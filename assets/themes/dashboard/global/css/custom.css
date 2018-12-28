@@ -1,0 +1,21 @@
+
+/* Metronic radio focus border css start */
+
+.has-success .checkbox, .has-success .checkbox-inline, .has-success .control-label, .has-success .form-control-feedback, .has-success .help-block, .has-success .radio, .has-success .radio-inline, .has-success.checkbox label, .has-success.checkbox-inline label, .has-success.radio label, .has-success.radio-inline label {
+    color: initial;
+}
+.has-success .md-radio label, .has-success.md-radio label {
+    color: initial;
+}
+.has-success .md-radio label>.box, .has-success.md-radio label>.box {
+    border-color: #666;
+}
+/* Metronic radio focus border css ends */
+
+/* Metronic input focus bottom border css start */
+
+.form-group.form-md-line-input .form-control.edited:not([readonly])~.form-control-focus:after, .form-group.form-md-line-input .form-control.edited:not([readonly])~label:after, .form-group.form-md-line-input .form-control:focus:not([readonly])~.form-control-focus:after, .form-group.form-md-line-input .form-control:focus:not([readonly])~label:after {
+    background: #5cb85c;
+}
+
+/* Metronic input focus bottom border css ends */

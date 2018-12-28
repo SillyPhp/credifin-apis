@@ -1,0 +1,89 @@
+<?php
+
+namespace common\models;
+
+/**
+ * This is the model class for table "{{%answered_questionnaire_fields}}".
+ *
+ * @property int $id Primary Key
+ * @property string $answer_enc_id Answer Encrypted ID
+ * @property string $answered_questionnaire_enc_id Foreign Key to Answered Questionnaire
+ * @property string $field_enc_id Foreign Key to Questionnaire Fields Table
+ * @property string $field_option_enc_id Foreign Key to Field Options Table
+ * @property string $answer Field Answer
+ * @property string $created_on On which date Field Answer information was added to database
+ * @property string $created_by By which User Field Answer information was added
+ * @property string $last_updated_on On which date Field Answer information was updated
+ * @property string $last_updated_by By which User Field Answer information was updated
+ * @property int $is_deleted Is Field Answer Deleted (0 As False, 1 As True)
+ *
+ * @property AnsweredQuestionnaire $answeredQuestionnaireEnc
+ * @property QuestionnaireFields $fieldEnc
+ * @property QuestionnaireFieldOptions $fieldOptionEnc
+ * @property Users $createdBy
+ * @property Users $lastUpdatedBy
+ */
+class AnsweredQuestionnaireFields extends \yii\db\ActiveRecord {
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName() {
+        return '{{%answered_questionnaire_fields}}';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return [
+            [['answer_enc_id', 'answered_questionnaire_enc_id', 'field_enc_id', 'created_on', 'created_by'], 'required'],
+            [['answer'], 'string'],
+            [['created_on', 'last_updated_on'], 'safe'],
+            [['is_deleted'], 'integer'],
+            [['answer_enc_id', 'answered_questionnaire_enc_id', 'field_enc_id', 'field_option_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['answer_enc_id'], 'unique'],
+            [['answered_questionnaire_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AnsweredQuestionnaire::className(), 'targetAttribute' => ['answered_questionnaire_enc_id' => 'answered_questionnaire_enc_id']],
+            [['field_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuestionnaireFields::className(), 'targetAttribute' => ['field_enc_id' => 'field_enc_id']],
+            [['field_option_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuestionnaireFieldOptions::className(), 'targetAttribute' => ['field_option_enc_id' => 'field_option_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAnsweredQuestionnaireEnc() {
+        return $this->hasOne(AnsweredQuestionnaire::className(), ['answered_questionnaire_enc_id' => 'answered_questionnaire_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFieldEnc() {
+        return $this->hasOne(QuestionnaireFields::className(), ['field_enc_id' => 'field_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFieldOptionEnc() {
+        return $this->hasOne(QuestionnaireFieldOptions::className(), ['field_option_enc_id' => 'field_option_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy() {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy() {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+}

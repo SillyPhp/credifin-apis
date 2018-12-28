@@ -1,0 +1,154 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+body{margin: 0 auto; padding: 0; background:#f6f7f9 !important;}
+.can-box-1{ padding: 25px; border-radius:10px; background: url("../images/pages/candidates-list/bg3.png") no-repeat top  #fff; 
+            border: 1px solid #00a0e3; background-size: 100%; margin-bottom: 15px; text-align: center;  background-size: 100% 33%; padding-bottom: 15px;}
+/*.can-box-1:hover{; transition: .3s ease-in-out; box-shadow: 0px 0px 10px rgb(0, 0, 0, .6);}*/
+/*.can-box-1:hover > .can-user-icon{box-shadow: 0px 0px 10px rgb(19, 132, 150, .6); border-radius: 50%;  }*/
+.can-row{padding: 0px 0px !important;}
+.can-box-1:hover > .icon1 a{background:#fff !important;}
+.social-icons{ height: 45px; display: flex; justify-content: center; }
+.icon1{
+    padding: 8px 0;
+    width: 36px;
+    height: 38px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.icon1 a{
+    padding: 0px;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    display: block;
+}
+.fb a{ background:#fff; color:#3B5998; border: 2px solid #3B5998; }
+.fb a:hover{ background:#3B5998; color: #fff;  border-radius:50px; transition:ease-in .3s; }
+.twitter a{background:#fff; color:#00C6FF; border: 2px solid #00c6ff; }
+.twitter a:hover{background:#00c6ff; color:#fff; border-radius:50px; transition:ease-in .3s}
+.linkedin a{background:#fff; color:#0077b5; border: 2px solid #0077b5;  }
+.linkedin a:hover{background:#0077B5; color:#fff; border-radius:50px; transition:ease-in .3s}
+.can-user-icon{max-height: 125px; max-width: 125px;  padding: 0px 0 0px 0;
+              border-radius: 50%; text-align: center;}
+.can-user-icon img{min-height: 125px; min-width: 125px; border-radius: 50%;  border:5px solid #00a0e3; text-align: center;}
+.can-name {padding: 10px 0 0 0; font-weight: bold; font-style: oblique; color: #00a0e3;  font-size: 16px }
+.can-loc{padding-top:4px;line-height: 20px;}
+.can-loca{font-size: 13px;}
+.can-loca i{color: #00a0e3;}
+.can-post{font-size: 14px; font-weight: bold;}
+.can-loc i{color:#00a0e3; font-size: 15px;}
+.can-loc span{font-size: 14px;}
+.view-resume a{ color:#fff; background:#00a0e3;  border:1px solid #00a0e3; }
+.view-resume a:hover{color:#fff; background: #ff7803; border:1px solid #ff7803; transition: .3s ease-in-out;}
+.can-details{color:#333;}
+.cat-label:after{
+    content: "";
+    display: block;
+    border-bottom: 2px solid #36c6d3;
+    width: 90%;
+}
+.sidebar{background: #fff;  padding: 20px 0;  border-radius: 8px; }
+.cat-label{padding: 10px 0 0 20px; font-family: lobster; font-size: 20px;color:#333;}
+.sidebar ul { list-style-type: none; padding: 0 0 0 20px ;}
+.sidebar ul li{padding: 5px 0 0 0;}
+.sidebar ul li:hover{color:#36c6d3;}
+.sidebar ul li:focus{color:#00a0e3;}
+.md-checkbox label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 0;
+    line-height: 20px;
+}
+.md-checkbox label>.box {
+    top: 4px !important;
+    border: 1px solid #36c6d3 !important;
+    height: 15px !important;
+    width: 15px !important;
+    z-index: 5;
+    border-radius: 5px;
+    -webkit-transition-delay: .2s;
+    -moz-transition-delay: .2s;
+    transition-delay: .2s;
+    
+}
+.md-checkbox label>span {
+    display: block;
+    position: absolute;
+    left: 5px !important;
+    -webkit-transition-duration: .3s;
+    -moz-transition-duration: .3s;
+    transition-duration: .3s;
+}
+.md-check:checked ~ label{color:#36c6d3;}
+/*@media screen and (max-width:992px){
+    .can-box-1{margin:0 0 15px 0;}
+
+}*/
+.large-container{
+    max-width: 1400px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin:auto;
+}
+.floating-icon{
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: -1px;
+    right: -1px;
+    background: #fff;
+    color: #1DA1F2;
+    border-radius: 0px 6px 0px 16px;
+    cursor: pointer;
+}
+.floating-icon .fa{
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    font-size: 20px;
+    transition: all 1s ease;
+    color: #1DA1F2;
+}
+.floating-icon.active .fa{
+    transform: rotate(45deg); 
+    transition: all 1s ease;
+}
+.detail{
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    text-transform: uppercase;
+    font-size: 12px;
+    background: #fff;
+    padding: 6px 15px;
+    border-radius: 6px 0px 16px 0px;
+    color: #1DA1F2;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 1s ease;
+    cursor: pointer;
+}
+.detail.active{
+  opacity: 1;
+}
+.view-resume .btn{
+    padding: 10px 20px;
+}
+/*.icon2{padding: 8px 0; margin:0 0px; }
+.icon2 a{ padding:6px 12px; border-radius:0px; color:#fff;}
+.fb1 a{ padding:8px 15px;  background:#3b5998; color:#fff; }
+.fb1 a:hover{ background:#3B5998; color: #fff;  border-radius:50px; transition:ease-in .3s; }
+.twitter1 a{background:#00C6FF; color:#fff; padding: 8px 13px; }
+.twitter1 a:hover{background:#00c6ff; color:#fff; border-radius:50px; transition:ease-in .3s}
+.linkedin1 a{background:#0077b5; color:#fff; padding:8px 13px;  }
+.linkedin1 a:hover{background:#0077B5; color:#fff; border-radius:50px; transition:ease-in .3s}*/
+
+
+
+
