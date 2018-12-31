@@ -38,7 +38,7 @@ a:hover {
             <div class="col-md-2 col-sm-3">
                 <?=
                 $this->render('/widgets/sidebar-review', [
-                    'type' => 'jobs',
+                    'type' => 'internships',
                 ]);
                 ?>
             </div>
@@ -584,7 +584,7 @@ $('#review-internships').scroll(function(){
     }
 });
 
-function getJobs(type = "Jobs") {
+function getJobs(type = "Internships") {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
