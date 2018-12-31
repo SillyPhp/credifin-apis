@@ -13,21 +13,13 @@ use frontend\models\JobApplied;
 use common\models\Posts;
 use common\models\EmployerApplications;
 use common\models\ApplicationPlacementLocations;
-use common\models\ApplicationInterviewLocations;
 use common\models\ApplicationOptions;
 use common\models\Organizations;
 use common\models\OrganizationLocations;
 use common\models\Cities;
 use common\models\Categories;
 use common\models\AssignedCategories;
-use common\models\ApplicationEmployeeBenefits;
 use common\models\EmployeeBenefits;
-use common\models\JobDescription;
-use common\models\Skills;
-use common\models\ApplicationSkills;
-use common\models\ApplicationJobDescription;
-use common\models\EducationalRequirements;
-use common\models\ApplicationEducationalRequirements;
 use common\models\AppliedApplications;
 use common\models\UserResume;
 use common\models\ReviewedApplications;
@@ -111,7 +103,7 @@ class JobsController extends Controller
             $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
             $review_list = ReviewedApplications::find()
                 ->alias('a')
-                ->select(['a.review_enc_id', 'a.application_enc_id as application_id','CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
+                ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
                 ->offset($sidebarpage)
                 ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
                 ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
@@ -265,105 +257,24 @@ class JobsController extends Controller
 
     public function actionDetail($eaidk)
     {
-
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
                 'is_deleted' => 0
             ])
             ->one();
-
-        $application_options = ApplicationOptions::find()
-            ->select(['option_name', 'value'])
-            ->where(['application_enc_id' => $application_details->application_enc_id])
-            ->asArray()
-            ->all();
-
-        $job_title = EmployerApplications::find()
-            ->alias('a')
-            ->select(['c.name', 'a.application_enc_id', 'a.application_number', 'a.slug', 'f.name as org_name', 'f.website', 'f.logo', 'g.designation', 'f.logo_location', 'f.email', 'f.cover_image', 'f.cover_image_location', 'd.name as primary', 'DATE_FORMAT(a.created_on,"%d-%m-%Y") as date_created', 'a.type', 'a.last_date', 'a.description', 'e.industry as preferred_industry', 'a.preferred_gender', 'a.experience'])
-            ->where(['application_enc_id' => $application_details->application_enc_id])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = b.parent_enc_id')
-            ->innerJoin(Industries::tableName() . 'as e', 'e.industry_enc_id = a.preferred_industry')
-            ->innerJoin(Organizations::tableName() . 'as f', 'f.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(Designations::tableName() . 'as g', 'g.designation_enc_id = a.designation_enc_id')
-            ->asArray()
-            ->all();
-
-        $job_application_Place_location = EmployerApplications::find()
-            ->alias('a')
-            ->distinct()
-            ->select(['b.positions', 'd.name', 'd.city_enc_id'])
-            ->where(['a.slug' => $eaidk])
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(OrganizationLocations::tableName() . 'as c', 'c.location_enc_id = b.location_enc_id')
-            ->innerJoin(Cities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
-            ->asArray()
-            ->all();
-        $total = EmployerApplications::find()
-            ->alias('a')
-            ->where(['a.slug' => $eaidk])
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(OrganizationLocations::tableName() . 'as c', 'c.location_enc_id = b.location_enc_id')
-            ->innerJoin(Cities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
-            ->sum('b.positions');
-
-        $job_application_location = EmployerApplications::find()
-            ->alias('a')
-            ->select(['d.name'])
-            ->distinct()
-            ->where(['a.slug' => $eaidk])
-            ->innerJoin(ApplicationInterviewLocations::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(OrganizationLocations::tableName() . 'as c', 'c.location_enc_id = b.location_enc_id')
-            ->innerJoin(Cities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
-            ->asArray()
-            ->all();
-
-        $job_desc = EmployerApplications::find()
-            ->alias('a')
-            ->select(['c.job_description'])
-            ->where(['a.slug' => $eaidk])
-            ->innerJoin(ApplicationJobDescription::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(JobDescription::tableName() . 'as c', 'c.job_description_enc_id = b.job_description_enc_id')
-            ->asArray()
-            ->all();
-
-        $job_skill = EmployerApplications::find()
-            ->alias('a')
-            ->select(['c.skill'])
-            ->where(['a.slug' => $eaidk])
-            ->innerJoin(ApplicationSkills::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(Skills::tableName() . 'as c', 'c.skill_enc_id = b.skill_enc_id')
-            ->asArray()
-            ->all();
-
-        $job_qualifications = EmployerApplications::find()
-            ->alias('a')
-            ->select(['c.educational_requirement'])
-            ->where(['a.slug' => $eaidk])
-            ->innerJoin(ApplicationEducationalRequirements::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(EducationalRequirements::tableName() . 'as c', 'c.educational_requirement_enc_id = b.educational_requirement_enc_id')
-            ->asArray()
-            ->all();
-
-        $emp_benefit = EmployerApplications::find()
-            ->alias('a')
-            ->where(['a.slug' => $eaidk])
-            ->select(['c.benefit'])
-            ->innerJoin(ApplicationEmployeeBenefits::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(EmployeeBenefits::tableName() . 'as c', 'c.benefit_enc_id = b.benefit_enc_id')
-            ->asArray()
-            ->all();
-
+        if (!$application_details) {
+            return 'Not Found';
+        }
+        $object = new \account\models\jobs\JobApplicationForm();
+        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()
-                ->all();
+                ->exists();
+
             $resumes = UserResume::find()
                 ->select(['user_enc_id', 'resume_enc_id', 'title'])
                 ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
@@ -376,31 +287,20 @@ class JobsController extends Controller
                 ->where(['a.application_enc_id' => $application_details->application_enc_id])
                 ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                 ->andWhere(['b.field_name' => 'Get Applications'])
-                ->asArray()
-                ->one();
+                ->exists();
         }
 
         if (!empty($application_details)) {
             $model = new JobApplied();
             return $this->render('detail', [
                 'application_details' => $application_details,
-                'title' => $job_title,
-                'options' => $application_options,
-                'desc' => $job_desc,
-                'skills' => $job_skill,
-                'placements' => $job_application_Place_location,
-                'interview_loc' => $job_application_location,
-                'org_details' => $organization_details,
-                'qualifications' => $job_qualifications,
+                'data' => $object->getCloneData($application_details->application_enc_id),
+                'org' => $org_details,
                 'applied' => $applied_jobs,
                 'model' => $model,
                 'resume' => $resumes,
-                'total_vac' => $total,
                 'que' => $app_que,
-                'emp_benefit' => $emp_benefit,
             ]);
-        } else {
-            return 'Not Found';
         }
     }
 
@@ -421,6 +321,7 @@ class JobsController extends Controller
 
     public function actionPrimaryCat()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $primaryfields = Categories::find()
             ->alias('a')
             ->select(['a.name', 'b.assigned_category_enc_id'])
@@ -428,10 +329,11 @@ class JobsController extends Controller
             ->where(['b.assigned_to' => 'Jobs'])
             ->asArray()
             ->all();
-        return json_encode($primaryfields);
+        return $primaryfields;
     }
 
-    public function actionJobPreview() {
+    public function actionJobPreview()
+    {
         if ($_GET['data']) {
             $var = $_GET['data'];
             $session = Yii::$app->session;

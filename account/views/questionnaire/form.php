@@ -958,20 +958,20 @@ $script = <<<JS
     $('#form-builder').validate({
        ignore: ":hidden:not(#form-value)",
        rules: {
-                    'QuestionnaireForm[formbuilderdata]':
+                    'formbuilderdata':
                      {
                        required:true,
                      },
         },
                          
         messages: { 
-                    'QuestionnaireForm[formbuilderdata]': { 
+                    'formbuilderdata': { 
                         required:'<div id = "color_red">Please Select Form elements And Drag in Box</div>',
                     },
         },
         
         errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "QuestionnaireForm[formbuilderdata]") { 
+                    if (element.attr("name") == "formbuilderdata") { 
                         error.insertAfter("#error_placement");
                     } 
                     } 

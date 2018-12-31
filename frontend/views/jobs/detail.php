@@ -1,315 +1,374 @@
 <?php
-$this->title = Yii::t('frontend', 'Job Detail');
+$separator = Yii::$app->params->seo_settings->title_separator;
+$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-$location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
 
+$location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-$total_vac=0;
+$total_vac = 0;
 
-foreach($data['applicationPlacementLocations'] as $placements)
-{
+foreach ($data['applicationPlacementLocations'] as $placements) {
     $total_vac += $placements['positions'];
 }
 foreach ($data['applicationOptions'] as $value) {
     $option[$value['option_name']] = $value['value'];
 }
-    $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
-    $application_object = json_encode($applied_data);
+$applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
+$application_object = json_encode($applied_data);
 
-$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
+$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $cover_location . DIRECTORY_SEPARATOR . $cover;
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
 if (empty($cover)) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location']. DIRECTORY_SEPARATOR . $org['logo'];
+
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
 ?>
 
-<div class="modal fade bs-modal-lg in" id="modal_que"  aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
-            </div>
-            <div class="modal-body">
-                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+    <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
+                </div>
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Fill Out The Details</h4>
-            </div>
-            <div class="modal-body">
-                <?php $form = ActiveForm::begin(['id' => 'resume_form']) ?>
-                <?= $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location') ?>
-                <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
-                <?php
-                if ($que>0) {
-
-                    $ques = 1;
-                } else {
-
-                    $ques = 0;
-                }
-                ?>
-                <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
-                <?= $form->field($model, 'check')->inline()->radioList([0 => 'Use Existing One', 1 => 'Upload New'])->label('Upload Resume') ?>
-
-                <div id="new_resume">
-                    <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
-                </div>
-                <div id="use_existing">
-                    <div class="row">
-                        <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
-                        <?php if ($resume) { ?>
-                            <?php foreach ($resume as $res) {
-                                ?>
-                                <div class="col-md-offset-1 col-md-10">
-                                    <div class="radio_questions">
-                                        <div class="inputGroup">
-                                            <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]" type="radio" value="<?= $res['resume_enc_id']; ?>"/>
-                                            <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php }
-                            ?>
-                        <?php } ?>
-                    </div>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <?= Html::submitbutton('Save', ['class' => 'btn btn-primary btn-shape btn-col sav_job']); ?>
-                <?= Html::button('Close', ['class' => 'btn default btn-shape btn-colour', 'data-dismiss' => 'modal']); ?>
-            </div>
-        </div>
-    </div>
-</div>
-<?php ActiveForm::end(); ?>
-<section class="overlape">
-    <!--<div class="block no-padding">-->
-    <div data-velocity="-.1" style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
-    <!--<div class="container fluid">-->
-    <div class="row m-0">
-        <div class="col-lg-12 p-0">
-            <div class="inner-header">
-                <h3><?= $data['cat_name']; ?></h3>
-                <div class="job-statistic">
-                    <?php if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                        ?>
-                        <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlisted</a></span>
-
+    <section class="overlape">
+        <!--<div class="block no-padding">-->
+        <div data-velocity="-.1"
+             style="background: url(' <?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
+             class="parallax scrolly-invisible no-parallax"></div>
+        <!-- PARALLAX BACKGROUND IMAGE -->
+        <!--<div class="container fluid">-->
+        <div class="row m-0">
+            <div class="col-lg-12 p-0">
+                <div class="inner-header">
+                    <h3><?= $data['cat_name']; ?></h3>
+                    <div class="job-statistic">
                         <?php
-                    } else {
-                        ?>
-                        <span class="hover-change"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlist</a></span>
-                    <?php } ?>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--</div>-->
-    <!--</div>-->
-</section>
-<section>
-    <!--<div class="block">-->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-8">
-                <div class="job-single-sec">
-                    <div class="job-single-head2">
-                        <div class="job-overview">
-                            <h3>Job Overview</h3>
-                            <ul>
-                                <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
-                                <li><i class="fa fa-puzzle-piece"></i><h3>Industry</h3><span><?= $data['industry']; ?></span></li>
-                                <li><i class="fa fa-thumb-tack"></i><h3>Designation</h3><span><?= $data['designation']; ?></span></li>
-                                <li><i class="fa fa-thumb-tack"></i><h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
-                                <li><i class="fa fa-money"></i><h3>Offered Salary (<?php echo ucwords($option['salary_duration']); ?>)</h3><span><?= '&#8377 ' . $option['salary']; ?></span></li>
-                                <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
-                                        switch ($data['preferred_gender']) {
-                                            case 0:
-                                                echo 'No Preference';;
-                                                break;
-                                            case 1:
-                                                echo 'Male';
-                                                break;
-                                            case 2:
-                                                echo 'Female';
-                                                break;
-                                            case 3:
-                                            echo 'Trans';
-                                            default:
-                                                echo 'not found';
-                                        }
-                                        ?></span></li>
-                                <li><i class="fa fa-shield"></i><h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
-                                <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
-                                <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span> <?php
-                                        $str = "";
-                                        foreach ($data['applicationPlacementLocations'] as $job_placement) {
-                                            $str .= $job_placement['name'] . ',';
-                                        }
-                                        echo rtrim($str, ',');
-                                        ?></span> </li>
-                            </ul>
-                        </div><!-- Job Overview -->
-                    </div><!-- Job Head -->
-
-                    <div class="job-details">
-                        <h3>Required Knowledge, Skills, and Abilities</h3>
-                        <div class="tags-bar">
-                            <?php foreach ($data['applicationSkills'] as $job_skill) { ?>
-                                <span><?= strtoupper($job_skill['skill']); ?> </span>
-                            <?php } ?>
-                        </div>
-                        <h3>Job Description</h3>
-                        <ul>
-                            <?php
-                            foreach ($data['applicationJobDescriptions'] as $job_desc) {
+                        if (!Yii::$app->user->isGuest) {
+                            if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                 ?>
-                                <li> <?php echo ucwords($job_desc['job_description']); ?> </li>
-
-                            <?php }
-                            ?>
-                        </ul>
-                        <?php if (!empty($data['description'])) {
-                            ?>
-                            <h3>Other Details</h3>
-                            <p><?= $data['description']; ?></p>
-                        <?php } ?>
-
-
-                        <h3>Education + Experience</h3>
-                        <ul>
-                            <?php
-                            foreach ($data['applicationEducationalRequirements'] as $qualification) {
+                                <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
+                                                class="fa fa-heart-o"></i> Shortlisted</a></span>
+                                <?php
+                            } else {
                                 ?>
-                                <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
-                            <?php } ?>
-                        </ul>
-                        <h3>Employer Benefits</h3>
-                        <ul>
-                            <?php
-                            foreach ($data['applicationEmployeeBenefits'] as $benefit) {
-                                ?>
-                                <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                            <?php } ?>
-                        </ul>
-                    </div>
-                    <div class="job-overview">
-                        <h3>Interview Details</h3>
-                        <ul style="border:0px;">
-                            <?php if (!empty($option['interview_start_date'] && $option['interview_start_time'])) { ?>
-                                <li><i class="fa fa-calendar-check-o"></i><h3>Interview Dates</h3><span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span></li>
-                                <li><i class="fa fa-clock-o"></i><h3>Interview Time</h3><span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span></li>
-                            <?php } ?>
-                            <li><i class="fa fa-map-marker"></i><h3>Interview Locations</h3><span> <?php
-                                    $str2 = "";
-                                    foreach ($data['applicationInterviewLocations'] as $loc) {
-                                        $str2 .= $loc['name'] . ',';
-                                    } echo rtrim($str2, ',');
-                                    ?></span></li>
-                        </ul>
-                    </div>
-                    <div class="share-bar">
-                        <span>Share</span>
-                        <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
-                            <i class="fa fa-facebook"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
-                            <i class="fa fa-twitter"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
-                            <i class="fa fa-linkedin"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
-                            <i class="fa fa-whatsapp"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
-                            <i class="fa fa-envelope"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4">
-                <div class="job-single-head style2">
-                    <div class="job-thumb">
-                        <?php
-                        if (!empty($logo)) {
-                            ?>
-                            <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="" />
-                            <?php
-                        } else {
-                            ?>
-                            <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125" color="" font="55px"></canvas>
-                            <?php
+                                <span class="hover-change"><a href="#" class="shortlist_job"><i
+                                                class="fa fa-heart-o"></i> Shortlist</a></span>
+                                <?php
+                            }
                         }
                         ?>
                     </div>
-                    <div class="job-head-info">
-                        <h4><?= $org['org_name']; ?></h4>
-                        <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
-                        <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
-                    </div>
-                    <?php if (Yii::$app->user->isGuest): ?>
-                        <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login to apply</a>
-                    <?php else: ?>
-                        <?php if ($applied): ?>
-                            <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i class="fa fa-check" ></i>Applied</a>
-                        <?php else: ?>
-                            <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                    <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
-                    <div class="share-bar no-border">
-                        <h3>Share</h3>
-                        <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
-                            <i class="fa fa-facebook"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
-                            <i class="fa fa-twitter"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
-                            <i class="fa fa-linkedin"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
-                            <i class="fa fa-whatsapp"></i>
-                        </a>
-                        <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
-                            <i class="fa fa-envelope"></i>
-                        </a>
-                    </div>
-                </div><!-- Job Head -->
+                </div>
             </div>
         </div>
-    </div>
-    <!--</div>-->
-</section>
+        <!--</div>-->
+        <!--</div>-->
+    </section>
+    <section>
+        <!--<div class="block">-->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <div class="job-single-sec">
+                        <div class="job-single-head2">
+                            <div class="job-overview">
+                                <h3>Job Overview</h3>
+                                <ul>
+                                    <li><i class="fa fa-puzzle-piece"></i>
+                                        <h3>Profile</h3><span><?= $data['name']; ?></span></li>
+                                    <li><i class="fa fa-puzzle-piece"></i>
+                                        <h3>Industry</h3><span><?= $data['industry']; ?></span></li>
+                                    <li><i class="fa fa-thumb-tack"></i>
+                                        <h3>Designation</h3><span><?= $data['designation']; ?></span></li>
+                                    <li><i class="fa fa-thumb-tack"></i>
+                                        <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Offered Salary (<?php echo ucwords($option['salary_duration']); ?>)</h3>
+                                        <span><?= '&#8377 ' . $option['salary']; ?></span></li>
+                                    <li><i class="fa fa-mars-double"></i>
+                                        <h3>Gender</h3><span><?php
+                                            switch ($data['preferred_gender']) {
+                                                case 0:
+                                                    echo 'No Preference';;
+                                                    break;
+                                                case 1:
+                                                    echo 'Male';
+                                                    break;
+                                                case 2:
+                                                    echo 'Female';
+                                                    break;
+                                                case 3:
+                                                    echo 'Trans';
+                                                default:
+                                                    echo 'not found';
+                                            }
+                                            ?></span></li>
+                                    <li><i class="fa fa-shield"></i>
+                                        <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
+                                    <li><i class="fa fa-line-chart "></i>
+                                        <h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
+                                    <li><i class="fa fa-map-marker "></i>
+                                        <h3>Locations</h3><span> <?php
+                                            $str = "";
+                                            foreach ($data['applicationPlacementLocations'] as $job_placement) {
+                                                $str .= $job_placement['name'] . ',';
+                                            }
+                                            echo rtrim($str, ',');
+                                            ?></span></li>
+                                </ul>
+                            </div><!-- Job Overview -->
+                        </div><!-- Job Head -->
+
+                        <div class="job-details">
+                            <h3>Required Knowledge, Skills, and Abilities</h3>
+                            <div class="tags-bar">
+                                <?php foreach ($data['applicationSkills'] as $job_skill) { ?>
+                                    <span><?= strtoupper($job_skill['skill']); ?> </span>
+                                <?php } ?>
+                            </div>
+                            <h3>Job Description</h3>
+                            <ul>
+                                <?php
+                                foreach ($data['applicationJobDescriptions'] as $job_desc) {
+                                    ?>
+                                    <li> <?php echo ucwords($job_desc['job_description']); ?> </li>
+
+                                <?php }
+                                ?>
+                            </ul>
+                            <?php if (!empty($data['description'])) {
+                                ?>
+                                <h3>Other Details</h3>
+                                <p><?= $data['description']; ?></p>
+                            <?php } ?>
+
+
+                            <h3>Education + Experience</h3>
+                            <ul>
+                                <?php
+                                foreach ($data['applicationEducationalRequirements'] as $qualification) {
+                                    ?>
+                                    <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
+                                <?php } ?>
+                            </ul>
+                            <h3>Employer Benefits</h3>
+                            <ul>
+                                <?php
+                                foreach ($data['applicationEmployeeBenefits'] as $benefit) {
+                                    ?>
+                                    <li> <?php echo ucwords($benefit['benefit']); ?> </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                        <div class="job-overview">
+                            <h3>Interview Details</h3>
+                            <ul style="border:0px;">
+                                <?php if (!empty($option['interview_start_date'] && $option['interview_start_time'])) { ?>
+                                    <li><i class="fa fa-calendar-check-o"></i>
+                                        <h3>Interview Dates</h3>
+                                        <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
+                                    </li>
+                                    <li><i class="fa fa-clock-o"></i>
+                                        <h3>Interview Time</h3>
+                                        <span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span>
+                                    </li>
+                                <?php } ?>
+                                <li><i class="fa fa-map-marker"></i>
+                                    <h3>Interview Locations</h3><span> <?php
+                                        $str2 = "";
+                                        foreach ($data['applicationInterviewLocations'] as $loc) {
+                                            $str2 .= $loc['name'] . ',';
+                                        }
+                                        echo rtrim($str2, ',');
+                                        ?></span></li>
+                            </ul>
+                        </div>
+                        <div class="share-bar">
+                            <span>Share</span>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-fb">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-linkedin">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-whatsapp">
+                                <i class="fa fa-whatsapp"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-google">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="job-single-head style2">
+                        <div class="job-thumb">
+                            <?php
+                            if (!empty($logo)) {
+                                ?>
+                                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="<?= $org['org_name']; ?>"/>
+                                <?php
+                            } else {
+                                ?>
+                                <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
+                                        color="<?= $org['color']; ?>" font="55px"></canvas>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                        <div class="job-head-info">
+                            <h4><?= $org['org_name']; ?></h4>
+                            <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
+                        </div>
+                        <?php if (Yii::$app->user->isGuest): ?>
+                            <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
+                                to apply</a>
+                        <?php else: ?>
+                            <?php if ($applied): ?>
+                                <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i
+                                            class="fa fa-check"></i>Applied</a>
+                            <?php else: ?>
+                                <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for
+                                    Job</a>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
+                        <div class="share-bar no-border">
+                            <h3>Share</h3>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-fb">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-linkedin">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-whatsapp">
+                                <i class="fa fa-whatsapp"></i>
+                            </a>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-google">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div><!-- Job Head -->
+                </div>
+            </div>
+        </div>
+        <!--</div>-->
+    </section>
     <div id="message_img">
         <span id='close_btn'><i class="fa fa-times"></i></span>
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From YOur Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
+                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
+                Questionnaire Pending From YOur Side you can fill them now By clicking <a
+                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
+                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>
     <div class="fader"></div>
+<?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill Out The Details</h4>
+                </div>
+                <div class="modal-body">
+
+                    <?= $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location') ?>
+                    <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
+                    <?php
+                    if ($que > 0) {
+
+                        $ques = 1;
+                    } else {
+
+                        $ques = 0;
+                    }
+                    ?>
+                    <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
+                    <?= $form->field($model, 'check')->inline()->radioList([0 => 'Use Existing One', 1 => 'Upload New'])->label('Upload Resume') ?>
+
+                    <div id="new_resume">
+                        <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
+                    </div>
+                    <div id="use_existing">
+                        <div class="row">
+                            <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
+                            <?php if ($resume) { ?>
+                                <?php foreach ($resume as $res) {
+                                    ?>
+                                    <div class="col-md-offset-1 col-md-10">
+                                        <div class="radio_questions">
+                                            <div class="inputGroup">
+                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
+                                                       type="radio" value="<?= $res['resume_enc_id']; ?>"/>
+                                                <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php }
+                                ?>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn - primary btn - shape btn - col sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn default btn - shape btn - colour', 'data - dismiss' => 'modal']); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php ActiveForm::end(); ?>
 <?php
 $this->registerCss("
  .sub_description_1,sub_description_2
