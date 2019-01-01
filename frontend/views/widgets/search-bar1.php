@@ -5,7 +5,7 @@ use yii\helpers\Url;
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-            <form action="<?= Url::to('/jobs/list?'); ?>">
+            <form action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
                         <div class="col-md-4 col-xs-6 ">

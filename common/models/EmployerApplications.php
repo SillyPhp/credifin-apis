@@ -23,7 +23,7 @@ namespace common\models;
  * @property string $joining_date Joining Date
  * @property string $last_date Last Date to Apply
  * @property string $experience Minimum Experience Required
- * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both) 
+ * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both)
  * @property string $fill_questionnaire_on Fill Questionnaire (1 as at the time of application, 2 as after initial approval of the application)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)

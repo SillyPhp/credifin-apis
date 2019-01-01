@@ -15,7 +15,8 @@ use common\models\Industries;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
-class OrganizationSignUpForm extends Model {
+class OrganizationSignUpForm extends Model
+{
 
     public $username;
     public $email;
@@ -35,7 +36,8 @@ class OrganizationSignUpForm extends Model {
     public $user_type;
     private $_flag = false;
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             [
                 'class' => PhoneInputBehavior::className(),
@@ -44,13 +46,15 @@ class OrganizationSignUpForm extends Model {
         ];
     }
 
-    public function formName() {
+    public function formName()
+    {
         return '';
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_industry', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_industry', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
             [['organization_name'], 'string', 'max' => 100],
             [['username', 'email', 'organization_email'], 'string', 'max' => 50],
@@ -71,10 +75,18 @@ class OrganizationSignUpForm extends Model {
             [['organization_business_activity'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_business_activity' => 'business_activity_enc_id']],
             [['organization_industry'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['organization_industry' => 'industry_enc_id']],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
+            [
+                ['organization_industry'], 'required', 'when' => function ($model, $attribute) {
+                return $model->organization_business_activity == 'Others';
+            }, 'whenClient' => "function (attribute, value) {
+                        return $('#organization_business_activity').val() == 'Others';
+                }"
+            ],
         ];
     }
 
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'username' => Yii::t('frontend', 'Username'),
             'email' => Yii::t('frontend', 'Email'),
@@ -93,13 +105,14 @@ class OrganizationSignUpForm extends Model {
         ];
     }
 
-    public function add() {
+    public function add()
+    {
         if (!$this->validate()) {
             return false;
         }
 
         $user_type = UserTypes::findOne([
-                    'user_type' => $this->user_type,
+            'user_type' => $this->user_type,
         ]);
 
         if (!$user_type) {
@@ -137,7 +150,11 @@ class OrganizationSignUpForm extends Model {
                 $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
                 $organizationsModel->organization_type_enc_id = $this->organization_type;
                 $organizationsModel->business_activity_enc_id = $this->organization_business_activity;
-                $organizationsModel->industry_enc_id = $this->organization_industry;
+                if ($this->organization_industry) {
+                    $organizationsModel->industry_enc_id = $this->organization_industry;
+                } else {
+                    $organizationsModel->industry_enc_id = NULL;
+                }
                 $organizationsModel->name = $this->organization_name;
                 $organizationsModel->email = $this->organization_email;
                 $organizationsModel->initials_color = RandomColors::one();

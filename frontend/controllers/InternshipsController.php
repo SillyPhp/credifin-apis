@@ -180,7 +180,7 @@ class InternshipsController extends Controller {
             ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
-            ->where(['j.name' => $options['type']]);
+            ->where(['j.name' => $options['type'], 'a.is_deleted' => 0]);
         if(isset($options['company'])) {
             $jobcards->andWhere([
                 'or',

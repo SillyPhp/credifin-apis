@@ -54,7 +54,7 @@ class AccountsController extends Controller {
 
         $loginFormModel = new LoginForm();
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-            return $this->redirect('/account/dashboard');
+            return $this->redirect((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : '/account/dashboard'));
         }
 
         return $this->render('login', [
