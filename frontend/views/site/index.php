@@ -55,7 +55,7 @@ $this->params['header_dark'] = false;
     <div class="header-row">  
         <div class="container">
             <div class="header-boxs">
-                <div class="box-border">
+                <div class="box-border fade-in one">
                     <!--<div class="box-overlay"></div>-->
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
                     <div class="h-heading">Corporates</div>
@@ -65,14 +65,14 @@ $this->params['header_dark'] = false;
                         <div class="text">John Doe</div> 
                     </div>-->
                 </div>
-                <div class="box-border">
+                <div class="box-border fade-in two">
                     <div class="icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
                     </div>
                     <div class="h-heading">Candidates</div>
                     <div class="h-text">Consultants, test preparation, travel services</div>
                 </div>
-                <div class="box-border">
+                <div class="box-border fade-in three">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"></div>
                         <div class="h-heading">Universities & Colleges</div>
@@ -82,7 +82,7 @@ $this->params['header_dark'] = false;
                         <div class="text">Coming Soon</div>
                     </div>
                 </div>              
-                <div class="box-border"> 
+                <div class="box-border fade-in four">
                     <div class="box-overlay">
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>"></div>
                     <div class="h-heading">Consultants</div>
@@ -256,6 +256,8 @@ $this->params['header_dark'] = false;
         </div>
     </article>
 </div>
+
+
 <?php
 $this->registerCss('
 .animated.fadeIn {
@@ -779,6 +781,53 @@ textarea {
 .seq .seq-nav{
     z-index:999;
 }
+
+
+/* make keyframes that tell the start state and the end state of our object */
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.fade-in {
+  opacity:0;  /* make things invisible upon start */
+  -webkit-animation:fadeIn ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+  -moz-animation:fadeIn ease-in 1;
+  animation:fadeIn ease-in 1;
+
+  -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
+
+  -webkit-animation-duration:1s;
+  -moz-animation-duration:1s;
+  animation-duration:1s;
+}
+
+.fade-in.one {
+  -webkit-animation-delay: 0.9s;
+  -moz-animation-delay: 0.9s;
+  animation-delay: 0.9s;
+}
+
+.fade-in.two {
+  -webkit-animation-delay: 1.5s;
+  -moz-animation-delay:1.5s;
+  animation-delay: 1.5s;
+}
+
+.fade-in.three {
+  -webkit-animation-delay: 2.0s;
+  -moz-animation-delay: 2.0s;
+  animation-delay: 2.0s;
+}
+
+.fade-in.four {
+  -webkit-animation-delay: 2.4s;
+  -moz-animation-delay: 2.4s;
+  animation-delay: 2.4s;
+}
+
+/*---make a basic box ---*/
 ');
 $script = <<< JS
 $(document).on('click', '.feed-open', function(){
@@ -872,5 +921,26 @@ $this->registerJs($script);
 $this->registerCssFile('http://demo.sequencejs.com/modern-slide-in/css/sequence-theme.modern-slide-in.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/hammer.min.js');
-$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/scripts.min.js');
+$this->registerJsFile('@eyAssets/js/sequence.min.js');
+//$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/scripts.min.js');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
+<script>
+    $( document ).ready(function() {
+    // Get the Sequence element
+    var sequenceElement = document.getElementById("sequence");
+
+    // Place your Sequence options here to override defaults
+    var options = {
+        autoPlay: true,
+        autoPlayInterval: 3000,
+        phaseThreshold: false,
+        preloader: true,
+        reverseWhenNavigatingBackwards: true
+    }
+
+    // Launch Sequence on the element, and with the options we specified above
+    var mySequence = sequence(sequenceElement, options);
+
+    });
+</script>
