@@ -71,8 +71,7 @@ class JobsController extends Controller
             ->innerJoin(Cities::tableName() . 'as f', 'f.city_enc_id = e.city_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as g', 'g.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(ApplicationOptions::tableName() . 'as h', 'h.application_enc_id = a.application_enc_id')
-            ->where(['g.name' => 'Jobs'])
-            ->andWhere(['h.option_name' => 'salary'])
+            ->where(['g.name' => 'Jobs', 'h.option_name' => 'salary', 'a.is_deleted' => 0])
             ->orderBy(['a.id' => SORT_DESC])
             ->groupBy('a.application_enc_id')
             ->asArray()
@@ -111,6 +110,7 @@ class JobsController extends Controller
                 ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
                 ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
                 ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
+                ->where(['b.is_deleted' => 0])
                 ->groupBy(['b.application_enc_id'])
                 ->limit(4)
                 ->orderBy(['a.id' => SORT_DESC])
@@ -183,7 +183,7 @@ class JobsController extends Controller
             ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
-            ->where(['j.name' => $options['type']]);
+            ->where(['j.name' => $options['type'], 'a.is_deleted' => 0]);
         if (isset($options['company'])) {
             $jobcards->andWhere([
                 'or',

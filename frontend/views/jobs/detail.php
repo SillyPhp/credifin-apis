@@ -60,7 +60,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                     <h3><?= $data['cat_name']; ?></h3>
                     <div class="job-statistic">
                         <?php
-                        if (!Yii::$app->user->isGuest) {
+                        if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                             if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                 ?>
                                 <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
@@ -258,7 +258,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                             <?php if ($applied): ?>
                                 <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i
                                             class="fa fa-check"></i>Applied</a>
-                            <?php else: ?>
+                            <?php elseif (!Yii::$app->user->identity->organization): ?>
                                 <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for
                                     Job</a>
                             <?php endif; ?>
