@@ -44,7 +44,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Internships'); ?></h2>
+                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
                 </div>
             </div>
             <div class="row category-row">
@@ -78,7 +78,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Recent Internships'); ?></h3>
+                    <h3 class="heading-style"><?= Yii::t('frontend', 'Feature Internships'); ?></h3>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="type-1">
@@ -601,55 +601,64 @@ $(document).ready(function () {
         success: function(response) {
             console.log("status", response);
             if(response.status == 200) {
-                console.log("here!!");
+                console.log(response);
                 var jcard = $('#application-card').html();
                 $(".blogbox").append(Mustache.render(jcard, response.job_cards));
                 var card2 = $('#category-card').html();
                 $(".category-row").append(Mustache.render(card2, response.job_categories));
-                var fcard = $('#company-card').html();
-                $(".companies").append(Mustache.render(fcard, response.companycards));
+                // var companies_cards = $('#company-card').html();
+                // $(".companies").append(Mustache.render(companies_cards, response.companycards));
+                utilities.initials();
             } else {
                 console.log("not work!");
             }
         }
-    }).done(function(){
-        
-        $('#company-slider').owlCarousel({
-            loop: true,
-            nav: true,
-            dots: false,
-            pauseControls: true,
-            margin: 20,
-            responsiveClass: true,
-            navText: [
-            '<i class="fa fa-angle-left set_icon"></i>',
-            '<i class="fa fa-angle-right set_icon"></i>'
-            ],
-            responsive: {
-            0: {
-            items: 1
-            },
-            568: {
-            items: 2
-            },
-            600: {
-            items: 3
-            },
-            1000: {
-            items: 6
-            },
-            1400: {
-            items: 6
-            }
-            }
-        });
-        var url = "http://www.eygb.co/assets/themes/ey/js/functions.js";
-        $.getScript( url, function() {
-        //      initials();
-        });
-    });
-        
+    })  
 });
+function getCompanies(){
+    $.ajax({
+        method: "POST",
+        url : '/jobs/featured-companies',
+        success: function(response) {
+            if(response.status === 200) {
+                var fcard = $('#company-card').html();
+                $(".companies").append(Mustache.render(fcard, response.companycards));
+                $('#company-slider').owlCarousel({
+                    loop: true,
+                    nav: true,
+                    dots: false,
+                    pauseControls: true,
+                    margin: 20,
+                    responsiveClass: true,
+                    navText: [
+                    '<i class="fa fa-angle-left set_icon"></i>',
+                    '<i class="fa fa-angle-right set_icon"></i>'
+                    ],
+                    responsive: {
+                        0: {
+                            items: 1
+                        },
+                        568: {
+                            items: 2
+                        },
+                        600: {
+                            items: 3
+                        },
+                        1000: {
+                            items: 6
+                        },
+                        1400: {
+                            items: 7
+                        }
+                    }
+                });
+                utilities.initials();
+            }
+        }
+    });
+   
+}
+getCompanies();
         
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -693,8 +702,9 @@ echo $this->render('/widgets/application-card', [
 
 echo $this->render('/widgets/application-card', [
     'type' => 'mustache',
+    'type2' => 'with-add-review',
 ]);
 
-echo $this->render('/widgets/company-cards', [
-    'type' => 'mustache-company-carousel',
+echo $this->render('/widgets/application-card', [
+    'type' => 'mustache-company',
 ]);
