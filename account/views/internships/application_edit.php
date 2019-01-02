@@ -11,11 +11,16 @@ use yii\widgets\Pjax;
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
 $process = ArrayHelper::map($process_list, 'interview_process_enc_id', 'process_name');
+$que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
 $benefits = ArrayHelper::map($benefit, 'benefit_enc_id', 'benefit');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
-$que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
+$desc_list = ArrayHelper::index($data['applicationJobDescriptions'], 'job_description_enc_id');
+$edu_list = ArrayHelper::index($data['applicationEducationalRequirements'], 'educational_requirement_enc_id');
 
+foreach ($data['applicationOptions'] as $value) {
+    $option[$value['option_name']] = $value['value'];
+}
 ?>
 
 <div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
@@ -98,39 +103,37 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="row">                    
                                 <div class="col-md-4">
                                     <div class="select">
-                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Function', 'disabled' => true])->label(false); ?>
+                                        <?php $select = $data['category_enc_id'];  ?>
+                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['options' => [$select => ['selected' => true]], 'prompt' => 'Choose Job Function', 'disabled' => true])->label(false); ?>
                                     </div>        
                                 </div>
                                 <div class="col-md-4">
-
                                     <div class="cat_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Job Profile', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?> 
-
+                                        <?= $form->field($model, 'jobtitle')->textInput(['placeholder' => 'Job Profile', 'id' => 'jobtitle', 'disabled' => true, 'value' => $data['cat_name']])->label(false) ?> 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="desig_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'designations')->textInput(['id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
+                                        <?= $form->field($model, 'designations')->textInput(['id' => 'designations', 'placeholder' => 'Designation', 'value' => $data['designation']])->label(false); ?>
                                     </div>
 
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+                                    <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'], ['options' => [$data['type'] => ['selected' => true]]])->label(false); ?>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
+                                    <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'value' => $option['salary']])->label('Salary'); ?>
                                 </div>
                                 <div class="col-md-3">
                                     <?=
                                     $form->field($model, 'ctctype')->dropDownList([
                                         'monthly' => 'Monthly',
                                         'weekly' => 'Weekly',
-                                        'hourly' => 'Hourly',
-                                        'annually' => 'Annually'])->label(false);
+                                        'annually' => 'Annually'], ['options' => [$option['salary_duration'] => ['selected' => true]]])->label(false);
                                     ?>
                                 </div>
                                 <div class="col-md-3">
@@ -147,7 +150,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <div class="col-md-3">
                                     <div class="weekDays-selector">
                                         <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
-
                                         <?=
                                         $form->field($model, 'weekdays')->inline()->checkBoxList([
                                             '1' => 'M',
@@ -190,22 +192,22 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Job Timing From');
+                                    <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => $data['timings_from']]])->label('Job Timing From');
                                     ?>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
+                                    <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => $data['timings_to']]])->label('Upto');
                                     ?> 
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'pref_inds')->dropDownList($industry, ['prompt' => 'Preferred industry'])->label(false); ?>
+                                    <?= $form->field($model, 'pref_inds')->dropDownList($industry, ['options' => [$data['preferred_industry'] => ['selected' => true]], 'prompt' => 'Preferred industry'])->label(false); ?>
                                 </div> 
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
                                     <div id="gender_pref">
                                         <div class="radio-group">
-                                            <?php $model->gender = [0]; ?>
+                                            <?php $model->gender = [$data['preferred_gender']]; ?>
                                             <?=
                                             $form->field($model, 'gender')->inline()->radioList([
                                                 0 => 'No Pref',
@@ -229,31 +231,39 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                 </div> 
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'min_exp')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Experience Required'])->label(false); ?>
+                                    <?= $form->field($model, 'min_exp')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['options' => [$data['experience'] => ['selected' => true]], 'prompt' => 'Experience Required'])->label(false); ?>
                                 </div> 
                                 <div class="col-md-3">
+                                    <?php
+                                    $lastdate = $data['last_date'];
+                                    $last_date = date("d-m-Y", strtotime($lastdate));
+                                    ?>
                                     <?=
                                     $form->field($model, 'last_date')->widget(DatePicker::classname(), [
-                                        'options' => ['placeholder' => 'Last Date To Apply'],
+                                        'options' => ['placeholder' => 'Last Date To Apply', 'value' => $last_date],
                                         'readonly' => true,
                                         'pluginOptions' => [
                                             'autoclose' => true,
                                             'format' => 'dd-M-yyyy',
-                                            'name' => 'earliestjoiningdate',
+                                            'name' => 'earliestjoiningdate1',
                                             'todayHighlight' => true,
                                             'startDate' => '+0d',
                                 ]])->label(false);
                                     ?>
                                 </div> 
                                 <div class="col-md-3">
+                                    <?php
+                                    $joindate = $data['joining_date'];
+                                    $join_date = date("d-m-Y", strtotime($joindate));
+                                    ?>
                                     <?=
                                     $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
-                                        'options' => ['placeholder' => 'Joining Date'],
+                                        'options' => ['placeholder' => 'Joining Date', 'value' => $join_date],
                                         'readonly' => true,
                                         'pluginOptions' => [
                                             'autoclose' => true,
                                             'format' => 'dd-M-yyyy',
-                                            'name' => 'earliestjoiningdate',
+                                            'name' => 'earliestjoiningdate2',
                                             'todayHighlight' => true,
                                             'startDate' => '+0d',
                                 ]])->label(false);
@@ -278,51 +288,60 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
                                     </div>
                                 </div>
-                            </div>  
-                            <?php
-                            Pjax::begin(['id' => 'pjax_locations1']);
-                            if (!empty($loc_list)) {
-                                ?>
-                                <?=
-                                $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
-                                    'item' => function($index, $label, $name, $checked, $value) {
-
-                                        if ($index % 3 == 0) {
-                                            $return .= '<div class="row">';
-                                        }
-                                        $return .= '<div class="col-md-4">';
-                                        $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="' . $value . '" class="checkbox-label">';
-                                        $return .= '<div class="checkbox-text">';
-                                        $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
-                                        $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
-                                        $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
-                                        $return .= '<div class="form-group">';
-                                        $return .= '<div class="input-group spinner">';
-                                        $return .= '<input type="text" class="form-control place_no" value="1">';
-                                        $return .= '<div class="input-group-btn-vertical">';
-                                        $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
-                                        $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
-                                        $return .= '</div>';
-                                        $return .= '</div>';
-                                        $return .= '</div>';
-                                        $return .= '<div class="tooltips">';
-                                        $return .= 'Enter No. of Positions.';
-                                        $return .= '</div>';
-                                        $return .= '</div>';
-                                        $return .= '</label>';
-                                        $return .= '</div>';
-                                        if ($index % 3 == 2 || isset($label['total'])) {
-                                            $return .= '</div>';
-                                        }
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-
+                            </div> 
+                            <?php if (empty($loc_list)) { ?>
+                                <div class="empty-section-text">No Placement Location has been found </div>
                             <?php } else { ?>
-                                <div class="empty-section-text">No Placement Location has been found </div> 
-                            <?php } Pjax::end(); ?>
+                                    <?php 
+                                    foreach($data['applicationPlacementLocations'] as $v)
+                                    {
+                                        $arr[] = $v['location_enc_id'];
+                                    }
+                                    $model->placement_locations = $arr; 
+                                    ?>
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_locations1']);?>
+                                    <?=
+                                    $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
+                                        'item' => function($index, $label, $name, $checked, $value) {
+                                         if($index%3==0)
+                                            {
+                                              $return .= '<div class="row">';
+                                            }
+                                            $return .= '<div class="col-md-4">';
+                                            $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="' . $value . '" class="checkbox-label">';
+                                            $return .= '<div class="checkbox-text">';
+                                            $return .= '<p class="loc_name_tag">' . $label['location_name'].'</p>';
+                                            $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
+                                            $return .= '<span class="state_city_tag">' . $label['city_name'] .", ". $label['state_name']. '</span>';
+                                            $return .= '<div class="form-group">';
+                                            $return .= '<div class="input-group spinner">';
+                                            $return .= '<input type="text" class="form-control place_no" value="1">';
+                                            $return .= '<div class="input-group-btn-vertical">';
+                                            $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
+                                            $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
+                                            $return .= '</div>';
+                                            $return .= '</div>';
+                                            $return .= '</div>';
+                                            $return .= '<div class="tooltips">';
+                                            $return .= 'Enter No. of Positions.';
+                                            $return .= '</div>';
+                                            $return .= '</div>';
+                                            $return .= '</label>';
+                                            $return .= '</div>';
+                                          if ($index%3==2 ||isset($label['total']))
+                                            {
+                                                $return .= '</div>';
+                                            }
+                                            
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                    <?php Pjax::end() ?>  
+                                
+                            <?php } ?> 
                             <input type="text" name="placement_calc" id="placement_calc" readonly>
                         </div>
 
@@ -357,9 +376,31 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                 </div>
                                 <div class="col-md-6">
-
+                                        <?php 
+                                    foreach($data['applicationJobDescriptions'] as $v)
+                                    {
+                                        $arr2[] = $v['job_description_enc_id'];
+                                    }
+                                    $model->clone_desc = $arr2; 
+                                    ?>
                                     <div class="md-checkbox-list" id="md-checkbox">
-
+                                        <?=
+                                    $form->field($model, 'clone_desc')->checkBoxList($desc_list, [
+                                        'item' => function($index, $label, $name, $checked, $value) {
+                                            $return .= '<div class="md-checkbox">';
+                                            $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" id= "' . $value . '" class="md-check" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="' . $value . '">';
+                                            $return .= '<span></span>';
+                                            $return .= '<span class="check"></span>';
+                                            $return .= '<span class="box"></span>'.$label['job_description'].'</label>';
+                                            $return .= '</div>';
+                                            
+                                            
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                    
                                     </div>
                                     <div id="error-checkbox-msg"></div> 
                                     <?= $form->field($model, 'checkboxArray', ['template' => '{input}'])->hiddenInput(['id' => 'checkbox_array']); ?>
@@ -398,8 +439,30 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                 </div>
                                 <div class="col-md-6">
+                                     <?php 
+                                    foreach($data['applicationEducationalRequirements'] as $v)
+                                    {
+                                        $arr3[] = $v['educational_requirement_enc_id'];
+                                    }
+                                    $model->clone_edu = $arr3; 
+                                    ?>
                                     <div class="md-checkbox" id="quali_list">
-
+                                        <?=
+                                    $form->field($model, 'clone_edu')->checkBoxList($edu_list, [
+                                        'item' => function($index, $label, $name, $checked, $value) {
+                                            $return .= '<div class="md-checkbox">';
+                                            $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" id= "' . $value . '" class="md-check" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="' . $value . '">';
+                                            $return .= '<span></span>';
+                                            $return .= '<span class="check"></span>';
+                                            $return .= '<span class="box"></span>'.$label['educational_requirement'].'</label>';
+                                            $return .= '</div>';
+                                            
+                                            
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>  
                                     </div>
                                     <div id="error-edu-msg"></div>        
                                     <?= $form->field($model, 'qualifications_arr', ['template' => '{input}'])->hiddenInput(['id' => 'qaulific_array']); ?>
@@ -440,82 +503,89 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     </div>
                                     <div class="row">
                                         <div id="suggestionbox">
+                                            <?php foreach ($data['applicationSkills'] as $s) { ?>
+                                                <span><a href='#' class='clickable' data-value = "<?= $s['skill_enc_id']  ?>"><?=$s['skill'] ?></a></span>
+                                          <?php  } ?>
                                         </div>
                                         <?= $form->field($model, 'specialskillsrequired', ['template' => '{input}'])->hiddenInput(['id' => 'specialskillsrequired'])->label(false); ?>
-                                        <?= $form->field($model, 'skillsArray', ['template' => '{input}'])->hiddenInput(['id' => 'skillsArray'])->label(false); ?>    
+                                        <?= $form->field($model, 'skillsArray', ['template' => '{input}'])->hiddenInput(['id' => 'skillsArray'])->label(false); ?>  
+                                        <input type='hidden' name='skill_clone' id='skill_clone' value='<?= json_encode($data['applicationSkills']); ?>'>  
+                                        <input type='hidden' name='field_clone' id='field_clone' value='<?= json_encode($data['applicationInterviewQuestionnaires']); ?>'> 
                                     </div>
+
                                 </div>
                             </div>
                             <div class="divider"></div>
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-12">
                                     <div class="module2-heading">
                                         Employee Benefits
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
                                     <div class="button_location pull-right">
-                                        <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                        <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary btn-circle custom_color-set2 modal-load-class']); ?>
                                     </div>
                                 </div>
                             </div>
                             <div class="divider"></div>
-                            <div id="b_error"></div>
+
                             <div class="cat-sec">
                                 <div class="row no-gape">
                                     <?php
-                                    Pjax::begin(['id' => 'pjax_benefits']);
-                                    if (!empty($benefits)) {
-                                        ?>
-                                        <?=
-                                        $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
-                                            'item' => function($index, $label, $name, $checked, $value) {
-                                                $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                                                $return .= '<div class="p-category">';
-                                                $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                                $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
-                                                $return .= '<div class="checkbox-text">';
-                                                $return .= '<span class="checkbox-text--title">';
-                                                $return .= '<i class="fa fa-user"></i>';
-                                                $return .= '</span><br/>';
-                                                $return .= '<span class="checkbox-text--description2">';
-                                                $return .= $label;
-                                                $return .= '</span>';
-                                                $return .= '</div>';
-                                                $return .= '</label>';
-                                                $return .= '</div>';
-                                                $return .= '</div>';
-                                                return $return;
-                                            }
-                                        ])->label(false);
-                                        ?>
-                                    </div>
-                                </div> 
-                            <?php } else { ?>   
-
-                                <div class="empty-section-text"> No Benefits Yet Added to display</div>
-                            <?php } ?>
-                            <?php Pjax::end() ?> 
+                                    if(!empty($data['applicationEmployeeBenefits'])){
+                                    foreach($data['applicationEmployeeBenefits'] as $v)
+                                    {
+                                        $arr1[] = $v['benefit_enc_id'];
+                                    }
+                                    $model->emp_benefit = $arr1;
+                                    } 
+                                    ?>
+                                    <?php Pjax::begin(['id' => 'pjax_benefits']); ?>   
+                                    <?=
+                                    $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
+                                        'item' => function($index, $label, $name, $checked, $value) {
+                                            $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
+                                            $return .= '<div class="p-category">';
+                                            $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" id= "' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                            $return .= '<div class="checkbox-text">';
+                                            $return .= '<span class="checkbox-text--title">';
+                                            $return .= '<i class="fa fa-user"></i>';
+                                            $return .= '</span><br/>';
+                                            $return .= '<span class="checkbox-text--description2">';
+                                            $return .= $label;
+                                            $return .= '</span>';
+                                            $return .= '</div>';
+                                            $return .= '</label>';
+                                            $return .= '</div>';
+                                            $return .= '</div>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                    <?php Pjax::end() ?> 
+                                      
+                                </div>
+                            </div>    
                             <div class="row">
                                 <div class="col-md-10 col-md-offset-1">
                                     <?=
-                                    $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
+                                    $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50,'value'=>$data['description']])->label('Any Other Detail');
                                     ?>
                                     <input type="text" name="skill_counter" id="skill_counter" readonly>
                                     <input type="text" name="qualific_count" id="qualific_count" readonly>
                                     <input type="text" name="desc_count" id="desc_count" readonly>
                                 </div>
                             </div>
-                            <input type="text" name="benefit_calc" id="benefit_calc" readonly>
                             <div class="divider"></div> 
                         </div>
                         <div class="tab-pane" id="tab3">
                             <div id="process_err"> </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6"> 
                                     <?= $form->field($model, 'getinterviewcity', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'getinterviewcity'])->label(false) ?>
                                     <?= $form->field($model, 'question_process', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'question_process'])->label(false) ?>
                                 </div>
+
                             </div>
                             <div id="question_dropdown">
                                 <div class="row">
@@ -535,42 +605,39 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     </div>    
                                     <?php
                                     Pjax::begin(['id' => 'pjax_process']);
-                                    if (!empty($process)) {
-                                        ?>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <?=
-                                                $form->field($model, 'interview_process')->radioList($process, [
-                                                    'item' => function($index, $label, $name, $checked, $value) {
-                                                        $return .= '<div class="col-md-4 text-center">';
-                                                        $return .= '<div class="radio_questions">';
-                                                        $return .= '<div class="inputGroup process_radio">';
-                                                        $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                                        $return .= '<label for="' . $value . '">' . $label . '</label>';
-                                                        $return .= '</div>';
-                                                        $return .= '</div>';
-                                                        $return .= '</div>';
-
-                                                        return $return;
-                                                    }
-                                                ])->label(false);
-                                                ?> 
-                                            </div>
-                                        </div>
-
-                                    <?php } else {
+                                    $model->interview_process = [$data['interview_process_enc_id']]; 
+                                    if(!empty($process)){
+                                    ?> 
+                                    <div class="row">
+                                     <div class="col-md-12">
+                                    <?= $form->field($model, 'interview_process')->radioList($process, [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return .= '<div class="col-md-4 text-center">';
+                                                $return .= '<div class="radio_questions">'; 
+                                                $return .= '<div class="inputGroup process_radio">'; 
+                                                $return .= '<input type="radio" id="'. $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="'. $value . '">'.$label.'</label>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                
+                                                return $return;
+                                            }
+                                        ])->label(false);
                                         ?> 
+                                                </div>
+                                            </div>
+                                    <?php } else { ?>   
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="empty-section-text">No Process Found</div> 
                                             </div>
                                         </div>
-                                        <?php
+                                    <?php
                                     }
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <input type="text" name="process_calc" id="process_calc" readonly>
                                 <div class="divider"></div>
                                 <div id="que_error"></div>
                                 <div class="col-md-12 no-padd">
@@ -586,37 +653,43 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
+
                                 <?php
                                 Pjax::begin(['id' => 'pjax_questionnaire']);
-                                if (!empty($que)) {
+                                if (!empty($que)) { 
+                                    foreach($data['applicationInterviewQuestionnaires'] as $v)
+                                    {
+                                        $arr5[] = $v['questionnaire_enc_id'];
+                                    }
+                                    $model->questionnaire = $arr5; 
                                     ?>
-                                    <div class="row">
-                                        <?=
+                            <div class="row">
+                                    <?= 
                                         $form->field($model, 'questionnaire')->checkBoxList($que, [
                                             'item' => function($index, $label, $name, $checked, $value) {
                                                 $return .= '<div class="col-md-9">';
-                                                $return .= '<div class="radio_questions">';
-                                                $return .= '<div class="inputGroup question_checkbox">';
-                                                $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                                $return .= '<label for="' . $value . '">' . $label . '</label>';
+                                                $return .= '<div class="radio_questions">'; 
+                                                $return .= '<div class="inputGroup question_checkbox">'; 
+                                                $return .= '<input type="checkbox" id="'. $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="'. $value . '">'.$label.'</label>';
                                                 $return .= '</div>';
                                                 $return .= '</div>';
                                                 $return .= '</div>';
                                                 $return .= '<div class="col-md-3">';
-                                                $return .= '<div class="selectWrapper">';
-                                                $return .= '<select class="selectBox">';
-                                                $return .= '<option value="">Choose Stage</option>';
-                                                $return .= '</select>';
-                                                $return .= '</div>';
-                                                $return .= '</div>';
+                                                $return .=  '<div class="selectWrapper">';
+                                                $return .=  '<select class="selectBox">';
+                                                $return .=  '<option value="">Select</option>';
+                                                $return .=  '</select>';
+                                                $return .=  '</div>';
+                                                $return .=  '</div>';
                                                 return $return;
                                             }
                                         ])->label(false);
-                                        ?>
-                                    </div>
-                                <?php } else { ?>
-
+                                    ?>
+                                </div>
+                              <?php  } else {
+                                    ?>
                                     <div class="row">    
                                         <div class="col-md-12">
                                             <div class="empty-section-text">No Questionnaire Found</div>
@@ -626,7 +699,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 }
                                 Pjax::end();
                                 ?> 
-                                <input type="text" name="ques_calc" id="ques_calc" readonly>
                             </div>
                         </div>
                         <div class="tab-pane" id="tab4">
@@ -636,7 +708,22 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12">      
+                                <div class="col-md-12">
+                                <?php if (!empty($option['interview_start_date'])) {
+                                    $model->interradio = ['1'];
+                                    $strfrm = $option['interview_start_date'];
+                                    $strt = date("d-m-Y", strtotime($strfrm));
+                                    $endfrm = $option['interview_end_date'];
+                                    $end = date("d-m-Y", strtotime($endfrm));
+                                    $stTime = $option['interview_start_time'];
+                                    $endTime =$option['interview_end_time'];
+                                }
+                                else {
+                                    $strt = '20-12-2018';
+                                    $end = '20-12-2018';
+                                    $stTime = '9:00';
+                                    $endTime = '3:00';
+                                 } ?>      
                                     <div class="md-radio-inline">
                                         <?=
                                         $form->field($model, 'interradio')->inline()->radioList([
@@ -645,7 +732,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 ], [
                                             'item' => function($index, $label, $name, $checked, $value) {
                                                 $return = '<div class="md-radio">';
-                                                $return .= '<input type="radio" id="1' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                $return .= '<input type="radio" id="1' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                                                 $return .= '<label for="1' . $index . '">';
                                                 $return .= '<span></span>';
                                                 $return .= '<span class="check"></span>';
@@ -662,14 +749,15 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="row">
                                 <div id="interview_box">  
                                     <div class="col-md-6">
+                                  
                                         <?=
                                         DatePicker::widget([
                                             'model' => $model,
                                             'attribute' => 'startdate',
                                             'id' => 'interview_range',
                                             'attribute2' => 'enddate',
-                                            'options' => ['placeholder' => 'Start From'],
-                                            'options2' => ['placeholder' => 'End Date'],
+                                            'options' => ['placeholder' => 'Start From','value'=>$strt],
+                                            'options2' => ['placeholder' => 'End Date','value'=>$end],
                                             'type' => DatePicker::TYPE_RANGE,
                                             'form' => $form,
                                             'pluginOptions' => [
@@ -681,17 +769,16 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         ?>
                                     </div>    
                                     <div class="col-md-3">
-                                        <?= $form->field($model, 'interviewstarttime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Starts From');
+                                        <?= $form->field($model, 'interviewstarttime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => $stTime]])->label('Starts From');
                                         ?>
                                     </div>
                                     <div class="col-md-3">
-                                        <?= $form->field($model, 'interviewendtime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('End');
+                                        <?= $form->field($model, 'interviewendtime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => $endTime]])->label('End');
                                         ?>
                                     </div>
                                 </div> 
-
-                                <div class="row">
-                                    <div class="col-md-12"> 
+                                    <div class="row">
+                                        <div class="col-md-12"> 
                                         <div class="col-md-4 m-padd"> 
                                             <h3 class="module2-heading">Select Interview Locations</h3>
                                         </div>
@@ -704,46 +791,57 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             </div>   
                                         </div>
                                     </div>
-                                </div>
+                                    </div>
                                 <div class="row">
-                                    <?php
-                                    Pjax::begin(['id' => 'pjax_locations2']);
-                                    if (!empty($int_list)) {
-                                        ?>
-                                        <?=
-                                        $form->field($model, 'interviewcity')->checkBoxList($int_list, [
-                                            'item' => function($index, $label, $name, $checked, $value) {
-                                                $i++;
-                                                if ($index % 3 == 0) {
-                                                    $return .= '<div class="row">';
-                                                }
-                                                $return .= '<div class="col-md-4">';
-                                                $return .= '<input type="checkbox" value="' . $value . '" name="' . $name . '" id="int' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
-                                                $return .= '<label for="int' . $value . '" class="checkbox-label">';
-                                                $return .= '<div class="checkbox-text">';
-                                                $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
-                                                $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
-                                                $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
-                                                $return .= '</div>';
-                                                $return .= '</label>';
-                                                $return .= '</div>';
+                                        <?php 
+                                   if(!empty($int_list))  {   
+                                    foreach($data['applicationInterviewLocations'] as $v)
+                                    {
+                                        $arr4[] = $v['location_enc_id'];
+                                    }
+                                    $model->interviewcity = $arr4; 
+                                    ?>
 
-                                                if ($index % 3 == 2 || isset($label['total'])) {
-                                                    $return .= '</div>';
-                                                }
-                                                return $return;
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_locations2']);?>
+                                    <?=
+                                    $form->field($model, 'interviewcity')->checkBoxList($int_list, [
+                                        'item' => function($index, $label, $name, $checked, $value) {
+                                         if($index%3==0)
+                                            {
+                                              $return .= '<div class="row">';
                                             }
-                                        ])->label(false);
-                                        ?>
-                                    <?php } else { ?>
+                                            $return .= '<div class="col-md-4">';
+                                            $return .= '<input type="checkbox" value="'.$value.'" name="' . $name . '" id="int' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="int' . $value . '" class="checkbox-label">';
+                                            $return .= '<div class="checkbox-text">';
+                                            $return .= '<p class="loc_name_tag">' . $label['location_name'].'</p>';
+                                            $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
+                                            $return .= '<span class="state_city_tag">' . $label['city_name'] .", ". $label['state_name']. '</span>';
+                                            $return .= '</div>';
+                                            $return .= '</label>';
+                                            $return .= '</div>';
+
+                                          if ($index%3==2 || isset($label['total']))
+                                            {
+                                                $return .= '</div>';
+                                            }
+                                            
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                    <?php Pjax::end() ?>  
+                                
+                            <?php } else{ ?>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="empty-section-text">No Location has been found</div>
                                             </div>
                                         </div>
-                                    <?php } Pjax::end();
+                                    <?php } 
                                     ?>
-                                    <input type="text" name="interview_calc" id="interview_calc" readonly>        
+                                    <input type="text" name="interview_calc" id="interview_calc" readonly>
                                 </div>
                             </div>
                         </div>
@@ -758,86 +856,86 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <tbody>
                                             <tr>
                                                 <td><strong>Primary Field:</strong></td>
-                                                <td> <p class="final_confrm" data-display="JobApplicationForm[primaryfield]" id="fieldvalue"> </p></td>
+                                                <td> <p class="final_confrm" data-display="JobApplicationFormEdit[primaryfield]" id="fieldvalue"> </p></td>
                                                 <td><strong>Job Title:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[jobtitle]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[jobtitle]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Field of Work:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[designations]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[designations]"> </p></td>
                                                 <td><strong>Job Type:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[jobtype]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[jobtype]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>CTC:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[ctc]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[ctc]"> </p></td>
                                                 <td><strong>Type:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[ctctype]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[ctctype]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Salary:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[salaryinhand]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[salaryinhand]"> </p></td>
                                                 <td><strong>Joining Date:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[earliestjoiningdate]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[earliestjoiningdate]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Special Skills:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[specialskillsrequired]" id="skillvalues"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[specialskillsrequired]" id="skillvalues"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Timing From:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[from]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[from]"> </p></td>
                                                 <td><strong>Upto:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[to]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[to]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Start:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[startdate]" > </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[startdate]" > </p></td>
                                                 <td><strong>Interview End:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[enddate]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[enddate]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Start Time:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[interviewstarttime]" id="time1" > </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[interviewstarttime]" id="time1" > </p></td>
                                                 <td><strong>Interview End Time:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[interviewendtime]" id="time2" > </p></td>
+                                                <td><p class="final_confrm"  data-display="JobApplicationFormEdit[interviewendtime]" id="time2" > </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Job Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[checkbox][]" id="chackboxvalues"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[checkbox][]" id="chackboxvalues"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Educational Qualification:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[qualifications][]" id="education_vals"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[qualifications][]" id="education_vals"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Placement Locations (No. of positions):</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[placement_locations][]" id="placement_locations" > </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[placement_locations][]" id="placement_locations" > </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Location:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[interviewcity][]" id="interviewcitycityvalues" > </p>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[interviewcity][]" id="interviewcitycityvalues" > </p>
                                                     <span class="final_confrm"  data-display="randomfunc"> </span></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Brief Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[othrdetail]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[othrdetail]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Gender:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[gender]" id="gendr_text"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[gender]" id="gendr_text"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Industry:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[pref_inds]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[pref_inds]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Last Date:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[last_date]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[last_date]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Minimum Experience:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[min_exp]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationFormEdit[min_exp]"> </p></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -860,14 +958,12 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 Continue
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                            <?= Html::button('Submit', ['class' => 'btn button-submit custom-buttons2 btn-primary custom_color-set2']) ?>
-                            <a id="data_preview" href="#" class="btn button-preview btn-primary custom-buttons2 custom_color-set2" target="_blank">Preview</a>
+                            <?= Html::button('Save', ['class' => 'btn button-submit custom-buttons2 btn-primary custom_color-set2']) ?>
                         </div>
                     </div>
                 </div>
             </div>
             <?php ActiveForm::end(); ?>
-
         </div>
     </div>
 </div>
@@ -897,7 +993,7 @@ $this->registerCss("
   width: 40px;
   height: 40px;
   opacity: 0;
-  background-color: #00A0E3;
+  background-color: #2196F3;
   background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
   background-position: 80% 80%;
   background-repeat: no-repeat;
@@ -945,7 +1041,7 @@ $this->registerCss("
 .p-category .checkbox-text span i {
     float: left;
     width: 100%;
-    color: #00A0E3;
+    color: #4aa1e3;
     font-size: 70px;
     margin-top: 15px;
     line-height: initial !important;
@@ -1039,7 +1135,7 @@ textarea{
 } 
 .custom-buttons2{
 //    width:100%;
-//    background:#00a0e3 !important;
+    background:#00a0e3 !important;
     font-size: 12px !important;
     padding: 8px 10px !important;
 //    margin-bottom:20px;
@@ -1142,7 +1238,7 @@ select{
     text-align: center;
 }
 
-.field-jobapplicationform-gender
+.field-JobApplicationFormEdit-gender
 {
  margin:0px;
 }
@@ -1155,7 +1251,7 @@ select{
     padding-top:0px;
 }
 
-.field-jobapplicationform-weekoptsat,.field-jobapplicationform-weekoptsund
+.field-JobApplicationFormEdit-weekoptsat,.field-JobApplicationFormEdit-weekoptsund
 {
     width: 100%;
     float: left;
@@ -1163,7 +1259,7 @@ select{
 }
 
     
-#jobapplicationform-weekoptsat,#jobapplicationform-weekoptsund
+#jobapplicationformedit-weekoptsat,#jobapplicationformedit-weekoptsund
 {
  width:90%;
 }
@@ -1225,21 +1321,18 @@ select{
 {
   display:none;
 }
-#jobapplicationform-last_date,#jobapplicationform-earliestjoiningdate{
-    border-bottom: 1px solid #c2cad8;
-    cursor: pointer;
+#jobapplicationformedit-last_date,#jobapplicationformedit-earliestjoiningdate
+{
+border-bottom: 1px solid #c2cad8;
 }
-.has-error div #jobapplicationform-last_date, .has-error div #jobapplicationform-earliestjoiningdate{
+.has-error div #jobapplicationformedit-last_date, .has-error div #jobapplicationformedit-earliestjoiningdate{
 border-bottom: 1px solid #e73d4a;
 }
-.has-error div #jobapplicationform-interviewstarttime-error{
+.has-error div #jobapplicationformedit-interviewstarttime-error{
     margin-top:10px;
 }
-.has-error div #jobapplicationform-interviewendtime-error{
+.has-error div #jobapplicationformedit-interviewendtime-error{
     margin-top:10px;
-}
-.has-success div div .input-group-addon, .has-success div #jobapplicationform-last_date, .has-success div #jobapplicationform-earliestjoiningdate{
-    border-bottom: 1px solid #00A0E3 !important;
 }
 .button-submit
 {
@@ -1488,16 +1581,14 @@ margin-bottom:8px;
   line-height: 36px;
 }
 
-#skill_counter,#qualific_count,#desc_count,#placement_calc,#interview_calc,#benefit_calc,#process_calc,#ques_calc
+#skill_counter,#qualific_count,#desc_count,#placement_calc,#interview_calc
 {opacity:0;
 cursor:default;
 width:5%;
 }
 
 .rule-text4
-{color:#e9465d;
-font-size: 16px;
-padding: 0px 15px;}
+{color:#e9465d;}
 
 .checkbox-input {
   display: none;
@@ -1523,7 +1614,7 @@ q:before, q:after, blockquote:before, blockquote:after {
     width: 36px;
     height: 36px;
     opacity: 0;
-    background-color: #00A0E3;
+    background-color: #4aa1e3;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
@@ -1537,7 +1628,6 @@ q:before, q:after, blockquote:before, blockquote:after {
 .color_red
 {
  color: #e73d49;
- font-size:18px;
 }
 .spinner {
   width: 100px;
@@ -1591,7 +1681,7 @@ q:before, q:after, blockquote:before, blockquote:after {
     border: 1px solid #d9d9d9;
     
     border-radius: 2px;
-    box-shadow: inset 0 0 0px 0 #00A0E3;
+    box-shadow: inset 0 0 0px 0 #2196F3;
 }
 
 #heading_placeholder
@@ -1606,7 +1696,7 @@ q:before, q:after, blockquote:before, blockquote:after {
   font-size: 14px;
   margin-top: 16px;
   padding-top: 10px;
-  border-top: 1px solid #00A0E3;
+  border-top: 1px solid #2196F3;
       margin-bottom: 10px;
 }
 .checkbox-text--description .un {
@@ -1614,8 +1704,8 @@ q:before, q:after, blockquote:before, blockquote:after {
 }
 
 .checkbox-input:checked + .checkbox-label {
-  border-color: #00A0E3;
-  box-shadow: inset 0 -12px 0 0 #00A0E3;
+  border-color: #4aa1e3;
+  box-shadow: inset 0 -12px 0 0 #4aa1e3;
 }
 .checkbox-input:checked + .checkbox-label:before {
   top: 0;
@@ -1713,7 +1803,7 @@ span.chip .fa-times
     
 }
 
-.field-jobapplicationform-checkbox{
+.field-JobApplicationFormEdit-checkbox{
   margin-top: -22px;
 }
 
@@ -1742,7 +1832,7 @@ span.chip .fa-times
     border-radius: 6px;
     position:relative;
 }
-#jobapplicationform-startdate-kvdate{
+#jobapplicationformedit-startdate-kvdate{
     padding:25px 0px;
 }
 
@@ -1839,7 +1929,7 @@ li.draggable-item.ui-sortable-placeholder {
 }
 
 #hiddenlist{
-	display:none;
+    display:none;
 }
 
 #shownlist{
@@ -1911,13 +2001,11 @@ li.draggable-item.ui-sortable-placeholder {
 .rule-text{
     position: absolute;
     color: #e73d49;
-    font-size:16px;
 }
 
 .inter_cust_rule
 {
 color: #e73d49;
-font-size:16px;
 }
 
 #add,#question_dropdown
@@ -1930,13 +2018,13 @@ font-size:16px;
 display:none; 
 }
 .loader {
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 9999;
-	background: url('http://www.downgraf.com/wp-content/uploads/2014/09/01-progress.gif?e44397') 50% 50% no-repeat rgb(249,249,249);
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('http://www.downgraf.com/wp-content/uploads/2014/09/01-progress.gif?e44397') 50% 50% no-repeat rgb(249,249,249);
 }
 
 #loading_img
@@ -1986,7 +2074,7 @@ height:17px !important;
     position: absolute;
     left: 90px;
     border: solid 1px transparent;
-    background-color: #00A0E3;
+    background-color: #4aa1e3;
     padding: 10px;
     color: #fff;
     z-index: 1000;
@@ -1999,7 +2087,7 @@ height:17px !important;
     top: 10px;
     position: absolute;
     border-top: 10px solid transparent;
-    border-right: 15px solid #00A0E3;
+    border-right: 15px solid #4aa1e3;
     border-bottom: 10px solid transparent;
 }
 
@@ -2102,37 +2190,36 @@ height:17px !important;
     line-height: 21px;
 }
 
-.button-preview {
-    display:none;
-}
-.place_no{
-    text-align: center !important;
-    border: 1px solid #ddd !important;
-}
+
 ");
 
 $script = <<< JS
+clone_skill();
 
-var session_tok = "";
-function genrate_session_token() {
-    var possible = "abcdefghijklmnopqrstuvwxyz1234567890";
-    for(var i = 0;i < 8; i++) {
-        session_tok += possible.charAt(Math.floor(Math.random()*possible.length));
-    }
+function clone_skill()
+{
+    
+   var obj = JSON.parse($("#skill_clone").val());
+
+   $.each(obj,function()
+   {      var skillsdata = this.skill;
+          var value = this.skill_enc_id;
+          addTags(skillsdata,value);
+   })
 }
-genrate_session_token();
+
 //$('#loading_img').addClass('show');
-$("#jobapplicationform-primaryfield").prop("disabled", false);          
+$("#jobapplicationformedit-primaryfield").prop("disabled", false);          
 $("#jobtitle").prop("disabled", false);
 $('.selectBox').prop("disabled", true);    
    
-$('#jobapplicationform-salaryinhand, #jobapplicationform-ctc').mask("#,#0,#00", {reverse: true});
+$('#jobapplicationformedit-salaryinhand, #jobapplicationformedit-ctc').mask("#,#0,#00", {reverse: true});
 $('[data-toggle="tooltip"]').tooltip();
     $(document).on("keypress",'.place_no', function (evt) {
     if (evt.which < 48 || evt.which > 57)
     {
         evt.preventDefault();
-    }
+    } 
    });     
    
    $(document).on('click','.up_bt',function(e)
@@ -2146,10 +2233,22 @@ $('[data-toggle="tooltip"]').tooltip();
            } 
    });
  
-  $(document).on('change','input[name="JobApplicationForm[interview_process]"]',function()
+  $(document).on('change','input[name="JobApplicationFormEdit[interview_process]"]',function()
       {
-        $('.selectBox').html('<option value="">Choose Stage</option>');
-         var id = $(this).val();
+        $('.selectBox').html('<option value="">Select</option>');
+        var id = $(this).val();
+        get_field_list(id);
+   })
+
+radio__pros_set();
+function radio__pros_set()
+{
+    var id = $('#jobapplicationformedit-interview_process input[type=radio]:checked').val();
+    get_field_list(id);
+}
+
+   function get_field_list(id)
+   {
         if(!id=="")
         {
            $.ajax({
@@ -2165,11 +2264,13 @@ $('[data-toggle="tooltip"]').tooltip();
                               html.push('<option value="'+value.field_enc_id+'">'+value.field_name+'</option>');
                             });
                         $('.selectBox').append(html);
+                        set_que_pros();
                   }
                })
          }
-   })      
-   
+   }
+
+
    $(document).on('click','.down_bt',function(e)
        {
        e.preventDefault();
@@ -2185,78 +2286,62 @@ $('[data-toggle="tooltip"]').tooltip();
 var data_before = null;
 var checked = null;
 var array = [];
-var place_len = 0;        
-var interview_len = 0; 
-var benefit_len = 0;
-var ques_len = 0;
-var stage_len = 0;
-var process_len = 0;
+place_len = 0;        
+interview_len = 0;
 
-
-$(document).on("click",'input[name="JobApplicationForm[placement_locations][]"]', function() {
-    checked = $(this);
-     
-    if (this.checked == true) {
-        place_len =  $('[name="JobApplicationForm[placement_locations][]"]:checked').length;
-        place_checker(place_len);
-        checked.next('label').find('.spinner').css('display','inline-flex');
-        checked.next('label').find(".tooltips").fadeIn(1000);
-        checked.next('label').find(".tooltips").fadeOut(2000);
-    } 
+        function box_opn(thisObj)
+        {
+            place_len =  $('[name="JobApplicationFormEdit[placement_locations][]"]:checked').length;
+            if(thisObj.prop('checked'))
+                     {
+                
+                place_checker(place_len);
+                thisObj.next('label').find('.spinner').css('display','inline-flex');
+                thisObj.next('label').find(".tooltips").fadeIn(1000);
+                thisObj.next('label').find(".tooltips").fadeOut(2000);
+                     }
+          else
+           {
+              place_checker(place_len);   
+              thisObj.next('label').find('.spinner').css('display','none');
+              thisObj.next('label').find(".tooltips").css('display','none');  
+           }
+        }
         
-    else {
-        place_len =  $('[name="JobApplicationForm[placement_locations][]"]:checked').length;
-        place_checker(place_len);   
-      checked.next('label').find('.spinner').css('display','none');
-      checked.next('label').find(".tooltips").css('display','none');  
-   }   
+$.each($("input[name='JobApplicationFormEdit[placement_locations][]']"), function(){
+                 box_opn($(this));
+ });   
+
+    
+$(document).on("click",'input[name="JobApplicationFormEdit[placement_locations][]"]', function() {
+        box_opn($(this));
 });
 
-$(document).on("click",'input[name="JobApplicationForm[interviewcity][]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
-        interview_len =  $('[name="JobApplicationForm[interviewcity][]"]:checked').length;
+$(document).on("click",'input[name="JobApplicationFormEdit[interviewcity][]"]', function() {
+    validate_int($(this));
+});
+
+ function validate_int(thisObj)
+ {
+     if (thisObj.checked == true) {
+        interview_len =  $('[name="JobApplicationFormEdit[interviewcity][]"]:checked').length;
         interview_checker(interview_len);
     } 
         
     else {
-        interview_len =  $('[name="JobApplicationForm[interviewcity][]"]:checked').length;
+        interview_len =  $('[name="JobApplicationFormEdit[interviewcity][]"]:checked').length;
         interview_checker(interview_len); 
         
    }   
-});
+ } 
 
-$(document).on("click",'input[name="JobApplicationForm[emp_benefit][]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
-        benefit_len =  $('[name="JobApplicationForm[emp_benefit][]"]:checked').length;
-        benefit_checker(benefit_len);
+ $.each($("input[name='JobApplicationFormEdit[interviewcity][]']"), function(){
+             validate_int($(this));
+ });       
        
-    } 
-        
-    else {
-        benefit_len =  $('[name="JobApplicationForm[emp_benefit][]"]:checked').length;
-        benefit_checker(benefit_len); 
-        
-   }   
-});
-
-$(document).on("click",'input[name="JobApplicationForm[interview_process]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
-        process_len =  $('[name="JobApplicationForm[interview_process]"]:checked').length;
-        process_checker(process_len);
-
-    } 
-        
-    else {
-        process_len =  $('[name="JobApplicationForm[interview_process]"]:checked').length;
-        process_checker(process_len); 
-        
-   }   
-}); 
-         
+var global = [];        
 var prime_id = null;
+prime_id = $('#jobapplicationformedit-primaryfield').val();
 
         function place_checker(place_len)
         {
@@ -2280,76 +2365,42 @@ var prime_id = null;
               $('#interview_calc').val('1');
            }
         }
-
-   function benefit_checker(benefit_len)
-        {
-          if(benefit_len == 0)
-          {
-              $('#benefit_calc').val('');
-           }
-          else 
-          {
-              $('#benefit_calc').val('1');
-           }
-        }
-   function process_checker(process_len)
-        {
-          if(process_len == 0)
-          {
-              $('#process_calc').val('');
-           }
-          else 
-          {
-              $('#process_calc').val('1');
-           }
-        } 
-        function ques_checker(ques_len,stage_len)
-        {  
-          if(ques_len>0&&stage_len>0&&ques_len==stage_len)
-          {
-              $('#ques_calc').val('1');
-           }
-           else
-           {
-            $('#ques_calc').val('');
-           }
-        } 
-
-$(document).on('click','#jobapplicationform-weekdays input',function()
+   
+$(document).on('click','#jobapplicationformedit-weekdays input',function()
     {
      if ($('#weekday-5').is(':checked'))
         {
-         $('.field-jobapplicationform-weekoptsat').css('display','block');
+         $('.field-JobApplicationFormEdit-weekoptsat').css('display','block');
          $('.sat').css('display','block');
         
         }
      else if ($('#weekday-5').is(':unchecked'))
         {
-          $('.field-jobapplicationform-weekoptsat').css('display','none');
+          $('.field-JobApplicationFormEdit-weekoptsat').css('display','none');
           $('.sat').css('display','none');
         }
     if($('#weekday-6').is(':checked'))
         {
-          $('.field-jobapplicationform-weekoptsund').css('display','block');
+          $('.field-JobApplicationFormEdit-weekoptsund').css('display','block');
           $('.sun').css('display','block');
         }
         
      else if($('#weekday-6').is(':unchecked'))
         { 
-          $('.field-jobapplicationform-weekoptsund').css('display','none');
+          $('.field-JobApplicationFormEdit-weekoptsund').css('display','none');
           $('.sun').css('display','none');
         }
    
    }) 
    
-$('#jobapplicationform-primaryfield').on('change',function()
+$('#jobapplicationformedit-primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#jobtitle').val('');
       $('.tt-dataset').empty();  
    })
    
-        
+var query_id = null;        
         
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -2357,7 +2408,7 @@ var skills = new Bloodhound({
    remote: {
     url:'/account/categories-list/skills-data',
     prepare: function (query, settings) {
-             settings.url += '?q=' +$('#inputfield').val();
+             settings.url += '?q=' +$('#inputfield').val()+'&id='+query_id;
              return settings;
         },  
     'cache': true, 
@@ -2395,6 +2446,10 @@ var categories = new Bloodhound({
              return settings;
         },  
     'cache': false,  
+     filter: function(list) {
+            global = list;
+            return list;
+        }
   }
 });
         
@@ -2413,11 +2468,13 @@ $('#jobtitle').typeahead(null, {
      
   }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
   {var data =  datum.id; 
+  query_id =  datum.id; 
       skils_update(data); 
       educational_update(data); 
       $('.drop-options').empty();
       $('#shownlist').empty();
-      $('#heading_placeholder').css('display','block'); 
+      $('#heading_placeholder').css('display','block');  
+      $('#title_hidden').val(JSON.stringify(datum));  
       $.ajax({
       url:"/account/categories-list/job-description",
       data:{data:data},
@@ -2429,18 +2486,18 @@ $('#jobtitle').typeahead(null, {
      $.each(obj,function()
      { 
       html.push ("<div class=\'md-checkbox\'>"+
-     "<input type=\'checkbox\' id=\'"+this.job_description_enc_id+"\' value = \'"+this.job_description_enc_id+"\' class=\'md-check\' name = \'JobApplicationForm[checkbox][]\'>"+
+     "<input type=\'checkbox\' id=\'"+this.job_description_enc_id+"\' value = \'"+this.job_description_enc_id+"\' class=\'md-check\' name = \'JobApplicationFormEdit[checkbox][]\'>"+
       "<label for=\'"+this.job_description_enc_id+"\'>"+
       "<span></span>"+
        "<span class=\'check\'></span>"+
        "<span class=\'box\'></span>"+this.job_description+"</label>"+
        "</div>");  
-         });
-                                                
+         });                                    
         $("#md-checkbox").html(html); 
          }
      });  
-    });
+
+    })
     
 function skils_update(data)
         {
@@ -2475,7 +2532,7 @@ function skils_update(data)
      $.each(obj,function()
      { 
       html.push ("<div class=\'md-checkbox\'>"+
-     "<input type=\'checkbox\' id=\'"+this.educational_requirement_enc_id+"\' value = \'"+this.educational_requirement+"\' class=\'md-check\' name = \'JobApplicationForm[qualifications][]\'>"+
+     "<input type=\'checkbox\' id=\'"+this.educational_requirement_enc_id+"\' value = \'"+this.educational_requirement+"\' class=\'md-check\' name = \'JobApplicationFormEdit[qualifications][]\'>"+
       "<label for=\'"+this.educational_requirement_enc_id+"\'>"+
       "<span></span>"+
        "<span class=\'check\'></span>"+
@@ -2486,7 +2543,7 @@ function skils_update(data)
          }
      });  
         }
-   
+
   
  function ChildFunction()
      {
@@ -2597,20 +2654,38 @@ $(document).on('click', '.modal-load-class', function() {
          $('#add_existing_location').hide();
          $('#existing_location').show();
    })
+radio_set();
+function radio_set()
+{
+    var i = $('#jobapplicationformedit-interradio input[type=radio]:checked').val();
+    change_radio(i);
+}
 
-        
-   $('input[name = "JobApplicationForm[interradio]"]').on('change',function()
-   {
-     var i  = $(this).val();
-        if (i==1) 
+function change_radio(i)
+{
+    if (i==1) 
         {
           $('#interview_box').show();
         }
         else
         {
             $('#interview_box').hide();
+           
         }
-   })    
+}
+
+ function radio_chk(thisObj)
+ {
+    var i  = thisObj.val();
+       change_radio(i)
+ }
+
+        
+   $('input[name = "JobApplicationFormEdit[interradio]"]').on('change',function()
+   {
+     radio_chk($(this));
+   })
+
         var quesn_count = 0;
         $('#question_field').keypress(function(e){
         if(e.which == 13){
@@ -2659,119 +2734,120 @@ $(document).on('click', '.modal-load-class', function() {
               edu_counter_set();
        }
         $(document).on('click','.drop-options span a', function(event){
-		event.preventDefault();
+        event.preventDefault();
                 var btn = $(this);
                 var tag = btn.closest("li").remove();
                 quesn_count--
                 quesn_upt();
-	});
+    });
         $(document).on('click','.quali_drop_options span a', function(event){
-		event.preventDefault();
+        event.preventDefault();
                 var btn = $(this);
                 var tag = btn.closest("li").remove();
                 count_edu--;
                 edu_counter_set();
-	});
+    });
         
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();
              var url =  $('#submit_form').attr('action');
-             var data = $('#submit_form').serialize()+'&n='+session_tok;
+             var data = $('#submit_form').serialize();
                   $.ajax({
                    url: url,
                    type: 'post',
                    data: data,
                    beforeSend: function()
                        {
-                         $('#loading_img').addClass('show');
-                         $('.button-submit').prop('disabled','disabled');
-                         $('.fader').css('display','block');
+                         // $('#loading_img').addClass('show');
+                         // $('.button-submit').prop('disabled','disabled');
+                         // $('.fader').css('display','block');
                        },
                    success: function(data) {
-                   if(data == true)
-                    {
-                    function explode(){
-                     $('#loading_img').removeClass('show');
-                     $('.button-submit').prop('disabled','');
-                     window.location.replace('/account/jobs/dashboard'); 
-                     }
-                       setTimeout(explode, 3000); 
-                     }
-                     else {
-                     $('#loading_img').removeClass('show');
-                     $('.fader').css('display','none');
-                     alert('Opps Something Went Wrong..!');
-                       }
+                   // if(data == true)
+                   //  {
+                   //  function explode(){
+                   //   $('#loading_img').removeClass('show');
+                   //   $('.button-submit').prop('disabled','');
+                   //   window.location.replace('/account/company-dashboard'); 
+                   //   }
+                   //     setTimeout(explode, 3000); 
+                   //   }
+                   //   else {
+                   //   $('#loading_img').removeClass('show');
+                   //   $('.fader').css('display','none');
+                   //   alert('Opps Something Went Wrong..!');
+                   //     }
+                    console.log('testing edit');
                     }            
                     });
                 });
  
        var skillsdata = null;
        $(document).on('click','.clickable', function(event){
-		event.preventDefault();
+        event.preventDefault();
                 skillsdata = $(this).text();
                 var value = $(this).attr('data-value');
                 addTags(skillsdata,value);
    });
         
  function getTags(){ //Gets array of existing tags
-		var alltags = new Array();
-		var i = 0;
-		$("#shownlist span").each(function( index ) {
-  			alltags[i] = $(this).html().substr(0,$(this).html().length - 36);
-			i ++;
-		});	
-		return alltags;
-	};
+        var alltags = new Array();
+        var i = 0;
+        $("#shownlist span").each(function( index ) {
+            alltags[i] = $(this).html().substr(0,$(this).html().length - 36);
+            i ++;
+        }); 
+        return alltags;
+    };
 function setTags(){ //Gets string of existing tags separated by commas
-		var texttags = getTags();
-		var finaltext = "";
-		for(var i=0; i<texttags.length; i++){
-			if(finaltext == ""){
-				finaltext = texttags[i];	
-			}
-			else{
-				finaltext = finaltext + "," + texttags[i];
-			}
-		}
-		return finaltext;
-	}
+        var texttags = getTags();
+        var finaltext = "";
+        for(var i=0; i<texttags.length; i++){
+            if(finaltext == ""){
+                finaltext = texttags[i];    
+            }
+            else{
+                finaltext = finaltext + "," + texttags[i];
+            }
+        }
+        return finaltext;
+    }
     var count = 0; 
   function addTags(skillsdata,value){
-		var tags = skillsdata.trim();
-		var listnews = "";
-		var newtags = "";
-		var existenttags = getTags();
-		if(tags.substr(tags.length - 1) == ","){ 
-			tags = tags.substr(0, tags.length -1);	
-		}
-		if(tags.substr(0,1) == ","){
-			tags = tags.substr(1, tags.length);	
-		}
-		if(tags.indexOf(",") !== -1){
-			var artags = tags.split(',');	
-			for(var i=0; i<artags.length; i++){
-				if((artags[i].trim() !== "")&&($.inArray(artags[i].trim(), existenttags) == -1)){
-					listnews = listnews + '<span data-value = "'+value+'">'+artags[i].trim()+'<a href="#" class="fa fa-times"></a></span>';
-					existenttags.push(artags[i].trim());
+        var tags = skillsdata.trim();
+        var listnews = "";
+        var newtags = "";
+        var existenttags = getTags();
+        if(tags.substr(tags.length - 1) == ","){ 
+            tags = tags.substr(0, tags.length -1);  
+        }
+        if(tags.substr(0,1) == ","){
+            tags = tags.substr(1, tags.length); 
+        }
+        if(tags.indexOf(",") !== -1){
+            var artags = tags.split(',');   
+            for(var i=0; i<artags.length; i++){
+                if((artags[i].trim() !== "")&&($.inArray(artags[i].trim(), existenttags) == -1)){
+                    listnews = listnews + '<span data-value = "'+value+'">'+artags[i].trim()+'<a href="#" class="fa fa-times"></a></span>';
+                    existenttags.push(artags[i].trim());
                                     count++;
                                     skill_counter();
                                     scroll_skills();
-				}
-			}
-		}
-		else{
+                }
+            }
+        }
+        else{
                     if($.inArray(tags, existenttags) == -1){
-	            listnews = '<span data-value = "'+value+'">'+tags+'<a href="#" class="fa fa-times"></a></span>';
+                listnews = '<span data-value = "'+value+'">'+tags+'<a href="#" class="fa fa-times"></a></span>';
                     count++;
                     skill_counter();
                     scroll_skills();
-		}
-		}
-		$("#shownlist").append(listnews);
-		$("#inputfield").val("");
-	};        
+        }
+        }
+        $("#shownlist").append(listnews);
+        $("#inputfield").val("");
+    };        
         
 $("#inputfield").keypress(function(e){
         if(e.which == 13){
@@ -2786,14 +2862,14 @@ $("#inputfield").keypress(function(e){
         } 
     })
 $(document).on('click','#shownlist span a', function(event){
-		event.preventDefault();
-		var btn = $(this);
-		var tag = btn.parent().html().toString();
-		tag = tag.substr(0,tag.length-20);
-		btn.parent().remove();
+        event.preventDefault();
+        var btn = $(this);
+        var tag = btn.parent().html().toString();
+        tag = tag.substr(0,tag.length-20);
+        btn.parent().remove();
                 count--;
                 skill_counter();
-	});   
+    });   
  
  function skill_counter()
         {
@@ -2806,33 +2882,51 @@ $(document).on('click','#shownlist span a', function(event){
            $('#skill_counter').val("1");
           }
         }
-         $('#md-checkbox').on('click', ':checkbox', function () {
-            if ($(this).is(':checked')) {
+        
+       $('#md-checkbox').on('click', ':checkbox', function () {
+            desc_box($(this));
+        });
+        
+        $.each($("input[name='JobApplicationFormEdit[clone_desc][]']"), function(){
+                 desc_box($(this));
+         });
+   
+ function desc_box(thisObj)
+        {
+          if (thisObj.is(':checked')) {
                 $('#heading_placeholder').hide();
-                $(".drop-options").append('<li value-id="' + $(this).attr("id") + '" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' + $(this).closest("div").find("label").text() + '</li>');
+                $(".drop-options").append('<li value-id="' + thisObj.attr("id") + '" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' + thisObj.closest("div").find("label").text() + '</li>');
                 scroll_checklist();
                 quesn_count++
                quesn_upt();
-            } else if ($(this).is(':unchecked')) {
-              $('.drop-options [value-id = "'+$(this).attr("id")+'"]').remove();
+            } else if (thisObj.is(':unchecked')) {
+              $('.drop-options [value-id = "'+thisObj.attr("id")+'"]').remove();
               quesn_count--
               quesn_upt();
             }
-        });
-        
-         $('#quali_list').on('click', ':checkbox', function () {
-            if ($(this).is(':checked')) {
+        }
+ function edu_box(thisObj)
+        {
+          if (thisObj.is(':checked')) {
                 $('#heading_quali').hide();
-                $(".quali_drop_options").append('<li value-id="' + $(this).attr("id") + '" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' + $(this).closest("div").find("label").text() + '</li>');
+                $(".quali_drop_options").append('<li value-id="' + thisObj.attr("id") + '" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' + thisObj.closest("div").find("label").text() + '</li>');
                 scroll_checklist();
                count_edu++;
               edu_counter_set();
-            } else if ($(this).is(':unchecked')) {
-              $('.quali_drop_options [value-id = "'+$(this).attr("id")+'"]').remove();
+            } else if (thisObj.is(':unchecked')) {
+              $('.quali_drop_options [value-id = "'+thisObj.attr("id")+'"]').remove();
               count_edu--;
               edu_counter_set();
             }
+        }
+        
+         $('#quali_list').on('click', ':checkbox', function () {
+            edu_box($(this));
         });
+        
+        $.each($("input[name='JobApplicationFormEdit[clone_edu][]']"), function(){
+                 edu_box($(this));
+         });
         
        $( init );
 
@@ -2873,11 +2967,10 @@ function init() {
         function placement_arr()
         {
                         var array =[];
-                        $.each($("input[name='JobApplicationForm[placement_locations][]']:checked"), function(index,value){
+                        $.each($("input[name='JobApplicationFormEdit[placement_locations][]']:checked"), function(index,value){
                         var obj = {};
-                        obj["id"] = $(this).attr('id');
-                        obj["value"] = $(this).next('label').find('.place_no').val();
-                        obj["name"] = $(this).attr('data-value');
+                        obj["location_enc_id"] = $(this).attr('id');
+                        obj["positions"] = $(this).next('label').find('.place_no').val();
                         array.push(obj);
                         }); 
               $('#placement_array').val(JSON.stringify(array));     
@@ -2885,50 +2978,51 @@ function init() {
         function question_process_arr()
         {
                         var process_question_arr =[];
-                        $.each($("input[name='JobApplicationForm[questionnaire][]']:checked"),
-                        function(index,value){
+                        $.each($("input[name='JobApplicationFormEdit[questionnaire][]']:checked"), function(index,value){
                         var obj = {};
-                        obj["id"] = $(this).attr('id');
-                        obj["process_id"] = $(this).closest('.col-md-9').next().find('.selectBox').val();
+                        obj["questionnaire_enc_id"] = $(this).attr('id');
+                        obj["field_enc_id"] = $(this).closest('.col-md-9').next().find('.selectBox').val();
                         process_question_arr.push(obj);
                         }); 
               $('#question_process').val(JSON.stringify(process_question_arr)); 
-                  
        }
-   $(document).on('change','input[name="JobApplicationForm[questionnaire][]"]',function(){
-        var box;
-    if ($(this).is(':checked')) {
-        box =  $(this).closest('.col-md-9').next().find('.selectBox');
-        box.prop("disabled", false);
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-        }
-        else if ($(this).is(':unchecked'))
-        {
-        box =  $(this).closest('.col-md-9').next().find('.selectBox');
-        box.prop("disabled", true);
-        box.val("");
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-        }
+
+   $(document).on('change','input[name="JobApplicationFormEdit[questionnaire][]"]',function(){
+   enable_fields($(this),id="");
    })
-   $(document).on('change','.selectBox',function()
+
+   function set_que_pros()
    {
-     if($(this).val()!=="")
-     {
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-     }
-     else
-     {
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-     }
-    }) 
+      var objct = JSON.parse($('#field_clone').val());
+      $.each(objct, function(i,v){
+        var id = v.field_enc_id
+        set_val_que(id);
+     }); 
+   }
+
+   function set_val_que(id)
+   {
+      var que = $("input[name='JobApplicationFormEdit[questionnaire][]']");
+      $.each(que, function(){
+        enable_fields($(this),id);
+     }); 
+      
+   }
+
+   function enable_fields(thisObj,id)
+   {
+    var box;
+    if (thisObj.is(':checked')) {
+        box =  thisObj.closest('.col-md-9').next().find('.selectBox');
+        box.prop("disabled", false);
+        box.val(id).change();
+        }
+        else if (thisObj.is(':unchecked'))
+        {
+        box =  thisObj.closest('.col-md-9').next().find('.selectBox');
+        box.prop("disabled", true);  
+        }
+   }
 
      function edu_counter_set()
         {
@@ -2971,16 +3065,16 @@ function init() {
                 focusInvalid: false, // do not focus the last invalid input
                 
                 rules: {
-                    'JobApplicationForm[jobtitle]': {
+                    'JobApplicationFormEdit[jobtitle]': {
                         required: true
                     },
-                    'benefit_calc': {
+                    'JobApplicationFormEdit[emp_benefit]': {
                         required: true
                     },
-                    'JobApplicationForm[designations]': {
+                    'JobApplicationFormEdit[designations]': {
                         required: true
                     },
-                    'process_calc': {
+                    'JobApplicationFormEdit[interview_process]': {
                         required: true
                     },
                     'placement_calc': {
@@ -2989,18 +3083,18 @@ function init() {
                     'interview_calc': {
                         required: true
                     },
-                    'JobApplicationForm[jobtype]': {
+                    'JobApplicationFormEdit[jobtype]': {
                         required: true
                     },
-                    'JobApplicationForm[primaryfield]': {
+                    'JobApplicationFormEdit[primaryfield]': {
                       
                        required:true
                     },
-                    'JobApplicationForm[pref_inds]': {
+                    'JobApplicationFormEdit[pref_inds]': {
                       
                        required:true
                     },
-                    'JobApplicationForm[gender]': {
+                    'JobApplicationFormEdit[gender]': {
                        required:true
                     },
                    'skill_counter':
@@ -3015,87 +3109,84 @@ function init() {
                     {
                       required:true
                     },
-                    'JobApplicationForm[earliestjoiningdate]': {
+                    'JobApplicationFormEdit[earliestjoiningdate]': {
                         required: true
                     },
-                    'JobApplicationForm[salaryinhand]': {
+                    'JobApplicationFormEdit[salaryinhand]': {
                         required: true,
                         
                     },
-                    'JobApplicationForm[last_date]': {
+                    'JobApplicationFormEdit[last_date]': {
                         required: true,
                     },
-                    'JobApplicationForm[interviewstarttime]': {
+                    'JobApplicationFormEdit[interviewstarttime]': {
                         required: true,
                     },
-                    'JobApplicationForm[interviewendtime]': {
+                    'JobApplicationFormEdit[interviewendtime]': {
                         required: true,
                     },
-                    'JobApplicationForm[ctc]': {
-                        required: true,
-                        
-                    },
-                    'JobApplicationForm[min_exp]': {
+                    'JobApplicationFormEdit[ctc]': {
                         required: true,
                         
                     },
-                    'JobApplicationForm[startdate]':
+                    'JobApplicationFormEdit[min_exp]': {
+                        required: true,
+                        
+                    },
+                    'JobApplicationFormEdit[startdate]':
                      {
                        required:true
                        },
-                   'JobApplicationForm[enddate]':
+                   'JobApplicationFormEdit[enddate]':
                    {
                        required:true
                        },
-                   'JobApplicationForm[jobdescription]':
+                   'JobApplicationFormEdit[jobdescription]':
                     {
                      required:true
                      
                       },
-                   'ques_calc':
+                   'JobApplicationFormEdit[questionnaire][]':
                     {
                      required:true
                       },
                    
-                   'JobApplicationForm[quesradio]':
+                   'JobApplicationFormEdit[quesradio]':
                     {
                      required:true
                       },
         
-                   'JobApplicationForm[interradio]':
+                   'JobApplicationFormEdit[interradio]':
                  {
                  required:true     
                 },
-                  'JobApplicationForm[fill_quesio_on]':
+                  'JobApplicationFormEdit[fill_quesio_on]':
                  {
                  required:true     
                 },
         
                 },
                 messages: { 
-                    'JobApplicationForm[startdate]':
-                     {
-                       required:'<div class = "color_red">Field Is Required</div>',
-                       },
-                    'JobApplicationForm[fill_quesio_on]':
-                     {
-                       required:'<div class = "color_red">Please Choose Fill Quesionnaire</div>',
-                       },
-                       'benefit_calc': {
-                        required: '<div class = "color_red">Please Choose Or Add One Benefit</div>',
-                    },
-                    'ques_calc':
-                     {
-                       required:'<div class = "color_red">Please Choose atleast One Questionnaire and Process Stage</div>',
-                       },
-                   'JobApplicationForm[enddate]':
+                    'JobApplicationFormEdit[startdate]':
                      {
                        required:'<div class = "color_red">Field Is Required</div>',
                        },
 
-                    'process_calc':
+                    'JobApplicationFormEdit[fill_quesio_on]':
+                     {
+                       required:'<div class = "color_red">Please Choose Fill Quesionnaire</div>',
+                       },
+                    'JobApplicationFormEdit[questionnaire][]':
+                     {
+                       required:'<div class = "color_red">Please Choose One Form</div>',
+                       },
+                       'JobApplicationFormEdit[interview_process]':
                       {
                        required:'<div class = "color_red">Please Choose one Interview process</div>',
+                       },
+                   'JobApplicationFormEdit[enddate]':
+                   {
+                       required:'<div class = "color_red">Field Is Required</div>',
                        },
                     'desc_count': { 
                         required:'<div class = "rule-text">Select or add atleast Three Job Descriptions</div>',
@@ -3109,12 +3200,12 @@ function init() {
               'interview_calc': {
                         required: '<div class = "inter_cust_rule">Please Select Atleast One Interview Location</div>',
                     },
-             'JobApplicationForm[quesradio]':
+             'JobApplicationFormEdit[quesradio]':
                     {
                      required:'<div class = "color_red">Please Select From the options</div>'
                      
                       },
-             'JobApplicationForm[interradio]':
+             'JobApplicationFormEdit[interradio]':
                  {
                  required: '<div class = "rule-text2">Please Select From the options</div>'    
                 },
@@ -3125,8 +3216,8 @@ function init() {
                     },
                 },
                 errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "JobApplicationForm[salaryinhand]") { 
-                        error.insertAfter("#jobapplicationform-salaryinhand");
+                    if (element.attr("name") == "JobApplicationFormEdit[salaryinhand]") { 
+                        error.insertAfter("#jobapplicationformedit-salaryinhand");
                     } else if (element.attr("name") == "desc_count") { 
                         error.insertAfter("#error-checkbox-msg");
                     } 
@@ -3139,27 +3230,20 @@ function init() {
               else if (element.attr("name") == "interview_calc") { 
                         error.insertAfter("#interview_error");
                     } 
-            else if (element.attr("name") == "JobApplicationForm[quesradio]") { 
-                        error.insertAfter("#error-checkbox-msg2");
-                    } 
-            else if (element.attr("name") == "ques_calc") { 
-                        error.insertAfter("#que_error");
-                    } 
-        else if (element.attr("name") == "JobApplicationForm[interradio]") { 
-                        error.insertAfter("#error-checkbox-msg3");
-                    }
-        else if (element.attr("name") == "process_calc") { 
+            else if (element.attr("name") == "JobApplicationFormEdit[interview_process]") { 
                         error.insertAfter("#process_err");
                     } 
-             else if (element.attr("name") == "benefit_calc") { 
-                        error.insertAfter("#b_error");
-              } 
+             else if (element.attr("name") == "JobApplicationFormEdit[questionnaire][]") { 
+                        error.insertAfter("#que_error");
+                    } 
+        else if (element.attr("name") == "JobApplicationFormEdit[interradio]") { 
+                        error.insertAfter("#error-checkbox-msg3");
+                    } 
         else if(element.attr("name") == "skill_counter")
                { 
                     error.insertAfter("#suggestionbox");
                 }
-              
-                        
+        
             else {
                         error.insertAfter(element); // for other inputs, just perform default behavior
                 }
@@ -3182,7 +3266,7 @@ function init() {
                 },
 
                 success: function (label) {
-                    if (label.attr("for") == "JobApplicationForm[checkbox][]") { // for checkboxes and radio buttons, no need to show OK icon
+                    if (label.attr("for") == "JobApplicationFormEdit[checkbox][]") { // for checkboxes and radio buttons, no need to show OK icon
                         label
                             .closest('.form-group').removeClass('has-error').addClass('has-success');
                         label.remove(); // remove error label here
@@ -3207,7 +3291,7 @@ function init() {
                     } else if (input.is(":radio") && input.is(":checked")) {
                         $(this).html(input.attr("data-title"));
                     } 
-                  else if ($(this).attr("data-display") == 'JobApplicationForm[checkbox][]') {
+                  else if ($(this).attr("data-display") == 'JobApplicationFormEdit[checkbox][]') {
                    var arr_val = [];
                    var checkboxvalues = new Array();
                    $.each($('.drop-options li'),function(index,value)
@@ -3241,10 +3325,10 @@ function init() {
                         skills_arr();
                         placement_arr();
                         question_process_arr();
-                   if($('input[name="JobApplicationForm[interradio]"]:checked' ).val()== 0)
+                   if($('input[name="JobApplicationFormEdit[interradio]"]:checked' ).val()== 0)
                    {
-                      $('#jobapplicationform-interviewstarttime').val('');
-                      $('#jobapplicationform-interviewendtime').val('');
+                      $('#jobapplicationformedit-interviewstarttime').val('');
+                      $('#jobapplicationformedit-interviewendtime').val('');
                       $('#time1').html('');
                       $('#time2').html('');
                      
@@ -3256,29 +3340,34 @@ function init() {
                          n += possible.charAt(Math.floor(Math.random()*possible.length));
                     }
                 
-                var data = $('#submit_form').serialize()+'&n='+session_tok;
+                var data = $('#submit_form').serialize()+'&n='+n;
                 
                     $.ajax({
                          url: '/account/jobs/preview', 
                          data:data, 
                          method:'post',
-                         success: function(data) {
-                            $('.button-preview').attr('href','/jobs/job-preview?data='+session_tok+'');  
-                         }
-                    });
+                         success: function(data)
+                            {
+                               if($('#data_preview').length == 0 ){
+                                   $('.btn-preview').append('<a id = "data_preview" href="/jobs/job-preview?data='+n+'" class="btn button-preview btn-primary custom-buttons2 custom_color-set2" target = "_blank">Preview</a>');
+                                    }
+                                else
+                                  {return false;}   
+                             }
+                        })
                 }
-                 else if($(this).attr("data-display") == 'JobApplicationForm[placement_locations][]' || $(this).attr("data-display") == 'JobApplicationForm[specialskillsrequired]' || $(this).attr("data-display") == 'JobApplicationForm["primaryfield"]' || $(this).attr("data-display") == 'JobApplicationForm[interviewcity][]')
+                 else if($(this).attr("data-display") == 'JobApplicationFormEdit[placement_locations][]' || $(this).attr("data-display") == 'JobApplicationFormEdit[specialskillsrequired]' || $(this).attr("data-display") == 'JobApplicationFormEdit["primaryfield"]' || $(this).attr("data-display") == 'JobApplicationFormEdit[interviewcity][]')
                     {
                       var interviewcitynames = new Array();
                       var getintercity = new Array();
-                       $('input[name = "JobApplicationForm[interviewcity][]"]:checked').each(function(){
+                       $('input[name = "JobApplicationFormEdit[interviewcity][]"]:checked').each(function(){
                           interviewcitynames.push('<span class = "chip">'+ $(this).attr('data-value')+ '</span>');
                           getintercity.push($(this).attr('data-value'));
                     });
                         $('#interviewcitycityvalues').html(interviewcitynames.join(" "));
                         $('#getinterviewcity').val(JSON.stringify(getintercity));
                         var placement_city = new Array();
-                        $('input[name = "JobApplicationForm[placement_locations][]"]:checked').each(function(){
+                        $('input[name = "JobApplicationFormEdit[placement_locations][]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
                       $('#placement_locations').html(placement_city.join(" "));
@@ -3404,3 +3493,4 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
