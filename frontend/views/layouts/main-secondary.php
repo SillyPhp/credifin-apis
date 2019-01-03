@@ -66,7 +66,9 @@ $this->beginPage();
         <?php
         $this->registerCss("
         #home {
+            min-height:100vh !important;
             height: auto !important;
+            margin-bottom:-50px;
         }");
 
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=UA-121432126-1', [
