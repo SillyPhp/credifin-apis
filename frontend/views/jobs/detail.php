@@ -303,12 +303,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
-                your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
-                Questionnaire Pending From YOur Side you can fill them now By clicking <a
-                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
-                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From YOur Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>
