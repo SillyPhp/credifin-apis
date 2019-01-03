@@ -35,9 +35,9 @@ use yii\helpers\Url;
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
-                                    <input type="text" name="location" value="<?=Yii::$app->request->get('location')?>" class="form-control">
+                                    <input type="text" name="location" id="cities" value="<?=Yii::$app->request->get('location')?>" class="form-control">
                                 <?php }else{ ?>
-                                    <input type="text" name="location" placeholder="Location" class="form-control">
+                                    <input type="text" name="location" id="cities" placeholder="Location" class="form-control">
                                 <?php }?>
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
