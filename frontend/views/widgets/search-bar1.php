@@ -5,11 +5,12 @@ use yii\helpers\Url;
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-            <form action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
+            <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
                         <div class="col-md-4 col-xs-6 ">
                             <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
@@ -21,6 +22,7 @@ use yii\helpers\Url;
                         </div>
                         <div class="col-md-3 col-xs-6">
                             <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('company')){
                                     ?>
@@ -31,7 +33,8 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="col-md-3 col-xs-6">
-                            <div class="input-group">
+                            <div class="input-group display-flex">
+                                <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
@@ -71,6 +74,12 @@ $this->registerCss('
 }
 .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group{
     height: 45px;
+}
+.display-flex{
+    display: inline-flex !important;
+}
+.set-heights{
+    line-height:31px;
 }
 .preview_tags{
     position:relative;
@@ -185,6 +194,7 @@ $this->registerCss('
     color: #fff;
     border-color: transparent;
     border-radius: 4px;
+    width:100% !important;
 }
 ');
 $script = <<<JS
