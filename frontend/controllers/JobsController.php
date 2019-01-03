@@ -98,30 +98,37 @@ class JobsController extends Controller
     public function actionReviewList()
     {
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
-            $review_list = ReviewedApplications::find()
-                ->alias('a')
-                ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
-                ->offset($sidebarpage)
-                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-                ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-                ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-                ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-                ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-                ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
-                ->groupBy(['b.application_enc_id'])
-                ->limit(4)
-                ->orderBy(['a.id' => SORT_DESC])
-                ->asArray()
-                ->all();
-            return $response = [
-                'cards' => $review_list,
-                'status' => 200,
-                'title' => 'Success',
-                'titl2e' => 'test',
-                'message' => 'Your Experience has been added.',
-            ];
+            if(!Yii::$app->user->isGuest){
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
+                $review_list = ReviewedApplications::find()
+                    ->alias('a')
+                    ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
+                    ->offset($sidebarpage)
+                    ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
+                    ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+                    ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+                    ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+                    ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+                    ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
+                    ->where(['b.is_deleted' => 0])
+                    ->groupBy(['b.application_enc_id'])
+                    ->limit(4)
+                    ->orderBy(['a.id' => SORT_DESC])
+                    ->asArray()
+                    ->all();
+                return $response = [
+                    'cards' => $review_list,
+                    'status' => 200,
+                    'title' => 'Success',
+                    'titl2e' => 'test',
+                    'message' => 'Your Experience has been added.',
+                ];
+            }else{
+                return $response = [
+                    'status' => 201,
+                ];
+            }
         }
     }
 
