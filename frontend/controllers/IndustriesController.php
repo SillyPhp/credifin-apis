@@ -19,11 +19,11 @@ class IndustriesController extends Controller
     public function actionGetIndustriesByBusinessActivity()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $id = Yii::$app->request->get('id');
+        $id = Yii::$app->request->post('id');
         if (!empty($id)) {
             $industries = AssignedIndustries::find()
                 ->alias('a')
-                ->select(['b.industry_enc_id industry_id', 'b.industry'])
+                ->select(['b.industry_enc_id id', 'b.industry name'])
                 ->innerJoin(Industries::tableName() . 'as b', 'b.industry_enc_id = a.industry_enc_id')
                 ->innerJoin(BusinessActivities::tableName() . 'as c', 'c.business_activity_enc_id = a.business_activity_enc_id')
                 ->where(['c.business_activity_enc_id' => $id])

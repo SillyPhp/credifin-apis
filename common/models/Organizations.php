@@ -13,6 +13,7 @@ namespace common\models;
  * @property string $name Organization Name
  * @property string $slug Organization Slug
  * @property string $email Organization Email
+ * @property string $initials_color Initials Color
  * @property string $logo Organization Logo
  * @property string $logo_location Location of the logo
  * @property string $cover_image Organization Cover Image
@@ -53,6 +54,7 @@ namespace common\models;
  * @property OrganizationInterviewProcess[] $organizationInterviewProcesses
  * @property OrganizationLocations[] $organizationLocations
  * @property OrganizationQuestionnaire[] $organizationQuestionnaires
+ * @property OrganizationReviews[] $organizationReviews
  * @property OrganizationVideos[] $organizationVideos
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
@@ -66,26 +68,29 @@ namespace common\models;
  * @property UserVerificationTokens[] $userVerificationTokens
  * @property Users[] $users
  */
-class Organizations extends \yii\db\ActiveRecord {
-
+class Organizations extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%organizations}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'industry_enc_id', 'name', 'slug', 'email', 'phone', 'created_on', 'created_by'], 'required'],
+            [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_on', 'created_by'], 'required'],
             [['establishment_year', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'mission', 'vision', 'value', 'status'], 'string'],
             [['is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_deleted'], 'integer'],
             [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'industry_enc_id', 'name', 'slug', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'tag_line', 'website', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin'], 'string', 'max' => 50],
+            [['initials_color'], 'string', 'max' => 7],
             [['phone', 'fax'], 'string', 'max' => 15],
             [['email'], 'unique'],
             [['slug'], 'unique'],
@@ -102,155 +107,184 @@ class Organizations extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDesignations() {
+    public function getDesignations()
+    {
         return $this->hasMany(Designations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEducationalRequirements() {
+    public function getEducationalRequirements()
+    {
         return $this->hasMany(EducationalRequirements::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEmployeeBenefits() {
+    public function getEmployeeBenefits()
+    {
         return $this->hasMany(EmployeeBenefits::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEmployerApplications() {
+    public function getEmployerApplications()
+    {
         return $this->hasMany(EmployerApplications::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getJobDescriptions() {
+    public function getJobDescriptions()
+    {
         return $this->hasMany(JobDescription::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationEmployeeBenefits() {
+    public function getOrganizationEmployeeBenefits()
+    {
         return $this->hasMany(OrganizationEmployeeBenefits::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationImages() {
+    public function getOrganizationImages()
+    {
         return $this->hasMany(OrganizationImages::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationInterviewProcesses() {
+    public function getOrganizationInterviewProcesses()
+    {
         return $this->hasMany(OrganizationInterviewProcess::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationLocations() {
+    public function getOrganizationLocations()
+    {
         return $this->hasMany(OrganizationLocations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationQuestionnaires() {
+    public function getOrganizationQuestionnaires()
+    {
         return $this->hasMany(OrganizationQuestionnaire::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationVideos() {
+    public function getOrganizationReviews()
+    {
+        return $this->hasMany(OrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationVideos()
+    {
         return $this->hasMany(OrganizationVideos::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBusinessActivityEnc() {
+    public function getBusinessActivityEnc()
+    {
         return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'business_activity_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIndustryEnc() {
+    public function getIndustryEnc()
+    {
         return $this->hasOne(Industries::className(), ['industry_enc_id' => 'industry_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationTypeEnc() {
+    public function getOrganizationTypeEnc()
+    {
         return $this->hasOne(OrganizationTypes::className(), ['organization_type_enc_id' => 'organization_type_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSelectedServices() {
+    public function getSelectedServices()
+    {
         return $this->hasMany(SelectedServices::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getShortlistedOrganizations() {
+    public function getShortlistedOrganizations()
+    {
         return $this->hasMany(ShortlistedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSkills() {
+    public function getSkills()
+    {
         return $this->hasMany(Skills::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserTasks() {
+    public function getUserTasks()
+    {
         return $this->hasMany(UserTasks::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserVerificationTokens() {
+    public function getUserVerificationTokens()
+    {
         return $this->hasMany(UserVerificationTokens::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUsers() {
+    public function getUsers()
+    {
         return $this->hasMany(Users::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
-
 }
