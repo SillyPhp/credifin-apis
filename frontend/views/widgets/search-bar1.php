@@ -10,6 +10,7 @@ use yii\helpers\Url;
                     <div class="row content-search">
                         <div class="col-md-4 col-xs-6 ">
                             <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
@@ -21,6 +22,7 @@ use yii\helpers\Url;
                         </div>
                         <div class="col-md-3 col-xs-6">
                             <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('company')){
                                     ?>
@@ -31,13 +33,14 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="col-md-3 col-xs-6">
-                            <div class="input-group">
+                            <div class="input-group display-flex">
+                                <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
-                                    <input type="text" name="location" value="<?=Yii::$app->request->get('location')?>" class="form-control">
+                                    <input type="text" name="location" id="cities" value="<?=Yii::$app->request->get('location')?>" class="form-control">
                                 <?php }else{ ?>
-                                    <input type="text" name="location" placeholder="Location" class="form-control">
+                                    <input type="text" name="location" id="cities" placeholder="Location" class="form-control">
                                 <?php }?>
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
@@ -71,6 +74,12 @@ $this->registerCss('
 }
 .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group{
     height: 45px;
+}
+.display-flex{
+    display: inline-flex !important;
+}
+.set-heights{
+    line-height:31px;
 }
 .preview_tags{
     position:relative;
@@ -185,6 +194,7 @@ $this->registerCss('
     color: #fff;
     border-color: transparent;
     border-radius: 4px;
+    width:100% !important;
 }
 ');
 $script = <<<JS

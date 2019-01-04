@@ -29,6 +29,11 @@ a:hover {
 .main-content{
     min-height:100vh !important;
 }
+.not-found{
+    width: 300px;
+    margin: auto;
+    display: block;
+}
 ');
 ?>
 
@@ -614,6 +619,8 @@ function getJobs(type = "Jobs") {
                 jobcards(response.jobcards);
                 utilities.initials();
             } else {
+                utilities.initials();
+                $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Jobs not found.</h2>');
                 $('#loadMore').hide();
             }
         }
