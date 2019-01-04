@@ -58,15 +58,21 @@ class InternshipsController extends Controller {
                     ->limit(8)
                     ->all();
 
-            $job_categories = Categories::find()
-                    ->alias('a')
-                    ->select(['a.name', 'a.slug', 'a.icon'])
-                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'a.category_enc_id = b.category_enc_id')
-                    ->where(['b.parent_enc_id' => null])
-                    ->orderBy(new Expression('rand()'))
-                    ->asArray()
-                    ->limit(8)
-                    ->all();
+            $job_categories = AssignedCategories::find()
+                ->select(['a.category_enc_id','b.name','b.slug','b.icon','c.name as sub','COUNT(d.id) as total','e.application_type_enc_id','e.name as type'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'],false)
+                ->joinWith(['categoryEnc c'],false)
+                ->joinWith(['employerApplications d' => function($b){
+                    $b->joinWith(['applicationTypeEnc e']);
+                    $b->where(['e.name' => 'Internships']);
+                }],false)
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['total' => SORT_DESC])
+                ->limit(8)
+                ->asArray()
+                ->all();
+
             $companycards = Organizations::find()
                     ->alias('a')
                     ->select(['a.is_sponsored', 'a.name', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
@@ -74,6 +80,11 @@ class InternshipsController extends Controller {
                     ->limit(10)
                     ->asArray()
                     ->all();
+
+//            echo '<pre>';
+//            print_r($job_categories);
+//            echo '</pre>';
+//            exit;
 
             if ($job_cards) {
                 $response = [
@@ -96,6 +107,7 @@ class InternshipsController extends Controller {
             ]);
         }
     }
+
 
     public function actionList() {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
