@@ -5,11 +5,8 @@ use yii\helpers\Url;
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-<<<<<<< HEAD
             <form action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
-=======
             <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
->>>>>>> remotes/origin/Jobs_search_page
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
                         <div class="col-md-4 col-xs-6 ">
@@ -157,7 +154,6 @@ $this->registerCss('
 .tt-menu {
   width: 100%;
   margin: 0px 0;
-//  padding: 8px 0;
   text-align:left;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -257,8 +253,6 @@ $('#cities').typeahead(null, {
     $('.Typeahead-spinner').hide();
   });
         
-var methodToBe = "GET";
-var urlToBe = '".yii\helpers\Url::to(["/site/jobs-by-industry","id"=>industry])."';
 $(window).scroll(function () {
     if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
         $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"50px"}, 1000);
