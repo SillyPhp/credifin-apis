@@ -33,7 +33,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Job Application
+                <span class="caption-subject font-red bold uppercase">Internship Application
                     <span class="step-title"> Step 1 of 4</span>
                 </span>
             </div>
@@ -63,7 +63,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <a href="#tab2" data-toggle="tab" class="step">
                                 <span class="number"> 2 </span><br/>
                                 <span class="desc">
-                                    <i class="fa fa-check"></i> Job Description </span>
+                                    <i class="fa fa-check"></i> Internship Description </span>
                             </a>
                         </li>
                         <li>
@@ -94,52 +94,73 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                     </div>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
-
                             <div class="row">                    
                                 <div class="col-md-4">
                                     <div class="select">
-                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Function', 'disabled' => true])->label(false); ?>
+                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Category', 'disabled' => true])->label(false); ?>
                                     </div>        
                                 </div>
                                 <div class="col-md-4">
-
                                     <div class="cat_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Job Profile', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?> 
+                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="desig_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'designations')->textInput(['id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
-                                    </div>
+                                        <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
 
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
-                                    <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
-                                </div>
-                                <div class="col-md-3">
-                                    <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
-                                </div>
-                                <div class="col-md-3">
-                                    <?=
-                                    $form->field($model, 'ctctype')->dropDownList([
-                                        'monthly' => 'Monthly',
-                                        'weekly' => 'Weekly',
-                                        'hourly' => 'Hourly',
-                                        'annually' => 'Annually'])->label(false);
-                                    ?>
-                                </div>
-                                <div class="col-md-3">
-                                    <div id="addct">
-                                        <a id="addctc"><span class="fa fa-plus"></span> Add Annual CTC</a>
+                                <div class="col-md-6">
+                                    <div id="radio_rules"></div>
+                                    <label>Type Of Stipend</label>
+                                    <div class="md-radio-inline">
+                                        <?=    $form->field($model, 'stipendtype')->inline()->radioList([
+                                            1 => 'Unpaid',
+                                            2 => 'Performance Based',
+                                            3 => 'Negotiable',
+                                            4 => 'Fixed',
+                                        ], [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return = '<div class="md-radio">';
+                                                $return .= '<input type="radio" id="sti' .$index.$name.'" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                $return .= '<label for="sti' .$index.$name.'">';
+                                                $return .= '<span></span>';
+                                                $return .= '<span class="check"></span>';
+                                                $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                $return .= '</div>';
+                                                return $return;
+                                            }
+                                        ])->label(false); ?>
                                     </div>
-                                    <div id="ctc">
-                                        <?= $form->field($model, 'ctc')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('CTC'); ?>
-                                        <a class="close-ctc"><i class="fa fa-times"></i></a>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div id="fixed_stip">
+                                            <div class="col-md-8">
+                                                <?= $form->field($model, 'stipendpaid')->label('Stipend Paid') ?>
+                                            </div>
+                                        </div>
+                                        <div id="min_max">
+                                            <div class="col-md-4">
+                                                <?= $form->field($model, 'minstip')->label('Min Stipend') ?>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <?= $form->field($model, 'maxstip')->label('Max Stipend') ?>
+                                            </div>
+                                        </div>
+                                        <div id="stipend_paid">
+                                            <div class="col-md-4">
+                                                <?=
+                                                $form->field($model, 'stipendur')->dropDownList([
+                                                    'monthly' => 'Monthly',
+                                                    'weekly' => 'Weekly',
+                                                ])->label(false);
+                                                ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +168,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <div class="col-md-3">
                                     <div class="weekDays-selector">
                                         <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
-
                                         <?=
                                         $form->field($model, 'weekdays')->inline()->checkBoxList([
                                             '1' => 'M',
@@ -165,7 +185,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             }
                                         ])->label(false);
                                         ?>
-
                                         <label>Working Days</label>
                                         <div id="week_options">
                                             <div class="sat-sun">
@@ -190,18 +209,13 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Job Timing From');
+                                    <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Internship Timing From');
                                     ?>
                                 </div>
                                 <div class="col-md-3">
                                     <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
                                     ?> 
                                 </div>
-                                <div class="col-md-3">
-                                    <?= $form->field($model, 'pref_inds')->dropDownList($industry, ['prompt' => 'Preferred industry'])->label(false); ?>
-                                </div> 
-                            </div>
-                            <div class="row">
                                 <div class="col-md-3">
                                     <div id="gender_pref">
                                         <div class="radio-group">
@@ -212,7 +226,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 1 => 'Male',
                                                 2 => 'Female',
                                                 3 => 'Trans',
-                                                    ], [
+                                            ], [
                                                 'item' => function($index, $label, $name, $checked, $value) {
 
                                                     $return .= '<input type="radio" id="gender' . $index . '" name="' . $name . '" value="' . $value . '" class="gender_radio" ' . (($checked) ? 'checked' : '') . '>';
@@ -222,15 +236,12 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 }
                                             ])->label(false);
                                             ?>
-
                                         </div>
                                         <label>Gender Preference</label>
                                     </div>
-
-                                </div> 
-                                <div class="col-md-3">
-                                    <?= $form->field($model, 'min_exp')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Experience Required'])->label(false); ?>
-                                </div> 
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-3">
                                     <?=
                                     $form->field($model, 'last_date')->widget(DatePicker::classname(), [
@@ -258,7 +269,33 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             'startDate' => '+0d',
                                 ]])->label(false);
                                     ?>
-                                </div> 
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="pre_placement_err"></div>
+                                    <label>Is there Any Pre Placement Offer?</label>
+                                    <div class="md-radio-inline">
+                                        <?=    $form->field($model, 'pre_place')->inline()->radioList([
+                                            1 => 'Yes',
+                                            2 => 'No',
+                                        ], [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return = '<div class="md-radio">';
+                                                $return .= '<input type="radio" id="pre' .$index.$name.'" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                $return .= '<label for="pre' .$index.$name.'">';
+                                                $return .= '<span></span>';
+                                                $return .= '<span class="check"></span>';
+                                                $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                $return .= '</div>';
+                                                return $return;
+                                            }
+                                        ])->label(false); ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="pre_package">
+                                        <?= $form->field($model, 'pre_sal')->label('Salary Package(Yearly)') ?>
+                                    </div>
+                                </div>
                             </div>
                             <div class="divider">
                                 <span></span>
@@ -758,86 +795,82 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <tbody>
                                             <tr>
                                                 <td><strong>Primary Field:</strong></td>
-                                                <td> <p class="final_confrm" data-display="JobApplicationForm[primaryfield]" id="fieldvalue"> </p></td>
+                                                <td> <p class="final_confrm" data-display="InternshipApplicationForm[primaryfield]" id="fieldvalue"> </p></td>
                                                 <td><strong>Job Title:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[jobtitle]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[jobtitle]"> </p></td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Field of Work:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[designations]"> </p></td>
-                                                <td><strong>Job Type:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[jobtype]"> </p></td>
+                                                <td><strong>Stipend Type:</strong></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[stipendtype]"> </p></td>
+                                                <td><strong>Internship Type:</strong></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[jobtype]"> </p></td>
                                             </tr>
                                             <tr>
-                                                <td><strong>CTC:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[ctc]"> </p></td>
-                                                <td><strong>Type:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[ctctype]"> </p></td>
+                                                <td><strong>Min:</strong></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[minstip]"> </p></td>
+                                                <td><strong>Max:</strong></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[maxstip]"> </p></td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Salary:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[salaryinhand]"> </p></td>
+                                                <td><strong>Fixed:</strong></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[stipendpaid]"> </p></td>
                                                 <td><strong>Joining Date:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[earliestjoiningdate]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[earliestjoiningdate]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Special Skills:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[specialskillsrequired]" id="skillvalues"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[specialskillsrequired]" id="skillvalues"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Timing From:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[from]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[from]"> </p></td>
                                                 <td><strong>Upto:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[to]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[to]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Start:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[startdate]" > </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[startdate]" > </p></td>
                                                 <td><strong>Interview End:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[enddate]"> </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[enddate]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Start Time:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[interviewstarttime]" id="time1" > </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[interviewstarttime]" id="time1" > </p></td>
                                                 <td><strong>Interview End Time:</strong></td>
-                                                <td><p class="final_confrm"  data-display="JobApplicationForm[interviewendtime]" id="time2" > </p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[interviewendtime]" id="time2" > </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Job Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[checkbox][]" id="chackboxvalues"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[checkbox][]" id="chackboxvalues"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Educational Qualification:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[qualifications][]" id="education_vals"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[qualifications][]" id="education_vals"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Placement Locations (No. of positions):</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[placement_locations][]" id="placement_locations" > </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[placement_locations][]" id="placement_locations" > </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Location:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[interviewcity][]" id="interviewcitycityvalues" > </p>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[interviewcity][]" id="interviewcitycityvalues" > </p>
                                                     <span class="final_confrm"  data-display="randomfunc"> </span></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Brief Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[othrdetail]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[othrdetail]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Gender:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[gender]" id="gendr_text"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[gender]" id="gendr_text"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Industry:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[pref_inds]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[pref_inds]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Last Date:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[last_date]"> </p></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Minimum Experience:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"  data-display="JobApplicationForm[min_exp]"> </p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[last_date]"> </p></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -889,6 +922,7 @@ $this->registerCss("
   font-weight: 400;
   margin-bottom:0px;
 }
+#pre_package{display:none;}
 .checkbox-label-v2:before {
   content: '';
   position: absolute;
@@ -1142,7 +1176,7 @@ select{
     text-align: center;
 }
 
-.field-jobapplicationform-gender
+.field-InternshipApplicationForm-gender
 {
  margin:0px;
 }
@@ -1155,7 +1189,7 @@ select{
     padding-top:0px;
 }
 
-.field-jobapplicationform-weekoptsat,.field-jobapplicationform-weekoptsund
+.field-internshipapplicationform-weekoptsat,.field-internshipapplicationform-weekoptsund
 {
     width: 100%;
     float: left;
@@ -1163,7 +1197,7 @@ select{
 }
 
     
-#jobapplicationform-weekoptsat,#jobapplicationform-weekoptsund
+#InternshipApplicationForm-weekoptsat,#InternshipApplicationForm-weekoptsund
 {
  width:90%;
 }
@@ -1225,20 +1259,20 @@ select{
 {
   display:none;
 }
-#jobapplicationform-last_date,#jobapplicationform-earliestjoiningdate{
+#InternshipApplicationForm-last_date,#InternshipApplicationForm-earliestjoiningdate{
     border-bottom: 1px solid #c2cad8;
     cursor: pointer;
 }
-.has-error div #jobapplicationform-last_date, .has-error div #jobapplicationform-earliestjoiningdate{
+.has-error div #InternshipApplicationForm-last_date, .has-error div #InternshipApplicationForm-earliestjoiningdate{
 border-bottom: 1px solid #e73d4a;
 }
-.has-error div #jobapplicationform-interviewstarttime-error{
+.has-error div #InternshipApplicationForm-interviewstarttime-error{
     margin-top:10px;
 }
-.has-error div #jobapplicationform-interviewendtime-error{
+.has-error div #InternshipApplicationForm-interviewendtime-error{
     margin-top:10px;
 }
-.has-success div div .input-group-addon, .has-success div #jobapplicationform-last_date, .has-success div #jobapplicationform-earliestjoiningdate{
+.has-success div div .input-group-addon, .has-success div #InternshipApplicationForm-last_date, .has-success div #InternshipApplicationForm-earliestjoiningdate{
     border-bottom: 1px solid #00A0E3 !important;
 }
 .button-submit
@@ -1313,6 +1347,10 @@ display:none;
           box-shadow: 0 5px 10px rgba(0,0,0,.2);
           max-height:158px;
           overflow-y:auto;
+}
+#fixed_stip,#min_max,#stipend_paid
+{
+ display:none;
 }
 .tt-suggestion {
   padding: 3px 20px;
@@ -1537,7 +1575,7 @@ q:before, q:after, blockquote:before, blockquote:after {
 .color_red
 {
  color: #e73d49;
- font-size:18px;
+ font-size:14px;
 }
 .spinner {
   width: 100px;
@@ -1713,7 +1751,7 @@ span.chip .fa-times
     
 }
 
-.field-jobapplicationform-checkbox{
+.field-InternshipApplicationForm-checkbox{
   margin-top: -22px;
 }
 
@@ -1742,7 +1780,7 @@ span.chip .fa-times
     border-radius: 6px;
     position:relative;
 }
-#jobapplicationform-startdate-kvdate{
+#InternshipApplicationForm-startdate-kvdate{
     padding:25px 0px;
 }
 
@@ -2112,7 +2150,52 @@ height:17px !important;
 ");
 
 $script = <<< JS
-
+$('input[name= "InternshipApplicationForm[pre_place]"]').on('change',function(){
+        var pre = $(this).attr("data-title");
+        if(pre==1)
+        {
+         $('#pre_package').show();
+        }
+        else if(pre==2)
+        {
+         $('#pre_package').hide();
+        }
+        });
+$('input[name= "InternshipApplicationForm[stipendtype]"]').on('change',function(){
+        var stipendtyp = $(this).attr("data-title");
+   if(stipendtyp=='1')
+        {
+        $('#fixed_stip').hide();
+        $('#stipend_paid').hide();
+        $('#min_max').hide();
+        $('#internshipapplicationform-minstip').val('');
+        $('#internshipapplicationform-maxstip').val('');
+        $('#internshipapplicationform-stipendpaid').val('');
+        }
+     else if(stipendtyp =='4')
+        {
+        $('#fixed_stip').show();
+        $('#stipend_paid').show();
+        $('#min_max').hide();
+        $('#internshipapplicationform-minstip').val('');
+        $('#internshipapplicationform-maxstip').val('');
+        $('#internshipapplicationform-stipendpaid').val('');
+        }
+     else if(stipendtyp=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#stipend_paid').show();
+        $('#min_max').show(); 
+        $('#internshipapplicationform-stipendpaid').val('');
+        }
+     else if(stipendtyp=='3')
+        {
+        $('#fixed_stip').hide();
+        $('#stipend_paid').show();
+        $('#min_max').show(); 
+        $('#internshipapplicationform-stipendpaid').val('');
+        }
+   }) 
 var session_tok = "";
 function genrate_session_token() {
     var possible = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -2122,11 +2205,12 @@ function genrate_session_token() {
 }
 genrate_session_token();
 //$('#loading_img').addClass('show');
-$("#jobapplicationform-primaryfield").prop("disabled", false);          
+$("#internshipapplicationform-primaryfield").prop("disabled", false);          
 $("#jobtitle").prop("disabled", false);
 $('.selectBox').prop("disabled", true);    
    
-$('#jobapplicationform-salaryinhand, #jobapplicationform-ctc').mask("#,#0,#00", {reverse: true});
+$('#internshipapplicationform-minstip, #internshipapplicationform-maxstip').mask("#,#0,#00", {reverse: true});
+$('#internshipapplicationform-stipendpaid, #internshipapplicationform-pre_sal').mask("#,#0,#00", {reverse: true});
 $('[data-toggle="tooltip"]').tooltip();
     $(document).on("keypress",'.place_no', function (evt) {
     if (evt.which < 48 || evt.which > 57)
@@ -2146,7 +2230,7 @@ $('[data-toggle="tooltip"]').tooltip();
            } 
    });
  
-  $(document).on('change','input[name="JobApplicationForm[interview_process]"]',function()
+  $(document).on('change','input[name="InternshipApplicationForm[interview_process]"]',function()
       {
         $('.selectBox').html('<option value="">Choose Stage</option>');
          var id = $(this).val();
@@ -2193,11 +2277,11 @@ var stage_len = 0;
 var process_len = 0;
 
 
-$(document).on("click",'input[name="JobApplicationForm[placement_locations][]"]', function() {
+$(document).on("click",'input[name="InternshipApplicationForm[placement_locations][]"]', function() {
     checked = $(this);
      
     if (this.checked == true) {
-        place_len =  $('[name="JobApplicationForm[placement_locations][]"]:checked').length;
+        place_len =  $('[name="InternshipApplicationForm[placement_locations][]"]:checked').length;
         place_checker(place_len);
         checked.next('label').find('.spinner').css('display','inline-flex');
         checked.next('label').find(".tooltips").fadeIn(1000);
@@ -2205,52 +2289,52 @@ $(document).on("click",'input[name="JobApplicationForm[placement_locations][]"]'
     } 
         
     else {
-        place_len =  $('[name="JobApplicationForm[placement_locations][]"]:checked').length;
+        place_len =  $('[name="InternshipApplicationForm[placement_locations][]"]:checked').length;
         place_checker(place_len);   
       checked.next('label').find('.spinner').css('display','none');
       checked.next('label').find(".tooltips").css('display','none');  
    }   
 });
 
-$(document).on("click",'input[name="JobApplicationForm[interviewcity][]"]', function() {
+$(document).on("click",'input[name="InternshipApplicationForm[interviewcity][]"]', function() {
     checked = $(this);
     if (this.checked == true) {
-        interview_len =  $('[name="JobApplicationForm[interviewcity][]"]:checked').length;
+        interview_len =  $('[name="InternshipApplicationForm[interviewcity][]"]:checked').length;
         interview_checker(interview_len);
     } 
         
     else {
-        interview_len =  $('[name="JobApplicationForm[interviewcity][]"]:checked').length;
+        interview_len =  $('[name="InternshipApplicationForm[interviewcity][]"]:checked').length;
         interview_checker(interview_len); 
         
    }   
 });
 
-$(document).on("click",'input[name="JobApplicationForm[emp_benefit][]"]', function() {
+$(document).on("click",'input[name="InternshipApplicationForm[emp_benefit][]"]', function() {
     checked = $(this);
     if (this.checked == true) {
-        benefit_len =  $('[name="JobApplicationForm[emp_benefit][]"]:checked').length;
+        benefit_len =  $('[name="InternshipApplicationForm[emp_benefit][]"]:checked').length;
         benefit_checker(benefit_len);
        
     } 
         
     else {
-        benefit_len =  $('[name="JobApplicationForm[emp_benefit][]"]:checked').length;
+        benefit_len =  $('[name="InternshipApplicationForm[emp_benefit][]"]:checked').length;
         benefit_checker(benefit_len); 
         
    }   
 });
 
-$(document).on("click",'input[name="JobApplicationForm[interview_process]"]', function() {
+$(document).on("click",'input[name="InternshipApplicationForm[interview_process]"]', function() {
     checked = $(this);
     if (this.checked == true) {
-        process_len =  $('[name="JobApplicationForm[interview_process]"]:checked').length;
+        process_len =  $('[name="InternshipApplicationForm[interview_process]"]:checked').length;
         process_checker(process_len);
 
     } 
         
     else {
-        process_len =  $('[name="JobApplicationForm[interview_process]"]:checked').length;
+        process_len =  $('[name="InternshipApplicationForm[interview_process]"]:checked').length;
         process_checker(process_len); 
         
    }   
@@ -2315,42 +2399,39 @@ var prime_id = null;
            }
         } 
 
-$(document).on('click','#jobapplicationform-weekdays input',function()
+$(document).on('click','#internshipapplicationform-weekdays input',function()
     {
      if ($('#weekday-5').is(':checked'))
         {
-         $('.field-jobapplicationform-weekoptsat').css('display','block');
+         $('.field-internshipapplicationform-weekoptsat').css('display','block');
          $('.sat').css('display','block');
         
         }
      else if ($('#weekday-5').is(':unchecked'))
         {
-          $('.field-jobapplicationform-weekoptsat').css('display','none');
+          $('.field-internshipapplicationform-weekoptsat').css('display','none');
           $('.sat').css('display','none');
         }
     if($('#weekday-6').is(':checked'))
         {
-          $('.field-jobapplicationform-weekoptsund').css('display','block');
+          $('.field-internshipapplicationform-weekoptsund').css('display','block');
           $('.sun').css('display','block');
         }
         
      else if($('#weekday-6').is(':unchecked'))
         { 
-          $('.field-jobapplicationform-weekoptsund').css('display','none');
+          $('.field-InternshipApplicationForm-weekoptsund').css('display','none');
           $('.sun').css('display','none');
         }
    
    }) 
    
-$('#jobapplicationform-primaryfield').on('change',function()
+$('#internshipapplicationform-primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#jobtitle').val('');
       $('.tt-dataset').empty();  
    })
-   
-        
-        
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -2429,7 +2510,7 @@ $('#jobtitle').typeahead(null, {
      $.each(obj,function()
      { 
       html.push ("<div class=\'md-checkbox\'>"+
-     "<input type=\'checkbox\' id=\'"+this.job_description_enc_id+"\' value = \'"+this.job_description_enc_id+"\' class=\'md-check\' name = \'JobApplicationForm[checkbox][]\'>"+
+     "<input type=\'checkbox\' id=\'"+this.job_description_enc_id+"\' value = \'"+this.job_description_enc_id+"\' class=\'md-check\' name = \'InternshipApplicationForm[checkbox][]\'>"+
       "<label for=\'"+this.job_description_enc_id+"\'>"+
       "<span></span>"+
        "<span class=\'check\'></span>"+
@@ -2475,7 +2556,7 @@ function skils_update(data)
      $.each(obj,function()
      { 
       html.push ("<div class=\'md-checkbox\'>"+
-     "<input type=\'checkbox\' id=\'"+this.educational_requirement_enc_id+"\' value = \'"+this.educational_requirement+"\' class=\'md-check\' name = \'JobApplicationForm[qualifications][]\'>"+
+     "<input type=\'checkbox\' id=\'"+this.educational_requirement_enc_id+"\' value = \'"+this.educational_requirement+"\' class=\'md-check\' name = \'InternshipApplicationForm[qualifications][]\'>"+
       "<label for=\'"+this.educational_requirement_enc_id+"\'>"+
       "<span></span>"+
        "<span class=\'check\'></span>"+
@@ -2555,8 +2636,7 @@ var que_type = $('#question_field').typeahead(null, {
       var questions = datum.job_description;  
       drop_options(id,questions); 
       que_type.typeahead('val','');
-   });    
-    
+   }); 
         
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
@@ -2599,7 +2679,7 @@ $(document).on('click', '.modal-load-class', function() {
    })
 
         
-   $('input[name = "JobApplicationForm[interradio]"]').on('change',function()
+   $('input[name = "InternshipApplicationForm[interradio]"]').on('change',function()
    {
      var i  = $(this).val();
         if (i==1) 
@@ -2873,7 +2953,7 @@ function init() {
         function placement_arr()
         {
                         var array =[];
-                        $.each($("input[name='JobApplicationForm[placement_locations][]']:checked"), function(index,value){
+                        $.each($("input[name='InternshipApplicationForm[placement_locations][]']:checked"), function(index,value){
                         var obj = {};
                         obj["id"] = $(this).attr('id');
                         obj["value"] = $(this).next('label').find('.place_no').val();
@@ -2885,7 +2965,7 @@ function init() {
         function question_process_arr()
         {
                         var process_question_arr =[];
-                        $.each($("input[name='JobApplicationForm[questionnaire][]']:checked"),
+                        $.each($("input[name='InternshipApplicationForm[questionnaire][]']:checked"),
                         function(index,value){
                         var obj = {};
                         obj["id"] = $(this).attr('id');
@@ -2895,12 +2975,12 @@ function init() {
               $('#question_process').val(JSON.stringify(process_question_arr)); 
                   
        }
-   $(document).on('change','input[name="JobApplicationForm[questionnaire][]"]',function(){
+   $(document).on('change','input[name="InternshipApplicationForm[questionnaire][]"]',function(){
         var box;
     if ($(this).is(':checked')) {
         box =  $(this).closest('.col-md-9').next().find('.selectBox');
         box.prop("disabled", false);
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
+        ques_len = $('[name="InternshipApplicationForm[questionnaire][]"]:checked').length;
         stage_len = $('.selectBox option:selected:not([value=""])').length;
         ques_checker(ques_len,stage_len);
         }
@@ -2909,7 +2989,7 @@ function init() {
         box =  $(this).closest('.col-md-9').next().find('.selectBox');
         box.prop("disabled", true);
         box.val("");
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
+        ques_len = $('[name="InternshipApplicationForm[questionnaire][]"]:checked').length;
         stage_len = $('.selectBox option:selected:not([value=""])').length;
         ques_checker(ques_len,stage_len);
         }
@@ -2918,13 +2998,13 @@ function init() {
    {
      if($(this).val()!=="")
      {
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
+        ques_len = $('[name="InternshipApplicationForm[questionnaire][]"]:checked').length;
         stage_len = $('.selectBox option:selected:not([value=""])').length;
         ques_checker(ques_len,stage_len);
      }
      else
      {
-        ques_len = $('[name="JobApplicationForm[questionnaire][]"]:checked').length;
+        ques_len = $('[name="InternshipApplicationForm[questionnaire][]"]:checked').length;
         stage_len = $('.selectBox option:selected:not([value=""])').length;
         ques_checker(ques_len,stage_len);
      }
@@ -2971,13 +3051,31 @@ function init() {
                 focusInvalid: false, // do not focus the last invalid input
                 
                 rules: {
-                    'JobApplicationForm[jobtitle]': {
+                    'InternshipApplicationForm[pre_sal]': {
+                        required: true
+                    },
+                    'InternshipApplicationForm[stipendtype]': {
+                        required: true
+                    },
+                    'InternshipApplicationForm[pre_place]': {
+                        required: true
+                    },
+                     'InternshipApplicationForm[minstip]': {
+                        required: true
+                    },
+                    'InternshipApplicationForm[maxstip]': {
+                        required: true
+                    },
+                    'InternshipApplicationForm[stipendpaid]': {
+                        required: true
+                    },
+                    'InternshipApplicationForm[jobtitle]': {
                         required: true
                     },
                     'benefit_calc': {
                         required: true
                     },
-                    'JobApplicationForm[designations]': {
+                    'InternshipApplicationForm[designations]': {
                         required: true
                     },
                     'process_calc': {
@@ -2989,18 +3087,18 @@ function init() {
                     'interview_calc': {
                         required: true
                     },
-                    'JobApplicationForm[jobtype]': {
+                    'InternshipApplicationForm[jobtype]': {
                         required: true
                     },
-                    'JobApplicationForm[primaryfield]': {
+                    'InternshipApplicationForm[primaryfield]': {
                       
                        required:true
                     },
-                    'JobApplicationForm[pref_inds]': {
+                    'InternshipApplicationForm[pref_inds]': {
                       
                        required:true
                     },
-                    'JobApplicationForm[gender]': {
+                    'InternshipApplicationForm[gender]': {
                        required:true
                     },
                    'skill_counter':
@@ -3015,39 +3113,39 @@ function init() {
                     {
                       required:true
                     },
-                    'JobApplicationForm[earliestjoiningdate]': {
+                    'InternshipApplicationForm[earliestjoiningdate]': {
                         required: true
                     },
-                    'JobApplicationForm[salaryinhand]': {
+                    'InternshipApplicationForm[salaryinhand]': {
                         required: true,
                         
                     },
-                    'JobApplicationForm[last_date]': {
+                    'InternshipApplicationForm[last_date]': {
                         required: true,
                     },
-                    'JobApplicationForm[interviewstarttime]': {
+                    'InternshipApplicationForm[interviewstarttime]': {
                         required: true,
                     },
-                    'JobApplicationForm[interviewendtime]': {
+                    'InternshipApplicationForm[interviewendtime]': {
                         required: true,
                     },
-                    'JobApplicationForm[ctc]': {
-                        required: true,
-                        
-                    },
-                    'JobApplicationForm[min_exp]': {
+                    'InternshipApplicationForm[ctc]': {
                         required: true,
                         
                     },
-                    'JobApplicationForm[startdate]':
+                    'InternshipApplicationForm[min_exp]': {
+                        required: true,
+                        
+                    },
+                    'InternshipApplicationForm[startdate]':
                      {
                        required:true
                        },
-                   'JobApplicationForm[enddate]':
+                   'InternshipApplicationForm[enddate]':
                    {
                        required:true
                        },
-                   'JobApplicationForm[jobdescription]':
+                   'InternshipApplicationForm[jobdescription]':
                     {
                      required:true
                      
@@ -3057,27 +3155,35 @@ function init() {
                      required:true
                       },
                    
-                   'JobApplicationForm[quesradio]':
+                   'InternshipApplicationForm[quesradio]':
                     {
                      required:true
                       },
         
-                   'JobApplicationForm[interradio]':
+                   'InternshipApplicationForm[interradio]':
                  {
                  required:true     
                 },
-                  'JobApplicationForm[fill_quesio_on]':
+                  'InternshipApplicationForm[fill_quesio_on]':
                  {
                  required:true     
                 },
         
                 },
                 messages: { 
-                    'JobApplicationForm[startdate]':
+                    'InternshipApplicationForm[stipendtype]': {
+                      
+                       required:'<div class = "color_red">Please Select One Option From The List</div>',
+                    },
+                   'InternshipApplicationForm[pre_place]': {
+                      
+                       required:'<div class = "color_red">Choose One</div>',
+                    },
+                    'InternshipApplicationForm[startdate]':
                      {
                        required:'<div class = "color_red">Field Is Required</div>',
                        },
-                    'JobApplicationForm[fill_quesio_on]':
+                    'InternshipApplicationForm[fill_quesio_on]':
                      {
                        required:'<div class = "color_red">Please Choose Fill Quesionnaire</div>',
                        },
@@ -3088,7 +3194,7 @@ function init() {
                      {
                        required:'<div class = "color_red">Please Choose atleast One Questionnaire and Process Stage</div>',
                        },
-                   'JobApplicationForm[enddate]':
+                   'InternshipApplicationForm[enddate]':
                      {
                        required:'<div class = "color_red">Field Is Required</div>',
                        },
@@ -3109,12 +3215,12 @@ function init() {
               'interview_calc': {
                         required: '<div class = "inter_cust_rule">Please Select Atleast One Interview Location</div>',
                     },
-             'JobApplicationForm[quesradio]':
+             'InternshipApplicationForm[quesradio]':
                     {
                      required:'<div class = "color_red">Please Select From the options</div>'
                      
                       },
-             'JobApplicationForm[interradio]':
+             'InternshipApplicationForm[interradio]':
                  {
                  required: '<div class = "rule-text2">Please Select From the options</div>'    
                 },
@@ -3125,8 +3231,8 @@ function init() {
                     },
                 },
                 errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "JobApplicationForm[salaryinhand]") { 
-                        error.insertAfter("#jobapplicationform-salaryinhand");
+                    if (element.attr("name") == "InternshipApplicationForm[salaryinhand]") { 
+                        error.insertAfter("#InternshipApplicationForm-salaryinhand");
                     } else if (element.attr("name") == "desc_count") { 
                         error.insertAfter("#error-checkbox-msg");
                     } 
@@ -3139,13 +3245,21 @@ function init() {
               else if (element.attr("name") == "interview_calc") { 
                         error.insertAfter("#interview_error");
                     } 
-            else if (element.attr("name") == "JobApplicationForm[quesradio]") { 
+            else if (element.attr("name") == "InternshipApplicationForm[quesradio]") { 
                         error.insertAfter("#error-checkbox-msg2");
                     } 
+             else if(element.attr("name") == "InternshipApplicationForm[stipendtype]")
+               { 
+                    error.insertAfter("#radio_rules");
+                }
+              else if(element.attr("name") == "InternshipApplicationForm[pre_place]")
+               { 
+                    error.insertAfter("#pre_placement_err");
+                }
             else if (element.attr("name") == "ques_calc") { 
                         error.insertAfter("#que_error");
                     } 
-        else if (element.attr("name") == "JobApplicationForm[interradio]") { 
+        else if (element.attr("name") == "InternshipApplicationForm[interradio]") { 
                         error.insertAfter("#error-checkbox-msg3");
                     }
         else if (element.attr("name") == "process_calc") { 
@@ -3182,7 +3296,7 @@ function init() {
                 },
 
                 success: function (label) {
-                    if (label.attr("for") == "JobApplicationForm[checkbox][]") { // for checkboxes and radio buttons, no need to show OK icon
+                    if (label.attr("for") == "InternshipApplicationForm[checkbox][]") { // for checkboxes and radio buttons, no need to show OK icon
                         label
                             .closest('.form-group').removeClass('has-error').addClass('has-success');
                         label.remove(); // remove error label here
@@ -3207,7 +3321,7 @@ function init() {
                     } else if (input.is(":radio") && input.is(":checked")) {
                         $(this).html(input.attr("data-title"));
                     } 
-                  else if ($(this).attr("data-display") == 'JobApplicationForm[checkbox][]') {
+                  else if ($(this).attr("data-display") == 'InternshipApplicationForm[checkbox][]') {
                    var arr_val = [];
                    var checkboxvalues = new Array();
                    $.each($('.drop-options li'),function(index,value)
@@ -3241,10 +3355,10 @@ function init() {
                         skills_arr();
                         placement_arr();
                         question_process_arr();
-                   if($('input[name="JobApplicationForm[interradio]"]:checked' ).val()== 0)
+                   if($('input[name="InternshipApplicationForm[interradio]"]:checked' ).val()== 0)
                    {
-                      $('#jobapplicationform-interviewstarttime').val('');
-                      $('#jobapplicationform-interviewendtime').val('');
+                      $('#InternshipApplicationForm-interviewstarttime').val('');
+                      $('#InternshipApplicationForm-interviewendtime').val('');
                       $('#time1').html('');
                       $('#time2').html('');
                      
@@ -3259,26 +3373,26 @@ function init() {
                 var data = $('#submit_form').serialize()+'&n='+session_tok;
                 
                     $.ajax({
-                         url: '/account/jobs/preview', 
+                         url: '/account/internships/preview', 
                          data:data, 
                          method:'post',
                          success: function(data) {
-                            $('.button-preview').attr('href','/jobs/job-preview?data='+session_tok+'');  
+                            $('.button-preview').attr('href','/internships/internship-preview?data='+session_tok+'');  
                          }
                     });
                 }
-                 else if($(this).attr("data-display") == 'JobApplicationForm[placement_locations][]' || $(this).attr("data-display") == 'JobApplicationForm[specialskillsrequired]' || $(this).attr("data-display") == 'JobApplicationForm["primaryfield"]' || $(this).attr("data-display") == 'JobApplicationForm[interviewcity][]')
+                 else if($(this).attr("data-display") == 'InternshipApplicationForm[placement_locations][]' || $(this).attr("data-display") == 'InternshipApplicationForm[specialskillsrequired]' || $(this).attr("data-display") == 'InternshipApplicationForm["primaryfield"]' || $(this).attr("data-display") == 'InternshipApplicationForm[interviewcity][]')
                     {
                       var interviewcitynames = new Array();
                       var getintercity = new Array();
-                       $('input[name = "JobApplicationForm[interviewcity][]"]:checked').each(function(){
+                       $('input[name = "InternshipApplicationForm[interviewcity][]"]:checked').each(function(){
                           interviewcitynames.push('<span class = "chip">'+ $(this).attr('data-value')+ '</span>');
                           getintercity.push($(this).attr('data-value'));
                     });
                         $('#interviewcitycityvalues').html(interviewcitynames.join(" "));
                         $('#getinterviewcity').val(JSON.stringify(getintercity));
                         var placement_city = new Array();
-                        $('input[name = "JobApplicationForm[placement_locations][]"]:checked').each(function(){
+                        $('input[name = "InternshipApplicationForm[placement_locations][]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
                       $('#placement_locations').html(placement_city.join(" "));

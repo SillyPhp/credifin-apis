@@ -1,6 +1,6 @@
 <?php
 
-namespace account\models\jobs;
+namespace account\models\internships;
 
 use Yii;
 use yii\base\Model;
@@ -19,19 +19,24 @@ use common\models\AssignedCategories;
 use common\models\EducationalRequirements;
 use common\models\ApplicationEducationalRequirements;
 use common\models\ApplicationInterviewQuestionnaire;
-use common\models\Designations;
 use common\models\ApplicationEmployeeBenefits;
+use common\models\AssignedSkills;
 use common\models\AssignedJobDescription;
 use common\models\AssignedEducationalRequirements;
-use common\models\AssignedSkills;
-use common\models\Industries;
-use common\models\OrganizationLocations;
-use common\models\OrganizationQuestionnaire;
-use common\models\EmployeeBenefits;
-use common\models\OrganizationInterviewProcess;
-class JobApplicationForm extends Model {
+
+/**
+ * LoginForm is the model behind the login form.
+ *
+ * @property User|null $user This property is read-only.
+ *
+ */
+
+class InternshipApplicationForm extends Model
+{
 
     public $questionnaire;
+    public $pre_sal;
+    public $pre_place;
     public $jobtitle;
     public $jobtype;
     public $ctc;
@@ -54,6 +59,11 @@ class JobApplicationForm extends Model {
     public $earliestjoiningdate;
     public $from;
     public $to;
+    public $stipendtype;
+    public $stipendpaid;
+    public $minstip;
+    public $maxstip;
+    public $stipendur;
     public $questions;
     public $checkbox;
     public $getinterviewcity;
@@ -84,54 +94,63 @@ class JobApplicationForm extends Model {
     public $clone_edu;
     public $clone_skills;
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['questions',
-            'primaryfield',
-            'clone_desc',
-            'clone_edu',
-            'clone_skills',
-            'emp_benefit',
-            'fieldofwork',
-            'question_process',
-            'interview_process',
-            'questionnaire',
-            'addressforinterview',
-            'cities',
-            'specialskillsrequired',
-            'earliestjoiningdate',
-            'qualifications_arr',
-            'from',
-            'othrdetail',
-            'job_desc_array',
-            'to',
-            'weekdays',
-            'checkboxArray',
-            'skillsArray',
-            'questions',
-            'startdate',
-            'enddate',
-            'ctctype',
-            'interviewstarttime',
-            'interviewendtime',
-            'getinterviewcity',
-            'jobposition',
-            'placement_loc',
-            'checkbox',
-            'gender',
-            'min_exp',
-            'pref_inds',
-            'last_date',
-            'last_date',
-            'designations',
-            'placement_locations',
-            'fill_quesio_on',
-            'salaryinhand', 'weekoptsat', 'custom_job_title', 'weekoptsund', 'jobtitle', 'jobtype', 'interviewdate', 'interviewcity', 'jobdescription', 'ctc', 'interradio', 'quesradio'], 'required'],
+                'primaryfield',
+                'pre_sal',
+                'pre_place',
+                'stipendtype',
+                'stipendpaid',
+                'minstip',
+                'maxstip',
+                'stipendur',
+                'clone_desc',
+                'clone_edu',
+                'clone_skills',
+                'emp_benefit',
+                'fieldofwork',
+                'question_process',
+                'interview_process',
+                'questionnaire',
+                'addressforinterview',
+                'cities',
+                'specialskillsrequired',
+                'earliestjoiningdate',
+                'qualifications_arr',
+                'from',
+                'othrdetail',
+                'job_desc_array',
+                'to',
+                'weekdays',
+                'checkboxArray',
+                'skillsArray',
+                'questions',
+                'startdate',
+                'enddate',
+                'ctctype',
+                'interviewstarttime',
+                'interviewendtime',
+                'getinterviewcity',
+                'jobposition',
+                'placement_loc',
+                'checkbox',
+                'gender',
+                'min_exp',
+                'pref_inds',
+                'last_date',
+                'last_date',
+                'designations',
+                'placement_locations',
+                'fill_quesio_on',
+                'salaryinhand', 'weekoptsat', 'custom_job_title', 'weekoptsund', 'jobtitle', 'jobtype', 'interviewdate', 'interviewcity', 'jobdescription', 'ctc', 'interradio', 'quesradio'], 'required'],
         ];
     }
 
-    public function attributeLabels() {
-        return[
+    public function attributeLabels()
+    {
+        return [
             'id' => Yii::t('account', 'ID'),
             'employer_enc_id' => Yii::t('account', 'Employer Enc ID'),
             'name' => Yii::t('account', 'Name'),
@@ -171,10 +190,36 @@ class JobApplicationForm extends Model {
         ];
     }
 
-    public function saveValues() {
-        $sal = str_replace(',', '', $this->salaryinhand);
-        $ctc_val = str_replace(',', '', $this->ctc);
-        $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
+    public function saveValues()
+    {
+
+        if($this->stipendtype==2||$this->stipendtype==3)
+        {
+            $min = $this->minstip;
+            $max = $this->maxstip;
+            $duration = $this->stipendur;
+            $stipendpaid = null;
+        }
+        else if ($this->stipendtype==4)
+        {
+            $stipendpaid = $this->stipendpaid;
+        }
+        else
+        {
+          $max = null;
+          $min = null;
+          $duration = null;
+          $stipendpaid = null;
+        }
+
+        if ($this->pre_place==1)
+        {
+            $sal = $this->pre_sal;
+        }
+        else{
+            $sal = null;
+        }
+        $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -191,12 +236,13 @@ class JobApplicationForm extends Model {
         $employerApplicationsModel->status = 'Active';
 
         $chk_cat = Categories::find()
-                ->alias('a')
-                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id'])
-                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['name' => $this->jobtitle])
-                ->asArray()
-                ->one();
+            ->alias('a')
+            ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where(['name' => $this->jobtitle])
+            ->asArray()
+            ->one();
+
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
             $utilitiesModel = new Utilities();
@@ -212,7 +258,6 @@ class JobApplicationForm extends Model {
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
-
                 $assignedCategoryModel = new AssignedCategories();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -240,52 +285,19 @@ class JobApplicationForm extends Model {
             $utilitiesModel->variables['field_name'] = 'slug';
             $employerApplicationsModel->slug = $utilitiesModel->create_slug();
         }
-
-
-        if (!empty($this->designations)) {
-            $chk_d = Designations::find()
-                    ->select(['designation_enc_id', 'designation'])
-                    ->where(['designation' => $this->designations])
-                    ->asArray()
-                    ->one();
-
-            if (empty($chk_d)) {
-                $desigModel = new Designations;
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $desigModel->designation_enc_id = $utilitiesModel->encrypt();
-                $utilitiesModel->variables['name'] = $this->designations;
-                $utilitiesModel->variables['table_name'] = Designations::tableName();
-                $utilitiesModel->variables['field_name'] = 'slug';
-                $desigModel->slug = $utilitiesModel->create_slug();
-                $desigModel->designation = $this->designations;
-                $desigModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-                $desigModel->created_on = date('Y-m-d H:i:s');
-                $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if ($desigModel->save()) {
-                    $employerApplicationsModel->designation_enc_id = $desigModel->designation_enc_id;
-                } else {
-                    print_r($desigModel->getError());
-                }
-            } else {
-                $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
-            }
-        }
-
-
+        $employerApplicationsModel->designation_enc_id = null;
         $employerApplicationsModel->description = $this->othrdetail;
         $employerApplicationsModel->type = $this->jobtype;
         $employerApplicationsModel->timings_from = $this->from;
         $employerApplicationsModel->timings_to = $this->to;
-        $employerApplicationsModel->experience = $this->min_exp;
+        $employerApplicationsModel->experience = null;
         $employerApplicationsModel->preferred_gender = $this->gender;
-        $employerApplicationsModel->preferred_industry = $this->pref_inds;
+        $employerApplicationsModel->preferred_industry = null;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($this->earliestjoiningdate));
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($this->last_date));
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($employerApplicationsModel->save()) {
-
             foreach (json_decode($this->question_process) as $process) {
                 $processModel = new ApplicationInterviewQuestionnaire();
                 $utilitiesModel = new Utilities();
@@ -315,7 +327,6 @@ class JobApplicationForm extends Model {
                 }
             }
 
-
             if (in_array("6", $this->weekdays)) {
                 $weekoptionsat = $this->weekoptsat;
             } else if (in_array("7", $this->weekdays)) {
@@ -324,11 +335,31 @@ class JobApplicationForm extends Model {
                 $weekoptionsat = null;
                 $weekoptionsund = null;
             }
-            if ($this->interradio == 1) {
-                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => $this->startdate, 'interview_end_date' => $this->enddate, 'interview_start_time' => $this->interviewstarttime, 'interview_end_time' => $this->interviewendtime];
-            } else {
-                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => null, 'interview_end_date' => null, 'interview_start_time' => null, 'interview_end_time' => null];
+
+            if ($this->interradio==1)
+            {
+                $strt = $this->startdate;
+                $enddate = $this->enddate;
+                $strttime = $this->interviewstarttime;
+                $endtime = $this->interviewendtime;
             }
+            else{
+                $strt = null;
+                $enddate = null;
+                $strttime = null;
+                $endtime = null;
+            }
+
+     $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
+                    'sund_frequency' => $weekoptionsund,'salary_duration' => $this->ctctype,
+                    'interview_start_date' => $strt,
+                    'interview_end_date' => $enddate, 'interview_start_time' => $strttime,
+                    'interview_end_time' => $endtime,'salary'=>$sal,'stipend_type'=>$this->stipendtype,
+                    'min_stipend'=>$min,'max_stipend'=>$max,
+                    'stipend_duration'=>$duration,
+                    'pre_placement_offer'=>$this->pre_place,
+                    'fixed_stipend'=>$stipendpaid];
+
             foreach ($options as $key => $value) {
                 $applicationoptionsModel = new ApplicationOptions();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -354,7 +385,6 @@ class JobApplicationForm extends Model {
                 $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                 $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if (!$applicationPlacementLocationsModel->save()) {
-
                     print_r($applicationPlacementLocationsModel->getErrors());
                 }
             }
@@ -371,7 +401,6 @@ class JobApplicationForm extends Model {
                     $applicationInterviewLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationInterviewLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationInterviewLocationsModel->save()) {
-
                         print_r($applicationInterviewLocationsModel->getErrors());
                     }
                 }
@@ -516,12 +545,12 @@ class JobApplicationForm extends Model {
 
             return true;
         } else {
-
             print_r($employerApplicationsModel->getErrors());
         }
     }
 
-    private function assignedJob($j_id, $cat_id) {
+    private function assignedJob($j_id, $cat_id)
+    {
         $asignedJobModel = new AssignedJobDescription();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -535,7 +564,8 @@ class JobApplicationForm extends Model {
         }
     }
 
-    private function assignedEdu($e_id, $cat_id) {
+    private function assignedEdu($e_id, $cat_id)
+    {
         $asignedEduModel = new AssignedEducationalRequirements();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -550,7 +580,8 @@ class JobApplicationForm extends Model {
         }
     }
 
-    private function assignedSkill($s_id, $cat_id) {
+    private function assignedSkill($s_id, $cat_id)
+    {
         $asignedSkillModel = new AssignedSkills();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -564,110 +595,12 @@ class JobApplicationForm extends Model {
             print_r($asignedSkillModel->getErrors());
         }
     }
-    
-    private function _createSharingImage() {
-        
-    }
 
-    public function getQuestionnnaireList()
+    private function _createSharingImage()
     {
-        $questions_list = OrganizationQuestionnaire::find()
-            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['like', 'questionnaire_for', '"1"'])
-            ->orderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->all();
-        return $questions_list;
+
     }
 
-    public function getOrganizationLocationOffice()
-    {
-        $q_list = OrganizationLocations::find()
-            ->alias('a')
-            ->distinct()
-            ->select(['a.location_enc_id', 'a.organization_enc_id', 'a.location_name', 'a.address', 'b.name AS city_name', 'c.name AS state_name'])
-            ->where(['like', 'a.location_for', '"1"'])
-            ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->joinWith(['cityEnc b' => function($b) {
-                $b->joinWith(['stateEnc c'], false);
-            }], false)
-            ->orderBy(['a.id' => SORT_DESC]);
-
-        $p_list = $q_list->asArray()->all();
-        $total = $q_list->count();
-        $p_list[($total - 1)]['total'] = $total;
-
-        return $p_list;
-    }
-
-    public function getOrganizationLocationInterview()
-    {
-        $loc_list = OrganizationLocations::find()
-            ->alias('a')
-            ->distinct()
-            ->select(['a.location_enc_id', 'a.organization_enc_id', 'a.location_name', 'a.address', 'b.name AS city_name', 'c.name AS state_name'])
-            ->where(['like', 'location_for', '"2"'])
-            ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->joinWith(['cityEnc b' => function($b) {
-                $b->joinWith(['stateEnc c'], false);
-            }], false)
-            ->orderBy(['a.id' => SORT_DESC]);
-
-
-        $l_list = $loc_list->asArray()->all();
-        $total = $loc_list->count();
-        $l_list[($total - 1)]['total'] = $total;
-
-        return $l_list;
-    }
-
-    public function getPrimaryFields()
-    {
-        $primaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
-            ->asArray()
-            ->all();
-        return $primaryfields;
-    }
-
-    public function getndustry()
-    {
-        $industries = Industries::find()
-            ->select(['industry_enc_id', 'industry'])
-            ->asArray()
-            ->all();
-
-        return $industries;
-    }
-
-    public function getInterviewProcess()
-    {
-        $interview_process = OrganizationInterviewProcess::find()
-            ->select(['interview_process_enc_id', 'process_name'])
-            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->orderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->all();
-        return $interview_process;
-    }
-
-    public function getBenefits()
-    {
-        $benefits = EmployeeBenefits::find()
-            ->select(['benefit_enc_id', 'benefit'])
-            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->orderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->all();
-        return $benefits;
-    }
 
     public function getCloneData($aidk)
     {
@@ -675,41 +608,48 @@ class JobApplicationForm extends Model {
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.id', 'a.application_enc_id', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience'])
-            ->joinWith(['applicationOptions b' => function($b) {
+            ->joinWith(['preferredIndustry x'], false)
+            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience'])
+            ->joinWith(['applicationOptions b' => function ($b) {
                 $b->select(['b.application_enc_id', 'b.option_enc_id', 'b.option_name', 'b.value']);
             }])
-            ->joinWith(['applicationEmployeeBenefits c' => function($b) {
+            ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->andWhere(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
             }])
-            ->joinWith(['applicationEducationalRequirements e' => function($b) {
+            ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
-            ->joinWith(['applicationSkills g' => function($b) {
+            ->joinWith(['applicationSkills g' => function ($b) {
                 $b->joinWith(['skillEnc h'], false);
                 $b->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
             }])
-            ->joinWith(['applicationJobDescriptions i' => function($b) {
+            ->joinWith(['applicationJobDescriptions i' => function ($b) {
                 $b->joinWith(['jobDescriptionEnc j'], false);
                 $b->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])
-            ->joinwith(['title k' => function($b) {
+            ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
             }], false)
             ->joinWith(['designationEnc n'], false)
-            ->joinWith(['applicationPlacementLocations o' => function($b) {
+            ->joinWith(['applicationPlacementLocations o' => function ($b) {
                 $b->andWhere(['o.is_deleted' => 0]);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions']);
+                $b->joinWith(['locationEnc s' => function ($b) {
+                    $b->joinWith(['cityEnc t'], false);
+                }], false);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
             }])
-            ->joinWith(['applicationInterviewLocations p' => function($b) {
+            ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->andWhere(['p.is_deleted' => 0]);
-                $b->select(['p.location_enc_id', 'p.application_enc_id']);
+                $b->joinWith(['locationEnc u' => function ($b) {
+                    $b->joinWith(['cityEnc v'], false);
+                }], false);
+                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
             }])
-            ->joinWith(['applicationInterviewQuestionnaires q' => function($b) {
+            ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->andWhere(['q.is_deleted' => 0]);
                 $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
             }])

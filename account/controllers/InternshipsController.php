@@ -1,7 +1,6 @@
 <?php
 
 namespace account\controllers;
-
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -22,9 +21,9 @@ use common\models\ShortlistedOrganizations;
 use common\models\ReviewedApplications;
 use common\models\AppliedApplicationProcess;
 use common\models\Utilities;
+use account\models\internships\InternshipApplicationForm;
 use account\models\jobs\JobApplicationForm;
-use account\models\jobs\JobApplicationFormEdit;
-use account\models\jobs\JobApplied;
+
 
 class InternshipsController extends Controller {
 
@@ -43,17 +42,17 @@ class InternshipsController extends Controller {
             return $this->__individualDashboard();
         }
     }
-
     public function actionApplication() {
         if (Yii::$app->user->identity->organization) {
-            $model = new JobApplicationForm();
-            $questions_list = $model->getQuestionnnaireList();
-            $p_list = $model->getOrganizationLocationOffice();
-            $l_list = $model->getOrganizationLocationInterview();
-            $primaryfields = $model->getPrimaryFields();
-            $industries = $model->getndustry();
-            $interview_process = $model->getInterviewProcess();
-            $benefits    = $model->getBenefits();
+            $object = new JobApplicationForm();
+            $model = new InternshipApplicationForm();
+            $questions_list = $object->getQuestionnnaireList();
+            $p_list = $object->getOrganizationLocationOffice();
+            $l_list = $object->getOrganizationLocationInterview();
+            $primaryfields = $object->getPrimaryFields();
+            $industries = $object->getndustry();
+            $interview_process = $object->getInterviewProcess();
+            $benefits    = $object->getBenefits();
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
                 if ($model->saveValues()) {
@@ -74,6 +73,7 @@ class InternshipsController extends Controller {
                     'industries' => $industries,
                     'process_list' => $interview_process,
                     'benefit' => $benefits,
+
                 ]);
             }
         } else {
@@ -93,6 +93,19 @@ class InternshipsController extends Controller {
             } else {
                 return false;
             }
+        }
+    }
+
+    public function actionPreview() {
+        $model = new InternshipApplicationForm();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $var = Yii::$app->request->post('n');
+            $session = Yii::$app->session;
+            $session->set($var, $model);
+            return $var;
+        } else {
+            return false;
         }
     }
 
@@ -152,21 +165,6 @@ class InternshipsController extends Controller {
                 'process_list' => $interview_process,
                 'benefit' => $benefits,
             ]);
-        }
-    }
-
-    public function actionPreview() {
-        $model = new JobApplicationForm();
-        if ($model->load(Yii::$app->request->post())) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $var = Yii::$app->request->post('n');
-            $session = Yii::$app->session;
-
-            $session->set($var, $model);
-
-            return $var;
-        } else {
-            return false;
         }
     }
 
@@ -609,7 +607,7 @@ class InternshipsController extends Controller {
 
     private function __internships($limit = NULL) {
         $options = [
-            'applicationType' => 'Internships',
+            'applicationType' => 'internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',

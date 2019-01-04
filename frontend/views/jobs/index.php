@@ -710,50 +710,52 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-function getCompanies(){
-    $.ajax({
-        method: "POST",
-        url : '/jobs/featured-companies',
-        success: function(response) {
-            if(response.status === 200) {
-                var card2 = $('#company-card').html();
-                $(".companies").append(Mustache.render(card2, response.companycards));
-                $('#company-slider').owlCarousel({
-                    loop: true,
-                    nav: true,
-                    dots: false,
-                    pauseControls: true,
-                    margin: 20,
-                    responsiveClass: true,
-                    navText: [
-                    '<i class="fa fa-angle-left set_icon"></i>',
-                    '<i class="fa fa-angle-right set_icon"></i>'
-                    ],
-                    responsive: {
-                        0: {
-                            items: 1
-                        },
-                        568: {
-                            items: 2
-                        },
-                        600: {
-                            items: 3
-                        },
-                        1000: {
-                            items: 6
-                        },
-                        1400: {
-                            items: 7
-                        }
-                    }
-                });
-                utilities.initials();
+$.ajax({
+    method: "GET",
+    url : "/company/jobs-ajax",
+    success: function(response) {
+        if(response.status == 200) {
+            var card2 = $('#company-card').html();
+            $(".companies").append(Mustache.render(card2, response.companycards));
+        } else {
+            console.log("not work");
+        }
+    }
+}).done(function(){
+    $('.owl-carousel-4col').owlCarousel({
+        loop: true,
+        nav: true,
+        dots: false,
+        pauseControls: true,
+        margin: 20,
+        responsiveClass: true,
+        navText: [
+        '<i class="fa fa-angle-left set_icon"></i>',
+        '<i class="fa fa-angle-right set_icon"></i>'
+        ],
+        responsive: {
+            0: {
+                items: 1
+            },
+            568: {
+                items: 3
+            },
+            600: {
+                items: 5
+            },
+            1000: {
+                items: 7
+            },
+            1200: {
+                items: 8
+            },
+            1400: {
+                items: 8
             }
         }
     });
-    
-}
-getCompanies();
+
+});
 
 
 

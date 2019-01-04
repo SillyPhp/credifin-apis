@@ -38,7 +38,7 @@ if ($type == 'card') {
         for ($i = 0; $i < 3; $i++) {
             ?>
             <div class="col-md-4">
-                <div data-id="<?= Yii::t('frontend', $cards[$i]['id']); ?>" class="application-card-main">
+                <div data-key="<?= Yii::t('frontend', $cards[$i]['id']); ?>" class="application-card-main">
                     <span class="application-card-type"><i
                                 class="fa fa-inr"></i><?= Yii::t('frontend', $cards[$i]['salary']); ?></span>
                     <div class="col-md-12 application-card-border-bottom">
@@ -55,7 +55,8 @@ if ($type == 'card') {
                                     <?php
                                 } else {
                                     ?>
-                                    <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>" width="80" height="80" color="<?= Yii::t('frontend', $cards[$i]['color']); ?>" font="35px"></canvas>
+                                    <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>"
+                                            width="80" height="80" color="" font="35px"></canvas>
                                     <?php
                                 }
                                 ?>
@@ -105,7 +106,8 @@ if ($type == 'card') {
                             <img src="{{logo}}">
                             {{/logo}}
                             {{^logo}}
-                            <canvas class="user-icon" name="{{organization_name}}" width="80" height="80" color="{{color}}" font="35px"></canvas>
+                            <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                    color="{{color}}" font="35px"></canvas>
                             {{/logo}}
                         </a>
                     </div>
@@ -123,7 +125,7 @@ if ($type == 'card') {
                     {{last_date}}
                 </h6>
                 <h4 class="pull-right pr-10 pt-20 custom_set" align="center">
-                    <strong>{{organization_name}}</strong>
+                    <strong>{{org_name}}</strong>
                 </h4>
                 {{/last_date}}
                 {{^last_date}}
@@ -237,12 +239,11 @@ if ($type == 'card') {
     </script>
     <?php
 }
-if ($type == 'card' || $type2 == 'with-add-review') {
+if ($type == 'card') {
     $script = <<<JS
 $(document).on('click','.application-card-add', function(event){
      event.preventDefault();
     var itemid = $(this).closest('.application-card-main').attr('data-id');
-    console.log(itemid);
     $.ajax({
         url: "/jobs/item-id",
         method: "POST",

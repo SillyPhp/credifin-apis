@@ -601,64 +601,55 @@ $(document).ready(function () {
         success: function(response) {
             console.log("status", response);
             if(response.status == 200) {
-                console.log(response);
+                console.log("here!!");
                 var jcard = $('#application-card').html();
                 $(".blogbox").append(Mustache.render(jcard, response.job_cards));
                 var card2 = $('#category-card').html();
                 $(".category-row").append(Mustache.render(card2, response.job_categories));
-                // var companies_cards = $('#company-card').html();
-                // $(".companies").append(Mustache.render(companies_cards, response.companycards));
-                utilities.initials();
+                var fcard = $('#company-card').html();
+                $(".companies").append(Mustache.render(fcard, response.companycards));
             } else {
                 console.log("not work!");
             }
         }
-    })  
-});
-function getCompanies(){
-    $.ajax({
-        method: "POST",
-        url : '/jobs/featured-companies',
-        success: function(response) {
-            if(response.status === 200) {
-                var fcard = $('#company-card').html();
-                $(".companies").append(Mustache.render(fcard, response.companycards));
-                $('#company-slider').owlCarousel({
-                    loop: true,
-                    nav: true,
-                    dots: false,
-                    pauseControls: true,
-                    margin: 20,
-                    responsiveClass: true,
-                    navText: [
-                    '<i class="fa fa-angle-left set_icon"></i>',
-                    '<i class="fa fa-angle-right set_icon"></i>'
-                    ],
-                    responsive: {
-                        0: {
-                            items: 1
-                        },
-                        568: {
-                            items: 2
-                        },
-                        600: {
-                            items: 3
-                        },
-                        1000: {
-                            items: 6
-                        },
-                        1400: {
-                            items: 7
-                        }
-                    }
-                });
-                utilities.initials();
+    }).done(function(){
+        
+        $('#company-slider').owlCarousel({
+            loop: true,
+            nav: true,
+            dots: false,
+            pauseControls: true,
+            margin: 20,
+            responsiveClass: true,
+            navText: [
+            '<i class="fa fa-angle-left set_icon"></i>',
+            '<i class="fa fa-angle-right set_icon"></i>'
+            ],
+            responsive: {
+            0: {
+            items: 1
+            },
+            568: {
+            items: 2
+            },
+            600: {
+            items: 3
+            },
+            1000: {
+            items: 6
+            },
+            1400: {
+            items: 6
             }
-        }
+            }
+        });
+        var url = "http://www.eygb.co/assets/themes/ey/js/functions.js";
+        $.getScript( url, function() {
+        //      initials();
+        });
     });
-   
-}
-getCompanies();
+        
+});
         
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -702,9 +693,8 @@ echo $this->render('/widgets/application-card', [
 
 echo $this->render('/widgets/application-card', [
     'type' => 'mustache',
-    'type2' => 'with-add-review',
 ]);
 
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-company',
+echo $this->render('/widgets/company-cards', [
+    'type' => 'mustache-company-carousel',
 ]);
