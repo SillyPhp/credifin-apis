@@ -5,7 +5,11 @@ use yii\helpers\Url;
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
+<<<<<<< HEAD
             <form action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
+=======
+            <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
+>>>>>>> remotes/origin/Jobs_search_page
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
                         <div class="col-md-4 col-xs-6 ">

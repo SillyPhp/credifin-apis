@@ -9,14 +9,12 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 
 $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
-
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-$total_vac=0;
+$total_vac = 0;
 
-foreach($data['applicationPlacementLocations'] as $placements)
-{
+foreach ($data['applicationPlacementLocations'] as $placements) {
     $total_vac += $placements['positions'];
 }
 foreach ($data['applicationOptions'] as $value) {
@@ -34,33 +32,33 @@ if (empty($cover)) {
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
 ?>
 
-<div class="modal fade bs-modal-lg in" id="modal_que"  aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
-            </div>
-            <div class="modal-body">
-                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+    <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
+                </div>
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<section class="overlape">
-    <!--<div class="block no-padding">-->
-    <div data-velocity="-.1" style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
-    <!--<div class="container fluid">-->
-    <div class="row m-0">
-        <div class="col-lg-12 p-0">
-            <div class="inner-header">
-                <h3><?= $data['cat_name']; ?></h3>
-                <div class="job-statistic">
-                    <?php if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                        ?>
-                        <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlisted</a></span>
-
+    <section class="overlape">
+        <!--<div class="block no-padding">-->
+        <div data-velocity="-.1"
+             style="background: url(' <?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
+             class="parallax scrolly-invisible no-parallax"></div>
+        <!-- PARALLAX BACKGROUND IMAGE -->
+        <!--<div class="container fluid">-->
+        <div class="row m-0">
+            <div class="col-lg-12 p-0">
+                <div class="inner-header">
+                    <h3><?= $data['cat_name']; ?></h3>
+                    <div class="job-statistic">
                         <?php
                         if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                             if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
@@ -182,7 +180,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date'] && $option['interview_start_time'])) { ?>
+                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
                                     <li><i class="fa fa-calendar-check-o"></i>
                                         <h3>Interview Dates</h3>
                                         <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
@@ -305,8 +303,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From YOur Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
+                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
+                Questionnaire Pending From YOur Side you can fill them now By clicking <a
+                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
+                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>

@@ -71,7 +71,7 @@ class JobsController extends Controller
             ->innerJoin(Cities::tableName() . 'as f', 'f.city_enc_id = e.city_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as g', 'g.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(ApplicationOptions::tableName() . 'as h', 'h.application_enc_id = a.application_enc_id')
-            ->where(['g.name' => 'Jobs', 'h.option_name' => 'salary', 'a.is_deleted' => 0])
+            ->where(['g.name' => 'Jobs', 'a.is_deleted' => 0, 'h.option_name' => 'salary'])
             ->orderBy(['a.id' => SORT_DESC])
             ->groupBy('a.application_enc_id')
             ->asArray()
@@ -98,7 +98,7 @@ class JobsController extends Controller
     public function actionReviewList()
     {
         if (Yii::$app->request->isAjax) {
-            if(!Yii::$app->user->isGuest){
+            if (!Yii::$app->user->isGuest) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
                 $review_list = ReviewedApplications::find()
@@ -124,7 +124,7 @@ class JobsController extends Controller
                     'titl2e' => 'test',
                     'message' => 'Your Experience has been added.',
                 ];
-            }else{
+            } else {
                 return $response = [
                     'status' => 201,
                 ];
@@ -269,9 +269,11 @@ class JobsController extends Controller
                 'is_deleted' => 0
             ])
             ->one();
+
         if (!$application_details) {
             return 'Not Found';
         }
+
         $object = new \account\models\jobs\JobApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
@@ -296,18 +298,16 @@ class JobsController extends Controller
                 ->exists();
         }
 
-        if (!empty($application_details)) {
-            $model = new JobApplied();
-            return $this->render('detail', [
-                'application_details' => $application_details,
-                'data' => $object->getCloneData($application_details->application_enc_id),
-                'org' => $org_details,
-                'applied' => $applied_jobs,
-                'model' => $model,
-                'resume' => $resumes,
-                'que' => $app_que,
-            ]);
-        }
+        $model = new JobApplied();
+        return $this->render('detail', [
+            'application_details' => $application_details,
+            'data' => $object->getCloneData($application_details->application_enc_id),
+            'org' => $org_details,
+            'applied' => $applied_jobs,
+            'model' => $model,
+            'resume' => $resumes,
+            'que' => $app_que,
+        ]);
     }
 
     public function actionJobalert()
@@ -338,7 +338,8 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionJobPreview() {
+    public function actionJobPreview()
+    {
         if ($_GET['data']) {
             $var = $_GET['data'];
             $session = Yii::$app->session;
