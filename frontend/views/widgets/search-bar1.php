@@ -5,7 +5,6 @@ use yii\helpers\Url;
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-            <form action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
             <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
