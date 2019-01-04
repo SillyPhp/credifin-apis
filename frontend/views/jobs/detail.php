@@ -9,21 +9,23 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 
 $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
+
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-$total_vac = 0;
+$total_vac=0;
 
-foreach ($data['applicationPlacementLocations'] as $placements) {
+foreach($data['applicationPlacementLocations'] as $placements)
+{
     $total_vac += $placements['positions'];
 }
 foreach ($data['applicationOptions'] as $value) {
     $option[$value['option_name']] = $value['value'];
 }
-$applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
-$application_object = json_encode($applied_data);
+    $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
+    $application_object = json_encode($applied_data);
 
-$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $cover_location . DIRECTORY_SEPARATOR . $cover;
+$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
 if (empty($cover)) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
@@ -32,132 +34,113 @@ if (empty($cover)) {
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
 ?>
 
-    <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
-                </div>
-                <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+<div class="modal fade bs-modal-lg in" id="modal_que"  aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
+            </div>
+            <div class="modal-body">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="overlape">
+    <!--<div class="block no-padding">-->
+    <div data-velocity="-.1" style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
+    <!--<div class="container fluid">-->
+    <div class="row m-0">
+        <div class="col-lg-12 p-0">
+            <div class="inner-header">
+                <h3><?= $data['cat_name']; ?></h3>
+                <div class="job-statistic">
+                    <?php if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
+                        ?>
+                        <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlisted</a></span>
+
+                        <?php
+                    } else {
+                        ?>
+                        <span class="hover-change"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlist</a></span>
+                    <?php } ?>
+
                 </div>
             </div>
         </div>
     </div>
-    <section class="overlape">
-        <!--<div class="block no-padding">-->
-        <div data-velocity="-.1"
-             style="background: url(' <?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
-             class="parallax scrolly-invisible no-parallax"></div>
-        <!-- PARALLAX BACKGROUND IMAGE -->
-        <!--<div class="container fluid">-->
-        <div class="row m-0">
-            <div class="col-lg-12 p-0">
-                <div class="inner-header">
-                    <h3><?= $data['cat_name']; ?></h3>
-                    <div class="job-statistic">
-                        <?php
-                        if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
-                            if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                                ?>
-                                <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                                class="fa fa-heart-o"></i> Shortlisted</a></span>
-                                <?php
-                            } else {
-                                ?>
-                                <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                                class="fa fa-heart-o"></i> Shortlist</a></span>
-                                <?php
-                            }
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--</div>-->
-        <!--</div>-->
-    </section>
-    <section>
-        <!--<div class="block">-->
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8">
-                    <div class="job-single-sec">
-                        <div class="job-single-head2">
-                            <div class="job-overview">
-                                <h3>Job Overview</h3>
-                                <ul>
-                                    <li><i class="fa fa-puzzle-piece"></i>
-                                        <h3>Profile</h3><span><?= $data['name']; ?></span></li>
-                                    <li><i class="fa fa-puzzle-piece"></i>
-                                        <h3>Industry</h3><span><?= $data['industry']; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i>
-                                        <h3>Designation</h3><span><?= $data['designation']; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i>
-                                        <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
-                                    <li><i class="fa fa-money"></i>
-                                        <h3>Offered Salary (<?php echo ucwords($option['salary_duration']); ?>)</h3>
-                                        <span><?= '&#8377 ' . $option['salary']; ?></span></li>
-                                    <li><i class="fa fa-mars-double"></i>
-                                        <h3>Gender</h3><span><?php
-                                            switch ($data['preferred_gender']) {
-                                                case 0:
-                                                    echo 'No Preference';;
-                                                    break;
-                                                case 1:
-                                                    echo 'Male';
-                                                    break;
-                                                case 2:
-                                                    echo 'Female';
-                                                    break;
-                                                case 3:
-                                                    echo 'Trans';
-                                                default:
-                                                    echo 'not found';
-                                            }
-                                            ?></span></li>
-                                    <li><i class="fa fa-shield"></i>
-                                        <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
-                                    <li><i class="fa fa-line-chart "></i>
-                                        <h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
-                                    <li><i class="fa fa-map-marker "></i>
-                                        <h3>Locations</h3><span> <?php
-                                            $str = "";
-                                            foreach ($data['applicationPlacementLocations'] as $job_placement) {
-                                                $str .= $job_placement['name'] . ',';
-                                            }
-                                            echo rtrim($str, ',');
-                                            ?></span></li>
-                                </ul>
-                            </div><!-- Job Overview -->
-                        </div><!-- Job Head -->
-
-                        <div class="job-details">
-                            <h3>Required Knowledge, Skills, and Abilities</h3>
-                            <div class="tags-bar">
-                                <?php foreach ($data['applicationSkills'] as $job_skill) { ?>
-                                    <span><?= strtoupper($job_skill['skill']); ?> </span>
-                                <?php } ?>
-                            </div>
-                            <h3>Job Description</h3>
+    <!--</div>-->
+    <!--</div>-->
+</section>
+<section>
+    <!--<div class="block">-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="job-single-sec">
+                    <div class="job-single-head2">
+                        <div class="job-overview">
+                            <h3>Job Overview</h3>
                             <ul>
-                                <?php
-                                foreach ($data['applicationJobDescriptions'] as $job_desc) {
-                                    ?>
-                                    <li> <?php echo ucwords($job_desc['job_description']); ?> </li>
-
-                                <?php }
-                                ?>
+                                <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
+                                <li><i class="fa fa-puzzle-piece"></i><h3>Industry</h3><span><?= $data['industry']; ?></span></li>
+                                <li><i class="fa fa-thumb-tack"></i><h3>Designation</h3><span><?= $data['designation']; ?></span></li>
+                                <li><i class="fa fa-thumb-tack"></i><h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
+                                <li><i class="fa fa-money"></i><h3>Offered Salary (<?php echo ucwords($option['salary_duration']); ?>)</h3><span><?= '&#8377 ' . $option['salary']; ?></span></li>
+                                <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
+                                        switch ($data['preferred_gender']) {
+                                            case 0:
+                                                echo 'No Preference';;
+                                                break;
+                                            case 1:
+                                                echo 'Male';
+                                                break;
+                                            case 2:
+                                                echo 'Female';
+                                                break;
+                                            case 3:
+                                            echo 'Trans';
+                                            default:
+                                                echo 'not found';
+                                        }
+                                        ?></span></li>
+                                <li><i class="fa fa-shield"></i><h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
+                                <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
+                                <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span> <?php
+                                        $str = "";
+                                        foreach ($data['applicationPlacementLocations'] as $job_placement) {
+                                            $str .= $job_placement['name'] . ',';
+                                        }
+                                        echo rtrim($str, ',');
+                                        ?></span> </li>
                             </ul>
-                            <?php if (!empty($data['description'])) {
-                                ?>
-                                <h3>Other Details</h3>
-                                <p><?= $data['description']; ?></p>
+                        </div><!-- Job Overview -->
+                    </div><!-- Job Head -->
+
+                    <div class="job-details">
+                        <h3>Required Knowledge, Skills, and Abilities</h3>
+                        <div class="tags-bar">
+                            <?php foreach ($data['applicationSkills'] as $job_skill) { ?>
+                                <span><?= strtoupper($job_skill['skill']); ?> </span>
                             <?php } ?>
+                        </div>
+                        <h3>Job Description</h3>
+                        <ul>
+                            <?php
+                            foreach ($data['applicationJobDescriptions'] as $job_desc) {
+                                ?>
+                                <li> <?php echo ucwords($job_desc['job_description']); ?> </li>
+
+                            <?php }
+                            ?>
+                        </ul>
+                        <?php if (!empty($data['description'])) {
+                            ?>
+                            <h3>Other Details</h3>
+                            <p><?= $data['description']; ?></p>
+                        <?php } ?>
 
 
                             <h3>Education + Experience</h3>
@@ -257,7 +240,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         <?php else: ?>
                             <?php if ($applied): ?>
                                 <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i
-                                            class="fa fa-check"></i>Applied</a>
+                                        class="fa fa-check"></i>Applied</a>
                             <?php elseif (!Yii::$app->user->identity->organization): ?>
                                 <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for
                                     Job</a>
@@ -303,12 +286,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
-                your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
-                Questionnaire Pending From YOur Side you can fill them now By clicking <a
-                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
-                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From YOur Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>

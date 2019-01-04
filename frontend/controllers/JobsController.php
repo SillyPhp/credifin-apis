@@ -63,7 +63,7 @@ class JobsController extends Controller
 
         $job_cards = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id as id', 'a.created_on', 'h.value as salary', 'a.slug', 'f.name as city', 'a.experience', 'a.type', 'c.name as title', 'd.name as org_name', 'd.logo', 'd.logo_location', 'd.initials_color color'])
+            ->select(['a.application_enc_id as id', 'a.created_on', 'h.value as salary', 'a.slug', 'f.name as city', 'a.experience', 'a.type', 'c.name as title', 'd.name as org_name', 'd.logo', 'd.logo_location'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
@@ -183,7 +183,7 @@ class JobsController extends Controller
             ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
-            ->where(['j.name' => $options['type'], 'a.is_deleted' => 0]);
+            ->where(['j.name' => $options['type']]);
         if (isset($options['company'])) {
             $jobcards->andWhere([
                 'or',
@@ -257,6 +257,7 @@ class JobsController extends Controller
 
     public function actionDetail($eaidk)
     {
+
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
@@ -287,7 +288,8 @@ class JobsController extends Controller
                 ->where(['a.application_enc_id' => $application_details->application_enc_id])
                 ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                 ->andWhere(['b.field_name' => 'Get Applications'])
-                ->exists();
+                ->asArray()
+                ->one();
         }
 
         if (!empty($application_details)) {
@@ -332,8 +334,7 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionJobPreview()
-    {
+    public function actionJobPreview() {
         if ($_GET['data']) {
             $var = $_GET['data'];
             $session = Yii::$app->session;
