@@ -13,7 +13,7 @@ $this->params['header_dark'] = false;
             <ul class="seq-canvas">
                 <li class="seq-in step1">
                     <div class="seq-model">
-                        <img data-seq src="<?= Url::to('@eyAssets/images/pages/index2/jobs_banner.png') ?>" class="img-responsive" alt="A" />
+<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/jobs_banner.png') ?><!--" class="img-responsive" alt="A" />-->
                     </div>
 
                     <div class="seq-title">
@@ -24,7 +24,7 @@ $this->params['header_dark'] = false;
 
                 <li class="step2">
                     <div class="seq-model">
-                        <img data-seq src="<?= Url::to('@eyAssets/images/pages/index2/youth-development.png') ?>" class="img-responsive" alt="A" />
+<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/youth-development.png') ?><!--" class="img-responsive" alt="A" />-->
                     </div>
 
                     <div class="seq-title">
@@ -35,7 +35,7 @@ $this->params['header_dark'] = false;
 
                 <li class="step3">
                     <div class="seq-model">
-                        <img data-seq src="<?= Url::to('@eyAssets/images/pages/index2/job-search.png') ?>" alt="" />
+<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/job-search.png') ?><!--" alt="" />-->
                     </div>
 
                     <div class="seq-title">
@@ -178,6 +178,166 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!--how it works ends-->
+<!--new section starts-->
+<section class="background-image">
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-3">
+            <ul class="nav nav-tabs tabs-left sideways pt-15">
+                <li class="active"><a href="#home-v" data-toggle="tab"><i class="fa fa-home"></i> Home</a></li>
+                <li><a href="#profile-v" data-toggle="tab"><i class="fa fa-user"></i> Profile</a></li>
+                <li><a href="#messages-v" data-toggle="tab"><i class="fa fa-envelope"></i> Messages</a></li>
+                <li><a href="#settings-v" data-toggle="tab"><i class="fa fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <div class="col-xs-8">
+            <!-- Tab panes -->
+            <div class="tab-content tab-content-main">
+                <div class="tab-pane active" id="home-v">
+                    <div class="row">
+                        <div class="col-xs-5 padding-0">
+                            <img class="img-responsive" alt="200x200" src="https://resizing.flixster.com/2nm9DeqzcjkvO5AAu3RdVZdxqOg=/581x518/v1.cjs0MzIzNTtqOzE3OTEwOzEyMDA7NTgxOzUxOA" />
+                            <div class="image-description">
+                                <h4>Want to be part of team.</h4> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                        </div>
+                        <div class="col-xs-7">
+                            <ul class="nav nav-tabs inner-nav-ul">
+                                <div class="tab-slider"></div>
+                                <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+                                <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+                                <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+                            </ul>
+                            <div class="tab-content inner-nav">
+                                <div id="home" class="tab-pane fade in active">
+                                    <h3>Lorem ipsum dolor</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    <br/>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                </div>
+                                <div id="menu1" class="tab-pane fade">
+                                    <h3>Menu 1</h3>
+                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                </div>
+                                <div id="menu2" class="tab-pane fade">
+                                    <h3>Menu 2</h3>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="profile-v">
+                    <div class="row">
+                        <div class="col-xs-5 padding-0">
+                            <img class="img-responsive" alt="200x200" src="http://keenthemes.com/preview/metronic/theme/assets/pages/media/profile/profile_user.jpg">
+                            <div class="image-description">
+                                <h4>Want to be part of team.</h4> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                        </div>
+                        <div class="col-xs-7">
+                            <ul class="nav nav-tabs inner-nav-ul">
+                                <div class="tab-slider"></div>
+                                <li class="active"><a data-toggle="tab" href="#home2">Home</a></li>
+                                <li><a data-toggle="tab" href="#menu21">Menu 1</a></li>
+                                <li><a data-toggle="tab" href="#menu22">Menu 2</a></li>
+                            </ul>
+                            <div class="tab-content inner-nav">
+                                <div id="home2" class="tab-pane fade in active">
+                                    <h3>Lorem ipsum dolor</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    <br/>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                </div>
+                                <div id="menu21" class="tab-pane fade">
+                                    <h3>Menu 1</h3>
+                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                </div>
+                                <div id="menu22" class="tab-pane fade">
+                                    <h3>Menu 2</h3>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="messages-v">
+                    <div class="row">
+                        <div class="col-xs-5 padding-0">
+                            <img class="img-responsive" alt="200x200" src="https://resizing.flixster.com/2nm9DeqzcjkvO5AAu3RdVZdxqOg=/581x518/v1.cjs0MzIzNTtqOzE3OTEwOzEyMDA7NTgxOzUxOA" />
+                            <div class="image-description">
+                                <h4>Want to be part of team.</h4> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                        </div>
+                        <div class="col-xs-7">
+                            <ul class="nav nav-tabs inner-nav-ul">
+                                <div class="tab-slider"></div>
+                                <li class="active"><a data-toggle="tab" href="#home3">Home</a></li>
+                                <li><a data-toggle="tab" href="#menu31">Menu 1</a></li>
+                                <li><a data-toggle="tab" href="#menu32">Menu 2</a></li>
+                            </ul>
+                            <div class="tab-content inner-nav">
+                                <div id="home3" class="tab-pane fade in active">
+                                    <h3>Lorem ipsum dolor</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    <br/>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                </div>
+                                <div id="menu31" class="tab-pane fade">
+                                    <h3>Menu 1</h3>
+                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                </div>
+                                <div id="menu32" class="tab-pane fade">
+                                    <h3>Menu 2</h3>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="settings-v">
+                    <div class="row">
+                        <div class="col-xs-5 padding-0">
+                            <img class="img-responsive" alt="200x200" src="https://via.placeholder.com/350x280?text=Visit+Blogging.com+Now">
+                            <div class="image-description">
+                                <h4>Want to be part of team.</h4> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                        </div>
+                        <div class="col-xs-7">
+                            <ul class="nav nav-tabs inner-nav-ul">
+                                <div class="tab-slider"></div>
+                                <li class="active"><a data-toggle="tab" href="#home4">Home</a></li>
+                                <li><a data-toggle="tab" href="#menu41">Menu 1</a></li>
+                                <li><a data-toggle="tab" href="#menu42">Menu 2</a></li>
+                            </ul>
+                            <div class="tab-content inner-nav">
+                                <div id="home4" class="tab-pane fade in active">
+                                    <h3>Lorem ipsum dolor</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    <br/>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                </div>
+                                <div id="menu41" class="tab-pane fade">
+                                    <h3>Menu 1</h3>
+                                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                </div>
+                                <div id="menu42" class="tab-pane fade">
+                                    <h3>Menu 2</h3>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+</section>
+<!--new section ends-->
 <section class="partner">
     <div class="container">
         <div class="heading-style ">Join our Community</div>
@@ -413,14 +573,18 @@ $this->registerCss('
 .seq{
     max-width: 100% !important;
 }
+#sequence .step1, #sequence .step2, #sequence .step3  {
+    background-size:100% 100% !important;
+    background-repeat:no-repeat !important;
+}
 #sequence .step1 {
-    background-color: #3de4c9;    
+    background: url(' . Url::to('@eyAssets/images/bg/slider1.webp') . ');  
 }
 #sequence .step2 {
-    background-color: #f96852;  
+    background: url(' . Url::to('@eyAssets/images/bg/slider2.webp') . ');
 }
 #sequence .step3 {
-    background-color: #2bbf8e;
+    background: url(' . Url::to('@eyAssets/images/bg/slider4.webp') . ');  
 }
 .seq .seq-canvas, .seq .seq-nav{
     max-width: 100%;
@@ -828,6 +992,133 @@ textarea {
 }
 
 /*---make a basic box ---*/
+
+/*---new Section css ends ---*/
+.background-image{
+  background:url("https://c1.staticflickr.com/9/8711/17095171331_4ec22e0407_b.jpg");
+  background-size:100% 100%;
+  overflow: hidden;
+}
+.tabs-left li a i{
+    font-size: 15px;
+    display: inline-block;
+    margin: 4px;
+    margin-top: 0px;
+}
+.tabs-left {
+  border-bottom: none;
+/*   border-right: 1px solid #ddd; */
+}
+.inner-nav-ul{
+  background-color:#fff;
+  position:relative;
+}
+//.inner-nav-ul li {
+//    border-bottom: 3px solid transparent !important;
+//}
+//.inner-nav-ul li.active {
+//    border-bottom: 3px solid #00a0e3 !important;
+//}
+.inner-nav-ul li a{
+  border-radius:0px;
+  color:#696969;
+}
+.inner-nav-ul li.active a{
+  color:#00a0e3;
+}
+.inner-nav{
+    padding:20px;
+      background-color: #fff;
+  min-height:390px;
+}
+.image-description{
+  background-color:#fff;
+  padding:25px;
+  padding-top: 15px;
+}
+.inner-nav h3{
+  margin-top:0px;
+}
+.tabs-left>li {
+  float: none;
+ margin:0px;
+  
+}
+.padding-0{
+  padding:0px !important;
+}
+.tabs-left>li>a{
+  background:#222;
+  color:#bdbdbd;
+  border-radius:0px;
+  margin-right: 0px;
+  
+    text-align: left;
+}
+.tabs-left>li.active>a,
+.tabs-left>li>a:hover,
+.tabs-left>li.active>a:hover,
+.tabs-left>li.active:focus>a,
+.tabs-left>li.active>a:focus {
+  border-bottom-color: #ddd;
+  border-right-color: transparent;
+  background:#000 !important;
+  color:#fff;
+  font-weight:700;
+  border:none;
+  border-radius:0px;
+  margin:0px;
+}
+.nav-tabs>li>a:hover {
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+}
+.tab-pane.active {
+    animation: slide-down 1s ease-out;
+}
+
+@keyframes slide-down {
+    0% { opacity: 0; transform: translateY(100%); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.tab-content-main .tab-pane{
+//position:absolute;
+//    margin-left: 225px;
+//  -webkit-trasition: all 0.3s linear;
+//  transition: all 0.3s linear;
+}
+//.tab-content-main .tab-pane.active{
+//    margin-left: 0px;
+//  transition: all 2.3s ease-in-out;
+//  -webkit-transition: all 2.3s ease-in-out;
+//  -ms-transition: all 2.3s ease-in-out;
+//  -moz-transition: all 2.3s ease-in-out;
+//  -o-transition: all 2.3s ease-in-out;
+//}
+.tab-slider
+{
+  display:inline-block;
+  width:75px;
+  height:4px;
+  border-radius:3px;
+  background-color:#00a0e3;
+  position:absolute;
+  z-index:1200;
+  bottom:0;
+  transition:all .4s linear;
+  
+}
+/* .tabs-left>li.active>a::after{content: "";
+    position: absolute;
+    top: 0px;
+    right: -20px;
+    border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  
+  border-left: 20px solid #f90;
+    display: block;
+    width: 0;} */
+/*---new Section css ends ---*/
 ');
 $script = <<< JS
 $(document).on('click', '.feed-open', function(){
@@ -916,6 +1207,17 @@ $(document).on('submit', '#partner-with-us-form', function(event) {
     $(window).on('scroll', doAnimations);
   $(window).trigger('scroll'); 
 });       
+  
+$(".inner-nav-ul a").click(function() {
+  var position = $(this).parent().position();
+  var width = $(this).parent().width();
+  var slider = $(this).parent().parent().find('.tab-slider');
+    slider.css({"left":+ position.left,"width":width});
+});
+var actWidth = $(".inner-nav-ul").find(".active").parent("li").width();
+var actPosition = $(".inner-nav-ul .active").position();
+$(".tab-slider").css({"left":+ actPosition.left,"width": actWidth});
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('http://demo.sequencejs.com/modern-slide-in/css/sequence-theme.modern-slide-in.css');
