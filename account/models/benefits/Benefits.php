@@ -7,21 +7,25 @@ use yii\base\Model;
 use common\models\EmployeeBenefits;
 use common\models\Utilities;
 
-class Benefits extends Model {
+class Benefits extends Model
+{
 
     public $benefit;
 
-    public function formName() {
+    public function formName()
+    {
         return '';
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['benefit'], 'required'],
         ];
     }
 
-    public function Add() {
+    public function Add()
+    {
         $beneiftModal = new EmployeeBenefits();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);

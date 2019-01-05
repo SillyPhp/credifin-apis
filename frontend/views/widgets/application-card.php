@@ -38,7 +38,7 @@ if ($type == 'card') {
         for ($i = 0; $i < 3; $i++) {
             ?>
             <div class="col-md-4">
-                <div data-id="<?= Yii::t('frontend', $cards[$i]['id']); ?>" class="application-card-main">
+                <div data-key="<?= Yii::t('frontend', $cards[$i]['id']); ?>" class="application-card-main">
                     <span class="application-card-type"><i
                                 class="fa fa-inr"></i><?= Yii::t('frontend', $cards[$i]['salary']); ?></span>
                     <div class="col-md-12 application-card-border-bottom">
@@ -55,7 +55,8 @@ if ($type == 'card') {
                                     <?php
                                 } else {
                                     ?>
-                                    <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>" width="80" height="80" color="<?= Yii::t('frontend', $cards[$i]['color']); ?>" font="35px"></canvas>
+                                    <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>"
+                                            width="80" height="80" color="" font="35px"></canvas>
                                     <?php
                                 }
                                 ?>
@@ -105,7 +106,8 @@ if ($type == 'card') {
                             <img src="{{logo}}">
                             {{/logo}}
                             {{^logo}}
-                            <canvas class="user-icon" name="{{organization_name}}" width="80" height="80" color="{{color}}" font="35px"></canvas>
+                            <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                    color="{{color}}" font="35px"></canvas>
                             {{/logo}}
                         </a>
                     </div>
@@ -123,7 +125,7 @@ if ($type == 'card') {
                     {{last_date}}
                 </h6>
                 <h4 class="pull-right pr-10 pt-20 custom_set" align="center">
-                    <strong>{{organization_name}}</strong>
+                    <strong>{{org_name}}</strong>
                 </h4>
                 {{/last_date}}
                 {{^last_date}}
@@ -178,32 +180,6 @@ if ($type == 'card') {
         {{/.}}
     </script>
     <?php
-} elseif ($type == 'mustache-company-card') {
-    ?>
-    <script id="explore-company-card" type="text/template">
-        {{#.}}
-        <div class="col-md-3 col-sm-6">
-            <div class="cards-outer">
-                <a href="/company/{{organization_link}}">
-                    <div class="post-module">
-                        <div class="thumbnail">
-                            <img src="{{cover_image}}"/>
-                        </div>
-                        <div class="post-content">
-                            <div class="profile__picture">
-                                <img class="logos-img" src="{{logo}}">
-                            </div>
-                            <h1 class="title">{{org_name}}</h1>
-                            <h2 class="sub_title">Empowering Youth &amp; Going Beyond.</h2>
-                            <p class="description">{{description}}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-        {{/.}}
-    </script>
-    <?php
 } elseif ($type == 'mustache-company-card-featured') {
     ?>
     <script id="company-card-featured" type="text/template">
@@ -237,12 +213,11 @@ if ($type == 'card') {
     </script>
     <?php
 }
-if ($type == 'card' || $type2 == 'with-add-review') {
+if ($type == 'card') {
     $script = <<<JS
 $(document).on('click','.application-card-add', function(event){
      event.preventDefault();
     var itemid = $(this).closest('.application-card-main').attr('data-id');
-    console.log(itemid);
     $.ajax({
         url: "/jobs/item-id",
         method: "POST",
@@ -264,93 +239,4 @@ $(document).on('click','.application-card-add', function(event){
 });
 JS;
     $this->registerJs($script);
-}
-if ($type == 'mustache-company') {
-    $this->registerCss('
-.owl-item{
-    min-height:150px !important;
-}
-.partners-flex-box .logo-box:hover {
-    -webkit-box-shadow: 0 17px 27px -9px #757575;
-    box-shadow: 0 17px 27px -9px #757575;
-    -webkit-transition: -webkit-box-shadow .7s !important;
-    transition: -webkit-box-shadow .7s !important;
-    transition: box-shadow .7s !important;
-    transition: box-shadow .7s, -webkit-box-shadow .7s !important;
-}
-.partners-flex .partners-flex-box {
-    width: 130px;
-    -o-object-fit: contain;
-    object-fit: contain;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.partners-flex .partners-flex-box .logo-box {
-    height: 120px;
-    width: 120px;
-    background-color: #fff;
-}
-.partners-flex .partners-flex-box .image-partners {
-    height: 114px;
-    margin: 2px;
-    cursor: pointer;
-    padding: 6px;
-    width: 116px;
-}
-.partners-flex {
-    width: 90%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    margin: 0px auto;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-}
-.item{
-    display: block;
-    margin: 5px;
-    color: #FFF;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    text-align: center;
-}
-.owl-controls .nav div {
-    padding: 5px 9px;
-}
-.owl-nav i{
-    margin-top: 2px;
-}
-.owl-controls .owl-nav div {
-    position: absolute;
-}
-.owl-controls .owl-nav .owl-prev{
-    left: -60px;
-    top: 50px;
-}
-.owl-controls .owl-nav .owl-prev i,.owl-controls .owl-nav .owl-next i{
-    font-size:64px !important;
-}
-.owl-controls .owl-nav .owl-prev,.owl-controls .owl-nav .owl-next{
-    background: transparent !important;
-}
-.owl-controls .owl-nav .owl-next{
-    right: -60px;
-    top: 50px;
-}
-.set_icon{
-    background:transparent !important;
-}
-');
 }

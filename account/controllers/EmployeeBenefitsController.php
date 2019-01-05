@@ -7,9 +7,11 @@ use yii\web\Controller;
 use yii\web\Response;
 use account\models\benefits\Benefits;
 
-class EmployeeBenefitsController extends Controller {
-    
-    public function actionCreate() {
+class EmployeeBenefitsController extends Controller
+{
+
+    public function actionCreate()
+    {
         $BenefitsModel = new Benefits();
 
         if ($BenefitsModel->load(Yii::$app->request->post()) && $BenefitsModel->validate()) {
@@ -30,7 +32,7 @@ class EmployeeBenefitsController extends Controller {
         }
 
         return $this->renderAjax('form', [
-                    'BenefitsModel' => $BenefitsModel,
+            'BenefitsModel' => $BenefitsModel,
         ]);
     }
 

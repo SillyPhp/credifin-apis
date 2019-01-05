@@ -9,27 +9,19 @@ use common\models\QuestionnaireFields;
 use common\models\QuestionnaireFieldOptions;
 use common\models\Utilities;
 
-class QuestionnaireForm extends Model
-{
+class QuestionnaireForm extends Model {
 
     public $formbuilderdata;
     public $formname;
     public $formusedcategory;
 
-    public function rules()
-    {
+    public function rules() {
         return [
             [['formbuilderdata', 'formname', 'formusedcategory'], 'required']
         ];
     }
 
-    public function formName()
-    {
-        return '';
-    }
-
-    public function add()
-    {
+    public function add() {
         $utilitiesModel = new Utilities();
         $organizationQuestionnaireModel = new OrganizationQuestionnaire();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -93,19 +85,21 @@ class QuestionnaireForm extends Model
         $fields = OrganizationQuestionnaire::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.questionnaire_enc_id', 'a.questionnaire_name', 'a.questionnaire_for'])
-            ->where(['a.questionnaire_enc_id' => $qidk])
-            ->joinWith(['questionnaireFields b' => function ($b) {
-                $b->select(['b.questionnaire_enc_id', 'b.field_enc_id', 'b.field_type', 'b.field_label', 'b.field_name', 'b.sequence', 'b.placeholder']);
-                $b->orderBy(['b.sequence' => SORT_ASC]);
+            ->select(['a.questionnaire_enc_id','a.questionnaire_name','a.questionnaire_for'])
+            ->where(['a.questionnaire_enc_id'=>$qidk])
+            ->joinWith(['questionnaireFields b'=>function($b)
+            {
+                $b->select(['b.questionnaire_enc_id','b.field_enc_id','b.field_type','b.field_label','b.field_name','b.sequence','b.placeholder']);
+                $b->orderBy(['b.sequence'=>SORT_ASC]);
                 $b->groupBy(['b.field_enc_id']);
-                $b->joinWith(['questionnaireFieldOptions c' => function ($b) {
-                    $b->select(['c.field_enc_id', 'c.field_option']);
+                $b->joinWith(['questionnaireFieldOptions c'=>function($b)
+                {
+                    $b->select(['c.field_enc_id','c.field_option']);
                 }]);
             }])
             ->asArray()
             ->one();
-        return $fields;
+        return  $fields;
     }
 
 }

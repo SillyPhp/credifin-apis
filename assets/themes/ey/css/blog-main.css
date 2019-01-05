@@ -114,3 +114,21 @@
 {
     margin-right: 10px;
 }
+.cs-button{
+    background: #00a0e3 !important;
+    margin-bottom: 20px;
+    -webkit-border-radius: 6px !important;
+    -moz-border-radius: 6px !important;
+    -ms-border-radius: 6px !important;
+    -o-border-radius: 6px !important;
+    border-radius: 6px !important;
+}
+.cs-button:hover{
+    color: #ffffff;
+    box-shadow:0 0 10px rgba(0,0,0,.5) !important;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -ms-transition:.3s all;
+    -o-transition:.3s all;
+}

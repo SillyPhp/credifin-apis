@@ -7,11 +7,13 @@ use yii\web\Controller;
 use yii\web\Response;
 use common\models\UserTasks;
 
-class TasksController extends Controller {
+class TasksController extends Controller
+{
 
     private $_condition;
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -23,7 +25,7 @@ class TasksController extends Controller {
 
             $page = Yii::$app->request->post('page');
 
-            if (!(int) $page > 0) {
+            if (!(int)$page > 0) {
                 $page = 1;
             }
 
@@ -50,7 +52,8 @@ class TasksController extends Controller {
         }
     }
 
-    public function actionCreate() {
+    public function actionCreate()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $utilitiesModel = new \common\models\Utilities();
@@ -85,7 +88,8 @@ class TasksController extends Controller {
         }
     }
 
-    public function actionRemove() {
+    public function actionRemove()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post('id');
 
@@ -110,7 +114,8 @@ class TasksController extends Controller {
         }
     }
 
-    public function actionUpdate() {
+    public function actionUpdate()
+    {
         return '';
     }
 

@@ -8,9 +8,11 @@ use yii\web\Response;
 use common\models\States;
 use account\models\locations\LocationForm;
 
-class LocationsController extends Controller {
+class LocationsController extends Controller
+{
 
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $statesModel = new States();
         $locationFormModel = new LocationForm();
         if ($locationFormModel->load(Yii::$app->request->post())) {
@@ -32,8 +34,8 @@ class LocationsController extends Controller {
         }
 
         return $this->renderAjax('form', [
-                    'statesModel' => $statesModel,
-                    'locationFormModel' => $locationFormModel,
+            'statesModel' => $statesModel,
+            'locationFormModel' => $locationFormModel,
         ]);
     }
 

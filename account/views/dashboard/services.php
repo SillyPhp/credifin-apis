@@ -6,60 +6,71 @@ use yii\bootstrap\ActiveForm;
 
 $services = ArrayHelper::map($services, 'service_enc_id', 'name');
 ?>
-<div class="light-box"></div>
-<div class="main-outer">
-    <div class="main-inner">
-        <?php
-        $form = ActiveForm::begin([
-                    'id' => 'submit_form',
-                    'enableClientValidation' => true,
-                    'validateOnBlur' => false,
-                    'options' => [
-                        'class' => 'form',
-                    ],
-                    'fieldConfig' => [
-                        'template' => '{input}',
+    <div class="light-box"></div>
+    <div class="main-outer">
+        <div class="main-inner">
+            <h2 class="lightbox-title text-center"><?= Yii::t('account', 'What services would you like to access?'); ?></h2>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <?php
+                    $form = ActiveForm::begin([
+                        'id' => 'submit_form',
+                        'enableClientValidation' => true,
+                        'validateOnBlur' => false,
                         'options' => [
-                            'tag' => false,
+                            'class' => 'form',
                         ],
-                    ],
-        ]);
-        ?>
-        <h2 class="text-center"><?= Yii::t('account', 'What services would you like to use?'); ?></h2>
-        <div class="row">
-            <?php
-            echo $form->field($model, 'services[]')->inline()->checkBoxList($services, [
-                'id' => 'services',
-                'item' => function($index, $label, $name, $checked, $value) {
-                    $services = [
-                        1 => [
-                            'description' => 'Some description text here of the title that displays on hover',
-                            'icon' => 'job-search-icon.png',
+                        'fieldConfig' => [
+                            'template' => '{input}{error}',
+                            'options' => [
+                                'tag' => false,
+                            ],
                         ],
-                        2 => [
-                            'description' => 'Some description text here of the title that displays on hover',
-                            'icon' => 'intership.png',
-                        ],
-                    ];
-                    $return = '<div class="col-md-4 col-sm-4"><input type="checkbox" name="' . $name . '" value="' . $value . '" id="services-' . $index . '" class="checkbox-input services" />';
-                    $return .= '<label for="services-' . $index . '" class="checkbox-label">';
-                    $return .= '<a class="box"><div class="content"><img src="' . Url::to('@eyAssets/images/pages/home/icons/' . $services[$index + 1]['icon']) . '"/>';
-                    $return .= '<h3>' . $label . '</h3>';
-                    $return .= '<p class="description">' . $services[$index + 1]['description'] . '</p>';
-                    $return .= '</div></a></label></div>';
-                    return $return;
-                }
-            ])->label(false);
-            ?>
+                    ]);
+                    ?>
+                    <div class="row">
+                        <?php
+                        echo $form->field($model, 'services[]')->inline()->checkBoxList($services, [
+                            'id' => 'services',
+                            'item' => function($index, $label, $name, $checked, $value) {
+                                $services = [
+                                    1 => [
+                                        'icon' => 'job-search-icon.png',
+                                    ],
+                                    2 => [
+                                        'icon' => 'intership.png',
+                                    ],
+                                ];
+                                $return = '<div class="col-md-6 col-sm-6"><input type="checkbox" name="' . $name . '" value="' . $value . '" id="services-' . $index . '" class="checkbox-input services" />';
+                                $return .= '<label for="services-' . $index . '" class="checkbox-label">';
+                                $return .= '<a class="box"><div class="content"><img src="' . Url::to('@eyAssets/images/pages/home/icons/' . $services[$index + 1]['icon']) . '"/>';
+                                $return .= '<h3>' . $label . '</h3>';
+                                $return .= '</div></a></label></div>';
+                                return $return;
+                            }
+                        ])->label(false);
+                        ?>
+                    </div>
+                    <div style="text-align:center;margin-top: 20px;">
+                        <input type="submit" id="sbt" class="btn custom-buttons2 btn-primary" value="Save">
+                    </div>
+                    <div class="error"></div>
+                    <?php ActiveForm::end(); ?>
+                </div>
+            </div>
         </div>
-        <div style="width: 175px;height: 50px;position: absolute;bottom: 0;right: 5px;text-align:right;">
-            <input type="submit" id="sbt" class="btn green btn-circle" style="position: relative;margin-top: 4px;float: right;margin-left: 5px;" value="Save">
-        </div>
-<?php ActiveForm::end(); ?>
     </div>
-</div>
 <?php
 $this->registerCss("
+.error{
+    color:red;
+    font-size: 15px;
+    text-align: center;
+    display: none;
+}
+#sbt{
+    padding: 8px 15px !important;
+}
 .box {
     color: #000;
     background-color: #fff;
@@ -76,14 +87,11 @@ $this->registerCss("
     bottom: 0;
     right: 0;
     top: 0;
+    left:0;
     margin: auto;
     text-align:center;
     z-index: 2;
     height: 5.3em;
-    transition: all .3s ease;
-}
-.box:hover .content {
-    height: 15em;
     transition: all .3s ease;
 }
 .content h3{
@@ -93,24 +101,9 @@ $this->registerCss("
     width:60px;
     height:60px;
 }
-.box:hover .content h3 {
-    color:#000;
-    margin-top:30px;
-}
-.content p {
-    height: 0;
-    opacity: 0;
-    visibility: hidden;
-    margin: 5px;
-    font-size: 16px;
-    line-height: 1.5em;
-}
-.box:hover p{
-    height: 3em;
-    opacity: 1;
-    visibility: visible;
-    transition: all .2s ease;
-    color:#000;
+.box:hover .content {
+    transform: scale(1.1);
+    color:rgb(0, 0, 0);
 }
 .box:hover .link {
     transition: all .2s ease;
@@ -129,9 +122,8 @@ $this->registerCss("
     cursor: pointer;
     font-weight: 400;
     margin: 5px 0;
-    border: 1px solid #d9d9d9;
     border-radius: 2px;
-    box-shadow: inset 0 0 0 0 #2196F3;
+    box-shadow: 0px 0px 10px 0px #dddd;
 }
 .checkbox-label:before {
     content: '';
@@ -153,7 +145,7 @@ $this->registerCss("
     z-index:99;
 }
 .checkbox-input:checked + .checkbox-label {
-    box-shadow: inset 0 -12px 0 0 #2196F3;
+    box-shadow:0px 0px 10px 5px #efefef;
 }
 .checkbox-input:checked + .checkbox-label:before {
     top: 0;
@@ -162,86 +154,6 @@ $this->registerCss("
 .checkbox-input:checked + .checkbox-label .checkbox-text {
     -webkit-transform: translate(0, -8px);
     transform: translate(0, -8px);
-}
-.check_services {
-  background-color: #e8e8e8;
-  display: block;
-  margin: 10px 0;
-  position: relative;
-      border-radius: 10px;
-}
-.check_services label {
-  padding: 12px 25px;
-  width: 100%;
-  display: block;
-  text-align: left;
-  color: #3C454C;
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-  transition: color 200ms ease-in;
-  overflow: hidden;
-  padding-right:50px;
-}
-.check_services label:before {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  content: '';
-  background-color: #5562eb;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%) scale3d(1, 1, 1);
-          transform: translate(-50%, -50%) scale3d(1, 1, 1);
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  z-index: -1;
-}
-.check_services label:after {
-  width: 32px;
-  height: 32px;
-  content: '';
-  border: 2px solid #D1D7DC;
-  background-color: #fff;
-  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
-  background-repeat: no-repeat;
-  background-position: 2px 3px;
-  border-radius: 50%;
-  z-index: 2;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
-  cursor: pointer;
-  transition: all 200ms ease-in;
-}
-.check_services input:checked ~ label {
-  color: #fff;
-  border-radius: 10px;
-}
-.check_services input:checked ~ label:before {
-  -webkit-transform: translate(-50%, -50%) scale3d(56, 56, 1);
-          transform: translate(-50%, -50%) scale3d(56, 56, 1);
-  opacity: 1;
-}
-.check_services input:checked ~ label:after {
-  background-color: #54E0C7;
-  border-color: #54E0C7;
-}
-.check_services input {
-  width: 32px;
-  height: 32px;
-  order: 1;
-  z-index: 2;
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
-  cursor: pointer;
-  visibility: hidden;
 }
 @media screen and (min-width: 540px) {
     .checkbox-label {
@@ -257,8 +169,13 @@ $this->registerCss("
     font-weight: 600;
     line-height: 36px;
 }
-.form h2{
+.lightbox-title{
     margin-bottom:15px;
+    font-weight: 500;
+    font-size: 26px;
+    color: #444;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
 }
 .light-box{
     position:fixed;
@@ -280,10 +197,10 @@ $this->registerCss("
     position:relative;
 }
 .main-outer{
-    width:60%;
-    height:80%;
-    top:10%;
-    left:20%;
+    width:50%;
+    height:60%;
+    top:12%;
+    left:25%;
     display: none;
     position: fixed;
     overflow:hidden;
@@ -300,16 +217,38 @@ $this->registerCss("
 .tab{
     display:none;
 }
+.ps__rail-x{
+    display:none !important;
+}
 ");
 $script = <<<JS
+     $(document).ready(function() {
+         
+      $("#sbt").on('click', function(){
+          var chk1 = $('#services-0');
+          var chk2 = $('#services-1');
+          
+          if(chk1.prop("checked") == true || chk2.prop("checked") == true){
+              return true;
+          }else{
+              $('.error').html('Select at least one to continue');
+              $('.error').fadeIn(1000);
+          }
+      });
+      $('.checkbox-input').click(function(){
+        $('.error').fadeOut(1000);
+      });
+    });
+    
+    $(function() {
+        $('.light-box').fadeIn(500);
+        $('.main-inner').fadeIn(1000);
+        $('.main-outer').fadeIn(1000);
+    });
+    var ps = new PerfectScrollbar('.main-inner');
 
-$(function() {
-    $('.light-box').fadeIn(500);
-    $('.main-inner').fadeIn(1000);
-    $('.main-outer').fadeIn(1000);
-});
-var ps = new PerfectScrollbar('.main-inner');
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

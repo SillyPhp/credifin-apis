@@ -78,7 +78,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Feature Internships'); ?></h3>
+                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="type-1">
@@ -98,24 +98,19 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-<?php
-echo $this->render('/widgets/blog-slider', [
-    'posts' => $posts,
-]);
-?>
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Companies'); ?></h3>
-                    <div class="row ml-20 mr-20 companies">
-
-                    </div>
+                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
     </section>
 <?php
+echo $this->render('/widgets/blog-slider', [
+    'posts' => $posts,
+]);
 $this->registerCss('
 .backgrounds{
     background-size: 100% 640px;
@@ -144,16 +139,12 @@ $this->registerCss('
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-
-
-
 .tt-hint {
   color: #999
 }
 .tt-menu {
   width: 100%;
   margin: 0px 0;
-//  padding: 8px 0;
   text-align:left;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -594,72 +585,6 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-$(document).ready(function () {
-    $.ajax({
-        method: "GET",
-        url : "/internships",
-        success: function(response) {
-            console.log("status", response);
-            if(response.status == 200) {
-                console.log(response);
-                var jcard = $('#application-card').html();
-                $(".blogbox").append(Mustache.render(jcard, response.job_cards));
-                var card2 = $('#category-card').html();
-                $(".category-row").append(Mustache.render(card2, response.job_categories));
-                // var companies_cards = $('#company-card').html();
-                // $(".companies").append(Mustache.render(companies_cards, response.companycards));
-                utilities.initials();
-            } else {
-                console.log("not work!");
-            }
-        }
-    })  
-});
-function getCompanies(){
-    $.ajax({
-        method: "POST",
-        url : '/jobs/featured-companies',
-        success: function(response) {
-            if(response.status === 200) {
-                var fcard = $('#company-card').html();
-                $(".companies").append(Mustache.render(fcard, response.companycards));
-                $('#company-slider').owlCarousel({
-                    loop: true,
-                    nav: true,
-                    dots: false,
-                    pauseControls: true,
-                    margin: 20,
-                    responsiveClass: true,
-                    navText: [
-                    '<i class="fa fa-angle-left set_icon"></i>',
-                    '<i class="fa fa-angle-right set_icon"></i>'
-                    ],
-                    responsive: {
-                        0: {
-                            items: 1
-                        },
-                        568: {
-                            items: 2
-                        },
-                        600: {
-                            items: 3
-                        },
-                        1000: {
-                            items: 6
-                        },
-                        1400: {
-                            items: 7
-                        }
-                    }
-                });
-                utilities.initials();
-            }
-        }
-    });
-   
-}
-getCompanies();
-        
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -702,9 +627,4 @@ echo $this->render('/widgets/application-card', [
 
 echo $this->render('/widgets/application-card', [
     'type' => 'mustache',
-    'type2' => 'with-add-review',
-]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-company',
 ]);

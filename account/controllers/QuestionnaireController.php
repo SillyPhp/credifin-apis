@@ -4,6 +4,7 @@ namespace account\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 
 class QuestionnaireController extends Controller
 {
@@ -80,13 +81,14 @@ class QuestionnaireController extends Controller
 
     public function actionEdit($qidk)
     {
-        $model = new \account\models\questionnaire\QuestionnaireForm(); //update soon
+        $model = new \account\models\questionnaire\QuestionnaireForm();
         $fields = $model->getCloneData($qidk);
         if (empty($fields)) {
             return 'Questionnaire not found!!';
         }
         if ($model->load(Yii::$app->request->post())) {
-            return json_encode($model->update($qidk));
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->update($qidk);
         } else {
             return $this->render('questionnaire-edit', [
                 'model' => $model,

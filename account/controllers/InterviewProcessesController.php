@@ -6,20 +6,29 @@ use Yii;
 use yii\web\Controller;
 use account\models\processes\InterviewProcess;
 
-class InterviewProcessesController extends Controller {
+class InterviewProcessesController extends Controller
+{
 
-    public function actionIndex() {
-        $organizationQuestionnaire = \common\models\OrganizationQuestionnaire::find()
-                ->select(['questionnaire_enc_id as id', 'questionnaire_name', 'questionnaire_for'])
-                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-                ->orderBy(['id' => SORT_ASC])
-                ->all();
+    public function actionIndex()
+    {
+        $options = [
+            'where' => [
+                'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+            ],
+            'orderBy' => [
+                'id' => SORT_DESC,
+            ],
+        ];
+
+        $processes = new \account\models\processes\OrganizationInterviewProcesses();
+
         return $this->render('index', [
-                    'organizationQuestionnaire' => $organizationQuestionnaire,
+            'processes' => $processes->getProcesses($options),
         ]);
     }
 
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $model = new InterviewProcess();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
@@ -30,7 +39,7 @@ class InterviewProcessesController extends Controller {
         }
 
         return $this->render('form', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 

@@ -9,14 +9,8 @@ use yii\db\Expression;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use common\models\Organizations;
-use frontend\models\CompanyLogoForm;
-use frontend\models\CompanyCoverImageForm;
-use frontend\models\AddEmployeeBenefitForm;
-use common\models\OrganizationVideos;
 use common\models\OrganizationLocations;
-use common\models\States;
 use common\models\Cities;
-use common\models\Countries;
 use common\models\EmployerApplications;
 use common\models\ApplicationPlacementLocations;
 use common\models\AssignedCategories;
@@ -26,7 +20,12 @@ use common\models\Designations;
 use common\models\Posts;
 use common\models\ApplicationOptions;
 use common\models\Industries;
-use common\models\ShortlistedOrganizations;
+use common\models\EmployeeBenefits;
+use common\models\AppliedApplications;
+use common\models\UserResume;
+use common\models\ApplicationInterviewQuestionnaire;
+use common\models\InterviewProcessFields;
+use frontend\models\JobApplied;
 
 class InternshipsController extends Controller {
     
@@ -51,22 +50,28 @@ class InternshipsController extends Controller {
                     ->innerJoin(ApplicationTypes::tableName() . 'as g', 'g.application_type_enc_id = a.application_type_enc_id')
                     ->innerJoin(ApplicationOptions::tableName() . 'as h', 'h.application_enc_id = a.application_enc_id')
                     ->where(['h.option_name' => 'salary'])
-                    ->andWhere(['g.name' => 'Internships'])
+                    ->andWhere(['g.name' => 'internships'])
                     ->orderBy(['a.id' => SORT_DESC])
                     ->groupBy('a.application_enc_id')
                     ->asArray()
                     ->limit(8)
                     ->all();
 
-            $job_categories = Categories::find()
-                    ->alias('a')
-                    ->select(['a.name', 'a.slug', 'a.icon'])
-                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'a.category_enc_id = b.category_enc_id')
-                    ->where(['b.parent_enc_id' => null])
-                    ->orderBy(new Expression('rand()'))
-                    ->asArray()
-                    ->limit(8)
-                    ->all();
+            $job_categories = AssignedCategories::find()
+                ->select(['a.category_enc_id','b.name','b.slug','b.icon','c.name as sub','COUNT(d.id) as total','e.application_type_enc_id','e.name as type'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'],false)
+                ->joinWith(['categoryEnc c'],false)
+                ->joinWith(['employerApplications d' => function($b){
+                    $b->joinWith(['applicationTypeEnc e']);
+                    $b->where(['e.name' => 'Internships']);
+                }],false)
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['total' => SORT_DESC])
+                ->limit(8)
+                ->asArray()
+                ->all();
+
             $companycards = Organizations::find()
                     ->alias('a')
                     ->select(['a.is_sponsored', 'a.name', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
@@ -74,6 +79,11 @@ class InternshipsController extends Controller {
                     ->limit(10)
                     ->asArray()
                     ->all();
+
+//            echo '<pre>';
+//            print_r($job_categories);
+//            echo '</pre>';
+//            exit;
 
             if ($job_cards) {
                 $response = [
@@ -96,6 +106,52 @@ class InternshipsController extends Controller {
             ]);
         }
     }
+    public function actionInternshipPreview() {
+        if ($_GET['data']) {
+            $var = $_GET['data'];
+            $session = Yii::$app->session;
+            $object = $session->get($var);
+            if (empty($object)) {
+                return 'Opps Session expired..!';
+            }
+            foreach ($object->interviewcity as $id) {
+                $int_arr = OrganizationLocations::find()
+                    ->alias('a')
+                    ->select(['b.name AS city_name'])
+                    ->where(['a.location_enc_id' => $id])
+                    ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
+                    ->asArray()
+                    ->one();
+
+                $int_loc .= $int_arr['city_name'] . ',';
+            }
+
+            $primary_cat = Categories::find()
+                ->select(['name'])
+                ->where(['category_enc_id' => $object->primaryfield])
+                ->asArray()
+                ->one();
+
+            foreach ($object->emp_benefit as $benefit) {
+                $benefits[] = EmployeeBenefits::find()
+                    ->select(['benefit'])
+                    ->where(['benefit_enc_id' => $benefit])
+                    ->asArray()
+                    ->one();
+            }
+
+            return $this->render('internship-preview', [
+                'object' => $object,
+                'interview' => $int_loc,
+                'indst' => $indstry,
+                'primary_cat' => $primary_cat,
+                'benefits' => $benefits
+            ]);
+        } else {
+            return false;
+        }
+    }
+
 
     public function actionList() {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -129,7 +185,7 @@ class InternshipsController extends Controller {
             if($parameters['type'] && !empty($parameters['type'])) {
                 $options['type'] = $parameters['type'];
             } else {
-                $options['type'] = 'Internships';
+                $options['type'] = 'internships';
             }
 
             return $this->_getCardsFromJobs($options);
@@ -138,8 +194,59 @@ class InternshipsController extends Controller {
         return $this->render('list');
     }
 
-    public function actionDetail() {
-        return $this->render('internship-details');
+    public function actionDetail($eaidk){
+        $application_details = EmployerApplications::find()
+            ->where([
+                'slug' => $eaidk,
+                'is_deleted' => 0
+            ])
+            ->joinWith(['applicationTypeEnc b'=>function($b)
+            {
+                $b->andWhere(['b.name'=>'internships']);
+            }])
+            ->one();
+        if (empty($application_details))
+        {
+            return 'Application Not found';
+        }
+        $object = new \account\models\jobs\JobApplicationForm;
+        $org_details = $application_details->getOrganizationEnc()->select(['name org_name','email','website','logo','logo_location','cover_image','cover_image_location'])->asArray()->one();
+
+        if (!Yii::$app->user->isGuest) {
+            $applied_jobs = AppliedApplications::find()
+                ->where(['application_enc_id' => $application_details->application_enc_id])
+                ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->exists();
+
+            $resumes = UserResume::find()
+                ->select(['user_enc_id', 'resume_enc_id', 'title'])
+                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->asArray()
+                ->all();
+
+            $app_que = ApplicationInterviewQuestionnaire::find()
+                ->alias('a')
+                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
+                ->where(['a.application_enc_id' => $application_details->application_enc_id])
+                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
+                ->andWhere(['b.field_name' => 'Get Applications'])
+                ->exists();
+        }
+
+        if (!empty($application_details)) {
+            $model = new JobApplied();
+            return $this->render('internship-details', [
+                'application_details' => $application_details,
+                'data'=>$object->getCloneData($application_details->application_enc_id),
+                'org'=>$org_details,
+                'applied' => $applied_jobs,
+                'model' => $model,
+                'resume' => $resumes,
+                'que' => $app_que,
+            ]);
+        } else {
+            return 'Not Found';
+        }
     }
 
     public function actionFeaturedCompanies()

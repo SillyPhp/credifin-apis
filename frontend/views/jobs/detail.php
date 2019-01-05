@@ -12,6 +12,7 @@ $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_i
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
+
 $total_vac = 0;
 
 foreach ($data['applicationPlacementLocations'] as $placements) {
@@ -180,7 +181,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date'] && $option['interview_start_time'])) { ?>
+                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
                                     <li><i class="fa fa-calendar-check-o"></i>
                                         <h3>Interview Dates</h3>
                                         <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
@@ -199,34 +200,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                         echo rtrim($str2, ',');
                                         ?></span></li>
                             </ul>
-                        </div>
-                        <div class="share-bar">
-                            <span>Share</span>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-fb">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-twitter">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-linkedin">
-                                <i class="fa fa-linkedin"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-whatsapp">
-                                <i class="fa fa-whatsapp"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-google">
-                                <i class="fa fa-envelope"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -248,7 +221,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         </div>
                         <div class="job-head-info">
                             <h4><?= $org['org_name']; ?></h4>
-                            <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php if ($org['website']): ?>
+                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php endif; ?>
                             <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
                         </div>
                         <?php if (Yii::$app->user->isGuest): ?>
@@ -265,29 +240,30 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         <?php endif; ?>
                         <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                         <div class="share-bar no-border">
+                            <?php $link = Url::to('job/' . $application_details["slug"], true); ?>
                             <h3>Share</h3>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-fb">
                                 <i class="fa fa-facebook"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-linkedin">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-google">
                                 <i class="fa fa-envelope"></i>
                             </a>
@@ -303,8 +279,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From YOur Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
+                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
+                Questionnaire Pending From YOur Side you can fill them now By clicking <a
+                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
+                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>
