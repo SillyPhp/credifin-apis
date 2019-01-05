@@ -12,6 +12,7 @@ $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_i
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
+
 $total_vac = 0;
 
 foreach ($data['applicationPlacementLocations'] as $placements) {
@@ -200,34 +201,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                         ?></span></li>
                             </ul>
                         </div>
-                        <div class="share-bar">
-                            <span>Share</span>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-fb">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-twitter">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-linkedin">
-                                <i class="fa fa-linkedin"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-whatsapp">
-                                <i class="fa fa-whatsapp"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-google">
-                                <i class="fa fa-envelope"></i>
-                            </a>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4">
@@ -248,7 +221,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         </div>
                         <div class="job-head-info">
                             <h4><?= $org['org_name']; ?></h4>
-                            <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php if ($org['website']): ?>
+                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php endif; ?>
                             <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
                         </div>
                         <?php if (Yii::$app->user->isGuest): ?>
@@ -265,29 +240,30 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         <?php endif; ?>
                         <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                         <div class="share-bar no-border">
+                            <?php $link = Url::to('job/' . $application_details["slug"], true); ?>
                             <h3>Share</h3>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-fb">
                                 <i class="fa fa-facebook"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-linkedin">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-google">
                                 <i class="fa fa-envelope"></i>
                             </a>
