@@ -19,7 +19,7 @@ use common\models\ShortlistedApplications;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\ShortlistedOrganizations;
-use common\models\ReviewedApplications;
+use common\models\ReviewedApplications;;
 use common\models\AppliedApplicationProcess;
 use common\models\Utilities;
 use account\models\jobs\JobApplicationForm;
@@ -88,7 +88,7 @@ class JobsController extends Controller {
             $update = Yii::$app->db->createCommand()
                     ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                     ->execute();
-            if ($update == 1) {
+            if ($update === 1) {
                 return true;
             } else {
                 return false;
@@ -368,7 +368,6 @@ class JobsController extends Controller {
                         return $status = [
                             'status' => false,
                         ];
-                        ;
                     }
                 }
             }
