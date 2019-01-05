@@ -353,5 +353,6 @@ if ($type == 'mustache-company') {
 .set_icon{
     background:transparent !important;
 }
+
 ');
 }
