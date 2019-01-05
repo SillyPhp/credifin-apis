@@ -13,6 +13,8 @@ use common\models\AppliedApplicationProcess;
 
 class DashboardController extends Controller {
 
+
+
     private $_condition;
 
     public function actionIndex() {

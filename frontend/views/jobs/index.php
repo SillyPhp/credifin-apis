@@ -30,7 +30,7 @@ use yii\helpers\Url;
                             <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                         </div>
                         <div class="form-group mb-10">
-                            <input type="submit" class="form-control submit-next hvr-float" id="form_control_1" value="Search">
+                            <input type="submit" class="form-control submit-next" id="form_control_1" value="Search">
                         </div>
                     </form>
                 </div>
@@ -127,7 +127,7 @@ use yii\helpers\Url;
 $this->registerCss('
 .backgrounds{
     background-size: 100% 520px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/job-search-bg.png') . ');
+    background-image: url(' . Url::to('@eyAssets/images/backgrounds/jobs.webp') . ');
     background-position: left top;
     background-repeat: no-repeat;
     min-height: 520px;

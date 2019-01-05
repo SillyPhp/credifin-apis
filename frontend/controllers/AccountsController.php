@@ -164,7 +164,6 @@ class AccountsController extends Controller {
             }
 
             $userEmailsModel = new UserEmails();
-//        return $userEmailsModel->verificationEmail($id, $is_organization);
             if ($userEmailsModel->verificationEmail($id, $is_organization)) {
                 return [
                     'status' => 200,
