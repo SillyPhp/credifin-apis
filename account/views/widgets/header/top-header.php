@@ -29,3 +29,14 @@ echo Menu::widget([
     'linkTemplate' => '<a href="{url}">{label}</a>',
     'submenuTemplate' => '<ul class="sub-menu">{items}</ul>',
 ]);
+$script = <<<JS
+var thispageurl = window.location.pathname;
+
+$(".dropdown-fw.dropdown-fw-disabled a").each(function(){
+    var attr = $(this).attr('href');
+      if (attr === thispageurl) {
+        $(this).parent().addClass('open');
+      }
+});
+JS;
+$this->registerJs($script);
