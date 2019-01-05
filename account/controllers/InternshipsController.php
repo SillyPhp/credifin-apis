@@ -42,14 +42,14 @@ class InternshipsController extends Controller {
             return $this->__individualDashboard();
         }
     }
-    public function actionApplication() {
+    public function actionCreate() {
         if (Yii::$app->user->identity->organization) {
             $object = new JobApplicationForm();
             $model = new InternshipApplicationForm();
             $questions_list = $object->getQuestionnnaireList();
             $p_list = $object->getOrganizationLocationOffice();
             $l_list = $object->getOrganizationLocationInterview();
-            $primaryfields = $object->getPrimaryFields();
+            $primaryfields = $object->getPrimaryFields('Internships');
             $industries = $object->getndustry();
             $interview_process = $object->getInterviewProcess();
             $benefits    = $object->getBenefits();
@@ -139,7 +139,7 @@ class InternshipsController extends Controller {
         $questions_list = $model->getQuestionnnaireList();
         $p_list = $model->getOrganizationLocationOffice();
         $l_list = $model->getOrganizationLocationInterview();
-        $primaryfields = $model->getPrimaryFields();
+        $primaryfields = $object->getPrimaryFields('Internships');
         $industries = $model->getndustry();
         $interview_process = $model->getInterviewProcess();
         $benefits    = $model->getBenefits();
@@ -178,7 +178,7 @@ class InternshipsController extends Controller {
             $questions_list = $object->getQuestionnnaireList();
             $p_list = $object->getOrganizationLocationOffice();
             $l_list = $object->getOrganizationLocationInterview();
-            $primaryfields = $object->getPrimaryFields();
+            $primaryfields = $object->getPrimaryFields('Internships');
             $industries = $object->getndustry();
             $interview_process = $object->getInterviewProcess();
             $benefits    = $object->getBenefits();

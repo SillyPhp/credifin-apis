@@ -44,7 +44,7 @@ class JobsController extends Controller {
         }
     }
 
-    public function actionApplication() {
+    public function actionCreate() {
         if (Yii::$app->user->identity->organization) {
             $model = new JobApplicationForm();
             $questions_list = $model->getQuestionnnaireList();

@@ -30,7 +30,6 @@ use common\models\AssignedEducationalRequirements;
  * @property User|null $user This property is read-only.
  *
  */
-
 class InternshipApplicationForm extends Model
 {
 
@@ -193,30 +192,23 @@ class InternshipApplicationForm extends Model
     public function saveValues()
     {
 
-        if($this->stipendtype==2||$this->stipendtype==3)
-        {
+        if ($this->stipendtype == 2 || $this->stipendtype == 3) {
             $min = $this->minstip;
             $max = $this->maxstip;
             $duration = $this->stipendur;
             $stipendpaid = null;
-        }
-        else if ($this->stipendtype==4)
-        {
+        } else if ($this->stipendtype == 4) {
             $stipendpaid = $this->stipendpaid;
-        }
-        else
-        {
-          $max = null;
-          $min = null;
-          $duration = null;
-          $stipendpaid = null;
+        } else {
+            $max = null;
+            $min = null;
+            $duration = null;
+            $stipendpaid = null;
         }
 
-        if ($this->pre_place==1)
-        {
+        if ($this->pre_place == 1) {
             $sal = $this->pre_sal;
-        }
-        else{
+        } else {
             $sal = null;
         }
         $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
@@ -336,29 +328,27 @@ class InternshipApplicationForm extends Model
                 $weekoptionsund = null;
             }
 
-            if ($this->interradio==1)
-            {
+            if ($this->interradio == 1) {
                 $strt = $this->startdate;
                 $enddate = $this->enddate;
                 $strttime = $this->interviewstarttime;
                 $endtime = $this->interviewendtime;
-            }
-            else{
+            } else {
                 $strt = null;
                 $enddate = null;
                 $strttime = null;
                 $endtime = null;
             }
 
-     $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
-                    'sund_frequency' => $weekoptionsund,'salary_duration' => $this->ctctype,
-                    'interview_start_date' => $strt,
-                    'interview_end_date' => $enddate, 'interview_start_time' => $strttime,
-                    'interview_end_time' => $endtime,'salary'=>$sal,'stipend_type'=>$this->stipendtype,
-                    'min_stipend'=>$min,'max_stipend'=>$max,
-                    'stipend_duration'=>$duration,
-                    'pre_placement_offer'=>$this->pre_place,
-                    'fixed_stipend'=>$stipendpaid];
+            $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
+                'sund_frequency' => $weekoptionsund, 'salary_duration' => $this->ctctype,
+                'interview_start_date' => $strt,
+                'interview_end_date' => $enddate, 'interview_start_time' => $strttime,
+                'interview_end_time' => $endtime, 'salary' => $sal, 'stipend_type' => $this->stipendtype,
+                'min_stipend' => $min, 'max_stipend' => $max,
+                'stipend_duration' => $duration,
+                'pre_placement_offer' => $this->pre_place,
+                'fixed_stipend' => $stipendpaid];
 
             foreach ($options as $key => $value) {
                 $applicationoptionsModel = new ApplicationOptions();

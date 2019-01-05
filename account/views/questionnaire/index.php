@@ -16,9 +16,9 @@
                                     <div class="padding-left">
                                         <div class="manage-jobs-sec">
                                             <?php
-                                            if (count($questionnaire) > 0) {
+                                            if ($questionnaire['total'] > 0) {
                                                 echo $this->render('/widgets/questionnaire/card', [
-                                                    'questionnaire' => $questionnaire,
+                                                    'questionnaire' => $questionnaire['data'],
                                                     'per_row' => 4,
                                                     'col_width' => 'col-lg-3 col-md-3 col-sm-6',
                                                 ]);
