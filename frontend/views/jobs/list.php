@@ -530,6 +530,7 @@ a:hover {
                                             <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
                                                      values="49;5;27;49" calcMode="linear"
                                                      repeatCount="indefinite"></animate>
+
                                         </circle>
                                     </g>
                                 </g>
