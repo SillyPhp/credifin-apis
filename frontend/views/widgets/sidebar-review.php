@@ -233,6 +233,7 @@ function droppingWidgets(type, logo, logo_main, internship, company, location, p
         Ajax_call(dataId);
         $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0"><strong>' + internship + '</strong><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a></p><p class="mb-5">' + company + '</p></div></div></div></li>');
         utilities.initials();
+        check_list();
     } else {
         var dataArr = [];
 
@@ -245,6 +246,7 @@ function droppingWidgets(type, logo, logo_main, internship, company, location, p
             Ajax_call(dataId);
             $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0"><strong>' + internship + '</strong><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a></p><p class="mb-5">' + company + '</p></div></div></div></li>');
             utilities.initials();
+            check_list();
         }
     }
 }
@@ -257,6 +259,7 @@ function Ajax_call(itemid) {
             'itemid': itemid
         }
     }).done(function(data) {
+        check_list();
         if (data == 'error') {
             alert('Please Login first..');
         }
@@ -279,10 +282,10 @@ $(document).on('click', '.close', function(event) {
 });
 
 function check_list() {
-    if (!$('#ilist').html().length > 0) {
-        $('#hidder').slideDown();
-    } else {
+    if($('#ilist').find('li').length > 0){
         $('#hidder').slideUp();
+    } else {
+        $('#hidder').slideDown();
     }
 }
 

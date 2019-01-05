@@ -44,7 +44,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Internships'); ?></h2>
+                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
                 </div>
             </div>
             <div class="row category-row">
@@ -78,7 +78,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Recent Internships'); ?></h3>
+                    <h3 class="heading-style"><?= Yii::t('frontend', 'Feature Internships'); ?></h3>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="type-1">
