@@ -723,7 +723,7 @@ class JobsController extends Controller {
         $category = AssignedCategories::find()
                 ->alias('a')
                 ->select(['b.name',
-                    'CONCAT("' . Url::to('@commonAssets/categories/') . '", c.icon) icon'
+                    'CONCAT("' . Url::to('@commonAssets/categories/png/') . '", c.icon) icon'
                 ])
                 ->innerJoin(Categories::tableName() . ' b', 'b.category_enc_id = a.category_enc_id')
                 ->innerJoin(Categories::tableName() . ' c', 'c.category_enc_id = a.parent_enc_id')

@@ -98,14 +98,14 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="row">                    
                                 <div class="col-md-4">
                                     <div class="select">
-                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Function', 'disabled' => true])->label(false); ?>
+                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
                                     </div>        
                                 </div>
                                 <div class="col-md-4">
 
                                     <div class="cat_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Job Profile', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?> 
+                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                     </div>
                                 </div>
@@ -489,11 +489,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             }
                                         ])->label(false);
                                         ?>
-                                    </div>
-                                </div> 
-                            <?php } else { ?>   
 
-                                <div class="empty-section-text"> No Benefits Yet Added to display</div>
+                            <?php } else { ?>
+                                </div>
+                            </div>
+                            <div class="empty-section-text"> No Benefits Yet Added to display</div>
                             <?php } ?>
                             <?php Pjax::end() ?> 
                             <div class="row">

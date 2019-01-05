@@ -526,11 +526,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             }
                                         ])->label(false);
                                         ?>
-                                    </div>
-                                </div> 
-                            <?php } else { ?>   
 
-                                <div class="empty-section-text"> No Benefits Yet Added to display</div>
+                            <?php } else { ?>
+                                </div>
+                            </div>
+                            <div class="empty-section-text"> No Benefits Yet Added to display</div>
                             <?php } ?>
                             <?php Pjax::end() ?> 
                             <div class="row">
