@@ -127,7 +127,7 @@ use yii\helpers\Url;
 $this->registerCss('
 .backgrounds{
     background-size: 100% 520px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/job-search-bg.png') . ');
+    background-image: url(' . Url::to('@eyAssets/images/backgrounds/jobs.webp') . ');
     background-position: left top;
     background-repeat: no-repeat;
     min-height: 520px;
