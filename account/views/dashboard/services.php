@@ -35,11 +35,9 @@ $services = ArrayHelper::map($services, 'service_enc_id', 'name');
                             'item' => function($index, $label, $name, $checked, $value) {
                                 $services = [
                                     1 => [
-                                        'description' => 'Some description text here of the title that displays on hover',
                                         'icon' => 'job-search-icon.png',
                                     ],
                                     2 => [
-                                        'description' => 'Some description text here of the title that displays on hover',
                                         'icon' => 'intership.png',
                                     ],
                                 ];
@@ -47,7 +45,6 @@ $services = ArrayHelper::map($services, 'service_enc_id', 'name');
                                 $return .= '<label for="services-' . $index . '" class="checkbox-label">';
                                 $return .= '<a class="box"><div class="content"><img src="' . Url::to('@eyAssets/images/pages/home/icons/' . $services[$index + 1]['icon']) . '"/>';
                                 $return .= '<h3>' . $label . '</h3>';
-//                                $return .= '<p class="description">' . $services[$index + 1]['description'] . '</p>';
                                 $return .= '</div></a></label></div>';
                                 return $return;
                             }
@@ -68,6 +65,7 @@ $this->registerCss("
 .error{
     color:red;
     font-size: 15px;
+    text-align: center;
     display: none;
 }
 #sbt{
@@ -124,7 +122,6 @@ $this->registerCss("
     cursor: pointer;
     font-weight: 400;
     margin: 5px 0;
-//    border: 1px solid #d9d9d9;
     border-radius: 2px;
     box-shadow: 0px 0px 10px 0px #dddd;
 }
@@ -176,7 +173,6 @@ $this->registerCss("
     margin-bottom:15px;
     font-weight: 500;
     font-size: 26px;
-//    font-family: lobster;
     color: #444;
     border-bottom: 1px solid #ddd;
     padding-bottom: 20px;

@@ -1,43 +1,49 @@
 <?php
 $this->title = Yii::t('frontend', 'Jobs');
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
+
 ?>
-<div class="fixed-btn background-logo-blue">
-    <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
-    <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
-    <span><?= Yii::t('frontend', 'Want to post a Job?'); ?></span>
-</div>
-<section class="backgrounds">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center text-white">
-                <h2 class="text-white"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
-                <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
-                <div class="search-by-type">
-                    <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
-                        <div class="input-group mb-10 mr-10">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" name="keyword" class="form-control" placeholder="Job Title or Keywords"/>
-                        </div>
-                        <div class="input-group mb-10 mr-10">
-                            <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
-                            <input type="text" name="company" class="form-control" placeholder="Company"/>
-                        </div>
-                        <div class="input-group mb-10">
-                            <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
-                            <input type="text" id="cities" name="location" class="form-control" autocomplete="off" placeholder="City or State"/>
-                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                        </div>
-                        <div class="form-group mb-10">
-                            <input type="submit" class="form-control submit-next" id="form_control_1" value="Search">
-                        </div>
-                    </form>
+    <div class="fixed-btn background-logo-blue">
+        <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
+        <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
+        <span><?= Yii::t('frontend', 'Want to post a Job?'); ?></span>
+    </div>
+    <section class="backgrounds">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center text-white">
+                    <h2 class="text-white"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
+                    <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
+                    <div class="search-by-type">
+                        <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
+                            <div class="input-group mb-10 mr-10">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input type="text" name="keyword" class="form-control"
+                                       placeholder="Job Title or Keywords"/>
+                            </div>
+                            <div class="input-group mb-10 mr-10">
+                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
+                                <input type="text" name="company" class="form-control" placeholder="Company"/>
+                            </div>
+                            <div class="input-group mb-10">
+                                <span class="input-group-addon set-heights"><i
+                                            class="fa fa-map-marker fa-lg"></i></span>
+                                <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
+                                       placeholder="City or State"/>
+                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                            </div>
+                            <div class="form-group mb-10">
+                                <input type="submit" class="form-control submit-next" id="form_control_1"
+                                       value="Search">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php if ($total_categories = count($job_categories) > 0): ?>
     <section>
         <div class="container">
@@ -58,9 +64,10 @@ use yii\helpers\Url;
                         if ($next < $total_categories) {
                             ?>
                             <div class="col-md-3 col-sm-6 categories">
-                                <a href="<?= Url::to('jobs/list?keyword=' . $job_categories[$next]['slug']) .'&company=&location=' ; ?>">
+                                <a href="<?= Url::to('jobs/list?keyword=' . $job_categories[$next]['slug']) . '&company=&location='; ?>">
                                     <div class="grids">
-                                        <img class="grids-image" src="<?= Url::to('@commonAssets/categories/') . $job_categories[$next]["icon"] ?>">
+                                        <img class="grids-image"
+                                             src="<?= Url::to('@commonAssets/categories/') . $job_categories[$next]["icon"] ?>">
                                     </div>
                                     <h4><?= Yii::t('frontend', $job_categories[$next]['name']); ?></h4>
                                 </a>
@@ -75,7 +82,7 @@ use yii\helpers\Url;
             }
             ?>
         </div>
-    </div>
+        </div>
     </section>
 <?php endif; ?>
 <?php if ($total_cards = count($job_cards) > 0): ?>
@@ -96,7 +103,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-           <div class="col-md-12">
+            <div class="col-md-12">
                 <?=
                 $this->render('/widgets/application-card', [
                     'type' => 'card',
@@ -106,24 +113,21 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-<?php endif; 
-    echo $this->render('/widgets/blog-slider', [
-    'posts' => $posts,
-]);
+<?php endif;
 ?>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Companies'); ?></h3>
-                <div class="companies">
-                    
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php
+echo $this->render('/widgets/blog-slider', [
+    'posts' => $posts,
+]);
 $this->registerCss('
 .backgrounds{
     background-size: 100% 520px;
@@ -632,8 +636,6 @@ $this->registerCss('
     -moz-transform: rotateX(10deg);
     transform: rotateX(10deg);
 }
-
-
 .typeahead {
   background-color: #fff;
 }
@@ -645,16 +647,12 @@ $this->registerCss('
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-
-
-
 .tt-hint {
   color: #999
 }
 .tt-menu {
   width: 100%;
   margin: 0px 0;
-//  padding: 8px 0;
   text-align:left;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -696,71 +694,12 @@ $this->registerCss('
     font-size: 25px;
     display: none;
 }
-.set-heights{
-//    height: 45px;
-//    position: relative;
-//    display: block;
-//    float: left;
-//    line-height: 32px;
-}
 .twitter-typeahead{
     float:left;
 }
-
 ');
 
 $script = <<<JS
-$.ajax({
-    method: "GET",
-    url : "/company/jobs-ajax",
-    success: function(response) {
-        if(response.status == 200) {
-            var card2 = $('#company-card').html();
-            $(".companies").append(Mustache.render(card2, response.companycards));
-        } else {
-            console.log("not work");
-        }
-    }
-}).done(function(){
-    $('.owl-carousel-4col').owlCarousel({
-        loop: true,
-        nav: true,
-        dots: false,
-        pauseControls: true,
-        margin: 20,
-        responsiveClass: true,
-        navText: [
-        '<i class="fa fa-angle-left set_icon"></i>',
-        '<i class="fa fa-angle-right set_icon"></i>'
-        ],
-        responsive: {
-            0: {
-                items: 1
-            },
-            568: {
-                items: 3
-            },
-            600: {
-                items: 5
-            },
-            1000: {
-                items: 7
-            },
-            1200: {
-                items: 8
-            },
-            1400: {
-                items: 8
-            }
-        }
-    });
-
-});
-
-
-
-        
-        
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -798,6 +737,3 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-company',
-]);

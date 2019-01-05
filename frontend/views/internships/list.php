@@ -538,13 +538,7 @@ a:hover {
                         </a>
                     </div>
                     <hr class="change-hr">
-                    <div class="esc-heading">
-                        <h3 style="font-family:lobster;font-size:28pt;margin-bottom:0px;">Featured
-                            Companies</h3>
-                    </div>
-                    <div class="row ml-20 mr-20 companies">
-
-                    </div>
+                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
                 </div>
                 <!--</div>-->
             </div>

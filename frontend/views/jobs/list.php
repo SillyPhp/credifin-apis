@@ -538,13 +538,7 @@ a:hover {
                         </a>
                     </div>
                     <hr class="change-hr">
-                    <div class="esc-heading">
-                        <h3 style="font-family:lobster;font-size:28pt;margin-bottom:0px;">Featured
-                            Companies</h3>
-                    </div>
-                    <div class="row ml-20 mr-20 companies">
-
-                    </div>
+                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
                 </div>
                 <!--</div>-->
             </div>
@@ -633,51 +627,7 @@ function getJobs(type = "Jobs") {
         });
     });
 }
-function getCompanies(){
-    $.ajax({
-        method: "POST",
-        url : '/jobs/featured-companies',
-        success: function(response) {
-            if(response.status === 200) {
-                var card2 = $('#company-card').html();
-                $(".companies").append(Mustache.render(card2, response.companycards));
-                $('#company-slider').owlCarousel({
-                    loop: true,
-                    nav: true,
-                    dots: false,
-                    pauseControls: true,
-                    margin: 20,
-                    responsiveClass: true,
-                    navText: [
-                    '<i class="fa fa-angle-left set_icon"></i>',
-                    '<i class="fa fa-angle-right set_icon"></i>'
-                    ],
-                    responsive: {
-                        0: {
-                            items: 1
-                        },
-                        568: {
-                            items: 2
-                        },
-                        600: {
-                            items: 3
-                        },
-                        1000: {
-                            items: 6
-                        },
-                        1400: {
-                            items: 7
-                        }
-                    }
-                });
-                utilities.initials();
-            }
-        }
-    });
-    
-}
 getJobs();
-getCompanies();
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -686,10 +636,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 
 echo $this->render('/widgets/application-card', [
     'type' => 'mustache',
-]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-company',
 ]);
 
 echo $this->render('/widgets/job-alerts');
