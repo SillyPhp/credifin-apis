@@ -1,9 +1,11 @@
+
+text/x-generic job-application-process.php ( PHP script text )
+
 <?php
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 ?>
 
 <!--<div class="row">
@@ -41,13 +43,12 @@ Html::button('Add New Company', [
     </div>
 </div>-->
 
-<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+<div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                     alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
             </div>
         </div>
     </div>
@@ -57,10 +58,51 @@ Html::button('Add New Company', [
         <div class="portlet light ">
             <div class="portlet-title tabbable-line">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <h3>Process Applications of <?= $application['name']; ?></h3>
-                    </div>
+                    <!--                    <div class="col-lg-12">
+                                            <h3></h3>
+                                        </div>-->
                 </div>
+                <div class="caption">
+                    <form class="rating-form-1">
+                        <label for="all">
+                            <input type="radio" name="rating" class="super-happy" id="all" checked />
+                            <span class="filters">All</span>
+                        </label>
+                        <?php
+                        if (!empty($labels)) {
+                            foreach ($labels as $arr) {
+                                ?>
+                                <label for="super-happy1" class="city_label">
+                                    <input type="radio" name="rating" class="super-happy" id="<?php echo $arr['city_enc_id'] ?>"/>
+                                    <span class="filters"><?php echo $arr['name'] ?></span>
+                                </label>
+                                <?php
+                            }
+                        }
+
+                        ?>
+
+                    </form>
+
+                </div>
+
+
+                <div class="actions pull-right">
+                    <form id="form1">
+                        <div style="">
+                            <select>
+                                <option value="" selected disabled hidden>Filter </option>
+                                <option value="date">Application Date</option>
+                                <option value="experience">Relevant Experience</option>
+                                <option value="newest">Newest First</option>
+                                <option value="best">Best Match</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <a id="schedule-interview" class="btn btn-primary pull-right" style="margin: 5px;border-radius: 3px !important;" href="#">
+                    Schedule Interview
+                </a>
             </div>
             <div class="portlet-body">
                 <div class="tab-content">
@@ -167,6 +209,7 @@ Html::button('Add New Company', [
                                                         <tr>
                                                             <th>Question</th>
                                                             <th>Process Name</th>
+                                                            <th>Rating</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="qu_data">
@@ -174,7 +217,14 @@ Html::button('Add New Company', [
                                                             <tr>
                                                                 <td><a class="blue question_list" href="/account/answers-display?q=<?=$list_que['qid']; ?>&a=<?= $arr['applied_application_enc_id']; ?>" data-questionId="<?= $list_que['qid']; ?>" data-appliedId="<?= $arr['applied_application_enc_id']; ?>" target="_blank"><?= $list_que['name'];?></a></td>
                                                                 <td><?=$list_que['field_label']; ?></td>
+                                                                <td>
 
+                                                                    <div class="star-ratings-css">
+                                                                        <div class="star-ratings-css-top" style="<?= 'width:80%' ?>"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                                                                        <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                                                                    </div>
+
+                                                                </td>
                                                             </tr>
                                                         <?php } ?>
                                                         </tbody>
@@ -194,7 +244,6 @@ Html::button('Add New Company', [
                                 </div>
                             </div>
                         </div>
-                    </div>
 
                     </div>
                 </div>
@@ -208,15 +257,14 @@ Html::button('Add New Company', [
         <div class="row">
             <div class="col-md-12">
                 <form class="form-horizontal">
-                    <h2 class="text-center"><?= Yii::t('account', 'Select Date and time for Interview'); ?></h2>
+                    <h2 class="text-center"><?= Yii::t('frontend', 'Select Date and time for Interview'); ?></h2>
                     <a class="close_schedule">&times;</a>
                     <div class="tab">
                         <div class="row">
                             <div class="form-group">
                                 <label class="control-label col-md-4">Select Title</label>
                                 <div class="col-md-8">
-                                    <select name="application_id" class="form-control" id="application_id"
-                                            style="background-color: #eef1f5; ">
+                                    <select name="application_id" class="form-control" id="application_id" style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <?php
                                         foreach ($application as $a) {
@@ -231,14 +279,12 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Interviewer</label>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control input-large" data-role="tagsinput"
-                                           id="email"></div>
+                                    <input type="text" class="form-control input-large" data-role="tagsinput" id="email"> </div>
                             </div>
                             <div class="form-group">
                                 <label for="color" class="control-label col-md-4">Select Color</label>
                                 <div class="col-md-8">
-                                    <select name="color" class="form-control" id="color"
-                                            style="background-color: #eef1f5; ">
+                                    <select name="color" class="form-control" id="color" style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <option style="color:#0071c5;" value="#0071c5">&#9724; Dark blue</option>
                                         <option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquoise</option>
@@ -253,8 +299,7 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Select Interview Date</label>
                                 <div class="col-md-8">
-                                    <input class="form-control form-control-inline input-medium date-picker" size="16"
-                                           type="text" id="datepicker" value=""/>
+                                    <input class="form-control form-control-inline input-medium date-picker" size="16" type="text" id="datepicker" value="" />
                                 </div>
                             </div>
 
@@ -262,11 +307,10 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Select Inteview Duration</label>
                                 <div class="col-md-8">
-                                    <select name="interview_slots" class="form-control" id="interview_slots"
-                                            style="background-color: #eef1f5; ">
+                                    <select name="interview_slots" class="form-control" id="interview_slots" style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <option>15 minutes</option>
-                                        <option>30 minutes</option>
+                                        <option>30  minutes</option>
                                         <option>45 minutes</option>
                                         <option>60 minutes</option>
 
@@ -277,8 +321,7 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label for="color" class="control-label col-md-4">Medium</label>
                                 <div class="col-md-8">
-                                    <select name="color" class="form-control" id="location"
-                                            style="background-color: #eef1f5; ">
+                                    <select name="color" class="form-control" id="location" style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <option>In Place</option>
                                         <option>Conference Call</option>
@@ -292,8 +335,7 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Notes</label>
                                 <div class="col-md-8">
-                                    <textarea class="form-control" value="" id="notes"
-                                              style="background-color: #eef1f5; "></textarea>
+                                    <textarea class="form-control" value="" id="notes" style="background-color: #eef1f5; "></textarea>
                                 </div>
                             </div>
                         </div>
@@ -315,7 +357,7 @@ Html::button('Add New Company', [
 </div>
 
 <?php
-$this->registerCss('
+$this->registerCss(' 
 .btn_hired
 {
 background-color: #8dd644;
@@ -342,6 +384,7 @@ background-color: #8dd644;
     border: #8dd644;
 display:none;
 }
+
 #submit{
     display:none;
 }
@@ -357,57 +400,33 @@ display:none;
     padding: 10px 20px;
     border-radius: 0px 0px 0px 15px !important;
 }
-.rate {
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  border: none;
-}
-
-.rate_input {
-  display: none;
-}
-
-.rate_label {
-  float: right;
-  font-size: 0;
-  color: #d9d9d9;
-}
-
-.rate_label:before {
-  content: "\f005";
-  font-family: FontAwesome;
-  font-size: 28px; 
-}
-
-.rate_label:hover,
-.rate_label:hover ~ label {
-  color: #fcd000;
-  transition: 0.2s;
-}
-
-.rate_label:checked ~ label {
-  color: #ffeb3b;
-}
-
-.rate_label:checked ~ label:hover,
-.rate_label:checked ~ label:hover ~ label {
-  color: #fcd000;
-  transition: 0.2s;
-}
-
-/* Half-star*/
-.star-half {
+    
+.star-ratings-css {
+  unicode-bidi: bidi-override;
+  color: #c5c5c5;
+  font-size: 25px;
+  height: 25px;
+  width: 100px;
+  margin: 0 auto;
   position: relative;
+  padding: 0;
+  text-shadow: 0px 1px 0 #a2a2a2;
 }
-
-.star-half:before {
+.star-ratings-css-top {
+  color: #f9e21a;
+  padding: 0;
   position: absolute;
-  content: "\f089";
-  padding-right: 0;
-}    
-
-
+  z-index: 1;
+  display: block;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+.star-ratings-css-bottom {
+  padding: 0;
+  display: block;
+  z-index: 0;
+}
 
 /*new*/
 .slide-btn{
@@ -617,7 +636,7 @@ a:hover{
     width: 50px;
     height: 50px;
     border: 2px solid #eee;
-    background-color: #fff !important;
+    background-color: #fff;
     color: #eee !important;
     border-radius: 50% !important;
     padding: 18px 0px 15px 0px;
@@ -852,25 +871,42 @@ input[class="super-happy"]:focus + span {
         left:25%;
     }
 }
+.reject_css
+{
+color: #fff !important;
+    background-color: #e12626 !important;
+    border: 1px solid #d25656;
+} 
 .tab{
     display: none;
 }
 /* Modal light box css ends */
 ');
 $script = <<<JS
-    
+load_star_rating();        
+function load_star_rating()
+    {
+    $.each($('.question_list'),function()
+        {
+          var questionId = $(this).attr('data-questionid');
+          var appliedId = $(this).attr('data-appliedid');
+          $.ajax({
+                  url:'/account/jobs/load-ratings',
+                  method:'post',
+                  data:{questionId:questionId,appliedId:appliedId},
+                  success:function(res)
+                  {
+                    console.log(res);
+                  }
+                });
+        })
+   }
         
 $('[data-toggle="tooltip"]').tooltip();
         
 $('#chkveg').multiselect({
     includeSelectAllOption: true
 });
-
-//$('#btnget').click(function() {
-//    alert($('#chkveg').val());    
-//}); 
-
-
 
 $(document).on('click','.slide-bttn',function()
     {   
@@ -922,8 +958,8 @@ $(document).on('click', '.approve', function() {
           thisObj2.show();
         }
         }
-        
-   $(document).on('click','.reject',function()
+  
+        $(document).on('click','.reject',function()
             {
              var btn = $(this);
              var btn2 = $(this).prev();
@@ -949,8 +985,13 @@ $(document).on('click', '.approve', function() {
             {
                alert('something went wrong..');
             }
-            } 
-            }) });   
+            }
+                 
+                  
+                })
+                $(this).parent().prev('div').find('.current').addClass('reject_css');
+           })
+        
   function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}          
             
    function run(thisObj)
@@ -1085,24 +1126,6 @@ $(document).on('click', '.approve', function() {
             }
         });
         
-        
-         $(document).on('click', '.city_label', function(){
-           var city_id = $(this).find('input').attr('id');
-            
-            $.ajax({
-                url : 'application-process' ,
-                method : 'POST' ,
-                data : {city_id:city_id} ,
-                success : function(data)
-                {
-                    $.pjax.reload({container: '#pjax_filters', async: false});
-//                    JSON_parse(data);
-        console.log(data);
-                    }
-            });
-        });
-        
-        
 var ps = new PerfectScrollbar('.main-inner');
 JS;
 $this->registerJs($script);
@@ -1125,11 +1148,6 @@ $this->registerJsFile('@eyAssets/js/multi_tab_modal.js', ['depends' => [\yii\boo
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-<!--    <script type="text/javascript">
-    $(document).on('click', '.approve', function() {
-        console.log($(this).closest('.steps-row-2.active:last').next('.steps-row-2'));
-    });
-    </script>    -->
 
 <script id="dates" type="text/template">
     {{#.}}
@@ -1142,8 +1160,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 <div id="row1" class="row time-slots">
                     <div class="col-md-5">
                         <div class="input-group timepicker-main">
-                            <input type="text" class="form-control timepicker timepicker-24" id="start-time-1"
-                                   placeholder="from">
+                            <input type="text" class="form-control timepicker timepicker-24" id="start-time-1" placeholder="from">
                         </div>
                     </div>
                     <div class="col-md-1">
@@ -1151,8 +1168,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                     </div>
                     <div class="col-md-5">
                         <div class="input-group timepicker-main">
-                            <input type="text" class="form-control timepicker timepicker-24" id="end-time-1"
-                                   placeholder="to">
+                            <input type="text" class="form-control timepicker timepicker-24" id="end-time-1"  placeholder="to">
                         </div>
                     </div>
                 </div>
