@@ -9,7 +9,7 @@ $result = [];
 foreach ($services['menu_items'] as $service) {
     $new = [
         'label' => '<i class="' . $service['icon'] . '"></i>' . Yii::t('account', $service['name']),
-        'url' => $service['link'],
+        'url' => Url::toRoute($service['link']),
     ];
     array_push($result, $new);
 }

@@ -68,41 +68,38 @@ Html::button('Add New Company', [
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row cd-box">
-
                                     <?php
                                     Pjax::begin(['id' => 'pjax_filters']);
-
                                     if (!empty($fields)) {
                                         foreach ($fields as $arr) {
-                                            foreach ($arr as $user) {
                                                 ?>
                                                 <div class="cd-can-box">
                                                     <div class="cd-box-border" id="cd-box-border">
                                                         <div class="row">
                                                             <div class=" cd-user-icon col-md-6">
-                                                                <a href="<?= '/user/' . $user['username'] ?>"
+                                                                <a href="<?= '/user/' . $arr['username'] ?>"
                                                                    target="_blank">
-                                                                    <?php if ($user['image']): ?>
-                                                                        <img src="<?= $user['image'] ?>"
+                                                                    <?php if ($arr['image']): ?>
+                                                                        <img src="<?= $arr['image'] ?>"
                                                                              class="img-responsive img-thumbnail img-rounded">
                                                                     <?php else: ?>
                                                                         <canvas class="user-icon"
-                                                                                name="<?= $user['name'] ?>" width="80"
+                                                                                name="<?= $arr['name'] ?>" width="80"
                                                                                 height="80" font="35px"></canvas>
                                                                     <?php endif; ?>
                                                                 </a>
                                                             </div>
                                                             <div class="vj-btn col-md-6">
-                                                                <a href="<?= '/user/' . $user['username'] ?>">View
+                                                                <a href="<?= '/user/' . $arr['username'] ?>">View
                                                                     Profile</a>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="cd-user-detail col-md-2">
                                                                 <div class="cd-u-name">
-                                                                    <a href="<?= '/user/' . $user['username'] ?>"
+                                                                    <a href="<?= '/user/' . $arr['username'] ?>"
                                                                        target="_blank">
-                                                                        <?= $user['name'] ?>
+                                                                        <?= $arr['name'] ?>
                                                                     </a>
                                                                 </div>
                                                                 <div class="cd-u-field"></div>
@@ -114,12 +111,12 @@ Html::button('Add New Company', [
                                                                         <div class="steps-form-2">
                                                                             <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">
                                                                                 <?php
-                                                                                $len = count($user['process']);
+                                                                                $len = count($arr['appliedApplicationProcesses']);
                                                                                 $j = 0;
-                                                                                foreach ($user['process'] as $p) {
+                                                                                foreach ($arr['appliedApplicationProcesses'] as $p) {
                                                                                     ?>
                                                                                     <div class="steps-step-2 <?php
-                                                                                    if ($j < $user['active']) {
+                                                                                    if ($j < $arr['active']) {
                                                                                         echo 'active';
                                                                                     } else {
                                                                                         echo '';
@@ -127,9 +124,9 @@ Html::button('Add New Company', [
                                                                                     ?>">
                                                                                         <a type="button"
                                                                                            class="circle-group btn btn-circle-2 waves-effect btn-blue-grey <?php
-                                                                                           if ($j < $user['active']) {
+                                                                                           if ($j < $arr['active']) {
                                                                                                echo 'active';
-                                                                                           } elseif ($j == $user['active']) {
+                                                                                           } elseif ($j == $arr['active']) {
                                                                                                echo 'current';
                                                                                            }
                                                                                            ?>" data-toggle="tooltip"
@@ -151,15 +148,18 @@ Html::button('Add New Company', [
 
                                                             </div>
                                                             <div class="cd-btns col-md-2">
-                                                                <button type="button"
-                                                                        class="btn btn-outline btn-circle blue btn-sm approve"
-                                                                        value="<?= $user['app_id']; ?>">Approve
-                                                                </button>
-                                                                <button type="button"
-                                                                        class="btn btn-outline btn-circle blue btn-sm reject">
-                                                                    Reject
-                                                                </button>
+                                                                <?php if($arr['active']==$arr['total']){ ?>
+                                                                    <button type="button" class="btn btn-outline btn-circle btn-sm btn_hired"><i class="glyphicon glyphicon-ok"></i>Hired</button>
+                                                                <?php } elseif($arr['status']=='Rejected'){ ?>
+                                                                    <button type="button" class="btn btn-outline btn-circle btn-sm btn_reject"><i class="glyphicon glyphicon-remove"></i>Rejected</button>
+                                                                <?php } else  { ?>
+                                                                    <button type="button" class="btn btn-outline btn-circle btn-sm btn_hired_temp"><i class="glyphicon glyphicon-ok"></i>Hired</button>
+                                                                    <button type="button" class="btn btn-outline btn-circle blue btn-sm approve" value="<?= $arr['applied_application_enc_id']; ?>" data-total="<?= $arr['total']; ?>">Approve</button>
+                                                                    <button type="button" class="btn btn-outline btn-circle blue btn-sm reject" value="<?= $arr['applied_application_enc_id']; ?>">Reject</button>
+                                                                    <button type="button" class="btn btn-outline btn-circle btn-sm btn_reject_temp"><i class="glyphicon glyphicon-remove"></i>Rejected</button>
+                                                                <?php } ?>
                                                             </div>
+                                                        </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-12">
@@ -188,55 +188,55 @@ Html::button('Add New Company', [
                                                             <?php foreach ($que as $list_que) { ?>
                                                                 <tr>
                                                                     <td><a class="blue"
-                                                                           href="/account/answers-display?q=<?= $list_que['qid']; ?>&a=<?= $user['app_id']; ?>"
+                                                                           href="/account/answers-display?q=<?= $list_que['qid']; ?>&a=<?= $arr['app_id']; ?>"
                                                                            value="'+this.qid+'"
                                                                            target="_blank"><?= $list_que['name']; ?></a>
                                                                     </td>
                                                                     <td><?= $list_que['field_label']; ?></td>
                                                                     <td>
                                                                         <fieldset class="rate">
-                                                                            <input id="6<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                            <input id="6<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    class="rating_sys rate_input"
                                                                                    type="radio"
-                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   name="rate<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    value="5"/>
                                                                             <label class="rate_label">
-                                                                                for="6<?= $list_que['qid'] . $user['app_id']; ?>
+                                                                                for="6<?= $list_que['qid'] . $arr['app_id']; ?>
                                                                                 " title="Unsatisfactory">5</label>
 
-                                                                            <input id="7<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                            <input id="7<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    class="rating_sys rate_input"
                                                                                    type="radio"
-                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   name="rate<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    value="4"/>
                                                                             <label class="rate_label">
-                                                                                for="7<?= $list_que['qid'] . $user['app_id']; ?>
+                                                                                for="7<?= $list_que['qid'] . $arr['app_id']; ?>
                                                                                 " title="Bad">4</label>
-                                                                            <input id="8<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                            <input id="8<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    class="rating_sys rate_input"
                                                                                    type="radio"
-                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   name="rate<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    value="3"/>
                                                                             <label class="rate_label"
-                                                                                   for="8<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   for="8<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    title="Very bad">3</label>
 
-                                                                            <input id="9<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                            <input id="9<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    class="rating_sys rate_input"
                                                                                    type="radio"
-                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   name="rate<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    value="2"/>
                                                                             <label class="rate_label"
-                                                                                   for="9<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   for="9<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    title="Awful">2</label>
 
-                                                                            <input id="10<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                            <input id="10<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    class="rating_sys rate_input"
                                                                                    type="radio"
-                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   name="rate<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    value="1"/>
                                                                             <label class="rate_label"
-                                                                                   for="10<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   for="10<?= $list_que['qid'] . $arr['app_id']; ?>"
                                                                                    title="Horrific">1</label>
                                                                         </fieldset>
                                                                     </td>
@@ -249,7 +249,7 @@ Html::button('Add New Company', [
                                                 <?php
                                             }
                                         }
-                                    } else {
+                                    else {
                                         ?>
                                         <h3>No Applicant has Applied For This Post</h3>
                                         <?php
@@ -381,6 +381,32 @@ Html::button('Add New Company', [
 
 <?php
 $this->registerCss('
+.btn_hired
+{
+background-color: #8dd644;
+    color: #fff;
+    border: #8dd644;
+}  
+.btn_reject
+{
+background-color: #ff0000;
+    color: #fff;
+    border: #8dd644;
+}
+.btn_reject_temp
+{
+background-color: #ff0000;
+    color: #fff;
+    border: #8dd644;
+display:none;
+}
+.btn_hired_temp
+{
+background-color: #8dd644;
+    color: #fff;
+    border: #8dd644;
+display:none;
+}
 #submit{
     display:none;
 }

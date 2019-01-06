@@ -75,15 +75,15 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
         <li><a href="#offices" data-toggle="tooltip" data-placement="right" title="Our Offices"><i class="fa fa-map-marker"></i></a></li>
     </ul>
 </nav>-->
-<div id="fab-message-open" class="fab-message" style="position:fixed;bottom: 30px;cursor:pointer;right:30px;z-index:9999;background-color: green;color: #fff;font-size: 20px;border-radius: 50%;width:60px;height:60px;line-height: 60px;text-align: center;-webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-    -webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    -o-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;">
-    <i class="fa fa-envelope"></i>
-<div class="fab-hover-message" style="">Want to post your CV</div>
-</div>
+<!--<div id="fab-message-open" class="fab-message" style="position:fixed;bottom: 30px;cursor:pointer;right:30px;z-index:9999;background-color: green;color: #fff;font-size: 20px;border-radius: 50%;width:60px;height:60px;line-height: 60px;text-align: center;-webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);-->
+<!--    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);-->
+<!--    -webkit-transition: all .2s ease-in-out;-->
+<!--    -moz-transition: all .2s ease-in-out;-->
+<!--    -o-transition: all .2s ease-in-out;-->
+<!--    transition: all .2s ease-in-out;">-->
+<!--    <i class="fa fa-envelope"></i>-->
+<!--<div class="fab-hover-message" style="">Want to post your CV</div>-->
+<!--</div>-->
 <!--<button id="openPopup" class="btn btn-default">Drop your CV</button>-->
 <div class="loader-aj-main"><div class="loader-aj"><div class="dot first"></div><div class="dot second"></div></div></div>
 <div class="sections">
@@ -1343,118 +1343,118 @@ $(window).on('scroll', function () {
 
                     return false;
                 });
-        
- var popup = new ideaboxPopup({
-        background: '#234b8f',
-        popupView: 'full',
-        data: [
-            {
-                question: '<h2 style="color: #fff; font-weight: 900;">ADD YOUR CV</h2>',
-                answerType: 'inputbox',
-                description: 'Microsoft Word .doc and PDF accepted',
-                nextLabel: 'Continue',
-                formName: 'country',
-                inAnimation: 'zoomIn'
-            },
-            {
-                question: 'There are many variations of passages of Lorem Ipsum available',
-                description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
-                nextLabel: 'Close',
-                inAnimation: 'flipInX'
-            }
-
-        ]
-    });
-
-
-    document.getElementById("fab-message-open").addEventListener("click", function (e) {
-        popup.open();
-    });
-        
-var popup2 = new ideaboxPopup({
-    background : '#E36161',
-    popupView : 'full',
-    startPage: {
-            msgTitle		: 'Welcome to our Reivew Survey',
-            msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-            startBtnText	: "Let's Get Start",
-            showCancelBtn	: false,
-            cancelBtnText	: 'Cancel'
-    },
-    endPage: {
-            msgTitle		: 'Thank you for your supports :)',
-            msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-            showCloseBtn	: true,
-            closeBtnText	: 'Close All',
-            inAnimation		: 'zoomIn'
-    },
-    data: [
-            {
-                    question 	: 'Please review this plugin?',
-                    answerType	: 'starrate',
-                    starCount	: 10,
-                    formName	: 'rate',
-                    description	: '',
-                    nextLabel	: 'Go to Step 2',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Please rate us!</b>'
-            },
-            {
-                    question 	: 'Tell us your name:',
-                    answerType	: 'inputbox',
-                    formName	: 'namex',
-                    description	: 'Please enter name and surname..',
-                    nextLabel	: 'Go to Step 3',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Please enter a name.</b>'
-            },
-            {
-                    question 	: 'What is your favorite colors?',
-                    answerType	: 'checkbox',
-                    formName	: 'colors',
-                    choices		: [
-                            { label : 'Blue', value : 'BLUE' },
-                            { label : 'Magenta', value : 'MAGENTA' },
-                            { label : 'Green', value : 'GREEN' },
-                            { label : 'Yellow', value : 'YELLOW' }
-                    ],
-                    description	: 'Please choice between 1 - 2 choices from choices.',
-                    nextLabel	: 'Go to Step 4',
-                    required	: true,
-                    minSelect	: 1,
-                    maxSelect	: 2,
-                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
-            },
-            {
-                    question 	: 'What is your favorite Envato site?',
-                    answerType	: 'radio',
-                    formName	: 'website',
-                    choices		: [
-                            { label : 'Themeforest', value : 'themeforest.net' },
-                            { label : 'Codecanyon', value : 'codecanyon.net' },
-                            { label : 'Videohive', value : 'videohive.net' },
-                            { label : 'Audiojungle', value : 'audiojungle.net' },
-                    ],
-                    description	: 'Please select anyone choice.',
-                    nextLabel	: 'Go to Step 5',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Please select one</b>'
-            },
-            {
-                    question 	: 'What do you think about us?',
-                    answerType	: 'textarea',
-                    formName	: 'description',
-                    description	: 'Please input any words..',
-                    nextLabel	: 'Finish'
-            }
-
-    ]
-});
-
-
-document.getElementById("benefitPopup").addEventListener("click", function(e){
-    popup2.open();
-});
+//        
+//  var popup = new ideaboxPopup({
+//         background: '#234b8f',
+//         popupView: 'full',
+//         data: [
+//             {
+//                 question: '<h2 style="color: #fff; font-weight: 900;">ADD YOUR CV</h2>',
+//                 answerType: 'inputbox',
+//                 description: 'Microsoft Word .doc and PDF accepted',
+//                 nextLabel: 'Continue',
+//                 formName: 'country',
+//                 inAnimation: 'zoomIn'
+//             },
+//             {
+//                 question: 'There are many variations of passages of Lorem Ipsum available',
+//                 description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
+//                 nextLabel: 'Close',
+//                 inAnimation: 'flipInX'
+//             }
+//
+//         ]
+//     });
+//
+//
+//     document.getElementById("fab-message-open").addEventListener("click", function (e) {
+//         popup.open();
+//     });
+//        
+// var popup2 = new ideaboxPopup({
+//     background : '#E36161',
+//     popupView : 'full',
+//     startPage: {
+//             msgTitle		: 'Welcome to our Reivew Survey',
+//             msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+//             startBtnText	: "Let's Get Start",
+//             showCancelBtn	: false,
+//             cancelBtnText	: 'Cancel'
+//     },
+//     endPage: {
+//             msgTitle		: 'Thank you for your supports :)',
+//             msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+//             showCloseBtn	: true,
+//             closeBtnText	: 'Close All',
+//             inAnimation		: 'zoomIn'
+//     },
+//     data: [
+//             {
+//                     question 	: 'Please review this plugin?',
+//                     answerType	: 'starrate',
+//                     starCount	: 10,
+//                     formName	: 'rate',
+//                     description	: '',
+//                     nextLabel	: 'Go to Step 2',
+//                     required	: true,
+//                     errorMsg	: '<b style="color:#900;">Please rate us!</b>'
+//             },
+//             {
+//                     question 	: 'Tell us your name:',
+//                     answerType	: 'inputbox',
+//                     formName	: 'namex',
+//                     description	: 'Please enter name and surname..',
+//                     nextLabel	: 'Go to Step 3',
+//                     required	: true,
+//                     errorMsg	: '<b style="color:#900;">Please enter a name.</b>'
+//             },
+//             {
+//                     question 	: 'What is your favorite colors?',
+//                     answerType	: 'checkbox',
+//                     formName	: 'colors',
+//                     choices		: [
+//                             { label : 'Blue', value : 'BLUE' },
+//                             { label : 'Magenta', value : 'MAGENTA' },
+//                             { label : 'Green', value : 'GREEN' },
+//                             { label : 'Yellow', value : 'YELLOW' }
+//                     ],
+//                     description	: 'Please choice between 1 - 2 choices from choices.',
+//                     nextLabel	: 'Go to Step 4',
+//                     required	: true,
+//                     minSelect	: 1,
+//                     maxSelect	: 2,
+//                     errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+//             },
+//             {
+//                     question 	: 'What is your favorite Envato site?',
+//                     answerType	: 'radio',
+//                     formName	: 'website',
+//                     choices		: [
+//                             { label : 'Themeforest', value : 'themeforest.net' },
+//                             { label : 'Codecanyon', value : 'codecanyon.net' },
+//                             { label : 'Videohive', value : 'videohive.net' },
+//                             { label : 'Audiojungle', value : 'audiojungle.net' },
+//                     ],
+//                     description	: 'Please select anyone choice.',
+//                     nextLabel	: 'Go to Step 5',
+//                     required	: true,
+//                     errorMsg	: '<b style="color:#900;">Please select one</b>'
+//             },
+//             {
+//                     question 	: 'What do you think about us?',
+//                     answerType	: 'textarea',
+//                     formName	: 'description',
+//                     description	: 'Please input any words..',
+//                     nextLabel	: 'Finish'
+//             }
+//
+//     ]
+// });
+//
+//
+// document.getElementById("benefitPopup").addEventListener("click", function(e){
+//     popup2.open();
+// });
         
 
 
@@ -1516,7 +1516,7 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
+//$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1524,5 +1524,5 @@ $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => 
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
