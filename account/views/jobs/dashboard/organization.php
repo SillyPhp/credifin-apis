@@ -116,7 +116,8 @@ echo $this->render('/widgets/header/secondary-header', [
                         else {
                             ?>
                             <h3>No Processes To Display</h3>
-                        <?php }
+                        <?php
+                            }
                         ?>
                     </div>
                 </div>
