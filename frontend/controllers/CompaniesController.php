@@ -11,6 +11,7 @@ use common\models\Organizations;
 use frontend\models\CompanyLogoForm;
 use frontend\models\CompanyCoverImageForm;
 use frontend\models\AddEmployeeBenefitForm;
+use frontend\models\OrganizationVideoForm;
 use common\models\OrganizationVideos;
 use common\models\OrganizationLocations;
 use common\models\States;
@@ -260,7 +261,7 @@ class CompaniesController extends Controller {
             return $response = [
                 'status' => 200,
                 'title' => 'Success',
-                'message' => 'Video has been Deleted.',
+                'message' => 'Location has been Removed.',
             ];
         } else {
             return $response = [
@@ -333,6 +334,29 @@ class CompaniesController extends Controller {
             }
             return $response;
         }
+    }
+
+    public function actionAddVideo() {
+        $organizationVideoForm = new OrganizationVideoForm();
+        if ($organizationVideoForm->load(Yii::$app->request->post())) {
+            $organizationVideoForm->link = $this->getYouTubeID($organizationVideoForm->link);
+            if ($organizationVideoForm->add()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return $this->renderAjax('add-video', [
+            'organizationVideoForm' => $organizationVideoForm,
+        ]);
+    }
+
+    private function getYouTubeID($URL) {
+        $YouTubeCheck = preg_match('![?&]{1}v=([^&]+)!', $URL . '&', $Data);
+        If ($YouTubeCheck) {
+            $VideoID = $Data[1];
+        }
+        return $VideoID;
     }
 
 }

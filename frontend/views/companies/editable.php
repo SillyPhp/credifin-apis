@@ -193,12 +193,12 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                 </div>
                                 <div class="col-md-5 col-sm-9">
                                     <div class="cname"><?= $organization['name']; ?></div>
-                                    <div>
-                                        <div class="tagline" id="tagline1" >
-                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>
-                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
+<!--                                    <div>-->
+<!--                                        <div class="tagline" id="tagline1" >-->
+<!--                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>-->
+<!--                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                     <div>
                                         <div class="tagline" id="tagline2" >
                                             <span href="#" class="model" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= $organization['tag_line']; ?>"></span>
@@ -326,7 +326,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     <div class="t-heading">Video Gallery 
                         <div class="button_location pull-right">
                             <!--<= Html::button('Add New Video', ['value' => URL::to('/site/companys1'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
-                            <button type="submit" class="i-review-nx modal-load-class" value="/site/companys1"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
+                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-video"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
                         </div>
                     </div>
                     <div class="row videorows">
@@ -375,58 +375,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
             </div>
         </div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="t-heading">
-                        Employee Benefits
-                        <div class="button_location pull-right">
-                            <!--< Html::button('Add New', ['id' => 'benefitPopup', 'class' => 'btn btn-primary btn-circle custom_color-set2']); ?>-->
-                            <button type="submit" id="benefitPopup" class="i-review-nx"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
-                            <!--<= Html::button('Add New', ['data-toggle' => 'modal', 'data-target' => '#benefit-modal', 'class' => 'btn btn-primary btn-circle custom_color-set2']); ?>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php
-            $benefits_list = [['enc_id' => 'aafxxs1', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aaeefxxs', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aaffsdxxs', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aafxsfgbxs', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aahrgfs', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope'], ['enc_id' => 'aaoljfs', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope'], ['enc_id' => 'aafhls', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope'], ['enc_id' => 'aafsbvc', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope']];
-
-            if (!empty($benefits_list)) {
-                $total = count($benefits_list);
-                $rows = ceil($total / 4);
-                $next = 0;
-                for ($i = 1; $i <= $rows; $i++) {
-                    ?> <div class="cat-sec">
-                        <div class="row no-gape">
-                            <?php
-                            for ($j = 0; $j < 4; $j++) {
-                                if ($next < $total) {
-                                    ?>
-                                    <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                        <div class="p-category">
-                                            <input type="checkbox" name="benefits_list[]" id="<?= $benefits_list[$next]['enc_id']; ?>" data-value="" class="checkbox-input"/>
-                                            <label for="<?= $benefits_list[$next]['enc_id'] ?>" class="checkbox-label">
-                                                <div class="checkbox-text">
-                                                    <span class="checkbox-text--title">
-                                                        <i class="<?= $benefits_list[$next]['icon']; ?>"></i> 
-                                                    </span><br/>
-                                                    <span class="checkbox-text--description">
-                                                        <?= $benefits_list[$next]['descriptiop']; ?>
-                                                    </span>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <?php
-                                }
-                                $next++;
-                            }
-                            ?> 
-                        </div>
-                    </div>
-                <?php }
-                 } ?>
-        </div>
     </section>
 
     <section id="jobs">
@@ -456,7 +404,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     <div class="button_location">
                         <!--<i class="fa fa-pencil" ></i>-->
                         <!--<= Html::button('Add New Location', ['value' => URL::to('/account/locations/add'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
-                        <button type="submit" class="i-review-nx modal-load-class" value="/account/locations/add"><span class="i-review-button-tx">Add Location <span class="fa fa-long-arrow-right"></span></span></button>
+                        <button type="submit" class="i-review-nx modal-load-class" value="/account/locations/create"><span class="i-review-button-tx">Add Location <span class="fa fa-long-arrow-right"></span></span></button>
                         <!--<button type="submit" class="i-review-next"><span class="i-review-button-text" style="margin-right:0;">Add Location</span></button>-->
                     </div>
                 </div>

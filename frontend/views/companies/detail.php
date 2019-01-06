@@ -75,8 +75,8 @@ if ($organization['cover_image']) {
                                 <div class="col-md-6">
                                     <div class="cname"><?= $organization['name']; ?></div>
                                     <input type="hidden" id="organisation_id" value="<?= $organization['organization_enc_id'] ?>"/>
-                                    <div class="tagline">Company's feild of working</div>
-                                    <div class="tagline">Companys tag line</div>
+                                    <div class="tagline"><?= $organization['tag_line']; ?></div>
+                                    <div class="tagline">Establishment in <?= $organization['establishment_year']; ?></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="social-btns">
