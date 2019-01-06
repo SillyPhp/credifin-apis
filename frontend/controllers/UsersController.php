@@ -36,6 +36,14 @@ class UsersController extends Controller {
                 ->asArray()
                 ->limit(2)
                 ->all();
+        $skills = \common\models\UserSkills::find()
+                ->alias('a')
+                ->select(['a.skill_enc_id', 'b.skill skills'])
+                ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
+                ->where(['a.created_by' => $user['user_enc_id']])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
 //        print_r($education);
 //        exit();
         if ($user['user_enc_id'] == Yii::$app->user->identity->user_enc_id) {
@@ -46,6 +54,7 @@ class UsersController extends Controller {
             $individualCoverImageFormModel = new IndividualCoverImageForm();
             return $this->render('candidate-profile-edit-new', [
                         'user' => $user,
+                        'skills' => $skills,
                         'experience' => $experience,
                         'education' => $education,
                         'individualImageFormModel' => $individualImageFormModel,
@@ -58,9 +67,9 @@ class UsersController extends Controller {
 
         return $this->render('candidate-profile-new', [
                     'user' => $user,
+                    'skills' => $skills,
                     'experience' => $experience,
                     'education' => $education,
-                    'addSkillForm' => $addSkillForm,
         ]);
     }
 
@@ -70,7 +79,7 @@ class UsersController extends Controller {
 //                ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
 //                ->asArray()
 //                ->one();
-//        
+//
 //        $experience = UserWorkExperience::find()
 //                ->where(['created_by' => $user['user_enc_id']])
 //                ->asArray()
@@ -113,6 +122,26 @@ class UsersController extends Controller {
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Your Experience has been added.',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.',
+                ];
+            }
+        }
+    }
+
+    public function actionAddSkill() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $addSkillForm = new AddSkillForm();
+        if ($addSkillForm->load(Yii::$app->request->post())) {
+            if ($addSkillForm->save()) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Your Skill has been added.',
                 ];
             } else {
                 return $response = [
