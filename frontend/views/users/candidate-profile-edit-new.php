@@ -9,11 +9,13 @@ use yii\widgets\Pjax;
 
 $this->params['header_dark'] = false;
 
-function random_color_part() {
+function random_color_part()
+{
     return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
 }
 
-function random_color() {
+function random_color()
+{
     return random_color_part() . random_color_part() . random_color_part();
 }
 
@@ -35,198 +37,171 @@ if (!file_exists($cover_image_path)) {
 $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
 ?>
 
-<nav class="min-nav" id="min-nav">
-    <ul class="nav nav-stacked navbar-fixed-top">
-        <li><a href="#home" data-toggle="tooltip" data-placement="right" title="About Me" class="active"><i class="fa fa-home"></i></a></li>
-        <li><a href="#exp" data-toggle="tooltip" data-placement="right" title="Experience"><i class="fa fa-briefcase"></i></a></li>
-        <li><a href="#edu" data-toggle="tooltip" data-placement="right" title="Education"><i class="fa fa-graduation-cap"></i></a></li>
-        <li><a href="#skills" data-toggle="tooltip" data-placement="right" title="Skills"><i class="fa fa-cogs" ></i></a></li>
-        <!--<li><a href="#portfolio" data-toggle="tooltip" data-placement="right" title="Portfolio"><i class="fa fa-folder-open"></i></a></li>-->
-    </ul>
-</nav>  
-<!-- Main jumbotron for a primary marketing message or call to action -->
-<div class="loader-aj-main"><div class="loader-aj"><div class="dot first"></div><div class="dot second"></div></div></div>
-<div class="sections">   
-    <section id="home">    
-        <div style="background-image: url('<?= Url::to($cover_image); ?>');" class="jumbo">
-            <?php
-            $formm = ActiveForm::begin([
-                        'id' => 'upload-user-cover-image',
-                        'options' => ['enctype' => 'multipart/form-data'],
-                    ])
-            ?>
-            <div class="cover-edit">
-                <a class="fa fa-pencil dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="#">
-                            <?=
-                            $formm->field($individualCoverImageFormModel, 'cover_image', [
-                                'template' => '{input}',
-                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'coverImageUpload', 'accept' => '.png, .jpg, .jpeg']);
-                            ?>
-                            <label for="coverImageUpload">Change Cover Picture</label>
-
-                        </a>
-                    </li>
-                    <li><a href="#" class="remove_cover_image">Remove</a></li>
-                    <li><a href="#">Cancel</a></li>
-                </ul>
-                <div id="pop-content2" class="hiden2">
-                    <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) ?>
-                    <button id="cancel_cover" type="button" class="btn btn-default btn-sm editable-cancel">
-                        <i class="glyphicon glyphicon-remove"></i>
-                    </button>
-                </div>
-                <div id="pop-content2_2" class="hiden2">
-                    <h5>Are you sure want to remove Cover Image?</h5>
-                    <button id="confirm_remove_cover" type="button" value="cover" class="btn btn-primary btn-sm editable-submit">
-                        <i class="glyphicon glyphicon-ok"></i>
-                    </button>
-                    <button id="cancel_cover_remove" type="button" class="btn btn-default btn-sm editable-cancel">
-                        <i class="glyphicon glyphicon-remove"></i>
-                    </button>
-                </div>
-            </div>
-            <?php ActiveForm::end() ?>
+    <!--    <nav class="min-nav" id="min-nav">-->
+    <!--        <ul class="nav nav-stacked navbar-fixed-top">-->
+    <!--            <li><a href="#home" data-toggle="tooltip" data-placement="right" title="About Me" class="active"><i class="fa fa-home"></i></a></li>-->
+    <!--            <li><a href="#exp" data-toggle="tooltip" data-placement="right" title="Experience"><i class="fa fa-briefcase"></i></a></li>-->
+    <!--            <li><a href="#edu" data-toggle="tooltip" data-placement="right" title="Education"><i class="fa fa-graduation-cap"></i></a></li>-->
+    <!--            <li><a href="#skills" data-toggle="tooltip" data-placement="right" title="Skills"><i class="fa fa-cogs" ></i></a></li>-->
+    <!--           <li><a href="#portfolio" data-toggle="tooltip" data-placement="right" title="Portfolio"><i class="fa fa-folder-open"></i></a></li>-->
+    <!--        </ul>-->
+    <!--    </nav>-->
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="loader-aj-main">
+        <div class="loader-aj">
+            <div class="dot first"></div>
+            <div class="dot second"></div>
         </div>
-        <div class="large-container">
-            <div class="bdy-content">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="can-user-icon">
-                            <img id="profile-img" src="<?= Url::to($image); ?>" alt="" class="img-circle img-thumbnail "/>
-                            <?php
-                            $form = ActiveForm::begin([
-                                        'id' => 'upload-user-image',
-                                        'options' => ['enctype' => 'multipart/form-data'],
-                                    ])
-                            ?>
-                            <div id="open-pop" class="avatar-edit">
-                                <i class="fa fa-pencil dropdown-toggle full_width" data-toggle="dropdown"></i>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#">
-                                            <?=
-                                            $form->field($individualImageFormModel, 'image', [
-                                                'template' => '{input}',
-                                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'imageUpload', 'accept' => '.png, .jpg, .jpeg']);
-                                            ?>
-                                            <!--<input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />-->
-                                            <label for="imageUpload">Change Profile Picture</label>
-                                        </a>
-                                    </li>
-                                    <li><a href="#" class="remove-image">Remove</a></li>
-                                    <li><a href="#">Cancel</a></li>
-                                </ul>
-                            </div>
-                            <div id="pop-content" class="hiden">
-                                <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) ?>
-                                <button id="cancel_image" type="button" class="btn btn-default btn-sm editable-cancel">
-                                    <i class="glyphicon glyphicon-remove"></i>
-                                </button>
-                            </div>
-                            <div id="pop-content1_2" class="hiden">
-                                <h5>Are you sure want to remove Profile Image?</h5>
-                                <button id="confirm_remove_image" type="button" value="image" class="btn btn-primary btn-sm editable-submit">
-                                    <i class="glyphicon glyphicon-ok"></i>
-                                </button>
-                                <button id="cancel_remove" type="button" class="btn btn-default btn-sm editable-cancel">
-                                    <i class="glyphicon glyphicon-remove"></i>
-                                </button>
-                            </div>
-                            <?php ActiveForm::end() ?>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 set-four-tabs">
-                            <div class="col-md-5 col-sm-4 head-btns">
-                                <div class="col-md-5 col-sm-12">
-                                    <div class="head-btn1">
-                                        <a href="">
-                                            <i class="fa fa-volume-control-phone"></i>
-                                            <span class="btn-txt"> Contact Me</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-5 col-sm-12">
-                                    <div class=" head-btn1 head-btn11">
-                                        <a href="">
-                                            <i class="fa fa-envelope-o"></i>
-                                            <div class="btn-txt2"> Send Email</div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-offset-2 col-md-5 col-sm-offset-4 col-sm-4 head-btns">
-                                <div class="col-md-offset-1 col-md-5 col-sm-12 ">
-                                    <div class="head-btn2">
-                                        <a href="">
-                                            <i class="fa fa-cloud-download"></i>
-                                            <div class="btn-txt"> Download CV</div>
-                                        </a>  
-                                    </div>
-                                </div>
-                                <div class="col-md-5 col-sm-12">
-                                    <div class=" head-btn2 head-btn11">
-                                        <a href="">
-                                            <i class="fa fa-list-ul"></i>
-                                            <div class="btn-txt"> Shortlist Profile</div>
-                                        </a>    
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="bdy-content">
-                            <div class="col-md-12 can-name-heading">
-                                <?= $user['first_name']; ?> <?= $user['last_name']; ?>
-    <!--                            <span href="#" class="model" data-pk="first_name" data-name="first_name" data-type="text" data-value=""></span>
-                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span> 
-                                <span href="#" class="model ml-15" data-pk="last_name" data-name="last_name" data-type="text" data-value=""> </span>
-                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
-                            </div>
+    </div>
+    <div class="sections">
+        <section id="home">
+            <div style="background-image: url('<?= Url::to($cover_image); ?>');" class="jumbo">
+                <?php
+                $formm = ActiveForm::begin([
+                    'id' => 'upload-user-cover-image',
+                    'options' => ['enctype' => 'multipart/form-data'],
+                ])
+                ?>
+                <div class="cover-edit">
+                    <a class="fa fa-pencil dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">
+                                <?=
+                                $formm->field($individualCoverImageFormModel, 'cover_image', [
+                                    'template' => '{input}',
+                                    'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'coverImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                                ?>
+                                <label for="coverImageUpload">Change Cover Picture</label>
 
-                        </div>
+                            </a>
+                        </li>
+                        <li><a href="#" class="remove_cover_image">Remove</a></li>
+                        <li><a href="#">Cancel</a></li>
+                    </ul>
+                    <div id="pop-content2" class="hiden2">
+                        <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) ?>
+                        <button id="cancel_cover" type="button" class="btn btn-default btn-sm editable-cancel">
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </button>
                     </div>
-
-                    <div class="clearfix"></div>
+                    <div id="pop-content2_2" class="hiden2">
+                        <h5>Are you sure want to remove Cover Image?</h5>
+                        <button id="confirm_remove_cover" type="button" value="cover"
+                                class="btn btn-primary btn-sm editable-submit">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                        <button id="cancel_cover_remove" type="button" class="btn btn-default btn-sm editable-cancel">
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php ActiveForm::end() ?>
+            </div>
+            <div class="large-container">
+                <div class="bdy-content">
                     <div class="row">
-                        <div class="personal-info col-md-12">
-                            <div class="personal-detail col-md-6">
-                                <div class="heading-style ">About Me</div>
-                                <div class="per-discription">
-                                    <span href="#" class="model" data-pk="description" data-name="description" data-type="textarea" data-value="<?= $user['description']; ?>" data-url="/users/update-profile"></span>
-                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                        <div class="col-md-12">
+                            <div class="can-user-icon">
+                                <img id="profile-img" src="<?= Url::to($image); ?>" alt=""
+                                     class="img-circle img-thumbnail "/>
+                                <?php
+                                $form = ActiveForm::begin([
+                                    'id' => 'upload-user-image',
+                                    'options' => ['enctype' => 'multipart/form-data'],
+                                ])
+                                ?>
+                                <div id="open-pop" class="avatar-edit">
+                                    <i class="fa fa-pencil dropdown-toggle full_width" data-toggle="dropdown"></i>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="#">
+                                                <?=
+                                                $form->field($individualImageFormModel, 'image', [
+                                                    'template' => '{input}',
+                                                    'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'imageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                                                ?>
+                                                <!--<input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />-->
+                                                <label for="imageUpload">Change Profile Picture</label>
+                                            </a>
+                                        </li>
+                                        <li><a href="#" class="remove-image">Remove</a></li>
+                                        <li><a href="#">Cancel</a></li>
+                                    </ul>
                                 </div>
+                                <div id="pop-content" class="hiden">
+                                    <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) ?>
+                                    <button id="cancel_image" type="button"
+                                            class="btn btn-default btn-sm editable-cancel">
+                                        <i class="glyphicon glyphicon-remove"></i>
+                                    </button>
+                                </div>
+                                <div id="pop-content1_2" class="hiden">
+                                    <h5>Are you sure want to remove Profile Image?</h5>
+                                    <button id="confirm_remove_image" type="button" value="image"
+                                            class="btn btn-primary btn-sm editable-submit">
+                                        <i class="glyphicon glyphicon-ok"></i>
+                                    </button>
+                                    <button id="cancel_remove" type="button"
+                                            class="btn btn-default btn-sm editable-cancel">
+                                        <i class="glyphicon glyphicon-remove"></i>
+                                    </button>
+                                </div>
+                                <?php ActiveForm::end() ?>
                             </div>
-                            <div class="col-md-6 per">
-                                <div class="per-det col-md-12 row">
-                                    <div class="heading-style col-md-12">Personal Details</div>
-                                    <div class="per-ped">
-                                        <div class="can-name">Nationality:</div>
-                                        <div class="can-name-fill">
-                                            <span href="#" class="model" data-type="text" data-value="Indian"></span>
-                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                        </div>
+                        <div class="row">
+                            <div class="bdy-content">
+                                <div class="col-md-12 can-name-heading">
+                                    <?= $user['first_name']; ?> <?= $user['last_name']; ?>
+                                    <!--                            <span href="#" class="model" data-pk="first_name" data-name="first_name" data-type="text" data-value=""></span>
+                                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                                <span href="#" class="model ml-15" data-pk="last_name" data-name="last_name" data-type="text" data-value=""> </span>
+                                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="row">
+                            <div class="personal-info col-md-12">
+                                <div class="personal-detail col-md-6">
+                                    <div class="heading-style ">About Me</div>
+                                    <div class="per-discription">
+                                        <span href="#" class="model" data-pk="description" data-name="description"
+                                              data-type="textarea" data-value="<?= $user['description']; ?>"
+                                              data-url="/users/update-profile"></span>
+                                        <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 per">
+                                    <div class="per-det col-md-12 row">
+                                        <div class="heading-style col-md-12">Personal Details</div>
+                                        <div class="per-ped">
+                                            <div class="can-name">Nationality:</div>
+                                            <div class="can-name-fill">
+                                                <span href="#" class="model" data-type="text"
+                                                      data-value="Indian"></span>
+                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!--                                <div class="per-ped">
-                                                                        <div class="can-name">Skype:</div>
-                                                                        <div class="can-name-fill">
-                                                                            <span href="#" class="model2" data-type="text" data-value="YourSkype"></span>
-                                                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                                        </div>
-                                                                    </div>-->
+                                        <!--                                <div class="per-ped">
+                                                                            <div class="can-name">Skype:</div>
+                                                                            <div class="can-name-fill">
+                                                                                <span href="#" class="model2" data-type="text" data-value="YourSkype"></span>
+                                                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                                            </div>
+                                                                        </div>-->
 
-                                    <div class="per-ped">
-                                        <div class="can-name">Marital:</div>
-                                        <div class="can-name-fill">
-                                            <span href="#" class="marital-status" data-type="select"></span>
-                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                        <div class="per-ped">
+                                            <div class="can-name">Marital:</div>
+                                            <div class="can-name-fill">
+                                                <span href="#" class="marital-status" data-type="select"></span>
+                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!--                                    <div class="per-ped">
+                                        <!--                                    <div class="per-ped">
                                                                             <div class="can-name">Phone:</div>
                                                                             <div class="can-name-fill">
                                     <?= $user['phone']; ?>
@@ -235,451 +210,444 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                                                             </div>
                                                                         </div>-->
 
-                                    <!--                                    <div class="per-ped">
-                                                                            <div class="can-name">DOB:</div>
-                                                                            <div class="can-name-fill">
-                                                                                <span href="#" class="model2" data-type="combodate" data-format="YYYY-MM-DD" data-value="1993-09-28" data-viewformat="DD/MM/YYYY" data-template="D / MMM / YYYY" data-title="Select Date of birth"></span>
-                                                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                                            </div>
-                                                                        </div>-->
-                                    <!--                                    <div class="per-ped">
+                                        <!--                                    <div class="per-ped">
+                                                                                <div class="can-name">DOB:</div>
+                                                                                <div class="can-name-fill">
+                                                                                    <span href="#" class="model2" data-type="combodate" data-format="YYYY-MM-DD" data-value="1993-09-28" data-viewformat="DD/MM/YYYY" data-template="D / MMM / YYYY" data-title="Select Date of birth"></span>
+                                                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                                                </div>
+                                                                            </div>-->
+                                        <!--                                    <div class="per-ped">
                                                                             <div class="can-name">Email:</div>
                                                                             <div class="can-name-fill">
                                     <?= $user['email']; ?>
                                                                             </div>
                                                                         </div>-->
-                                    <div class="col-md-12 col-sm-12">
-                                        <div class="wrap">
-                                            <div class="social">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="wrap">
+                                                <div class="social">
 
-                                                <a class="model-link" data-pk="facebook" data-name="facebook" data-type="text" data-value="<?= $user['facebook']; ?>" href="<?= $user['facebook']; ?>"><i class="fa fa-facebook fb"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                <a class="model-link" data-pk="twitter" data-name="twitter" data-type="text" data-value="<?= $user['twitter']; ?>" href="<?= $user['twitter']; ?>"><i class="fa fa-twitter tw"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                <a class="model-link" data-pk="youtube" data-name="youtube" data-type="text" data-value="<?= $user['youtube']; ?>" href="<?= $user['youtube']; ?>"><i class="fa fa-youtube yt"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                <a class="model-link" data-pk="linkedin" data-name="linkedin" data-type="text" data-value="<?= $user['linkedin']; ?>" href="<?= $user['linkedin']; ?>"><i class="fa fa-linkedin lk"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                <a class="model-link" data-pk="skype" data-name="skype" data-type="text" data-value="<?= $user['skype']; ?>" href="<?= $user['skype']; ?>"><i class="fa fa-skype sk"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                <a class="model-link" data-pk="instagram" data-name="instagram" data-type="text" data-value="<?= $user['instagram']; ?>" href="<?= $user['instagram']; ?>"><i class="fa fa-instagram db"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                                <a class="model-link" data-pk="google" data-name="google" data-type="text" data-value="<?= $user['google']; ?>" href="<?= $user['google']; ?>"><i class="fa fa-google apple"></i></a>
-                                                <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="facebook" data-name="facebook"
+                                                       data-type="text" data-value="<?= $user['facebook']; ?>"
+                                                       href="<?= $user['facebook']; ?>"><i
+                                                                class="fa fa-facebook fb"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="twitter" data-name="twitter"
+                                                       data-type="text" data-value="<?= $user['twitter']; ?>"
+                                                       href="<?= $user['twitter']; ?>"><i class="fa fa-twitter tw"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="youtube" data-name="youtube"
+                                                       data-type="text" data-value="<?= $user['youtube']; ?>"
+                                                       href="<?= $user['youtube']; ?>"><i class="fa fa-youtube yt"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="linkedin" data-name="linkedin"
+                                                       data-type="text" data-value="<?= $user['linkedin']; ?>"
+                                                       href="<?= $user['linkedin']; ?>"><i
+                                                                class="fa fa-linkedin lk"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="skype" data-name="skype"
+                                                       data-type="text" data-value="<?= $user['skype']; ?>"
+                                                       href="<?= $user['skype']; ?>"><i class="fa fa-skype sk"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="instagram" data-name="instagram"
+                                                       data-type="text" data-value="<?= $user['instagram']; ?>"
+                                                       href="<?= $user['instagram']; ?>"><i
+                                                                class="fa fa-instagram db"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                    <a class="model-link" data-pk="google" data-name="google"
+                                                       data-type="text" data-value="<?= $user['google']; ?>"
+                                                       href="<?= $user['google']; ?>"><i class="fa fa-google apple"></i></a>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>   
-                </div> 
-            </div> 
-    </section>        
-    <!--<div class="clearfix"></div>-->
-    <!-- experience -->
-    <section id="exp">
-        <div class="large-container">
-            <div class="row">
-                <div class="exp col-md-12">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_experience']);
-                    ?>
-                    <div class="bdy-content">
-                        <div class="col-md-10">
-                            <div class="heading-style">Work Experience</div>
-                        </div>
-                        <div class="col-md-2">
-                            <?=
-                            Html::button('<i class="fa fa-plus"></i> Add Work Experience', [
-                                'class' => 'btn btn-primary btn-circle btn-md pull-right mt-20',
-//                                'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'add-experience'),
-                                'id' => 'open-modal',
-                                'data-toggle' => 'modal',
-                                'data-target' => '#myModal2',
-                            ]);
-                            ?>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="exp-box1 ">
-                            <div class="minus-padding col-md-1">
-                                <div class="com-mark"> <!---com-line class for line  -->
-                                    <i class="fa fa-bullseye"></i>
-                                </div>
-                                <div class="com-mark-img">
-                                </div>
-                            </div>
-                            <div class="exp-time col-md-3"> 
-                                <div class="com-name"><?= $experience['company']; ?></div>
-                                <div class="com-loc"><?= $experience['city']; ?></div>
-                                <div class="com-time">
-                                    <div class="col-md-6">
-                                        <div class="com-t">From</div>
-                                        <div class="com-due"><?= date('F-Y', strtotime($experience['from_date'])); ?></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="com-t">To</div>
-                                        <div class="com-due"><?= date('F-Y', strtotime($experience['to_date'])); ?></div>
-                                    </div>
-                                </div>
-                                <div class="clearfix"></div>
-                                <?php $interval = date_diff(date_create($experience['from_date']), date_create($experience['to_date'])); ?>
-                                <div class="time-du"><?= $interval->format('%y years %m months'); ?></div>
-                            </div>
-                            <div class="exp-post col-md-8">
-                                <div class="post"><?= $experience['title']; ?></div>
-                                <div class="role">Tasks Performed</div>
-                                <div class="duty"><?= $experience['description']; ?></div>
-                            </div> 
-                        </div>
-
-                        <div class="clearfix"></div> 
                     </div>
-                    <?php Pjax::end(); ?>
-                </div> 
-            </div>
-        </div>
-    </section>
-
-    <div class="clearfix"></div>
-    <!-- education -->    
-    <section id="edu">
-        <div class="large-container">
-            <div class="edu">
-                <div class="bdy-content">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_qualification']);
-                    ?>
-                    <div class="col-md-10">
-                        <div class="heading-style ">Qualification</div>
-                        <?php
-//                            print_r($experience);
-//                            print_r($education);
-                        ?>
-                    </div>
-                    <div class="col-md-2">
-                        <?=
-                        Html::button('<i class="fa fa-plus"></i> Add Qualification', [
-                            'class' => 'btn btn-primary btn-circle btn-md pull-right mt-20',
-                            'id' => 'qualification-modal',
-                            'data-toggle' => 'modal',
-                            'data-target' => '#open-qualification-modal',
-                        ]);
-                        ?>
-                    </div>
-                    <?php foreach ($education as $e) { ?>
-                        <div class="col-md-offset-1 col-md-5">
-                            <div class="edubox1">
-                                <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
-                                <div class="h-school-name"><?= $e['degree']; ?></div>
-                                <div class="bord-name"><?= $e['institute']; ?></div>
-                                <div class="h-year">
-                                    <?php
-                                    $from = strtotime($e['from_date']);
-                                    $to = strtotime($e['to_date']);
-                                    ?>
-                                    <?= date('Y', $from) ?> to <?= date('Y', $to) ?>
-                                </div>
-                            </div> 
-                        </div>
-                    <?php } ?>
-                    <!--                    <div class=" col-md-5">
-                                            <div class="edubox1">
-                                                <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
-                                                <div class="h-school-name">Degree Name</div>
-                                                <div class="bord-name">University Name</div>
-                                                <div class="h-year">
-                                                    2010-2011
-                                                </div>
-                                            </div> 
-                                        </div>-->
-                    <?php Pjax::end(); ?>
                 </div>
-            </div>
-        </div>
-
-    </section>
-    <div class="clearfix"></div>
-
-    <!--Skills-->
-    <section id="skills">
-        <div class="large-container">
-            <div class="row">    
-                <div class="skills col-md-12">
-                    <div class="bdy-content">
-                        <div class="row">
+        </section>
+        <!--<div class="clearfix"></div>-->
+        <!-- experience -->
+        <section id="exp">
+            <div class="large-container">
+                <div class="row">
+                    <div class="exp col-md-12">
+                        <?php
+                        Pjax::begin(['id' => 'pjax_experience']);
+                        ?>
+                        <div class="bdy-content">
                             <div class="col-md-10">
-                                <div class="heading-style">Skills & Language</div>
+                                <div class="heading-style">Work Experience</div>
                             </div>
                             <div class="col-md-2">
                                 <?=
-                                Html::button('<i class="fa fa-plus"></i> Add Qualification', [
+                                Html::button('<i class="fa fa-plus"></i> Add Work Experience', [
                                     'class' => 'btn btn-primary btn-circle btn-md pull-right mt-20',
-                                    'id' => 'skill-modal',
+//                                'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'add-experience'),
+                                    'id' => 'open-modal',
                                     'data-toggle' => 'modal',
-                                    'data-target' => '#open-skill-modal',
+                                    'data-target' => '#myModal2',
                                 ]);
                                 ?>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="skill-tags">
-                                    <ul>
-                                        <li>HTML</li>
-                                        <li>CSS</li>
-                                        <li>Javascript</li>
-                                        <li>Photoshop</li>
-                                        <li>CoralDraw</li>
-                                    </ul>
+                            <div class="clearfix"></div>
+                            <div class="exp-box1 ">
+                                <div class="minus-padding col-md-1">
+                                    <div class="com-mark"> <!---com-line class for line  -->
+                                        <i class="fa fa-bullseye"></i>
+                                    </div>
+                                    <div class="com-mark-img">
+                                    </div>
                                 </div>
+                                <div class="exp-time col-md-3">
+                                    <div class="com-name"><?= $experience['company']; ?></div>
+                                    <div class="com-loc"><?= $experience['city']; ?></div>
+                                    <div class="com-time">
+                                        <div class="col-md-6">
+                                            <div class="com-t">From</div>
+                                            <div class="com-due"><?= date('F-Y', strtotime($experience['from_date'])); ?></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="com-t">To</div>
+                                            <div class="com-due"><?= date('F-Y', strtotime($experience['to_date'])); ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <?php $interval = date_diff(date_create($experience['from_date']), date_create($experience['to_date'])); ?>
+                                    <div class="time-du"><?= $interval->format('%y years %m months'); ?></div>
+                                </div>
+                                <div class="exp-post col-md-8">
+                                    <div class="post"><?= $experience['title']; ?></div>
+                                    <div class="role">Tasks Performed</div>
+                                    <div class="duty"><?= $experience['description']; ?></div>
+                                </div>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                        <?php Pjax::end(); ?>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="clearfix"></div>
+        <!-- education -->
+        <section id="edu">
+            <div class="large-container">
+                <div class="edu">
+                    <div class="bdy-content">
+                        <?php
+                        Pjax::begin(['id' => 'pjax_qualification']);
+                        ?>
+                        <div class="col-md-10">
+                            <div class="heading-style ">Qualification</div>
+                        </div>
+                        <div class="col-md-2">
+                            <?=
+                            Html::button('<i class="fa fa-plus"></i> Add Qualification', [
+                                'class' => 'btn btn-primary btn-circle btn-md pull-right mt-20',
+                                'id' => 'qualification-modal',
+                                'data-toggle' => 'modal',
+                                'data-target' => '#open-qualification-modal',
+                            ]);
+                            ?>
+                        </div>
+                        <?php foreach ($education as $e) { ?>
+                            <div class="col-md-offset-1 col-md-5">
+                                <div class="edubox1">
+                                    <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>
+                                    <div class="h-school-name"><?= $e['degree']; ?></div>
+                                    <div class="bord-name"><?= $e['institute']; ?></div>
+                                    <div class="h-year">
+                                        <?php
+                                        $from = strtotime($e['from_date']);
+                                        $to = strtotime($e['to_date']);
+                                        ?>
+                                        <?= date('Y', $from) ?> to <?= date('Y', $to) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <?php Pjax::end(); ?>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <div class="clearfix"></div>
+
+        <!--Skills-->
+        <section id="skills">
+            <div class="large-container">
+                <div class="row">
+                    <div class="skills col-md-12">
+                        <div class="bdy-content">
+                            <?php
+                            Pjax::begin(['id' => 'pjax_skills']);
+                            ?>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="heading-style">Skills & Language</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <?=
+                                    Html::button('<i class="fa fa-plus"></i> Add Skills', [
+                                        'class' => 'btn btn-primary btn-circle btn-md pull-right mt-20',
+                                        'id' => 'skill-modal',
+                                        'data-toggle' => 'modal',
+                                        'data-target' => '#open-skill-modal',
+                                    ]);
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="skill-tags">
+                                        <ul>
+                                            <?php foreach ($skills as $sk) { ?>
+                                                <li><?= $sk['skills']; ?></li>
+                                            <?php } ?>
+                                            <!--                                            <li>CSS</li>-->
+                                            <!--                                            <li>Javascript</li>-->
+                                            <!--                                            <li>Photoshop</li>-->
+                                            <!--                                            <li>CoralDraw</li>-->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php Pjax::end(); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="clearfix"></div>
+
+    </div>
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><?= Yii::t('frontend', 'Add Work Experience'); ?></h4>
+                </div>
+                <?php
+                $fform = ActiveForm::begin([
+                    'id' => 'add-experience-form',
+                    'action' => '/users/add-experience',
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+                    ],
+                ]);
+                ?>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $fform->field($AddExperienceForm, 'title')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?= $fform->field($AddExperienceForm, 'company')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                        </div>
+
+                        <div class="col-md-6">
+                            <?= $fform->field($AddExperienceForm, 'location')->textInput(['id' => 'cities', 'placeholder' => 'Location', 'autocomplete' => 'off'])->label(false); ?>
+                            <?= $fform->field($AddExperienceForm, 'city_id', ['template' => '{input}'])->hiddenInput(['id' => 'city_id'])->label(false); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?=
+                            $fform->field($AddExperienceForm, 'exp_from')->widget(DatePicker::classname(), [
+                                'options' => ['placeholder' => 'Work Experience From'],
+                                'readonly' => true,
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'yyyy-mm-dd',
+                                    'name' => 'exp_from',
+                                    'todayHighlight' => true,
+                                ]])->label(false);
+                            ?>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="check_exp">
+                                <?=
+                                $fform->field($AddExperienceForm, 'exp_to')->widget(DatePicker::classname(), [
+                                    'options' => ['placeholder' => 'Work Experience To'],
+                                    'readonly' => true,
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'yyyy-mm-dd',
+                                        'name' => 'earliestjoiningdate',
+                                        'todayHighlight' => true,
+                                    ]])->label(false);
+                                ?>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="md-checkbox-inline">
+                                <?=
+                                $fform->field($AddExperienceForm, 'present')->checkBoxList([
+                                    1 => 'I currently work here',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked) {
+                                        $return = '<div class="md-checkbox check_this">';
+                                        $return .= '<input type="checkbox" id="exp_present" value="0" name="' . $name . '"  class="md-check" ' . $checked . ' >';
+                                        $return .= '<label for="exp_present">';
+                                        $return .= '<span></span>';
+                                        $return .= '<span class="check"></span>';
+                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                        $return .= '</div>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?=
+                            $fform->field($AddExperienceForm, 'description')->textarea(['rows' => 6,])->label('Description');
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
+                    <?= Html::button('Close', ['class' => 'btn default btn-circle', 'data-dismiss' => 'modal']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="open-qualification-modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><?= Yii::t('frontend', 'Add Qualification'); ?></h4>
+                </div>
+                <?php
+                $fforms = ActiveForm::begin([
+                    'id' => 'add-education-form',
+                    'action' => '/users/add-qualification',
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+                    ],
+                ]);
+                ?>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $fforms->field($addQualificationForm, 'school')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $fforms->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $fforms->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?=
+                            $fforms->field($addQualificationForm, 'qualification_from')->widget(DatePicker::classname(), [
+                                'options' => ['placeholder' => 'From Year'],
+                                'readonly' => true,
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'yyyy-mm-dd',
+                                    'name' => 'qualification_from',
+                                    'todayHighlight' => true,
+                                ]])->label(false);
+                            ?>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="check_exp">
+                                <?=
+                                $fforms->field($addQualificationForm, 'qualification_to')->widget(DatePicker::classname(), [
+                                    'options' => ['placeholder' => 'To Year'],
+                                    'readonly' => true,
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'yyyy-mm-dd',
+                                        'name' => 'qualification_to',
+                                        'todayHighlight' => true,
+                                    ]])->label(false);
+                                ?>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
+                    <?= Html::button('Close', ['class' => 'btn default btn-circle', 'data-dismiss' => 'modal']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
             </div>
-        </div>
-    </section>
-
-    <div class="clearfix"></div>
-
-</div>
-<div class="modal fade" id="myModal2" role="dialog">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><?= Yii::t('frontend', 'Add Work Experience'); ?></h4>
-            </div>
-            <?php
-            $fform = ActiveForm::begin([
-                        'id' => 'add-experience-form',
-                        'action' => '/users/add-experience',
-                        'fieldConfig' => [
-                            'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
-                        ],
-            ]);
-            ?>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $fform->field($AddExperienceForm, 'title')->textInput(['autocomplete' => 'off'])->label(true); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <?= $fform->field($AddExperienceForm, 'company')->textInput(['autocomplete' => 'off'])->label(true); ?>
-                    </div>
-
-                    <div class="col-md-6">
-                        <?= $fform->field($AddExperienceForm, 'location')->textInput(['id' => 'cities', 'placeholder' => 'Location', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $fform->field($AddExperienceForm, 'city_id', ['template' => '{input}'])->hiddenInput(['id' => 'city_id'])->label(false); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <?=
-                        $fform->field($AddExperienceForm, 'exp_from')->widget(DatePicker::classname(), [
-                            'options' => ['placeholder' => 'Work Experience From'],
-                            'readonly' => true,
-                            'pluginOptions' => [
-                                'autoclose' => true,
-                                'format' => 'yyyy-mm-dd',
-                                'name' => 'exp_from',
-                                'todayHighlight' => true,
-                    ]])->label(false);
-                        ?>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="check_exp">
-                            <?=
-                            $fform->field($AddExperienceForm, 'exp_to')->widget(DatePicker::classname(), [
-                                'options' => ['placeholder' => 'Work Experience To'],
-                                'readonly' => true,
-                                'pluginOptions' => [
-                                    'autoclose' => true,
-                                    'format' => 'yyyy-mm-dd',
-                                    'name' => 'earliestjoiningdate',
-                                    'todayHighlight' => true,
-                        ]])->label(false);
-                            ?>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="md-checkbox-inline">
-                            <?=
-                            $fform->field($AddExperienceForm, 'present')->checkBoxList([
-                                1 => 'I currently work here',
-                                    ], [
-                                'item' => function($index, $label, $name, $checked) {
-                                    $return = '<div class="md-checkbox check_this">';
-                                    $return .= '<input type="checkbox" id="exp_present" value="0" name="' . $name . '"  class="md-check" ' . $checked . ' >';
-                                    $return .= '<label for="exp_present">';
-                                    $return .= '<span></span>';
-                                    $return .= '<span class="check"></span>';
-                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                    $return .= '</div>';
-                                    return $return;
-                                }
-                            ])->label(false);
-                            ?>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <?=
-                        $fform->field($AddExperienceForm, 'description')->textarea(['rows' => 6,])->label('Description');
-                        ?>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
-                <?= Html::button('Close', ['class' => 'btn default btn-circle', 'data-dismiss' => 'modal']); ?>
-            </div>
-            <?php ActiveForm::end(); ?>
         </div>
     </div>
-</div>
-<div class="modal fade" id="open-qualification-modal" role="dialog">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><?= Yii::t('frontend', 'Add Qualification'); ?></h4>
+    <div class="modal fade" id="open-skill-modal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><?= Yii::t('frontend', 'Add Skills'); ?></h4>
+                </div>
+                <?php
+                $forms = ActiveForm::begin([
+                    'id' => 'add-skill-form',
+                    'action' => '/users/add-skill',
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+                    ],
+                ]);
+                ?>
+                <div class="modal-body">
+                    <div class="col-md-10 col-md-offset-1">
+                        <?= $forms->field($addSkillForm, 'name')->textInput(['id' => 'skills-input', 'autocomplete' => 'off', 'placeholder' => 'Enter name of skills'])->label(false); ?>
+                        <?= $forms->field($addSkillForm, 'skills_id')->hiddenInput(['id' => 'skills-main'])->label(false); ?>
+                    </div>
+<!--                    <div class="skill-tags">-->
+<!--                        <div class="additionalskills">Additional Skills</div>-->
+<!--                        <ul>-->
+<!--                            <li>HTML</li>-->
+<!--                            <li>CSS</li>-->
+<!--                            <li>Javascript</li>-->
+<!--                            <li>Photoshop</li>-->
+<!--                            <li>CoralDraw</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                </div>
+                <div class="modal-footer">
+                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
+                    <?= Html::button('Close', ['class' => 'btn default btn-circle', 'data-dismiss' => 'modal']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
             </div>
-            <?php
-            $fforms = ActiveForm::begin([
-                        'id' => 'add-education-form',
-                        'action' => '/users/add-qualification',
-                        'fieldConfig' => [
-                            'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
-                        ],
-            ]);
-            ?>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $fforms->field($addQualificationForm, 'school')->textInput(['autocomplete' => 'off'])->label(true); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $fforms->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off'])->label(true); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $fforms->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off'])->label(true); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <?=
-                        $fforms->field($addQualificationForm, 'qualification_from')->widget(DatePicker::classname(), [
-                            'options' => ['placeholder' => 'From Year'],
-                            'readonly' => true,
-                            'pluginOptions' => [
-                                'autoclose' => true,
-                                'format' => 'yyyy-mm-dd',
-                                'name' => 'qualification_from',
-                                'todayHighlight' => true,
-                    ]])->label(false);
-                        ?>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="check_exp">
-                            <?=
-                            $fforms->field($addQualificationForm, 'qualification_to')->widget(DatePicker::classname(), [
-                                'options' => ['placeholder' => 'To Year'],
-                                'readonly' => true,
-                                'pluginOptions' => [
-                                    'autoclose' => true,
-                                    'format' => 'yyyy-mm-dd',
-                                    'name' => 'qualification_to',
-                                    'todayHighlight' => true,
-                        ]])->label(false);
-                            ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
-                <?= Html::button('Close', ['class' => 'btn default btn-circle', 'data-dismiss' => 'modal']); ?>
-            </div>
-            <?php ActiveForm::end(); ?>
         </div>
     </div>
-</div>
-<div class="modal fade" id="open-skill-modal" role="dialog">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><?= Yii::t('frontend', 'Add Skills'); ?></h4>
-            </div>
-            <?php
-            $forms = ActiveForm::begin([
-                        'id' => 'add-skill-form',
-                        'action' => '/users/add-skill',
-                        'fieldConfig' => [
-                            'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
-                        ],
-            ]);
-            ?>
-            <div class="modal-body">
-                <div class="col-md-10 col-md-offset-1">
-                    <?= $forms->field($addSkillForm, 'name')->textInput(['id' => 'skills-input', 'autocomplete' => 'off', 'placeholder' => 'Enter name of skills'])->label(false); ?>
-                </div>
-<!--                <
-                $forms->field($addSkillForm, 'range', ['template' => '<div class="row"><div class="col-md-12"><div class="wrap"><div class="holder"><div class="demo">{label}<div class="col-md-8 col-md-offset-2 rkmd-slider slider-discrete slider-lightBlue">{input}</div>{error}{hint}</div></div></div></div></div>'])->widget(Slider::classname(), [
-                    'value' => '3',
-                    'pluginOptions' => [
-                        'min' => 0,
-                        'max' => 100,
-                        'tooltip' => 'hide',
-                    ]
-                ])->label(true)
-                ?>-->
-                <div class="skill-tags">
-                    <div class="additionalskills">Additional Skills</div>
-                    <ul>
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>Javascript</li>
-                        <li>Photoshop</li>
-                        <li>CoralDraw</li>
-                    </ul>
-                </div>
-                <!--                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="wrap">
-                                            <div class="holder">
-                                                <div class="demo">
-                                                    <label class="col-md-3">HTML</label>
-                                                    <div class="col-md-9 rkmd-slider slider-discrete slider-lightBlue">
-                                                        <input type="range" min="0" max="100" value="35">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>-->
-            </div>
-            <div class="modal-footer">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle']); ?>
-                <?= Html::button('Close', ['class' => 'btn default btn-circle', 'data-dismiss' => 'modal']); ?>
-            </div>
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
-</div>
 <?php
 $this->registerCss('
 .large-container{
@@ -808,8 +776,8 @@ $this->registerCss('
 .skill-tags{display: inline; padding-top:10px; }
 .skill-tags ul li span{color:#333339; font-size:16px; text-transform: uppercase; font-weight: bold; background: none; }
 .skill-tags ul{padding-left: 10px;}
-.skill-tags ul li{ display: inline; background: rgba(220, 220, 220, 0.85); padding: 5px 10px; border-radius: 10px; font-size: 14px; 
-                  font-style: oblique; margin: 0 3px;}
+.skill-tags ul li{ display: inline-block; background: rgba(220, 220, 220, 0.85); padding: 5px 10px; border-radius: 10px; font-size: 14px; 
+                  font-style: oblique; margin: 3px;}
 .progress , .progress-bar{height: 15px; font-size: 10px; line-height: 15px;}
 .progress{margin: 15px 0 0px 0;}
 .custom-bg{background: #00a3e0; }
@@ -1514,8 +1482,6 @@ $(document).on('click', '.check_this', function(){
         $('#exp_present').val('0');
     }
 });
-//console.log(image_path);
-//console.log(cover_image_path);
         
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -1548,13 +1514,11 @@ $("#coverImageUpload").change(function() {
 
 $('#profile-img').on('load', function () {
     if($("#profile-img").attr('src') != image_path && $("#profile-img").attr('src') != profile_name_path){
-//        console.log(1);
         $('#pop-content').fadeIn(1000);
    }
 });
 $('.jumbo').on('change', function () {
     if($(".jumbo").css('background-image') != image_path ){
-//        console.log(10);
         $('#pop-content2').fadeIn(1000);
    }
 });
@@ -1600,11 +1564,9 @@ $(document).on('submit', '#upload-user-cover-image', function(event) {
             $('.loader-aj-main').fadeIn(1000);  
         },
         success: function (response) {
-//        console.log(response);
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-//                console.log('okkk');
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1633,7 +1595,6 @@ $(document).on('submit', '#add-experience-form', function(event) {
                 $("#add-experience-form")[0].reset();
                 $.pjax.reload({container: '#pjax_experience', async: false});
                 $('#myModal2').modal('hide');
-//                console.log('okkk');
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1696,35 +1657,7 @@ $(document).on('click', '#cancel_cover', function() {
     $('#pop-content2').fadeOut(1000);
     $('.jumbo').css('background-image', cover_image_path);
 });
-        
-//$(document).on('submit', '#add-education-form', function(event) {
-//    event.preventDefault();
-//    var data = $('#add-education-form').serialize();
-//    var url = $(this).attr('action');
-//    var method = $(this).attr('method');
-//    $.ajax({
-//        url: url,
-//        method: method,
-//        data: data,
-//        beforeSend:function(){     
-//            $('.loader-aj-main').fadeIn(1000);  
-//        },
-//        success: function (response) {
-//        console.log(response);
-//        $('.loader-aj-main').fadeOut(1000);
-//            if (response.title == 'Success') {
-//                toastr.success(response.message, response.title);
-//                $("#add-education-form")[0].reset();
-//                $.pjax.reload({container: '#pjax_qualification', async: false});
-//                $('#open-qualification-modal').modal('hide');
-////                console.log('okkk');
-//            } else {
-//                toastr.error(response.message, response.title);
-//            }
-//            
-//        }
-//    });
-//}); 
+
 $(document).on('submit', '#add-education-form', function(event) {
     event.preventDefault();
     var education_method = $(this).attr('method');
@@ -1733,19 +1666,6 @@ $(document).on('submit', '#add-education-form', function(event) {
     var before = function(){     
         $('.loader-aj-main').fadeIn(1000);  
     };
-//    var after = function(){
-//        
-//            if (response.title == 'Success') {
-//                toastr.success(response.message, response.title);
-//                $("#add-education-form")[0].reset();
-//                $.pjax.reload({container: '#pjax_qualification', async: false});
-//                $('#open-qualification-modal').modal('hide');
-//            } else {
-//                toastr.error(response.message, response.title);
-//            }
-//            
-//        }
-//    }
     var req = function(){
         var result = ajax(education_method, education_url, education_data);
         var resp = result["responseJSON"];
@@ -1755,6 +1675,30 @@ $(document).on('submit', '#add-education-form', function(event) {
             $("#add-education-form")[0].reset();
             $.pjax.reload({container: '#pjax_qualification', async: false});
             $('#open-qualification-modal').modal('hide');
+        }else{
+            toastr.error(resp.message, resp.title);
+        }
+    }
+    order(before, req);
+});
+$(document).on('submit', '#add-skill-form', function(event) {
+    event.preventDefault();
+    var skills_method = $(this).attr('method');
+    var skills_url = $(this).attr('action');
+    var skills_data = $(this).serialize();
+    var before = function(){
+        $('.loader-aj-main').fadeIn(1000);
+    };
+    var req = function(){
+        var result = ajax(skills_method, skills_url, skills_data);
+        var resp = result["responseJSON"];
+        $('.loader-aj-main').fadeOut(1000);
+        if(resp.status == 200){
+            toastr.success(resp.message, resp.title);
+            $('#skills-main').val('');
+            $("#add-skill-form")[0].reset();
+            $.pjax.reload({container: '#pjax_skills', async: false});
+            $('#open-skill-modal').modal('hide');
         }else{
             toastr.error(resp.message, resp.title);
         }
@@ -1795,56 +1739,8 @@ $('#cities').typeahead(null, {
     $('.Typeahead-spinner').hide();
   }).on('typeahead:selected typeahead:completed',function(e,datum)
       {
-        console.log(datum.id);
         $('#city_id').val(datum.id);
      });
-        
-        
-        
-        
-        
-        
-        
- 
-        
-
-//        
-//var skill = new Bloodhound({
-//  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
-//  queryTokenizer: Bloodhound.tokenizers.whitespace,
-//  remote: {
-//    url:'/account/skills/get-skills',
-//    prepare: function (query, settings) {
-//                      settings.type = "POST";
-//                      settings.url += '?q=' +$('#skills-input').val();
-////                      settings.contentType = "application/json; charset=UTF-8";
-////                      settings.data = JSON.stringify(query);
-//
-//                      return settings;
-//                   },
-//  }
-//});    
-
-        
- 
-            
-//$('#skills-input').typeahead(null, {
-//  name: 'skills',
-//  highlight: true,       
-//  display: 'text',
-//  source: skill,
-//   limit: 15,
-//   hint:false,
-//}).on('typeahead:asyncrequest', function() {
-//    $('.Typeahead-spinner').show();
-//  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-//    
-//    $('.Typeahead-spinner').hide();
-//  }).on('typeahead:selected typeahead:completed',function(e,datas)
-//      {
-//        console.log(datas.id);
-////        $('#city_id').val(datas.id);
-//     });
         
         
 var accountBloodhound = new Bloodhound({
@@ -1873,15 +1769,8 @@ $('#skills-input').typeahead(null, {
     display: 'skill',
     source: accountBloodhound 
 }).bind('typeahead:select', function (ev, suggestion) {
-    console.log('Selection: ' + suggestion);
+    $('#skills-main').val(suggestion.skill_enc_id);
 });        
-        
-        
-        
-        
-        
-        
-        
         
         
 $('[data-toggle="tooltip"]').tooltip();
@@ -1905,8 +1794,7 @@ var objectPositionTop = $('#skills').offset().top;
                             nav.find('a[href="#' + $(this).attr('id') + '"]').addClass('active');
                         }
                     });
-
-//                    var currentPosition = $(document).scrollTop();
+                    
                     if (currentPosition >= objectPositionTop) {
                         $('.progress .progress-bar').css("width",
                                 function () {
@@ -1926,169 +1814,6 @@ var objectPositionTop = $('#skills').offset().top;
 
                     return false;
                 });
-        
-        
-//Range slider js starts
-        
-
-
-  
-
-
-///* Range Slider Function */
-//(function($) {
-//
-//  $.fn.rkmd_rangeSlider = function() {
-//    var self, slider_width, slider_offset, curnt, sliderContinuous, sliderDiscrete, range, slider;
-//    self             = $(this);
-//    slider_width     = self.outerWidth();
-//    slider_offset    = self.offset().left;
-//
-//    sliderContinuous = $('.slider-continuous');
-//    sliderDiscrete   = $('.slider-discrete');
-//
-//    if(self.hasClass('slider-continuous') === true) {
-//
-//      sliderContinuous.each(function(i, v) {
-//        curnt         = $(this);
-//        curnt.append(sliderContinuous_tmplt());
-//        range         = curnt.find('input[type="range"]');
-//        slider        = curnt.find('.slider');
-//        slider_fill   = slider.find('.slider-fill');
-//        slider_handle = slider.find('.slider-handle');
-//
-//        var range_val = range.val();
-//        slider_fill.css('width', range_val +'%');
-//        slider_handle.css('left', range_val +'%');
-//
-//      });
-//    }
-//
-//    if(self.hasClass('slider-discrete') === true) {
-//
-//      sliderDiscrete.each(function(i, v) {
-//        curnt         = $(this);
-//        curnt.append(sliderDiscrete_tmplt());
-//        range         = curnt.find('input[type="range"]');
-//        slider        = curnt.find('.slider');
-//        slider_fill   = slider.find('.slider-fill');
-//        slider_handle = slider.find('.slider-handle');
-//        slider_label  = slider.find('.slider-label');
-//
-//        var range_val = parseInt(range.val());
-//        slider_fill.css('width', range_val +'%');
-//        slider_handle.css('left', range_val +'%');
-//        slider_label.find('span').text(range_val);
-//      });
-//    }
-//
-//    self.on('mousedown', '.slider-handle', function(e) {
-//      if(e.button === 2) {
-//        return false;
-//      }
-//
-//      var parents       = $(this).parents('.rkmd-slider');
-//      var slider_width  = parents.outerWidth();
-//      var slider_offset = parents.offset().left;
-//      var check_range   = parents.find('input[type="range"]').is(':disabled');
-//
-//      if(check_range === true) {
-//        return false;
-//      }
-//
-//      if(parents.hasClass('slider-discrete') === true) {
-//        $(this).addClass('is-active');
-//      }
-//      var handlers = {
-//        mousemove: function(e) {
-//          var slider_new_width = e.pageX - slider_offset;
-//
-//          if(slider_new_width <= slider_width && !(slider_new_width < '0')) {
-//            slider_move(parents, slider_new_width, slider_width);
-//          }
-//        },
-//        mouseup: function(e) {
-//          $(this).off(handlers);
-//
-//          if(parents.hasClass('slider-discrete') === true) {
-//            parents.find('.is-active').removeClass('is-active');
-//          }
-//        }
-//      };
-//      $(document).on(handlers);
-//    });
-//
-//    self.on('mousedown', '.slider', function(e) {
-//      if(e.button === 2) {
-//        return false;
-//      }
-//
-//      var parents       = $(this).parents('.rkmd-slider');
-//      var slider_width  = parents.outerWidth();
-//      var slider_offset = parents.offset().left;
-//      var check_range   = parents.find('input[type="range"]').is(':disabled');
-//
-//      if(check_range === true) {
-//        return false;
-//      }
-//
-//      var slider_new_width = e.pageX - slider_offset;
-//      if(slider_new_width <= slider_width && !(slider_new_width < '0')) {
-//        slider_move(parents, slider_new_width, slider_width);
-//      }
-//
-//      var handlers = {
-//        mouseup: function(e) {
-//          $(this).off(handlers);
-//        }
-//      };
-//      $(document).on(handlers);
-//
-//    });
-//  };
-//
-//  function sliderContinuous_tmplt() {
-//    var tmplt = '<div class="slider">' +
-//        '<div class="slider-fill"></div>' +
-//        '<div class="slider-handle"></div>' +
-//        '</div>';
-//
-//    return tmplt;
-//  }
-//  function sliderDiscrete_tmplt() {
-//    var tmplt = '<div class="slider">' +
-//        '<div class="slider-fill"></div>' +
-//        '<div class="slider-handle"><div class="slider-label"><span>0</span></div></div>' +
-//        '</div>';
-//
-//    return tmplt;
-//  }
-//  function slider_move(parents, newW, sliderW) {
-//    var slider_new_val = parseInt(Math.round(newW / sliderW * 100));
-//
-//    var slider_fill    = parents.find('.slider-fill');
-//    var slider_handle  = parents.find('.slider-handle');
-//    var range          = parents.find('input[type="range"]');
-//
-//    slider_fill.css('width', slider_new_val +'%');
-//    slider_handle.css({
-//      'left': slider_new_val +'%',
-//      'transition': 'none',
-//      '-webkit-transition': 'none',
-//      '-moz-transition': 'none'
-//    });
-//
-//    range.val(slider_new_val);
-//
-//    if(parents.hasClass('slider-discrete') === true) {
-//      parents.find('.slider-handle span').text(slider_new_val);
-//    }
-//  }
-//
-//}(jQuery));
-//        $('.rkmd-slider').rkmd_rangeSlider();
-//Range slider js ends
-        
         
 JS;
 $this->registerJs($script);
