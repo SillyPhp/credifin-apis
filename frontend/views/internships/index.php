@@ -3,9 +3,10 @@ use yii\helpers\Url;
 $this->params['header_dark'] = false;
 ?>
     <div class="fixed-btn background-logo-blue">
-        <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
+        <a href="/site/company-index">
+            <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
         Are you an Employer?<br/>
-        <span>Want to post an Internship?</span>
+            <span>Want to post an Internship or a Job?</span></a>
     </div>
     <section class="backgrounds">
         <div class="container">
@@ -420,7 +421,7 @@ $this->registerCss('
 }
 
 /*<!---- view-all button css ends --->*/
-.fixed-btn{
+.fixed-btn a{
     position: fixed;
     text-align: center;
     width: 150px;
@@ -437,14 +438,14 @@ $this->registerCss('
     bottom: -42px;
     border-top-right-radius: 28px;
 }
-.fixed-btn span{
+.fixed-btn a span{
     font-weight: 700;
 }
-.fixed-btn:hover{
+.fixed-btn a:hover{
     opacity: 1;
     bottom: 0px;
 }
-.background-logo-blue{
+.background-logo-blue a{
     background-color: #49a1e3;
 }
 .background-mirror {

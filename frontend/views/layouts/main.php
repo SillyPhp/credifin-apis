@@ -110,11 +110,11 @@ AppAssets::register($this);
                 <div class="set_container container">
                     <div class="row">
                         <div class="mt-6 useful-links col-sm-12 col-md-4">
-                            <ul>
-                                <li><a href="<?= Url::to('/about-us'); ?>">About Us</a></li> |
-                                <li><a href="">Team</a></li> |
-                                <li><a href="">Vision</a></li>
-                            </ul>
+<!--                            <ul>-->
+<!--                                <li><a href="--><?//= Url::to('/about-us'); ?><!--">About Us</a></li> |-->
+<!--                                <li><a href="">Team</a></li> |-->
+<!--                                <li><a href="">Vision</a></li>-->
+<!--                            </ul>-->
                         </div>
                         <div class="set1 col-sm-12 col-md-4">
                             <div class="footer-widget ">
@@ -130,11 +130,11 @@ AppAssets::register($this);
                             </div>  
                         </div>
                         <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
-                            <ul>
-                                <li><a href="<?= Url::to('/contact-us'); ?>">Contact Us</a></li> |
-                                <li><a href="">FAQ'S</a></li> |
-                                <li><a href="">Help Counter</a></li>
-                            </ul>
+<!--                            <ul>-->
+<!--                                <li><a href="--><?//= Url::to('/contact-us'); ?><!--">Contact Us</a></li> |-->
+<!--                                <li><a href="">FAQ'S</a></li> |-->
+<!--                                <li><a href="">Help Counter</a></li>-->
+<!--                            </ul>-->
                         </div>
                     </div>
                 </div>

@@ -171,6 +171,9 @@ class SiteController extends Controller {
     public function actionTrainer() {
         return $this->render('trainer');
     }
+    public function actionCompanyIndex() {
+        return $this->render('company-index');
+    }
 
     public function actionAddNewSubscriber() {
         Yii::$app->response->format = Response::FORMAT_JSON;
