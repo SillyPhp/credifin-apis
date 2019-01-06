@@ -233,6 +233,9 @@ $script = <<<JS
                     } else if (tab_count == 'tab4')
                     {
                         $.pjax.reload({container: '#pjax_locations2', async: false});
+                    } else{
+                        $.pjax.reload({container: '#pjax_locations1', async: false});
+                        $.pjax.reload({container: '#location_map', async: false});
                     }
                     $('#modal').modal('toggle');
                 } else {
