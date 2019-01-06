@@ -16,7 +16,7 @@ for ($i = 1; $i <= $rows; $i++) {
                     <div class="<?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
-                                <button class="clone-bttn" type="button">
+                                <button class="clone-bttn" type="button" onclick="window.open('<?= Url::to('/account/interview-processes/clone/' . $processes[$next]['id']); ?>', '_blank');";>
                                     <i class="fa fa-clone"></i>
                                 </button>
                                 <button class="edit-bttn" type="button">

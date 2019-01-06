@@ -5,6 +5,7 @@ namespace account\controllers;
 use Yii;
 use yii\web\Controller;
 use account\models\processes\InterviewProcess;
+use common\models\OrganizationInterviewProcess;
 
 class InterviewProcessesController extends Controller {
 
@@ -32,6 +33,28 @@ class InterviewProcessesController extends Controller {
         return $this->render('form', [
                     'model' => $model,
         ]);
+    }
+
+    public function actionClone($ipidk)
+    {
+        $process = OrganizationInterviewProcess::find()
+            ->alias('a')
+            ->where(['a.interview_process_enc_id' => $ipidk])
+            ->joinWith(['interviewProcessFields b'],true)
+            ->asArray()
+            ->one();
+
+        $model = new InterviewProcess;
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return $this->render('index', ['model' => $model, 'process' => $process]);
+        }
     }
 
 }
