@@ -56,8 +56,12 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
+        if(!\Yii::$app->session->has("backURL")){
+            \Yii::$app->session->set("backURL", \Yii::$app->request->referrer);
+        }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-            return $this->redirect((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : '/account/dashboard'));
+//                return $this->redirect((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : '/account/dashboard'));
+            return $this->redirect(\Yii::$app->session->get("backURL"));
         }
 
         return $this->render('login', [
