@@ -1,8 +1,8 @@
 <?php
 
 use yii\widgets\Menu;
+use yii\helpers\Url;
 
-$jobs_visibility = $internships_visibility = $freelancers_visibility = false;
 $services = Yii::$app->user->identity->services;
 $result = [];
 

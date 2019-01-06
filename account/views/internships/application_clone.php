@@ -104,19 +104,19 @@ foreach ($data['applicationOptions'] as $value) {
                                 <div class="col-md-4">
                                     <div class="select">
                                         <?php $select = $data['category_enc_id'];  ?>
-                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['options' => [$select => ['selected' => true]], 'prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
+                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['options' => [$select => ['selected' => true]], 'prompt' => 'Choose Job Function', 'disabled' => true])->label(false); ?>
                                     </div>        
                                 </div>
                                 <div class="col-md-4">
                                     <div class="cat_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true, 'value' => $data['cat_name']])->label(false) ?>
+                                        <?= $form->field($model, 'jobtitle')->textInput(['placeholder' => 'Job Profile', 'id' => 'jobtitle', 'disabled' => true, 'value' => $data['cat_name']])->label(false) ?> 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="desig_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation', 'value' => $data['designation']])->label(false); ?>
+                                        <?= $form->field($model, 'designations')->textInput(['id' => 'designations', 'placeholder' => 'Designation', 'value' => $data['designation']])->label(false); ?>
                                     </div>
 
                                 </div>

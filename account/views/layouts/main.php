@@ -222,6 +222,9 @@ BackendNewAssets::register($this);
                 -ms-border-radius: 50% !important;
                 -o-border-radius: 50% !important;
                 border-radius: 50% !important;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
             }
             .can-detail-s > p{
                 margin-top: 10px !important;

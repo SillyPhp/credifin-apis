@@ -639,6 +639,7 @@ class JobApplicationForm extends Model
             ->select(['a.name', 'a.category_enc_id'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
+            ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->asArray()
             ->all();
         return $primaryfields;
@@ -648,7 +649,7 @@ class JobApplicationForm extends Model
     {
         $industries = Industries::find()
             ->select(['industry_enc_id', 'industry'])
-            ->orderBy([new \yii\db\Expression('FIELD (industry, "Same Industry", "No Preference") DESC, industry ASC')])
+            ->orderBy([new \yii\db\Expression('FIELD (industry, "Same Industry", "No Preference") DESC, FIELD (industry, "Others") ASC, industry ASC')])
             ->asArray()
             ->all();
 

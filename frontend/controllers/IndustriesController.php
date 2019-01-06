@@ -28,6 +28,7 @@ class IndustriesController extends Controller
                 ->innerJoin(BusinessActivities::tableName() . 'as c', 'c.business_activity_enc_id = a.business_activity_enc_id')
                 ->where(['c.business_activity_enc_id' => $id])
                 ->orderBy(['b.industry' => SORT_ASC])
+                ->orderBy([new \yii\db\Expression('FIELD (b.industry, "Others") ASC, b.industry ASC')])
                 ->asArray()
                 ->all();
             if ($industries) {
@@ -44,14 +45,5 @@ class IndustriesController extends Controller
             return $response;
         }
     }
-
-//    public function actionList()
-//    {
-//        Yii::$app->response->format = Response::FORMAT_JSON;
-//        return Industries::find()
-//            ->orderBy([new \yii\db\Expression('FIELD (industry, "Same Industry", "No Preference") DESC, industry ASC')])
-//            ->asArray()
-//            ->all();
-//    }
 
 }

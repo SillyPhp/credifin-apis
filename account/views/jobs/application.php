@@ -106,14 +106,14 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                         <div class="cat_wrapper">
                                             <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
+                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="desig_wrapper">
                                             <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                            <?= $form->field($model, 'designations')->textInput(['id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
+                                            <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
                                         </div>
 
                                     </div>
@@ -230,7 +230,18 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                     </div>
                                     <div class="col-md-3">
-                                        <?= $form->field($model, 'min_exp')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Experience Required'])->label(false); ?>
+                                        <?= $form->field($model, 'min_exp')->dropDownList([
+                                            '0' => 'No Experience',
+                                            '1' => 'Less Than 1',
+                                            '2' => '1 Year',
+                                            '3' => '2-3 Years',
+                                            '3-5' => '3-5 Years',
+                                            '5-10' => '5-10 Years',
+                                            '10-20' => '10-20 Years',
+                                            '20+' => 'More Than 20 Years',
+                                        ], [
+                                            'prompt' => 'Experience Required',
+                                        ])->label(false); ?>
                                     </div>
                                     <div class="col-md-3">
                                         <?=

@@ -16,15 +16,12 @@ for ($i = 1; $i <= $rows; $i++) {
                     <div class="<?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
-                                <button class="clone-bttn" type="button">
+                                <button class="clone-bttn set-right-align two" type="button">
                                     <i class="fa fa-clone"></i>
-                                </button>
-                                <button class="edit-bttn" type="button">
-                                    <i class="fa fa-pencil-square-o"></i>
                                 </button>
                             </div>
                             <div class="lt-bttn">
-                                <button type="button" class="e-bttn">
+                                <button type="button" class="e-bttn set-right-align one">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>

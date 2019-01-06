@@ -15,7 +15,6 @@ $benefits = ArrayHelper::map($benefit, 'benefit_enc_id', 'benefit');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
-
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
@@ -104,13 +103,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-4">
                                         <div class="cat_wrapper">
                                             <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
-
+                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false); ?>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
-
                                     </div>
                                 </div>
                                 <div class="row">
@@ -229,10 +226,8 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                     3 => 'Trans',
                                                 ], [
                                                     'item' => function ($index, $label, $name, $checked, $value) {
-
                                                         $return .= '<input type="radio" id="gender' . $index . '" name="' . $name . '" value="' . $value . '" class="gender_radio" ' . (($checked) ? 'checked' : '') . '>';
                                                         $return .= '<label class="gender_label" for="gender' . $index . '">' . $label . '</label>';
-
                                                         return $return;
                                                     }
                                                 ])->label(false);
@@ -304,13 +299,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="module2-heading">Select Placement Locations</div>
-
                                     </div>
                                     <div class="col-md-4">
                                         <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
                                         <span id="place_error"></span>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="button_location">
                                             <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
@@ -357,18 +350,14 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         }
                                     ])->label(false);
                                     ?>
-
                                 <?php } else { ?>
                                     <div class="empty-section-text">No Placement Location has been found</div>
                                 <?php }
                                 Pjax::end(); ?>
                                 <input type="text" name="placement_calc" id="placement_calc" readonly>
                             </div>
-
                             <div class="tab-pane" id="tab2">
-
                                 <div class="module2-heading">Provide job description</div>
-
                                 <div class="row padd-10">
                                     <div class="col-md-6">
                                         <div id="manual_questions">
@@ -388,32 +377,23 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-
                                         <div id="checkboxlistarea">
                                             <h3 id="heading_placeholder"> Please type Atleast 3 Job Description above or
                                                 select from predefined list <i class="fa fa-share"
                                                                                aria-hidden="true"></i></h3>
                                             <ul class="drop-options connected-sortable droppable-area">
-
                                             </ul>
                                         </div>
-
                                     </div>
                                     <div class="col-md-6">
-
                                         <div class="md-checkbox-list" id="md-checkbox">
-
                                         </div>
                                         <div id="error-checkbox-msg"></div>
                                         <?= $form->field($model, 'checkboxArray', ['template' => '{input}'])->hiddenInput(['id' => 'checkbox_array']); ?>
-
                                     </div>
                                 </div>
-
                                 <div class="divider"></div>
-
                                 <div class="module2-heading">Educational Requirements</div>
-
                                 <div class="row padd-10">
                                     <div class="col-md-6">
                                         <div id="manual_questions">
@@ -432,19 +412,15 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-
                                         <div id="quali_listarea">
                                             <h3 id="heading_quali"> Please type the educational requirements above or
                                                 select from predefined list <i class="fa fa-share"></i></h3>
                                             <ul class="quali_drop_options connected-sortable droppable-area">
-
                                             </ul>
                                         </div>
-
                                     </div>
                                     <div class="col-md-6">
                                         <div class="md-checkbox" id="quali_list">
-
                                         </div>
                                         <div id="error-edu-msg"></div>
                                         <?= $form->field($model, 'qualifications_arr', ['template' => '{input}'])->hiddenInput(['id' => 'qaulific_array']); ?>
@@ -454,7 +430,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <div class="divider"></div>
 
                                 <div class="module2-heading">Skills Required</div>
-
                                 <div class="row padd-10">
                                     <div class="col-md-6">
                                         <div class="row">
@@ -464,7 +439,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                     <input type="text" id="inputfield" name="inputfield"
                                                            class="form-control"
                                                            placeholder="Type required skills and press enter.">
-
                                                 </div>
                                             </div>
                                         </div>
@@ -2825,7 +2799,7 @@ $(document).on('click', '.modal-load-class', function() {
                     function explode(){
                      $('#loading_img').removeClass('show');
                      $('.button-submit').prop('disabled','');
-                     window.location.replace('/account/jobs/dashboard'); 
+                     window.location.replace('/account/internships/dashboard'); 
                      }
                        setTimeout(explode, 3000); 
                      }

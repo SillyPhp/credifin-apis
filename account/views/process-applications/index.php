@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 ?>
 
 <!--<div class="row">
@@ -40,11 +41,12 @@ Html::button('Add New Company', [
     </div>
 </div>-->
 
-<div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
+<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                     alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
                 <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
             </div>
         </div>
@@ -55,50 +57,10 @@ Html::button('Add New Company', [
         <div class="portlet light ">
             <div class="portlet-title tabbable-line">
                 <div class="row">
-                    <!--                    <div class="col-lg-12">
-                                            <h3></h3>
-                                        </div>-->
+                    <div class="col-lg-12">
+                        <h3>Process Applications of <?= $application['name']; ?></h3>
+                    </div>
                 </div>
-                <div class="caption">
-                    <form class="rating-form-1">
-                        <label for="all">
-                            <input type="radio" name="rating" class="super-happy" id="all" checked />
-                            <span class="filters">All</span>
-                        </label>
-                        <?php
-                        if (!empty($labels)) {
-                            foreach ($labels as $arr) {
-                                ?>
-                                <label for="super-happy1" class="city_label">
-                                    <input type="radio" name="rating" class="super-happy" id="<?php echo $arr['city_enc_id'] ?>"/>
-                                    <span class="filters"><?php echo $arr['name'] ?></span>
-                                </label>
-                                <?php
-                            }
-                        }
-                        ?>
-
-                    </form>
-
-                </div>
-
-
-                <div class="actions pull-right">
-                    <form id="form1">
-                        <div style="">
-                            <select>
-                                <option value="" selected disabled hidden>Filter </option>
-                                <option value="date">Application Date</option>
-                                <option value="experience">Relevant Experience</option>
-                                <option value="newest">Newest First</option>
-                                <option value="best">Best Match</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <a id="schedule-interview" class="btn btn-primary pull-right" style="margin: 5px;border-radius: 3px !important;" href="#">
-                    Schedule Interview
-                </a>
             </div>
             <div class="portlet-body">
                 <div class="tab-content">
@@ -116,24 +78,30 @@ Html::button('Add New Company', [
                                                 ?>
                                                 <div class="cd-can-box">
                                                     <div class="cd-box-border" id="cd-box-border">
-                                                        <div class="row">  
+                                                        <div class="row">
                                                             <div class=" cd-user-icon col-md-6">
-                                                                <a href="<?= '/user/' . $user['username'] ?>" target="_blank">
+                                                                <a href="<?= '/user/' . $user['username'] ?>"
+                                                                   target="_blank">
                                                                     <?php if ($user['image']): ?>
-                                                                        <img src="<?= $user['image'] ?>" class="img-responsive img-thumbnail img-rounded">
+                                                                        <img src="<?= $user['image'] ?>"
+                                                                             class="img-responsive img-thumbnail img-rounded">
                                                                     <?php else: ?>
-                                                                        <canvas class="user-icon" name="<?= $user['name'] ?>" width="80" height="80" font="35px"></canvas>
+                                                                        <canvas class="user-icon"
+                                                                                name="<?= $user['name'] ?>" width="80"
+                                                                                height="80" font="35px"></canvas>
                                                                     <?php endif; ?>
-                                                                </a>        
+                                                                </a>
                                                             </div>
-                                                            <div class="vj-btn col-md-6"> 
-                                                                <a href="<?= '/user/' . $user['username'] ?>">View Profile</a>
+                                                            <div class="vj-btn col-md-6">
+                                                                <a href="<?= '/user/' . $user['username'] ?>">View
+                                                                    Profile</a>
                                                             </div>
                                                         </div>
-                                                        <div class="row"> 
-                                                            <div class="cd-user-detail col-md-2">                                       
+                                                        <div class="row">
+                                                            <div class="cd-user-detail col-md-2">
                                                                 <div class="cd-u-name">
-                                                                    <a href="<?= '/user/' . $user['username'] ?>" target="_blank">
+                                                                    <a href="<?= '/user/' . $user['username'] ?>"
+                                                                       target="_blank">
                                                                         <?= $user['name'] ?>
                                                                     </a>
                                                                 </div>
@@ -141,7 +109,7 @@ Html::button('Add New Company', [
                                                                 <div class="cd-u-p-company"></div>
                                                             </div>
                                                             <div class="col-md-8">
-                                                                <div class="row"> 
+                                                                <div class="row">
                                                                     <div class="col-md-12">
                                                                         <div class="steps-form-2">
                                                                             <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">
@@ -157,14 +125,19 @@ Html::button('Add New Company', [
                                                                                         echo '';
                                                                                     }
                                                                                     ?>">
-                                                                                        <a type="button" class="circle-group btn btn-circle-2 waves-effect btn-blue-grey <?php
-                                                                                        if ($j < $user['active']) {
-                                                                                            echo 'active';
-                                                                                        } elseif ($j == $user['active']) {
-                                                                                            echo 'current';
-                                                                                        }
-                                                                                        ?>" data-toggle="tooltip" data-placement="top" title=""  data-id ="<?= $p['field_enc_id'] ?>"  data-original-title="<?= $p['field_name'] ?>">
-                                                                                            <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
+                                                                                        <a type="button"
+                                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey <?php
+                                                                                           if ($j < $user['active']) {
+                                                                                               echo 'active';
+                                                                                           } elseif ($j == $user['active']) {
+                                                                                               echo 'current';
+                                                                                           }
+                                                                                           ?>" data-toggle="tooltip"
+                                                                                           data-placement="top" title=""
+                                                                                           data-id="<?= $p['field_enc_id'] ?>"
+                                                                                           data-original-title="<?= $p['field_name'] ?>">
+                                                                                            <i class="<?= $p['icon'] ?>"
+                                                                                               aria-hidden="true"></i>
                                                                                         </a>
                                                                                     </div>
                                                                                     <?php
@@ -174,19 +147,26 @@ Html::button('Add New Company', [
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>        
+                                                                </div>
 
                                                             </div>
                                                             <div class="cd-btns col-md-2">
-                                                                <button type="button" class="btn btn-outline btn-circle blue btn-sm approve" value="<?= $user['app_id']; ?>">Approve</button>   
-                                                                <button type="button" class="btn btn-outline btn-circle blue btn-sm reject">Reject</button> 
-                                                            </div>                     
-                                                        </div>  
+                                                                <button type="button"
+                                                                        class="btn btn-outline btn-circle blue btn-sm approve"
+                                                                        value="<?= $user['app_id']; ?>">Approve
+                                                                </button>
+                                                                <button type="button"
+                                                                        class="btn btn-outline btn-circle blue btn-sm reject">
+                                                                    Reject
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                         <div class="row">
                                                             <div class="col-md-12">
                                                                 <div class="slide-btn">
                                                                     <button class="slide-bttn" type="button">
-                                                                        <i class="fa fa-angle-double-down" aria-hidden="true"></i>
+                                                                        <i class="fa fa-angle-double-down"
+                                                                           aria-hidden="true"></i>
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -194,50 +174,84 @@ Html::button('Add New Company', [
                                                     </div>
 
 
-                                                    <div class="cd-box-border-hide" >
+                                                    <div class="cd-box-border-hide">
 
                                                         <table class="table table-bordered">
                                                             <thead>
-                                                                <tr>
-                                                                    <th>Question</th>
-                                                                    <th>Process Name</th>
-                                                                    <th>Rating</th>
-                                                                </tr>
+                                                            <tr>
+                                                                <th>Question</th>
+                                                                <th>Process Name</th>
+                                                                <th>Rating</th>
+                                                            </tr>
                                                             </thead>
                                                             <tbody class="qu_data">
-                                                                <?php foreach ($que as $list_que) { ?>
-                                                                    <tr>
-                                                                        <td><a class="blue" href="/account/answers-display?q=<?= $list_que['qid']; ?>&a=<?= $user['app_id']; ?>" value="'+this.qid+'" target="_blank"><?= $list_que['name']; ?></a></td>
-                                                                        <td><?= $list_que['field_label']; ?></td>
-                                                                        <td>
-                                                                            <fieldset class="rate">
-                                                                                <input id="6<?= $list_que['qid'] . $user['app_id']; ?>" class="rating_sys rate_input" type="radio" name="rate<?= $list_que['qid'] . $user['app_id']; ?>" value="5" />
-                                                                                <label class="rate_label"> for="6<?= $list_que['qid'] . $user['app_id']; ?>" title="Unsatisfactory">5</label>
+                                                            <?php foreach ($que as $list_que) { ?>
+                                                                <tr>
+                                                                    <td><a class="blue"
+                                                                           href="/account/answers-display?q=<?= $list_que['qid']; ?>&a=<?= $user['app_id']; ?>"
+                                                                           value="'+this.qid+'"
+                                                                           target="_blank"><?= $list_que['name']; ?></a>
+                                                                    </td>
+                                                                    <td><?= $list_que['field_label']; ?></td>
+                                                                    <td>
+                                                                        <fieldset class="rate">
+                                                                            <input id="6<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   class="rating_sys rate_input"
+                                                                                   type="radio"
+                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   value="5"/>
+                                                                            <label class="rate_label">
+                                                                                for="6<?= $list_que['qid'] . $user['app_id']; ?>
+                                                                                " title="Unsatisfactory">5</label>
 
-                                                                                <input id="7<?= $list_que['qid'] . $user['app_id']; ?>" class="rating_sys rate_input" type="radio" name="rate<?= $list_que['qid'] . $user['app_id']; ?>" value="4" />
-                                                                                <label class="rate_label"> for="7<?= $list_que['qid'] . $user['app_id']; ?>" title="Bad">4</label>
-                                                                                <input  id="8<?= $list_que['qid'] . $user['app_id']; ?>" class="rating_sys rate_input" type="radio" name="rate<?= $list_que['qid'] . $user['app_id']; ?>" value="3" />
-                                                                                <label class="rate_label" for="8<?= $list_que['qid'] . $user['app_id']; ?>" title="Very bad">3</label>
+                                                                            <input id="7<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   class="rating_sys rate_input"
+                                                                                   type="radio"
+                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   value="4"/>
+                                                                            <label class="rate_label">
+                                                                                for="7<?= $list_que['qid'] . $user['app_id']; ?>
+                                                                                " title="Bad">4</label>
+                                                                            <input id="8<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   class="rating_sys rate_input"
+                                                                                   type="radio"
+                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   value="3"/>
+                                                                            <label class="rate_label"
+                                                                                   for="8<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   title="Very bad">3</label>
 
-                                                                                <input id="9<?= $list_que['qid'] . $user['app_id']; ?>" class="rating_sys rate_input" type="radio" name="rate<?= $list_que['qid'] . $user['app_id']; ?>" value="2" />
-                                                                                <label class="rate_label" for="9<?= $list_que['qid'] . $user['app_id']; ?>" title="Awful">2</label>
+                                                                            <input id="9<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   class="rating_sys rate_input"
+                                                                                   type="radio"
+                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   value="2"/>
+                                                                            <label class="rate_label"
+                                                                                   for="9<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   title="Awful">2</label>
 
-                                                                                <input id="10<?= $list_que['qid'] . $user['app_id']; ?>" class="rating_sys rate_input" type="radio" name="rate<?= $list_que['qid'] . $user['app_id']; ?>" value="1" />
-                                                                                <label class="rate_label" for="10<?= $list_que['qid'] . $user['app_id']; ?>" title="Horrific">1</label>
-                                                                            </fieldset>
-                                                                        </td>
-                                                                    </tr>
-                                                                <?php } ?>
+                                                                            <input id="10<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   class="rating_sys rate_input"
+                                                                                   type="radio"
+                                                                                   name="rate<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   value="1"/>
+                                                                            <label class="rate_label"
+                                                                                   for="10<?= $list_que['qid'] . $user['app_id']; ?>"
+                                                                                   title="Horrific">1</label>
+                                                                        </fieldset>
+                                                                    </td>
+                                                                </tr>
+                                                            <?php } ?>
                                                             </tbody>
                                                         </table>
-                                                    </div> 
+                                                    </div>
                                                 </div>
                                                 <?php
                                             }
                                         }
                                     } else {
                                         ?>
-                                        <h3>No Applicant has Applied For This Post</h3>      
+                                        <h3>No Applicant has Applied For This Post</h3>
                                         <?php
                                     }
                                     Pjax::end();
@@ -266,7 +280,8 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Select Title</label>
                                 <div class="col-md-8">
-                                    <select name="application_id" class="form-control" id="application_id" style="background-color: #eef1f5; ">
+                                    <select name="application_id" class="form-control" id="application_id"
+                                            style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <?php
                                         foreach ($application as $a) {
@@ -281,12 +296,14 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Interviewer</label>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control input-large" data-role="tagsinput" id="email"> </div>
+                                    <input type="text" class="form-control input-large" data-role="tagsinput"
+                                           id="email"></div>
                             </div>
                             <div class="form-group">
                                 <label for="color" class="control-label col-md-4">Select Color</label>
                                 <div class="col-md-8">
-                                    <select name="color" class="form-control" id="color" style="background-color: #eef1f5; ">
+                                    <select name="color" class="form-control" id="color"
+                                            style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <option style="color:#0071c5;" value="#0071c5">&#9724; Dark blue</option>
                                         <option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquoise</option>
@@ -301,7 +318,8 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Select Interview Date</label>
                                 <div class="col-md-8">
-                                    <input class="form-control form-control-inline input-medium date-picker" size="16" type="text" id="datepicker" value="" />
+                                    <input class="form-control form-control-inline input-medium date-picker" size="16"
+                                           type="text" id="datepicker" value=""/>
                                 </div>
                             </div>
 
@@ -309,10 +327,11 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Select Inteview Duration</label>
                                 <div class="col-md-8">
-                                    <select name="interview_slots" class="form-control" id="interview_slots" style="background-color: #eef1f5; ">
+                                    <select name="interview_slots" class="form-control" id="interview_slots"
+                                            style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <option>15 minutes</option>
-                                        <option>30  minutes</option>
+                                        <option>30 minutes</option>
                                         <option>45 minutes</option>
                                         <option>60 minutes</option>
 
@@ -323,7 +342,8 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label for="color" class="control-label col-md-4">Medium</label>
                                 <div class="col-md-8">
-                                    <select name="color" class="form-control" id="location" style="background-color: #eef1f5; ">
+                                    <select name="color" class="form-control" id="location"
+                                            style="background-color: #eef1f5; ">
                                         <option value="">Choose</option>
                                         <option>In Place</option>
                                         <option>Conference Call</option>
@@ -337,7 +357,8 @@ Html::button('Add New Company', [
                             <div class="form-group">
                                 <label class="control-label col-md-4">Notes</label>
                                 <div class="col-md-8">
-                                    <textarea class="form-control" value="" id="notes" style="background-color: #eef1f5; "></textarea>
+                                    <textarea class="form-control" value="" id="notes"
+                                              style="background-color: #eef1f5; "></textarea>
                                 </div>
                             </div>
                         </div>
@@ -1109,55 +1130,57 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
     {{#.}}
     <div class="form-group">
 
-    <label class="control-label col-md-3">{{date}}</label>
+        <label class="control-label col-md-3">{{date}}</label>
 
-    <div class="col-md-9">
-    <div class="row">
-    <div id="row1" class="row time-slots">
-    <div class="col-md-5">
-    <div class="input-group timepicker-main">
-    <input type="text" class="form-control timepicker timepicker-24" id="start-time-1" placeholder="from">
-    </div>
-    </div>
-    <div class="col-md-1">
-    <h5>-</h5>
-    </div>
-    <div class="col-md-5">
-    <div class="input-group timepicker-main">
-    <input type="text" class="form-control timepicker timepicker-24" id="end-time-1"  placeholder="to">
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    <div id="times-container"></div>
-    <div class="col-md-9 col-md-offset-3">
-    <a href="#" id="add-more"><i class="fa fa-plus-circle"></i> Add more</a>
-    </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div id="row1" class="row time-slots">
+                    <div class="col-md-5">
+                        <div class="input-group timepicker-main">
+                            <input type="text" class="form-control timepicker timepicker-24" id="start-time-1"
+                                   placeholder="from">
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <h5>-</h5>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="input-group timepicker-main">
+                            <input type="text" class="form-control timepicker timepicker-24" id="end-time-1"
+                                   placeholder="to">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="times-container"></div>
+        <div class="col-md-9 col-md-offset-3">
+            <a href="#" id="add-more"><i class="fa fa-plus-circle"></i> Add more</a>
+        </div>
     </div>
     {{/.}}
 </script>
 
 <script id="add-more-d" type="text/template">
     <div style="padding:0px;margin-top:15px;" id="added-date" class='col-md-9 col-md-offset-3'>
-    <div class='col-md-5'>
-    <div class='input-group timepicker-main'>
-    <input type='text' class='form-control timepicker timepicker-24' placeholder='from'>
-    </div>
-    </div>
-    <div class='col-md-1'>
-    <h5>-</h5>
-    </div>
-    <div class='col-md-5'>
-    <div class='input-group timepicker-main'>
-    <input type='text' class='form-control timepicker timepicker-24' placeholder='to'>
-    </div>
-    </div>
-    <div class='col-md-1'>
-    <a class='remove-add'>
-    <i class='fa fa-times'></i>
-    </a>
-    </div>
+        <div class='col-md-5'>
+            <div class='input-group timepicker-main'>
+                <input type='text' class='form-control timepicker timepicker-24' placeholder='from'>
+            </div>
+        </div>
+        <div class='col-md-1'>
+            <h5>-</h5>
+        </div>
+        <div class='col-md-5'>
+            <div class='input-group timepicker-main'>
+                <input type='text' class='form-control timepicker timepicker-24' placeholder='to'>
+            </div>
+        </div>
+        <div class='col-md-1'>
+            <a class='remove-add'>
+                <i class='fa fa-times'></i>
+            </a>
+        </div>
     </div>
 </script>
 

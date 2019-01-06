@@ -302,12 +302,15 @@ AppAssets::register($this);
                 line-height:normal;
                 margin-top:5px;
             }
-            .my-profiles-sec span canvas{
+            .my-profiles-sec > span > img, .cst img, .profiles-sidebar .close-profile, .my-profiles-sec span canvas{
                 -webkit-border-radius: 50% !important;
                 -moz-border-radius: 50% !important;
                 -ms-border-radius: 50% !important;
                 -o-border-radius: 50% !important;
                 border-radius: 50% !important;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
             }
             ');
 
