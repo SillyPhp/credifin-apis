@@ -11,7 +11,6 @@ $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sig
 $this->params['grid_size'] = 'col-md-8 col-md-push-2';
 $organization_types = ArrayHelper::map($organization_types, 'organization_type_enc_id', 'organization_type');
 $business_activities = ArrayHelper::map($business_activities, 'business_activity_enc_id', 'business_activity');
-$industries = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
     <div class="row">

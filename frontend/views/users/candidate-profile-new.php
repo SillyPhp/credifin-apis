@@ -26,14 +26,14 @@ if (!file_exists($cover_image_path)) {
     $cover_image = "http://www.placehold.it/1500x500/EFEFEF/AAAAAA&amp;text=No+Cover+Image";
 }
 ?>
-<nav class="min-nav" id="min-nav">
-    <ul class="nav nav-stacked navbar-fixed-top">
-        <li><a href="#home" data-toggle="tooltip" data-placement="right" title="About Me" class="active"><i class="fa fa-home"></i></a></li>
-        <li><a href="#exp" data-toggle="tooltip" data-placement="right" title="Experience"><i class="fa fa-briefcase"></i></a></li>
-        <li><a href="#edu" data-toggle="tooltip" data-placement="right" title="Education"><i class="fa fa-graduation-cap"></i></a></li>
-        <li><a href="#skills" data-toggle="tooltip" data-placement="right" title="Skills"><i class="fa fa-cogs" ></i></a></li>
-    </ul>
-</nav>
+<!--<nav class="min-nav" id="min-nav">-->
+<!--    <ul class="nav nav-stacked navbar-fixed-top">-->
+<!--        <li><a href="#home" data-toggle="tooltip" data-placement="right" title="About Me" class="active"><i class="fa fa-home"></i></a></li>-->
+<!--        <li><a href="#exp" data-toggle="tooltip" data-placement="right" title="Experience"><i class="fa fa-briefcase"></i></a></li>-->
+<!--        <li><a href="#edu" data-toggle="tooltip" data-placement="right" title="Education"><i class="fa fa-graduation-cap"></i></a></li>-->
+<!--        <li><a href="#skills" data-toggle="tooltip" data-placement="right" title="Skills"><i class="fa fa-cogs" ></i></a></li>-->
+<!--    </ul>-->
+<!--</nav>-->
 
 <div class="sections">   
     <section id="home">    
@@ -49,46 +49,6 @@ if (!file_exists($cover_image_path)) {
                     <div class="col-md-12">
                         <div class="can-user-icon">
                             <img src="<?= Url::to($image); ?>" alt="" class="img-circle img-thumbnail "/>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 set-four-tabs">
-                        <div class="col-md-5 col-sm-4 head-btns">
-                            <div class="col-md-5 col-sm-12">
-                                <div class="head-btn1">
-                                    <a href="">
-                                        <i class="fa fa-volume-control-phone"></i>
-                                        <span class="btn-txt"> Contact Me</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-5 col-sm-12">
-                                <div class=" head-btn1 head-btn11">
-                                    <a href="">
-                                        <i class="fa fa-envelope-o"></i>
-                                        <div class="btn-txt2"> Send Email</div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-offset-2 col-md-5 col-sm-offset-4 col-sm-4 head-btns">
-                            <div class="col-md-offset-1 col-md-5 col-sm-12 ">
-                                <div class="head-btn2">
-                                    <a href="">
-                                        <i class="fa fa-cloud-download"></i>
-                                        <div class="btn-txt"> Download CV</div>
-                                    </a>  
-                                </div>
-                            </div>
-                            <div class="col-md-5 col-sm-12">
-                                <div class=" head-btn2 head-btn11">
-                                    <a href="">
-                                        <i class="fa fa-list-ul"></i>
-                                        <div class="btn-txt"> Shortlist Profile</div>
-                                    </a>    
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,7 +116,7 @@ if (!file_exists($cover_image_path)) {
                                 </div>
                                 <div class="exp-time col-md-3"> 
                                     <div class="com-name"><?= $experience['company']; ?></div>
-                                    <div class="com-loc">Ludhiana</div>
+                                    <div class="com-loc"><?= $experience['city']; ?></div>
                                     <div class="com-time">
                                         <div class="col-md-6">
                                             <div class="com-t">From</div>
@@ -190,27 +150,23 @@ if (!file_exists($cover_image_path)) {
         <div class="large-container">
             <div class="edu">
                 <div class="bdy-content">
-                    <div class="heading-style ">Qualification</div>  
+                    <div class="heading-style ">Qualification</div>
+<?php foreach ($education as $e) { ?>
                     <div class="col-md-offset-1 col-md-5">
                         <div class="edubox1">
                             <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
-                            <div class="h-school-name">Degree Name</div>
-                            <div class="bord-name">University Name</div>
+                            <div class="h-school-name"><?= $e['degree']; ?></div>
+                            <div class="bord-name"><?= $e['institute']; ?></div>
                             <div class="h-year">
-                                2010-2011
+                                <?php
+                                $from = strtotime($e['from_date']);
+                                $to = strtotime($e['to_date']);
+                                ?>
+                                <?= date('Y', $from) ?> to <?= date('Y', $to) ?>
                             </div>
                         </div> 
                     </div>
-                    <div class=" col-md-5">
-                        <div class="edubox1">
-                            <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
-                            <div class="h-school-name">Degree Name</div>
-                            <div class="bord-name">University Name</div>
-                            <div class="h-year">
-                                2010-2011
-                            </div>
-                        </div> 
-                    </div>
+<?php } ?>
                 </div>
             </div>
         </div>
@@ -224,73 +180,86 @@ if (!file_exists($cover_image_path)) {
             <div class="row">    
                 <div class="skills col-md-12">
                     <div class="bdy-content">
-                        <div class="col-md-8">
+                        <div class="row">
+                        <div class="col-md-12">
                             <div class="heading-style">Skills & Language</div>
-                            <div class="keyheading">Key Skills</div>
-                            <div class="col-md-6">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 55%" aria-valuenow="55" >HTML</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 65%;" aria-valuenow="65" >CSS</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 75%" aria-valuenow="75" >Photoshop</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6"> 
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 40%" aria-valuenow="40" >Javascript</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Coraldraw</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Bootstrap</div>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="skill-tags">
-                                <div class="additionalskills">Additional Skills</div>
-                                <ul>
-                                    <li>HTML</li>
-                                    <li>CSS</li>
-                                    <li>Javascript</li>
-                                    <li>Photoshop</li>
-                                    <li>CoralDraw</li>
-                                </ul>
-                            </div>
+<!--                            <div class="keyheading">Key Skills</div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="progress">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 55%" aria-valuenow="55" >HTML</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="progress">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 65%;" aria-valuenow="65" >CSS</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="progress">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 75%" aria-valuenow="75" >Photoshop</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6"> -->
+<!--                                <div class="progress">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 40%" aria-valuenow="40" >Javascript</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="progress">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Coraldraw</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6">-->
+<!--                                <div class="progress">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Bootstrap</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="clearfix"></div>-->
+<!--                            <div class="skill-tags">-->
+<!--                                <div class="additionalskills">Additional Skills</div>-->
+<!--                                <ul>-->
+<!--                                    <li>HTML</li>-->
+<!--                                    <li>CSS</li>-->
+<!--                                    <li>Javascript</li>-->
+<!--                                    <li>Photoshop</li>-->
+<!--                                    <li>CoralDraw</li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
 
                         </div>
-                        <div class="col-md-4 communication">
-                            <div class="keyheading">Communication</div>
-                            <div class="col-md-12 com-prog">
-                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>      
-                                <div class="progress margin-top-0">
-                                    <div class="progress-bar progress-bar-success" role="progressbar"  aria-valuenow="90" 
-                                         aria-valuemin="0" aria-valuemax="100" >English</div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 com-prog">
-                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>
-                                <div class="progress  margin-top-0">
-                                    <div class="progress-bar progress-bar-info" role="progressbar"  aria-valuenow="90" 
-                                         aria-valuemin="0" aria-valuemax="100" >Hindi</div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 com-prog">
-                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>
-                                <div class="progress margin-top-0">
-                                    <div class="progress-bar progress-bar-warning " aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"
-                                         role="progressbar" >Punjabi</div>
+                        </div>
+<!--                        <div class="col-md-4 communication">-->
+<!--                            <div class="keyheading">Communication</div>-->
+<!--                            <div class="col-md-12 com-prog">-->
+<!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>      -->
+<!--                                <div class="progress margin-top-0">-->
+<!--                                    <div class="progress-bar progress-bar-success" role="progressbar"  aria-valuenow="90" -->
+<!--                                         aria-valuemin="0" aria-valuemax="100" >English</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-12 com-prog">-->
+<!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>-->
+<!--                                <div class="progress  margin-top-0">-->
+<!--                                    <div class="progress-bar progress-bar-info" role="progressbar"  aria-valuenow="90" -->
+<!--                                         aria-valuemin="0" aria-valuemax="100" >Hindi</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-12 com-prog">-->
+<!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>-->
+<!--                                <div class="progress margin-top-0">-->
+<!--                                    <div class="progress-bar progress-bar-warning " aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"-->
+<!--                                         role="progressbar" >Punjabi</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="skill-tags">
+                                    <ul>
+                                        <?php foreach ($skills as $sk) { ?>
+                                            <li><?= $sk['skills']; ?></li>
+                                        <?php } ?>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -420,8 +389,8 @@ $this->registerCss('
 .skill-tags{display: inline; padding-top:10px; }
 .skill-tags ul li span{color:#333339; font-size:16px; text-transform: uppercase; font-weight: bold; background: none; }
 .skill-tags ul{padding-left: 10px;}
-.skill-tags ul li{ display: inline; background: rgb(255,255,255,.6); padding: 5px 10px; border-radius: 10px; font-size: 14px; 
-                  font-style: oblique; margin: 0 3px;}
+.skill-tags ul li{ display: inline-block; background: rgba(220, 220, 220, 0.85); padding: 5px 10px; border-radius: 10px; font-size: 14px; 
+                  font-style: oblique; margin: 3px;}
 .progress , .progress-bar{height: 15px; font-size: 10px; line-height: 15px;}
 .progress{margin: 15px 0 0px 0;}
 .custom-bg{background: #00a3e0; }

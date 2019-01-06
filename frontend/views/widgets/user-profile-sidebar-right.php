@@ -30,19 +30,12 @@ use yii\helpers\Html;
             <?php endif; ?>
         </div>
         <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
-        <span><i>UX / UI Designer</i>at Empower Youth</span>
         <p><?= Yii::$app->user->identity->email ?></p>
-        <p>Member Since, 2017</p>
-        <p><i class="la la-map-marker"></i>Istanbul/ turkey</p>
     </div>
     <div class="tree_widget-sec">
         <ul>
             <li class="inner-child">
                 <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
-
-            </li>
-            <li class="inner-child">
-                <a href="/account/resume" title="" class="tree-toggler"><i class="fa fa-briefcase"></i>My Resume</a>
 
             </li>
             <li class="inner-child">
@@ -52,14 +45,6 @@ use yii\helpers\Html;
             <li class="inner-child">
                 <a href="/account/candidate-dashboard" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
 
-            </li>
-            <li class="inner-child">
-                <a href="#" title="" class="tree-toggler"><i class="fa fa-user"></i>Job Alerts</a>
-                <ul class="tree">
-                    <li><a href="#" title="">My Profile</a></li>
-                    <li><a href="#" title="">Social Network</a></li>
-                    <li><a href="#" title="">Contact Information</a></li>
-                </ul>
             </li>
             <!--            modal of change password start-->
 

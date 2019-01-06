@@ -1,15 +1,15 @@
 <?php
 
 use yii\widgets\Menu;
+use yii\helpers\Url;
 
-$jobs_visibility = $internships_visibility = $freelancers_visibility = false;
 $services = Yii::$app->user->identity->services;
 $result = [];
 
 foreach ($services['menu_items'] as $service) {
     $new = [
         'label' => '<i class="' . $service['icon'] . '"></i>' . Yii::t('account', $service['name']),
-        'url' => $service['link'],
+        'url' => Url::toRoute($service['link']),
     ];
     array_push($result, $new);
 }

@@ -17,15 +17,12 @@ for ($i = 1; $i <= $rows; $i++) {
                     <div class="<?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
-                                <button class="clone-bttn" type="button" onclick="window.open('<?= Url::to('/account/questionnaire/clone/' . $questionnaire[$next]["id"]); ?>', '_blank');">
+                                <button class="clone-bttn set-right-align two" type="button" onclick="window.open('<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>', '_blank');">
                                     <i class="fa fa-clone"></i>
-                                </button>
-                                <button class="edit-bttn" type="button" onclick="window.open('<?= Url::to('/account/questionnaire/edit/' . $questionnaire[$next]["id"]); ?>', '_blank');">
-                                    <i class="fa fa-pencil-square-o"></i>
                                 </button>
                             </div>
                             <div class="lt-bttn">
-                                <button type="button" class="e-bttn delete_questionnaire" value="<?= $questionnaire[$next]['id']; ?>">
+                                <button type="button" class="e-bttn delete_questionnaire set-right-align one" value="<?= $questionnaire[$next]['id']; ?>">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -61,9 +58,6 @@ function used_for($n) {
             break;
         case 2:
             $a = 'Internships';
-            break;
-        case 3:
-            $a = 'Training Programs';
             break;
         default:
             $a = 'NA';

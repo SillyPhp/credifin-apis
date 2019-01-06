@@ -287,7 +287,7 @@ a:hover{
    padding:5px 10px 5px 10px;
    position:absolute;
    display:none;
-   right:60px;
+   /*right:60px;*/
 } 
 .edit-bttn{
    background:transparent;
@@ -296,7 +296,7 @@ a:hover{
    padding:6px 10px 4px 10px;
    position:absolute;
    display: none;
-   right:30px;
+   /*right:30px;*/
 }
 .e-bttn{
     background:transparent;
@@ -305,8 +305,11 @@ a:hover{
     padding:5px 10px 5px 10px;
     position:absolute;
     display:none;
-    right:5px;
-} 
+    /*right:5px;*/
+}
+.set-right-align.one{right:5px;}
+.set-right-align.two{right:35px;}
+.set-right-align.three{right:60px;}
 .e-bttn:hover, .clone-bttn:hover, .edit-bttn:hover{
     background:#00a0e3;
     color:#fff;  

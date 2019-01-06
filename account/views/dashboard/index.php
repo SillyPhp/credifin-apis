@@ -17,74 +17,89 @@ if (!$is_email_verified):
     echo $this->render('/widgets/verification/resend-email');
 endif;
 ?>
-<div class="row">
-    <div class="col-md-3">
-        <?= $this->render('/widgets/tasks/taskbar-card'); ?>
-        <?=
-        $this->render('/widgets/services-selection/edit-services', [
-            'model' => $model,
-            'services' => $services,
-        ]);
-        ?>
-    </div>
-    <div class="col-md-9">
-        <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
-            <?= $this->render('/widgets/applications/dashboard-applied-applications', [
-                'applied' => $applied_app
-            ]); ?>
-        <?php elseif (Yii::$app->user->identity->organization): ?>
-            <div class="portlet light portlet-fit">
-                <div class="portlet-title" style="border-bottom:none;">
-                    <div class="check-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
+    <div class="row">
+        <div class="col-md-3">
+            <?= $this->render('/widgets/tasks/taskbar-card'); ?>
+            <?=
+            $this->render('/widgets/services-selection/edit-services', [
+                'model' => $model,
+                'services' => $services,
+            ]);
+            ?>
+        </div>
+        <div class="col-md-9">
+            <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
+                <?=
+                $this->render('/widgets/applications/dashboard-applied-applications', [
+                    'applied' => $applied_app
+                ]);
+                ?>
+            <?php elseif (Yii::$app->user->identity->organization): ?>
+                <div class="portlet light portlet-fit">
+                    <div class="portlet-title" style="border-bottom:none;">
+                        <div class="check-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
+                        </div>
+                        <div class="caption-1" style="">
+                            <i class="icon-microphone font-dark hide"></i>
+                            <span class="caption-subject bold font-dark uppercase" style="font-size:16px;"> Welcome Aboard</span><br>
+                            <span class="caption-helper">Empower Youth makes it easy to post jobs and manage your candidates</span>
+                        </div>
                     </div>
-                    <div class="caption-1" style="">
-                        <i class="icon-microphone font-dark hide"></i>
-                        <span class="caption-subject bold font-dark uppercase" style="font-size:16px;"> Welcome Aboard</span><br>
-                        <span class="caption-helper">Empower Youth makes it easy to post jobs and manage your candidates</span>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="how-box">
+                                    <div class="how-icon"><img
+                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/create.svg') ?>">
+                                    </div>
+                                    <div class="how-heading">Create a Job</div>
+                                    <div class="how-text"><p>Create a Job, get applications, let candidates fill
+                                            Questionnaire.</p>
+                                        <p class="pera">Ask them what's relevant to your organization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="how-box">
+                                    <div class="how-icon"><img
+                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/invite.svg') ?>">
+                                    </div>
+                                    <div class="how-heading">Invite Candidates</div>
+                                    <div class="how-text"><p>Share application with candidates that you have found by
+                                            any other means.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="how-box">
+                                    <div class="how-icon"><img
+                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/share.svg') ?>">
+                                    </div>
+                                    <div class="how-heading">Compare Applicants</div>
+                                    <div class="how-text">
+                                        <p>Compare different applicants on the basis of their skills, suitability,
+                                            location, experience, expected salary, etc.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="how-box">
+                                    <div class="how-icon"><img
+                                                src="<?= Url::to('@eyAssets/images/pages/dashboard/process.svg') ?>">
+                                    </div>
+                                    <div class="how-heading">Process Applications</div>
+                                    <div class="how-text">Finalize the candidates that you would like to interview and
+                                        schedule seamlessly.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="how-box">
-                                <div class="how-icon"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/create.svg') ?>"></div>
-                                <div class="how-heading">Create a Job</div>
-                                <div class="how-text"><p>Create a Job, get applications, let candidates fill Questionnaire.</p> 
-                                    <p class="pera">Ask them what's relevant to your organization.</p>
-                                </div>
-                            </div>    
-                        </div>
-                        <div class="col-md-3">
-                            <div class="how-box">
-                                <div class="how-icon"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/invite.svg') ?>"></div>
-                                <div class="how-heading">Invite Candidates</div>
-                                <div class="how-text"><p>Share application with candidates that you have found by any other means.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="how-box">
-                                <div class="how-icon"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/share.svg') ?>"></div>
-                                <div class="how-heading">Compare Applicants</div>
-                                <div class="how-text">
-                                    <p>Compare different applicants on the basis of their skills, suitability, location, experience, expected salary, etc.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="how-box">
-                                <div class="how-icon"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.svg') ?>"></div>
-                                <div class="how-heading">Process Applications</div>
-                                <div class="how-text">Finalize the candidates that you would like to interview and schedule seamlessly.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
 <?php
 $this->registerCss("
 /*how it works section css starts*/
@@ -96,12 +111,12 @@ $this->registerCss("
     padding:10px 0 0 0;
     font-size:13px;
     color: #9eacb4;
-}
+} 
 p.pera{
     padding-top:10px;
 }
-p{
-    margin:0px 0px !important;
+p{ 
+    margin:0px 0px !important;  
 }
 .caption-1{
    text-align:center; 
