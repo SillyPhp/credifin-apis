@@ -120,7 +120,26 @@ $this->registerCss('
     background-position: 0 0;
     background-repeat: no-repeat;
     min-height: 570px;
-    padding-top: 100px;
+    padding-top: 135px;
+}
+@media screen and (min-width: 1700px) {
+    .backgrounds{
+        min-height: 700px;
+        background-size: 100% 700px;
+    }
+}
+@media screen and (max-width: 1700px) {
+    .backgrounds{
+        min-height: 600px;
+        background-size: 100% 600px;
+    }
+}
+@media screen and (max-width: 1350px) {
+    .backgrounds{
+        min-height: 550px;
+        background-size: cover;
+        padding-top: 100px;
+    }
 }
 /* Top Search bar css start */
 .twitter-typeahead{
