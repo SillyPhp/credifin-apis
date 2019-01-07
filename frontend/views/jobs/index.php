@@ -135,7 +135,26 @@ $this->registerCss('
     background-position: left top;
     background-repeat: no-repeat;
     min-height: 520px;
-    padding-top: 120px;
+    padding-top: 150px;
+}
+@media screen and (min-width: 1700px) {
+    .backgrounds{
+        min-height: 700px;
+        background-size: 100% 700px;
+    }
+}
+@media screen and (max-width: 1700px) {
+    .backgrounds{
+        min-height: 600px;
+        background-size: 100% 600px;
+    }
+}
+@media screen and (max-width: 1350px) {
+    .backgrounds{
+        min-height: 520px;
+        background-size: 100% 520px;
+        padding-top: 120px;
+    }
 }
 /* Search button css start */
 .form-wrapper {
