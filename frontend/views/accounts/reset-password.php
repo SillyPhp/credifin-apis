@@ -33,6 +33,6 @@ $form->field($model, 'confirm_password')->passwordInput([
 ?>
 
 <div class="form-group pull-right mt-10">
-    <?= Html::submitButton('Change', ['class' => 'btn btn-success btn-md btn-block', 'name' => 'login-button']); ?>
+    <?= Html::submitButton('Change', ['class' => 'btn btn-success btn-md btn-block main-blue-btn', 'name' => 'login-button']); ?>
 </div>
 <?php ActiveForm::end(); ?>

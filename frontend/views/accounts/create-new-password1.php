@@ -30,6 +30,6 @@ $createNewPasswordForm->field($createNewPasswordModel, 'confirm_password')->pass
 ]);
 ?>
 <div class="form-group pull-right mt-10">
-    <?= Html::submitButton('Change Password', ['class' => 'btn btn-success btn-md btn-block', 'name' => 'forgot-password-button']); ?>
+    <?= Html::submitButton('Change Password', ['class' => 'btn btn-success btn-md btn-block main-blue-btn', 'name' => 'forgot-password-button']); ?>
 </div>
 <?php ActiveForm::end(); ?>

@@ -39,7 +39,7 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
     ?>
 </div>
 <div class="form-group pull-right mt-10">
-    <?= Html::submitButton('Login', ['class' => 'btn btn-success btn-md btn-block', 'name' => 'login-button']); ?>
+    <?= Html::submitButton('Login', ['class' => 'btn main-blue-btn btn-md btn-block', 'name' => 'login-button']); ?>
 </div>
 <div class="clear text-center pt-10">
     <a class="text-theme-colored font-weight-600 font-12" href="<?= Url::to('/forgot-password'); ?>"><?= Yii::t('frontend', 'Forgot Your Password?'); ?></a>
@@ -49,10 +49,10 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
 </div>
 <div class="row pt-20">
     <div class="col-md-6">
-        <a class="btn btn-dark btn-lg btn-block no-border hvr-float" href="<?= Url::to('/signup/organization'); ?>" data-bg-color="#4d004d"><?= Yii::t('frontend', 'Organization'); ?></a>
+        <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="<?= Url::to('/signup/organization'); ?>" data-bg-color="#ff7803"><?= Yii::t('frontend', 'Organization'); ?></a>
     </div>
     <div class="col-md-6">
-        <a class="btn btn-dark btn-lg btn-block no-border hvr-float" href="<?= Url::to('/signup/individual'); ?>" data-bg-color="#800040"><?= Yii::t('frontend', 'Individual'); ?></a>
+        <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="<?= Url::to('/signup/individual'); ?>" data-bg-color="#ff7803"><?= Yii::t('frontend', 'Individual'); ?></a>
     </div>
 </div>
 <?php ActiveForm::end(); ?>

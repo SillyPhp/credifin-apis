@@ -168,13 +168,13 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15', 'name' => 'register-button']); ?>
+            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
         </div>
     </div>
     <div class="row  pt-20">
         <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float" href="<?= Url::to('/signup/individual'); ?>"
-               data-bg-color="#800040"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
+            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="<?= Url::to('/signup/individual'); ?>"
+               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
         </div>
     </div>
 <?php ActiveForm::end(); ?>
