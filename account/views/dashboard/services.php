@@ -32,7 +32,7 @@ $services = ArrayHelper::map($services, 'service_enc_id', 'name');
                         <?php
                         echo $form->field($model, 'services[]')->inline()->checkBoxList($services, [
                             'id' => 'services',
-                            'item' => function($index, $label, $name, $checked, $value) {
+                            'item' => function ($index, $label, $name, $checked, $value) {
                                 $services = [
                                     1 => [
                                         'icon' => 'job-search-icon.png',
