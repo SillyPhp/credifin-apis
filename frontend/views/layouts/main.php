@@ -101,6 +101,9 @@ AppAssets::register($this);
                 <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
             </header>
             <div class="main-content">
+                <div id="page-loading" class="page-loading">
+                    <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+                </div>
                 <?= $content; ?>
             </div>
             <footer id="footer" class="footer">
@@ -169,6 +172,27 @@ AppAssets::register($this);
         </div>
         <?php
         $this->registerCss('
+        .page-loading {
+            background-color: #ffffff;
+            content: "";
+            height: 100%;
+            left: 0;
+            position: fixed;
+            text-align: center;
+            top: 0;
+            width: 100%;
+            z-index: 2147483647;
+        }
+        .page-loading > img {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -ms-transform: translateX(-50%) translateY(-50%);
+            -o-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
             #main-header #logo-black{
                 display:none;
             }
@@ -343,6 +367,20 @@ AppAssets::register($this);
                     function gtag(){dataLayer.push(arguments);}
                     gtag("js", new Date());
                     gtag("config", "UA-121432126-1");
+         
+//         document.onreadystatechange = function () {
+//          var state = document.readyState
+//          if (state == "interactive") {
+//                 document.getElementById("page-loading").style.visibility="visible";
+//                 console.log("if");
+//          } else if (state == "complete") {
+//              setTimeout(function(){
+//                 document.getElementById("page-loading").style.visibility="hidden";
+//                 console.log("else if");
+//              },1000);
+//          }
+//        }
+            $(".page-loading").fadeOut();
                     
         ');
         
