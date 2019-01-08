@@ -238,89 +238,89 @@ if ($organization['cover_image']) {
         <?php
     }
     ?>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="t-heading">
-                        Employee Benefits
-                    </div>
-                </div>
-            </div>
-            <div class="cat-sec">
-                <div class="row no-gape">
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-bullhorn"></i>
-                                <span>Design, Art & Multimedia</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-graduation-cap"></i>
-                                <span>Education Training</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-line-chart "></i>
-                                <span>Accounting / Finance</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-users"></i>
-                                <span>Human Resource</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="cat-sec">
-                <div class="row no-gape">
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-phone"></i>
-                                <span>Telecommunications</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-cutlery"></i>
-                                <span>Restaurant / Food Service</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-building"></i>
-                                <span>Construction / Facilities</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="p-category">
-                            <a href="#" title="">
-                                <i class="fa fa-user-md"></i>
-                                <span>Health</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section>-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-lg-12">-->
+<!--                    <div class="t-heading">-->
+<!--                        Employee Benefits-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="cat-sec">-->
+<!--                <div class="row no-gape">-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-bullhorn"></i>-->
+<!--                                <span>Design, Art & Multimedia</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-graduation-cap"></i>-->
+<!--                                <span>Education Training</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-line-chart "></i>-->
+<!--                                <span>Accounting / Finance</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-users"></i>-->
+<!--                                <span>Human Resource</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="cat-sec">-->
+<!--                <div class="row no-gape">-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-phone"></i>-->
+<!--                                <span>Telecommunications</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-cutlery"></i>-->
+<!--                                <span>Restaurant / Food Service</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-building"></i>-->
+<!--                                <span>Construction / Facilities</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
+<!--                        <div class="p-category">-->
+<!--                            <a href="#" title="">-->
+<!--                                <i class="fa fa-user-md"></i>-->
+<!--                                <span>Health</span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <?php
     if (count($jobcards) > 0) {
         ?>
@@ -374,27 +374,27 @@ if ($organization['cover_image']) {
     }
     ?>
 </div>
-<div class="alerts">
-    <?=
-    Html::button('Notify Me About Jobs', [
-        'class' => 'btn btn-md bubbly-button',
-        'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-alert'),
-        'id' => 'open-modal',
-        'data-toggle' => 'modal',
-        'data-target' => '#myModal2',
-    ]);
-    ?>
-</div>
-<div class="modal fade" id="myModal2" role="dialog">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-body">
-                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
-            </div>
-        </div>
-    </div>
-</div>
+<!--<div class="alerts">-->
+<!--    --><?//=
+//    Html::button('Notify Me About Jobs', [
+//        'class' => 'btn btn-md bubbly-button',
+//        'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-alert'),
+//        'id' => 'open-modal',
+//        'data-toggle' => 'modal',
+//        'data-target' => '#myModal2',
+//    ]);
+//    ?>
+<!--</div>-->
+<!--<div class="modal fade" id="myModal2" role="dialog">-->
+<!--    <div class="modal-dialog modal-md">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-body">-->
+<!--                <img src="--><?//= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?><!--" alt="--><?//= Yii::t('frontend', 'Loading'); ?><!--" class="loading">-->
+<!--                <span> &nbsp;&nbsp;--><?//= Yii::t('frontend', 'Loading'); ?><!--... </span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 <?php
 $this->registerCss('
 /* Feature, categories css starts */
@@ -478,9 +478,9 @@ document.documentElement.scrollTop = 0;
         
         
         
-$(document).on("click", "#open-modal", function () {
-    $(".modal-body").load($(this).attr("url"));
-});
+// $(document).on("click", "#open-modal", function () {
+//     $(".modal-body").load($(this).attr("url"));
+// });
 
     $('[data-toggle="tooltip"]').tooltip();
         

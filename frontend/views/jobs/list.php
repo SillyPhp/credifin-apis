@@ -638,5 +638,5 @@ echo $this->render('/widgets/application-card', [
     'type' => 'mustache',
 ]);
 
-echo $this->render('/widgets/job-alerts');
+//echo $this->render('/widgets/job-alerts');
 ?>
