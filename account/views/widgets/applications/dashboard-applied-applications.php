@@ -1,7 +1,11 @@
 <?php
 
 use yii\helpers\Url;
+
+
+
 ?>
+
 
 <div class="portlet applied_app light portlet-fit">
     <div class="portlet-title">
@@ -15,37 +19,37 @@ use yii\helpers\Url;
             <div class="m-portlet__body">
                 <div class="m-widget4 m-widget4--progress">
                     <?php if ($applied) { ?>
-                    <?php foreach ($applied as $apply) { ?>
-                        <div class="m-widget4__item">
-                            <div class="m-widget4__img m-widget4__img--pic">
-                                <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" alt="">
-                            </div>
-                            <div class="m-widget4__info">
+                        <?php foreach ($applied as $apply) { ?>
+                            <div class="m-widget4__item">
+                                <div class="m-widget4__img m-widget4__img--pic">
+                                    <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" alt="">
+                                </div>
+                                <div class="m-widget4__info">
                                             <span class="m-widget4__title">
                                                 <?= $apply['title']; ?>
                                             </span><br>
-                                <span class="m-widget4__sub">
+                                    <span class="m-widget4__sub">
                                                 <?= $apply['org_name']; ?>
                                             </span>
-                            </div>
-                            <div class="m-widget4__progress">
-                                <div class="m-widget4__progress-wrapper">
-                                    <span class="m-widget17__progress-number"><?= $apply['per']; ?>%</span>
-                                    <span class="m-widget17__progress-label"><?= $apply['status']; ?></span>
-                                    <div class="progress m-progress--sm">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: <?= $apply['per']; ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="63"></div>
+                                </div>
+                                <div class="m-widget4__progress">
+                                    <div class="m-widget4__progress-wrapper">
+                                        <span class="m-widget17__progress-number"><?= $apply['per']; ?>%</span>
+                                        <span class="m-widget17__progress-label"><?= $apply['status']; ?></span>
+                                        <div class="progress m-progress--sm">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: <?= $apply['per']; ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="63"></div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="m-widget4__ext">
+                                    <?php if ($apply['status'] == 'Cancelled') { ?>
+                                        <a data="<?= $apply['applied_id']; ?>" class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app" disabled>Cancel</a>
+                                    <?php } else { ?>
+                                        <a  data="<?= $apply['applied_id']; ?>" class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>
+                                    <?php } ?>
+                                </div>
                             </div>
-                            <div class="m-widget4__ext">
-                                <?php if ($apply['status'] == 'Cancelled') { ?>
-                                    <a data="<?= $apply['applied_id']; ?>" class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app" disabled>Cancel</a>
-                                <?php } else { ?>
-                                    <a  data="<?= $apply['applied_id']; ?>" class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    <?php } ?>
+                        <?php } ?>
                     <?php } ?>
                 </div>
             </div>
@@ -102,22 +106,40 @@ use yii\helpers\Url;
 </div>
 <?php
 $script = <<< JS
-var intro = introJs();
 
-intro.setOptions({
- steps: [
-   {
-     element: document.querySelector('.applied_app'),
-     intro: "application applied enables you to view the recruitment you’ve applied for.",
-     disableInteraction: true
-   },
- ]
-});
-
-intro.start();
+// function dashboard_individual_guide(){
+//         var intro = introJs();
+//
+//         intro.setOptions({
+//             steps: [
+//                 {
+//                     element: document.querySelector('.applied_app'),
+//                     intro: "application applied enables you to view the recruitment you’ve applied for.",
+//                     disableInteraction: true
+//                 },
+//             ]
+//         });
+//
+//         intro.start();
+//     }
 
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('/assets/themes/dashboard/tutorials/individual_dashboard_home.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+
+
+?>
+<script>
+
+</script>
+<?php
+if (!Yii::$app->session->has("tutorialsd")) {
+    echo '<script>dashboard_individual_guide()</script>';
+    echo '<script>console.log(1)</script>';
+    Yii::$app->session->set("tutorialsd", "Yes");
+} else{
+    echo '<script>console.log(2)</script>';
+}
 ?>
