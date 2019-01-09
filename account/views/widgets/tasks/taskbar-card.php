@@ -423,7 +423,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\b
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://ciphertrick.com/demo/jquerysession/js/jquerysession.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 //$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 

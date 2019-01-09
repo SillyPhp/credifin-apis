@@ -2591,3 +2591,34 @@ function dashboard_organization_jobs_count(){
 
     intro.start();
 }
+
+function dashboard_organization_internships_count(){
+    var intro = introJs();
+
+    intro.setOptions({
+        steps: [
+            {
+                element: document.querySelector('.jobs_count'),
+                intro: "Total Internships",
+                position: 'top'
+            },
+            {
+                element: document.querySelector('.processes_count'),
+                intro: "Total Processes",
+                position: 'bottom'
+            },
+            {
+                element: document.querySelector('.questionnaire_count'),
+                intro: "Total Questionnaire",
+                position: 'top'
+            },
+            {
+                element: document.querySelector('.employees_count'),
+                intro: "Total Employees",
+                position: 'bottom'
+            },
+        ]
+    });
+
+    intro.start();
+}
