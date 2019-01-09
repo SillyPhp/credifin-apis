@@ -188,7 +188,7 @@ $this->registerCss('
     height:50px;
 }    
 .header{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/cover-image.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/index2/company-index-bg.png') . ');
     background-repeat:no-repeat; 
     background-size:cover;
 }
