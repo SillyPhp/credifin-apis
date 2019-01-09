@@ -77,7 +77,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="com2 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/mid1.png') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
                             </div>
                             <div class="com-name">
                                 Midland MicroFin
@@ -136,7 +136,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                             </div>
                             <div class="com-name">
-                                Empower youth
+                                Hamco Ispat
                             </div>
                         </div>
                         <div class="com10 animatable fadeIn">
@@ -279,6 +279,7 @@ $this->registerCss('
     border-radius:50%;
     box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.1);
     padding: 18px !important; 
+    line-height:0px;
 }
 .com-name{ 
     padding-top:8px;
@@ -300,7 +301,7 @@ $this->registerCss('
     top:50%;
     left:50%;
     -webkit-transform: translate(-50%, -50%); 
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%);    
 }
 .com1, .com2, .com3, .com4, .com5, .com6, .com7, .com8, .com9, .com10, .com11{
       position:absolute;
