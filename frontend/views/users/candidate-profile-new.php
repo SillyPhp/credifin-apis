@@ -29,9 +29,9 @@ if (empty($cover_image)) {
                                     ?>
                                     <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle img-thumbnail "/>
                                 <?php else: ?>
-                                    <span><canvas class="user-icon img-circle img-thumbnail" name="<?= $name; ?>"
+                                    <canvas class="user-icon img-circle img-thumbnail" name="<?= $name; ?>"
                                                   color="<?= $user['initials_color']; ?>" width="200" height="200"
-                                                  font="100px"></canvas></span>
+                                                  font="100px"></canvas>
                                 <?php endif; ?>
                             </div>
                         </div>
