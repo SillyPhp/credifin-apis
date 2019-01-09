@@ -45,7 +45,7 @@ if ($organization['cover_image']) {
                         <span class="hover-change col_pink"><a href="#" class="shortlist_org"><i class="fa fa-heart-o"></i> Shortlisted</a></span>
 
                         <?php
-                    } else {
+                    } elseif(!Yii::$app->user->isGuest) {
                         ?>
                         <span class="hover-change"><a href="#" class="shortlist_org"><i class="fa fa-heart-o"></i> Shortlist</a></span>
                     <?php } ?>
@@ -76,7 +76,13 @@ if ($organization['cover_image']) {
                                     <div class="cname"><?= $organization['name']; ?></div>
                                     <input type="hidden" id="organisation_id" value="<?= $organization['organization_enc_id'] ?>"/>
                                     <div class="tagline"><?= $organization['tag_line']; ?></div>
+                                    <?php
+                                    if(!empty($organization['establishment_year'])){
+                                        ?>
                                     <div class="tagline">Establishment in <?= $organization['establishment_year']; ?></div>
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="social-btns">
@@ -200,11 +206,9 @@ if ($organization['cover_image']) {
     if (count($videos) > 0) {
         ?>
         <section id="video">
-            <div class="video">
                 <div class="container">
                     <div class="content">
                         <div class="t-heading">Video Gallery </div>
-                        <div class="row videorows">
                             <?php
                             $rows = ceil(count($videos) / 3);
                             $next = 0;
@@ -230,97 +234,12 @@ if ($organization['cover_image']) {
                                 <?php
                             }
                             ?>
-                        </div>
                     </div>
                 </div>
-            </div>
         </section>
         <?php
     }
     ?>
-<!--    <section>-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-lg-12">-->
-<!--                    <div class="t-heading">-->
-<!--                        Employee Benefits-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="cat-sec">-->
-<!--                <div class="row no-gape">-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-bullhorn"></i>-->
-<!--                                <span>Design, Art & Multimedia</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-graduation-cap"></i>-->
-<!--                                <span>Education Training</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-line-chart "></i>-->
-<!--                                <span>Accounting / Finance</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-users"></i>-->
-<!--                                <span>Human Resource</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="cat-sec">-->
-<!--                <div class="row no-gape">-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-phone"></i>-->
-<!--                                <span>Telecommunications</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-cutlery"></i>-->
-<!--                                <span>Restaurant / Food Service</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-building"></i>-->
-<!--                                <span>Construction / Facilities</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-lg-3 col-md-3 col-sm-6">-->
-<!--                        <div class="p-category">-->
-<!--                            <a href="#" title="">-->
-<!--                                <i class="fa fa-user-md"></i>-->
-<!--                                <span>Health</span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
     <?php
     if (count($jobcards) > 0) {
         ?>
@@ -344,8 +263,7 @@ if ($organization['cover_image']) {
     }
     if (count($locations) > 0) {
         ?>
-        <section id="offices">       
-            <div class="offices">
+        <section id="offices">
                 <div class="container">
                     <div class="row content">
                         <div class="t-heading col-md-12">Our Offices</div>
@@ -368,33 +286,11 @@ if ($organization['cover_image']) {
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
         <?php
     }
     ?>
 </div>
-<!--<div class="alerts">-->
-<!--    --><?//=
-//    Html::button('Notify Me About Jobs', [
-//        'class' => 'btn btn-md bubbly-button',
-//        'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-alert'),
-//        'id' => 'open-modal',
-//        'data-toggle' => 'modal',
-//        'data-target' => '#myModal2',
-//    ]);
-//    ?>
-<!--</div>-->
-<!--<div class="modal fade" id="myModal2" role="dialog">-->
-<!--    <div class="modal-dialog modal-md">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-body">-->
-<!--                <img src="--><?//= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?><!--" alt="--><?//= Yii::t('frontend', 'Loading'); ?><!--" class="loading">-->
-<!--                <span> &nbsp;&nbsp;--><?//= Yii::t('frontend', 'Loading'); ?><!--... </span>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 <?php
 $this->registerCss('
 /* Feature, categories css starts */
@@ -477,10 +373,6 @@ document.body.scrollTop = 0;
 document.documentElement.scrollTop = 0;
         
         
-        
-// $(document).on("click", "#open-modal", function () {
-//     $(".modal-body").load($(this).attr("url"));
-// });
 
     $('[data-toggle="tooltip"]').tooltip();
         
@@ -489,93 +381,6 @@ document.documentElement.scrollTop = 0;
             type: 'inline',
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         })
-        
-    
-        // JavaScript Document
-      $(document).ready(function(){
-	$('.edit').click(function(){
-		$(this).hide();
-		$(this).prev().hide();
-		$(this).next().show();
-		$(this).next().select();
-	});
-	$('input[type="text"]').blur(function() {  
-         if ($.trim(this.value) == ''){  
-			 this.value = (this.defaultValue ? this.defaultValue : '');  
-		 }
-		 else{
-			 $(this).prev().prev().html(this.value);
-		 }
-		 $(this).hide();
-		 $(this).prev().show();
-		 $(this).prev().prev().show();
-     });
-	  $('input[type="text"]').keypress(function(event) {
-		  if (event.keyCode == '13') {
-			  if ($.trim(this.value) == ''){  
-				 this.value = (this.defaultValue ? this.defaultValue : '');  
-			 }
-			 else
-			 {
-				 $(this).prev().prev().html(this.value);
-			 }
-			 
-			 $(this).hide();
-			 $(this).prev().show();
-			 $(this).prev().prev().show();
-		  }
-	  });
-		  
-  });
- var sections = $('section')
-  , nav = $('nav')
-  , nav_height = nav.outerHeight();
- 
-$(window).on('scroll', function () {
-  var cur_pos = $(this).scrollTop();
- 
-  sections.each(function() {
-    var top = $(this).offset().top - nav_height,
-        bottom = top + $(this).outerHeight();
- 
-    if (cur_pos >= top && cur_pos <= bottom) {
-      nav.find('a').removeClass('active');
-      sections.removeClass('active');
- 
-      $(this).addClass('active');
-      nav.find('a[href="#'+$(this).attr('id')+'"]').addClass('active');
-    }
-  });
- 
-}); 
-      
-                nav.find('li a').on('click', function () {
-                    var el = $(this)
-                            , id = el.attr('href');
-
-                    $('html, body').animate({
-                        scrollTop: $(id).offset().top - nav_height
-                    }, 500);
-
-                    return false;
-                });
-        
-var animateButton = function(e) {
-//  e.preventDefault;
-  //reset animation
-  e.target.classList.remove('animate');
-  
-  e.target.classList.add('animate');
-  setTimeout(function(){
-    e.target.classList.remove('animate');
-  },700);
-};
-
-var bubblyButtons = document.getElementsByClassName("bubbly-button");
-
-for (var i = 0; i < bubblyButtons.length; i++) {
-  bubblyButtons[i].addEventListener('click', animateButton, false);
-}
         
         
 $(document).on('click','.shortlist_org',function(e){
