@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -130,6 +129,7 @@ $form->field($locationFormModel, 'longitude', [
 <?php ActiveForm::end(); ?>
 <?php
 $script = <<<JS
+
     function drp_down(id, data) {
         var selectbox = $('#' + id + '');
         $.each(data, function () {
@@ -150,10 +150,10 @@ $script = <<<JS
         if (e.which == 9)
             $(this).trigger("click");
     });
-
     "use strict";
     var geocoder;
     var map;
+   
     function initialize() {
         $("#map-canvas").css("height", "400px");
         geocoder = new google.maps.Geocoder();
@@ -163,6 +163,7 @@ $script = <<<JS
             center: latlng
         }
         map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        
     }
 
     function codeAddress(address) {
