@@ -189,7 +189,7 @@ $this->params['header_dark'] = false;
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>">
                         </div>
                         <div class="com-name">
                             Capital Small Finance Bank
@@ -197,7 +197,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com2 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/mid1.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
                         </div>
                         <div class="com-name">
                             Midland MicroFin
@@ -221,7 +221,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com5 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>">
                         </div>
                         <div class="com-name">
                             Agile Finserv
@@ -245,10 +245,10 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com9 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                         </div>
                         <div class="com-name">
-                            Empower youth
+                            Hamco Ispat
                         </div>
                     </div>
                     <div class="com10 animatable fadeIn">
@@ -890,6 +890,7 @@ textarea {
     border-radius:50%;
     box-shadow: 8px 13px 30px 5px rgba(0, 0, 0, 0.3);
     padding: 18px !important; 
+    line-height: 0px;
 }
 .com-name{ 
     padding-top:8px;
