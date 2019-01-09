@@ -179,6 +179,7 @@ AppAssets::register($this);
             left: 0;
             position: fixed;
             text-align: center;
+            margin:0px;
             top: 0;
             width: 100%;
             z-index: 2147483647;
