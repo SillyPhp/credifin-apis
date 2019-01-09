@@ -125,9 +125,9 @@ $script = <<< JS
 
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 //$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-$this->registerJsFile('/assets/themes/dashboard/tutorials/individual_dashboard_home.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 
 
 ?>
@@ -135,11 +135,8 @@ $this->registerJsFile('/assets/themes/dashboard/tutorials/individual_dashboard_h
 
 </script>
 <?php
-if (!Yii::$app->session->has("tutorialsd")) {
+if (!Yii::$app->session->has("tutorial_individual_dashboard")) {
     echo '<script>dashboard_individual_guide()</script>';
-    echo '<script>console.log(1)</script>';
-    Yii::$app->session->set("tutorialsd", "Yes");
-} else{
-    echo '<script>console.log(2)</script>';
+    Yii::$app->session->set("tutorial_individual_dashboard", "Yes");
 }
 ?>

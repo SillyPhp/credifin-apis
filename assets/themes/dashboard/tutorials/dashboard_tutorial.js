@@ -2532,7 +2532,6 @@
 
 
 function dashboard_individual_guide(){
-    console.log('in function');
     var intro = introJs();
 
     intro.setOptions({
@@ -2541,6 +2540,51 @@ function dashboard_individual_guide(){
                 element: document.querySelector('.applied_app'),
                 intro: "application applied enables you to view the recruitment you’ve applied for.",
                 disableInteraction: true
+            },
+        ]
+    });
+
+    intro.start();
+}
+
+function dashboard_organization_taskbar(){
+    var intro = introJs();
+    intro.setOptions({
+        steps: [
+            {
+                element: document.querySelector('.card-body'),
+                intro: "Add your tasks to be done for reminder. Once you’re done, go for next.",
+                disableInteraction: true
+            },
+        ]
+    });
+    intro.start();
+}
+
+function dashboard_organization_jobs_count(){
+    var intro = introJs();
+
+    intro.setOptions({
+        steps: [
+            {
+                element: document.querySelector('.jobs_count'),
+                intro: "Total Jobs",
+                position: 'top'
+            },
+            {
+                element: document.querySelector('.processes_count'),
+                intro: "Total Processes",
+                position: 'bottom'
+            },
+            {
+                element: document.querySelector('.questionnaire_count'),
+                intro: "Total Questionnaire",
+                position: 'top'
+            },
+            {
+                element: document.querySelector('.employees_count'),
+                intro: "Total Employees",
+                position: 'bottom'
             },
         ]
     });
