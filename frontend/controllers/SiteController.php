@@ -352,7 +352,12 @@ class SiteController extends Controller {
     public function actionCareerMove() {
         return $this->render('career-move');
     }
-
+    public function actionCompanyJobsIndex() {
+        return $this->render('company-jobs-index');
+    }
+    public function actionCompanyInternshipsIndex() {
+        return $this->render('company-internships-index');
+    }
     public function actionWalkInInterview() {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
