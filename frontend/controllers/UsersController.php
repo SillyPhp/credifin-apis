@@ -15,107 +15,74 @@ use common\models\UserWorkExperience;
 use common\models\UserEducation;
 use yii\web\UploadedFile;
 
-class UsersController extends Controller {
+class UsersController extends Controller
+{
 
-    public function actionProfile($uidk) {
+    public function actionProfile($uidk)
+    {
         $user = Users::find()
-                ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
-                ->asArray()
-                ->one();
+            ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
+            ->asArray()
+            ->one();
         $experience = UserWorkExperience::find()
-                ->alias('a')
-                ->select(['a.experience_enc_id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
-                ->innerJoin(\common\models\Cities::tableName() . 'b', 'b.city_enc_id = a.city_enc_id')
-                ->where(['a.created_by' => $user['user_enc_id']])
-                ->orderBy(['a.id' => SORT_DESC])
-                ->asArray()
-                ->one();
+            ->alias('a')
+            ->select(['a.experience_enc_id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
+            ->innerJoin(\common\models\Cities::tableName() . 'b', 'b.city_enc_id = a.city_enc_id')
+            ->where(['a.created_by' => $user['user_enc_id']])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->one();
         $education = UserEducation::find()
-                ->where(['created_by' => $user['user_enc_id']])
-                ->orderBy(['id' => SORT_DESC])
-                ->asArray()
-                ->limit(2)
-                ->all();
+            ->where(['created_by' => $user['user_enc_id']])
+            ->orderBy(['id' => SORT_DESC])
+            ->asArray()
+            ->limit(2)
+            ->all();
         $skills = \common\models\UserSkills::find()
-                ->alias('a')
-                ->select(['a.skill_enc_id', 'b.skill skills'])
-                ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
-                ->where(['a.created_by' => $user['user_enc_id']])
-                ->orderBy(['a.id' => SORT_DESC])
-                ->asArray()
-                ->all();
-//        print_r($education);
-//        exit();
-        if ($user['user_enc_id'] == Yii::$app->user->identity->user_enc_id) {
+            ->alias('a')
+            ->select(['a.skill_enc_id', 'b.skill skills'])
+            ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
+            ->where(['a.created_by' => $user['user_enc_id']])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if(!count($user) > 0) {
+            return 'No User Found';
+        }
+
+        if (!Yii::$app->user->isGuest && (Yii::$app->user->identity->user_enc_id === $user['user_enc_id'])) {
             $AddExperienceForm = new AddExperienceForm();
             $addQualificationForm = new AddQualificationForm();
             $addSkillForm = new AddSkillForm();
             $individualImageFormModel = new IndividualImageForm();
             $individualCoverImageFormModel = new IndividualCoverImageForm();
             return $this->render('candidate-profile-edit-new', [
-                        'user' => $user,
-                        'skills' => $skills,
-                        'experience' => $experience,
-                        'education' => $education,
-                        'individualImageFormModel' => $individualImageFormModel,
-                        'individualCoverImageFormModel' => $individualCoverImageFormModel,
-                        'addQualificationForm' => $addQualificationForm,
-                        'AddExperienceForm' => $AddExperienceForm,
-                        'addSkillForm' => $addSkillForm,
+                'user' => $user,
+                'skills' => $skills,
+                'experience' => $experience,
+                'education' => $education,
+                'individualImageFormModel' => $individualImageFormModel,
+                'individualCoverImageFormModel' => $individualCoverImageFormModel,
+                'addQualificationForm' => $addQualificationForm,
+                'AddExperienceForm' => $AddExperienceForm,
+                'addSkillForm' => $addSkillForm,
             ]);
         }
 
         return $this->render('candidate-profile-new', [
-                    'user' => $user,
-                    'skills' => $skills,
-                    'experience' => $experience,
-                    'education' => $education,
+            'user' => $user,
+            'skills' => $skills,
+            'experience' => $experience,
+            'education' => $education,
         ]);
     }
 
-//
-//    public function actionProfile($uidk) {
-//        $user = Users::find()
-//                ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
-//                ->asArray()
-//                ->one();
-//
-//        $experience = UserWorkExperience::find()
-//                ->where(['created_by' => $user['user_enc_id']])
-//                ->asArray()
-//                ->limit(3)
-//                ->all();
-//        if ($user['user_enc_id'] == Yii::$app->user->identity->user_enc_id) {
-//            $AddExperienceForm = new AddExperienceForm();
-//            $individualImageFormModel = new IndividualImageForm();
-//            $individualCoverImageFormModel = new IndividualCoverImageForm();
-//            return $this->render('candidate-profile', [
-//                        'user' => $user,
-//                        'experience' => $experience,
-//                        'individualImageFormModel' => $individualImageFormModel,
-//                        'individualCoverImageFormModel' => $individualCoverImageFormModel,
-//                        'AddExperienceForm' => $AddExperienceForm,
-//            ]);
-//        }
-//        return $this->render('candidate-profile2', [
-//                    'user' => $user,
-//        ]);
-//    }
-//    public function actionAddExperience() {
-//        $userWorkExperience = new UserWorkExperience();
-//        if ($userWorkExperience->load(Yii::$app->request->post()) && $model->save()) {
-//            return $response = [
-//                'status' => 200,
-//                'message' => Yii::t('frontend', 'You are successfully subscribed.'),
-//            ];
-//        }
-//    }
-    public function actionAddExperience() {
+    public function actionAddExperience()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $AddExperienceForm = new AddExperienceForm();
         if ($AddExperienceForm->load(Yii::$app->request->post())) {
-//            return $AddExperienceForm;
-//            exit;
             if ($AddExperienceForm->save()) {
 
                 return $response = [
@@ -133,7 +100,8 @@ class UsersController extends Controller {
         }
     }
 
-    public function actionAddSkill() {
+    public function actionAddSkill()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $addSkillForm = new AddSkillForm();
         if ($addSkillForm->load(Yii::$app->request->post())) {
@@ -153,15 +121,10 @@ class UsersController extends Controller {
         }
     }
 
-    public function actionAddQualification() {
+    public function actionAddQualification()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $addQualificationForm = new AddQualificationForm();
-//        if(Yii::$app->request->post()){
-//            return 1;
-//        }
-//        else{
-//            return 0;
-//        }
         if ($addQualificationForm->load(Yii::$app->request->post())) {
             if ($addQualificationForm->save()) {
 
@@ -177,19 +140,20 @@ class UsersController extends Controller {
                     'message' => 'An error has occurred. Please try again.',
                 ];
             }
-        } else{
+        } else {
             return 'nothing';
         }
     }
 
-    public function actionUpdateProfile() {
+    public function actionUpdateProfile()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
             $userData = Yii::$app->request->post();
             $user = Users::findOne([
-                        'user_enc_id' => Yii::$app->user->identity->user_enc_id,
-                        'status' => 'Active',
-                        'is_deleted' => 0,
+                'user_enc_id' => Yii::$app->user->identity->user_enc_id,
+                'status' => 'Active',
+                'is_deleted' => 0,
             ]);
             $field = $userData['name'];
             $user->$field = $userData['value'];
@@ -217,7 +181,8 @@ class UsersController extends Controller {
         }
     }
 
-    public function actionUpdateProfileImage() {
+    public function actionUpdateProfileImage()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $individualImageFormModel = new IndividualImageForm();
         if (Yii::$app->request->post()) {
@@ -240,7 +205,8 @@ class UsersController extends Controller {
         }
     }
 
-    public function actionUpdateCoverImage() {
+    public function actionUpdateCoverImage()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $individualCoverImageFormModel = new IndividualCoverImageForm();
         if (Yii::$app->request->post()) {
@@ -261,17 +227,18 @@ class UsersController extends Controller {
         }
     }
 
-    public function actionRemoveImage() {
+    public function actionRemoveImage()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $type = Yii::$app->request->post('type');
         if ($type == 'image') {
             $update = Yii::$app->db->createCommand()
-                    ->update(Users::tableName(), ['image' => null, 'image_location' => null], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->execute();
+                ->update(Users::tableName(), ['image' => null, 'image_location' => null], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->execute();
         } elseif ($type == 'cover') {
             $update = Yii::$app->db->createCommand()
-                    ->update(Users::tableName(), ['cover_image' => null, 'cover_image_location' => null], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->execute();
+                ->update(Users::tableName(), ['cover_image' => null, 'cover_image_location' => null], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->execute();
         }
         if ($update) {
             return $response = [
@@ -286,16 +253,6 @@ class UsersController extends Controller {
                 'message' => 'An error has occurred. Please try again.',
             ];
         }
-    }
-
-    public function actionCpNew() {
-        $user = Users::find()
-                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id, 'status' => 'Active', 'is_deleted' => 0])
-                ->asArray()
-                ->one();
-        return $this->render('candidate-profile-new', [
-                    'user' => $user,
-        ]);
     }
 
 }
