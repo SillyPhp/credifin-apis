@@ -14,8 +14,11 @@ $this->params['header_dark'] = false;
                             <div class="main-tagline">Want to attract top talent ?</div>
                             <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &
                                 Save Time On Hiring Candidates.</div>
-                            <div class="main-text2">Increase Your Efficiency & Effectiveness.</div>
-                            <div class="main-bttn"><a href="/signup/organization">Create Account</a></div>
+                            <div class="main-text2"> <span>Increase Your Efficiency & Effectiveness.</span></div>
+                            <div class="main-bttn">
+                                <a href="/signup/organization" class="button2">Create Account
+                                <span><i class="fa fa-arrow-right"></i></span> </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -130,7 +133,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="com9 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                             </div>
                             <div class="com-name">
                                 Empower youth
@@ -210,32 +213,51 @@ $this->registerCss('
     max-width:600px;
     line-height:27px;
 }
-.main-text2{
-    color:#ff7803;
+.main-text2{ 
+    color:#fff;
     font-size:17px;
-    max-width:800px;
     line-height:27px;
+}
+.main-text2 span{
+    padding:0 5px;
+   background:#000; 
 }
 .main-bttn{
     padding-top:20px;
 }
-.main-bttn a{
-    background:transparent;
-    color:#fff;
+.button2{
     border:2px solid #fff;
-    padding:5px 10px;
+    padding:8px 10px;
+    color:#fff;
     text-transform:uppercase;
+    font-weight:bold;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    position:relative;
 }
-.main-bttn a:hover{
-   background: rgba(255,255,255,.8);
-    color: #ff7803;
-    border-color: #ff7803;
-    -o-transition:.3s all;
+.button2 span{
+    position:absolute;
+    opacity:0;
+    right: 5px;
+    top:7px;
+}
+.button2:hover{
+    color:#fff;
+    padding-right:30px;   
+}
+.button2:hover span{
+    opacity:1;
+   right:10px;
+   
+}
+.button2, .button2 span, .button2:hover {
+    -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -ms-transition:.3s all;
-    -webkit-transition:.3s all;
+    -o-transition:.3s all;
     transition:.3s all;
-}
+} 
 .how-it-works{
     padding:10px 0 30px;
 }
