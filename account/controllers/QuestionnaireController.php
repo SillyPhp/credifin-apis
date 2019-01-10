@@ -4,13 +4,13 @@ namespace account\controllers;
 
 use Yii;
 use yii\web\Controller;
-use yii\web\Response;
+use common\models\OrganizationQuestionnaire;
+use common\models\QuestionnaireFields;
+use common\models\QuestionnaireFieldOptions;
 
-class QuestionnaireController extends Controller
-{
+class QuestionnaireController extends Controller {
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $options = [
             'where' => [
                 'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
@@ -23,12 +23,11 @@ class QuestionnaireController extends Controller
         $questionnaire = new \account\models\questionnaire\OrganizationQuestionnaire();
 
         return $this->render('index', [
-            'questionnaire' => $questionnaire->getQuestionnaire($options),
+                    'questionnaire' => $questionnaire->getQuestionnaire($options),
         ]);
     }
 
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new \account\models\questionnaire\QuestionnaireForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->add()) {
@@ -39,62 +38,45 @@ class QuestionnaireController extends Controller
         }
 
         return $this->render('form', [
-            'model' => $model,
+                    'model' => $model,
         ]);
     }
 
-    public function actionDeleteQuestionnaire()
-    {
-        if (Yii::$app->request->isPost) {
-            $id = Yii::$app->request->post('data');
-            $update = Yii::$app->db->createCommand()
-                ->update(OrganizationQuestionnaire::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['questionnaire_enc_id' => $id])
-                ->execute();
-            if ($update) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
+    public function actionView($qidk) {
 
-    public function actionClone($qidk)
-    {
-        $model = new \account\models\questionnaire\QuestionnaireForm();
-        $fields = $model->getCloneData($qidk);
-        if (empty($fields)) {
-            return 'Questionnaire not found!!';
+        $this->layout = 'main-secondary';
+        $model = new \frontend\models\questionnaire\QuestionnaireForm;
+        $result = OrganizationQuestionnaire::find()
+            ->select(['questionnaire_enc_id', 'questionnaire_name'])
+            ->where(['questionnaire_enc_id' => $qidk])
+            ->asArray()
+            ->one();
+        if(empty($result))
+        {
+            return 'not found';
         }
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->add()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return $this->render('questionnaire-clone', [
-                'model' => $model,
-                'fields' => $fields,
-            ]);
-        }
-    }
+        $fields = QuestionnaireFields::find()
+            ->alias('a')
+            ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+            ->where(['a.questionnaire_enc_id' => $result['questionnaire_enc_id']])
+            ->asArray()
+            ->all();
 
-    public function actionEdit($qidk)
-    {
-        $model = new \account\models\questionnaire\QuestionnaireForm();
-        $fields = $model->getCloneData($qidk);
-        if (empty($fields)) {
-            return 'Questionnaire not found!!';
+        foreach ($fields as $field) {
+            $field_option = QuestionnaireFieldOptions::find()
+                ->select(['field_option_enc_id', 'field_option'])
+                ->where(['field_enc_id' => $field['field_enc_id']])
+                ->asArray()
+                ->all();
+            $field['options'] = $field_option;
+            $arr['fields'][] = $field;
         }
-        if ($model->load(Yii::$app->request->post())) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return $model->update($qidk);
-        } else {
-            return $this->render('questionnaire-edit', [
-                'model' => $model,
-                'fields' => $fields,
-            ]);
-        }
+
+
+        return $this->render('display', [
+            'fields' => $arr,
+            'model' => $model,
+        ]);
     }
 
 }
