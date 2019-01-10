@@ -5,6 +5,8 @@ namespace account\controllers;
 use Yii;
 use yii\web\Controller;
 use account\models\processes\InterviewProcess;
+use common\models\OrganizationInterviewProcess;
+use common\models\InterviewProcessFields;
 
 class InterviewProcessesController extends Controller {
 
@@ -31,6 +33,31 @@ class InterviewProcessesController extends Controller {
 
         return $this->render('form', [
                     'model' => $model,
+        ]);
+    }
+
+    public function actionView($id)
+    {
+
+        $id = Yii::$app->getRequest()->getQueryParam('id');
+        $process_name = OrganizationInterviewProcess::find()
+            ->select(['process_name'])
+            ->where(['interview_process_enc_id' => $id])
+            ->asArray()
+            ->one();
+        if(empty($process_name))
+        {
+            return 'not found';
+        }
+        $process_fields = InterviewProcessFields::find()
+            ->select(['field_name', 'icon'])
+            ->where(['interview_process_enc_id' => $id])
+            ->asArray()
+            ->all();
+
+        return $this->render('display', [
+            'process_name' => $process_name,
+            'process_fields' => $process_fields
         ]);
     }
 
