@@ -64,11 +64,10 @@ use yii\helpers\Url;
 <?php
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-$org_jobs_count;
+$org_jobs_count = NULL;
 if(!empty($org_jobs_count)){
     Yii::$app->session->set("tutorial_organization_jobs_count", $org_jobs_count);
 }
-Yii::$app->session->set("tutorial_organization_jobs_count", "Yes");
 if (!Yii::$app->session->has("tutorial_organization_jobs_count")) {
     echo '<script>dashboard_organization_jobs_count()</script>';
     Yii::$app->session->set("tutorial_organization_jobs_count", "Yes");
