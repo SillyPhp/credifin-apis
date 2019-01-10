@@ -13,8 +13,6 @@ use common\models\AppliedApplicationProcess;
 
 class DashboardController extends Controller
 {
-
-
     private $_condition;
 
     public function actionIndex()
@@ -70,6 +68,21 @@ class DashboardController extends Controller
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
+
+//        if (Yii::$app->user->identity->organization->organization_enc_id) {
+//            $this->_condition = ['IN', 'a.name', '"taskbar_card", "individual_dashboard_applied_applications"'];
+//        } else {
+//            $this->_condition = ['IN', 'a.name', '"taskbar_card"'];
+//        }
+//
+//        $options = [
+//            'where' => ['and',
+//                $this->_condition,
+//                ['b.is_viewed' => 0],
+//            ],
+//        ];
+//
+//        $tutorials = new \account\models\tutorials\Tutorials();
 
         return $this->render('index', [
             'applied' => $applied_app,

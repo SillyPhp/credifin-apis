@@ -5,6 +5,7 @@ use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Internships',
 ]);
+
 ?>
     <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
     <div class="row widget-row">
