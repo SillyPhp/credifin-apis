@@ -2598,7 +2598,7 @@ function dashboard_organization_internships_count(){
     intro.setOptions({
         steps: [
             {
-                element: document.querySelector('.jobs_count'),
+                element: document.querySelector('.internships_count'),
                 intro: "Total Internships",
                 position: 'top'
             },
