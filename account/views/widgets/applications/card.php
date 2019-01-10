@@ -12,7 +12,7 @@ for ($i = 1; $i <= $rows; $i++) {
         for ($j = 0; $j < $per_row; $j++) {
             if ($next < $total_applications) {
                 ?>
-                <div class="col-md-3">
+                <div class="<?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
                             <a href=""

@@ -48,7 +48,7 @@ class IndividualImageForm extends Model {
                             return false;
                         }
                     } else {
-                        return 'Unable to create directory';
+                        return false;
                     }
                 }
             } else {

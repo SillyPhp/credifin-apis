@@ -47,7 +47,7 @@ class UsersController extends Controller
             ->asArray()
             ->all();
 
-        if(!count($user) > 0) {
+        if (!count($user) > 0) {
             return 'No User Found';
         }
 
@@ -187,20 +187,19 @@ class UsersController extends Controller
         $individualImageFormModel = new IndividualImageForm();
         if (Yii::$app->request->post()) {
             $individualImageFormModel->image = UploadedFile::getInstance($individualImageFormModel, 'image');
-            return $individualImageFormModel->save();
-//            if ($individualImageFormModel->save()) {
-//                return $response = [
-//                    'status' => 200,
-//                    'title' => 'Success',
-//                    'message' => 'Profile image has been changed.',
-//                ];
-//            } else {
-//                return $response = [
-//                    'status' => 201,
-//                    'title' => 'Error',
-//                    'message' => 'An error has occurred. Please try again.',
-//                ];
-//            }
+            if ($individualImageFormModel->save()) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Profile image has been changed.',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.',
+                ];
+            }
         }
     }
 
