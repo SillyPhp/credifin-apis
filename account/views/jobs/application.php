@@ -94,7 +94,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="progress-bar progress-bar-success"></div>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tab3">
+                            <div class="tab-pane active" id="tab1">
 
                                 <div class="row">
                                     <div class="col-md-4">
@@ -531,7 +531,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <input type="text" name="benefit_calc" id="benefit_calc" readonly>
                                 <div class="divider"></div>
                             </div>
-                            <div class="tab-pane" id="tab1">
+                            <div class="tab-pane" id="tab3">
                                 <div id="process_err"></div>
                                 <div class="row">
                                     <div class="col-md-6">

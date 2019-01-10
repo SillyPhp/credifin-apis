@@ -1555,6 +1555,7 @@ margin-bottom:8px;
   font-size: 18px;
   font-weight: 600;
   line-height: 36px;
+  position:relative;
 }
 
 #skill_counter,#qualific_count,#desc_count,#placement_calc,#interview_calc,#benefit_calc,#process_calc,#ques_calc
@@ -2514,7 +2515,7 @@ var categories = new Bloodhound({
   remote: {
     url:'/account/categories-list/categories-data',
     prepare: function (query, settings) {
-             settings.url += '?q=' + $('#jobtitle').val()+'&id='+prime_id;
+             settings.url += '?q=' + $('#jobtitle').val()+'&type=Internships&id='+prime_id;
              return settings;
         },  
     'cache': false,  

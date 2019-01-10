@@ -35,14 +35,14 @@ class CategoriesListController extends Controller
         return $out;
     }
 
-    public function actionCategoriesData($q, $id)
+    public function actionCategoriesData($q, $id, $type = 'Jobs')
     {
         $categories = Categories::find()
             ->alias('a')
             ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where('a.name LIKE "%' . $q . '%"')
-            ->andWhere(['assigned_to' => 'Jobs', 'b.parent_enc_id' => $id])
+            ->andWhere(['assigned_to' => $type, 'b.parent_enc_id' => $id])
             ->asArray()
             ->all();
 

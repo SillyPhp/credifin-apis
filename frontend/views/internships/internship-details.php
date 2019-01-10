@@ -290,8 +290,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div>
                         <div class="job-head-info">
                             <h4><?= $org['org_name']; ?></h4>
-                            <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
-                            <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
+                            <?php if ($org['website']): ?>
+                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php endif; ?>
                         </div>
                         <?php if (Yii::$app->user->isGuest): ?>
                             <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login to apply</a>

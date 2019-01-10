@@ -224,7 +224,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                             <?php if ($org['website']): ?>
                                 <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
                             <?php endif; ?>
-                            <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
                         </div>
                         <?php if (Yii::$app->user->isGuest): ?>
                             <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
