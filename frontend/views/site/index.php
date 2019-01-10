@@ -17,8 +17,8 @@ $this->params['header_dark'] = false;
 <!--                    </div>-->
 
                     <div class="seq-title seq-detail-left">
-                        <h2 data-seq>Job Search</h2>
-                        <h3 data-seq>EmpowerYouth makes it easy for you to search your dream job </h3>
+                        <h2 data-seq>Career  </h2>
+                        <h3 data-seq><span>Discover a New Career Specially Designed For You.</span></h3>
                     </div>
                 </li>
 
@@ -29,7 +29,7 @@ $this->params['header_dark'] = false;
 
                     <div class="seq-title">
                         <h2 data-seq>Internships</h2>
-                        <h3 data-seq>EmpowerYouth makes it easy for you to find internships</h3>
+                        <h3 data-seq><span>Push Your Life To a Whole New Level</span></h3>
                     </div>
                 </li>
 
@@ -41,7 +41,8 @@ $this->params['header_dark'] = false;
                         <div class="seq-title white-seq-title">
 
                         <h2 data-seq>Dream Bigger. Aim Higher. Reach Faster.</h2>
-                        <h3 data-seq  style="color:#000 !important">A better career is out there. We'll help you find it. We're your first step to becoming everything you want to be. </h3>
+                        <h3 data-seq  style="color:#000 !important"><span>A better career is out there. We'll help you find it.
+                                We're your first step to becoming everything you want to be.</span> </h3>
                     </div>
                 </li>
             </ul>
@@ -617,10 +618,15 @@ $this->registerCss('
     text-align:right;
 }
 /*how it works section ends*/
+/*-------------------------------------*/
 /*partner with us*/
 .partner{
     padding:0px 0 80px 0;
     text-align:center;
+    background:url(' . Url::to('@eyAssets/images/pages/index2/black.png') . ');
+     background-size: 100%;
+    background-position: 0px -8px;
+    background-repeat:no-repeat;
 }
 .partner-btn button{
     border: 2px solid #dbd7d7;
@@ -647,6 +653,9 @@ $this->registerCss('
 }
 .partner-row{
     padding:30px 0 0 0; 
+}
+.footer{
+    margin-top:0px !important;
 }
 /*partner with us ends*/
 
