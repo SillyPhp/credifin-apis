@@ -124,7 +124,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                     <li><i class="fa fa-shield"></i>
                                         <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
                                     <li><i class="fa fa-line-chart "></i>
-                                        <h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
+                                        <h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
                                     <li><i class="fa fa-map-marker "></i>
                                         <h3>Locations</h3><span> <?php
                                             $str = "";
