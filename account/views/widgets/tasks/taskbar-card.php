@@ -427,16 +427,16 @@ $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => 
 //$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 
-$options = [
-    'where' => ['and',
-        ['a.name' => 'taskbar_card'],
-        ['b.is_viewed' => 0],
-    ],
-];
-
-$tutorials = Yii::$app->tutorials->getTutorialsByUser($options);
-echo "Hello";
-print_r($tutorials);
+//$options = [
+//    'where' => ['and',
+//        ['a.name' => 'taskbar_card'],
+//        ['b.is_viewed' => 0],
+//    ],
+//];
+//
+//$tutorials = Yii::$app->Tutorials->getTutorialsByUser($options);
+//echo "Hello";
+//print_r($tutorials);
 
 if (!Yii::$app->session->has("tutorial_organization_tasks")) {
     echo '<script>dashboard_organization_taskbar()</script>';

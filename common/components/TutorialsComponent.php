@@ -1,10 +1,11 @@
 <?php
 
-namespace account\models\tutorials;
+namespace common\components;
 
-use common\models\WidgetTutorials;
+use Yii;
+use yii\base\Component;
 
-class Tutorials extends WidgetTutorials
+class TutorialsComponent extends Component
 {
     private $_limit;
     private $_pageNumber;
@@ -23,14 +24,17 @@ class Tutorials extends WidgetTutorials
     public function getTutorialsByUser($options = [])
     {
         $this->__setOptions($options);
-        $tutorials = self::find()
+        $tutorials = \common\models\WidgetTutorials::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.tutorial_enc_id id', 'a.name', 'b.is_viewed']);
+            ->select(['a.tutorial_enc_id id', 'a.name', 'b.is_viewed'])
+            ->leftJoin(\common\models\UserCoachingTutorials::tableName() . 'b', 'b.tutorial_enc_id = a.tutorial_enc_id');
 
         if ($this->_where) {
-            $tutorials->andWhere($this->_where);
+            $tutorials->where($this->_where);
         }
+
+        return $tutorials->createCommand()->getRawSql();
 
         $total = $tutorials->count();
 
@@ -48,6 +52,11 @@ class Tutorials extends WidgetTutorials
             'total' => $total,
             'data' => $tutorials->asArray()->all(),
         ];
+    }
+
+    public function updateUserCoachingTutorial()
+    {
+        $model = new \common\models\UserCoachingTutorials();
     }
 
 }
