@@ -187,21 +187,20 @@ class UsersController extends Controller
         $individualImageFormModel = new IndividualImageForm();
         if (Yii::$app->request->post()) {
             $individualImageFormModel->image = UploadedFile::getInstance($individualImageFormModel, 'image');
-
-            if ($individualImageFormModel->save()) {
-
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Profile image has been changed.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
-            }
+            return $individualImageFormModel->save();
+//            if ($individualImageFormModel->save()) {
+//                return $response = [
+//                    'status' => 200,
+//                    'title' => 'Success',
+//                    'message' => 'Profile image has been changed.',
+//                ];
+//            } else {
+//                return $response = [
+//                    'status' => 201,
+//                    'title' => 'Error',
+//                    'message' => 'An error has occurred. Please try again.',
+//                ];
+//            }
         }
     }
 

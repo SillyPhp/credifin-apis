@@ -23,6 +23,7 @@ class TutorialsComponent extends Component
 
     public function getTutorialsByUser($options = [])
     {
+        return 1;
         $this->__setOptions($options);
         $tutorials = \common\models\WidgetTutorials::find()
             ->alias('a')

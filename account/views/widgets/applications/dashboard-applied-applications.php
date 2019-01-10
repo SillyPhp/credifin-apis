@@ -151,6 +151,7 @@ $options = [
 ];
 
 $tutorials = Yii::$app->tutorials->getTutorialsByUser();
+//print_r();
 print_r($tutorials);
 if (!Yii::$app->session->has("tutorial_individual_dashboard")) {
     echo '<script>dashboard_individual_guide()</script>';
