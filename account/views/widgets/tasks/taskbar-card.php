@@ -429,7 +429,7 @@ $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js'
 
 $options = [
     'where' => ['and',
-        ['a.name' => 'individual_dashboard_applied_applications'],
+        ['a.name' => 'taskbar_card'],
         ['b.is_viewed' => 0],
     ],
 ];
