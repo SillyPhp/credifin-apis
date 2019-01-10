@@ -18,7 +18,7 @@ $this->params['header_dark'] = false;
 
                     <div class="seq-title seq-detail-left">
                         <h2 data-seq>Career  </h2>
-                        <h3 data-seq><span>Discover a New Career Specially Designed For You.</span></h3>
+                        <h3 data-seq>Discover a New Career Specially Designed For You.</h3>
                     </div>
                 </li>
 
@@ -29,7 +29,7 @@ $this->params['header_dark'] = false;
 
                     <div class="seq-title">
                         <h2 data-seq>Internships</h2>
-                        <h3 data-seq><span>Push Your Life To a Whole New Level</span></h3>
+                        <h3 data-seq>Push Your Life To a Whole New Level</h3>
                     </div>
                 </li>
 
@@ -41,8 +41,8 @@ $this->params['header_dark'] = false;
                         <div class="seq-title white-seq-title">
 
                         <h2 data-seq>Dream Bigger. Aim Higher. Reach Faster.</h2>
-                        <h3 data-seq  style="color:#000 !important"><span>A better career is out there. We'll help you find it.
-                                We're your first step to becoming everything you want to be.</span> </h3>
+                        <h3 data-seq>A better career is out there. We'll help you find it.
+                                We're your first step to becoming everything you want to be.</h3>
                     </div>
                 </li>
             </ul>
@@ -623,33 +623,35 @@ $this->registerCss('
 .partner{
     padding:0px 0 80px 0;
     text-align:center;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/black.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
      background-size: 100%;
-    background-position: 0px -8px;
     background-repeat:no-repeat;
 }
 .partner-btn button{
-    border: 2px solid #dbd7d7;
+    border: 2px solid #00a0e3;
     border-width: 2px 12px;
     padding: 14px 59px;
-    background: #ffffff !important;
-    color: #dbd7d7;
+    background: #00a0e3 !important;
+    color: #fff;
     text-transform: uppercase;
     border-radius: 9px 50px;
     transition:.6s all;
     -webkit-transition:.6s all;
-    -moz-transition:.6s all;
     -o-transition:.6s all;
+    -moz-transition:.6s all;
+    -ms-transition:.6s all;
 }
 .partner-btn button:hover{
     border:2px solid #00a0e3;
     border-width: 2px 12px;
     background: #00a0e3 !important;
     color: #fff;
+    border-radius: 9px 0px;
     transition:.6s all;
     -webkit-transition:.6s all;
     -moz-transition:.6s all;
     -o-transition:.6s all;
+    -ms-transition:.6s all;
 }
 .partner-row{
     padding:30px 0 0 0; 
@@ -885,7 +887,7 @@ textarea {
 .companies{
     margin-top:20px;
     position:relative;
-    padding:0 0 50px 0;
+    padding:0 0 105px 0;
 }
 .com-grid{
     text-transform:capitalize;
