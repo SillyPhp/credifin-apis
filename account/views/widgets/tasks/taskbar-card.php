@@ -11,7 +11,7 @@ use yii\helpers\Url;
                     <div class="profile-picture">
                         <?php
                         $name = $image = $link = NULL;
-                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                        if (!empty(Yii::$app->user->identity->organization)) {
                             if (Yii::$app->user->identity->organization->logo) {
                                 $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                             }
