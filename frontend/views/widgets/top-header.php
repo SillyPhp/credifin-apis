@@ -7,9 +7,7 @@ use yii\helpers\Url;
         <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
         <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
         <?php if (!Yii::$app->user->isGuest): ?>
-            <?php if (Yii::$app->user->identity->organization): ?>
-                <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
-            <?php endif; ?>
+            <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
             <li><a href="<?= Url::to('/logout'); ?>" data-method="post"><?= Yii::t('frontend', 'Logout'); ?></a></li>
         <?php else: ?>
             <li><a href="<?= Url::to('/login'); ?>"><?= Yii::t('frontend', 'Login'); ?></a></li>
