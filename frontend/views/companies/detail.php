@@ -36,7 +36,6 @@ if ($organization['cover_image']) {
 
 <div class="sections">
     <section id="home">
-        <div class="" >
             <div class="coverpic">
                 <img src="<?= Url::to($cover_image); ?>" class="img-fluid">
                 <div class="shortlist_main">
@@ -51,7 +50,6 @@ if ($organization['cover_image']) {
                     <?php } ?>
                 </div>
             </div>
-        </div>
         <!-- Page Content  -->
         <div class="container">
             <div class="row">
@@ -69,7 +67,7 @@ if ($organization['cover_image']) {
                                         ?>
                                         <img src="<?= Url::to($image); ?>">
                                     <?php else: ?>
-                                        <canvas class="user-icon" name="<?= $image; ?>" width="130" height="130" font="65px"></canvas>
+                                        <canvas class="user-icon img-circle img-thumbnail " name="<?= $image; ?>" color="<?= $organization['initials_color'] ?>" width="130" height="130" font="65px"></canvas>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
@@ -219,10 +217,10 @@ if ($organization['cover_image']) {
                                     for ($j = 0; $j < 3; $j++) {
                                         ?>
                                         <div class="col-md-4">
-                                            <a href="#videoStory" class="videoLink">
+                                            <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
                                                 <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
                                             </a>
-                                            <div id="videoStory" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
+                                            <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
                                                 <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                                             </div>
                                         </div>
@@ -370,14 +368,9 @@ $this->registerCss('
 $script = <<<JS
        
 document.body.scrollTop = 0;
-document.documentElement.scrollTop = 0;
+document.documentElement.scrollTop = 0; 
         
-        
-
-    $('[data-toggle="tooltip"]').tooltip();
-        
-    $('.videoLink')
-        .magnificPopup({
+    $('.videoLink').magnificPopup({
             type: 'inline',
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         })

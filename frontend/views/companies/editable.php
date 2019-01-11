@@ -33,14 +33,6 @@ $this->params['seo_tags'] = [
     ],
 ];
 
-function random_color_part() {
-    return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-}
-
-function random_color() {
-    return random_color_part() . random_color_part() . random_color_part();
-}
-
 $industries = Json::encode($industries);
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -55,12 +47,13 @@ if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     if (!file_exists($cover_image_path)) {
-        $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+        $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     }
 } else {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
+$no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 ?>
 
 <div class="loader-aj-main"><div class="loader-aj"><div class="dot first"></div><div class="dot second"></div></div></div>
@@ -309,7 +302,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     </div>
                         <?php
                         Pjax::begin(['id' => 'pjax_locations3']);
-
+                        if(!empty($videos)){
                         $rows = ceil(count($videos) / 3);
                         $next = 0;
                         for ($i = 0; $i < $rows; $i++) {
@@ -331,11 +324,11 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                         <a href="#" class="remove_video">
                                             <i class="fa fa-times-circle" ></i>
                                         </a>
-                                        <a href="#videoStory" class="videoLink">
+                                        <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
                                             <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
                                         </a>
-                                        <div id="videoStory" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
-                                            <iframe width=Who We Are"100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                        <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
+                                            <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                                         </div>
                                     </div>
                                     <?php
@@ -345,12 +338,62 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             </div>
                             <?php
                         }
+                        } else{
+                            echo "no video found";
+                        }
                         Pjax::end();
                         ?>
                 </div>
             </div>
         </div>
 
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="t-heading">
+                        Employee Benefits
+                        <div class="button_location pull-right">
+                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+                Pjax::begin(['id' => 'pjax_benefit']);
+                if(!empty($benefit)){
+                $rows = ceil(count($benefit) / 4);
+                $next = 0;
+                for ($i = 0; $i < $rows; $i++) {
+            ?>
+            <div class="cat-sec">
+                <div class="row no-gape">
+                    <?php
+                    for ($j = 0; $j < 4; $j++) {
+                        ?>
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="p-category">
+                                <div class="p-category-view">
+                                    <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
+                                    <span><?= $benefit[$next]['benefit'] ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        $next++;
+                    }
+                    ?>
+                </div>
+            </div>
+                    <?php
+                }
+                } else{
+                    echo "no benefits found";
+                }
+            Pjax::end();
+            ?>
+        </div>
     </section>
 
     <section id="jobs">
@@ -748,13 +791,124 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     font-size:14px;
     margin:0px;
 }
+
+/* Feature, categories css starts */
+.checkbox-input {
+  display: none;
+}
+.checkbox-label {
+/*   display: inline-block; */
+/*   vertical-align: top; */
+/*   position: relative; */
+  width: 100%;
+  cursor: pointer;
+  font-weight: 400;
+  margin-bottom:0px;
+}
+.checkbox-label:before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  opacity: 0;
+  background-color: #2196F3;
+  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
+  background-position: 80% 80%;
+  background-repeat: no-repeat;
+  background-size: 30px;
+  border-radius: 50%;
+  -webkit-transform: translate(0%, -50%);
+  transform: translate(0%, -50%);
+  transition: all 0.4s ease;
+}
+.checkbox-input:checked + .checkbox-label:before {
+  top: 0;
+  opacity: 1;
+}
+.checkbox-input:checked + .checkbox-label .checkbox-text span {
+  -webkit-transform: translate(0, -8px);
+  transform: translate(0, -8px);
+}
+
+.cat-sec {
+    float: left;
+    width: 100%;
+}
+.p-category {
+    float: left;
+    width: 100%;
+    z-index: 1;
+    position: relative;
+}
+.p-category, .p-category *{
+    -webkit-transition: all 0.4s ease 0s;
+    -moz-transition: all 0.4s ease 0s;
+    -ms-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+}
+.p-category .p-category-view, .p-category .checkbox-text {
+    float: left;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e8ecec;
+    border-right: 1px solid #e8ecec;
+}
+.p-category .p-category-view img, .p-category .checkbox-text span i {
+    color: #4aa1e3;
+    font-size: 70px;
+    margin-top: 30px;
+    line-height: initial !important;
+}
+.p-category .p-category-view span, .p-category .checkbox-text span {
+    float: left;
+    width: 100%;
+    font-family: Open Sans;
+    font-size: 15px;
+    color: #202020;
+    margin-top: 18px;
+}
+.p-category img, .checkbox-text--title img{
+    width: 80px;
+    height: 50px;
+}
+.p-category:hover {
+    background: #ffffff;
+    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    width: 104%;
+    margin-left: -2%;
+    height: 102%;
+    z-index: 10;
+}
+.p-category:hover a, .p-category:hover .checkbox-text {
+    border-color: #ffffff;
+}
+.p-category:hover i, .p-category:hover .checkbox-label i{
+    color: #f07d1d;
+}
+.row.no-gape > div, .row.no-gape .p-category-main {
+    padding: 0;
+}
+.cat-sec .row > div:last-child a, .cat-sec .row .p-category-main:last-child .checkbox-text {
+    border-right-color: #ffffff;
+}
+/* Feature, categories css ends */
 ") ?>
 
 <?php
 $script = <<<JS
-document.body.scrollTop = 0;
-document.documentElement.scrollTop = 0;
-
 $('.model').editable({
     placement: 'top',
     url: '/companies/update-profile',
@@ -793,6 +947,7 @@ $(document).on("click", "#open-modal", function () {
         
 var image_path = $('#logo-img').attr('src');
 var logo_name_path = "$no_image";
+var default_cover_path = "$no_cover";
 var cover_path = $('#cover_img').attr('src');
         
 function readURL(input) {
@@ -913,13 +1068,9 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
 
 function hide_remove_logo(){
     var img_path = $('#logo-img').attr('src');
-    console.log(img_path);
-    console.log(logo_name_path);
     if(img_path == logo_name_path){
-        console.log('if');
         $('.remove-logo').parent('li').css('display', 'none');
     } else{
-        console.log('else');
         $('.remove-logo').parent('li').css('display', 'block');
     }
 }
@@ -941,6 +1092,7 @@ $(document).on('submit', '#change-cover-image', function(event) {
         success: function (response) {
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
+                hide_remove_cover();
                 toastr.success(response.message, response.title);
             } else {
                 toastr.error(response.message, response.title);
@@ -964,14 +1116,26 @@ $(document).on('click', '#confirm_remove_cover', function(event) {
         success: function (response) {
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
+                $('#cover_img').attr('src',default_cover_path);
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
+                hide_remove_cover();
             } else {
                 toastr.error(response.message, response.title);
             }
         }
     });
 });
+
+function hide_remove_cover(){
+    var cover_img_path = $('#cover_img').attr('src');
+    if(cover_img_path == default_cover_path){
+        $('.remove_cover_image').parent('li').css('display', 'none');
+    } else{
+        $('.remove_cover_image').parent('li').css('display', 'block');
+    }
+}
+hide_remove_cover();
 
 $(document).on('mouseover', '.videoLink img', function(){
     $(this).parent().prev().show();
@@ -1060,10 +1224,8 @@ $(document).on('click', '#confirm_loc', function(event) {
     });
 });
 
-    $('[data-toggle="tooltip"]').tooltip();
         
-    $('.videoLink')
-        .magnificPopup({
+    $('.videoLink').magnificPopup({
             type: 'inline',
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         })
@@ -1105,38 +1267,6 @@ $(document).on('click', '#confirm_loc', function(event) {
 	  });
 		  
   });
- var sections = $('section')
-  , nav = $('nav')
-  , nav_height = nav.outerHeight();
- 
-$(window).on('scroll', function () {
-  var cur_pos = $(this).scrollTop();
- 
-  sections.each(function() {
-    var top = $(this).offset().top - nav_height,
-        bottom = top + $(this).outerHeight();
- 
-    if (cur_pos >= top && cur_pos <= bottom) {
-      nav.find('a').removeClass('active');
-      sections.removeClass('active');
- 
-      $(this).addClass('active');
-      nav.find('a[href="#'+$(this).attr('id')+'"]').addClass('active');
-    }
-  });
- 
-}); 
-      
-                nav.find('li a').on('click', function () {
-                    var el = $(this)
-                            , id = el.attr('href');
-
-                    $('html, body').animate({
-                        scrollTop: $(id).offset().top - nav_height
-                    }, 500);
-
-                    return false;
-                });
 
 JS;
 
