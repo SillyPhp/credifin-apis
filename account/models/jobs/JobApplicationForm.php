@@ -299,7 +299,7 @@ class JobApplicationForm extends Model
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($employerApplicationsModel->save()) {
-            if ($this->questionnaire_selection==1){
+            if ($this->questionnaire_selection == 1) {
                 $process_questionnaire = json_decode($this->question_process);
                 if (!empty($process_questionnaire)) {
                     foreach ($process_questionnaire as $process) {
@@ -318,7 +318,7 @@ class JobApplicationForm extends Model
                     }
                 }
             }
-            if ($this->benefit_selection==1){
+            if ($this->benefit_selection == 1) {
                 if (!empty($this->emp_benefit)) {
                     foreach ($this->emp_benefit as $benefit) {
                         $benefitModel = new ApplicationEmployeeBenefits();
@@ -611,11 +611,11 @@ class JobApplicationForm extends Model
 
     }
 
-    public function getQuestionnnaireList()
+    public function getQuestionnnaireList($type = 1)
     {
         $questions_list = OrganizationQuestionnaire::find()
             ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['like', 'questionnaire_for', '"1"'])
+            ->andWhere(['like', 'questionnaire_for', '"' . $type . '"'])
             ->orderBy(['id' => SORT_DESC])
             ->asArray()
             ->all();
@@ -717,7 +717,8 @@ class JobApplicationForm extends Model
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.id', 'a.application_enc_id', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience'])
+            ->joinWith(['preferredIndustry x'], false)
+            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience'])
             ->joinWith(['applicationOptions b' => function ($b) {
                 $b->select(['b.application_enc_id', 'b.option_enc_id', 'b.option_name', 'b.value']);
             }])
@@ -745,11 +746,17 @@ class JobApplicationForm extends Model
             ->joinWith(['designationEnc n'], false)
             ->joinWith(['applicationPlacementLocations o' => function ($b) {
                 $b->andWhere(['o.is_deleted' => 0]);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions']);
+                $b->joinWith(['locationEnc s' => function ($b) {
+                    $b->joinWith(['cityEnc t'], false);
+                }], false);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->andWhere(['p.is_deleted' => 0]);
-                $b->select(['p.location_enc_id', 'p.application_enc_id']);
+                $b->joinWith(['locationEnc u' => function ($b) {
+                    $b->joinWith(['cityEnc v'], false);
+                }], false);
+                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->andWhere(['q.is_deleted' => 0]);
@@ -757,6 +764,7 @@ class JobApplicationForm extends Model
             }])
             ->asArray()
             ->one();
+
         return $application;
     }
 }
