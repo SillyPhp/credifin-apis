@@ -2248,6 +2248,17 @@ height:17px !important;
 
 ");
 $script = <<< JS
+$(document).on('click','.questionnaier_display',function(e) {
+    e.preventDefault();
+    var data = $(this).attr('data-id');
+    window.open('/account/questionnaire/view?qidk='+data+'', "_blank");
+});
+
+$(document).on('click','.process_display',function(e) {
+    e.preventDefault();
+    var data = $(this).attr('data-id');
+    window.open('/account/interview-processes/view?id='+data+'', "_blank");
+});
 var session_tok = "";
 function genrate_session_token()
 {
