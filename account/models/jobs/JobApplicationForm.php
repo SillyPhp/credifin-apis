@@ -85,12 +85,21 @@ class JobApplicationForm extends Model
     public $clone_desc;
     public $clone_edu;
     public $clone_skills;
+    public $benefit_selection;
+    public $questionnaire_selection;
+
+    public function formName()
+    {
+        return '';
+    }
 
     public function rules()
     {
         return [
             [['questions',
                 'primaryfield',
+                'questionnaire_selection',
+                'benefit_selection',
                 'clone_desc',
                 'clone_edu',
                 'clone_skills',
@@ -290,39 +299,42 @@ class JobApplicationForm extends Model
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($employerApplicationsModel->save()) {
-            $process_questionnaire = json_decode($this->question_process);
-            if (!empty($process_questionnaire)) {
-                foreach ($process_questionnaire as $process) {
-                    $processModel = new ApplicationInterviewQuestionnaire();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $processModel->interview_questionnaire_enc_id = $utilitiesModel->encrypt();
-                    $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $processModel->field_enc_id = $process->process_id;
-                    $processModel->questionnaire_enc_id = $process->id;
-                    $processModel->created_on = date('Y-m-d H:i:s');
-                    $processModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$processModel->save()) {
-                        print_r($processModel->getErrors());
+            if ($this->questionnaire_selection==1){
+                $process_questionnaire = json_decode($this->question_process);
+                if (!empty($process_questionnaire)) {
+                    foreach ($process_questionnaire as $process) {
+                        $processModel = new ApplicationInterviewQuestionnaire();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $processModel->interview_questionnaire_enc_id = $utilitiesModel->encrypt();
+                        $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+                        $processModel->field_enc_id = $process->process_id;
+                        $processModel->questionnaire_enc_id = $process->id;
+                        $processModel->created_on = date('Y-m-d H:i:s');
+                        $processModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$processModel->save()) {
+                            print_r($processModel->getErrors());
+                        }
                     }
                 }
             }
-            if (!empty($this->emp_benefit)) {
-                foreach ($this->emp_benefit as $benefit) {
-                    $benefitModel = new ApplicationEmployeeBenefits();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $benefitModel->application_benefit_enc_id = $utilitiesModel->encrypt();
-                    $benefitModel->benefit_enc_id = $benefit;
-                    $benefitModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $benefitModel->created_on = date('Y-m-d H:i:s');
-                    $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$benefitModel->save()) {
-                        print_r($benefitModel->getErrors());
+            if ($this->benefit_selection==1){
+                if (!empty($this->emp_benefit)) {
+                    foreach ($this->emp_benefit as $benefit) {
+                        $benefitModel = new ApplicationEmployeeBenefits();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $benefitModel->application_benefit_enc_id = $utilitiesModel->encrypt();
+                        $benefitModel->benefit_enc_id = $benefit;
+                        $benefitModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+                        $benefitModel->created_on = date('Y-m-d H:i:s');
+                        $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$benefitModel->save()) {
+                            print_r($benefitModel->getErrors());
+                        }
                     }
                 }
             }
-
             if (in_array("6", $this->weekdays)) {
                 $weekoptionsat = $this->weekoptsat;
             } else if (in_array("7", $this->weekdays)) {
@@ -599,11 +611,11 @@ class JobApplicationForm extends Model
 
     }
 
-    public function getQuestionnnaireList($type = 1)
+    public function getQuestionnnaireList()
     {
         $questions_list = OrganizationQuestionnaire::find()
             ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['like', 'questionnaire_for', '"' . $type . '"'])
+            ->andWhere(['like', 'questionnaire_for', '"1"'])
             ->orderBy(['id' => SORT_DESC])
             ->asArray()
             ->all();
@@ -705,57 +717,46 @@ class JobApplicationForm extends Model
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
-            ->joinWith(['preferredIndustry x'],false)
-            ->select(['a.id','a.application_number', 'a.application_enc_id','x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience'])
-            ->joinWith(['applicationOptions b' => function($b) {
+            ->select(['a.id', 'a.application_enc_id', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience'])
+            ->joinWith(['applicationOptions b' => function ($b) {
                 $b->select(['b.application_enc_id', 'b.option_enc_id', 'b.option_name', 'b.value']);
             }])
-            ->joinWith(['applicationEmployeeBenefits c' => function($b) {
+            ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->andWhere(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
             }])
-            ->joinWith(['applicationEducationalRequirements e' => function($b) {
+            ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
-            ->joinWith(['applicationSkills g' => function($b) {
+            ->joinWith(['applicationSkills g' => function ($b) {
                 $b->joinWith(['skillEnc h'], false);
                 $b->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
             }])
-            ->joinWith(['applicationJobDescriptions i' => function($b) {
+            ->joinWith(['applicationJobDescriptions i' => function ($b) {
                 $b->joinWith(['jobDescriptionEnc j'], false);
                 $b->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])
-            ->joinwith(['title k' => function($b) {
+            ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
             }], false)
             ->joinWith(['designationEnc n'], false)
-            ->joinWith(['applicationPlacementLocations o' => function($b) {
+            ->joinWith(['applicationPlacementLocations o' => function ($b) {
                 $b->andWhere(['o.is_deleted' => 0]);
-                $b->joinWith(['locationEnc s'=>function($b)
-                {
-                    $b->joinWith(['cityEnc t'],false);
-                }],false);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions','t.city_enc_id','t.name']);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions']);
             }])
-            ->joinWith(['applicationInterviewLocations p' => function($b) {
+            ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->andWhere(['p.is_deleted' => 0]);
-                $b->joinWith(['locationEnc u'=>function($b)
-                {
-                    $b->joinWith(['cityEnc v'],false);
-                }],false);
-                $b->select(['p.location_enc_id', 'p.application_enc_id','v.city_enc_id','v.name']);
+                $b->select(['p.location_enc_id', 'p.application_enc_id']);
             }])
-            ->joinWith(['applicationInterviewQuestionnaires q' => function($b) {
+            ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->andWhere(['q.is_deleted' => 0]);
                 $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
             }])
             ->asArray()
             ->one();
-
         return $application;
     }
-
 }
