@@ -10,7 +10,7 @@ use yii\helpers\Html;
 
             <?php
             $name = $image = NULL;
-            if (Yii::$app->user->identity->organization->name) {
+            if (Yii::$app->user->identity->organization) {
                 if (Yii::$app->user->identity->organization->logo) {
                     $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                 }
@@ -34,6 +34,10 @@ use yii\helpers\Html;
     </div>
     <div class="tree_widget-sec">
         <ul>
+            <?php
+            $userType = Yii::$app->user->identity->type->user_type;
+            if($userType === 'Individual') :
+            ?>
             <li class="inner-child">
                 <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
 
@@ -44,11 +48,7 @@ use yii\helpers\Html;
             </li>
             <li class="inner-child">
                 <a href="/account/candidate-dashboard" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
-
             </li>
-            <!--            modal of change password start-->
-
-            <!--<div class="alerts">-->
             <li>
                 <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2" data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
                 <div class="modal fade" id="myModal2" role="dialog">
@@ -61,7 +61,9 @@ use yii\helpers\Html;
                     </div>
                 </div>
             </li>
-            <!--modal of change password end-->
+            <?php elseif ($userType === 'Organization Admin'): ?>
+<!--            Organization Menu Items-->
+            <?php endif; ?>
             <li class="inner-child">
                 <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
             </li>
