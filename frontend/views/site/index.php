@@ -6,6 +6,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = false;
 ?>
+
 <section class="slider">
     <div id="sequence" class="seq">
 
@@ -180,6 +181,24 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!--how it works ends-->
+<!---->
+<section class="fixed-bttn">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="fx-heading">
+                    Its Free To Get Hired On Empower Youth
+                </div>
+                <div class="post-job-bttn">
+                    <a href="#" id="myBttn" class="hvr-float-shadow">
+                        Get Hired
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!---->
 <!--new section starts-->
 <section class="companies">
     <div class="container">
@@ -276,6 +295,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!--new section ends-->
+
 <section class="partner">
     <div class="container">
         <div class="heading-style ">Join our Community</div>
@@ -358,6 +378,80 @@ $this->params['header_dark'] = false;
 
 <?php
 $this->registerCss('
+/*try now sec*/
+.fixed-bttn{
+    padding:60px 0 100px;
+    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
+    background-size: cover;
+    background-attachment:fixed;
+    background-repeat:no-repeat;
+}
+.fx-heading{
+  text-transform:capitalize;
+    font-size:35px;
+    text-align:center;
+    padding:0 0 20px 0;
+    color:#666666;
+    font-family:lobster;
+}
+.post-job-bttn a{
+    background:#00a0e3;
+    color:#fff;
+    border-radius:5px;
+    text-transform: uppercase;
+    padding:10px 20px;
+    font-size:18px;
+    box-shadow:0 0 10px rgba(66, 63, 63, .5);
+    -webkit-transition:.3s all;
+   transition:.3s all;
+   text-align:center;
+   margin:0 auto;
+   max-width:300px;
+}
+.post-job-bttn a:hover{
+   box-shadow:none;
+   -webkit-transition:.3s all;
+   transition:.3s all;
+}
+.hvr-float-shadow {
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  position: relative;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: transform;
+  transition-property: transform;
+}
+.hvr-float-shadow:before {
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+  content: \'\';
+  top: 100%;
+  left: 5%;
+  height: 10px;
+  width: 90%;
+  opacity: 0;
+  background: -webkit-radial-gradient(center, ellipse, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: transform, opacity;
+  transition-property: transform, opacity;
+}
+.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
+  -webkit-transform: translateY(-5px);
+  transform: translateY(-5px);
+}
+.hvr-float-shadow:hover:before, .hvr-float-shadow:focus:before, .hvr-float-shadow:active:before {
+  opacity: 1;
+  -webkit-transform: translateY(5px);
+  transform: translateY(5px);
+}
+/*try now ends*/
+
 .animated.fadeIn {
 	-webkit-animation-name: fadeIn;
 	-moz-animation-name: fadeIn;
@@ -623,9 +717,7 @@ $this->registerCss('
 .partner{
     padding:0px 0 80px 0;
     text-align:center;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
-     background-size: 100%;
-    background-repeat:no-repeat;
+    background:#ecf5fe;
 }
 .partner-btn button{
     border: 2px solid #00a0e3;
@@ -899,7 +991,7 @@ textarea {
     height:100px;
     background:#fff;
     border-radius:50%;
-    box-shadow: 8px 13px 30px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.3);
     padding: 18px !important; 
     line-height: 0px;
 }
@@ -975,6 +1067,15 @@ textarea {
 /*companies css ends*/
 ');
 $script = <<< JS
+window.onscroll = function() {scrollFunction()};
+function scrollFunction() {
+  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+    document.getElementById("myBttn").style.display = "block";
+  } else {
+    document.getElementById("myBttn").style.display = "none";
+  }
+}
+
 $(document).on('click', '.feed-open', function(){
    $('.window-popup').addClass('open') ;
    $('body').toggleClass('sc_remove') ;
