@@ -7,12 +7,12 @@ use yii\helpers\Url;
         <?php if (Yii::$app->user->identity->organization): ?>
             <?php if ($for == 'Dashboard'): ?>
                 <div class="col-md-2 pull-right">
-                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/internships/application'); ?>">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/internships/create'); ?>">
                         <?= Yii::t('account', 'Create Internship'); ?>
                     </a>
                 </div>
                 <div class="col-md-2 pull-right">
-                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/application'); ?>">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/create'); ?>">
                         <?= Yii::t('account', 'Create Job'); ?>
                     </a>
                 </div>
@@ -23,7 +23,7 @@ use yii\helpers\Url;
                     </a>
                 </div>
                 <div class="col-md-2 pull-right">
-                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/application'); ?>">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/create'); ?>">
                         <?= Yii::t('account', 'Create Job'); ?>
                     </a>
                 </div>
@@ -34,7 +34,7 @@ use yii\helpers\Url;
                     </a>
                 </div>
                 <div class="col-md-2 pull-right">
-                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/internships/application'); ?>">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/internships/create'); ?>">
                         <?= Yii::t('account', 'Create Internship'); ?>
                     </a>
                 </div>

@@ -101,6 +101,9 @@ AppAssets::register($this);
                 <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
             </header>
             <div class="main-content">
+                <div id="page-loading" class="page-loading">
+                    <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+                </div>
                 <?= $content; ?>
             </div>
             <footer id="footer" class="footer">
@@ -110,11 +113,11 @@ AppAssets::register($this);
                 <div class="set_container container">
                     <div class="row">
                         <div class="mt-6 useful-links col-sm-12 col-md-4">
-                            <ul>
-                                <li><a href="<?= Url::to('/about-us'); ?>">About Us</a></li> |
-                                <li><a href="">Team</a></li> |
-                                <li><a href="">Vision</a></li>
-                            </ul>
+<!--                            <ul>-->
+<!--                                <li><a href="--><?//= Url::to('/about-us'); ?><!--">About Us</a></li> |-->
+<!--                                <li><a href="">Team</a></li> |-->
+<!--                                <li><a href="">Vision</a></li>-->
+<!--                            </ul>-->
                         </div>
                         <div class="set1 col-sm-12 col-md-4">
                             <div class="footer-widget ">
@@ -130,11 +133,11 @@ AppAssets::register($this);
                             </div>  
                         </div>
                         <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
-                            <ul>
-                                <li><a href="<?= Url::to('/contact-us'); ?>">Contact Us</a></li> |
-                                <li><a href="">FAQ'S</a></li> |
-                                <li><a href="">Help Counter</a></li>
-                            </ul>
+<!--                            <ul>-->
+<!--                                <li><a href="--><?//= Url::to('/contact-us'); ?><!--">Contact Us</a></li> |-->
+<!--                                <li><a href="">FAQ'S</a></li> |-->
+<!--                                <li><a href="">Help Counter</a></li>-->
+<!--                            </ul>-->
                         </div>
                     </div>
                 </div>
@@ -162,13 +165,35 @@ AppAssets::register($this);
                 </div>
             </footer>
             <?php
-            if (!Yii::$app->user->identity->organization) {
+            if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                 echo $this->render('/widgets/user-profile-sidebar-right');
             }
             ?>
         </div>
         <?php
         $this->registerCss('
+        .page-loading {
+            background-color: #ffffff;
+            content: "";
+            height: 100%;
+            left: 0;
+            position: fixed;
+            text-align: center;
+            margin:0px;
+            top: 0;
+            width: 100%;
+            z-index: 2147483647;
+        }
+        .page-loading > img {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -ms-transform: translateX(-50%) translateY(-50%);
+            -o-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
             #main-header #logo-black{
                 display:none;
             }
@@ -199,9 +224,14 @@ AppAssets::register($this);
                 display:inline;
                 padding:10px;
             }
+            .footer a {
+                text-align: center;
+                width: 100%;
+             }
             .footer-border{
                 text-align:center; 
                 border-top:5px solid #00a0e3;
+                position:relative;
             }
             .footer-border img{
                 margin-top:-50px
@@ -302,7 +332,17 @@ AppAssets::register($this);
                 line-height:normal;
                 margin-top:5px;
             }
-            .my-profiles-sec span canvas{
+            .my-profiles-sec > span > img, .cst img, .my-profiles-sec span canvas{
+                -webkit-border-radius: 50% !important;
+                -moz-border-radius: 50% !important;
+                -ms-border-radius: 50% !important;
+                -o-border-radius: 50% !important;
+                border-radius: 50% !important;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+            }
+            .profiles-sidebar .close-profile{
                 -webkit-border-radius: 50% !important;
                 -moz-border-radius: 50% !important;
                 -ms-border-radius: 50% !important;
@@ -333,6 +373,20 @@ AppAssets::register($this);
                     function gtag(){dataLayer.push(arguments);}
                     gtag("js", new Date());
                     gtag("config", "UA-121432126-1");
+         
+//         document.onreadystatechange = function () {
+//          var state = document.readyState
+//          if (state == "interactive") {
+//                 document.getElementById("page-loading").style.visibility="visible";
+//                 console.log("if");
+//          } else if (state == "complete") {
+//              setTimeout(function(){
+//                 document.getElementById("page-loading").style.visibility="hidden";
+//                 console.log("else if");
+//              },1000);
+//          }
+//        }
+            $(".page-loading").fadeOut();
                     
         ');
         

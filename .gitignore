@@ -1,0 +1,13 @@
+.idea
+common/config
+config
+assets-cached
+composer.lock
+init
+requirements.php
+Vagrantfile
+common/models/PasswordEncrypt.php
+common/models/RandomColors.php
+common/models/UserLogin.php
+common/models/Utilities.php
+vendor

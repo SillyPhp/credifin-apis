@@ -9,7 +9,7 @@ echo $this->render('/widgets/header/secondary-header', [
     <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
 <div class="row widget-row">
     <?=
-         $this->render('/widgets/jobs/count', [
+         $this->render('/widgets/jobs/stats', [
             'questionnaire' => $questionnaire,
             'applications' => $applications,
             'interview_processes' => $interview_processes,
@@ -26,9 +26,9 @@ echo $this->render('/widgets/header/secondary-header', [
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?></span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/jobs/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                    <a href="<?= Url::toRoute('/jobs/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                     <?php if ($applications['total'] > 8): ?>
-                        <a href="<?= Url::to('/account/jobs'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <a href="<?= Url::toRoute('/jobs'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -39,7 +39,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     echo $this->render('/widgets/applications/card', [
                         'applications' => $applications['data'],
                         'per_row' => 4,
-                        'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                     ]);
                 }
                 else {
@@ -61,9 +60,9 @@ echo $this->render('/widgets/header/secondary-header', [
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?></span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/questionnaire/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                    <a href="<?= Url::toRoute('/questionnaire/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                     <?php if ($questionnaire['total'] > 4): ?>
-                        <a href="<?= Url::to('/account/questionnaire'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <a href="<?= Url::toRoute('/questionnaire'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -96,9 +95,9 @@ echo $this->render('/widgets/header/secondary-header', [
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/interview-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                    <a href="<?= Url::toRoute('/interview-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                     <?php if ($interview_processes['total'] > 4): ?>
-                        <a href="<?= Url::to('/account/interview-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <a href="<?= Url::toRoute('/interview-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -145,7 +144,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="col-md-12">
                         <div class="mt-actions">
                             <?php
-//                                            print_r($applied_applications);
                             if (!empty($applied_applications)) { ?>
                                 <?php foreach ($applied_applications['list'] as $candiates) { ?>
                                     <div class="mt-action">

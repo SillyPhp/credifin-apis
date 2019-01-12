@@ -190,8 +190,7 @@ a.article:hover {
 }
 iframe{ max-width:768px; max-height:480px;}
 .video-container{ margin:0 auto; right:20%;}
-.videorows{padding-top:10px;  }
-.videorow{ padding-bottom:10px;}
+.videorow{ padding-bottom:10px;padding-top:10px;margin-top : 3vh;}
 .imgrow{padding-top:10px;}
 .social-icons{ padding:23px 0 10px 0; text-align:center; display:flex; justify-content:center;}
 .icon1{ padding:0px 5px; }

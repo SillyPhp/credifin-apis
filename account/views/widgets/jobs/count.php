@@ -59,37 +59,18 @@ use yii\helpers\Url;
 </div>
 <?php
 $script = <<< JS
-var intro = introJs();
 
-intro.setOptions({
- steps: [
-   {
-     element: document.querySelector('.jobs_count'),
-     intro: "Total Jobs",
-     position: 'top'
-   },
-   {
-     element: document.querySelector('.processes_count'),
-     intro: "Total Processes",
-     position: 'bottom'
-   },
-   {
-     element: document.querySelector('.questionnaire_count'),
-     intro: "Total Questionnaire",
-     position: 'top'
-   },
-   {
-     element: document.querySelector('.employees_count'),
-     intro: "Total Employees",
-     position: 'bottom'
-   },
- ]
-});
-
-intro.start();
 
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+
+?>
+<?php
+if (!Yii::$app->session->has("tutorial_organization_jobs_count")) {
+    echo '<script>dashboard_organization_jobs_count()</script>';
+    Yii::$app->session->set("tutorial_organization_jobs_count", "Yes");
+}
 ?>

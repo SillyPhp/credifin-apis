@@ -4,11 +4,11 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 $form = ActiveForm::begin([
-            'id' => 'form-builder',
-            'fieldConfig' => [
-                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}{hint}</div>",
-            ]
-        ]);
+    'id' => 'form-builder',
+    'fieldConfig' => [
+        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}{hint}</div>",
+    ]
+]);
 ?>
 
 <?=
@@ -16,113 +16,119 @@ $form->field($model, 'formbuilderdata', [
     'template' => '{input}',
 ])->hiddenInput(['id' => 'form-value'])->label(false);
 ?>
-<div class="fade"></div>
-<div class="outer-main">
-    <div class="inner-main">
+    <div class="fade"></div>
+    <div class="outer-main">
+        <div class="inner-main">
 
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12 col-sm-12">
-        <div class="portlet light portlet-fit">
-            <div class="portlet-body questionnair-details">
-                <div class="row"> 
-                    <div class="col-md-6 questionnaire-name">
-                        <?= $form->field($model, 'formname')->textInput(['class' => 'form-control'])->label('Enter name of your questionnaire') ?>
-                    </div>
-                    <div class="col-md-6 use-questionnaire">
-                        <div class="md-checkbox-inline">
-                            <label>Where would you like to use this questionnaire ?</label>
-                            <?=
-                            $form->field($model, 'formusedcategory')->checkBoxList([
-                                '1' => 'Jobs',
-                                '2' => 'Internships',
-                                '3' => 'Training',
-                                    ], [
-                                'item' => function($index, $label, $name, $checked, $value) {
-                                    $return = '<div class="md-checkbox">';
-                                    $return .= '<input type="checkbox" id="' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . $checked . ' >';
-                                    $return .= '<label for="' . $value . $index . '">';
-                                    $return .= '<span></span>';
-                                    $return .= '<span class="check"></span>';
-                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                    $return .= '</div>';
-                                    return $return;
-                                }
-                            ])->label(false);
-                            ?>
-                            <div id="sticky-anchor"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="portlet light portlet-fit">
+                <div class="portlet-body questionnair-details">
+                    <div class="row">
+                        <div class="col-md-6 questionnaire-name">
+                            <?= $form->field($model, 'formname')->textInput(['class' => 'form-control'])->label('Enter name of your questionnaire') ?>
+                        </div>
+                        <div class="col-md-6 use-questionnaire">
+                            <div class="md-checkbox-inline">
+                                <label>Where would you like to use this questionnaire ?</label>
+                                <?=
+                                $form->field($model, 'formusedcategory')->checkBoxList([
+                                    '1' => 'Jobs',
+                                    '2' => 'Internships',
+                                ], [
+                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                        $return = '<div class="md-checkbox">';
+                                        $return .= '<input type="checkbox" id="' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . $checked . ' >';
+                                        $return .= '<label for="' . $value . $index . '">';
+                                        $return .= '<span></span>';
+                                        $return .= '<span class="check"></span>';
+                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                        $return .= '</div>';
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+                                <div id="sticky-anchor"></div>
+                            </div>
                         </div>
                     </div>
-                </div>    
-            </div>
-        </div>
-    </div>
-</div>
-<div class="form_builder">
-    <div class="row form-drag-area">
-        <div class="col-sm-3 col-md-3">
-
-            <div class="portlet light portlet-fit" id="sticky">
-                <div class="portlet-body field-selections">
-                    <nav class="questionnaire-feilds">
-                        <ul class="nav">
-                            <li class="form_bal_textfield">
-                                <a href="javascript:;"> <i class="fa fa-plus-circle"></i> Text Field</a>
-                            </li>
-                            <li class="form_bal_textarea">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Text Area</a>
-                            </li>
-                            <li class="form_bal_select">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Select </a>
-                            </li>
-                            <li class="form_bal_radio">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Radio Button</a>
-                            </li>
-                            <li class="form_bal_checkbox">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Checkbox</a>
-                            </li>
-                            <li class="form_bal_number">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Number</a>
-                            </li>
-                            <li class="form_bal_date">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Date</a>
-                            </li>
-
-                            <li class="form_bal_time">
-                                <a href="javascript:;"><i class="fa fa-plus-circle"></i> Time</a>
-                            </li>
-                            <li>
-                                <div class="q-btns">  <?= Html::submitButton('Submit', ['class' => 'btn blue custom-buttons2 submit btn-block']); ?></div>
-                            </li>
-                            <li>
-                                <div class="q-btns"><button type="button" id="preview" class="btn blue custom-buttons2 btn-block">Preview</button></div>
-
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>
-        <div class="col-md-9 col-sm-9 bal_builder">
-            <div class="portlet light portlet-fit">
-                <div class="portlet-body zero-padding">
-                    <div id="error_placement"></div>
-                    <div class="box_input">
-                        <div id="wait"><img src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif' width="100" height="100" /></div>
-                        <div class="default-text" id="dragdrop">Drag and Drop the form fields here to create your questionnaire.</div>
-                        <div class="form_builder_area"></div>
+    </div>
+    <div class="form_builder">
+        <div class="row form-drag-area">
+            <div class="col-sm-3 col-md-3">
+
+                <div class="portlet light portlet-fit" id="sticky">
+                    <div class="portlet-body field-selections">
+                        <nav class="questionnaire-feilds">
+                            <ul class="nav">
+                                <li class="form_bal_textfield">
+                                    <a href="javascript:;"> <i class="fa fa-plus-circle"></i> Text Field</a>
+                                </li>
+                                <li class="form_bal_textarea">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Text Area</a>
+                                </li>
+                                <li class="form_bal_select">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Select </a>
+                                </li>
+                                <li class="form_bal_radio">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Radio Button</a>
+                                </li>
+                                <li class="form_bal_checkbox">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Checkbox</a>
+                                </li>
+                                <li class="form_bal_number">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Number</a>
+                                </li>
+                                <li class="form_bal_date">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Date</a>
+                                </li>
+
+                                <li class="form_bal_time">
+                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Time</a>
+                                </li>
+                                <li>
+                                    <div class="q-btns">  <?= Html::submitButton('Submit', ['class' => 'btn blue custom-buttons2 submit btn-block']); ?></div>
+                                </li>
+                                <li>
+                                    <div class="q-btns">
+                                        <button type="button" id="preview" class="btn blue custom-buttons2 btn-block">
+                                            Preview
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-9 col-sm-9 bal_builder">
+                <div class="portlet light portlet-fit">
+                    <div class="portlet-body zero-padding">
+                        <div id="error_placement"></div>
+                        <div class="box_input">
+                            <div id="wait"><img
+                                        src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif'
+                                        width="100" height="100"/></div>
+                            <div class="default-text" id="dragdrop">Drag and Drop the form fields here to create your
+                                questionnaire.
+                            </div>
+                            <div class="form_builder_area"></div>
+                        </div>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12" id="sticky-end"></div>
-</div>
-<?php ActiveForm::end(); ?> 
+    <div class="row">
+        <div class="col-md-12" id="sticky-end"></div>
+    </div>
+<?php ActiveForm::end(); ?>
 
 <?php
 $this->registerCss("
@@ -148,10 +154,8 @@ $this->registerCss("
 }
 
 .questionnaire-feilds ul li a:hover{
-//    background:#00a0e3;
     background-position: 0 0;
     color:#fff;
-//    transition:.3s ease-in-out
 }
 .questionnair-details{
     padding-bottom:5px !important;
@@ -190,26 +194,14 @@ $this->registerCss("
 }
 .box_input
 {
-//  height:200px;
   border: 4px groove rgba(0, 160, 227, .5);
-//  text-align:center;
   margin-top:10px;
 }
-//.tag
-//{
-//  margin:70px;
-//}
-//.form-drag-area
-//{
-// overflow-y: scroll;
-//}
 .form_builder_field {
     padding: 10px 20px !important;
     margin: 10px 0px !important;
 }
 .box_input{
-//    overflow-y: scroll;
-//    overflow-x: hidden;
     min-height: 100vh;
     position: relative;
 }
@@ -279,7 +271,6 @@ $this->registerCss("
 border: 1px solid #e73d49;
 box-shadow: 0px 0px 5px 0px #e73d49 !important;
 }
-
 ");
 
 $script = <<<JS
@@ -432,7 +423,7 @@ $script = <<<JS
 
     function getTimeFieldHTML() {
         var field = generateField();
-        var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="time" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Time Inputs" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "time-field_' + field + '" /></div></div>';
+        var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="time" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Time Input" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "time-field_' + field + '" /></div></div>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
@@ -958,23 +949,23 @@ $script = <<<JS
     $('#form-builder').validate({
        ignore: ":hidden:not(#form-value)",
        rules: {
-                    'QuestionnaireForm[formbuilderdata]':
+                    'formbuilderdata':
                      {
                        required:true,
                      },
         },
                          
         messages: { 
-                    'QuestionnaireForm[formbuilderdata]': { 
+                    'formbuilderdata': { 
                         required:'<div id = "color_red">Please Select Form elements And Drag in Box</div>',
                     },
         },
         
         errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "QuestionnaireForm[formbuilderdata]") { 
+                    if (element.attr("name") == "formbuilderdata") { 
                         error.insertAfter("#error_placement");
                     } 
-                    } 
+                    }
    }) ;   
     
     $(document).on('submit', '#form-builder', function(event) {
@@ -1036,5 +1027,6 @@ $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/form-builder/css/form_builder.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/form-builder/js/tether.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

@@ -104,7 +104,7 @@ foreach ($data['applicationOptions'] as $value) {
                                 <div class="col-md-4">
                                     <div class="select">
                                         <?php $select = $data['category_enc_id'];  ?>
-                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['options' => [$select => ['selected' => true]], 'prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
+                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['options' => [$select => ['selected' => true]], 'prompt' => 'Choose Job Function', 'disabled' => true])->label(false); ?>
                                     </div>        
                                 </div>
                                 <div class="col-md-4">
@@ -529,7 +529,11 @@ foreach ($data['applicationOptions'] as $value) {
                                 </div>
                             </div>
                             <div class="divider"></div>
-                            <div id="b_error"></div>    
+                            <div id="b_error"></div>
+                            <?php
+                                Pjax::begin(['id' => 'pjax_benefits']);
+                                if (!empty($benefits))  {
+                             ?>
                             <div class="cat-sec">
                                 <div class="row no-gape">
                                     <?php
@@ -541,7 +545,6 @@ foreach ($data['applicationOptions'] as $value) {
                                     $model->emp_benefit = $arr1;
                                     } 
                                     ?>
-                                    <?php Pjax::begin(['id' => 'pjax_benefits']); ?>   
                                     <?=
                                     $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                                         'item' => function($index, $label, $name, $checked, $value) {
@@ -564,10 +567,14 @@ foreach ($data['applicationOptions'] as $value) {
                                         }
                                     ])->label(false);
                                     ?>
-                                    <?php Pjax::end() ?> 
-                                      
+
                                 </div>
-                            </div>    
+                            </div>
+                            <?php } else { ?>
+
+                            <div class="empty-section-text"> No Benefits Yet Added to display</div>
+                            <?php } ?>
+                            <?php Pjax::end() ?>
                             <div class="row">
                                 <div class="col-md-10 col-md-offset-1">
                                     <?=
@@ -616,7 +623,8 @@ foreach ($data['applicationOptions'] as $value) {
                                     <?= $form->field($model, 'interview_process')->radioList($process, [
                                             'item' => function($index, $label, $name, $checked, $value) {
                                                 $return .= '<div class="col-md-4 text-center">';
-                                                $return .= '<div class="radio_questions">'; 
+                                                $return .= '<div class="radio_questions">';
+                                                $return .= '<div class="overlay-left"><a href="#" data-id="'.$value.'" class="text process_display">View</a></div>';
                                                 $return .= '<div class="inputGroup process_radio">'; 
                                                 $return .= '<input type="radio" id="'. $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
                                                 $return .= '<label for="'. $value . '">'.$label.'</label>';
@@ -673,7 +681,8 @@ foreach ($data['applicationOptions'] as $value) {
                                         $form->field($model, 'questionnaire')->checkBoxList($que, [
                                             'item' => function($index, $label, $name, $checked, $value) {
                                                 $return .= '<div class="col-md-9">';
-                                                $return .= '<div class="radio_questions">'; 
+                                                $return .= '<div class="radio_questions">';
+                                                $return .= '<div class="overlay-left"><a href="#" data-id="'.$value.'" class="text questionnaier_display">View</a></div>';
                                                 $return .= '<div class="inputGroup question_checkbox">'; 
                                                 $return .= '<input type="checkbox" id="'. $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
                                                 $return .= '<label for="'. $value . '">'.$label.'</label>';
@@ -981,6 +990,35 @@ foreach ($data['applicationOptions'] as $value) {
 
 <?php
 $this->registerCss("
+.overlay-left {
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 0;
+  height: 53px;
+  z-index:99;
+  transition: .5s ease;
+  border-radius: 8px 0px 0px 8px;
+}
+
+.radio_questions:hover .overlay-left {
+  width: 130px;
+}
+
+.text {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
 /* Feature, categories css starts */
 .checkbox-input {
   display: none;
@@ -2210,6 +2248,17 @@ height:17px !important;
 
 ");
 $script = <<< JS
+$(document).on('click','.questionnaier_display',function(e) {
+    e.preventDefault();
+    var data = $(this).attr('data-id');
+    window.open('/account/questionnaire/view?qidk='+data+'', "_blank");
+});
+
+$(document).on('click','.process_display',function(e) {
+    e.preventDefault();
+    var data = $(this).attr('data-id');
+    window.open('/account/interview-processes/view?id='+data+'', "_blank");
+});
 var session_tok = "";
 function genrate_session_token()
 {
@@ -3066,8 +3115,7 @@ function init() {
         $.each($('.placeble-area span'),function(index,value)
         {
         var obj_val = {};
-        obj_val["id"] = $(this).attr('data-value');
-        obj_val["value"] = $.trim($(this).text());
+        obj_val = $.trim($(this).text());
 
         array_val.push(obj_val);
          });
@@ -3440,8 +3488,7 @@ function init() {
                    $.each($('.drop-options li'),function(index,value)
                     {
                     var object_val = {};
-                    object_val["id"] = $(this).attr('value-id');
-                    object_val["value"] = $.trim($(this).text());
+                    object_val = $.trim($(this).text());
                     checkboxvalues.push("&#8728; "+$.trim($(this).text())+"<br>"); 
                     arr_val.push(object_val);
                     });
@@ -3452,8 +3499,7 @@ function init() {
                      $.each($('.quali_drop_options li'),function(index,value)
                     {
                     var obj_quali = {};
-                    obj_quali["id"] = $(this).attr('value-id');
-                    obj_quali["value"] = $.trim($(this).text());
+                    obj_quali = $.trim($(this).text());
                     qualifications_arr.push("&#8728; "+$.trim($(this).text())+"<br>"); 
                     arr_quali.push(obj_quali);
                     });

@@ -1,5 +1,7 @@
 <?php
+
 namespace account\models\jobs;
+
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -9,7 +11,9 @@ use common\models\AppliedApplicationLocations;
 use common\models\EmployerApplications;
 use common\models\InterviewProcessFields;
 use common\models\AppliedApplicationProcess;
-class JobApplied extends Model {
+
+class JobApplied extends Model
+{
     public $resume_file;
     public $id;
     public $check;
@@ -18,9 +22,11 @@ class JobApplied extends Model {
     public $fill_question;
     public $location_pref;
     public $status;
-    public function rules() {
+
+    public function rules()
+    {
         return [
-            [['id','resume_file','status','check','resume_list','questionnaire_id','location_pref','fill_question'], 'required'],
+            [['id', 'resume_file', 'status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
             [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf'],
         ];
     }
@@ -33,7 +39,7 @@ class JobApplied extends Model {
         $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
         $userResumeModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
         $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->resumes->logo_path . $userResumeModel->resume_location;
+        $base_path = Yii::$app->params->upload_directories->resume->file_path . $userResumeModel->resume_location;
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume_file->extension;
         $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
@@ -42,7 +48,7 @@ class JobApplied extends Model {
         $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!is_dir($base_path)) {
             if (mkdir($base_path, 0755, true)) {
-                if ($this->resume_file->saveAs( $this->resume_file->baseName . '.' . $this->resume_file->extension)) {
+                if ($this->resume_file->saveAs($base_path . DIRECTORY_SEPARATOR . $userResumeModel->resume)) {
                     if ($userResumeModel->validate() && $userResumeModel->save()) {
                         $appliedModel = new AppliedApplications();
                         $utilitiesModel = new Utilities();
@@ -55,8 +61,7 @@ class JobApplied extends Model {
                         $appliedModel->created_on = date('Y-m-d h:i:s');
                         $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if ($appliedModel->save()) {
-                            foreach (json_decode($this->location_pref) as $location)
-                            {
+                            foreach (json_decode($this->location_pref) as $location) {
                                 $locModel = new AppliedApplicationLocations;
                                 $utilitiesModel = new Utilities();
                                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -67,16 +72,15 @@ class JobApplied extends Model {
                                 $locModel->created_by = Yii::$app->user->identity->user_enc_id;
                                 $app_id = $appliedModel->applied_application_enc_id;
                                 $id = $this->id;
-                                if(!$locModel->save())
-                                {
+                                if (!$locModel->save()) {
                                     print_r($locModel->getErrors());
                                 }
                             }
-                            return $status = [
-                                'status'=>true,
-                                'aid'=>$appliedModel->applied_application_enc_id,
+                            $status = [
+                                'status' => true,
+                                'aid' => $appliedModel->applied_application_enc_id,
                             ];
-                            $this->save_process($id,$app_id);
+                            $this->save_process($id, $app_id);
                             return $status;
 
                         } else {
@@ -96,7 +100,8 @@ class JobApplied extends Model {
     }
 
     public function saveValues()
-    {   $appliedModel = new AppliedApplications();
+    {
+        $appliedModel = new AppliedApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
@@ -107,8 +112,7 @@ class JobApplied extends Model {
         $appliedModel->created_on = date('Y-m-d h:i:s');
         $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($appliedModel->save()) {
-            foreach (json_decode($this->location_pref) as $location)
-            {
+            foreach (json_decode($this->location_pref) as $location) {
                 $locModel = new AppliedApplicationLocations;
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -119,16 +123,15 @@ class JobApplied extends Model {
                 $locModel->created_by = Yii::$app->user->identity->user_enc_id;
                 $app_id = $appliedModel->applied_application_enc_id;
                 $id = $this->id;
-                if(!$locModel->save())
-                {
+                if (!$locModel->save()) {
                     print_r($locModel->getErrors());
                 }
             }
             $status = [
-                'status'=>true,
-                'aid'=>$appliedModel->applied_application_enc_id,
+                'status' => true,
+                'aid' => $appliedModel->applied_application_enc_id,
             ];
-            $this->save_process($id,$app_id);
+            $this->save_process($id, $app_id);
             return $status;
         } else {
             return false;
@@ -136,17 +139,16 @@ class JobApplied extends Model {
     }
 
 
-    private function save_process($id,$app_id)
+    private function save_process($id, $app_id)
     {
         $process_list = EmployerApplications::find()
             ->alias('a')
-            ->select(['b.field_name','b.field_enc_id'])
-            ->where(['a.application_enc_id'=>$id])
+            ->select(['b.field_name', 'b.field_enc_id'])
+            ->where(['a.application_enc_id' => $id])
             ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.interview_process_enc_id = a.interview_process_enc_id')
             ->asArray()
             ->all();
-        foreach ($process_list as $process)
-        {
+        foreach ($process_list as $process) {
             $processModel = new AppliedApplicationProcess;
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -155,8 +157,7 @@ class JobApplied extends Model {
             $processModel->field_enc_id = $process['field_enc_id'];
             $processModel->created_on = date('Y-m-d h:i:s');
             $processModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if(!$processModel->save())
-            {
+            if (!$processModel->save()) {
                 return false;
             }
         }

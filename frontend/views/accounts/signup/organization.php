@@ -11,7 +11,6 @@ $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sig
 $this->params['grid_size'] = 'col-md-8 col-md-push-2';
 $organization_types = ArrayHelper::map($organization_types, 'organization_type_enc_id', 'organization_type');
 $business_activities = ArrayHelper::map($business_activities, 'business_activity_enc_id', 'business_activity');
-$industries = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
     <div class="row">
@@ -169,13 +168,13 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15', 'name' => 'register-button']); ?>
+            <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
         </div>
     </div>
     <div class="row  pt-20">
         <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float" href="<?= Url::to('/signup/individual'); ?>"
-               data-bg-color="#800040"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
+            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="<?= Url::to('/signup/individual'); ?>"
+               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
         </div>
     </div>
 <?php ActiveForm::end(); ?>

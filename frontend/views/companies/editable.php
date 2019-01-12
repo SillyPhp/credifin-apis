@@ -42,16 +42,14 @@ function random_color() {
 }
 
 $industries = Json::encode($industries);
-//print_r($industries);
-//exit();
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true';
+        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
     }
 } else {
-    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
+    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
 }
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -62,29 +60,9 @@ if ($organization['cover_image']) {
 } else {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
-$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
+$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
 ?>
 
-<!-- Sidebar  -->
-<!--<nav class="min-nav" id="min-nav">
-    <ul class="nav nav-stacked navbar-fixed-top">
-        <li><a href="#home" class="active" data-toggle="tooltip" title="Home" data-placement="right"> <i class="fa fa-home"></i></a></li>
-        <li><a href="#about" data-toggle="tooltip" title="About Us" data-placement="right" ><i class="fa fa-briefcase"></i></a></li>
-        <li><a href="#video" data-toggle="tooltip" data-placement="right" title="Videos" ><i class="fa fa-play" aria-hidden="true"></i></a></li>
-        <li> <a href="#jobs" data-toggle="tooltip" data-placement="right" title="Job Available" ><i class="fa fa-question"></i></a> </li>
-        <li><a href="#offices" data-toggle="tooltip" data-placement="right" title="Our Offices"><i class="fa fa-map-marker"></i></a></li>
-    </ul>
-</nav>-->
-<div id="fab-message-open" class="fab-message" style="position:fixed;bottom: 30px;cursor:pointer;right:30px;z-index:9999;background-color: green;color: #fff;font-size: 20px;border-radius: 50%;width:60px;height:60px;line-height: 60px;text-align: center;-webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-    -webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    -o-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;">
-    <i class="fa fa-envelope"></i>
-<div class="fab-hover-message" style="">Want to post your CV</div>
-</div>
-<!--<button id="openPopup" class="btn btn-default">Drop your CV</button>-->
 <div class="loader-aj-main"><div class="loader-aj"><div class="dot first"></div><div class="dot second"></div></div></div>
 <div class="sections">
     <section id="home">
@@ -193,12 +171,12 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                 </div>
                                 <div class="col-md-5 col-sm-9">
                                     <div class="cname"><?= $organization['name']; ?></div>
-                                    <div>
-                                        <div class="tagline" id="tagline1" >
-                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>
-                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
-                                        </div>
-                                    </div>
+<!--                                    <div>-->
+<!--                                        <div class="tagline" id="tagline1" >-->
+<!--                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>-->
+<!--                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
                                     <div>
                                         <div class="tagline" id="tagline2" >
                                             <span href="#" class="model" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= $organization['tag_line']; ?>"></span>
@@ -326,10 +304,9 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     <div class="t-heading">Video Gallery 
                         <div class="button_location pull-right">
                             <!--<= Html::button('Add New Video', ['value' => URL::to('/site/companys1'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
-                            <button type="submit" class="i-review-nx modal-load-class" value="/site/companys1"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
+                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-video"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
                         </div>
                     </div>
-                    <div class="row videorows">
                         <?php
                         Pjax::begin(['id' => 'pjax_locations3']);
 
@@ -370,63 +347,10 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                         }
                         Pjax::end();
                         ?>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="t-heading">
-                        Employee Benefits
-                        <div class="button_location pull-right">
-                            <!--< Html::button('Add New', ['id' => 'benefitPopup', 'class' => 'btn btn-primary btn-circle custom_color-set2']); ?>-->
-                            <button type="submit" id="benefitPopup" class="i-review-nx"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
-                            <!--<= Html::button('Add New', ['data-toggle' => 'modal', 'data-target' => '#benefit-modal', 'class' => 'btn btn-primary btn-circle custom_color-set2']); ?>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php
-            $benefits_list = [['enc_id' => 'aafxxs1', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aaeefxxs', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aaffsdxxs', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aafxsfgbxs', 'descriptiop' => 'abc', 'icon' => 'fa fa-user'], ['enc_id' => 'aahrgfs', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope'], ['enc_id' => 'aaoljfs', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope'], ['enc_id' => 'aafhls', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope'], ['enc_id' => 'aafsbvc', 'descriptiop' => 'abc', 'icon' => 'fa fa-envelope']];
-
-            if (!empty($benefits_list)) {
-                $total = count($benefits_list);
-                $rows = ceil($total / 4);
-                $next = 0;
-                for ($i = 1; $i <= $rows; $i++) {
-                    ?> <div class="cat-sec">
-                        <div class="row no-gape">
-                            <?php
-                            for ($j = 0; $j < 4; $j++) {
-                                if ($next < $total) {
-                                    ?>
-                                    <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                        <div class="p-category">
-                                            <input type="checkbox" name="benefits_list[]" id="<?= $benefits_list[$next]['enc_id']; ?>" data-value="" class="checkbox-input"/>
-                                            <label for="<?= $benefits_list[$next]['enc_id'] ?>" class="checkbox-label">
-                                                <div class="checkbox-text">
-                                                    <span class="checkbox-text--title">
-                                                        <i class="<?= $benefits_list[$next]['icon']; ?>"></i> 
-                                                    </span><br/>
-                                                    <span class="checkbox-text--description">
-                                                        <?= $benefits_list[$next]['descriptiop']; ?>
-                                                    </span>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <?php
-                                }
-                                $next++;
-                            }
-                            ?> 
-                        </div>
-                    </div>
-                <?php }
-                 } ?>
-        </div>
     </section>
 
     <section id="jobs">
@@ -456,7 +380,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     <div class="button_location">
                         <!--<i class="fa fa-pencil" ></i>-->
                         <!--<= Html::button('Add New Location', ['value' => URL::to('/account/locations/add'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
-                        <button type="submit" class="i-review-nx modal-load-class" value="/account/locations/add"><span class="i-review-button-tx">Add Location <span class="fa fa-long-arrow-right"></span></span></button>
+                        <button type="submit" class="i-review-nx modal-load-class" value="/account/locations/create"><span class="i-review-button-tx">Add Location <span class="fa fa-long-arrow-right"></span></span></button>
                         <!--<button type="submit" class="i-review-next"><span class="i-review-button-text" style="margin-right:0;">Add Location</span></button>-->
                     </div>
                 </div>
@@ -740,10 +664,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     left: 162px;
     top: 8px;
 }
-
-.videorows{
-    margin-top : 3vh;
-}
 /*Bootstrap editable css ends */
 /*Loader css starts */
 .loader-aj-main{
@@ -828,153 +748,13 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     font-size:14px;
     margin:0px;
 }
-/* Feature, categories css starts */
-.checkbox-input {
-  display: none;
-}
-.checkbox-label {
-/*   display: inline-block; */
-/*   vertical-align: top; */
-/*   position: relative; */
-  width: 100%;
-  cursor: pointer;
-  font-weight: 400;
-  margin-bottom:0px;
-}
-.checkbox-label:before {
-  content: '';
-  position: absolute;
-  top: 80px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  opacity: 0;
-  background-color: #2196F3;
-  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
-  background-position: 80% 80%;
-  background-repeat: no-repeat;
-  background-size: 30px;
-  border-radius: 50%;
-  -webkit-transform: translate(0%, -50%);
-  transform: translate(0%, -50%);
-  transition: all 0.4s ease;
-}
-.checkbox-input:checked + .checkbox-label:before {
-  top: 0;
-  opacity: 1;
-}
-.checkbox-input:checked + .checkbox-label .checkbox-text span {
-  -webkit-transform: translate(0, -8px);
-  transform: translate(0, -8px);
-}
-
-.cat-sec {
-    float: left;
-    width: 100%;
-}
-.p-category {
-    float: left;
-    width: 100%;
-    z-index: 1;
-    position: relative;
-    display:flex;
-}
-.p-category, .p-category *{
-    -webkit-transition: all 0.4s ease 0s;
-    -moz-transition: all 0.4s ease 0s;
-    -ms-transition: all 0.4s ease 0s;
-    -o-transition: all 0.4s ease 0s;
-    transition: all 0.4s ease 0s;
-}
-.p-category .checkbox-text {
-    float: left;
-    width: 100%;
-    text-align: center;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #e8ecec;
-    border-right: 1px solid #e8ecec;
-}
-.p-category .checkbox-text span i {
-    float: left;
-    width: 100%;
-    color: #4aa1e3;
-    font-size: 70px;
-    margin-top: 15px;
-    line-height: initial !important;
-}
-.p-category .checkbox-text span {
-    float: left;
-    width: 100%;
-    font-family: Open Sans;
-    font-size: 15px;
-    color: #202020;
-    margin-top: 10px;
-}
-.p-category:hover {
-    background: #ffffff;
-    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    height: 102%;
-    z-index: 10;
-}
-.p-category:hover .checkbox-text {
-    border-color: #ffffff;
-}
-.p-category:hover .checkbox-label i{
-    color: #f07d1d;
-}
-.row.no-gape .p-category-main {
-    padding: 0;
-}
-.cat-sec .row .p-category-main:last-child .checkbox-text {
-    border-right-color: #ffffff;
-}
-/* Feature, categories css ends */
-
-// css custum start
-
-//.i-review-answer input{
-//    width: 50%;
-//    height: 40px;
-//    margin-left: 25%;
-//    background: #fff;
-//    border: none;
-//    border-radius: 5px;
-//}
-
-
 ") ?>
 
 <?php
 $script = <<<JS
-
 document.body.scrollTop = 0;
 document.documentElement.scrollTop = 0;
-        
-$('.fab-message').mouseover(function(e){
-        e.preventDefault();
-        console.log(1);
-    $('.fab-hover-message').css('opacity','1');
-    $('.fab-hover-message').css('transform','scale(1)');
-//    $('.fab-hover-message').css('display','inline-block');
-});
-$('.fab-message').mouseout(function(e){
-        e.preventDefault();
-    $('.fab-hover-message').css('opacity','0');
-    $('.fab-hover-message').css('transform','scale(0.5)');
-//    $('.fab-hover-message').css('display','none');
-});
-        
+
 $('.model').editable({
     placement: 'top',
     url: '/companies/update-profile',
@@ -1003,12 +783,10 @@ $('.pen').click(function(e){
     $(this).prev().editable('toggle');
 });
 
-        
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
-        
-        
+
 $(document).on("click", "#open-modal", function () {
     $(".modal-body").load($(this).attr("url"));
 });
@@ -1099,6 +877,7 @@ $(document).on('submit', '#upload-logo', function(event) {
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
+                hide_remove_logo();
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1124,13 +903,28 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
                 $('#logo-img').attr('src',logo_name_path);
+                hide_remove_logo();
             } else {
                 toastr.error(response.message, response.title);
             }
         }
     });
 });
-        
+
+function hide_remove_logo(){
+    var img_path = $('#logo-img').attr('src');
+    console.log(img_path);
+    console.log(logo_name_path);
+    if(img_path == logo_name_path){
+        console.log('if');
+        $('.remove-logo').parent('li').css('display', 'none');
+    } else{
+        console.log('else');
+        $('.remove-logo').parent('li').css('display', 'block');
+    }
+}
+hide_remove_logo();
+
 $(document).on('submit', '#change-cover-image', function(event) {
     event.preventDefault();
     $('#pop-content2').fadeOut(1000);
@@ -1343,120 +1137,6 @@ $(window).on('scroll', function () {
 
                     return false;
                 });
-        
- var popup = new ideaboxPopup({
-        background: '#234b8f',
-        popupView: 'full',
-        data: [
-            {
-                question: '<h2 style="color: #fff; font-weight: 900;">ADD YOUR CV</h2>',
-                answerType: 'inputbox',
-                description: 'Microsoft Word .doc and PDF accepted',
-                nextLabel: 'Continue',
-                formName: 'country',
-                inAnimation: 'zoomIn'
-            },
-            {
-                question: 'There are many variations of passages of Lorem Ipsum available',
-                description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
-                nextLabel: 'Close',
-                inAnimation: 'flipInX'
-            }
-
-        ]
-    });
-
-
-    document.getElementById("fab-message-open").addEventListener("click", function (e) {
-        popup.open();
-    });
-        
-var popup2 = new ideaboxPopup({
-    background : '#E36161',
-    popupView : 'full',
-    startPage: {
-            msgTitle		: 'Welcome to our Reivew Survey',
-            msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-            startBtnText	: "Let's Get Start",
-            showCancelBtn	: false,
-            cancelBtnText	: 'Cancel'
-    },
-    endPage: {
-            msgTitle		: 'Thank you for your supports :)',
-            msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-            showCloseBtn	: true,
-            closeBtnText	: 'Close All',
-            inAnimation		: 'zoomIn'
-    },
-    data: [
-            {
-                    question 	: 'Please review this plugin?',
-                    answerType	: 'starrate',
-                    starCount	: 10,
-                    formName	: 'rate',
-                    description	: '',
-                    nextLabel	: 'Go to Step 2',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Please rate us!</b>'
-            },
-            {
-                    question 	: 'Tell us your name:',
-                    answerType	: 'inputbox',
-                    formName	: 'namex',
-                    description	: 'Please enter name and surname..',
-                    nextLabel	: 'Go to Step 3',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Please enter a name.</b>'
-            },
-            {
-                    question 	: 'What is your favorite colors?',
-                    answerType	: 'checkbox',
-                    formName	: 'colors',
-                    choices		: [
-                            { label : 'Blue', value : 'BLUE' },
-                            { label : 'Magenta', value : 'MAGENTA' },
-                            { label : 'Green', value : 'GREEN' },
-                            { label : 'Yellow', value : 'YELLOW' }
-                    ],
-                    description	: 'Please choice between 1 - 2 choices from choices.',
-                    nextLabel	: 'Go to Step 4',
-                    required	: true,
-                    minSelect	: 1,
-                    maxSelect	: 2,
-                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
-            },
-            {
-                    question 	: 'What is your favorite Envato site?',
-                    answerType	: 'radio',
-                    formName	: 'website',
-                    choices		: [
-                            { label : 'Themeforest', value : 'themeforest.net' },
-                            { label : 'Codecanyon', value : 'codecanyon.net' },
-                            { label : 'Videohive', value : 'videohive.net' },
-                            { label : 'Audiojungle', value : 'audiojungle.net' },
-                    ],
-                    description	: 'Please select anyone choice.',
-                    nextLabel	: 'Go to Step 5',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Please select one</b>'
-            },
-            {
-                    question 	: 'What do you think about us?',
-                    answerType	: 'textarea',
-                    formName	: 'description',
-                    description	: 'Please input any words..',
-                    nextLabel	: 'Finish'
-            }
-
-    ]
-});
-
-
-document.getElementById("benefitPopup").addEventListener("click", function(e){
-    popup2.open();
-});
-        
-
 
 JS;
 
@@ -1516,7 +1196,7 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
+//$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1524,5 +1204,5 @@ $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => 
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>

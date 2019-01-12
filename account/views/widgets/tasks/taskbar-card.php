@@ -11,7 +11,7 @@ use yii\helpers\Url;
                     <div class="profile-picture">
                         <?php
                         $name = $image = $link = NULL;
-                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                        if (!empty(Yii::$app->user->identity->organization)) {
                             if (Yii::$app->user->identity->organization->logo) {
                                 $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                             }
@@ -414,23 +414,7 @@ $script = <<< JS
             }
         });
     }
-    if(!$.session.get("guide")){
-        $.session.set("guide", true);
-        var intro = introJs();
-           intro.setOptions({
-             steps: [
-               {
-                 element: document.querySelector('.card-body'),
-                 intro: "Add your tasks to be done for reminder. Once you’re done, go for next.",
-                 disableInteraction: true
-               },
-             ]
-           });
-        intro.start();
-        
-     }else{
-        
-     }
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -440,7 +424,24 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('https://ciphertrick.com/demo/jquerysession/js/jquerysession.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+
+//$options = [
+//    'where' => ['and',
+//        ['a.name' => 'taskbar_card'],
+//        ['b.is_viewed' => 0],
+//    ],
+//];
+//
+//$tutorials = Yii::$app->Tutorials->getTutorialsByUser($options);
+//echo "Hello";
+//print_r($tutorials);
+
+if (!Yii::$app->session->has("tutorial_organization_tasks")) {
+    echo '<script>dashboard_organization_taskbar()</script>';
+    Yii::$app->session->set("tutorial_organization_tasks", "Yes");
+}
 ?>
 
 <!--<script type="text/javascript">

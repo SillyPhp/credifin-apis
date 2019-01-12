@@ -12,35 +12,37 @@ $this->params['header_dark'] = false;
         <div class="seq-screen">
             <ul class="seq-canvas">
                 <li class="seq-in step1">
-                    <div class="seq-model">
-                        <img data-seq src="<?= Url::to('@eyAssets/images/pages/index2/jobs_banner.png') ?>" class="img-responsive" alt="A" />
-                    </div>
+<!--                    <div class="seq-model">-->
+<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/jobs_banner.png') ?><!--" class="img-responsive" alt="A" />-->
+<!--                    </div>-->
 
-                    <div class="seq-title">
-                        <h2 data-seq>Internships</h2>
-                        <h3 data-seq>EmpowerYouth makes it easy for you to find internships</h3>
+                    <div class="seq-title seq-detail-left">
+                        <h2 data-seq>Career  </h2>
+                        <h3 data-seq>Discover a New Career Specially Designed For You.</h3>
                     </div>
                 </li>
 
                 <li class="step2">
                     <div class="seq-model">
-                        <img data-seq src="<?= Url::to('@eyAssets/images/pages/index2/youth-development.png') ?>" class="img-responsive" alt="A" />
+<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/youth-development.png') ?><!--" class="img-responsive" alt="A" />-->
                     </div>
 
                     <div class="seq-title">
-                        <h2 data-seq>Career Development</h2>
-                        <h3 data-seq>EmpowerYouth main motive is the development of youth<br> in every aspect possible </h3>
+                        <h2 data-seq>Internships</h2>
+                        <h3 data-seq>Push Your Life To a Whole New Level</h3>
                     </div>
                 </li>
 
                 <li class="step3">
                     <div class="seq-model">
-                        <img data-seq src="<?= Url::to('@eyAssets/images/pages/index2/job-search.png') ?>" alt="" />
+<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/job-search.png') ?><!--" alt="" />-->
                     </div>
 
-                    <div class="seq-title">
-                        <h2 data-seq>Job Search</h2>
-                        <h3 data-seq>EmpowerYouth makes it easy for you to search your dream job </h3>
+                        <div class="seq-title white-seq-title">
+
+                        <h2 data-seq>Dream Bigger. Aim Higher. Reach Faster.</h2>
+                        <h3 data-seq>A better career is out there. We'll help you find it.
+                                We're your first step to becoming everything you want to be.</h3>
                     </div>
                 </li>
             </ul>
@@ -178,6 +180,102 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!--how it works ends-->
+<!--new section starts-->
+<section class="companies">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="com-grid">
+                    <div class="heading-style">Companies With Us</div>
+                    <div class="">Companies recruiting top talent from our portal.</div>
+                    <div class="com1 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            Capital Small Finance Bank
+                        </div>
+                    </div>
+                    <div class="com2 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            Midland MicroFin
+                        </div>
+                    </div>
+                    <div class="com3 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            DSB Law Group
+                        </div>
+                    </div>
+                    <div class="com4 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            HAG India
+                        </div>
+                    </div>
+                    <div class="com5 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            Agile Finserv
+                        </div>
+                    </div>
+                    <div class="com6 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            Olready
+                        </div>
+                    </div>
+                    <div class="com8 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
+                        </div>
+                        <div class="com-name">
+                            Empower youth
+                        </div>
+                    </div>
+                    <div class="com9 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            Hamco Ispat
+                        </div>
+                    </div>
+                    <div class="com10 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@commonAssets/logos/text-logo.png') ?>">
+                        </div>
+                        <div class="com-name">
+                            Empower youth
+                        </div>
+                    </div>
+                    <div class="com11 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                        </div>
+                        <div class="com-name">
+                            Empower youth
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--new section ends-->
 <section class="partner">
     <div class="container">
         <div class="heading-style ">Join our Community</div>
@@ -409,59 +507,7 @@ $this->registerCss('
 .box-border:hover .overlay {
     height: 50%;
 }
-/*header section*/
-.seq{
-    max-width: 100% !important;
-}
-#sequence .step1 {
-    background-color: #3de4c9;    
-}
-#sequence .step2 {
-    background-color: #f96852;  
-}
-#sequence .step3 {
-    background-color: #2bbf8e;
-}
-.seq .seq-canvas, .seq .seq-nav{
-    max-width: 100%;
-}
-.header-boxs{
-    display: flex;
-    justify-content: center;
-}
-.seq .seq-next {
-    right: 20px;
-    background: url(' . Url::to('@eyAssets/images/pages/index2/right-arrow.png') . ');
-    background-repeat:no-repeat;
-    background-size:contain;
-}
-.seq .seq-prev {
-    left: 20px;
-    background: url(' . Url::to('@eyAssets/images/pages/index2/left-arrow.png') . ');
-    background-repeat:no-repeat;
-    background-size:contain;
-}
 
-.header-row{
-    margin-top: -90px;
-    padding: 0 0 20px 0;
-    position: relative;
-    z-index: 9;
-}
-.h-heading{
-    font-weight: bold;
-    color: #000;
-    padding-top: 15px;
-    font-size: 16px;
-}
-.seq .seq-model{
-    height:50% !important;
-}
-.icon img{
-    height:100px;
-    width:100px;
-}
-/*header section ends*/
 
 /*how we are different*/
 .different{
@@ -572,36 +618,46 @@ $this->registerCss('
     text-align:right;
 }
 /*how it works section ends*/
+/*-------------------------------------*/
 /*partner with us*/
 .partner{
     padding:0px 0 80px 0;
     text-align:center;
+    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
+     background-size: 100%;
+    background-repeat:no-repeat;
 }
 .partner-btn button{
-    border: 2px solid #dbd7d7;
+    border: 2px solid #00a0e3;
     border-width: 2px 12px;
     padding: 14px 59px;
-    background: #ffffff !important;
-    color: #dbd7d7;
+    background: #00a0e3 !important;
+    color: #fff;
     text-transform: uppercase;
     border-radius: 9px 50px;
     transition:.6s all;
     -webkit-transition:.6s all;
-    -moz-transition:.6s all;
     -o-transition:.6s all;
+    -moz-transition:.6s all;
+    -ms-transition:.6s all;
 }
 .partner-btn button:hover{
     border:2px solid #00a0e3;
     border-width: 2px 12px;
     background: #00a0e3 !important;
     color: #fff;
+    border-radius: 9px 0px;
     transition:.6s all;
     -webkit-transition:.6s all;
     -moz-transition:.6s all;
     -o-transition:.6s all;
+    -ms-transition:.6s all;
 }
 .partner-row{
     padding:30px 0 0 0; 
+}
+.footer{
+    margin-top:0px !important;
 }
 /*partner with us ends*/
 
@@ -778,9 +834,7 @@ textarea {
 .sc_remove::-webkit-scrollbar { width: 0 !important }
 .sc_remove { -ms-overflow-style: none; overflow: hidden; overflow: -moz-scrollbars-none; }
 /*Modal css ends */
-.seq .seq-nav{
-    z-index:999;
-}
+
 
 
 /* make keyframes that tell the start state and the end state of our object */
@@ -828,6 +882,97 @@ textarea {
 }
 
 /*---make a basic box ---*/
+
+/*companies section css*/
+.companies{
+    margin-top:20px;
+    position:relative;
+    padding:0 0 105px 0;
+}
+.com-grid{
+    text-transform:capitalize;
+    min-height:400px;
+    position:relative;
+}
+.com-logo{
+    width:100px;
+    height:100px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow: 8px 13px 30px 5px rgba(0, 0, 0, 0.3);
+    padding: 18px !important; 
+    line-height: 0px;
+}
+.com-name{ 
+    padding-top:8px;
+    font-size:15px;
+    display:none;
+    line-height:20px;
+    max-width:109px;
+    font-weight:bold;
+    text-align:center;
+    color:#00a0e3;
+}
+.com-logo:hover ~ .com-name{
+    display:block;
+}
+.com-logo img{
+    max-width:100%;
+    max-height:100%;
+    position: relative;
+    top:50%;
+    left:50%;
+    -webkit-transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%); 
+}
+.com1, .com2, .com3, .com4, .com5, .com6, .com7, .com8, .com9, .com10, .com11{
+      position:absolute;
+}
+.com1{
+   top: -23px;
+    left: 51%;
+}
+.com5{
+    top: 1%;
+    left: 84%;;
+}
+.com2{
+   top: 31%;
+    left: 40%;
+}
+.com3{
+    top:21%;
+    left:65%;
+}
+.com4{
+   top: 42%;
+    left: 81%;
+}
+.com6{
+    top: 55%;
+    left: 18%;
+} 
+.com7{
+    top: 55%;
+    left: 24%;
+}
+.com8{
+   top: 63%;
+   left: 51%;
+}
+.com9{
+    top: 83%;
+    left: 69%;
+}
+.com10{
+    top: 78%;
+    left: 90%;
+}
+.com11{
+    top: 84%;
+    left: 32%;
+}
+/*companies css ends*/
 ');
 $script = <<< JS
 $(document).on('click', '.feed-open', function(){
@@ -915,22 +1060,9 @@ $(document).on('submit', '#partner-with-us-form', function(event) {
     };
     $(window).on('scroll', doAnimations);
   $(window).trigger('scroll'); 
-});       
-JS;
-$this->registerJs($script);
-$this->registerCssFile('http://demo.sequencejs.com/modern-slide-in/css/sequence-theme.modern-slide-in.css');
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/hammer.min.js');
-$this->registerJsFile('@eyAssets/js/sequence.min.js');
-//$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/scripts.min.js');
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-?>
-<script>
-    $( document ).ready(function() {
-    // Get the Sequence element
-    var sequenceElement = document.getElementById("sequence");
-
-    // Place your Sequence options here to override defaults
+  
+  var sequenceElement = document.getElementById("sequence");
+  
     var options = {
         autoPlay: true,
         autoPlayInterval: 3000,
@@ -938,9 +1070,17 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         preloader: true,
         reverseWhenNavigatingBackwards: true
     }
-
-    // Launch Sequence on the element, and with the options we specified above
+    
     var mySequence = sequence(sequenceElement, options);
+});
 
-    });
-</script>
+JS;
+$this->registerJs($script);
+//$this->registerCssFile('http://demo.sequencejs.com/modern-slide-in/css/sequence-theme.modern-slide-in.css');
+$this->registerCssFile('@eyAssets/css/sequence-theme.modern-slide-in.css');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/hammer.min.js');
+$this->registerJsFile('@eyAssets/js/sequence.min.js');
+//$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/scripts.min.js');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>
