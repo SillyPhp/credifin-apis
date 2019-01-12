@@ -165,7 +165,7 @@ AppAssets::register($this);
                 </div>
             </footer>
             <?php
-            if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
+            if (!Yii::$app->user->isGuest) {
                 echo $this->render('/widgets/user-profile-sidebar-right');
             }
             ?>

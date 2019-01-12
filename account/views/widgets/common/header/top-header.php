@@ -6,9 +6,6 @@ use yii\helpers\Url;
     <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('account', 'Jobs'); ?></a></li>
     <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('account', 'internships'); ?></a></li>
     <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('account', 'Dashboard'); ?></a></li>
-    <?php if (Yii::$app->user->identity->organization): ?>
-        <li><a href="<?= Url::to('/logout'); ?>" data-method="post"><?= Yii::t('account', 'Logout'); ?></a></li>
-    <?php endif; ?>
 </ul>
 <?php
 $this->registerCss('

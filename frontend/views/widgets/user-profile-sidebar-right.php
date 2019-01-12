@@ -43,11 +43,11 @@ use yii\helpers\Html;
 
             </li>
             <li class="inner-child">
-                <a href="/account/candidate-dashboard" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted Job</a>
+                <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted Job</a>
 
             </li>
             <li class="inner-child">
-                <a href="/account/candidate-dashboard" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
+                <a href="/account/jobs/applied" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
             </li>
             <li>
                 <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2" data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
@@ -63,6 +63,21 @@ use yii\helpers\Html;
             </li>
             <?php elseif ($userType === 'Organization Admin'): ?>
 <!--            Organization Menu Items-->
+                <li class="inner-child">
+                    <a href="/company/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/jobs" title="" class="tree-toggler"><i class="fa fa-money"></i>Active Jobs</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/internships" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Active Internships</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/jobs/create" title="" class="tree-toggler"><i class="fa fa-money"></i>Create Jobs</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/internships/create" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Create Internships</a>
+                </li>
             <?php endif; ?>
             <li class="inner-child">
                 <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
@@ -211,7 +226,7 @@ $this->registerCss('
 .tree_widget-sec > ul > li > a i {
     float: left;
     font-size: 23px;
-    line-height: 41px;
+    line-height: 41px !important;
     color: #babebe;
     margin-right: 5px;
     width: 35px;
