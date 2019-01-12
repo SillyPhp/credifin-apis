@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
@@ -17,6 +18,7 @@ if (!$is_email_verified):
     echo $this->render('/widgets/verification/resend-email');
 endif;
 ?>
+    <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
     <div class="row">
         <div class="col-md-3">
             <?= $this->render('/widgets/tasks/taskbar-card'); ?>
@@ -97,11 +99,84 @@ endif;
                         </div>
                     </div>
                 </div>
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-social-twitter font-dark hide"></i>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?></span>
+                        </div>
+                        <div class="actions">
+                            <a href="<?= Url::toRoute('/jobs/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                            <?php if ($applications['jobs']['total'] > 8): ?>
+                                <a href="<?= Url::toRoute('/jobs'); ?>" title=""
+                                   class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <?php
+                        Pjax::begin(['id' => 'pjax_active_jobs']);
+                        if ($applications['jobs']['total'] > 0) {
+                            echo $this->render('/widgets/applications/card', [
+                                'applications' => $applications['jobs']['data'],
+                                'per_row' => 3,
+                                'col_width' => 'col-lg-4 col-md-4 col-sm-4',
+                            ]);
+                        } else {
+                            ?>
+                            <h3>No Active Jobs</h3>
+                        <?php }
+                        Pjax::end();
+                        ?>
+                    </div>
+                </div>
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-social-twitter font-dark hide"></i>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
+                        </div>
+                        <div class="actions">
+                            <a href="<?= Url::toRoute('/internships/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                            <?php if ($applications['internships']['total'] > 8): ?>
+                                <a href="<?= Url::toRoute('/internships'); ?>" title=""
+                                   class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <?php
+                        Pjax::begin(['id' => 'pjax_active_internships']);
+                        if ($applications['internships']['total'] > 0) {
+                            echo $this->render('/widgets/applications/card', [
+                                'applications' => $applications['internships']['data'],
+                                'per_row' => 3,
+                                'col_width' => 'col-lg-4 col-md-4 col-sm-4',
+                            ]);
+                        } else {
+                            ?>
+                            <h3>No Active Internships</h3>
+                        <?php }
+                        Pjax::end();
+                        ?>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
     </div>
 <?php
 $this->registerCss("
+.loader
+{
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    padding:2px;
+    z-index:99999;
+}
 /*how it works section css starts*/
 .how-icon img{
     height:84px;
@@ -274,3 +349,39 @@ p{
 }
 /* Application process css ends */
 ");
+$script = <<<JS
+$(document).on('click','.j-delete',function(e)
+       {
+         e.preventDefault();
+         if (window.confirm("Do you really want to Delete the current Application?")) { 
+            var data = $(this).attr('value');
+            url = "/account/internships/delete-application";
+            Ajax_delete(data,url);
+        }
+       })
+function Ajax_delete(data,url)
+        {
+          $.ajax({
+                url:url,
+                data:{data:data},
+                method:'post',
+                beforeSend:function(){
+                    $(".loader").css("display", "block");
+                  },
+                success:function(data)
+                    {
+                      if(data==true)
+                        {
+                          $(".loader").css("display", "none");
+                          $.pjax.reload({container: "#pjax_active_internships", async: false});
+                          $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                        }
+                       else
+                       {
+                          alert('Something went wrong.. !');
+                       }
+                     }
+              })
+        }   
+JS;
+$this->registerJs($script);

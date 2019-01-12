@@ -5,6 +5,7 @@ use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Internships',
 ]);
+
 ?>
     <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
     <div class="row widget-row">
@@ -39,7 +40,6 @@ echo $this->render('/widgets/header/secondary-header', [
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['data'],
                             'per_row' => 4,
-                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                         ]);
                     }
                     else {

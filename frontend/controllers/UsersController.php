@@ -47,7 +47,7 @@ class UsersController extends Controller
             ->asArray()
             ->all();
 
-        if(!count($user) > 0) {
+        if (!count($user) > 0) {
             return 'No User Found';
         }
 
@@ -187,9 +187,7 @@ class UsersController extends Controller
         $individualImageFormModel = new IndividualImageForm();
         if (Yii::$app->request->post()) {
             $individualImageFormModel->image = UploadedFile::getInstance($individualImageFormModel, 'image');
-
             if ($individualImageFormModel->save()) {
-
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',

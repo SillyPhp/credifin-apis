@@ -502,10 +502,10 @@
 .seq .seq-nav{
     z-index:999;
 }
+
 .seq-title h3{
-    background-color:#000;
-    color:#fff;
-    font-weight: 600;
+    color:#000;
+    font-weight:bold;
     padding: 0px 8px;
     width: auto !important;
 }
@@ -515,11 +515,9 @@
 }
 .white-seq-title h3{
     color:#fff !important;
+    padding: 0 8px;
 }
-.white-seq-title h3{
-    background-color:#fff;
-    color:#000;
-}
+
 .seq-detail-left{
     left:150px !important;
 }

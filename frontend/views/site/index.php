@@ -17,8 +17,8 @@ $this->params['header_dark'] = false;
 <!--                    </div>-->
 
                     <div class="seq-title seq-detail-left">
-                        <h2 data-seq>Job Search</h2>
-                        <h3 data-seq>EmpowerYouth makes it easy for you to search your dream job </h3>
+                        <h2 data-seq>Career  </h2>
+                        <h3 data-seq>Discover a New Career Specially Designed For You.</h3>
                     </div>
                 </li>
 
@@ -29,7 +29,7 @@ $this->params['header_dark'] = false;
 
                     <div class="seq-title">
                         <h2 data-seq>Internships</h2>
-                        <h3 data-seq>EmpowerYouth makes it easy for you to find internships</h3>
+                        <h3 data-seq>Push Your Life To a Whole New Level</h3>
                     </div>
                 </li>
 
@@ -41,7 +41,8 @@ $this->params['header_dark'] = false;
                         <div class="seq-title white-seq-title">
 
                         <h2 data-seq>Dream Bigger. Aim Higher. Reach Faster.</h2>
-                        <h3 data-seq  style="color:#000 !important">A better career is out there. We'll help you find it. We're your first step to becoming everything you want to be. </h3>
+                        <h3 data-seq>A better career is out there. We'll help you find it.
+                                We're your first step to becoming everything you want to be.</h3>
                     </div>
                 </li>
             </ul>
@@ -189,7 +190,7 @@ $this->params['header_dark'] = false;
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>">
                         </div>
                         <div class="com-name">
                             Capital Small Finance Bank
@@ -197,7 +198,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com2 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/mid1.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
                         </div>
                         <div class="com-name">
                             Midland MicroFin
@@ -221,7 +222,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com5 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>">
                         </div>
                         <div class="com-name">
                             Agile Finserv
@@ -245,10 +246,10 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com9 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                         </div>
                         <div class="com-name">
-                            Empower youth
+                            Hamco Ispat
                         </div>
                     </div>
                     <div class="com10 animatable fadeIn">
@@ -617,36 +618,46 @@ $this->registerCss('
     text-align:right;
 }
 /*how it works section ends*/
+/*-------------------------------------*/
 /*partner with us*/
 .partner{
     padding:0px 0 80px 0;
     text-align:center;
+    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
+     background-size: 100%;
+    background-repeat:no-repeat;
 }
 .partner-btn button{
-    border: 2px solid #dbd7d7;
+    border: 2px solid #00a0e3;
     border-width: 2px 12px;
     padding: 14px 59px;
-    background: #ffffff !important;
-    color: #dbd7d7;
+    background: #00a0e3 !important;
+    color: #fff;
     text-transform: uppercase;
     border-radius: 9px 50px;
     transition:.6s all;
     -webkit-transition:.6s all;
-    -moz-transition:.6s all;
     -o-transition:.6s all;
+    -moz-transition:.6s all;
+    -ms-transition:.6s all;
 }
 .partner-btn button:hover{
     border:2px solid #00a0e3;
     border-width: 2px 12px;
     background: #00a0e3 !important;
     color: #fff;
+    border-radius: 9px 0px;
     transition:.6s all;
     -webkit-transition:.6s all;
     -moz-transition:.6s all;
     -o-transition:.6s all;
+    -ms-transition:.6s all;
 }
 .partner-row{
     padding:30px 0 0 0; 
+}
+.footer{
+    margin-top:0px !important;
 }
 /*partner with us ends*/
 
@@ -876,7 +887,7 @@ textarea {
 .companies{
     margin-top:20px;
     position:relative;
-    padding:0 0 50px 0;
+    padding:0 0 105px 0;
 }
 .com-grid{
     text-transform:capitalize;
@@ -890,6 +901,7 @@ textarea {
     border-radius:50%;
     box-shadow: 8px 13px 30px 5px rgba(0, 0, 0, 0.3);
     padding: 18px !important; 
+    line-height: 0px;
 }
 .com-name{ 
     padding-top:8px;

@@ -66,6 +66,6 @@ $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => 
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 
 if (!Yii::$app->session->has("tutorial_organization_internships_count")) {
-    echo '<script>dashboard_organization_jobs_count()</script>';
+    echo '<script>dashboard_organization_internships_count()</script>';
     Yii::$app->session->set("tutorial_organization_internships_count", "Yes");
 }

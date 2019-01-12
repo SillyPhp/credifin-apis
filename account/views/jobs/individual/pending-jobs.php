@@ -355,7 +355,7 @@ function used_for($n) {
             $a = 'Jobs';
             break;
         case 2:
-            $a = 'Internships';
+            $a = 'internships';
             break;
         case 3:
             $a = 'Training Programs';

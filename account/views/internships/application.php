@@ -15,925 +15,931 @@ $benefits = ArrayHelper::map($benefit, 'benefit_enc_id', 'benefit');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
+
 ?>
 
-    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
-                </div>
+<div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="portlet light" id="form_wizard_1">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class=" icon-layers font-red"></i>
-                    <span class="caption-subject font-red bold uppercase">Internship Application
+</div>
+<div class="container">
+    <div class="portlet light" id="form_wizard_1">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class=" icon-layers font-red"></i>
+                <span class="caption-subject font-red bold uppercase">Internship Application
                     <span class="step-title"> Step 1 of 4</span>
                 </span>
-                </div>
             </div>
-            <div class="portlet-body form">
-                <?php
-                $form = ActiveForm::begin([
-                    'id' => 'submit_form',
-                    'enableClientValidation' => true,
-                    'validateOnBlur' => false,
-                    'fieldConfig' => [
-                        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}</div>",
-                    ]
-                ]);
-                ?>
-                <div class="form-wizard">
-                    <div class="form-body">
-                        <ul class="nav nav-pills nav-justified steps">
-                            <li>
-                                <a href="#tab1" data-toggle="tab" class="step">
-                                    <span class="number"> 1 </span><br/>
-                                    <span class="desc">
+        </div>
+        <div class="portlet-body form">
+            <?php
+            $form = ActiveForm::begin([
+                        'id' => 'submit_form',
+                        'enableClientValidation' => true,
+                        'validateOnBlur' => false,
+                        'fieldConfig' => [
+                            'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}</div>",
+                        ]
+            ]);
+            ?>
+            <div class="form-wizard">
+                <div class="form-body">
+                    <ul class="nav nav-pills nav-justified steps">
+                        <li>
+                            <a href="#tab1" data-toggle="tab" class="step">
+                                <span class="number"> 1 </span><br/>
+                                <span class="desc">
                                     <i class="fa fa-check"></i> Basic Information </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#tab2" data-toggle="tab" class="step">
-                                    <span class="number"> 2 </span><br/>
-                                    <span class="desc">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tab2" data-toggle="tab" class="step">
+                                <span class="number"> 2 </span><br/>
+                                <span class="desc">
                                     <i class="fa fa-check"></i> Internship Description </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#tab3" data-toggle="tab" class="step">
-                                    <span class="number"> 3 </span><br/>
-                                    <span class="desc">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tab3" data-toggle="tab" class="step">
+                                <span class="number"> 3 </span><br/>
+                                <span class="desc">
                                     <i class="fa fa-check"></i> Interview Process  </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#tab4" data-toggle="tab" class="step">
-                                    <span class="number"> 4 </span><br/>
-                                    <span class="desc">
+                            </a>
+                        </li>
+                        <li> 
+                            <a href="#tab4" data-toggle="tab" class="step">
+                                <span class="number"> 4 </span><br/>
+                                <span class="desc">
                                     <i class="fa fa-check"></i> Interview Details  </span>
-                                </a>
-                            </li>
-                            <li class="step5">
-                                <a href="#tab5" data-toggle="tab" class="step">
-                                    <span class="number"> 5 </span><br/>
-                                    <span class="desc">
+                            </a>
+                        </li>
+                        <li class="step5">
+                            <a href="#tab5" data-toggle="tab" class="step">
+                                <span class="number"> 5 </span><br/>
+                                <span class="desc">
                                     <i class="fa fa-check"></i> Confirmation </span>
 
-                                </a>
-                            </li>
-                        </ul>
-                        <div id="bar" class="progress progress-striped" role="progressbar">
-                            <div class="progress-bar progress-bar-success"></div>
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="tab1">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="select">
-                                            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Category', 'disabled' => true])->label(false); ?>
-                                        </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="bar" class="progress progress-striped" role="progressbar">
+                        <div class="progress-bar progress-bar-success"> </div>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            <div class="row">                    
+                                <div class="col-md-4">
+                                    <div class="select">
+                                        <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Category', 'disabled' => true])->label(false); ?>
+                                    </div>        
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="cat_wrapper">
+                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                        <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
+
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="cat_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false); ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
                                         <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="radio_rules"></div>
+                                    <label>Type Of Stipend</label>
+                                    <div class="md-radio-inline">
+                                        <?=    $form->field($model, 'stipendtype')->inline()->radioList([
+                                            1 => 'Unpaid',
+                                            2 => 'Performance Based',
+                                            3 => 'Negotiable',
+                                            4 => 'Fixed',
+                                        ], [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return = '<div class="md-radio">';
+                                                $return .= '<input type="radio" id="sti' .$index.$name.'" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                $return .= '<label for="sti' .$index.$name.'">';
+                                                $return .= '<span></span>';
+                                                $return .= '<span class="check"></span>';
+                                                $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                $return .= '</div>';
+                                                return $return;
+                                            }
+                                        ])->label(false); ?>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div id="radio_rules"></div>
-                                        <label>Type Of Stipend</label>
-                                        <div class="md-radio-inline">
-                                            <?= $form->field($model, 'stipendtype')->inline()->radioList([
-                                                1 => 'Unpaid',
-                                                2 => 'Performance Based',
-                                                3 => 'Negotiable',
-                                                4 => 'Fixed',
-                                            ], [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
-                                                    $return .= '<label for="sti' . $index . $name . '">';
-                                                    $return .= '<span></span>';
-                                                    $return .= '<span class="check"></span>';
-                                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                                    $return .= '</div>';
-                                                    return $return;
-                                                }
-                                            ])->label(false); ?>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div id="fixed_stip">
-                                                <div class="col-md-8">
-                                                    <?= $form->field($model, 'stipendpaid')->label('Stipend Paid') ?>
-                                                </div>
-                                            </div>
-                                            <div id="min_max">
-                                                <div class="col-md-4">
-                                                    <?= $form->field($model, 'minstip')->label('Min Stipend') ?>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <?= $form->field($model, 'maxstip')->label('Max Stipend') ?>
-                                                </div>
-                                            </div>
-                                            <div id="stipend_paid">
-                                                <div class="col-md-4">
-                                                    <?=
-                                                    $form->field($model, 'stipendur')->dropDownList([
-                                                        'monthly' => 'Monthly',
-                                                        'weekly' => 'Weekly',
-                                                    ])->label(false);
-                                                    ?>
-                                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div id="fixed_stip">
+                                            <div class="col-md-8">
+                                                <?= $form->field($model, 'stipendpaid')->label('Stipend Paid') ?>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="weekDays-selector">
-                                            <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
-                                            <?=
-                                            $form->field($model, 'weekdays')->inline()->checkBoxList([
-                                                '1' => 'M',
-                                                '2' => 'T',
-                                                '3' => 'W',
-                                                '4' => 'T',
-                                                '5' => 'F',
-                                                '6' => 'S',
-                                                '7' => 'S',
-                                            ], [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return = '<input type="checkbox" name="' . $name . '" value="' . $value . '" id="weekday-' . $index . '" class="weekday" ' . (($checked) ? 'checked' : '') . '/>';
-                                                    $return .= '<label for="weekday-' . $index . '">' . $label . '</label>';
-                                                    return $return;
-                                                }
-                                            ])->label(false);
-                                            ?>
-                                            <label>Working Days</label>
-                                            <div id="week_options">
-                                                <div class="sat-sun">
-                                                    <?=
-                                                    $form->field($model, 'weekoptsat')->dropDownList([
-                                                        'always' => 'Always',
-                                                        'alternative' => 'Alternative',
-                                                        'rearly' => 'Rearly'])->label(false);
-                                                    ?>
-                                                    <span class="sat">Sat</span>
-                                                </div>
-                                                <div class="sat-sun">
-                                                    <?=
-                                                    $form->field($model, 'weekoptsund')->dropDownList([
-                                                        'always' => 'Always',
-                                                        'alternative' => 'Alternative',
-                                                        'rearly' => 'Rearly'])->label(false);
-                                                    ?>
-                                                    <span class="sun">Sun</span>
-                                                </div>
+                                        <div id="min_max">
+                                            <div class="col-md-4">
+                                                <?= $form->field($model, 'minstip')->label('Min Stipend') ?>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <?= $form->field($model, 'maxstip')->label('Max Stipend') ?>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Internship Timing From');
-                                        ?>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
-                                        ?>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div id="gender_pref">
-                                            <div class="radio-group">
-                                                <?php $model->gender = [0]; ?>
+                                        <div id="stipend_paid">
+                                            <div class="col-md-4">
                                                 <?=
-                                                $form->field($model, 'gender')->inline()->radioList([
-                                                    0 => 'No Pref',
-                                                    1 => 'Male',
-                                                    2 => 'Female',
-                                                    3 => 'Trans',
-                                                ], [
-                                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                                        $return .= '<input type="radio" id="gender' . $index . '" name="' . $name . '" value="' . $value . '" class="gender_radio" ' . (($checked) ? 'checked' : '') . '>';
-                                                        $return .= '<label class="gender_label" for="gender' . $index . '">' . $label . '</label>';
-                                                        return $return;
-                                                    }
+                                                $form->field($model, 'stipendur')->dropDownList([
+                                                    'monthly' => 'Monthly',
+                                                    'weekly' => 'Weekly',
                                                 ])->label(false);
                                                 ?>
                                             </div>
-                                            <label>Gender Preference</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-3">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="weekDays-selector">
+                                        <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
                                         <?=
-                                        $form->field($model, 'last_date')->widget(DatePicker::classname(), [
-                                            'options' => ['placeholder' => 'Last Date To Apply'],
-                                            'readonly' => true,
-                                            'pluginOptions' => [
-                                                'autoclose' => true,
-                                                'format' => 'dd-M-yyyy',
-                                                'name' => 'earliestjoiningdate',
-                                                'todayHighlight' => true,
-                                                'startDate' => '+0d',
-                                            ]])->label(false);
+                                        $form->field($model, 'weekdays')->inline()->checkBoxList([
+                                            '1' => 'M',
+                                            '2' => 'T',
+                                            '3' => 'W',
+                                            '4' => 'T',
+                                            '5' => 'F',
+                                            '6' => 'S',
+                                            '7' => 'S',
+                                                ], [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return = '<input type="checkbox" name="' . $name . '" value="' . $value . '" id="weekday-' . $index . '" class="weekday" ' . (($checked) ? 'checked' : '') . '/>';
+                                                $return .= '<label for="weekday-' . $index . '">' . $label . '</label>';
+                                                return $return;
+                                            }
+                                        ])->label(false);
                                         ?>
+                                        <label>Working Days</label>
+                                        <div id="week_options">
+                                            <div class="sat-sun">
+                                                <?=
+                                                $form->field($model, 'weekoptsat')->dropDownList([
+                                                    'always' => 'Always',
+                                                    'alternative' => 'Alternative',
+                                                    'rearly' => 'Rearly'])->label(false);
+                                                ?>
+                                                <span class="sat">Sat</span>
+                                            </div>
+                                            <div class="sat-sun">
+                                                <?=
+                                                $form->field($model, 'weekoptsund')->dropDownList([
+                                                    'always' => 'Always',
+                                                    'alternative' => 'Alternative',
+                                                    'rearly' => 'Rearly'])->label(false);
+                                                ?>
+                                                <span class="sun">Sun</span>
+                                            </div>
+                                        </div> 
                                     </div>
-                                    <div class="col-md-3">
-                                        <?=
-                                        $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
-                                            'options' => ['placeholder' => 'Joining Date'],
-                                            'readonly' => true,
-                                            'pluginOptions' => [
-                                                'autoclose' => true,
-                                                'format' => 'dd-M-yyyy',
-                                                'name' => 'earliestjoiningdate',
-                                                'todayHighlight' => true,
-                                                'startDate' => '+0d',
-                                            ]])->label(false);
-                                        ?>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div id="pre_placement_err"></div>
-                                        <label>Is there Any Pre Placement Offer?</label>
-                                        <div class="md-radio-inline">
-                                            <?= $form->field($model, 'pre_place')->inline()->radioList([
-                                                1 => 'Yes',
-                                                2 => 'No',
+                                </div>
+                                <div class="col-md-3">
+                                    <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Internship Timing From');
+                                    ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
+                                    ?> 
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="gender_pref">
+                                        <div class="radio-group">
+                                            <?php $model->gender = [0]; ?>
+                                            <?=
+                                            $form->field($model, 'gender')->inline()->radioList([
+                                                0 => 'No Pref',
+                                                1 => 'Male',
+                                                2 => 'Female',
+                                                3 => 'Trans',
                                             ], [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
-                                                    $return .= '<label for="pre' . $index . $name . '">';
-                                                    $return .= '<span></span>';
-                                                    $return .= '<span class="check"></span>';
-                                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                                    $return .= '</div>';
+                                                'item' => function($index, $label, $name, $checked, $value) {
+
+                                                    $return .= '<input type="radio" id="gender' . $index . '" name="' . $name . '" value="' . $value . '" class="gender_radio" ' . (($checked) ? 'checked' : '') . '>';
+                                                    $return .= '<label class="gender_label" for="gender' . $index . '">' . $label . '</label>';
+
                                                     return $return;
                                                 }
-                                            ])->label(false); ?>
+                                            ])->label(false);
+                                            ?>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div id="pre_package">
-                                            <?= $form->field($model, 'pre_sal')->label('Salary Package(Yearly)') ?>
-                                        </div>
+                                        <label>Gender Preference</label>
                                     </div>
                                 </div>
-                                <div class="divider">
-                                    <span></span>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="module2-heading">Select Placement Locations</div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
-                                        <span id="place_error"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="button_location">
-                                            <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                                Pjax::begin(['id' => 'pjax_locations1']);
-                                if (!empty($loc_list)) {
-                                    ?>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
                                     <?=
-                                    $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
-                                        'item' => function ($index, $label, $name, $checked, $value) {
-
-                                            if ($index % 3 == 0) {
-                                                $return .= '<div class="row">';
-                                            }
-                                            $return .= '<div class="col-md-4">';
-                                            $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
-                                            $return .= '<label for="' . $value . '" class="checkbox-label">';
-                                            $return .= '<div class="checkbox-text">';
-                                            $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
-                                            $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
-                                            $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
-                                            $return .= '<div class="form-group">';
-                                            $return .= '<div class="input-group spinner">';
-                                            $return .= '<input type="text" class="form-control place_no" value="1">';
-                                            $return .= '<div class="input-group-btn-vertical">';
-                                            $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
-                                            $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '<div class="tooltips">';
-                                            $return .= 'Enter No. of Positions.';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '</label>';
-                                            $return .= '</div>';
-                                            if ($index % 3 == 2 || isset($label['total'])) {
+                                    $form->field($model, 'last_date')->widget(DatePicker::classname(), [
+                                        'options' => ['placeholder' => 'Last Date To Apply'],
+                                        'readonly' => true,
+                                        'pluginOptions' => [
+                                            'autoclose' => true,
+                                            'format' => 'dd-M-yyyy',
+                                            'name' => 'earliestjoiningdate',
+                                            'todayHighlight' => true,
+                                            'startDate' => '+0d',
+                                ]])->label(false);
+                                    ?>
+                                </div> 
+                                <div class="col-md-3">
+                                    <?=
+                                    $form->field($model, 'earliestjoiningdate')->widget(DatePicker::classname(), [
+                                        'options' => ['placeholder' => 'Joining Date'],
+                                        'readonly' => true,
+                                        'pluginOptions' => [
+                                            'autoclose' => true,
+                                            'format' => 'dd-M-yyyy',
+                                            'name' => 'earliestjoiningdate',
+                                            'todayHighlight' => true,
+                                            'startDate' => '+0d',
+                                ]])->label(false);
+                                    ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="pre_placement_err"></div>
+                                    <label>Is there Any Pre Placement Offer?</label>
+                                    <div class="md-radio-inline">
+                                        <?=    $form->field($model, 'pre_place')->inline()->radioList([
+                                            1 => 'Yes',
+                                            2 => 'No',
+                                        ], [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return = '<div class="md-radio">';
+                                                $return .= '<input type="radio" id="pre' .$index.$name.'" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                $return .= '<label for="pre' .$index.$name.'">';
+                                                $return .= '<span></span>';
+                                                $return .= '<span class="check"></span>';
+                                                $return .= '<span class="box"></span> ' . $label . ' </label>';
                                                 $return .= '</div>';
+                                                return $return;
                                             }
-                                            return $return;
+                                        ])->label(false); ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="pre_package">
+                                        <?= $form->field($model, 'pre_sal')->label('Salary Package(Yearly)') ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider">
+                                <span></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"> 
+                                    <div class="module2-heading">Select Placement Locations</div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
+                                    <span id="place_error"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="button_location">
+                                        <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
+                                    </div>
+                                </div>
+                            </div>  
+                            <?php
+                            Pjax::begin(['id' => 'pjax_locations1']);
+                            if (!empty($loc_list)) {
+                                ?>
+                                <?=
+                                $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
+                                    'item' => function($index, $label, $name, $checked, $value) {
+
+                                        if ($index % 3 == 0) {
+                                            $return .= '<div class="row">';
                                         }
-                                    ])->label(false);
-                                    ?>
-                                <?php } else { ?>
-                                    <div class="empty-section-text">No Placement Location has been found</div>
-                                <?php }
-                                Pjax::end(); ?>
-                                <input type="text" name="placement_calc" id="placement_calc" readonly>
+                                        $return .= '<div class="col-md-4">';
+                                        $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
+                                        $return .= '<label for="' . $value . '" class="checkbox-label">';
+                                        $return .= '<div class="checkbox-text">';
+                                        $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
+                                        $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
+                                        $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
+                                        $return .= '<div class="form-group">';
+                                        $return .= '<div class="input-group spinner">';
+                                        $return .= '<input type="text" class="form-control place_no" value="1">';
+                                        $return .= '<div class="input-group-btn-vertical">';
+                                        $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
+                                        $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
+                                        $return .= '</div>';
+                                        $return .= '</div>';
+                                        $return .= '</div>';
+                                        $return .= '<div class="tooltips">';
+                                        $return .= 'Enter No. of Positions.';
+                                        $return .= '</div>';
+                                        $return .= '</div>';
+                                        $return .= '</label>';
+                                        $return .= '</div>';
+                                        if ($index % 3 == 2 || isset($label['total'])) {
+                                            $return .= '</div>';
+                                        }
+                                        return $return;
+                                    }
+                                ])->label(false);
+                                ?>
+
+                            <?php } else { ?>
+                                <div class="empty-section-text">No Placement Location has been found </div> 
+                            <?php } Pjax::end(); ?>
+                            <input type="text" name="placement_calc" id="placement_calc" readonly>
+                        </div>
+
+                        <div class="tab-pane" id="tab2">
+
+                            <div class="module2-heading">Provide job description</div>
+
+                            <div class="row padd-10">
+                                <div class="col-md-6">
+                                    <div id="manual_questions">
+                                        <div class="descrip_wrapper">
+                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <input type="text" class="form-control" maxlength="150" id="question_field" placeholder="Type Custom Job Description And Press Enter.">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="manual_notes">
+                                        Select from predefined job descriptions list
+                                    </div>
+                                </div>
                             </div>
-                            <div class="tab-pane" id="tab2">
-                                <div class="module2-heading">Provide job description</div>
-                                <div class="row padd-10">
-                                    <div class="col-md-6">
-                                        <div id="manual_questions">
-                                            <div class="descrip_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                <input type="text" class="form-control" maxlength="150"
-                                                       id="question_field"
-                                                       placeholder="Type Custom Job Description And Press Enter.">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="manual_notes">
-                                            Select from predefined job descriptions list
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div id="checkboxlistarea">
-                                            <h3 id="heading_placeholder"> Please type Atleast 3 Job Description above or
-                                                select from predefined list <i class="fa fa-share"
-                                                                               aria-hidden="true"></i></h3>
-                                            <ul class="drop-options connected-sortable droppable-area">
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="md-checkbox-list" id="md-checkbox">
-                                        </div>
-                                        <div id="error-checkbox-msg"></div>
-                                        <?= $form->field($model, 'checkboxArray', ['template' => '{input}'])->hiddenInput(['id' => 'checkbox_array']); ?>
-                                    </div>
-                                </div>
-                                <div class="divider"></div>
-                                <div class="module2-heading">Educational Requirements</div>
-                                <div class="row padd-10">
-                                    <div class="col-md-6">
-                                        <div id="manual_questions">
-                                            <div class="edu_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                <input type="text" class="form-control" maxlength="150" id="quali_field"
-                                                       placeholder="Type custom educational requirements and press enter.">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="manual_notes">
-                                            Select from predefined educational requirement list
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div id="quali_listarea">
-                                            <h3 id="heading_quali"> Please type the educational requirements above or
-                                                select from predefined list <i class="fa fa-share"></i></h3>
-                                            <ul class="quali_drop_options connected-sortable droppable-area">
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="md-checkbox" id="quali_list">
-                                        </div>
-                                        <div id="error-edu-msg"></div>
-                                        <?= $form->field($model, 'qualifications_arr', ['template' => '{input}'])->hiddenInput(['id' => 'qaulific_array']); ?>
-                                    </div>
-                                </div>
+                            <div class="row">
+                                <div class="col-md-6">
 
-                                <div class="divider"></div>
+                                    <div id="checkboxlistarea">
+                                        <h3 id="heading_placeholder"> Please type Atleast 3 Job Description above or select from predefined list <i class="fa fa-share" aria-hidden="true" ></i></h3>
+                                        <ul class="drop-options connected-sortable droppable-area">
 
-                                <div class="module2-heading">Skills Required</div>
-                                <div class="row padd-10">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="skill_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                    <input type="text" id="inputfield" name="inputfield"
-                                                           class="form-control"
-                                                           placeholder="Type required skills and press enter.">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="placeble-area">
-                                                    <div id="shownlist">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="manual_notes">
-                                                    Select from predefined skills list
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div id="suggestionbox">
-                                            </div>
-                                            <?= $form->field($model, 'specialskillsrequired', ['template' => '{input}'])->hiddenInput(['id' => 'specialskillsrequired'])->label(false); ?>
-                                            <?= $form->field($model, 'skillsArray', ['template' => '{input}'])->hiddenInput(['id' => 'skillsArray'])->label(false); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="divider"></div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="module2-heading">
-                                            Employee Benefits
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="button_location pull-right">
-                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="divider"></div>
-                                <div id="b_error"></div>
-                                <?php
-                                Pjax::begin(['id' => 'pjax_benefits']);
-                                if (!empty($benefits)) {
-                                    ?>
-                                    <div class="cat-sec">
-                                        <div class="row no-gape">
-                                            <?=
-                                            $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                                                    $return .= '<div class="p-category">';
-                                                    $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                                    $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
-                                                    $return .= '<div class="checkbox-text">';
-                                                    $return .= '<span class="checkbox-text--title">';
-                                                    $return .= '<i class="fa fa-user"></i>';
-                                                    $return .= '</span><br/>';
-                                                    $return .= '<span class="checkbox-text--description2">';
-                                                    $return .= $label;
-                                                    $return .= '</span>';
-                                                    $return .= '</div>';
-                                                    $return .= '</label>';
-                                                    $return .= '</div>';
-                                                    $return .= '</div>';
-                                                    return $return;
-                                                }
-                                            ])->label(false);
-                                            ?>
-                                        </div>
-                                    </div>
-                                <?php } else { ?>
+                                        </ul>
+                                    </div>  
 
-                                    <div class="empty-section-text"> No Benefits Yet Added to display</div>
-                                <?php } ?>
-                                <?php Pjax::end() ?>
-                                <div class="row">
-                                    <div class="col-md-10 col-md-offset-1">
-                                        <?=
-                                        $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
-                                        ?>
-                                        <input type="text" name="skill_counter" id="skill_counter" readonly>
-                                        <input type="text" name="qualific_count" id="qualific_count" readonly>
-                                        <input type="text" name="desc_count" id="desc_count" readonly>
-                                    </div>
                                 </div>
-                                <input type="text" name="benefit_calc" id="benefit_calc" readonly>
-                                <div class="divider"></div>
+                                <div class="col-md-6">
+
+                                    <div class="md-checkbox-list" id="md-checkbox">
+
+                                    </div>
+                                    <div id="error-checkbox-msg"></div> 
+                                    <?= $form->field($model, 'checkboxArray', ['template' => '{input}'])->hiddenInput(['id' => 'checkbox_array']); ?>
+
+                                </div>
                             </div>
-                            <div class="tab-pane" id="tab3">
-                                <div id="process_err"></div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <?= $form->field($model, 'getinterviewcity', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'getinterviewcity'])->label(false) ?>
-                                        <?= $form->field($model, 'question_process', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'question_process'])->label(false) ?>
+
+                            <div class="divider"></div>
+
+                            <div class="module2-heading">Educational Requirements</div>
+
+                            <div class="row padd-10">
+                                <div class="col-md-6">
+                                    <div id="manual_questions">
+                                        <div class="edu_wrapper">
+                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <input type="text" class="form-control" maxlength="150"  id="quali_field" placeholder="Type custom educational requirements and press enter.">
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="question_dropdown">
+                                <div class="col-md-6">
+                                    <div class="manual_notes">
+                                        Select from predefined educational requirement list
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                    <div id="quali_listarea">
+                                        <h3 id="heading_quali"> Please type the educational requirements above or select from predefined list <i class="fa fa-share" ></i> </h3>
+                                        <ul class="quali_drop_options connected-sortable droppable-area">
+
+                                        </ul>
+                                    </div>  
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="md-checkbox" id="quali_list">
+
+                                    </div>
+                                    <div id="error-edu-msg"></div>        
+                                    <?= $form->field($model, 'qualifications_arr', ['template' => '{input}'])->hiddenInput(['id' => 'qaulific_array']); ?>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="module2-heading">Skills Required</div>
+
+                            <div class="row padd-10">
+                                <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-12  m-padd">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <h3 class="module2-heading">Choose Application Process</h3>
-                                                </div>
-                                                <div class="col-md-6  ">
-                                                    <div class="pull-right c-btn-top">
-                                                        <a onclick="window.open('/account/interview-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
-                                                            <?= Html::button('Create Application Process', ['class' => 'btn btn-md btn-primary custom-buttons2 custom_color-set2', 'id' => 'add2']); ?>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-12">
+                                            <div class = "skill_wrapper">
+                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <input type="text"  id="inputfield" name="inputfield" class="form-control" placeholder = "Type required skills and press enter." >
+
+                                            </div> 
                                         </div>
-                                        <?php
-                                        Pjax::begin(['id' => 'pjax_process']);
-                                        if (!empty($process)) {
-                                            ?>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <?=
-                                                    $form->field($model, 'interview_process')->radioList($process, [
-                                                        'item' => function ($index, $label, $name, $checked, $value) {
-                                                            $return .= '<div class="col-md-4 text-center">';
-                                                            $return .= '<div class="radio_questions">';
-                                                            $return .= '<div class="inputGroup process_radio">';
-                                                            $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                                            $return .= '<label for="' . $value . '">' . $label . '</label>';
-                                                            $return .= '</div>';
-                                                            $return .= '</div>';
-                                                            $return .= '</div>';
-
-                                                            return $return;
-                                                        }
-                                                    ])->label(false);
-                                                    ?>
-                                                </div>
-                                            </div>
-
-                                        <?php } else {
-                                            ?>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="empty-section-text">No Process Found</div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                        Pjax::end();
-                                        ?>
                                     </div>
-                                    <input type="text" name="process_calc" id="process_calc" readonly>
-                                    <div class="divider"></div>
-                                    <div id="que_error"></div>
-                                    <div class="col-md-12 no-padd">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <h3 class="module2-heading">Choose Questionnaire</h3>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="pull-right c-btn-top">
-                                                    <a onclick="window.open('/account/questionnaire/create', '_blank', 'width=1200,height=900,left=200,top=100');">
-                                                        <?= Html::button('Create Questionnaire', ['class' => 'btn btn-primary btn-md custom-buttons2 custom_color-set2', 'id' => 'add']); ?>
-                                                    </a>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class = "placeble-area">
+                                                <div id="shownlist"> 
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="manual_notes">
+                                                Select from predefined skills list
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="suggestionbox">
+                                        </div>
+                                        <?= $form->field($model, 'specialskillsrequired', ['template' => '{input}'])->hiddenInput(['id' => 'specialskillsrequired'])->label(false); ?>
+                                        <?= $form->field($model, 'skillsArray', ['template' => '{input}'])->hiddenInput(['id' => 'skillsArray'])->label(false); ?>    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="module2-heading">
+                                        Employee Benefits
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="button_location pull-right">
+                                        <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div id="b_error"></div>
+                            <div class="cat-sec">
+                                <div class="row no-gape">
                                     <?php
-                                    Pjax::begin(['id' => 'pjax_questionnaire']);
-                                    if (!empty($que)) {
+                                    Pjax::begin(['id' => 'pjax_benefits']);
+                                    if (!empty($benefits)) {
                                         ?>
-                                        <div class="row">
-                                            <?=
-                                            $form->field($model, 'questionnaire')->checkBoxList($que, [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return .= '<div class="col-md-9">';
-                                                    $return .= '<div class="radio_questions">';
-                                                    $return .= '<div class="inputGroup question_checkbox">';
-                                                    $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                                    $return .= '<label for="' . $value . '">' . $label . '</label>';
-                                                    $return .= '</div>';
-                                                    $return .= '</div>';
-                                                    $return .= '</div>';
-                                                    $return .= '<div class="col-md-3">';
-                                                    $return .= '<div class="selectWrapper">';
-                                                    $return .= '<select class="selectBox">';
-                                                    $return .= '<option value="">Choose Stage</option>';
-                                                    $return .= '</select>';
-                                                    $return .= '</div>';
-                                                    $return .= '</div>';
-                                                    return $return;
-                                                }
-                                            ])->label(false);
-                                            ?>
-                                        </div>
-                                    <?php } else { ?>
+                                        <?=
+                                        $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
+                                                $return .= '<div class="p-category">';
+                                                $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                                $return .= '<div class="checkbox-text">';
+                                                $return .= '<span class="checkbox-text--title">';
+                                                $return .= '<i class="fa fa-user"></i>';
+                                                $return .= '</span><br/>';
+                                                $return .= '<span class="checkbox-text--description2">';
+                                                $return .= $label;
+                                                $return .= '</span>';
+                                                $return .= '</div>';
+                                                $return .= '</label>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                return $return;
+                                            }
+                                        ])->label(false);
+                                        ?>
+                                    </div>
+                                </div> 
+                            <?php } else { ?>   
 
+                                <div class="empty-section-text"> No Benefits Yet Added to display</div>
+                            <?php } ?>
+                            <?php Pjax::end() ?> 
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <?=
+                                    $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
+                                    ?>
+                                    <input type="text" name="skill_counter" id="skill_counter" readonly>
+                                    <input type="text" name="qualific_count" id="qualific_count" readonly>
+                                    <input type="text" name="desc_count" id="desc_count" readonly>
+                                </div>
+                            </div>
+                            <input type="text" name="benefit_calc" id="benefit_calc" readonly>
+                            <div class="divider"></div> 
+                        </div>
+                        <div class="tab-pane" id="tab3">
+                            <div id="process_err"> </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= $form->field($model, 'getinterviewcity', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'getinterviewcity'])->label(false) ?>
+                                    <?= $form->field($model, 'question_process', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'question_process'])->label(false) ?>
+                                </div>
+                            </div>
+                            <div id="question_dropdown">
+                                <div class="row">
+                                    <div class="col-md-12  m-padd"> 
+                                        <div class="row">    
+                                            <div class="col-md-6">
+                                                <h3 class="module2-heading">Choose Application Process</h3>
+                                            </div>
+                                            <div class="col-md-6  ">
+                                                <div class="pull-right c-btn-top">
+                                                    <a onclick="window.open('/account/interview-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
+                                                        <?= Html::button('Create Application Process', ['class' => 'btn btn-md btn-primary custom-buttons2 custom_color-set2', 'id' => 'add2']); ?> 
+                                                    </a>
+                                                </div>    
+                                            </div>
+                                        </div>    
+                                    </div>    
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_process']);
+                                    if (!empty($process)) {
+                                        ?>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="empty-section-text">No Questionnaire Found</div>
+                                                <?=
+                                                $form->field($model, 'interview_process')->radioList($process, [
+                                                    'item' => function($index, $label, $name, $checked, $value) {
+                                                        $return .= '<div class="col-md-4 text-center">';
+                                                        $return .= '<div class="radio_questions">';
+                                                        $return .= '<div class="overlay-left"><a href="#" data-id="'.$value.'" class="text process_display">View</a></div>';
+                                                        $return .= '<div class="inputGroup process_radio">';
+                                                        $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                                        $return .= '<label for="' . $value . '">' . $label . '</label>';
+                                                        $return .= '</div>';
+                                                        $return .= '</div>';
+                                                        $return .= '</div>';
+
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?> 
+                                            </div>
+                                        </div>
+
+                                    <?php } else {
+                                        ?> 
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="empty-section-text">No Process Found</div> 
                                             </div>
                                         </div>
                                         <?php
                                     }
                                     Pjax::end();
                                     ?>
-                                    <input type="text" name="ques_calc" id="ques_calc" readonly>
                                 </div>
-                            </div>
-                            <div class="tab-pane" id="tab4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h3 class="module2-heading">Walk In Interview Details </h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="md-radio-inline">
-                                            <?=
-                                            $form->field($model, 'interradio')->inline()->radioList([
-                                                1 => 'Yes',
-                                                0 => 'No',
-                                            ], [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="1' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
-                                                    $return .= '<label for="1' . $index . '">';
-                                                    $return .= '<span></span>';
-                                                    $return .= '<span class="check"></span>';
-                                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                                    $return .= '</div>';
-                                                    return $return;
-                                                }
-                                            ])->label(false);
-                                            ?>
-                                        </div>
-                                        <div id="error-checkbox-msg3"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div id="interview_box">
+                                <input type="text" name="process_calc" id="process_calc" readonly>
+                                <div class="divider"></div>
+                                <div id="que_error"></div>
+                                <div class="col-md-12 no-padd">
+                                    <div class="row">
                                         <div class="col-md-6">
-                                            <?=
-                                            DatePicker::widget([
-                                                'model' => $model,
-                                                'attribute' => 'startdate',
-                                                'id' => 'interview_range',
-                                                'attribute2' => 'enddate',
-                                                'options' => ['placeholder' => 'Start From'],
-                                                'options2' => ['placeholder' => 'End Date'],
-                                                'type' => DatePicker::TYPE_RANGE,
-                                                'form' => $form,
-                                                'pluginOptions' => [
-                                                    'format' => 'dd-mm-yyyy',
-                                                    'autoclose' => true,
-                                                    'startDate' => '+0d',
-                                                ]
-                                            ]);
-                                            ?>
+                                            <h3 class="module2-heading">Choose Questionnaire</h3>
                                         </div>
-                                        <div class="col-md-3">
-                                            <?= $form->field($model, 'interviewstarttime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Starts From');
-                                            ?>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <?= $form->field($model, 'interviewendtime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('End');
-                                            ?>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="col-md-4 m-padd">
-                                                <h3 class="module2-heading">Select Interview Locations</h3>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <span id="interview_error"></span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="btn-padd-top pull-right">
-                                                    <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '1', 'class' => 'btn modal-load-class btn-primary custom-buttons2']); ?>
-                                                </div>
+                                        <div class="col-md-6">
+                                            <div class="pull-right c-btn-top">
+                                                <a onclick="window.open('/account/questionnaire/create', '_blank', 'width=1200,height=900,left=200,top=100');">
+                                                    <?= Html::button('Create Questionnaire', ['class' => 'btn btn-primary btn-md custom-buttons2 custom_color-set2', 'id' => 'add']); ?> 
+                                                </a> 
                                             </div>
                                         </div>
                                     </div>
+                                </div> 
+                                <?php
+                                Pjax::begin(['id' => 'pjax_questionnaire']);
+                                if (!empty($que)) {
+                                    ?>
                                     <div class="row">
-                                        <?php
-                                        Pjax::begin(['id' => 'pjax_locations2']);
-                                        if (!empty($int_list)) {
-                                            ?>
-                                            <?=
-                                            $form->field($model, 'interviewcity')->checkBoxList($int_list, [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $i++;
-                                                    if ($index % 3 == 0) {
-                                                        $return .= '<div class="row">';
-                                                    }
-                                                    $return .= '<div class="col-md-4">';
-                                                    $return .= '<input type="checkbox" value="' . $value . '" name="' . $name . '" id="int' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
-                                                    $return .= '<label for="int' . $value . '" class="checkbox-label">';
-                                                    $return .= '<div class="checkbox-text">';
-                                                    $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
-                                                    $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
-                                                    $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
-                                                    $return .= '</div>';
-                                                    $return .= '</label>';
-                                                    $return .= '</div>';
-
-                                                    if ($index % 3 == 2 || isset($label['total'])) {
-                                                        $return .= '</div>';
-                                                    }
-                                                    return $return;
-                                                }
-                                            ])->label(false);
-                                            ?>
-                                        <?php } else { ?>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="empty-section-text">No Location has been found</div>
-                                                </div>
-                                            </div>
-                                        <?php }
-                                        Pjax::end();
+                                        <?=
+                                        $form->field($model, 'questionnaire')->checkBoxList($que, [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return .= '<div class="col-md-9">';
+                                                $return .= '<div class="radio_questions">';
+                                                $return .= '<div class="overlay-left"><a href="#" data-id="'.$value.'" class="text questionnaier_display">View</a></div>';
+                                                $return .= '<div class="inputGroup question_checkbox">';
+                                                $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="' . $value . '">' . $label . '</label>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '<div class="col-md-3">';
+                                                $return .= '<div class="selectWrapper">';
+                                                $return .= '<select class="selectBox">';
+                                                $return .= '<option value="">Choose Stage</option>';
+                                                $return .= '</select>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                return $return;
+                                            }
+                                        ])->label(false);
                                         ?>
-                                        <input type="text" name="interview_calc" id="interview_calc" readonly>
                                     </div>
+                                <?php } else { ?>
+
+                                    <div class="row">    
+                                        <div class="col-md-12">
+                                            <div class="empty-section-text">No Questionnaire Found</div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                Pjax::end();
+                                ?> 
+                                <input type="text" name="ques_calc" id="ques_calc" readonly>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab4">
+                            <div class="row">
+                                <div class="col-md-12"> 
+                                    <h3 class="module2-heading">Walk In Interview Details </h3>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tab5">
-                                <div class="portlet box primary_colr">
-                                    <div class="portlet-title">
-                                        <div class="caption text-center">
-                                            Confirm your details
+                            <div class="row">
+                                <div class="col-md-12">      
+                                    <div class="md-radio-inline">
+                                        <?=
+                                        $form->field($model, 'interradio')->inline()->radioList([
+                                            1 => 'Yes',
+                                            0 => 'No',
+                                                ], [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $return = '<div class="md-radio">';
+                                                $return .= '<input type="radio" id="1' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                $return .= '<label for="1' . $index . '">';
+                                                $return .= '<span></span>';
+                                                $return .= '<span class="check"></span>';
+                                                $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                $return .= '</div>';
+                                                return $return;
+                                            }
+                                        ])->label(false);
+                                        ?>
+                                    </div>
+                                    <div id="error-checkbox-msg3"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="interview_box">  
+                                    <div class="col-md-6">
+                                        <?=
+                                        DatePicker::widget([
+                                            'model' => $model,
+                                            'attribute' => 'startdate',
+                                            'id' => 'interview_range',
+                                            'attribute2' => 'enddate',
+                                            'options' => ['placeholder' => 'Start From'],
+                                            'options2' => ['placeholder' => 'End Date'],
+                                            'type' => DatePicker::TYPE_RANGE,
+                                            'form' => $form,
+                                            'pluginOptions' => [
+                                                'format' => 'dd-mm-yyyy',
+                                                'autoclose' => true,
+                                                'startDate' => '+0d',
+                                            ]
+                                        ]);
+                                        ?>
+                                    </div>    
+                                    <div class="col-md-3">
+                                        <?= $form->field($model, 'interviewstarttime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Starts From');
+                                        ?>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <?= $form->field($model, 'interviewendtime')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('End');
+                                        ?>
+                                    </div>
+                                </div> 
+
+                                <div class="row">
+                                    <div class="col-md-12"> 
+                                        <div class="col-md-4 m-padd"> 
+                                            <h3 class="module2-heading">Select Interview Locations</h3>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span id="interview_error"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="btn-padd-top pull-right">
+                                                <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '1', 'class' => 'btn modal-load-class btn-primary custom-buttons2']); ?>
+                                            </div>   
                                         </div>
                                     </div>
-                                    <div class="portlet-body flip-scroll">
-                                        <table class="table table-bordered table-striped table-condensed flip-content">
-                                            <tbody>
+                                </div>
+                                <div class="row">
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_locations2']);
+                                    if (!empty($int_list)) {
+                                        ?>
+                                        <?=
+                                        $form->field($model, 'interviewcity')->checkBoxList($int_list, [
+                                            'item' => function($index, $label, $name, $checked, $value) {
+                                                $i++;
+                                                if ($index % 3 == 0) {
+                                                    $return .= '<div class="row">';
+                                                }
+                                                $return .= '<div class="col-md-4">';
+                                                $return .= '<input type="checkbox" value="' . $value . '" name="' . $name . '" id="int' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="int' . $value . '" class="checkbox-label">';
+                                                $return .= '<div class="checkbox-text">';
+                                                $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
+                                                $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
+                                                $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
+                                                $return .= '</div>';
+                                                $return .= '</label>';
+                                                $return .= '</div>';
+
+                                                if ($index % 3 == 2 || isset($label['total'])) {
+                                                    $return .= '</div>';
+                                                }
+                                                return $return;
+                                            }
+                                        ])->label(false);
+                                        ?>
+                                    <?php } else { ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="empty-section-text">No Location has been found</div>
+                                            </div>
+                                        </div>
+                                    <?php } Pjax::end();
+                                    ?>
+                                    <input type="text" name="interview_calc" id="interview_calc" readonly>        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab5">
+                            <div class="portlet box primary_colr">
+                                <div class="portlet-title">
+                                    <div class="caption text-center">
+                                        Confirm your details</div>
+                                </div>
+                                <div class="portlet-body flip-scroll">
+                                    <table class="table table-bordered table-striped table-condensed flip-content">
+                                        <tbody>
                                             <tr>
                                                 <td><strong>Primary Field:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[primaryfield]"
-                                                       id="fieldvalue"></p></td>
+                                                <td> <p class="final_confrm" data-display="InternshipApplicationForm[primaryfield]" id="fieldvalue"> </p></td>
                                                 <td><strong>Job Title:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[jobtitle]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[jobtitle]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Stipend Type:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[stipendtype]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[stipendtype]"> </p></td>
                                                 <td><strong>Internship Type:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[jobtype]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[jobtype]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Min:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[minstip]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[minstip]"> </p></td>
                                                 <td><strong>Max:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[maxstip]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[maxstip]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Fixed:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[stipendpaid]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[stipendpaid]"> </p></td>
                                                 <td><strong>Joining Date:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[earliestjoiningdate]"></p>
-                                                </td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[earliestjoiningdate]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Special Skills:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[specialskillsrequired]"
-                                                                   id="skillvalues"></p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[specialskillsrequired]" id="skillvalues"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Timing From:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[from]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[from]"> </p></td>
                                                 <td><strong>Upto:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[to]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[to]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Start:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[startdate]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[startdate]" > </p></td>
                                                 <td><strong>Interview End:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[enddate]"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[enddate]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Start Time:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[interviewstarttime]"
-                                                       id="time1"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[interviewstarttime]" id="time1" > </p></td>
                                                 <td><strong>Interview End Time:</strong></td>
-                                                <td><p class="final_confrm"
-                                                       data-display="InternshipApplicationForm[interviewendtime]"
-                                                       id="time2"></p></td>
+                                                <td><p class="final_confrm"  data-display="InternshipApplicationForm[interviewendtime]" id="time2" > </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Job Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[checkbox][]"
-                                                                   id="chackboxvalues"></p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[checkbox][]" id="chackboxvalues"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Educational Qualification:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[qualifications][]"
-                                                                   id="education_vals"></p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[qualifications][]" id="education_vals"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Placement Locations (No. of positions):</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[placement_locations][]"
-                                                                   id="placement_locations"></p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[placement_locations][]" id="placement_locations" > </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Location:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[interviewcity][]"
-                                                                   id="interviewcitycityvalues"></p>
-                                                    <span class="final_confrm" data-display="randomfunc"> </span></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[interviewcity][]" id="interviewcitycityvalues" > </p>
+                                                    <span class="final_confrm"  data-display="randomfunc"> </span></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Brief Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[othrdetail]"></p>
-                                                </td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[othrdetail]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Gender:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[gender]"
-                                                                   id="gendr_text"></p></td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[gender]" id="gendr_text"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Industry:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[pref_inds]"></p>
-                                                </td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[pref_inds]"> </p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Last Date:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="InternshipApplicationForm[last_date]"></p>
-                                                </td>
+                                                <td colspan="3"><p class="final_confrm"  data-display="InternshipApplicationForm[last_date]"> </p></td>
                                             </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
+                            </div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div id="loading_img">
-                    </div>
-                    <div class="form-actions">
-                        <div class="row ">
-                            <div class="btn-preview">
-                                <a href="javascript:;" class="btn custom-buttons3 button-previous custom_color-set">
-                                    <i class="fa fa-angle-left"></i>
-                                    Back
-                                </a>
-                                <a href="javascript:;"
-                                   class="btn btn-primary custom-buttons2 button-next custom_color-set">
-                                    Continue
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                                <?= Html::button('Submit', ['class' => 'btn button-submit custom-buttons2 btn-primary custom_color-set2']) ?>
-                                <a id="data_preview" href="#"
-                                   class="btn button-preview btn-primary custom-buttons2 custom_color-set2"
-                                   target="_blank">Preview</a>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <?php ActiveForm::end(); ?>
-
+                <div id="loading_img">
+                </div>
+                <div class="form-actions">
+                    <div class="row ">
+                        <div class="btn-preview">
+                            <a href="javascript:;" class="btn custom-buttons3 button-previous custom_color-set">
+                                <i class="fa fa-angle-left"></i>
+                                Back
+                            </a>
+                            <a href="javascript:;" class="btn btn-primary custom-buttons2 button-next custom_color-set">
+                                Continue
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                            <?= Html::button('Submit', ['class' => 'btn button-submit custom-buttons2 btn-primary custom_color-set2']) ?>
+                            <a id="data_preview" href="#" class="btn button-preview btn-primary custom-buttons2 custom_color-set2" target="_blank">Preview</a>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <?php ActiveForm::end(); ?>
+
         </div>
     </div>
+</div>
 
-    <div class="fader"></div>
+<div class="fader"></div>
 
 <?php
 $this->registerCss("
+.overlay-left {
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 0;
+  height: 53px;
+  z-index:99;
+  transition: .5s ease;
+  border-radius: 8px 0px 0px 8px;
+}
+
+.radio_questions:hover .overlay-left {
+  width: 130px;
+}
+
+.text {
+  color: white;
+  font-size: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
 /* Feature, categories css starts */
 .checkbox-input {
   display: none;
@@ -1549,6 +1555,7 @@ margin-bottom:8px;
   font-size: 18px;
   font-weight: 600;
   line-height: 36px;
+  position:relative;
 }
 
 #skill_counter,#qualific_count,#desc_count,#placement_calc,#interview_calc,#benefit_calc,#process_calc,#ques_calc
@@ -2175,6 +2182,17 @@ height:17px !important;
 ");
 
 $script = <<< JS
+$(document).on('click','.questionnaier_display',function(e) {
+    e.preventDefault();
+    var data = $(this).attr('data-id');
+    window.open('/account/questionnaire/view?qidk='+data+'', "_blank");
+});
+
+$(document).on('click','.process_display',function(e) {
+    e.preventDefault();
+    var data = $(this).attr('data-id');
+    window.open('/account/interview-processes/view?id='+data+'', "_blank");
+});
 $('input[name= "InternshipApplicationForm[pre_place]"]').on('change',function(){
         var pre = $(this).attr("data-title");
         if(pre==1)
@@ -2497,7 +2515,7 @@ var categories = new Bloodhound({
   remote: {
     url:'/account/categories-list/categories-data',
     prepare: function (query, settings) {
-             settings.url += '?q=' + $('#jobtitle').val()+'&id='+prime_id;
+             settings.url += '?q=' + $('#jobtitle').val()+'&type=Internships&id='+prime_id;
              return settings;
         },  
     'cache': false,  
@@ -2799,7 +2817,7 @@ $(document).on('click', '.modal-load-class', function() {
                     function explode(){
                      $('#loading_img').removeClass('show');
                      $('.button-submit').prop('disabled','');
-                     window.location.replace('/account/internships/dashboard'); 
+                     window.location.replace('/account/jobs/dashboard'); 
                      }
                        setTimeout(explode, 3000); 
                      }
@@ -2967,8 +2985,7 @@ function init() {
         $.each($('.placeble-area span'),function(index,value)
         {
         var obj_val = {};
-        obj_val["id"] = $(this).attr('data-value');
-        obj_val["value"] = $.trim($(this).text());
+        obj_val = $.trim($(this).text());
 
         array_val.push(obj_val);
          });
@@ -3352,8 +3369,7 @@ function init() {
                    $.each($('.drop-options li'),function(index,value)
                     {
                     var object_val = {};
-                    object_val["id"] = $(this).attr('value-id');
-                    object_val["value"] = $.trim($(this).text());
+                    object_val = $.trim($(this).text());
                     checkboxvalues.push("&#8728; "+$.trim($(this).text())+"<br>"); 
                     arr_val.push(object_val);
                     });
@@ -3364,8 +3380,7 @@ function init() {
                      $.each($('.quali_drop_options li'),function(index,value)
                     {
                     var obj_quali = {};
-                    obj_quali["id"] = $(this).attr('value-id');
-                    obj_quali["value"] = $.trim($(this).text());
+                    obj_quali = $.trim($(this).text());
                     qualifications_arr.push("&#8728; "+$.trim($(this).text())+"<br>"); 
                     arr_quali.push(obj_quali);
                     });

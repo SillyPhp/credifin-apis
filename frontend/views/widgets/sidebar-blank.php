@@ -88,7 +88,7 @@ use yii\helpers\Url;
                         'visible' => (Yii::$app->session->get('user_type') == 'Member'),
                         'url' => Url::to(['/demo/resume',
                             'type' => $type]), 'active' => ($item == 'resume')],
-                    ['label' => 'Internships',
+                    ['label' => 'internships',
                         'icon' => 'items',
                         'url' => Url::to(['/demo/internships', 'type' => $type]),
                         'active' => ($item == 'internships')],
@@ -102,11 +102,11 @@ use yii\helpers\Url;
                         'active' => ($item == 'resume')
                     ],
                     ['label' =>
-                        'Internships for review',
+                        'internships for review',
                         'visible' => (Yii::$app->session->has('user_type') && Yii::$app->session->get('user_type') == 'Member'),
                         'icon' => 'items',
                         'url' => Url::to(['/demo/internship-for-review', 'type' => $type]),
-                        'active' => ($item == 'Internships For Review')
+                        'active' => ($item == 'internships For Review')
                     ],
                     ['label' => 'Organization Form',
                         'visible' => (Yii::$app->session->has('user_type') && Yii::$app->session->get('user_type') == 'Company Admin'),

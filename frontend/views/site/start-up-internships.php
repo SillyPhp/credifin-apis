@@ -1,5 +1,5 @@
 <?php
-$this->title = Yii::t('frontend', 'Start Up Internships');
+$this->title = Yii::t('frontend', 'Start Up internships');
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;

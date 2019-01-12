@@ -11,7 +11,7 @@ use yii\helpers\Url;
                     <div class="profile-picture">
                         <?php
                         $name = $image = $link = NULL;
-                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                        if (!empty(Yii::$app->user->identity->organization)) {
                             if (Yii::$app->user->identity->organization->logo) {
                                 $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                             }
@@ -427,8 +427,17 @@ $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => 
 //$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 
-?>
-<?php
+//$options = [
+//    'where' => ['and',
+//        ['a.name' => 'taskbar_card'],
+//        ['b.is_viewed' => 0],
+//    ],
+//];
+//
+//$tutorials = Yii::$app->Tutorials->getTutorialsByUser($options);
+//echo "Hello";
+//print_r($tutorials);
+
 if (!Yii::$app->session->has("tutorial_organization_tasks")) {
     echo '<script>dashboard_organization_taskbar()</script>';
     Yii::$app->session->set("tutorial_organization_tasks", "Yes");

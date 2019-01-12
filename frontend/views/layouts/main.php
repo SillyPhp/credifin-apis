@@ -224,9 +224,14 @@ AppAssets::register($this);
                 display:inline;
                 padding:10px;
             }
+            .footer a {
+                text-align: center;
+                width: 100%;
+             }
             .footer-border{
                 text-align:center; 
                 border-top:5px solid #00a0e3;
+                position:relative;
             }
             .footer-border img{
                 margin-top:-50px
