@@ -22,11 +22,12 @@ $form = ActiveForm::begin([
         </div>
     </div>
     <div class="cat-sec">
-        <div class="row no-gape">
+        <div class="row no-gape pl-5 pr-5">
 
             <?=
             $form->field($addEmployeeBenefitForm, 'emp_benefit')->checkBoxList($benefit, [
                 'item' => function ($index, $label, $name, $checked, $value) {
+                if(empty($label['icon'])){$label['icon'] = 'plus-icon.svg';}
                     $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                     $return .= '<div class="p-category">';
                     $return .= '<input type="checkbox" id="' . $label['benefit_enc_id'] . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';

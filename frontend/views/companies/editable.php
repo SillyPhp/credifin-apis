@@ -371,16 +371,23 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                 <div class="row no-gape">
                     <?php
                     for ($j = 0; $j < 4; $j++) {
+                        if(!empty($benefit[$next]['benefit'])){
                         ?>
                         <div class="col-lg-3 col-md-3 col-sm-6">
                             <div class="p-category">
                                 <div class="p-category-view">
+                                    <?php
+                                    if(empty($benefit[$next]['icon'])){
+                                        $benefit[$next]['icon'] = 'plus-icon.svg';
+                                    }
+                                    ?>
                                     <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
                                     <span><?= $benefit[$next]['benefit'] ?></span>
                                 </div>
                             </div>
                         </div>
                         <?php
+                        }
                         $next++;
                     }
                     ?>
@@ -395,7 +402,52 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
             ?>
         </div>
     </section>
-
+    <section id="image1">
+        <div class="image">
+            <div class="container">
+                <div class="content">
+                    <div class="t-heading">Image Gallery</div>
+                    <div class="row imgrows">
+                        <div class="row imgrow">
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-main">
+                    <a id="loadmore">View More</a>
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="jobs">
         <div class="about">
             <div class="container">
@@ -798,8 +850,8 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 }
 .checkbox-label {
 /*   display: inline-block; */
-/*   vertical-align: top; */
 /*   position: relative; */
+  vertical-align: top;
   width: 100%;
   cursor: pointer;
   font-weight: 400;
@@ -901,7 +953,7 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 .row.no-gape > div, .row.no-gape .p-category-main {
     padding: 0;
 }
-.cat-sec .row > div:last-child a, .cat-sec .row .p-category-main:last-child .checkbox-text {
+.cat-sec .row > div:last-child .p-category-view, .cat-sec .row .p-category-main:nth-child(4n+0) .checkbox-text {
     border-right-color: #ffffff;
 }
 /* Feature, categories css ends */
