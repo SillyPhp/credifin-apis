@@ -129,6 +129,24 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
+<!---->
+<section class="fixed-bttn">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="fx-heading">
+                    Its Free To Get Hired On Empower Youth
+                </div>
+                <div class="post-job-bttn">
+                    <a href="#" id="myBttn" class="hvr-float-shadow">
+                        Get Hired
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!---->
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
@@ -181,24 +199,6 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!--how it works ends-->
-<!---->
-<section class="fixed-bttn">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="fx-heading">
-                    Its Free To Get Hired On Empower Youth
-                </div>
-                <div class="post-job-bttn">
-                    <a href="#" id="myBttn" class="hvr-float-shadow">
-                        Get Hired
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!---->
 <!--new section starts-->
 <section class="companies">
     <div class="container">
@@ -374,10 +374,42 @@ $this->params['header_dark'] = false;
         </div>
     </article>
 </div>
-
+<div class="fixed-btn background-logo-blue">
+    <a href="/site/company-index"> <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
+        <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
+        <span><?= Yii::t('frontend', 'Want to post a Job or an Intenship?'); ?></span></a>
+</div>
 
 <?php
 $this->registerCss('
+.fixed-btn a{
+    position: fixed;
+    text-align: center;
+    width: 150px;
+    color: #fff !important;
+    bottom: 0px;
+    left:0px;
+    border-right: 4px solid orange;
+    z-index: 999999;
+    height: 112px;
+    opacity: 0.9;
+    padding: 10px 0px;
+    transition: ease-in-out .3s;
+    cursor: pointer;
+    bottom: -42px;
+    border-top-right-radius: 28px;
+}
+.fixed-btn a span{
+    font-weight: 700;
+    color: #fff;
+}
+.fixed-btn a:hover{
+    opacity: 1;
+    bottom: 0px;
+}
+.background-logo-blue a{
+    background-color: #49a1e3;
+}
 /*try now sec*/
 .fixed-bttn{
     padding:60px 0 100px;
@@ -407,6 +439,7 @@ $this->registerCss('
    text-align:center;
    margin:0 auto;
    max-width:300px;
+   font-weight:600;
 }
 .post-job-bttn a:hover{
    box-shadow:none;
