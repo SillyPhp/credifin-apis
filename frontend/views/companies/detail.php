@@ -36,7 +36,6 @@ if ($organization['cover_image']) {
 
 <div class="sections">
     <section id="home">
-        <div class="" >
             <div class="coverpic">
                 <img src="<?= Url::to($cover_image); ?>" class="img-fluid">
                 <div class="shortlist_main">
@@ -51,7 +50,6 @@ if ($organization['cover_image']) {
                     <?php } ?>
                 </div>
             </div>
-        </div>
         <!-- Page Content  -->
         <div class="container">
             <div class="row">
@@ -69,7 +67,7 @@ if ($organization['cover_image']) {
                                         ?>
                                         <img src="<?= Url::to($image); ?>">
                                     <?php else: ?>
-                                        <canvas class="user-icon" name="<?= $image; ?>" width="130" height="130" font="65px"></canvas>
+                                        <canvas class="user-icon img-circle img-thumbnail " name="<?= $image; ?>" color="<?= $organization['initials_color'] ?>" width="130" height="130" font="65px"></canvas>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
@@ -219,10 +217,10 @@ if ($organization['cover_image']) {
                                     for ($j = 0; $j < 3; $j++) {
                                         ?>
                                         <div class="col-md-4">
-                                            <a href="#videoStory" class="videoLink">
+                                            <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
                                                 <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
                                             </a>
-                                            <div id="videoStory" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
+                                            <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
                                                 <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                                             </div>
                                         </div>
@@ -239,8 +237,55 @@ if ($organization['cover_image']) {
         </section>
         <?php
     }
+    if(!empty($benefit)){
     ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="t-heading">
+                        Employee Benefits
+                    </div>
+                </div>
+            </div>
+            <?php
+                $rows = ceil(count($benefit) / 4);
+                $next = 0;
+                for ($i = 0; $i < $rows; $i++) {
+                    ?>
+                    <div class="cat-sec">
+                        <div class="row no-gape">
+                            <?php
+                            for ($j = 0; $j < 4; $j++) {
+                                if(!empty($benefit[$next]['benefit'])){
+                                    ?>
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <div class="p-category">
+                                            <div class="p-category-view">
+                                                <?php
+                                                if(empty($benefit[$next]['icon'])){
+                                                    $benefit[$next]['icon'] = 'plus-icon.svg';
+                                                }
+                                                ?>
+                                                <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
+                                                <span><?= $benefit[$next]['benefit'] ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                $next++;
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                }
+            ?>
+        </div>
+    </section>
     <?php
+    }
     if (count($jobcards) > 0) {
         ?>
 
@@ -311,7 +356,7 @@ $this->registerCss('
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
 }
-.p-category > a {
+.p-category > .p-category-view {
     float: left;
     width: 100%;
     text-align: center;
@@ -319,15 +364,12 @@ $this->registerCss('
     border-bottom: 1px solid #e8ecec;
     border-right: 1px solid #e8ecec;
 }
-.p-category > a i {
-    float: left;
-    width: 100%;
-    color: #4aa1e3;
+.p-category > .p-category-view img {
     font-size: 70px;
     margin-top: 30px;
     line-height: initial !important;
 }
-.p-category > a span {
+.p-category > .p-category-view span {
     float: left;
     width: 100%;
     font-family: Open Sans;
@@ -352,7 +394,7 @@ $this->registerCss('
     height: 102%;
     z-index: 10;
 }
-.p-category:hover a {
+.p-category:hover .p-category-view {
     border-color: #ffffff;
 }
 .p-category:hover i{
@@ -361,8 +403,18 @@ $this->registerCss('
 .row.no-gape > div {
     padding: 0;
 }
-.cat-sec .row > div:last-child a {
+.cat-sec .row > div:last-child .p-category-view {
     border-right-color: #ffffff;
+}
+.p-category img{
+    width: 80px;
+    height: 50px;
+}
+.p-category .p-category-view img, .p-category .checkbox-text span i {
+    color: #4aa1e3;
+    font-size: 70px;
+    margin-top: 30px;
+    line-height: initial !important;
 }
 /* Feature, categories css ends */
 ');
@@ -370,14 +422,9 @@ $this->registerCss('
 $script = <<<JS
        
 document.body.scrollTop = 0;
-document.documentElement.scrollTop = 0;
+document.documentElement.scrollTop = 0; 
         
-        
-
-    $('[data-toggle="tooltip"]').tooltip();
-        
-    $('.videoLink')
-        .magnificPopup({
+    $('.videoLink').magnificPopup({
             type: 'inline',
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         })
