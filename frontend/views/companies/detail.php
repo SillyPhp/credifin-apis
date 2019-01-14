@@ -493,6 +493,8 @@ $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/company-profile.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
+$this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/css/swiper.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
