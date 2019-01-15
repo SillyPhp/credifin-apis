@@ -186,6 +186,7 @@ class JobApplicationForm extends Model
 
     public function saveValues()
     {
+        return
         $sal = str_replace(',', '', $this->salaryinhand);
         $ctc_val = str_replace(',', '', $this->ctc);
         $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
@@ -196,8 +197,8 @@ class JobApplicationForm extends Model
         $employerApplicationsModel->application_number = date('ymd') . time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
-        $employerApplicationsModel->questionnaire_enc_id = null;
-        $employerApplicationsModel->fill_questionnaire_on = null;
+        $employerApplicationsModel->has_questionnaire = $this->questionnaire_selection;
+        $employerApplicationsModel->has_benefits = $this->benefit_selection;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
         $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->image = '1';
@@ -226,7 +227,6 @@ class JobApplicationForm extends Model
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
-
                 $assignedCategoryModel = new AssignedCategories();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -723,10 +723,10 @@ class JobApplicationForm extends Model
                 $b->select(['b.application_enc_id', 'b.option_enc_id', 'b.option_name', 'b.value']);
             }])
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
-                $b->andWhere(['c.is_deleted' => 0]);
-                $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
-            }])
+                    $b->onCondition(['c.is_deleted' => 0]);
+                    $b->joinWith(['benefitEnc d'], false);
+                    $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
+                }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
@@ -759,9 +759,9 @@ class JobApplicationForm extends Model
                 $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
-                $b->andWhere(['q.is_deleted' => 0]);
-                $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
-            }])
+                    $b->onCondition(['q.is_deleted' => 0]);
+                    $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
+                }])
             ->asArray()
             ->one();
 

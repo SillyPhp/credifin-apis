@@ -114,30 +114,43 @@ class InternshipsController extends Controller {
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            foreach ($object->interviewcity as $id) {
-                $int_arr = OrganizationLocations::find()
-                    ->alias('a')
-                    ->select(['b.name AS city_name'])
-                    ->where(['a.location_enc_id' => $id])
-                    ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
-                    ->asArray()
-                    ->one();
+            $int_loc = [];
+            if (!empty($object->interviewcity)) {
+                foreach ($object->interviewcity as $id) {
+                    $int_arr = OrganizationLocations::find()
+                        ->alias('a')
+                        ->select(['b.name AS city_name'])
+                        ->where(['a.location_enc_id' => $id])
+                        ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
+                        ->asArray()
+                        ->one();
 
-                $int_loc .= $int_arr['city_name'] . ',';
+                    $int_loc .= $int_arr['city_name'] . ',';
+                }
             }
+            $indstry = Industries::find()
+                ->where(['industry_enc_id' => $object->pref_inds])
+                ->select(['industry'])
+                ->asArray()
+                ->one();
 
             $primary_cat = Categories::find()
                 ->select(['name'])
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
-
-            foreach ($object->emp_benefit as $benefit) {
-                $benefits[] = EmployeeBenefits::find()
-                    ->select(['benefit'])
-                    ->where(['benefit_enc_id' => $benefit])
-                    ->asArray()
-                    ->one();
+            if ($object->benefit_selection==1){
+                foreach ($object->emp_benefit as $benefit) {
+                    $benefits[] = EmployeeBenefits::find()
+                        ->select(['benefit'])
+                        ->where(['benefit_enc_id' => $benefit])
+                        ->asArray()
+                        ->one();
+                }
+            }
+            else
+            {
+                $benefits=null;
             }
 
             return $this->render('internship-preview', [

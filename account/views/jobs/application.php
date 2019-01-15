@@ -903,7 +903,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 <td><strong>Placement Locations (No. of positions):</strong></td>
                                                 <td colspan="3"><p class="final_confrm"
                                                                    data-display="placement_locations[]"
-                                                                   id="placement_locations"></p></td>
+                                                                   id="place_locations"></p></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Interview Location:</strong></td>
@@ -2270,7 +2270,6 @@ $('input[name= "questionnaire_selection"]').on('change',function(){
           
         });
 
-
 $(document).on('click','.questionnaier_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
@@ -3038,17 +3037,19 @@ function init() {
         
         function placement_arr()
         {
-                        var array =[];
-                        $.each($("input[name='placement_locations[]']:checked"), function(index,value){
-                        var obj = {};
-                        obj["id"] = $(this).attr('id');
-                        obj["value"] = $(this).next('label').find('.place_no').val();
-                        obj["name"] = $(this).attr('data-value');
-                        array.push(obj);
+            console.log($('[name="placement_locations[]"]:checked').length);
+                        var place_arr =[];
+                        $.each($("input[name='placement_locations[]']:checked"),
+                        function(index,value){
+                        var obj_place = {};
+                        obj_place["id"] = $(this).attr('id');
+                        obj_place["value"] = $(this).next('label').find('.place_no').val();
+                        obj_place["name"] = $(this).attr('data-value');
+                        place_arr.push(obj_place); 
                         }); 
-              $('#placement_array').val(JSON.stringify(array));     
-       }
-        function question_process_arr()
+              $('#placement_array').val(JSON.stringify(place_arr));
+       }  
+        function question_process_arr()  
         {
                         var process_question_arr =[];
                         $.each($("input[name='questionnaire[]']:checked"),
@@ -3466,7 +3467,7 @@ function init() {
                         $('input[name = "placement_locations[]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
-                      $('#placement_locations').html(placement_city.join(" "));
+                      $('#place_locations').html(placement_city.join(" "));
            
                        var skills_list = getTags();
                        $('#skillvalues').html(skills_list.toString());

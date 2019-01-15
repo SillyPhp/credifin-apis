@@ -302,7 +302,6 @@ class JobsController extends Controller
                 ->andWhere(['b.field_name' => 'Get Applications'])
                 ->exists();
         }
-
         $model = new JobApplied();
         return $this->render('detail', [
             'application_details' => $application_details,

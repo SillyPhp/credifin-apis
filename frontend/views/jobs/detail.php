@@ -172,10 +172,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                             <h3>Employer Benefits</h3>
                             <ul>
                                 <?php
+                                if (!empty($data['applicationEmployeeBenefits'])){
                                 foreach ($data['applicationEmployeeBenefits'] as $benefit) {
                                     ?>
                                     <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                <?php } ?>
+                                <?php } } else { ?>
+                                    <li> No Benefits  </li>
+                                    <?php } ?>
                             </ul>
                         </div>
                         <div class="job-overview">
