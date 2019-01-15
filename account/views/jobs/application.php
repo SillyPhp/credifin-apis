@@ -473,10 +473,12 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="module2-heading">
                                             Employee Benefits
                                         </div>
-                                        <div class="md-radio-inline">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="md-radio-inline text-right clearfix">
                                             <?=
                                             $form->field($model, 'benefit_selection')->inline()->radioList([
-                                                1 => 'Yes',
+                                                1 => 'Add Employee Benefits',
                                                 0 => 'Skip Employee Benefits',
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
@@ -492,9 +494,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ])->label(false);
                                             ?>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="button_location pull-right">
+                                        <div class="button_location pull-right clearfix">
                                             <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
                                         </div>
                                     </div>
@@ -620,10 +620,12 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <h3 class="module2-heading">Choose Questionnaire</h3>
-                                                <div class="md-radio-inline">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="md-radio-inline text-right clearfix">
                                                     <?=
                                                     $form->field($model, 'questionnaire_selection')->inline()->radioList([
-                                                        1 => 'Yes',
+                                                        1 => 'Add Questionnaire',
                                                         0 => 'Skip Questionnaire',
                                                     ], [
                                                         'item' => function ($index, $label, $name, $checked, $value) {
@@ -639,9 +641,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                     ])->label(false);
                                                     ?>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="pull-right c-btn-top">
+                                                <div class="pull-right c-btn-top clearfix">
                                                     <a onclick="window.open('/account/questionnaire/create', '_blank', 'width=1200,height=900,left=200,top=100');">
                                                         <?= Html::button('Create Questionnaire', ['class' => 'btn btn-primary btn-md custom-buttons2 custom_color-set2', 'id' => 'add']); ?>
                                                     </a>
@@ -981,7 +981,8 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
 <?php
 $this->registerCss("
-#benefits_hide,#questionnaire_hide
+.md-radio-inline.text-right.clearfix{padding-top:20px;}
+#benefits_hide,#questionnaire_hide,#benefitPopup,#add
 {
  display:none;
 }
@@ -2251,9 +2252,11 @@ $('input[name= "benefit_selection"]').on('change',function(){
         if(option==1)
             {
              $('#benefits_hide').css('display','block');   
+             $('#benefitPopup').css('display','block');   
             }
         else {
             $('#benefits_hide').css('display','none');   
+            $('#benefitPopup').css('display','none');   
         }
           
         });
@@ -2263,9 +2266,11 @@ $('input[name= "questionnaire_selection"]').on('change',function(){
         if(option==1)
             {
              $('#questionnaire_hide').css('display','block');   
+             $('#add').css('display','block');   
             }
         else {
             $('#questionnaire_hide').css('display','none');   
+            $('#add').css('display','none');   
         }
           
         });
@@ -2273,13 +2278,13 @@ $('input[name= "questionnaire_selection"]').on('change',function(){
 $(document).on('click','.questionnaier_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
-    window.open('/account/questionnaire/view?qidk='+data+'', "_blank");
+    window.open('/account/questionnaire/'+data+'/view', "_blank");
 });
 
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
-    window.open('/account/interview-processes/view?id='+data+'', "_blank");
+    window.open('/account/interview-processes/'+data+'/view', "_blank");
 });
 
 var session_tok = "";
@@ -2720,8 +2725,7 @@ var que_type = $('#question_field').typeahead(null, {
   { 
       var id = datum.job_description_enc_id;
       var questions = datum.job_description;  
-      drop_options(id,questions); 
-      que_type.typeahead('val','');
+      drop_options(id,questions);
    });    
     
         
@@ -2797,11 +2801,38 @@ $(document).on('click', '.modal-load-class', function() {
       
         function drop_options(id,questions)
         {
-        $('#heading_placeholder').hide();$(".drop-options").append('<li  value-id="'+id+'" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' +questions+ '<span> <a href = "#" class = "remove_this_item"><i class="fa fa-times"></i></a></span> </li>');
-         scroll_checklist();
-              quesn_count++
-              quesn_upt();
+            var duplicate_jd = [];
+           $.each($('.drop-options li'),function(index,value)
+                        {
+                         duplicate_jd.push($.trim($(this).text()).toUpperCase());
+                        });
+           if(jQuery.inArray($.trim(questions).toUpperCase(), duplicate_jd) != -1) {
+                return false;
+                    } else {
+                     $('#heading_placeholder').hide();$(".drop-options").append('<li  value-id="'+id+'" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' +questions+ '<span> <a href = "#" class = "remove_this_item"><i class="fa fa-times"></i></a></span> </li>');
+                        scroll_checklist();
+                        quesn_count++
+                        quesn_upt();
+                }
         }
+        
+        function drop_edu(id,qualification)
+        {
+            duplicate_ed=[];
+            $.each($('.quali_drop_options li'),function(index,value)
+                        {
+                         duplicate_ed.push($.trim($(this).text()).toUpperCase());
+                        });
+           if(jQuery.inArray($.trim(qualification).toUpperCase(), duplicate_ed) != -1) {
+                return false;
+                    } else {
+                     $('#heading_quali').hide();$(".quali_drop_options").append('<li  value-id="'+id+'" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' +qualification+ '<span> <a href = "#" class = "remove_this_item"><i class="fa fa-times"></i></a></span> </li>');   
+               scroll_qualifications();
+              count_edu++;
+              edu_counter_set();
+                }
+       
+       }
         
         
         var count_edu = 0;
@@ -2818,13 +2849,7 @@ $(document).on('click', '.modal-load-class', function() {
             }
         } 
     });
-        function drop_edu(id,qualification)
-        {
-       $('#heading_quali').hide();$(".quali_drop_options").append('<li  value-id="'+id+'" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' +qualification+ '<span> <a href = "#" class = "remove_this_item"><i class="fa fa-times"></i></a></span> </li>');   
-        scroll_qualifications();
-              count_edu++;
-              edu_counter_set();
-       }
+        
         $(document).on('click','.drop-options span a', function(event){
 		event.preventDefault();
                 var btn = $(this);
@@ -3037,7 +3062,6 @@ function init() {
         
         function placement_arr()
         {
-            console.log($('[name="placement_locations[]"]:checked').length);
                         var place_arr =[];
                         $.each($("input[name='placement_locations[]']:checked"),
                         function(index,value){
