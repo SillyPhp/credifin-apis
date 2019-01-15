@@ -93,12 +93,21 @@ class InternshipApplicationForm extends Model
     public $clone_desc;
     public $clone_edu;
     public $clone_skills;
+    public $benefit_selection;
+    public $questionnaire_selection;
+
+    public function formName()
+    {
+        return '';
+    }
 
     public function rules()
     {
         return [
             [['questions',
                 'primaryfield',
+                'questionnaire_selection',
+                'benefit_selection',
                 'pre_sal',
                 'pre_place',
                 'stipendtype',
@@ -192,7 +201,6 @@ class InternshipApplicationForm extends Model
 
     public function saveValues()
     {
-
         if($this->stipendtype==2||$this->stipendtype==3)
         {
             $min = $this->minstip;
@@ -227,8 +235,8 @@ class InternshipApplicationForm extends Model
         $employerApplicationsModel->application_number = date('ymd') . time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
-        $employerApplicationsModel->questionnaire_enc_id = null;
-        $employerApplicationsModel->fill_questionnaire_on = null;
+        $employerApplicationsModel->has_questionnaire = $this->questionnaire_selection;
+        $employerApplicationsModel->has_benefits = $this->benefit_selection;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
         $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->image = '1';
@@ -298,35 +306,39 @@ class InternshipApplicationForm extends Model
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($employerApplicationsModel->save()) {
-            $process_questionnaire = json_decode($this->question_process);
-            if (!empty($process_questionnaire)){
-                foreach ($process_questionnaire as $process) {
-                    $processModel = new ApplicationInterviewQuestionnaire();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $processModel->interview_questionnaire_enc_id = $utilitiesModel->encrypt();
-                    $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $processModel->field_enc_id = $process->process_id;
-                    $processModel->questionnaire_enc_id = $process->id;
-                    $processModel->created_on = date('Y-m-d H:i:s');
-                    $processModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$processModel->save()) {
-                        print_r($processModel->getErrors());
+            if ($this->questionnaire_selection == 1) {
+                $process_questionnaire = json_decode($this->question_process);
+                if (!empty($process_questionnaire)) {
+                    foreach ($process_questionnaire as $process) {
+                        $processModel = new ApplicationInterviewQuestionnaire();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $processModel->interview_questionnaire_enc_id = $utilitiesModel->encrypt();
+                        $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+                        $processModel->field_enc_id = $process->process_id;
+                        $processModel->questionnaire_enc_id = $process->id;
+                        $processModel->created_on = date('Y-m-d H:i:s');
+                        $processModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$processModel->save()) {
+                            print_r($processModel->getErrors());
+                        }
                     }
                 }
             }
-            if (!empty($this->emp_benefit)){
-                foreach ($this->emp_benefit as $benefit) {
-                    $benefitModel = new ApplicationEmployeeBenefits();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $benefitModel->application_benefit_enc_id = $utilitiesModel->encrypt();
-                    $benefitModel->benefit_enc_id = $benefit;
-                    $benefitModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $benefitModel->created_on = date('Y-m-d H:i:s');
-                    $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$benefitModel->save()) {
-                        print_r($benefitModel->getErrors());
+            if ($this->benefit_selection == 1) {
+                if (!empty($this->emp_benefit)) {
+                    foreach ($this->emp_benefit as $benefit) {
+                        $benefitModel = new ApplicationEmployeeBenefits();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $benefitModel->application_benefit_enc_id = $utilitiesModel->encrypt();
+                        $benefitModel->benefit_enc_id = $benefit;
+                        $benefitModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+                        $benefitModel->created_on = date('Y-m-d H:i:s');
+                        $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$benefitModel->save()) {
+                            print_r($benefitModel->getErrors());
+                        }
                     }
                 }
             }
@@ -356,9 +368,9 @@ class InternshipApplicationForm extends Model
 
      $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
                     'sund_frequency' => $weekoptionsund,'salary_duration' => $this->ctctype,
-                    'interview_start_date' => date('Y-m-d', strtotime($strt)),
-                    'interview_start_date' => date('Y-m-d', strtotime($enddate)), 'interview_start_time' => date("H:i:s", strtotime($strttime)),
-                    'interview_start_time' => date("H:i:s", strtotime($endtime)),'salary'=>$sal,'stipend_type'=>$this->stipendtype,
+                    'interview_start_date' => (($strt) ? date('Y-m-d', strtotime($strt)) : null),
+                    'interview_end_date' => (($enddate) ? date('Y-m-d', strtotime($enddate)) : null), 'interview_start_time' => (($strttime) ? date('Y-m-d', strtotime($strttime)) : null),
+                    'interview_end_time' => (($endtime) ? date('Y-m-d', strtotime($endtime)) : null),'salary'=>$sal,'stipend_type'=>$this->stipendtype,
                     'min_stipend'=>$min,'max_stipend'=>$max,
                     'stipend_duration'=>$duration,
                     'pre_placement_offer'=>$this->pre_place,

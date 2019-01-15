@@ -2,7 +2,6 @@
 $this->title = Yii::t('frontend', 'Job Detail');
 
 use yii\helpers\Url;
-
 $tot = 0;
 foreach (json_decode($object->placement_loc) as $pl_loc) {
     $str .= $pl_loc->name . ',';
@@ -72,7 +71,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                         <h3>Required Knowledge, Skills, and Abilities</h3>
                         <div class="tags-bar">
                             <?php foreach (json_decode($object->skillsArray) as $skill) { ?>
-                                <span><?php echo ucwords($skill->value); ?> </span>
+                                <span><?php echo ucwords($skill); ?> </span>
                             <?php } ?>
                         </div>
                         <h3>Job Description</h3>
@@ -80,7 +79,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                             <?php
                             foreach (json_decode($object->checkboxArray) as $job_desc) {
                                 ?>
-                                <li> <?php echo ucwords($job_desc->value); ?> </li>
+                                <li> <?php echo ucwords($job_desc); ?> </li>
                             <?php }
                             ?>
                         </ul>
@@ -92,15 +91,19 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                             foreach (json_decode($object->qualifications_arr) as $qualifications) {
                                 ?>
 
-                                <li><?= $qualifications->value; ?></li>
+                                <li><?= $qualifications; ?></li>
                             <?php } ?>
                         </ul>
                         <h3>Employer Benefits</h3>
-                        <ul><?php foreach ($benefits as $v) { ?>
-                                <li><?= $v['benefit']; ?></li>
-                            <?php } ?>
+                        <?php if(!empty($benefits)){ ?>
+                            <ul><?php foreach ($benefits as $v) { ?>
+                                    <li><?= $v['benefit']; ?></li>
+                                <?php } ?>
 
-                        </ul>
+                            </ul>
+                       <?php } else { ?>
+                            <ul><li>No Employee Benefits</li></ul>
+                 <?php } ?>
                     </div>
                     <div class="job-overview">
                         <h3>Interview Details</h3>
