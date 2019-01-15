@@ -4,18 +4,12 @@ return [
     [
         'class' => 'yii\rest\UrlRule',
         'controller' => [
-            'account',
-            'user',
-            'states',
-            'cities',
-            'quiz',
-            'quiz-counter',
-            'quiz-tracker',
-            'feedback',
-            'skills',
-            'jobs'
+            'oauth',
+            'jobs',
+            'test'
         ],
     ],
+
     [
         'class' => 'yii\rest\UrlRule',
         'controller' => [

@@ -21,21 +21,27 @@ return [
     ],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-api',
+//            'csrfParam' => '_csrf-api',
             'baseUrl' => '/api',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
+            'enableCookieValidation' => false,
+            'enableCsrfValidation' => false
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
+            'identityClass' => 'api\modules\v1\models\Clients',
+            'enableAutoLogin' => false,
+            'enableSession' => false
+//            'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
         ],
-        'session' => [
-            // this is the name of the session cookie used for login on the api
-            'name' => 'advanced-api',
+        'response' => [
+          'format' => \yii\web\Response::FORMAT_JSON
         ],
+//        'session' => [
+//            // this is the name of the session cookie used for login on the api
+//            'name' => 'advanced-api',
+//        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
