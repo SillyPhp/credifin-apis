@@ -55,14 +55,30 @@ AppAssets::register($this);
                     <div class="container-fluid">
                         <nav id="menuzord-right" class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
                             <a class="menuzord-brand pull-left flip mt-15" href="<?= Url::to('/'); ?>">
-                                <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
                                 <?php
-                                if (!$this->params['header_dark']) {
+                                if (!Yii::$app->user->isGuest) {
                                     ?>
-                                <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
-                                <?php
+                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
+                                    <?php
+                                    if (!$this->params['header_dark']) {
+                                        ?>
+                                    <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus_white.svg'); ?>">
+                                    <span class="logo_beta">Beta</span>
+                                    <?php
+                                    }
+                                } else{
+                                ?>
+                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                    <?php
+                                    if (!$this->params['header_dark']) {
+                                        ?>
+                                    <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
+                                    <span class="logo-beta">Beta</span>
+                                    <?php
+                                    }
                                 }
                                 ?>
+
                             </a>
                             <?php
                             if (!Yii::$app->user->isGuest) {
@@ -144,22 +160,22 @@ AppAssets::register($this);
                 <div class="footer-bottom">
                     <div class="container pt-20 pb-20">
                         <div class="row">
-                            <div class="col-md-6 col-sm-6 ">
+                            <div class="col-md-12 col-sm-12 text-center">
                                 <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
                             </div>
-                            <div class="col-md-6 col-sm-6 text-right">
-                                <div class="widget no-border m-0">
-                                    <ul class="list-inline  sm-text-center mt-5 font-12">
-                                        <li>
-                                            <a href="<?= Url::to('/about-us'); ?>" class="">Terms & Conditions</a>
-                                        </li>
-                                        |
-                                        <li>
-                                            <a href="<?= Url::to('/contact-us'); ?>" class="">Privacy Policies</a>
-                                        </li>    
-                                    </ul>
-                                </div>
-                            </div>
+<!--                            <div class="col-md-6 col-sm-6 text-right">-->
+<!--                                <div class="widget no-border m-0">-->
+<!--                                    <ul class="list-inline  sm-text-center mt-5 font-12">-->
+<!--                                        <li>-->
+<!--                                            <a href="--><?//= Url::to('/about-us'); ?><!--" class="">Terms & Conditions</a>-->
+<!--                                        </li>-->
+<!--                                        |-->
+<!--                                        <li>-->
+<!--                                            <a href="--><?//= Url::to('/contact-us'); ?><!--" class="">Privacy Policies</a>-->
+<!--                                        </li>    -->
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -172,6 +188,11 @@ AppAssets::register($this);
         </div>
         <?php
         $this->registerCss('
+        .menuzord-brand{position:relative;}
+        .logo-beta{font-size: 11px;position: absolute;bottom: -2px;right: -25px;color: #444;}
+        .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #444;}
+        .add-padding nav .menuzord-brand .logo_beta{color:#fff;}
+        .add-padding nav .menuzord-brand .logo-beta{color:#fff;}
         .page-loading {
             background-color: #ffffff;
             content: "";

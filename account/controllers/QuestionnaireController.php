@@ -7,10 +7,13 @@ use yii\web\Controller;
 use common\models\OrganizationQuestionnaire;
 use common\models\QuestionnaireFields;
 use common\models\QuestionnaireFieldOptions;
+use account\models\questionnaire\QuestionnaireForm;
 
-class QuestionnaireController extends Controller {
+class QuestionnaireController extends Controller
+{
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $options = [
             'where' => [
                 'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
@@ -23,12 +26,13 @@ class QuestionnaireController extends Controller {
         $questionnaire = new \account\models\questionnaire\OrganizationQuestionnaire();
 
         return $this->render('index', [
-                    'questionnaire' => $questionnaire->getQuestionnaire($options),
+            'questionnaire' => $questionnaire->getQuestionnaire($options),
         ]);
     }
 
-    public function actionCreate() {
-        $model = new \account\models\questionnaire\QuestionnaireForm();
+    public function actionCreate()
+    {
+        $model = new QuestionnaireForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->add()) {
                 return true;
@@ -38,21 +42,42 @@ class QuestionnaireController extends Controller {
         }
 
         return $this->render('form', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
-    public function actionView($qidk) {
+    public function actionClone($qidk)
+    {
+        $model = new QuestionnaireForm();
+        $fields = $model->getCloneData($qidk);
+        if (empty($fields)) {
+            return 'Questionnaire not found!!';
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->add()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return $this->render('questionnaire-clone', [
+                'model' => $model,
+                'fields' => $fields,
+            ]);
+        }
+    }
+
+    public function actionView($qidk)
+    {
 
         $this->layout = 'main-secondary';
-        $model = new \frontend\models\questionnaire\QuestionnaireForm;
+        $model = new \account\models\questionnaire\QuestionnaireViewForm();
         $result = OrganizationQuestionnaire::find()
             ->select(['questionnaire_enc_id', 'questionnaire_name'])
             ->where(['questionnaire_enc_id' => $qidk])
             ->asArray()
             ->one();
-        if(empty($result))
-        {
+        if (empty($result)) {
             return 'not found';
         }
         $fields = QuestionnaireFields::find()
@@ -76,6 +101,7 @@ class QuestionnaireController extends Controller {
         return $this->render('display', [
             'fields' => $arr,
             'model' => $model,
+            'result' => $result,
         ]);
     }
 
