@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
-$this->title = Yii::t('account', 'Quesionnaire Form');
+
+$this->title = Yii::t('account', $result['questionnaire_name']);
 $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 ?>
 
@@ -46,7 +47,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                         }
                         ?>
                         <div class="col-md-12 sub-bttn">
-                            <?= Html::submitButton('Submit',['class'=>'btn submit-bttn sav_ques']) ?>
+                            <?= Html::button('Submit', ['class' => 'btn submit-bttn sav_ques']); ?>
                         </div>
 
                     </div>
@@ -134,8 +135,5 @@ label{
 .md-checkbox label>.box{
     border: 2px solid #c2cad8;
 }
-//.datepicker>div{
-//    display:block;
-//}
 ');
 $this->registerCssFile('@backendAssets/global/css/components-rounded.min.css');

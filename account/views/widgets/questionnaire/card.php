@@ -26,7 +26,7 @@ for ($i = 1; $i <= $rows; $i++) {
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <a href="<?= Url::to('/questionnaire/view/' . $questionnaire[$next]['id']); ?>">
+                            <a href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>
