@@ -35,7 +35,7 @@
     padding: 0;
 }
 .chosen-container-single .chosen-single div::before, .chosen-container .chosen-results li.highlighted {
-    color: #fb236a;
+    color: #ff7803;
 }
 .container.fluid {
     max-width: 100%;
@@ -89,6 +89,17 @@
 }
 .main-slider-sec.style2::before {
     background: #16192c;
+}
+.main-slider-sec::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    content: "";
+    background-image: url("/assets/themes/ey/images/pages/index2/lines.png");
+    z-index: 3;
+    opacity: 0.1;
 }
 .slick-prev, .slick-next {
     background: none;
@@ -227,7 +238,7 @@
     float: left;
     width: 100%;
     font-family: Quicksand;
-    font-size: 50px;
+    font-size: 46px;
     font-weight: normal;
     color: #ffffff;
     letter-spacing: 0px;
@@ -333,7 +344,7 @@
 .search-job2 form button {
     font-size: 15px;
     font-weight: bold;
-    background: #d42525;
+    background: #ff7803;
     padding: 20px 0px;
     width: 100%;
     border:0px;
@@ -352,7 +363,7 @@
     border-radius: 0px 40px 40px 0px;
 }
 .job-search form button:hover {
-    background: #fb236a;
+    background: #e26e09;
 }
 @media only screen and (max-width: 1199px) {
     .job-search-sec {

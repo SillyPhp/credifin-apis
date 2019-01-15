@@ -20,32 +20,21 @@ $this->params['header_dark'] = false;
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
-                                <h3>The Easiest Way to Get Your New Job</h3>
-                                <span>Find Jobs, Employment & Career Opportunities</span>
+                                <h3>Discover a New Career Specially Designed For You</h3>
+                                <span>The Easiest Way to Get Your New Job</span>
                                 <div class="search-job2">
-                                    <form>
+                                    <form id="search_jobs_internships" action="<?= Url::to('/jobs/list'); ?>">
                                         <div class="row no-gape">
-                                            <div class="col-lg-6 col-md-6 col-sm-4">
+                                            <div class="col-lg-7 col-md-7 col-sm-4">
                                                 <div class="job-field">
-                                                    <input type="text" placeholder="Keywords"/>
+                                                    <input type="text" name="keyword" placeholder="Keywords"/>
                                                 </div>
                                             </div>
-<!--                                            <div class="col-lg-3 col-md-3 col-sm-4">-->
-<!--                                                <div class="job-field">-->
-<!--                                                    <select data-placeholder="All Regions" class="chosen-city">-->
-<!--                                                        <option>Istanbul</option>-->
-<!--                                                        <option>New York</option>-->
-<!--                                                        <option>London</option>-->
-<!--                                                        <option>Russia</option>-->
-<!--                                                    </select>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-                                            <div class="col-lg-4 col-md-3 col-sm-4">
+                                            <div class="col-lg-3 col-md-2 col-sm-4">
                                                 <div class="job-field">
-                                                    <select data-placeholder="Any category" class="chosen-city">
-                                                        <option>Jobs</option>
-                                                        <option>Internship</option>
-                                                        <option>Training</option>
+                                                    <select data-placeholder="Any category" id="search_type" class="chosen-city">
+                                                        <option value="jobs">Jobs</option>
+                                                        <option value="internships">Internships</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -99,7 +88,7 @@ $this->params['header_dark'] = false;
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
                         </div>
-                        <div class="h-heading">Consultants</div>
+                        <div class="h-heading">Recruiters</div>
                         <div class="h-text">Latest news & everything you need to know</div>
                     </div>
                     <div class="overlay">
@@ -1129,6 +1118,10 @@ function scrollFunction() {
     document.getElementById("myBttn").style.display = "none";
   }
 }
+$(document).on('change', '#search_type', function(){
+    var value = $(this).val();
+    $('#search_jobs_internships').attr('action', '/'+value+'/list');
+});
 
 $(document).on('click', '.feed-open', function(){
    $('.window-popup').addClass('open') ;
