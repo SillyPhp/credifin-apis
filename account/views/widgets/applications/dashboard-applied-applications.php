@@ -142,17 +142,17 @@ $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => 
 //$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 
-$options = [
-//    'where' => ['and',
-//        ['a.name' => 'individual_dashboard_applied_applications'],
-//        ['b.is_viewed' => 0],
-//    ],
-    ['a.name' => 'individual_dashboard_applied_applications'],
-];
+//$options = [
+////    'where' => ['and',
+////        ['a.name' => 'individual_dashboard_applied_applications'],
+////        ['b.is_viewed' => 0],
+////    ],
+//    ['a.name' => 'individual_dashboard_applied_applications'],
+//];
 
-$tutorials = Yii::$app->tutorials->getTutorialsByUser();
+//$tutorials = Yii::$app->tutorials->getTutorialsByUser();
 //print_r();
-print_r($tutorials);
+//print_r($tutorials);
 if (!Yii::$app->session->has("tutorial_individual_dashboard")) {
     echo '<script>dashboard_individual_guide()</script>';
     Yii::$app->session->set("tutorial_individual_dashboard", "Yes");
