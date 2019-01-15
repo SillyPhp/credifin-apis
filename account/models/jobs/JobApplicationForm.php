@@ -186,7 +186,6 @@ class JobApplicationForm extends Model
 
     public function saveValues()
     {
-        return
         $sal = str_replace(',', '', $this->salaryinhand);
         $ctc_val = str_replace(',', '', $this->ctc);
         $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
