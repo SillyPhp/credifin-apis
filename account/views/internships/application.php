@@ -2255,15 +2255,15 @@ $('input[name= "questionnaire_selection"]').on('change',function(){
           
         });
 $(document).on('click','.questionnaier_display',function(e) {
-    e.preventDefault();
-    var data = $(this).attr('data-id');
-    window.open('/account/questionnaire/view?qidk='+data+'', "_blank");
+   e.preventDefault();
+   var data = $(this).attr('data-id');
+   window.open('/account/questionnaire/'+data+'/view', "_blank");
 });
 
 $(document).on('click','.process_display',function(e) {
-    e.preventDefault();
-    var data = $(this).attr('data-id');
-    window.open('/account/interview-processes/view?id='+data+'', "_blank");
+   e.preventDefault();
+   var data = $(this).attr('data-id');
+   window.open('/account/interview-processes/'+data+'/view', "_blank");
 });
 $('input[name= "pre_place"]').on('change',function(){
         var pre = $(this).attr("data-title");

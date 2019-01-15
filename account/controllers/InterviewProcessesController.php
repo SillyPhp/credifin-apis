@@ -45,22 +45,19 @@ class InterviewProcessesController extends Controller
         ]);
     }
 
-    public function actionView($id)
+    public function actionView($ipidk)
     {
-
-        $id = Yii::$app->getRequest()->getQueryParam('id');
         $process_name = OrganizationInterviewProcess::find()
             ->select(['process_name'])
-            ->where(['interview_process_enc_id' => $id])
+            ->where(['interview_process_enc_id' => $ipidk])
             ->asArray()
             ->one();
-        if(empty($process_name))
-        {
+        if (empty($process_name)) {
             return 'not found';
         }
         $process_fields = InterviewProcessFields::find()
             ->select(['field_name', 'icon'])
-            ->where(['interview_process_enc_id' => $id])
+            ->where(['interview_process_enc_id' => $ipidk])
             ->asArray()
             ->all();
 
@@ -68,6 +65,28 @@ class InterviewProcessesController extends Controller
             'process_name' => $process_name,
             'process_fields' => $process_fields
         ]);
+    }
+
+    public function actionClone($ipidk)
+    {
+        $process = OrganizationInterviewProcess::find()
+            ->alias('a')
+            ->where(['a.interview_process_enc_id' => $ipidk])
+            ->joinWith(['interviewProcessFields b'], true)
+            ->asArray()
+            ->one();
+
+        $model = new InterviewProcess;
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return $this->render('clone', ['model' => $model, 'process' => $process]);
+        }
     }
 
 }
