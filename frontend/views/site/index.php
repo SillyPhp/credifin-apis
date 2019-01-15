@@ -8,54 +8,63 @@ $this->params['header_dark'] = false;
 ?>
 
 <section class="slider">
-    <div id="sequence" class="seq">
-
-        <div class="seq-screen">
-            <ul class="seq-canvas">
-                <li class="seq-in step1">
-<!--                    <div class="seq-model">-->
-<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/jobs_banner.png') ?><!--" class="img-responsive" alt="A" />-->
-<!--                    </div>-->
-
-                    <div class="seq-title seq-detail-left">
-                        <h2 data-seq>Career  </h2>
-                        <h3 data-seq>Discover a New Career Specially Designed For You.</h3>
+    <div class="block no-padding">
+        <div class="container fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main-featured-sec style2">
+                        <ul class="main-slider-sec style2 text-arrows">
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/mslider1.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/mslider2.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/mslider3.jpg') ?>" alt=""/></li>
+                        </ul>
+                        <div class="job-search-sec">
+                            <div class="job-search style2">
+                                <h3>The Easiest Way to Get Your New Job</h3>
+                                <span>Find Jobs, Employment & Career Opportunities</span>
+                                <div class="search-job2">
+                                    <form>
+                                        <div class="row no-gape">
+                                            <div class="col-lg-6 col-md-6 col-sm-4">
+                                                <div class="job-field">
+                                                    <input type="text" placeholder="Keywords"/>
+                                                </div>
+                                            </div>
+<!--                                            <div class="col-lg-3 col-md-3 col-sm-4">-->
+<!--                                                <div class="job-field">-->
+<!--                                                    <select data-placeholder="All Regions" class="chosen-city">-->
+<!--                                                        <option>Istanbul</option>-->
+<!--                                                        <option>New York</option>-->
+<!--                                                        <option>London</option>-->
+<!--                                                        <option>Russia</option>-->
+<!--                                                    </select>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                            <div class="col-lg-4 col-md-3 col-sm-4">
+                                                <div class="job-field">
+                                                    <select data-placeholder="Any category" class="chosen-city">
+                                                        <option>Jobs</option>
+                                                        <option>Internship</option>
+                                                        <option>Training</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2  col-md-3 col-sm-4">
+                                                <button type="submit">Search <i class="fa fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div><!-- Job Search 2 -->
+                            </div>
+                        </div>
                     </div>
-                </li>
-
-                <li class="step2">
-                    <div class="seq-model">
-<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/youth-development.png') ?><!--" class="img-responsive" alt="A" />-->
-                    </div>
-
-                    <div class="seq-title">
-                        <h2 data-seq>Internships</h2>
-                        <h3 data-seq>Push Your Life To a Whole New Level</h3>
-                    </div>
-                </li>
-
-                <li class="step3">
-                    <div class="seq-model">
-<!--                        <img data-seq src="--><?//= Url::to('@eyAssets/images/pages/index2/job-search.png') ?><!--" alt="" />-->
-                    </div>
-
-                        <div class="seq-title white-seq-title">
-
-                        <h2 data-seq>Dream Bigger. Aim Higher. Reach Faster.</h2>
-                        <h3 data-seq>A better career is out there. We'll help you find it.
-                                We're your first step to becoming everything you want to be.</h3>
-                    </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
-
-        <fieldset class="seq-nav" aria-controls="sequence" aria-label="Slider buttons">
-            <button type="button" class="seq-prev" aria-label="Previous">Previous</button>
-            <button type="button" class="seq-next" aria-label="Next">Next</button>
-        </fieldset>
     </div>
 
-    <div class="header-row">  
+
+    <div class="header-row">
         <div class="container">
             <div class="header-boxs">
                 <div class="box-border fade-in one">
@@ -63,10 +72,10 @@ $this->params['header_dark'] = false;
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
                     <div class="h-heading">Corporates</div>
                     <div class="h-text">Ask and answer questions, share results</div>
-                    
-<!--                    <div class="middle">
-                        <div class="text">John Doe</div> 
-                    </div>-->
+
+                    <!--                    <div class="middle">
+                                            <div class="text">John Doe</div>
+                                        </div>-->
                 </div>
                 <div class="box-border fade-in two">
                     <div class="icon">
@@ -77,19 +86,21 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
-                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"></div>
+                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
+                        </div>
                         <div class="h-heading">Universities & Colleges</div>
                         <div class="h-text">Search or let universities find you</div>
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
                     </div>
-                </div>              
+                </div>
                 <div class="box-border fade-in four">
                     <div class="box-overlay">
-                    <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>"></div>
-                    <div class="h-heading">Consultants</div>
-                    <div class="h-text">Latest news & everything you need to know</div>
+                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
+                        </div>
+                        <div class="h-heading">Consultants</div>
+                        <div class="h-text">Latest news & everything you need to know</div>
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
@@ -98,7 +109,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </div>
-</section> 
+</section>
 
 <!--------services section starts-------->
 
@@ -108,7 +119,7 @@ $this->params['header_dark'] = false;
         <div class="services row">
             <div class="col-md-6 serv-center">
                 <a href="<?= Url::to('/jobs'); ?>">
-                    <div class="service-box"> 
+                    <div class="service-box">
                         <div class="ser-icons">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>">
                         </div>
@@ -151,7 +162,7 @@ $this->params['header_dark'] = false;
 <section class="how-it-works">
     <div class="container">
         <div class="heading-style ">Solutions</div>
-        <div class="row steps-row"> 
+        <div class="row steps-row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5 col-sm-5">
                     <div class="how-icon animatable fadeIn">
@@ -161,17 +172,21 @@ $this->params['header_dark'] = false;
                 <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
                         <div class="how-heading">Employment</div>
-                        <div class="how-text">Create a profile with your past education and experience details, add goals and preferences to let people know you better.</div>
+                        <div class="how-text">Create a profile with your past education and experience details, add
+                            goals and preferences to let people know you better.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row steps-row"> 
+        <div class="row steps-row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
                         <div class="how-heading">Skill Enhancement</div>
-                        <div class="how-text">Browse our portal, check out the services that we offer and find the service that you are looking for.</div>
+                        <div class="how-text">Browse our portal, check out the services that we offer and find the
+                            service that you are looking for.
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-5 col-sm-5">
@@ -181,7 +196,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
         </div>
-        <div class="row steps-row"> 
+        <div class="row steps-row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5 col-sm-5">
                     <div class="how-icon animatable fadeIn">
@@ -191,7 +206,9 @@ $this->params['header_dark'] = false;
                 <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
                         <div class="how-heading">Create Resume</div>
-                        <div class="how-text">Once you have found the service that you desire than why wait avail it right away</div>
+                        <div class="how-text">Once you have found the service that you desire than why wait avail it
+                            right away
+                        </div>
                     </div>
                 </div>
             </div>
@@ -302,10 +319,14 @@ $this->params['header_dark'] = false;
         <div class="row partner-row">
             <div class="col-md-12">
                 <div class="col-md-6 col-sm-6">
-                    <div class="partner-btn"><button type='button' class="feed-open2">Partner with Us</button></div>
+                    <div class="partner-btn">
+                        <button type='button' class="feed-open2">Partner with Us</button>
+                    </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
-                    <div class="partner-btn"><button type="button" class="feed-open">Give us Feedback</button></div>
+                    <div class="partner-btn">
+                        <button type="button" class="feed-open">Give us Feedback</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -324,8 +345,8 @@ $this->params['header_dark'] = false;
                 <div class="col-md-12">
                     <?php
                     $form = ActiveForm::begin([
-                                'id' => 'feedback-form',
-                                'action' => '/site/send-feedback',
+                        'id' => 'feedback-form',
+                        'action' => '/site/send-feedback',
                     ]);
                     ?>
                     <?= $form->field($feedbackFormModel, 'name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-user"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Your Name', 'autocomplete' => 'off'])->label(false); ?>
@@ -356,8 +377,8 @@ $this->params['header_dark'] = false;
                     <div class="col-md-12">
                         <?php
                         $formm = ActiveForm::begin([
-                                    'id' => 'partner-with-us-form',
-                                    'action' => '/site/partner-with-us',
+                            'id' => 'partner-with-us-form',
+                            'action' => '/site/partner-with-us',
                         ]);
                         ?>
                         <?= $formm->field($partnerWithUsModel, 'name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-user"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Your Name', 'autocomplete' => 'off'])->label(false); ?>
@@ -375,7 +396,8 @@ $this->params['header_dark'] = false;
     </article>
 </div>
 <div class="fixed-btn background-logo-blue">
-    <a href="/site/company-index"> <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
+    <a href="/site/company-index"> <img
+                src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
         <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
         <span><?= Yii::t('frontend', 'Want to post a Job or an Intenship?'); ?></span></a>
 </div>
@@ -869,7 +891,7 @@ $this->registerCss('
 .has-success .form-control {
     border-color: transparent !important;
 }
-input, textarea{
+#feedback-form input, #feedback-form textarea, #partner-with-us-form input, #partner-with-us-form textarea{
     padding: 13px 40px !important;
     border: 1px solid transparent !important;
     transition: all .3s ease !important;
@@ -884,12 +906,10 @@ input, textarea{
     outline: none !important;
     padding-left: 50px !important;
 }
-input:focus, textarea:focus{
+#feedback-form input:focus, #feedback-form textarea:focus, #partner-with-us-form input:focus, #partner-with-us-form textarea:focus{
     -webkit-box-shadow: 5px 0 40px 0 rgba(0, 88, 171, 0.25) !important;
     box-shadow: 5px 0 40px 0 rgba(0, 88, 171, 0.25) !important;
     color: #0083ff !important;
-}
-:focus {
     outline: 0 !important;
 }
 .with-icon .utouch-icon {
@@ -1098,6 +1118,7 @@ textarea {
     left: 32%;
 }
 /*companies css ends*/
+
 ');
 $script = <<< JS
 window.onscroll = function() {scrollFunction()};
@@ -1194,27 +1215,24 @@ $(document).on('submit', '#partner-with-us-form', function(event) {
     };
     $(window).on('scroll', doAnimations);
   $(window).trigger('scroll'); 
-  
-  var sequenceElement = document.getElementById("sequence");
-  
-    var options = {
-        autoPlay: true,
-        autoPlayInterval: 3000,
-        phaseThreshold: false,
-        preloader: true,
-        reverseWhenNavigatingBackwards: true
-    }
-    
-    var mySequence = sequence(sequenceElement, options);
+ 
+  $('.main-slider-sec').slick({
+	  slidesToShow: 1,
+	  slidesToScroll: 1,
+	  arrows: false,
+	  autoplay: true,
+	  slide: 'li',
+	  fade: false,
+	  infinite: true,
+	  dots: false
+	});
 });
 
 JS;
 $this->registerJs($script);
-//$this->registerCssFile('http://demo.sequencejs.com/modern-slide-in/css/sequence-theme.modern-slide-in.css');
-$this->registerCssFile('@eyAssets/css/sequence-theme.modern-slide-in.css');
+$this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/hammer.min.js');
-$this->registerJsFile('@eyAssets/js/sequence.min.js');
-//$this->registerJsFile('http://demo.sequencejs.com/modern-slide-in/scripts/scripts.min.js');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@eyAssets/js/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@eyAssets/js/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
