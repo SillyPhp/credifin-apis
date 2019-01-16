@@ -1021,4 +1021,3 @@ $this->registerCssFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.cs
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/form-builder/js/tether.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
