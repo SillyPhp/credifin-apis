@@ -14,6 +14,13 @@ foreach ($services['menu_items'] as $service) {
     array_push($result, $new);
 }
 
+$profile = [
+    'label' => '<i class=""></i>' . Yii::t('account', 'Profile'),
+    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/company/' . Yii::$app->user->identity->organization->slug : '/user/' . Yii::$app->user->identity->username),
+    'template' => '<a href="{url}" target="_blank">{label}</a>',
+];
+array_push($result, $profile);
+
 echo Menu::widget([
     'activateItems' => true,
     'activateParents' => true,
