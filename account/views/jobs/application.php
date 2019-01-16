@@ -1294,7 +1294,7 @@ select{
     padding-top:0px;
 }
 
-.weekoptsat,.weekoptsund
+.field-weekoptsat,.field-weekoptsund
 {
     width: 100%;
     float: left;
