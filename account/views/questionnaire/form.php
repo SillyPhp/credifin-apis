@@ -38,7 +38,7 @@ $form->field($model, 'formbuilderdata', [
                                     '1' => 'Jobs',
                                     '2' => 'Internships',
                                 ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                    'item' => function($index, $label, $name, $checked, $value) {
                                         $return = '<div class="md-checkbox">';
                                         $return .= '<input type="checkbox" id="' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . $checked . ' >';
                                         $return .= '<label for="' . $value . $index . '">';
@@ -92,14 +92,11 @@ $form->field($model, 'formbuilderdata', [
                                     <a href="javascript:;"><i class="fa fa-plus-circle"></i> Time</a>
                                 </li>
                                 <li>
-                                    <div class="q-btns">  <?= Html::submitButton('Submit', ['class' => 'btn blue custom-buttons2 submit btn-block']); ?></div>
+                                    <div class="q-btns">  <?= Html::submitButton('Submit', ['class' => 'btn blue btn-circle submit btn-block']); ?></div>
                                 </li>
                                 <li>
-                                    <div class="q-btns">
-                                        <button type="button" id="preview" class="btn blue custom-buttons2 btn-block">
-                                            Preview
-                                        </button>
-                                    </div>
+                                    <div class="q-btns"><button type="button" id="preview" class="btn blue btn-circle btn-block">Preview</button></div>
+
                                 </li>
                             </ul>
                         </nav>
@@ -111,12 +108,8 @@ $form->field($model, 'formbuilderdata', [
                     <div class="portlet-body zero-padding">
                         <div id="error_placement"></div>
                         <div class="box_input">
-                            <div id="wait"><img
-                                        src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif'
-                                        width="100" height="100"/></div>
-                            <div class="default-text" id="dragdrop">Drag and Drop the form fields here to create your
-                                questionnaire.
-                            </div>
+                            <div id="wait"><img src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif' width="100" height="100" /></div>
+                            <div class="default-text" id="dragdrop">Drag and Drop the form fields here to create your questionnaire.</div>
                             <div class="form_builder_area"></div>
                         </div>
                     </div>
@@ -154,8 +147,10 @@ $this->registerCss("
 }
 
 .questionnaire-feilds ul li a:hover{
+//    background:#00a0e3;
     background-position: 0 0;
     color:#fff;
+//    transition:.3s ease-in-out
 }
 .questionnair-details{
     padding-bottom:5px !important;
@@ -197,6 +192,7 @@ $this->registerCss("
   border: 4px groove rgba(0, 160, 227, .5);
   margin-top:10px;
 }
+
 .form_builder_field {
     padding: 10px 20px !important;
     margin: 10px 0px !important;
@@ -266,11 +262,25 @@ $this->registerCss("
     color: #333 !important;
 }
 
+.mt-checkbox-list,.mt-radio-list
+{
+padding:0 !important;
+}
+.mt-checkbox,.mt-radio
+{
+display:inline !important;
+}
+.mt-checkbox p,.mt-radio p
+{
+padding:0px 3px;
+}
+
 .custom_error
 {
 border: 1px solid #e73d49;
 box-shadow: 0px 0px 5px 0px #e73d49 !important;
 }
+
 ");
 
 $script = <<<JS
@@ -305,8 +315,6 @@ $script = <<<JS
      
     $(".form_bal_textfield").draggable({
         helper: function () {
-            count_elem++;
-            elem_chk();
             return getTextFieldHTML();
             
         },
@@ -314,32 +322,24 @@ $script = <<<JS
     });
     $(".form_bal_textarea").draggable({
         helper: function () {
-           count_elem++;
-             elem_chk();
             return getTextAreaFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_number").draggable({
         helper: function () {
-          count_elem++;
-            elem_chk();
             return getNumberFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_email").draggable({
         helper: function () {
-           count_elem++;
-            elem_chk();
             return getEmailFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_date").draggable({
         helper: function () {
-           count_elem++;
-            elem_chk();
             return getDateFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -347,8 +347,6 @@ $script = <<<JS
 
     $(".form_bal_time").draggable({
         helper: function () {
-           count_elem++;
-            elem_chk();
             return getTimeFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -356,32 +354,24 @@ $script = <<<JS
 
     $(".form_bal_button").draggable({
         helper: function () {
-          count_elem++;
-            elem_chk();
             return getButtonFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_select").draggable({
         helper: function () {
-          count_elem++;
-            elem_chk();
             return getSelectFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_radio").draggable({
         helper: function () {
-          count_elem++;
-            elem_chk();
             return getRadioFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_checkbox").draggable({
         helper: function () {
-          count_elem++;
-            elem_chk();
             return getCheckboxFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -394,6 +384,8 @@ $script = <<<JS
             ui.placeholder.height(ui.helper.outerHeight());
         },
         stop: function (ev, ui) {
+            count_elem++;
+            elem_chk();
             getPreview();
             checkDiv();
         }
@@ -423,7 +415,7 @@ $script = <<<JS
 
     function getTimeFieldHTML() {
         var field = generateField();
-        var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="time" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Time Input" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "time-field_' + field + '" /></div></div>';
+        var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="time" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Time Inputs" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "time-field_' + field + '" /></div></div>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
@@ -477,7 +469,7 @@ $script = <<<JS
              }
         else{
             var ref = $(this).closest('.col-md-4').next().find('.add_more_radio');
-            add_more_check(ref);
+            add_more_radio(ref);
             $(this).closest('.col-md-4').parent().next().find('input').focus(); 
             return false;
         }
@@ -949,23 +941,23 @@ $script = <<<JS
     $('#form-builder').validate({
        ignore: ":hidden:not(#form-value)",
        rules: {
-                    'formbuilderdata':
+                    'QuestionnaireForm[formbuilderdata]':
                      {
                        required:true,
                      },
         },
                          
         messages: { 
-                    'formbuilderdata': { 
+                    'QuestionnaireForm[formbuilderdata]': { 
                         required:'<div id = "color_red">Please Select Form elements And Drag in Box</div>',
                     },
         },
         
         errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "formbuilderdata") { 
+                    if (element.attr("name") == "QuestionnaireForm[formbuilderdata]") { 
                         error.insertAfter("#error_placement");
                     } 
-                    }
+                    } 
    }) ;   
     
     $(document).on('submit', '#form-builder', function(event) {
@@ -1007,7 +999,7 @@ $script = <<<JS
             }
             else
            {
-             window.location.replace('/account/questionnaire');
+             window.location.replace('/account/jobs/dashboard');
             }
           }
         else{
@@ -1024,9 +1016,9 @@ $script = <<<JS
 JS;
 
 $this->registerJs($script);
-$this->registerCssFile('@root/assets/vendor/form-builder/css/form_builder.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerCssFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@root/assets/vendor/form-builder/js/tether.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile('@root/assets/vendor/form-builder/css/form_builder.css');
+$this->registerCssFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@root/assets/vendor/form-builder/js/tether.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
