@@ -272,11 +272,10 @@ $this->registerCss('
 .button2:hover{
     color:#fff;
     padding-right:30px;   
-}
+} 
 .button2:hover span{
     opacity:1;
-   right:10px;
-   
+   right:10px; 
 }
 .button2, .button2 span, .button2:hover {
     -webkit-transition:.3s all;
