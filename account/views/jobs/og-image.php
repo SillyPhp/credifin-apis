@@ -23,12 +23,14 @@ use yii\helpers\Url;
             .botom-row{ position: absolute; right: 20px; bottom: 10px; width: 200px; }
             img { margin: auto; }
             .circle1 img {width: 100%;}
+            .circle1 < canvas{padding:0px;}
+            canvas{border-radius: 50%;}
         </style>
     </head>
     <body>
         <?php
         $name = $logo = $color = NULL;
-        if (Yii::$app->user->identity->organization->organization_enc_id) {
+        if (Yii::$app->user->identity->organization) {
             if (Yii::$app->user->identity->organization->logo) {
                 $logo = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
             }
@@ -42,7 +44,7 @@ use yii\helpers\Url;
                     <?php if ($logo): ?>
                         <img src="<?= Url::to($logo); ?>" />
                     <?php else: ?>
-                        <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100" height="100" font="20px"></canvas>
+                        <canvas class="user-icon" name="Shashank Bansal" color="<?= $color; ?>" width="150" height="150" font="70px"></canvas>
                     <?php endif; ?>
                 </div>
                 <p><?= $details['name']; ?></p>
@@ -69,7 +71,7 @@ use yii\helpers\Url;
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.min.js'); ?>" type="text/javascript"></script>
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.svg.min.js'); ?>" type="text/javascript"></script>
-        <script src="<?= Url::to('@eyAssets/assets/themes/ey/js/functions.js'); ?>"></script>
+        <script src="<?= Url::to('@eyAssets/js/functions.js'); ?>"></script>
         <script type="text/javascript">
             function getUrlVars() {
                 var vars = {};
