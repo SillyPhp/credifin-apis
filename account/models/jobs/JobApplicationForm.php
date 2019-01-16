@@ -222,7 +222,7 @@ class JobApplicationForm extends Model
             $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $categoriesModel->slug = $utilitiesModel->create_slug();
-            $categoriesModel->parent_enc_id = null;
+            $categoriesModel->parent_enc_id = NULL;
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
@@ -254,6 +254,13 @@ class JobApplicationForm extends Model
             $employerApplicationsModel->slug = $utilitiesModel->create_slug();
         }
 
+        $image_information = $this->_createSharingImage($employerApplicationsModel->title);
+
+        if(!$image_information) {
+            return false;
+        } else {
+
+        }
 
         if (!empty($this->designations)) {
             $chk_d = Designations::find()
@@ -297,6 +304,7 @@ class JobApplicationForm extends Model
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($this->last_date));
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
+
         if ($employerApplicationsModel->save()) {
             if ($this->questionnaire_selection == 1) {
                 $process_questionnaire = json_decode($this->question_process);
@@ -339,13 +347,13 @@ class JobApplicationForm extends Model
             } else if (in_array("7", $this->weekdays)) {
                 $weekoptionsund = $this->weekoptsund;
             } else {
-                $weekoptionsat = null;
-                $weekoptionsund = null;
+                $weekoptionsat = NULL;
+                $weekoptionsund = NULL;
             }
             if ($this->interradio == 1) {
                 $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => date('Y-m-d', strtotime($this->startdate)), 'interview_end_date' => date('Y-m-d', strtotime($this->enddate)), 'interview_start_time' => date("H:i:s", strtotime($this->interviewstarttime)), 'interview_end_time' => date("H:i:s", strtotime($this->interviewendtime))];
             } else {
-                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => null, 'interview_end_date' => null, 'interview_start_time' => null, 'interview_end_time' => null];
+                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => NULL, 'interview_end_date' => NULL, 'interview_start_time' => NULL, 'interview_end_time' => NULL];
             }
             foreach ($options as $key => $value) {
                 $applicationoptionsModel = new ApplicationOptions();
@@ -605,7 +613,7 @@ class JobApplicationForm extends Model
         }
     }
 
-    private function _createSharingImage()
+    private function _createSharingImage($category)
     {
 
     }
