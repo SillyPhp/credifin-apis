@@ -174,7 +174,12 @@ class SiteController extends Controller {
     public function actionCompanyIndex() {
         return $this->render('company-index');
     }
-
+    public function actionCandidateList() {
+        return $this->render('candidate-list');
+    }
+    public function actionCandidateGrid() {
+        return $this->render('candidate-grid');
+    }
     public function actionAddNewSubscriber() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
