@@ -160,7 +160,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
-                        <div class="how-heading">Employment</div>
+                        <div class="how-heading">Get Hired</div>
                         <div class="how-text">Create a profile with your past education and experience details, add
                             goals and preferences to let people know you better.
                         </div>
@@ -172,7 +172,7 @@ $this->params['header_dark'] = false;
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
-                        <div class="how-heading">Skill Enhancement</div>
+                        <div class="how-heading">Evaluate Offer</div>
                         <div class="how-text">Browse our portal, check out the services that we offer and find the
                             service that you are looking for.
                         </div>
@@ -194,7 +194,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
-                        <div class="how-heading">Create Resume</div>
+                        <div class="how-heading">Create your Exclusive Profile</div>
                         <div class="how-text">Once you have found the service that you desire than why wait avail it
                             right away
                         </div>
