@@ -1,6 +1,7 @@
 <?php
 $this->title = Yii::t('frontend', $organization['name']);
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -38,10 +39,10 @@ if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
+        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
     }
 } else {
-    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
+    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -52,20 +53,35 @@ if ($organization['cover_image']) {
 } else {
     $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 }
-$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
+$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 ?>
 
-<div class="loader-aj-main"><div class="loader-aj"><div class="dot first"></div><div class="dot second"></div></div></div>
+<div class="loader-aj-main">
+    <div class="loader-aj">
+        <div class="dot first"></div>
+        <div class="dot second"></div>
+    </div>
+</div>
+<div id="fab-message-open" class="fab-message" style="">
+    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
+    <!--<i class="fa fa-envelope"></i>-->
+    <div class="fab-hover-message" style="">
+        <div class="fab-hover-image">
+            <img src="<?= Url::to('@eyAssets/images/pages/company-profile/cv.png') ?>">
+        </div>
+    </div>
+    <!--<div class="fab-hover-message" style="">Want to post your CV</div>-->
+</div>
 <div class="sections">
     <section id="home">
         <div class="coverpic">
             <img id="cover_img" src="<?= Url::to($cover_image); ?>" class="img-fluid">
             <?php
             $formm = ActiveForm::begin([
-                        'id' => 'change-cover-image',
-                        'options' => ['enctype' => 'multipart/form-data'],
-                    ])
+                'id' => 'change-cover-image',
+                'options' => ['enctype' => 'multipart/form-data'],
+            ])
             ?>
             <div class="cover-edit">
                 <a class="fa fa-pencil dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
@@ -92,7 +108,8 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                 </div>
                 <div id="pop-content2_2" class="hiden2">
                     <h5>Are you sure want to remove Cover Image?</h5>
-                    <button id="confirm_remove_cover" type="button" value="cover" class="btn btn-primary btn-sm editable-submit">
+                    <button id="confirm_remove_cover" type="button" value="cover"
+                            class="btn btn-primary btn-sm editable-submit">
                         <i class="glyphicon glyphicon-ok"></i>
                     </button>
                     <button id="cancel_cover_remove" type="button" class="btn btn-default btn-sm editable-cancel">
@@ -104,16 +121,18 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
         </div>
 
         <!-- Page Content  -->
-        <div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
+        <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                        <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                             alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
                         <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -121,12 +140,13 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                         <div class="home">
                             <div class="home-heading">
                                 <div class="c-logo col-md-2 col-sm-3">
-                                    <img id="logo-img" src="<?= Url::to($image); ?>" alt="" class="img-circle img-thumbnail "/>
+                                    <img id="logo-img" src="<?= Url::to($image); ?>" alt=""
+                                         class="img-circle img-thumbnail "/>
                                     <?php
                                     $form = ActiveForm::begin([
-                                                'id' => 'upload-logo',
-                                                'options' => ['enctype' => 'multipart/form-data'],
-                                            ])
+                                        'id' => 'upload-logo',
+                                        'options' => ['enctype' => 'multipart/form-data'],
+                                    ])
                                     ?>
                                     <div id="open-pop" class="avatar-edit">
                                         <i class="fa fa-pencil dropdown-toggle full_width" data-toggle="dropdown"></i>
@@ -147,16 +167,19 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                     </div>
                                     <div id="pop-content" class="hiden">
                                         <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) ?>
-                                        <button id="cancel_image" type="button" class="btn btn-default btn-sm editable-cancel">
+                                        <button id="cancel_image" type="button"
+                                                class="btn btn-default btn-sm editable-cancel">
                                             <i class="glyphicon glyphicon-remove"></i>
                                         </button>
                                     </div>
                                     <div id="pop-content1_2" class="hiden">
                                         <h5>Are you sure want to remove Logo?</h5>
-                                        <button id="confirm_remove_logo" type="button" value="logo" class="btn btn-primary btn-sm editable-submit">
+                                        <button id="confirm_remove_logo" type="button" value="logo"
+                                                class="btn btn-primary btn-sm editable-submit">
                                             <i class="glyphicon glyphicon-ok"></i>
                                         </button>
-                                        <button id="cancel_remove" type="button" class="btn btn-default btn-sm editable-cancel">
+                                        <button id="cancel_remove" type="button"
+                                                class="btn btn-default btn-sm editable-cancel">
                                             <i class="glyphicon glyphicon-remove"></i>
                                         </button>
                                     </div>
@@ -164,22 +187,27 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                 </div>
                                 <div class="col-md-5 col-sm-9">
                                     <div class="cname"><?= $organization['name']; ?></div>
-<!--                                    <div>-->
-<!--                                        <div class="tagline" id="tagline1" >-->
-<!--                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>-->
-<!--                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <!--                                    <div>-->
+                                    <!--                                        <div class="tagline" id="tagline1" >-->
+                                    <!--                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>-->
+                                    <!--                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     <div>
-                                        <div class="tagline" id="tagline2" >
-                                            <span href="#" class="model" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= $organization['tag_line']; ?>"></span>
+                                        <div class="tagline" id="tagline2">
+                                            <span href="#" class="model" data-type="text" data-pk="tag_line"
+                                                  data-name="tag_line"
+                                                  data-value="<?= $organization['tag_line']; ?>"></span>
                                             <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="tagline" id="tagline2" >
+                                        <div class="tagline" id="tagline2">
                                             <span>Establishment in </span>
-                                            <span href="#" id="establishment_year" data-type="combodate" data-format="YYYY" data-pk="establishment_year" data-viewformat="YYYY" data-template="YYYY" data-name="establishment_year" data-value="Establishment in <?= $organization['establishment_year']; ?>"></span>
+                                            <span href="#" id="establishment_year" data-type="combodate"
+                                                  data-format="YYYY" data-pk="establishment_year" data-viewformat="YYYY"
+                                                  data-template="YYYY" data-name="establishment_year"
+                                                  data-value="Establishment in <?= $organization['establishment_year']; ?>"></span>
                                             <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
                                         </div>
                                     </div>
@@ -190,46 +218,74 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                         <div class="col-md-12">
                                             <div class="social-btns">
                                                 <div class="social-inner">
-                                                    <a class="btns facebook model-link" data-pk="facebook" data-name="facebook" data-type="url" data-value="<?= $organization['facebook']; ?>" href="<?= $organization['facebook']; ?>">
+                                                    <a class="btns facebook model-link" data-pk="facebook"
+                                                       data-name="facebook" data-type="url"
+                                                       data-value="<?= $organization['facebook']; ?>"
+                                                       href="<?= $organization['facebook']; ?>">
                                                         <i class="fa fa-facebook"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                                 <div class="social-inner">
-                                                    <a class="btns twitter model-link" data-pk="twitter" data-name="twitter" data-type="url" data-value="<?= $organization['twitter']; ?>" href="<?= $organization['twitter']; ?>">
+                                                    <a class="btns twitter model-link" data-pk="twitter"
+                                                       data-name="twitter" data-type="url"
+                                                       data-value="<?= $organization['twitter']; ?>"
+                                                       href="<?= $organization['twitter']; ?>">
                                                         <i class="fa fa-twitter"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                                 <div class="social-inner">
-                                                    <a class="btns google model-link" data-pk="google" data-name="google" data-type="url" data-value="<?= $organization['google']; ?>" href="<?= $organization['google']; ?>">
+                                                    <a class="btns google model-link" data-pk="google"
+                                                       data-name="google" data-type="url"
+                                                       data-value="<?= $organization['google']; ?>"
+                                                       href="<?= $organization['google']; ?>">
                                                         <i class="fa fa-google"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                                 <div class="social-inner">
-                                                    <a class="btns instagram model-link" data-pk="instagram" data-name="instagram" data-type="url" data-value="<?= $organization['instagram']; ?>" href="<?= $organization['instagram']; ?>">
+                                                    <a class="btns instagram model-link" data-pk="instagram"
+                                                       data-name="instagram" data-type="url"
+                                                       data-value="<?= $organization['instagram']; ?>"
+                                                       href="<?= $organization['instagram']; ?>">
                                                         <i class="fa fa-instagram"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                                 <div class="social-inner">
-                                                    <a class="btns youtube model-link" data-pk="youtube" data-name="youtube" data-type="url" data-value="<?= $organization['youtube']; ?>" href="<?= $organization['youtube']; ?>">
+                                                    <a class="btns youtube model-link" data-pk="youtube"
+                                                       data-name="youtube" data-type="url"
+                                                       data-value="<?= $organization['youtube']; ?>"
+                                                       href="<?= $organization['youtube']; ?>">
                                                         <i class="fa fa-youtube"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                                 <div class="social-inner">
-                                                    <a class="btns linkedin model-link" data-pk="linkedin" data-name="linkedin" data-type="url" data-value="<?= $organization['linkedin']; ?>" href="<?= $organization['linkedin']; ?>">
+                                                    <a class="btns linkedin model-link" data-pk="linkedin"
+                                                       data-name="linkedin" data-type="url"
+                                                       data-value="<?= $organization['linkedin']; ?>"
+                                                       href="<?= $organization['linkedin']; ?>">
                                                         <i class="fa fa-linkedin"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                                 <div class="social-inner">
-                                                    <a class="btns website model-link" data-pk="website" data-name="website" data-type="url" data-value="<?= $organization['website']; ?>" href="<?= $organization['website']; ?>">
+                                                    <a class="btns website model-link" data-pk="website"
+                                                       data-name="website" data-type="url"
+                                                       data-value="<?= $organization['website']; ?>"
+                                                       href="<?= $organization['website']; ?>">
                                                         <i class="fa fa-globe"></i>
                                                     </a>
-                                                    <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
+                                                    <span id="controller" class="pen"><i
+                                                                class="fa fa-pencil"></i></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,19 +310,26 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                     <div class="t-heading">Who We Are</div>
                                     <div id="whoWe" class="a-details">
                                         <p>
-                                            <span href="#" class="model" data-pk="description" data-name="description" data-type="textarea" data-value="<?= $organization['description']; ?>"></span>
-                                            <span id="controller" class="pen pen_top2"><i class="fa fa-pencil"></i></span>
+                                            <span href="#" class="model" data-pk="description" data-name="description"
+                                                  data-type="textarea"
+                                                  data-value="<?= $organization['description']; ?>"></span>
+                                            <span id="controller" class="pen pen_top2"><i
+                                                        class="fa fa-pencil"></i></span>
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="t-heading">Our Vision</div></i>
+                                    <div class="t-heading">Our Vision</div>
+                                    </i>
                                     <div id="ourVision" class="a-details">
                                         <p>
-                                            <span href="#" class="model" data-pk="vision" data-name="vision" data-type="textarea" data-value="<?= $organization['vision']; ?>"></span>
-                                            <span id="controller" class="pen pen_top"><i class="fa fa-pencil"></i></span>
+                                            <span href="#" class="model" data-pk="vision" data-name="vision"
+                                                  data-type="textarea"
+                                                  data-value="<?= $organization['vision']; ?>"></span>
+                                            <span id="controller" class="pen pen_top"><i
+                                                        class="fa fa-pencil"></i></span>
                                         </p>
                                     </div>
                                 </div>
@@ -274,8 +337,11 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                     <div class="t-heading">Our Mission</div>
                                     <div id="ourMission" class="a-details">
                                         <p>
-                                            <span href="#" class="model" data-pk="mission" data-name="mission" data-type="textarea" data-value="<?= $organization['mission']; ?>"></span>
-                                            <span id="controller" class="pen pen_ttop"><i class="fa fa-pencil"></i></span>
+                                            <span href="#" class="model" data-pk="mission" data-name="mission"
+                                                  data-type="textarea"
+                                                  data-value="<?= $organization['mission']; ?>"></span>
+                                            <span id="controller" class="pen pen_ttop"><i
+                                                        class="fa fa-pencil"></i></span>
                                         </p>
                                     </div>
                                 </div>
@@ -294,15 +360,17 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
         <div class="video">
             <div class="container">
                 <div class="content">
-                    <div class="t-heading">Video Gallery 
+                    <div class="t-heading">Video Gallery
                         <div class="button_location pull-right">
                             <!--<= Html::button('Add New Video', ['value' => URL::to('/site/companys1'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
-                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-video"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
+                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-video">
+                                <span class="i-review-button-tx">Add New <span
+                                            class="fa fa-long-arrow-right"></span></span></button>
                         </div>
                     </div>
-                        <?php
-                        Pjax::begin(['id' => 'pjax_locations3']);
-                        if(!empty($videos)){
+                    <?php
+                    Pjax::begin(['id' => 'pjax_locations3']);
+                    if (!empty($videos)) {
                         $rows = ceil(count($videos) / 3);
                         $next = 0;
                         for ($i = 0; $i < $rows; $i++) {
@@ -314,21 +382,29 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                     <div class="col-md-4">
                                         <div id="remove_video_confirm" class="confirm_hiden">
                                             Are you Sure want to remove?<br/>
-                                            <button id="confirm_video" type="button" value="<?= $videos[$next]['video_enc_id'] ?>" class="btn btn-primary btn-sm editable-submit">
+                                            <button id="confirm_video" type="button"
+                                                    value="<?= $videos[$next]['video_enc_id'] ?>"
+                                                    class="btn btn-primary btn-sm editable-submit">
                                                 <i class="glyphicon glyphicon-ok"></i>
                                             </button>
-                                            <button id="cancel_video" type="button" class="btn btn-default btn-sm editable-cancel">
+                                            <button id="cancel_video" type="button"
+                                                    class="btn btn-default btn-sm editable-cancel">
                                                 <i class="glyphicon glyphicon-remove"></i>
                                             </button>
                                         </div>
                                         <a href="#" class="remove_video">
-                                            <i class="fa fa-times-circle" ></i>
+                                            <i class="fa fa-times-circle"></i>
                                         </a>
                                         <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
-                                            <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
+                                            <img src="<?= $videos[$next]['cover_image']; ?>"
+                                                 alt="<?= $videos[$next]['name']; ?>" class="img-fluid"/>
                                         </a>
-                                        <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
-                                            <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                        <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container"
+                                             style="max-width: 75%; margin: 0 auto;">
+                                            <iframe width="100%" height="480px"
+                                                    src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>"
+                                                    frameborder="0" allow="autoplay; encrypted-media"
+                                                    allowfullscreen></iframe>
                                         </div>
                                     </div>
                                     <?php
@@ -338,11 +414,11 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                             </div>
                             <?php
                         }
-                        } else{
-                            echo "no video found";
-                        }
-                        Pjax::end();
-                        ?>
+                    } else {
+                        echo "no video found";
+                    }
+                    Pjax::end();
+                    ?>
                 </div>
             </div>
         </div>
@@ -355,49 +431,51 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                     <div class="t-heading">
                         Employee Benefits
                         <div class="button_location pull-right">
-                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
+                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit">
+                                <span class="i-review-button-tx">Add New <span
+                                            class="fa fa-long-arrow-right"></span></span></button>
                         </div>
                     </div>
                 </div>
             </div>
             <?php
-                Pjax::begin(['id' => 'pjax_benefit']);
-                if(!empty($benefit)){
+            Pjax::begin(['id' => 'pjax_benefit']);
+            if (!empty($benefit)) {
                 $rows = ceil(count($benefit) / 4);
                 $next = 0;
                 for ($i = 0; $i < $rows; $i++) {
-            ?>
-            <div class="cat-sec">
-                <div class="row no-gape">
-                    <?php
-                    for ($j = 0; $j < 4; $j++) {
-                        if(!empty($benefit[$next]['benefit'])){
-                        ?>
-                        <div class="col-lg-3 col-md-3 col-sm-6">
-                            <div class="p-category">
-                                <div class="p-category-view">
-                                    <?php
-                                    if(empty($benefit[$next]['icon'])){
-                                        $benefit[$next]['icon'] = 'plus-icon.svg';
-                                    }
-                                    ?>
-                                    <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
-                                    <span><?= $benefit[$next]['benefit'] ?></span>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                        }
-                        $next++;
-                    }
                     ?>
-                </div>
-            </div>
+                    <div class="cat-sec">
+                        <div class="row no-gape">
+                            <?php
+                            for ($j = 0; $j < 4; $j++) {
+                                if (!empty($benefit[$next]['benefit'])) {
+                                    ?>
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <div class="p-category">
+                                            <div class="p-category-view">
+                                                <?php
+                                                if (empty($benefit[$next]['icon'])) {
+                                                    $benefit[$next]['icon'] = 'plus-icon.svg';
+                                                }
+                                                ?>
+                                                <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>"/>
+                                                <span><?= $benefit[$next]['benefit'] ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                $next++;
+                            }
+                            ?>
+                        </div>
+                    </div>
                     <?php
                 }
-                } else{
-                    echo "no benefits found";
-                }
+            } else {
+                echo "no benefits found";
+            }
             Pjax::end();
             ?>
         </div>
@@ -410,33 +488,45 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                     <div class="row imgrows">
                         <div class="row imgrow">
                             <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                   data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                             <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                   data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                             <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                   data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                             <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                   data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                             <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                   data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                             <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                   data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
+                                         class="img-fluid img-thumbnail">
                                 </a>
                             </div>
                         </div>
@@ -460,75 +550,153 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                         'type' => 'card',
                         'cards' => $jobcards,
                     ]);
-                    ?>                
+                    ?>
                 </div>
                 <?php Pjax::end(); ?>
             </div>
         </div>
-</section>
+    </section>
 
-<section id="offices">       
-    <div class="offices">
-        <div class="container">
-            <div class="row content">
-                <div class="t-heading col-md-12">Our Offices
-                    <div class="button_location">
-                        <!--<i class="fa fa-pencil" ></i>-->
-                        <!--<= Html::button('Add New Location', ['value' => URL::to('/account/locations/add'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
-                        <button type="submit" class="i-review-nx modal-load-class" value="/account/locations/create"><span class="i-review-button-tx">Add Location <span class="fa fa-long-arrow-right"></span></span></button>
-                        <!--<button type="submit" class="i-review-next"><span class="i-review-button-text" style="margin-right:0;">Add Location</span></button>-->
+    <section id="offices">
+        <div class="offices">
+            <div class="container">
+                <div class="row content">
+                    <div class="t-heading col-md-12">Our Offices
+                        <div class="button_location">
+                            <!--<i class="fa fa-pencil" ></i>-->
+                            <!--<= Html::button('Add New Location', ['value' => URL::to('/account/locations/add'), 'class' => 'btn modal-load-class btn-primary btn-circle custom_color-set2']); ?>-->
+                            <button type="submit" class="i-review-nx modal-load-class"
+                                    value="/account/locations/create"><span
+                                        class="i-review-button-tx">Add Location <span
+                                            class="fa fa-long-arrow-right"></span></span></button>
+                            <!--<button type="submit" class="i-review-next"><span class="i-review-button-text" style="margin-right:0;">Add Location</span></button>-->
+                        </div>
                     </div>
-                </div>
-                <?php Pjax::begin(['id' => 'pjax_locations1']); ?>
-                <div class="col-md-6 ">
-                    <div id="map" style="height:400px"></div>
-                </div>
-                <div class="col-md-6 content loc">
+                    <?php Pjax::begin(['id' => 'pjax_locations1']); ?>
+                    <div class="col-md-6 ">
+                        <div id="map" style="height:400px"></div>
+                    </div>
+                    <div class="col-md-6 content loc">
 
-                    <ul class = "loc-list">
-                        <?php
-                        $i = 1;
-                        foreach ($locations as $info) {
-                            ?>
-                            <li><span><?= $info['location_name']; ?>:-</span> <?= $info['address'] . ', ' . $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ' ' . $info['postal_code']; ?><a href="#" class="remove_location"><i class="fa fa fa-times-circle"></i></a><div id="remove_location_confirm" class="confirm_remove_loc"><button id="confirm_loc" type="button" value="<?= $info['location_enc_id']; ?>" class="btn btn-primary btn-sm editable-submit"><i class="glyphicon glyphicon-ok"></i></button><button id="cancel_loc" type="button" class="btn btn-default btn-sm editable-cancel"><i class="glyphicon glyphicon-remove"></i></button></div></li>
+                        <ul class="loc-list">
                             <?php
-                            $locations_loc .= "['" . $info['location_name'] . "', " . $info['latitude'] . ", " . $info['longitude'] . ", " . $i . "],";
-                            $i++;
-                        }
-                        ?>
-                    </ul>
+                            $i = 1;
+                            foreach ($locations as $info) {
+                                ?>
+                                <li><span><?= $info['location_name']; ?>
+                                        :-</span> <?= $info['address'] . ', ' . $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ' ' . $info['postal_code']; ?>
+                                    <a href="#" class="remove_location"><i class="fa fa fa-times-circle"></i></a>
+                                    <div id="remove_location_confirm" class="confirm_remove_loc">
+                                        <button id="confirm_loc" type="button" value="<?= $info['location_enc_id']; ?>"
+                                                class="btn btn-primary btn-sm editable-submit"><i
+                                                    class="glyphicon glyphicon-ok"></i></button>
+                                        <button id="cancel_loc" type="button"
+                                                class="btn btn-default btn-sm editable-cancel"><i
+                                                    class="glyphicon glyphicon-remove"></i></button>
+                                    </div>
+                                </li>
+                                <?php
+                                $locations_loc .= "['" . $info['location_name'] . "', " . $info['latitude'] . ", " . $info['longitude'] . ", " . $i . "],";
+                                $i++;
+                            }
+                            ?>
+                        </ul>
+                    </div>
+                    <?php
+                    Pjax::end();
+                    ?>
                 </div>
-                <?php
-                Pjax::end();
-                ?>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </div>
+<section>
+    <div class="container">
+        <div class="empty-field">
+            <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+        </div>
+        <h2>Modal Example</h2>
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Please Login to your empower youth profile or Sign Up </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
 <?php $this->registerCss("
+.fab-message{
+    position:fixed;
+    bottom: 20px;
+    cursor:pointer;
+    right:20px;
+    z-index:9999;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 50%;
+    width:100px;
+    height:80px;
+    line-height: 60px;
+    text-align: center;
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+}
+#fab-message-open:hover .fab-hover-message{
+  -webkit-animation-name: example1; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
+    animation-name: example1;
+    opacity:1;
+    animation-duration: 2s;
+    animation-iteration-count: 2;
+}
+@-webkit-keyframes example1 {
+  0%   { right:6px; bottom:120px;}
+  100%  { right:6px; bottom:55px;}
+}
+@keyframes example1{
+  0%   {right:6px; bottom:120px;}
+  100%  {right:6px; bottom:55px;}
+}
 .fab-hover-message{
-    bottom: 60px;
+    bottom: 120px;
     right: 6px;
     color:#222;
-    -ms-transform-origin: bottom right;
-    -webkit-transform-origin: bottom right;
-    transform-origin: bottom right;-webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    -o-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;
-    transform: scale(0.5);
-    opacity: 0;
-//    display: none;
+    opacity: 0; 
+//  display: none;
     position: absolute;
-    font-size: 18px;
+    font-size: 18px; 
     padding: 15px;
-    width: 250px;
-    background-color: #FFF;
-    border-radius: 3px;
-    -webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
+     border-radius: 3px;
+     z-index:9; 
 }
+
+.fab-hover-image img{
+    width:85px;
+    height:85px;
+}
+
 .coverpic{
     text-align: center;
     position:relative;
@@ -1274,7 +1442,7 @@ $(document).on('click', '#confirm_loc', function(event) {
             
         }
     });
-});
+}); 
 
         
     $('.videoLink').magnificPopup({
@@ -1319,6 +1487,120 @@ $(document).on('click', '#confirm_loc', function(event) {
 	  });
 		  
   });
+  
+
+    
+    var popup = new ideaboxPopup({
+        background: '#234b8f',
+        popupView: 'full',
+        data: [
+           {
+                    question 	: 'Select Category',
+                    answerType	: 'radio2',
+                    formName	: 'categories',
+                    choices		: [
+                            { label : 'Information Technology', value : 'Information Technology' },
+                            { label : 'Marketing', value : 'Marketing' },
+                            { label : 'Green', value : 'GREEN' },
+                            { label : 'Yellow', value : 'YELLOW' }
+                    ],
+                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    required	: true,
+                    minSelect	: 1,
+                    maxSelect	: 2,
+                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+            },
+           {
+                    question 	: 'Select Sub Profile',
+                    answerType	: 'checkbox2',
+                    formName	: 'profiles',
+                    choices		: [
+                            { label : 'Frontend Developer', value : 'Frontend Developer' },
+                            { label : 'Backend Developer', value : 'Backend Developer' },
+                            { label : 'Graphic Designer', value : 'Graphic Designer' },
+                            { label : 'SEO', value : 'SEO' }
+                    ],
+                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    required	: true,
+                    minSelect	: 1,
+                    maxSelect	: 2,
+                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+            },
+          {
+                    question 	: 'Location',
+                    answerType	: 'checkbox2',
+                    formName	: 'locations',
+                    choices		: [
+                            { label : 'Ludhiana', value : 'Ludhiana' },
+                            { label : 'Jalandhar', value : 'Jalandhar' },
+                            { label : 'Chandigarh', value : 'Chandigarh' },
+                            { label : 'Amritsar', value : 'Amritsar' },
+                            { label : 'United States', value : 'USA' },
+                            { label : 'England', value : 'EN' },
+                            { label : 'Spain', value : 'ESP' },
+                            { label : 'Turkey', value : 'TUR' },
+                            { label : 'Argentina', value : 'ARG' },
+                            { label : 'India', value : 'END' },
+                            { label : 'Brazi', value : 'BRA' },
+                            { label : 'French', value : 'FRA' },
+                            { label : 'Germany', value : 'DEU' },
+                            { label : 'Greece', value : 'GRC' },
+                            { label : 'Hong Kong', value : 'HKG' },
+                            { label : 'Italy', value : 'ITA' },
+                            { label : 'South Korea', value : 'KOR' },
+                            { label : 'United Kingdom', value : 'GBR' },
+                            { label : 'Russia', value : 'RUS' }
+                    ],
+                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    required	: true,
+                    minSelect	: 1,
+                    maxSelect	: 2,
+                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+            },
+            {
+                question 	: 'Where are you from?',
+                answerType	: 'radio2',
+                formName	: 'experience',
+                choices		: [
+                        { label : 'No Experince', value : 'USA' },
+                        { label : '<1 Year', value : '0' },
+                        { label : '1 Year', value : '1' },
+                        { label : '2-3 Years', value : 'TUR' },
+                        { label : '3-5 Years', value : 'ARG' },
+                        { label : '5-10 Years', value : 'ARG' },
+                        { label : '10+ Years', value : 'ARG' },
+                ],
+                description	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                nextLabel	: 'Next',
+                display		: 'inline',
+             },
+            {
+                question: '<h2 style="color: #fff; font-weight: 900;">Add Your EY Profile Link</h2>',
+                answerType: 'inputbox',
+                description: 'Microsoft Word .doc and PDF accepted',
+                nextLabel : 'Continue',
+                formName: 'country',
+                inAnimation: 'zoomIn' 
+            },
+        {
+                question: 'There are many variations of passages of Lorem Ipsum available',
+                description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
+                nextLabel: 'Close',
+                inAnimation: 'flipInX'
+            }
+
+
+        ]
+    });
+    
+    document.getElementById("fab-message-open").addEventListener("click", function (e) {
+        if($('#loggedIn').val())
+            popup.open();
+        else
+            $('#myModal').modal('toggle');
+    });
+    
+
 
 JS;
 
@@ -1368,6 +1650,9 @@ $this->registerJs("
 //        }
 //      })(marker, i));
     }
+    
+    
+  
 ");
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 Pjax::end();
@@ -1376,15 +1661,15 @@ $this->registerCssFile('@eyAssets/css/company-profile.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
-$this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
+//$this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-//$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
+$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
 ?>
