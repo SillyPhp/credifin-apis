@@ -1,5 +1,6 @@
 <?php
-$this->title = Yii::t('frontend', 'Job Detail');
+$separator = Yii::$app->params->seo_settings->title_separator;
+$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -107,16 +108,21 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 <div class="inner-header">
                     <h3><?= $data['cat_name']; ?></h3>
                     <div class="job-statistic">
-                        <?php if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                            ?>
-                            <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlisted</a></span>
-
-                            <?php
-                        } else {
-                            ?>
-                            <span class="hover-change"><a href="#" class="shortlist_job"><i class="fa fa-heart-o"></i> Shortlist</a></span>
-                        <?php } ?>
-
+                        <?php
+                        if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
+                            if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
+                                ?>
+                                <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
+                                                class="fa fa-heart-o"></i> Shortlisted</a></span>
+                                <?php
+                            } else {
+                                ?>
+                                <span class="hover-change"><a href="#" class="shortlist_job"><i
+                                                class="fa fa-heart-o"></i> Shortlist</a></span>
+                                <?php
+                            }
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -165,8 +171,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
                                     <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type</h3><span><?= $type; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= $option['max_stipend']; ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= $option['min_stipend']; ?></span></li>
+                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= (($option['max_stipend']) ? $option['max_stipend'] : 'Nil'); ?></span></li>
+                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($option['min_stipend']) ? $option['min_stipend'] : 'Nil'); ?></span></li>
                                     <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
@@ -184,8 +190,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= $option['fixed_stipend'] ?></span></li>
-                                    <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
+                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= (($option['fixed_stipend']) ? $option['fixed_stipend'] : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-line-chart "></i><h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
                                     <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span> <?php
                                             $str = "";
                                             foreach ($data['applicationPlacementLocations'] as $job_placement) {
@@ -232,42 +238,64 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             <h3>Employer Benefits</h3>
                             <ul>
                                 <?php
-                                foreach ($data['applicationEmployeeBenefits'] as $benefit) {
-                                    ?>
-                                    <li> <?php echo ucwords($benefit['benefit']); ?> </li>
+                                if (!empty($data['applicationEmployeeBenefits'])){
+                                    foreach ($data['applicationEmployeeBenefits'] as $benefit) {
+                                        ?>
+                                        <li> <?php echo ucwords($benefit['benefit']); ?> </li>
+                                    <?php } } else { ?>
+                                    <li> No Benefits  </li>
                                 <?php } ?>
                             </ul>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date'] && $option['interview_start_time'])) { ?>
-                                    <li><i class="fa fa-calendar-check-o"></i><h3>Interview Dates</h3><span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span></li>
-                                    <li><i class="fa fa-clock-o"></i><h3>Interview Time</h3><span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span></li>
+                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
+                                    <li><i class="fa fa-calendar-check-o"></i>
+                                        <h3>Interview Dates</h3>
+                                        <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
+                                    </li>
+                                    <li><i class="fa fa-clock-o"></i>
+                                        <h3>Interview Time</h3>
+                                        <span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span>
+                                    </li>
                                 <?php } ?>
-                                <li><i class="fa fa-map-marker"></i><h3>Interview Locations</h3><span> <?php
+                                <li><i class="fa fa-map-marker"></i>
+                                    <h3>Interview Locations</h3><span> <?php
                                         $str2 = "";
                                         foreach ($data['applicationInterviewLocations'] as $loc) {
                                             $str2 .= $loc['name'] . ',';
-                                        } echo rtrim($str2, ',');
+                                        }
+                                        echo rtrim($str2, ',');
                                         ?></span></li>
                             </ul>
                         </div>
-                        <div class="share-bar">
-                            <span>Share</span>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
+                        <div class="share-bar no-border">
+                            <?php $link = Url::to('internship/' . $application_details["slug"], true); ?>
+                            <h3>Share</h3>
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-fb">
                                 <i class="fa fa-facebook"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-linkedin">
                                 <i class="fa fa-linkedin"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-google">
                                 <i class="fa fa-envelope"></i>
                             </a>
                         </div>
@@ -290,19 +318,23 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div>
                         <div class="job-head-info">
                             <h4><?= $org['org_name']; ?></h4>
-                            <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
-                            <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
+                            <?php if ($org['website']): ?>
+                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php endif; ?>
                         </div>
                         <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login to apply</a>
+                            <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
+                                to apply</a>
                         <?php else: ?>
                             <?php if ($applied): ?>
-                                <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i class="fa fa-check" ></i>Applied</a>
-                            <?php else: ?>
-                                <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
+                                <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i
+                                            class="fa fa-check"></i>Applied</a>
+                            <?php elseif (!Yii::$app->user->identity->organization): ?>
+                                <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for
+                                    Internship</a>
                             <?php endif; ?>
                         <?php endif; ?>
-                        <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
+                        <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all Internships</a>
                         <div class="share-bar no-border">
                             <h3>Share</h3>
                             <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">

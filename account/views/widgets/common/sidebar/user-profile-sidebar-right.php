@@ -7,14 +7,23 @@ use yii\helpers\Url;
     <div class="can-detail-s">
         <div class="cst">
             <?php
-            $base_path = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR;
-            $image = Yii::$app->user->identity->image;
-            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+            $name = $image = NULL;
+            if (Yii::$app->user->identity->organization) {
+                if (Yii::$app->user->identity->organization->logo) {
+                    $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                }
+                $name = Yii::$app->user->identity->organization->name;
+            } else {
+                if (Yii::$app->user->identity->image) {
+                    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                }
+                $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+            }
             if ($image):
                 ?>
-                <img alt="<?= $name; ?>" title="<?= $name; ?>" src="<?= Url::to($base_path . $image); ?>">
+                <span><img src="<?= $image; ?>" alt="<?= $name; ?>" /></span>
             <?php else: ?>
-                <canvas class="user-icon" name="<?= $name; ?>" color="<?= Yii::$app->user->identity->initials_color; ?>" width="175" height="175" font="80px"></canvas>
+                <span><canvas class="user-icon" name="<?= $name; ?>" width="40" height="40" font="20px"></canvas></span>
             <?php endif; ?>
         </div>
         <h3><?= $name; ?></h3>
@@ -23,27 +32,51 @@ use yii\helpers\Url;
     </div>
     <div class="tree_widget-sec">
         <ul>
-            <li class="inner-child">
-                <a href="<?= Url::to('/user/' . Yii::$app->user->identity->username); ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
-            </li>
-            <li class="inner-child">
-                <a href="/account/resume" title="" class="tree-toggler"><i class="fa fa-briefcase"></i>My Resume</a>
+            <?php
+            $userType = Yii::$app->user->identity->type->user_type;
+            if($userType === 'Individual') :
+                ?>
+                <li class="inner-child">
+                    <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
 
-            </li>
-            <li class="inner-child">
-                <a href="/account/candidate-dashboard" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted Job</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted Job</a>
 
-            </li>
-            <li class="inner-child">
-                <a href="/account/candidate-dashboard" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
-
-            </li>
-            <li class="inner-child">
-                <a href="#" title=""><i class="fa fa-user"></i>Job Alerts</a>
-            </li>
-            <li>
-                <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2" data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
-            </li>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/jobs/applied" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
+                </li>
+                <li>
+                    <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2" data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
+                    <div class="modal fade" id="myModal2" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span> </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            <?php elseif ($userType === 'Organization Admin'): ?>
+                <!--            Organization Menu Items-->
+                <li class="inner-child">
+                    <a href="/company/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/jobs" title="" class="tree-toggler"><i class="fa fa-money"></i>Active Jobs</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/internships" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Active Internships</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/jobs/create" title="" class="tree-toggler"><i class="fa fa-money"></i>Create Jobs</a>
+                </li>
+                <li class="inner-child">
+                    <a href="/account/internships/create" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Create Internships</a>
+                </li>
+            <?php endif; ?>
             <li class="inner-child">
                 <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
             </li>

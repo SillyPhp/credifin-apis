@@ -2,274 +2,260 @@
 
 use yii\helpers\Url;
 
-function random_color_part() {
-    return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-}
-
-function random_color() {
-    return random_color_part() . random_color_part() . random_color_part();
-}
-
-if ($user['image']) {
-    $image_path = Yii::$app->params->upload_directories->users->image_path . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
-    $image = Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
-    if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true';
-    }
+$cover_image_path = Yii::$app->params->upload_directories->users->cover_image . $user['cover_image_location'];
+$cover_image = $user['cover_image'];
+if (empty($cover_image)) {
+    $cover_image = "//www.placehold.it/1500x500/EFEFEF/AAAAAA&amp;text=No+Cover+Image";
 } else {
-    $image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
-}
-
-$cover_image_path = Yii::$app->params->upload_directories->users->cover_image_path . $user['cover_image_location'] . DIRECTORY_SEPARATOR . $user['cover_image'];
-$cover_image = Yii::$app->params->upload_directories->users->cover_image . $user['cover_image_location'] . DIRECTORY_SEPARATOR . $user['cover_image'];
-if (!file_exists($cover_image_path)) {
-    $cover_image = "http://www.placehold.it/1500x500/EFEFEF/AAAAAA&amp;text=No+Cover+Image";
+    $cover_image = $cover_image_path . DIRECTORY_SEPARATOR . $cover_image;
 }
 ?>
-<!--<nav class="min-nav" id="min-nav">-->
-<!--    <ul class="nav nav-stacked navbar-fixed-top">-->
-<!--        <li><a href="#home" data-toggle="tooltip" data-placement="right" title="About Me" class="active"><i class="fa fa-home"></i></a></li>-->
-<!--        <li><a href="#exp" data-toggle="tooltip" data-placement="right" title="Experience"><i class="fa fa-briefcase"></i></a></li>-->
-<!--        <li><a href="#edu" data-toggle="tooltip" data-placement="right" title="Education"><i class="fa fa-graduation-cap"></i></a></li>-->
-<!--        <li><a href="#skills" data-toggle="tooltip" data-placement="right" title="Skills"><i class="fa fa-cogs" ></i></a></li>-->
-<!--    </ul>-->
-<!--</nav>-->
-
-<div class="sections">   
-    <section id="home">    
-        <div style="background-image: url('<?= Url::to($cover_image); ?>');" class="jumbo">
-            <div class="container">
-
-            </div>
-        </div>
-
-        <div class="large-container">
-            <div class="bdy-content">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="can-user-icon">
-                            <img src="<?= Url::to($image); ?>" alt="" class="img-circle img-thumbnail "/>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="bdy-content">
-                        <div class="col-md-12 can-name-heading"><?= $user['first_name']; ?> <?= $user['last_name']; ?></div>
-                    </div>
-                </div>
-
-                <div class="clearfix"></div>
-                <div class="row">
-                    <div class="personal-info col-md-12">
-                        <div class="personal-detail col-md-6">
-                            <div class="heading-style ">About Me</div>
-                            <div class="per-discription"><?= $user['description']; ?></div>
-                        </div>
-                        <div class="col-md-6 per">
-                            <div class="per-det col-md-12 row">
-                                <div class="heading-style col-md-12">Personal Details</div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="can-name col-md-6 col-sm-4">Nationality:</div>
-                                    <div class="can-name-fill col-md-6 col-sm-8">Indian</div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <div class="can-name col-md-6 col-sm-4">Marital:</div>
-                                    <div class="can-name-fill col-md-6 col-sm-8">Single</div>
-                                </div>
-                                <div class="col-md-12 col-sm-12">
-                                    <div class="wrap">
-                                        <div class="social">
-                                            <a href="<?= $user['facebook']; ?>"><i class="fa fa-facebook fb"></i></a>
-                                            <a href="<?= $user['twitter']; ?>"><i class="fa fa-twitter tw"></i></a>
-                                            <a href="<?= $user['youtube']; ?>"><i class="fa fa-youtube yt"></i></a>
-                                            <a href="<?= $user['linkedin']; ?>"><i class="fa fa-linkedin lk"></i></a>
-                                            <a href="<?= $user['skype']; ?>"><i class="fa fa-skype sk"></i></a>
-                                            <a href="<?= $user['instagram']; ?>"><i class="fa fa-instagram db"></i></a>
-                                            <a href="<?= $user['google']; ?>"><i class="fa fa-google apple"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>   
-            </div> 
-        </div> 
-    </section>        
-    <!--<div class="clearfix"></div>-->
-    <!-- experience -->
-    <section id="exp">
-        <div class="large-container">
-            <div class="row">
-                <div class="exp col-md-12">
-                    <div class="bdy-content">
-                        <div class="col-md-12">
-                            <div class="heading-style">Work Experience</div>
-                            <div class="clearfix"></div>
-                            <div class="exp-box1 ">
-                                <div class="minus-padding col-md-1">
-                                    <div class="com-mark"> <!---com-line class for line  -->
-                                        <i class="fa fa-bullseye"></i>
-                                    </div>
-                                    <div class="com-mark-img">
-                                    </div>
-                                </div>
-                                <div class="exp-time col-md-3"> 
-                                    <div class="com-name"><?= $experience['company']; ?></div>
-                                    <div class="com-loc"><?= $experience['city']; ?></div>
-                                    <div class="com-time">
-                                        <div class="col-md-6">
-                                            <div class="com-t">From</div>
-                                            <div class="com-due"><?= date('F-Y', strtotime($experience['from_date'])); ?></div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="com-t">To</div>
-                                            <div class="com-due"><?= date('F-Y', strtotime($experience['to_date'])); ?></div>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                    <?php $interval = date_diff(date_create($experience['from_date']), date_create($experience['to_date'])); ?>
-                                    <div class="time-du"><?= $interval->format('%y years %m months'); ?></div>
-                                </div>
-                                <div class="exp-post col-md-8">
-                                    <div class="post"><?= $experience['title']; ?></div>
-                                    <div class="role">Tasks Performed</div>
-                                    <div class="duty"><?= $experience['description']; ?></div>
-                                </div> 
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                    </div> 
-                </div>
-            </div>
-    </section>
-
-    <div class="clearfix"></div>
-    <!-- education -->    
-    <section id="edu">
-        <div class="large-container">
-            <div class="edu">
+    <div class="sections">
+        <section id="home">
+            <div style="background-image: url('<?= Url::to($cover_image); ?>');" class="jumbo"></div>
+            <div class="large-container">
                 <div class="bdy-content">
-                    <div class="heading-style ">Qualification</div>
-<?php foreach ($education as $e) { ?>
-                    <div class="col-md-offset-1 col-md-5">
-                        <div class="edubox1">
-                            <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
-                            <div class="h-school-name"><?= $e['degree']; ?></div>
-                            <div class="bord-name"><?= $e['institute']; ?></div>
-                            <div class="h-year">
-                                <?php
-                                $from = strtotime($e['from_date']);
-                                $to = strtotime($e['to_date']);
-                                ?>
-                                <?= date('Y', $from) ?> to <?= date('Y', $to) ?>
-                            </div>
-                        </div> 
-                    </div>
-<?php } ?>
-                </div>
-            </div>
-        </div>
-
-    </section>
-    <div class="clearfix"></div>
-
-    <!--Skills-->
-    <section id="skills">
-        <div class="large-container">
-            <div class="row">    
-                <div class="skills col-md-12">
-                    <div class="bdy-content">
-                        <div class="row">
+                    <div class="row">
                         <div class="col-md-12">
-                            <div class="heading-style">Skills & Language</div>
-<!--                            <div class="keyheading">Key Skills</div>-->
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 55%" aria-valuenow="55" >HTML</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 65%;" aria-valuenow="65" >CSS</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 75%" aria-valuenow="75" >Photoshop</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6"> -->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 40%" aria-valuenow="40" >Javascript</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Coraldraw</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6">-->
-<!--                                <div class="progress">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Bootstrap</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="clearfix"></div>-->
-<!--                            <div class="skill-tags">-->
-<!--                                <div class="additionalskills">Additional Skills</div>-->
-<!--                                <ul>-->
-<!--                                    <li>HTML</li>-->
-<!--                                    <li>CSS</li>-->
-<!--                                    <li>Javascript</li>-->
-<!--                                    <li>Photoshop</li>-->
-<!--                                    <li>CoralDraw</li>-->
-<!--                                </ul>-->
-<!--                            </div>-->
+                            <div class="can-user-icon">
+                                <?php
+                                $name = $image = NULL;
+                                if (Yii::$app->user->identity->image) {
+                                    $image = Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
+                                }
+                                $name = $user['first_name'] . ' ' . $user['last_name'];
 
+                                if ($image):
+                                    ?>
+                                    <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle img-thumbnail "/>
+                                <?php else: ?>
+                                    <canvas class="user-icon img-circle img-thumbnail" name="<?= $name; ?>"
+                                                  color="<?= $user['initials_color']; ?>" width="200" height="200"
+                                                  font="100px"></canvas>
+                                <?php endif; ?>
+                            </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="bdy-content">
+                            <div class="col-md-12 can-name-heading"><?= $user['first_name']; ?> <?= $user['last_name']; ?></div>
                         </div>
-<!--                        <div class="col-md-4 communication">-->
-<!--                            <div class="keyheading">Communication</div>-->
-<!--                            <div class="col-md-12 com-prog">-->
-<!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>      -->
-<!--                                <div class="progress margin-top-0">-->
-<!--                                    <div class="progress-bar progress-bar-success" role="progressbar"  aria-valuenow="90" -->
-<!--                                         aria-valuemin="0" aria-valuemax="100" >English</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-12 com-prog">-->
-<!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>-->
-<!--                                <div class="progress  margin-top-0">-->
-<!--                                    <div class="progress-bar progress-bar-info" role="progressbar"  aria-valuenow="90" -->
-<!--                                         aria-valuemin="0" aria-valuemax="100" >Hindi</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-12 com-prog">-->
-<!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>-->
-<!--                                <div class="progress margin-top-0">-->
-<!--                                    <div class="progress-bar progress-bar-warning " aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"-->
-<!--                                         role="progressbar" >Punjabi</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="skill-tags">
-                                    <ul>
-                                        <?php foreach ($skills as $sk) { ?>
-                                            <li><?= $sk['skills']; ?></li>
-                                        <?php } ?>
-                                    </ul>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="personal-info col-md-12">
+                            <div class="personal-detail col-md-6">
+                                <div class="heading-style ">About Me</div>
+                                <div class="per-discription"><?= $user['description']; ?></div>
+                            </div>
+                            <div class="col-md-6 per">
+                                <div class="per-det col-md-12 row">
+                                    <div class="heading-style col-md-12">Personal Details</div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="can-name col-md-6 col-sm-4">Nationality:</div>
+                                        <div class="can-name-fill col-md-6 col-sm-8">Indian</div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="can-name col-md-6 col-sm-4">Marital:</div>
+                                        <div class="can-name-fill col-md-6 col-sm-8">Single</div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="wrap">
+                                            <div class="social">
+                                                <a href="<?= $user['facebook']; ?>"><i
+                                                            class="fa fa-facebook fb"></i></a>
+                                                <a href="<?= $user['twitter']; ?>"><i class="fa fa-twitter tw"></i></a>
+                                                <a href="<?= $user['youtube']; ?>"><i class="fa fa-youtube yt"></i></a>
+                                                <a href="<?= $user['linkedin']; ?>"><i
+                                                            class="fa fa-linkedin lk"></i></a>
+                                                <a href="<?= $user['skype']; ?>"><i class="fa fa-skype sk"></i></a>
+                                                <a href="<?= $user['instagram']; ?>"><i class="fa fa-instagram db"></i></a>
+                                                <a href="<?= $user['google']; ?>"><i class="fa fa-google apple"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</div>
-<div class="clearfix"></div>
+        </section>
+        <!--<div class="clearfix"></div>-->
+        <!-- experience -->
+        <section id="exp">
+            <div class="large-container">
+                <div class="row">
+                    <div class="exp col-md-12">
+                        <div class="bdy-content">
+                            <div class="col-md-12">
+                                <div class="heading-style">Work Experience</div>
+                                <div class="clearfix"></div>
+                                <div class="exp-box1 ">
+                                    <div class="minus-padding col-md-1">
+                                        <div class="com-mark"> <!---com-line class for line  -->
+                                            <i class="fa fa-bullseye"></i>
+                                        </div>
+                                        <div class="com-mark-img">
+                                        </div>
+                                    </div>
+                                    <div class="exp-time col-md-3">
+                                        <div class="com-name"><?= $experience['company']; ?></div>
+                                        <div class="com-loc"><?= $experience['city']; ?></div>
+                                        <div class="com-time">
+                                            <div class="col-md-6">
+                                                <div class="com-t">From</div>
+                                                <div class="com-due"><?= date('F-Y', strtotime($experience['from_date'])); ?></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="com-t">To</div>
+                                                <div class="com-due"><?= date('F-Y', strtotime($experience['to_date'])); ?></div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <?php $interval = date_diff(date_create($experience['from_date']), date_create($experience['to_date'])); ?>
+                                        <div class="time-du"><?= $interval->format('%y years %m months'); ?></div>
+                                    </div>
+                                    <div class="exp-post col-md-8">
+                                        <div class="post"><?= $experience['title']; ?></div>
+                                        <div class="role">Tasks Performed</div>
+                                        <div class="duty"><?= $experience['description']; ?></div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <div class="clearfix"></div>
+        <!-- education -->
+        <section id="edu">
+            <div class="large-container">
+                <div class="edu">
+                    <div class="bdy-content">
+                        <div class="heading-style ">Qualification</div>
+                        <?php foreach ($education as $e) { ?>
+                            <div class="col-md-offset-1 col-md-5">
+                                <div class="edubox1">
+                                    <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>
+                                    <div class="h-school-name"><?= $e['degree']; ?></div>
+                                    <div class="bord-name"><?= $e['institute']; ?></div>
+                                    <div class="h-year">
+                                        <?php
+                                        $from = strtotime($e['from_date']);
+                                        $to = strtotime($e['to_date']);
+                                        ?>
+                                        <?= date('Y', $from) ?> to <?= date('Y', $to) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <div class="clearfix"></div>
+
+        <!--Skills-->
+        <section id="skills">
+            <div class="large-container">
+                <div class="row">
+                    <div class="skills col-md-12">
+                        <div class="bdy-content">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="heading-style">Skills & Language</div>
+                                    <!--                            <div class="keyheading">Key Skills</div>-->
+                                    <!--                            <div class="col-md-6">-->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 55%" aria-valuenow="55" >HTML</div>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                            <div class="col-md-6">-->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 65%;" aria-valuenow="65" >CSS</div>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                            <div class="col-md-6">-->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 75%" aria-valuenow="75" >Photoshop</div>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                            <div class="col-md-6"> -->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 40%" aria-valuenow="40" >Javascript</div>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                            <div class="col-md-6">-->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Coraldraw</div>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                            <div class="col-md-6">-->
+                                    <!--                                <div class="progress">-->
+                                    <!--                                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 80%" aria-valuenow="80" >Bootstrap</div>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                            <div class="clearfix"></div>-->
+                                    <!--                            <div class="skill-tags">-->
+                                    <!--                                <div class="additionalskills">Additional Skills</div>-->
+                                    <!--                                <ul>-->
+                                    <!--                                    <li>HTML</li>-->
+                                    <!--                                    <li>CSS</li>-->
+                                    <!--                                    <li>Javascript</li>-->
+                                    <!--                                    <li>Photoshop</li>-->
+                                    <!--                                    <li>CoralDraw</li>-->
+                                    <!--                                </ul>-->
+                                    <!--                            </div>-->
+
+                                </div>
+                            </div>
+                            <!--                        <div class="col-md-4 communication">-->
+                            <!--                            <div class="keyheading">Communication</div>-->
+                            <!--                            <div class="col-md-12 com-prog">-->
+                            <!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>      -->
+                            <!--                                <div class="progress margin-top-0">-->
+                            <!--                                    <div class="progress-bar progress-bar-success" role="progressbar"  aria-valuenow="90" -->
+                            <!--                                         aria-valuemin="0" aria-valuemax="100" >English</div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="col-md-12 com-prog">-->
+                            <!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>-->
+                            <!--                                <div class="progress  margin-top-0">-->
+                            <!--                                    <div class="progress-bar progress-bar-info" role="progressbar"  aria-valuenow="90" -->
+                            <!--                                         aria-valuemin="0" aria-valuemax="100" >Hindi</div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="col-md-12 com-prog">-->
+                            <!--                                <div class="communication-lvl">Novice <span>Intermediate</span><span> Advanced</span></div>-->
+                            <!--                                <div class="progress margin-top-0">-->
+                            <!--                                    <div class="progress-bar progress-bar-warning " aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"-->
+                            <!--                                         role="progressbar" >Punjabi</div>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <!--                        </div>-->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="skill-tags">
+                                        <ul>
+                                            <?php foreach ($skills as $sk) { ?>
+                                                <li><?= $sk['skills']; ?></li>
+                                            <?php } ?>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="clearfix"></div>
 <?php
 $this->registerCss('
     .large-container{
@@ -297,7 +283,7 @@ $this->registerCss('
 .can-name-heading{margin: 0 auto; text-align: center; margin-top: 15px; margin-left: 10px;
                  font-size: 28pt; color: #00a0e3; font-family: lobster;}
 .can-user-icon{position:relative;max-height: 200px; max-width: 200px; margin: 0 auto; z-index: 999;margin-top: -105px;}
-.can-user-icon img{height: 200px;width: 200px;box-shadow: 0px 0px 25px rgb(0,0,0,.3); }
+.can-user-icon img, .can-user-icon canvas{height: 200px;width: 200px;box-shadow: 0px 0px 25px rgb(0,0,0,.3); }
 .set-four-tabs{
     margin-top: -100px;
 }
@@ -406,7 +392,7 @@ $this->registerCss('
 @media (min-width:992px) and (max-width:1100px){
     .head-btn1 i, .head-btn2 i{display:none;}
     .head-btn1,.head-btn2{ max-width: 150px;} 
-    .can-user-icon img{margin-left: 0px;}
+    .can-user-icon img, .can-user-icon canvas{margin-left: 0px;}
     .head-btn1 a, .head-btn2 a{ padding-left: 5px; padding-right: 5px;}
 }
 @media screen and (max-width:992px){
@@ -416,7 +402,7 @@ $this->registerCss('
     /*.btn-txt, .btn-txt2{display:none;}*/
     .head-btn1 a, .head-btn2 a{text-align: center;}
     .bdy-content{margin:0 50px 0 100px; }
-    .can-user-icon img{margin-left: 20px;}
+    .can-user-icon img, .can-user-icon canvas{margin-left: 20px;}
     .per-det{border: none; padding: 0 0 0 0;}
     .per{padding-top: 20px;}
     .com-mark{display: none;}

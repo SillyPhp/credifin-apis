@@ -62,7 +62,7 @@ use yii\web\JsExpression;
         </nav>
         <div class="row mt-20">
             <div class="col-md-12">
-                <h2 class="heading-style"><?= Yii::t('frontend', 'Internships'); ?></h2>
+                <h2 class="heading-style"><?= Yii::t('frontend', 'internships'); ?></h2>
             </div>
         </div>
         <div class="row">
@@ -160,7 +160,7 @@ use yii\web\JsExpression;
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6">
-                <h3 class="heading-style"><?= Yii::t('frontend', 'Recent Internships'); ?></h3>
+                <h3 class="heading-style"><?= Yii::t('frontend', 'Recent internships'); ?></h3>
             </div>
             <div class="col-md-6 col-sm-6">
                 <div class="type-1">

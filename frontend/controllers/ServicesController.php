@@ -446,7 +446,7 @@ class ServicesController extends Controller {
                 ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
                 ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
                 ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-                ->andWhere(['j.name' => 'Internships'])
+                ->andWhere(['j.name' => 'internships'])
                 ->andWhere([
                     'or',
                     ['g.name' => $locationParams],

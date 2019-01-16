@@ -93,9 +93,9 @@ AppAssets::register($this);
             </p>
         </div>
         <?php
-        if (!Yii::$app->user->identity->organization) {
+//        if (!Yii::$app->user->identity->organization) {
             echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
-        }
+//        }
         ?>
     </div>
     <?php
@@ -222,7 +222,7 @@ AppAssets::register($this);
             .tree_widget-sec > ul > li > a:hover{
                 text-decoration:none;
             }
-            .my-profiles-sec > span > img, .cst img, .profiles-sidebar .close-profile, .my-profiles-sec span canvas{
+            .my-profiles-sec > span > img, .cst img, .my-profiles-sec span canvas{
                 -webkit-border-radius: 50% !important;
                 -moz-border-radius: 50% !important;
                 -ms-border-radius: 50% !important;
@@ -231,6 +231,13 @@ AppAssets::register($this);
                 width: 100%;
                 height: 100%;
                 background-color: #fff;
+            }
+            .profiles-sidebar .close-profile{
+                -webkit-border-radius: 50% !important;
+                -moz-border-radius: 50% !important;
+                -ms-border-radius: 50% !important;
+                -o-border-radius: 50% !important;
+                border-radius: 50% !important;
             }
             .can-detail-s > p{
                 margin-top: 10px !important;

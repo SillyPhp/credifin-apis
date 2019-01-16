@@ -23,10 +23,10 @@ if ($user['image']) {
     $image_path = Yii::$app->params->upload_directories->users->image_path . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
     $image = Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
     if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true';
+        $image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . str_replace("#","",Yii::$app->user->identity->initials_color) .'&color=ffffff';
     }
 } else {
-    $image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
+    $image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . str_replace("#","",Yii::$app->user->identity->initials_color) . '&color=ffffff';
 }
 
 $cover_image_path = Yii::$app->params->upload_directories->users->cover_image_path . $user['cover_image_location'] . DIRECTORY_SEPARATOR . $user['cover_image'];
@@ -34,7 +34,7 @@ $cover_image = Yii::$app->params->upload_directories->users->cover_image . $user
 if (!file_exists($cover_image_path)) {
     $cover_image = "http://www.placehold.it/1500x500/EFEFEF/AAAAAA&amp;text=No+Cover+Image";
 }
-$no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
+$no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $user['last_name'] . '&size=200&rounded=true&background=' . str_replace("#","",Yii::$app->user->identity->initials_color) . '&color=ffffff';
 ?>
 
     <!--    <nav class="min-nav" id="min-nav">-->

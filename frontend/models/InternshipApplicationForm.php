@@ -173,7 +173,7 @@ class InternshipApplicationForm extends Model {
          $stipend =  str_replace( ',', '', $this->stipendpaid);
         }
         
-        $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
+        $application_type_enc_id = ApplicationTypes::findOne(['name' => 'internships']);
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);

@@ -39,7 +39,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     echo $this->render('/widgets/applications/card', [
                         'applications' => $applications['data'],
                         'per_row' => 4,
-                        'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                     ]);
                 }
                 else {

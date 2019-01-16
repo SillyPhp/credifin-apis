@@ -33,58 +33,29 @@ $this->params['seo_tags'] = [
     ],
 ];
 
-function random_color_part() {
-    return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-}
-
-function random_color() {
-    return random_color_part() . random_color_part() . random_color_part();
-}
-
 $industries = Json::encode($industries);
-//print_r($industries);
-//exit();
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true';
+        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
     }
 } else {
-    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
+    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
 }
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     if (!file_exists($cover_image_path)) {
-        $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+        $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     }
 } else {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 }
-$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . random_color() . '&color=ffffff';
+$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#","",$organization['initials_color']) . '&color=ffffff';
+$no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 ?>
 
-<!-- Sidebar  -->
-<!--<nav class="min-nav" id="min-nav">
-    <ul class="nav nav-stacked navbar-fixed-top">
-        <li><a href="#home" class="active" data-toggle="tooltip" title="Home" data-placement="right"> <i class="fa fa-home"></i></a></li>
-        <li><a href="#about" data-toggle="tooltip" title="About Us" data-placement="right" ><i class="fa fa-briefcase"></i></a></li>
-        <li><a href="#video" data-toggle="tooltip" data-placement="right" title="Videos" ><i class="fa fa-play" aria-hidden="true"></i></a></li>
-        <li> <a href="#jobs" data-toggle="tooltip" data-placement="right" title="Job Available" ><i class="fa fa-question"></i></a> </li>
-        <li><a href="#offices" data-toggle="tooltip" data-placement="right" title="Our Offices"><i class="fa fa-map-marker"></i></a></li>
-    </ul>
-</nav>-->
-<!--<div id="fab-message-open" class="fab-message" style="position:fixed;bottom: 30px;cursor:pointer;right:30px;z-index:9999;background-color: green;color: #fff;font-size: 20px;border-radius: 50%;width:60px;height:60px;line-height: 60px;text-align: center;-webkit-box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);-->
-<!--    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);-->
-<!--    -webkit-transition: all .2s ease-in-out;-->
-<!--    -moz-transition: all .2s ease-in-out;-->
-<!--    -o-transition: all .2s ease-in-out;-->
-<!--    transition: all .2s ease-in-out;">-->
-<!--    <i class="fa fa-envelope"></i>-->
-<!--<div class="fab-hover-message" style="">Want to post your CV</div>-->
-<!--</div>-->
-<!--<button id="openPopup" class="btn btn-default">Drop your CV</button>-->
 <div class="loader-aj-main"><div class="loader-aj"><div class="dot first"></div><div class="dot second"></div></div></div>
 <div class="sections">
     <section id="home">
@@ -329,10 +300,9 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-video"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
                         </div>
                     </div>
-                    <div class="row videorows">
                         <?php
                         Pjax::begin(['id' => 'pjax_locations3']);
-
+                        if(!empty($videos)){
                         $rows = ceil(count($videos) / 3);
                         $next = 0;
                         for ($i = 0; $i < $rows; $i++) {
@@ -354,11 +324,11 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                         <a href="#" class="remove_video">
                                             <i class="fa fa-times-circle" ></i>
                                         </a>
-                                        <a href="#videoStory" class="videoLink">
+                                        <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
                                             <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
                                         </a>
-                                        <div id="videoStory" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
-                                            <iframe width=Who We Are"100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                        <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
+                                            <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                                         </div>
                                     </div>
                                     <?php
@@ -368,15 +338,116 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             </div>
                             <?php
                         }
+                        } else{
+                            echo "no video found";
+                        }
                         Pjax::end();
                         ?>
-                    </div>
                 </div>
             </div>
         </div>
 
     </section>
-
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="t-heading">
+                        Employee Benefits
+                        <div class="button_location pull-right">
+                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit"><span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+                Pjax::begin(['id' => 'pjax_benefit']);
+                if(!empty($benefit)){
+                $rows = ceil(count($benefit) / 4);
+                $next = 0;
+                for ($i = 0; $i < $rows; $i++) {
+            ?>
+            <div class="cat-sec">
+                <div class="row no-gape">
+                    <?php
+                    for ($j = 0; $j < 4; $j++) {
+                        if(!empty($benefit[$next]['benefit'])){
+                        ?>
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="p-category">
+                                <div class="p-category-view">
+                                    <?php
+                                    if(empty($benefit[$next]['icon'])){
+                                        $benefit[$next]['icon'] = 'plus-icon.svg';
+                                    }
+                                    ?>
+                                    <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
+                                    <span><?= $benefit[$next]['benefit'] ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        }
+                        $next++;
+                    }
+                    ?>
+                </div>
+            </div>
+                    <?php
+                }
+                } else{
+                    echo "no benefits found";
+                }
+            Pjax::end();
+            ?>
+        </div>
+    </section>
+    <section id="image1">
+        <div class="image">
+            <div class="container">
+                <div class="content">
+                    <div class="t-heading">Image Gallery</div>
+                    <div class="row imgrows">
+                        <div class="row imgrow">
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                            <div class="col-md-2 video1">
+                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" data-fancybox="image">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>" class="img-fluid img-thumbnail">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-main">
+                    <a id="loadmore">View More</a>
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="jobs">
         <div class="about">
             <div class="container">
@@ -688,10 +759,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     left: 162px;
     top: 8px;
 }
-
-.videorows{
-    margin-top : 3vh;
-}
 /*Bootstrap editable css ends */
 /*Loader css starts */
 .loader-aj-main{
@@ -776,14 +843,15 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     font-size:14px;
     margin:0px;
 }
+
 /* Feature, categories css starts */
 .checkbox-input {
   display: none;
 }
 .checkbox-label {
 /*   display: inline-block; */
-/*   vertical-align: top; */
 /*   position: relative; */
+  vertical-align: top;
   width: 100%;
   cursor: pointer;
   font-weight: 400;
@@ -825,7 +893,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     width: 100%;
     z-index: 1;
     position: relative;
-    display:flex;
 }
 .p-category, .p-category *{
     -webkit-transition: all 0.4s ease 0s;
@@ -834,7 +901,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
 }
-.p-category .checkbox-text {
+.p-category .p-category-view, .p-category .checkbox-text {
     float: left;
     width: 100%;
     text-align: center;
@@ -842,21 +909,23 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     border-bottom: 1px solid #e8ecec;
     border-right: 1px solid #e8ecec;
 }
-.p-category .checkbox-text span i {
-    float: left;
-    width: 100%;
+.p-category .p-category-view img, .p-category .checkbox-text span i {
     color: #4aa1e3;
     font-size: 70px;
-    margin-top: 15px;
+    margin-top: 30px;
     line-height: initial !important;
 }
-.p-category .checkbox-text span {
+.p-category .p-category-view span, .p-category .checkbox-text span {
     float: left;
     width: 100%;
     font-family: Open Sans;
     font-size: 15px;
     color: #202020;
-    margin-top: 10px;
+    margin-top: 18px;
+}
+.p-category img, .checkbox-text--title img{
+    width: 80px;
+    height: 50px;
 }
 .p-category:hover {
     background: #ffffff;
@@ -875,54 +944,23 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
     height: 102%;
     z-index: 10;
 }
-.p-category:hover .checkbox-text {
+.p-category:hover a, .p-category:hover .checkbox-text {
     border-color: #ffffff;
 }
-.p-category:hover .checkbox-label i{
+.p-category:hover i, .p-category:hover .checkbox-label i{
     color: #f07d1d;
 }
-.row.no-gape .p-category-main {
+.row.no-gape > div, .row.no-gape .p-category-main {
     padding: 0;
 }
-.cat-sec .row .p-category-main:last-child .checkbox-text {
+.cat-sec .row > div:last-child .p-category-view, .cat-sec .row .p-category-main:nth-child(4n+0) .checkbox-text {
     border-right-color: #ffffff;
 }
 /* Feature, categories css ends */
-
-// css custum start
-
-//.i-review-answer input{
-//    width: 50%;
-//    height: 40px;
-//    margin-left: 25%;
-//    background: #fff;
-//    border: none;
-//    border-radius: 5px;
-//}
-
-
 ") ?>
 
 <?php
 $script = <<<JS
-
-document.body.scrollTop = 0;
-document.documentElement.scrollTop = 0;
-        
-$('.fab-message').mouseover(function(e){
-        e.preventDefault();
-        console.log(1);
-    $('.fab-hover-message').css('opacity','1');
-    $('.fab-hover-message').css('transform','scale(1)');
-//    $('.fab-hover-message').css('display','inline-block');
-});
-$('.fab-message').mouseout(function(e){
-        e.preventDefault();
-    $('.fab-hover-message').css('opacity','0');
-    $('.fab-hover-message').css('transform','scale(0.5)');
-//    $('.fab-hover-message').css('display','none');
-});
-        
 $('.model').editable({
     placement: 'top',
     url: '/companies/update-profile',
@@ -951,18 +989,17 @@ $('.pen').click(function(e){
     $(this).prev().editable('toggle');
 });
 
-        
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
-        
-        
+
 $(document).on("click", "#open-modal", function () {
     $(".modal-body").load($(this).attr("url"));
 });
         
 var image_path = $('#logo-img').attr('src');
 var logo_name_path = "$no_image";
+var default_cover_path = "$no_cover";
 var cover_path = $('#cover_img').attr('src');
         
 function readURL(input) {
@@ -1047,6 +1084,7 @@ $(document).on('submit', '#upload-logo', function(event) {
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
+                hide_remove_logo();
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1072,13 +1110,24 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
                 $('#logo-img').attr('src',logo_name_path);
+                hide_remove_logo();
             } else {
                 toastr.error(response.message, response.title);
             }
         }
     });
 });
-        
+
+function hide_remove_logo(){
+    var img_path = $('#logo-img').attr('src');
+    if(img_path == logo_name_path){
+        $('.remove-logo').parent('li').css('display', 'none');
+    } else{
+        $('.remove-logo').parent('li').css('display', 'block');
+    }
+}
+hide_remove_logo();
+
 $(document).on('submit', '#change-cover-image', function(event) {
     event.preventDefault();
     $('#pop-content2').fadeOut(1000);
@@ -1095,6 +1144,7 @@ $(document).on('submit', '#change-cover-image', function(event) {
         success: function (response) {
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
+                hide_remove_cover();
                 toastr.success(response.message, response.title);
             } else {
                 toastr.error(response.message, response.title);
@@ -1118,14 +1168,26 @@ $(document).on('click', '#confirm_remove_cover', function(event) {
         success: function (response) {
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
+                $('#cover_img').attr('src',default_cover_path);
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
+                hide_remove_cover();
             } else {
                 toastr.error(response.message, response.title);
             }
         }
     });
 });
+
+function hide_remove_cover(){
+    var cover_img_path = $('#cover_img').attr('src');
+    if(cover_img_path == default_cover_path){
+        $('.remove_cover_image').parent('li').css('display', 'none');
+    } else{
+        $('.remove_cover_image').parent('li').css('display', 'block');
+    }
+}
+hide_remove_cover();
 
 $(document).on('mouseover', '.videoLink img', function(){
     $(this).parent().prev().show();
@@ -1214,10 +1276,8 @@ $(document).on('click', '#confirm_loc', function(event) {
     });
 });
 
-    $('[data-toggle="tooltip"]').tooltip();
         
-    $('.videoLink')
-        .magnificPopup({
+    $('.videoLink').magnificPopup({
             type: 'inline',
             midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
         })
@@ -1259,152 +1319,6 @@ $(document).on('click', '#confirm_loc', function(event) {
 	  });
 		  
   });
- var sections = $('section')
-  , nav = $('nav')
-  , nav_height = nav.outerHeight();
- 
-$(window).on('scroll', function () {
-  var cur_pos = $(this).scrollTop();
- 
-  sections.each(function() {
-    var top = $(this).offset().top - nav_height,
-        bottom = top + $(this).outerHeight();
- 
-    if (cur_pos >= top && cur_pos <= bottom) {
-      nav.find('a').removeClass('active');
-      sections.removeClass('active');
- 
-      $(this).addClass('active');
-      nav.find('a[href="#'+$(this).attr('id')+'"]').addClass('active');
-    }
-  });
- 
-}); 
-      
-                nav.find('li a').on('click', function () {
-                    var el = $(this)
-                            , id = el.attr('href');
-
-                    $('html, body').animate({
-                        scrollTop: $(id).offset().top - nav_height
-                    }, 500);
-
-                    return false;
-                });
-//        
-//  var popup = new ideaboxPopup({
-//         background: '#234b8f',
-//         popupView: 'full',
-//         data: [
-//             {
-//                 question: '<h2 style="color: #fff; font-weight: 900;">ADD YOUR CV</h2>',
-//                 answerType: 'inputbox',
-//                 description: 'Microsoft Word .doc and PDF accepted',
-//                 nextLabel: 'Continue',
-//                 formName: 'country',
-//                 inAnimation: 'zoomIn'
-//             },
-//             {
-//                 question: 'There are many variations of passages of Lorem Ipsum available',
-//                 description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
-//                 nextLabel: 'Close',
-//                 inAnimation: 'flipInX'
-//             }
-//
-//         ]
-//     });
-//
-//
-//     document.getElementById("fab-message-open").addEventListener("click", function (e) {
-//         popup.open();
-//     });
-//        
-// var popup2 = new ideaboxPopup({
-//     background : '#E36161',
-//     popupView : 'full',
-//     startPage: {
-//             msgTitle		: 'Welcome to our Reivew Survey',
-//             msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-//             startBtnText	: "Let's Get Start",
-//             showCancelBtn	: false,
-//             cancelBtnText	: 'Cancel'
-//     },
-//     endPage: {
-//             msgTitle		: 'Thank you for your supports :)',
-//             msgDescription 	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-//             showCloseBtn	: true,
-//             closeBtnText	: 'Close All',
-//             inAnimation		: 'zoomIn'
-//     },
-//     data: [
-//             {
-//                     question 	: 'Please review this plugin?',
-//                     answerType	: 'starrate',
-//                     starCount	: 10,
-//                     formName	: 'rate',
-//                     description	: '',
-//                     nextLabel	: 'Go to Step 2',
-//                     required	: true,
-//                     errorMsg	: '<b style="color:#900;">Please rate us!</b>'
-//             },
-//             {
-//                     question 	: 'Tell us your name:',
-//                     answerType	: 'inputbox',
-//                     formName	: 'namex',
-//                     description	: 'Please enter name and surname..',
-//                     nextLabel	: 'Go to Step 3',
-//                     required	: true,
-//                     errorMsg	: '<b style="color:#900;">Please enter a name.</b>'
-//             },
-//             {
-//                     question 	: 'What is your favorite colors?',
-//                     answerType	: 'checkbox',
-//                     formName	: 'colors',
-//                     choices		: [
-//                             { label : 'Blue', value : 'BLUE' },
-//                             { label : 'Magenta', value : 'MAGENTA' },
-//                             { label : 'Green', value : 'GREEN' },
-//                             { label : 'Yellow', value : 'YELLOW' }
-//                     ],
-//                     description	: 'Please choice between 1 - 2 choices from choices.',
-//                     nextLabel	: 'Go to Step 4',
-//                     required	: true,
-//                     minSelect	: 1,
-//                     maxSelect	: 2,
-//                     errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
-//             },
-//             {
-//                     question 	: 'What is your favorite Envato site?',
-//                     answerType	: 'radio',
-//                     formName	: 'website',
-//                     choices		: [
-//                             { label : 'Themeforest', value : 'themeforest.net' },
-//                             { label : 'Codecanyon', value : 'codecanyon.net' },
-//                             { label : 'Videohive', value : 'videohive.net' },
-//                             { label : 'Audiojungle', value : 'audiojungle.net' },
-//                     ],
-//                     description	: 'Please select anyone choice.',
-//                     nextLabel	: 'Go to Step 5',
-//                     required	: true,
-//                     errorMsg	: '<b style="color:#900;">Please select one</b>'
-//             },
-//             {
-//                     question 	: 'What do you think about us?',
-//                     answerType	: 'textarea',
-//                     formName	: 'description',
-//                     description	: 'Please input any words..',
-//                     nextLabel	: 'Finish'
-//             }
-//
-//     ]
-// });
-//
-//
-// document.getElementById("benefitPopup").addEventListener("click", function(e){
-//     popup2.open();
-// });
-        
-
 
 JS;
 

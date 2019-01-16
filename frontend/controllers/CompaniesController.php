@@ -2,11 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\models\OrganizationEmployeeBenefits;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
+use common\models\Utilities;
 use common\models\Organizations;
 use frontend\models\CompanyLogoForm;
 use frontend\models\CompanyCoverImageForm;
@@ -23,6 +25,7 @@ use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\ApplicationOptions;
 use common\models\ShortlistedOrganizations;
+use common\models\EmployeeBenefits;
 
 class CompaniesController extends Controller {
 
@@ -31,7 +34,6 @@ class CompaniesController extends Controller {
                 ->where(['slug' => $cpidk, 'status' => 'Active', 'is_deleted' => 0])
                 ->asArray()
                 ->one();
-
         if ($organization) {
             $organizationLocations = OrganizationLocations::find()
                     ->alias('a')
@@ -63,6 +65,13 @@ class CompaniesController extends Controller {
                     ->limit(3)
                     ->asArray()
                     ->all();
+            $benefit = OrganizationEmployeeBenefits::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'b.benefit', 'b.icon'])
+                ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
+                ->asArray()
+                ->all();
 
             if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization_enc_id == $organization['organization_enc_id']) {
                 $industries = \common\models\Industries::find()
@@ -83,6 +92,7 @@ class CompaniesController extends Controller {
                             'addEmployeeBenefitForm' => $addEmployeeBenefitForm,
                             'jobcards' => $jobcards,
                             'industries' => $industries,
+                            'benefit' => $benefit,
                 ]);
             } else {
                 $chkuser = ShortlistedOrganizations::find()
@@ -96,10 +106,11 @@ class CompaniesController extends Controller {
                             'videos' => $organizationVideos,
                             'jobcards' => $jobcards,
                             'shortlist' => $chkuser,
+                            'benefit' => $benefit,
                 ]);
             }
         } else {
-            
+
         }
     }
 
@@ -310,7 +321,7 @@ class CompaniesController extends Controller {
         $companyAlertForm = new \frontend\models\CompanyAlertForm();
         return $this->renderAjax('companyalert', ['companyAlertForm' => $companyAlertForm]);
     }
-    
+
     public function actionJobsAjax() {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -350,6 +361,55 @@ class CompaniesController extends Controller {
             'organizationVideoForm' => $organizationVideoForm,
         ]);
     }
+
+    public function actionAddBenefit() {
+        $benefits = \common\models\EmployeeBenefits::find()
+            ->asArray()
+            ->all();
+        $addEmployeeBenefitForm = new AddEmployeeBenefitForm();
+        return $this->renderAjax('add-benefit', [
+            'addEmployeeBenefitForm' => $addEmployeeBenefitForm,
+            'benefits' => $benefits,
+        ]);
+    }
+
+    public function actionSubmitBenefit(){
+        $addEmployeeBenefitForm = new AddEmployeeBenefitForm();
+        if ($addEmployeeBenefitForm->load(Yii::$app->request->post())) {
+//            return json_encode($addEmployeeBenefitForm->save());
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($addEmployeeBenefitForm->save()) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Image has been Removed.',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.',
+                ];
+            }
+        }
+    }
+
+//    public function actionBenifitInsert(){
+//        $model =new  EmployeeBenefits;
+//        $utilitiesModel = new Utilities();
+//        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//        $model->benefit_enc_id = $utilitiesModel->encrypt();
+//        $model->benefit = 'Work From Home';
+//        $model->icon  = 'work_from_home.svg';
+//        $model->created_on =   date('Y-m-d h:i:s');
+//        $model->created_by  = Yii::$app->user->identity->user_enc_id;
+//        if ($model->save()) {
+//            return 'ok';
+//        }
+//        else {
+//            print_r($model->getErrors());
+//        }
+//    }
 
     private function getYouTubeID($URL) {
         $YouTubeCheck = preg_match('![?&]{1}v=([^&]+)!', $URL . '&', $Data);

@@ -65,11 +65,11 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-md-12">
                     <div class="fx-heading">
-                        its free to try empower youth
+                        its free to hire from empower youth
                     </div>
                     <div class="post-job-bttn">
                         <a href="#" id="myBttn" class="hvr-float-shadow">
-                            Post a job for free
+                            Post Now
                         </a>
                     </div>
                 </div>
@@ -542,6 +542,8 @@ $this->registerCss('
    text-align:center;
    margin:0 auto;
    max-width:300px;
+   display:block;
+   font-weight:600;
 }
 .post-job-bttn a:hover{
    box-shadow:none;
