@@ -10,8 +10,8 @@ $pl_loc = rtrim($str, ',');
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 
-if (!file_exists($cover_image_base_path)) {
-    $cover_image = "http://www.placehold.it/1500x500/EFEFEF/AAAAAA&amp;text=No+Cover+Image";
+if (empty(Yii::$app->user->identity->organization->cover_image)) {
+    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
 ?>
@@ -347,7 +347,6 @@ $this->registerCss("
         width: 100%;
         height: 100%;
         content: '';
-        background-image: url('../images/lines.png');
         z-index: 0;
         opacity: 0.14;
     }

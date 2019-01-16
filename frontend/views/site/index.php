@@ -622,7 +622,7 @@ $this->registerCss('
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #008CBA;
+    background-color: #00a0e3;
     overflow: hidden;
     width: 100%;
     height: 0;
@@ -630,7 +630,7 @@ $this->registerCss('
 }
 .text { 
     color: white;
-    font-size: 20px;
+    font-size: 15px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -643,7 +643,7 @@ $this->registerCss('
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 50%;
+    height: 20%;
 }
 
 
