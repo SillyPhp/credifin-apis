@@ -1663,7 +1663,7 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 //$this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
