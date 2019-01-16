@@ -26,7 +26,7 @@ use yii\helpers\Html;
                 ?>
                 <span><img src="<?= $image; ?>" alt="<?= $name; ?>" /></span>
             <?php else: ?>
-                <span><canvas class="user-icon" name="<?= $name; ?>" width="40" height="40" font="20px"></canvas></span>
+                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= Yii::$app->user->identity->initials_color ?>" width="140" height="140" font="60px"></canvas></span>
             <?php endif; ?>
         </div>
         <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>

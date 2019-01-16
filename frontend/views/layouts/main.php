@@ -63,9 +63,11 @@ AppAssets::register($this);
                                     if (!$this->params['header_dark']) {
                                         ?>
                                     <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus_white.svg'); ?>">
-                                    <span class="logo_beta">Beta</span>
                                     <?php
                                     }
+                                    ?>
+                                    <span class="logo_beta">Beta</span>
+                                    <?php
                                 } else{
                                 ?>
                                     <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
@@ -73,9 +75,11 @@ AppAssets::register($this);
                                     if (!$this->params['header_dark']) {
                                         ?>
                                     <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
-                                    <span class="logo-beta">Beta</span>
                                     <?php
                                     }
+                                    ?>
+                                    <span class="logo-beta">Beta</span>
+                                    <?php
                                 }
                                 ?>
 
