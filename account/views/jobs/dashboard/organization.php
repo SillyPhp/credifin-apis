@@ -105,6 +105,7 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="row">
                     <div class="col-lg-12">
                         <?php
+                        Pjax::begin(['id' => 'pjax_active_process']);
                         if ($interview_processes['total'] > 0) {
                             echo $this->render('/widgets/processes/card', [
                                 'processes' => $interview_processes['data'],
@@ -116,6 +117,7 @@ echo $this->render('/widgets/header/secondary-header', [
                             ?>
                             <h3>No Processes To Display</h3>
                         <?php }
+                        Pjax::end();
                         ?>
                     </div>
                 </div>
@@ -245,10 +247,21 @@ $script = <<<JS
     $(document).on('click','.delete_questionnaire',function(e)
        {
           e.preventDefault();
-         if (window.confirm("Do you really want to Delete the current Application?")) { 
+         if (window.confirm("Do you really want to Delete the current Questionnaire?")) { 
             var data = $(this).attr('value');
-            url = "/account/questionnaire/delete-questionnaire";
+            url = "/account/questionnaire/delete";
             pjax_container = "#pjax_active_questionnaire";
+            Ajax_delete(data,url,pjax_container);
+        }
+       })    
+       
+       $(document).on('click','.delete_interview_process',function(e)
+       {
+          e.preventDefault();
+         if (window.confirm("Do you really want to Delete the current Process?")) { 
+            var data = $(this).attr('value');
+            url = "/account/interview-processes/delete";
+            pjax_container = "#pjax_active_process";
             Ajax_delete(data,url,pjax_container);
         }
        })     
