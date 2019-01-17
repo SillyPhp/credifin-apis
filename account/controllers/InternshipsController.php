@@ -520,15 +520,16 @@ class InternshipsController extends Controller
 
         $total_pending = AppliedApplications::find()
             ->alias('a')
+            ->select(['a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['a.status' => 'Pending'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending'])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
             ->groupBy(['b.application_enc_id'])
             ->count();
 
@@ -580,6 +581,40 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->groupBy(['b.application_enc_id'])
             ->count();
+        $accepted_jobs = AppliedApplications::find()
+            ->alias('a')
+            ->select(['g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active','SUM(k.positions) as positions'])
+            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
+            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
+            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->having(['>', 'active', 0])
+            ->groupBy('a.applied_application_enc_id')
+            ->limit(8)
+            ->asArray()
+            ->all();
+        $total_accepted =  AppliedApplications::find()
+            ->alias('a')
+            ->select(['g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
+            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
+            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
+            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->having(['>', 'active', 0])
+            ->groupBy('a.applied_application_enc_id')
+            ->count();
+
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
@@ -590,6 +625,8 @@ class InternshipsController extends Controller
             'total_applied' => $total_applied,
             'total_shortlist' => $total_shortlist,
             'total_pending' => $total_pending,
+            'accepted_jobs' => $accepted_jobs,
+            'total_accepted' => $total_accepted,
         ]);
     }
 

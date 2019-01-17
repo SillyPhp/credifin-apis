@@ -33,13 +33,13 @@ use yii\widgets\Pjax;
                                     <div class="topic-con"> 
                                         <div class="hr-company-box">
                                             <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@commonAssets/categories/' . $accept["icon"]); ?>" class="img-responsive ">
+                                                <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>" class="img-responsive ">
                                             </div>
                                             <div class="hr-com-name">
                                                 <?= $accept['org_name']; ?>
                                             </div>
                                             <div class="hr-com-field">
-                                                <?= $accept['name']; ?>
+                                                <?= $accept['title']; ?>
                                             </div>
                                             <div class="opening-txt">
                                                 <?= $accept["positions"]; ?> Openings
