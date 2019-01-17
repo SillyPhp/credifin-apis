@@ -25,6 +25,20 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+    <section class="fixed-bttn">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="fx-heading">
+                        Showcase Your employer brand
+                    </div>
+                </div>
+                <div class="col-md-4">Create Company Profile</div>
+                <div class="col-md-4">Hiring Posters</div>
+                <div class="col-md-4">Responsiveness to Candidates</div>
+            </div>
+        </div>
+    </section>
     <section class="how-it-works">
         <div class="container">
             <div class="row">
