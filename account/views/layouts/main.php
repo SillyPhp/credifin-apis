@@ -42,9 +42,10 @@ AppAssets::register($this);
                         </button>
                         <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
                             <div id="menuzord" class="menuzord">
-                                <a style="float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
+                                <a style="position:relative;float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
                                     <img id="header-logo" alt="<?= Yii::$app->params->site_name; ?>"
-                                         src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                         src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
+                                    <span class="logo_beta">Beta</span>
                                 </a>
                                 <?php
                                 $name = $image = $color = NULL;
@@ -87,6 +88,9 @@ AppAssets::register($this);
         </header>
         <div class="container-fluid">
             <div class="page-content" style="padding-top:20px;">
+                <div id="page-loading" class="page-loading">
+                    <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+                </div>
                 <?= $content; ?>
             </div>
             <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>
@@ -100,6 +104,29 @@ AppAssets::register($this);
     </div>
     <?php
     $this->registerCss('
+            .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #fff;}
+            .page-loading {
+                background-color: #ffffff;
+                content: "";
+                height: 100%;
+                left: 0;
+                position: fixed;
+                text-align: center;
+                margin:0px;
+                top: 0;
+                width: 100%;
+                z-index: 2147483647;
+            }
+            .page-loading > img {
+                left: 50%;
+                position: absolute;
+                top: 50%;
+                -webkit-transform: translateX(-50%) translateY(-50%);
+                -moz-transform: translateX(-50%) translateY(-50%);
+                -ms-transform: translateX(-50%) translateY(-50%);
+                -o-transform: translateX(-50%) translateY(-50%);
+                transform: translateX(-50%) translateY(-50%);
+            }
             .my-profiles-sec {
                 float: right;
             }
@@ -268,6 +295,7 @@ AppAssets::register($this);
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
         };
+        $(".page-loading").fadeOut();
 JS;
     $this->registerJs($script);
     $this->registerJsFile('@eyAssets/js/functions.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
