@@ -52,7 +52,7 @@ class InternshipsController extends Controller
         if (Yii::$app->user->identity->organization) {
             $object = new JobApplicationForm();
             $model = new InternshipApplicationForm();
-            $questions_list = $object->getQuestionnnaireList(2);
+            $questions_list = $object->getQuestionnnaireList();
             $p_list = $object->getOrganizationLocationOffice();
             $l_list = $object->getOrganizationLocationInterview();
             $primaryfields = $object->getPrimaryFields('Internships');
@@ -450,9 +450,8 @@ class InternshipsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'b.*', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.shortlisted' => 1])
+            ->select(['a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -467,8 +466,7 @@ class InternshipsController extends Controller
             ->all();
         $total_shortlist = ShortlistedApplications::find()
             ->alias('a')
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.shortlisted' => 1])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -480,7 +478,7 @@ class InternshipsController extends Controller
             ->count();
         $applied_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['SQL_CALC_FOUND_ROWS (0)', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['or',
                 ['a.status' => 'Pending'],
@@ -517,7 +515,7 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['k.application_enc_id'])
+            ->groupBy(['b.application_enc_id'])
             ->count();
 
         $total_pending = AppliedApplications::find()
@@ -555,9 +553,8 @@ class InternshipsController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.review', 'a.review_enc_id', 'b.application_enc_id app_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.review' => 1])
+            ->select(['a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -567,13 +564,13 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->groupBy(['b.application_enc_id'])
             ->limit(8)
-            ->orderBy(['a.id' => SORT_DESC])
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
         $total_reviews = ReviewedApplications::find()
             ->alias('a')
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.review' => 1])
+            ->select(['a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -583,7 +580,8 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->groupBy(['b.application_enc_id'])
             ->count();
-        return $this->render('dashboard/individual', ['shortlisted' => $shortlist_jobs,
+        return $this->render('dashboard/individual', [
+            'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
             'shortlist_org' => $shortlist_org,
             'reviewlist' => $review_list,

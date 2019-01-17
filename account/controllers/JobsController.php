@@ -28,6 +28,7 @@ use common\models\Utilities;
 use account\models\jobs\JobApplicationForm;
 use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
+use common\models\InterviewProcessFields;
 
 class JobsController extends Controller
 {
@@ -262,8 +263,7 @@ class JobsController extends Controller
         $review_list = ReviewedApplications::find()
             ->alias('a')
             ->select(['a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.review' => 1])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -272,7 +272,7 @@ class JobsController extends Controller
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->groupBy(['b.application_enc_id'])
-            ->orderBy(['a.id' => SORT_DESC])
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
         return $this->render('individual/review-jobs', [
@@ -284,9 +284,8 @@ class JobsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.shortlisted', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'b.*', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id,])
-            ->where(['a.shortlisted' => 1])
+            ->select(['a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
