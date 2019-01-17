@@ -363,6 +363,12 @@ class SiteController extends Controller {
     public function actionCompanyInternshipsIndex() {
         return $this->render('company-internships-index');
     }
+    public function actionReviewCompanyList() {
+        return $this->render('review-company-list');
+    }
+    public function actionReviewCompany() {
+        return $this->render('review-company');
+    }
     public function actionWalkInInterview() {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;

@@ -453,7 +453,7 @@ function random_fn(t){
 		return i;
 	}
     var createUpdateBtn = function (qno, that){
-        var i = '<a href="'+that.options.data[qno].choices[0].label+'">Update Profile</a>';
+        var i = '<div class="up-pro-btn"><a href="'+that.options.data[qno].choices[0].label+'" class="update-profile-btn">Update Profile</a></div>';
 
         return i;
     }

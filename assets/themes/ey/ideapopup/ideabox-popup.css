@@ -773,3 +773,29 @@ Primary use : Web & Mobile
     padding: 10px !important;
 }
 /* drop resume slider css ends */
+/*update profile btn css*/
+.update-profile-btn{
+    border:solid 2px #212529;
+    background-color: transparent;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    color:#212529;
+    outline: none;
+    font-family: inherit;
+    position: relative;
+    -webkit-transition: color 500ms linear;
+    -moz-transition: color 500ms linear;
+    -o-transition: color 500ms linear;
+    transition: color 500ms linear;
+}
+.up-pro-btn{
+    margin-top:35px;
+}
+.update-profile-btn:hover{
+    color:#fff;
+    background: #212539;
+}
+
