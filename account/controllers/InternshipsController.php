@@ -52,7 +52,7 @@ class InternshipsController extends Controller
         if (Yii::$app->user->identity->organization) {
             $object = new JobApplicationForm();
             $model = new InternshipApplicationForm();
-            $questions_list = $object->getQuestionnnaireList();
+            $questions_list = $object->getQuestionnnaireList(2);
             $p_list = $object->getOrganizationLocationOffice();
             $l_list = $object->getOrganizationLocationInterview();
             $primaryfields = $object->getPrimaryFields('Internships');
