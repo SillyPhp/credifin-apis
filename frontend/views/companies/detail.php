@@ -33,6 +33,16 @@ if ($organization['cover_image']) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 ?>
+<div id="fab-message-open" class="fab-message" style="">
+    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
+    <!--<i class="fa fa-envelope"></i>-->
+    <div class="fab-hover-message" style="">
+        <div class="fab-hover-image">
+            <img src="<?= Url::to('@eyAssets/images/pages/company-profile/cv.png') ?>">
+        </div>
+    </div>
+    <!--<div class="fab-hover-message" style="">Want to post your CV</div>-->
+</div>
 
 <div class="sections">
     <section id="home">
@@ -336,8 +346,89 @@ if ($organization['cover_image']) {
     }
     ?>
 </div>
+    <section>
+        <div class="container">
+            <div class="empty-field">
+                <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Please Login to your empower youth profile or Sign Up </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
 <?php
 $this->registerCss('
+.fab-message{
+    position:fixed;
+    bottom: 20px;
+    cursor:pointer;
+    right:20px;
+    z-index:9999;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 50%;
+    width:100px;
+    height:80px;
+    line-height: 60px;
+    text-align: center;
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+}
+#fab-message-open:hover .fab-hover-message{
+  -webkit-animation-name: example1; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
+    animation-name: example1;
+    opacity:1;
+    animation-duration: 2s;
+    animation-iteration-count: 2;
+}
+@-webkit-keyframes example1 {
+  0%   { right:6px; bottom:120px;}
+  100%  { right:6px; bottom:55px;}
+}
+@keyframes example1{
+  0%   {right:6px; bottom:120px;}
+  100%  {right:6px; bottom:55px;}
+}
+.fab-hover-message{
+    bottom: 120px;
+    right: 6px;
+    color:#222;
+    opacity: 0; 
+//  display: none;
+    position: absolute;
+    font-size: 18px; 
+    padding: 15px;
+     border-radius: 3px;
+     z-index:9; 
+}
+
+.fab-hover-image img{
+    width:85px;
+    height:85px;
+}
 /* Feature, categories css starts */
 .cat-sec {
     float: left;
@@ -451,7 +542,117 @@ $(document).on('click','.shortlist_org',function(e){
             }
         }
     });        
-})
+}) 
+ var popup = new ideaboxPopup({
+        background: '#234b8f',
+        popupView: 'full',
+        data: [
+           {
+                    question 	: 'Select Category',
+                    answerType	: 'radio2',
+                    formName	: 'categories',
+                    choices		: [
+                            { label : 'Information Technology', value : 'Information Technology' },
+                            { label : 'Marketing', value : 'Marketing' },
+                            { label : 'Green', value : 'GREEN' },
+                            { label : 'Yellow', value : 'YELLOW' }
+                    ],
+                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    required	: true,
+                    minSelect	: 1,
+                    maxSelect	: 2,
+                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+            },
+           {
+                    question 	: 'Select Sub Profile',
+                    answerType	: 'checkbox2',
+                    formName	: 'profiles',
+                    choices		: [
+                            { label : 'Frontend Developer', value : 'Frontend Developer' },
+                            { label : 'Backend Developer', value : 'Backend Developer' },
+                            { label : 'Graphic Designer', value : 'Graphic Designer' },
+                            { label : 'SEO', value : 'SEO' }
+                    ],
+                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    required	: true,
+                    minSelect	: 1,
+                    maxSelect	: 2,
+                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+            },
+          {
+                    question 	: 'Location',
+                    answerType	: 'checkbox2',
+                    formName	: 'locations',
+                    choices		: [
+                            { label : 'Ludhiana', value : 'Ludhiana' },
+                            { label : 'Jalandhar', value : 'Jalandhar' },
+                            { label : 'Chandigarh', value : 'Chandigarh' },
+                            { label : 'Amritsar', value : 'Amritsar' },
+                            { label : 'United States', value : 'USA' },
+                            { label : 'England', value : 'EN' },
+                            { label : 'Spain', value : 'ESP' },
+                            { label : 'Turkey', value : 'TUR' },
+                            { label : 'Argentina', value : 'ARG' },
+                            { label : 'India', value : 'END' },
+                            { label : 'Brazi', value : 'BRA' },
+                            { label : 'French', value : 'FRA' },
+                            { label : 'Germany', value : 'DEU' },
+                            { label : 'Greece', value : 'GRC' },
+                            { label : 'Hong Kong', value : 'HKG' },
+                            { label : 'Italy', value : 'ITA' },
+                            { label : 'South Korea', value : 'KOR' },
+                            { label : 'United Kingdom', value : 'GBR' },
+                            { label : 'Russia', value : 'RUS' }
+                    ],
+                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    required	: true,
+                    minSelect	: 1,
+                    maxSelect	: 2,
+                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+            },
+            {
+                question 	: 'Where are you from?',
+                answerType	: 'radio2',
+                formName	: 'experience',
+                choices		: [
+                        { label : 'No Experince', value : 'USA' },
+                        { label : '<1 Year', value : '0' },
+                        { label : '1 Year', value : '1' },
+                        { label : '2-3 Years', value : 'TUR' },
+                        { label : '3-5 Years', value : 'ARG' },
+                        { label : '5-10 Years', value : 'ARG' },
+                        { label : '10+ Years', value : 'ARG' },
+                ],
+                description	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                nextLabel	: 'Next',
+                display		: 'inline',
+             },
+            {
+                question: '<h2 style="color: #fff; font-weight: 900;">Add Your EY Profile Link</h2>',
+                answerType: 'inputbox',
+                description: 'Microsoft Word .doc and PDF accepted',
+                nextLabel : 'Continue',
+                formName: 'country',
+                inAnimation: 'zoomIn' 
+            },
+        {
+                question: 'There are many variations of passages of Lorem Ipsum available',
+                description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
+                nextLabel: 'Close',
+                inAnimation: 'flipInX'
+            }
+
+
+        ]
+    });
+    
+    document.getElementById("fab-message-open").addEventListener("click", function (e) {
+        if($('#loggedIn').val())
+            popup.open();
+        else
+            $('#myModal').modal('toggle');
+    });
+   
 JS;
 
 if (count($locations) > 0) {
@@ -496,3 +697,5 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');

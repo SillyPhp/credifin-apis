@@ -1493,41 +1493,46 @@ $(document).on('click', '#confirm_loc', function(event) {
     var popup = new ideaboxPopup({
         background: '#234b8f',
         popupView: 'full',
+        endPage: {
+            msgTitle : 'Profile has been updated',
+            msgDescription : 'Thanks for submitting your profile',
+            showCloseBtn: true,
+            closeBtnText : 'Close All',
+            inAnimation: 'zoomIn'
+        },
         data: [
            {
-                    question 	: 'Select Category',
+                    question 	: 'Select Job Profile',
                     answerType	: 'radio2',
-                    formName	: 'categories',
+                    //database field name
+                    formName	: 'job_profile',
+                    //values from database
                     choices		: [
                             { label : 'Information Technology', value : 'Information Technology' },
                             { label : 'Marketing', value : 'Marketing' },
                             { label : 'Green', value : 'GREEN' },
                             { label : 'Yellow', value : 'YELLOW' }
                     ],
-                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    description	: 'Please select your job profile',
                     required	: true,
-                    minSelect	: 1,
-                    maxSelect	: 2,
-                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+                    errorMsg	: '<b style="color:#900;">Select the choices.</b>'
             },
            {
-                    question 	: 'Select Sub Profile',
+                    question 	: 'Select Job Title',
                     answerType	: 'checkbox2',
-                    formName	: 'profiles',
+                    formName	: 'job_title',
                     choices		: [
                             { label : 'Frontend Developer', value : 'Frontend Developer' },
                             { label : 'Backend Developer', value : 'Backend Developer' },
                             { label : 'Graphic Designer', value : 'Graphic Designer' },
                             { label : 'SEO', value : 'SEO' }
                     ],
-                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    description	: 'Please select job titles that you are interested in and press next button',
                     required	: true,
-                    minSelect	: 1,
-                    maxSelect	: 2,
                     errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
             },
           {
-                    question 	: 'Location',
+                    question 	: 'Preffered Location',
                     answerType	: 'checkbox2',
                     formName	: 'locations',
                     choices		: [
@@ -1551,44 +1556,39 @@ $(document).on('click', '#confirm_loc', function(event) {
                             { label : 'United Kingdom', value : 'GBR' },
                             { label : 'Russia', value : 'RUS' }
                     ],
-                    description	: 'Please choice between 1 - 2 choices from choices.',
+                    description	: 'Please select your preffered location and press next button',
                     required	: true,
-                    minSelect	: 1,
-                    maxSelect	: 2,
-                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
+                    errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
             },
             {
-                question 	: 'Where are you from?',
+                question 	: 'Experience',
                 answerType	: 'radio2',
                 formName	: 'experience',
                 choices		: [
-                        { label : 'No Experince', value : 'USA' },
+                        { label : 'No Experince', value : 'No' },
                         { label : '<1 Year', value : '0' },
                         { label : '1 Year', value : '1' },
-                        { label : '2-3 Years', value : 'TUR' },
-                        { label : '3-5 Years', value : 'ARG' },
-                        { label : '5-10 Years', value : 'ARG' },
-                        { label : '10+ Years', value : 'ARG' },
+                        { label : '2-3 Years', value : '2-3' },
+                        { label : '3-5 Years', value : '3-5' },
+                        { label : '5-10 Years', value : '5-10' }, 
+                        { label : '10+ Years', value : '10+' },
                 ],
-                description	: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                nextLabel	: 'Next',
-                display		: 'inline',
+                description	: 'How much experience do you have?',
+                nextLabel : 'Apply Now',
+                required	: true,
+                errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
+            
              },
             {
-                question: '<h2 style="color: #fff; font-weight: 900;">Add Your EY Profile Link</h2>',
-                answerType: 'inputbox',
-                description: 'Microsoft Word .doc and PDF accepted',
-                nextLabel : 'Continue',
-                formName: 'country',
-                inAnimation: 'zoomIn' 
+                question: '<h2 style="color: #fff; font-weight: 900;">You have applied with your empower youth profile </h2>',
+                answerType: 'updatebtn',
+                formName : 'is_applied',
+                 choices		: [
+                     {label: 'http://www.eygb.me/user/ajay'}
+                 ],
+                description: '',
+                nextLabel : 'Finish',
             },
-        {
-                question: 'There are many variations of passages of Lorem Ipsum available',
-                description: 'All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',
-                nextLabel: 'Close',
-                inAnimation: 'flipInX'
-            }
-
 
         ]
     });
@@ -1661,14 +1661,14 @@ $this->registerCssFile('@eyAssets/css/company-profile.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
-//$this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
+$this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
-//$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');

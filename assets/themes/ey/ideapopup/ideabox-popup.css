@@ -725,3 +725,51 @@ Primary use : Web & Mobile
     }
 }
 /*en of the main styles*/
+/* drop resume slider css starts */
+.toggle input {
+    width: 0;
+    height: 0;
+    display:none;
+}
+.toggle input + label {
+    margin: 0;
+    padding: .75rem 2rem;
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    border: solid 2px #000;
+    background-color: transparent;
+    line-height: 140%;
+    border-radius: 10px;
+    text-align: center;
+    cursor:pointer;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    transition: border-color .15s ease-out,  color .25s ease-out,  background-color .15s ease-out, box-shadow .15s ease-out;
+}
+.toggle input + label:hover{
+    background-color: #ff7803;
+    border-color: #ff7803;
+    cursor:pointer;
+}
+.toggle input:checked + label {
+    background-color: #ff7803;
+    border-color: #ff7803;
+    z-index: 1;
+}
+@media (max-width: 800px) {
+    .toggle input + label {
+        padding: .75rem .25rem;
+        flex: 0 0 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+.radio2{
+    width:auto;
+    display:inline-block !important;
+    background-color:transparent !important;
+    margin-bottom: 0px !important;
+    padding: 10px !important;
+}
+/* drop resume slider css ends */
