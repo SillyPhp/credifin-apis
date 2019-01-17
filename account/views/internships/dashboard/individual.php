@@ -153,9 +153,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $review['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $review['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -217,9 +214,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $shortlist['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $shortlist['name']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -277,9 +271,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $apply['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $apply['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
