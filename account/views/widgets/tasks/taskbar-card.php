@@ -159,6 +159,7 @@ ul.widget-todo-list {
     margin: 0;
     position: relative;
     max-height: 600px;
+    min-height:205px;
     display: block;
     overflow-x: scroll;
 }
@@ -249,6 +250,9 @@ ul.widget-todo-list li .todo-actions .todo-remove {
     margin-right: 15px;
     border: 4px solid #fff;
     border-radius: 50px;
+}
+.widget-profile-info .profile-picture img{
+    background-color:#fff;
 }
 .font-weight-semibold {
     font-weight: 600 !important;
