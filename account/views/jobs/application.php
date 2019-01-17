@@ -278,7 +278,8 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
+
                             <?php
                             Pjax::begin(['id' => 'pjax_locations1']);
                             if (!empty($loc_list)) {
