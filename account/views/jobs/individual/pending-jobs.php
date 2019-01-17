@@ -31,7 +31,7 @@ use yii\widgets\Pjax;
                                                 <?= $pend['org_name']; ?>
                                             </div>
                                             <div class="hr-com-field">
-                                                <?= $pend['name']; ?>
+                                                <?= $pend['title']; ?>
                                             </div>
                                             <div class="opening-txt">
                                                 <?= $pend["positions"]; ?> Openings

@@ -55,7 +55,7 @@ use yii\helpers\Url;
                     <div class="widget-thumb-body">
                         <span class="widget-thumb-subtitle"></span>
                         <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="<?= $applied_applications['total']; ?>"><?= $applications['total']; ?></span>
+                              data-value="<?= $applied_applications['total']; ?>"><?= $applied_applications['total']; ?></span>
                     </div>
                 </div>
             </div>

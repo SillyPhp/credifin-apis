@@ -35,7 +35,7 @@ use yii\widgets\Pjax;
                                                 <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
                                             </div>
                                             <div class="hr-com-name">
-                                                <?= $review['org_name']; ?>
+                                                <?= $review['title']; ?>
                                             </div>
                                             <div class="opening-txt">
                                                 <?= $review["positions"]; ?> Openings
