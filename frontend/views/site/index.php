@@ -263,10 +263,10 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com8 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>">
                         </div>
                         <div class="com-name">
-                            Empower youth
+                            Amrit Malwa Capital Bank
                         </div>
                     </div>
                     <div class="com9 animatable fadeIn">
@@ -279,10 +279,10 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com10 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@commonAssets/logos/text-logo.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>">
                         </div>
                         <div class="com-name">
-                            Empower youth
+                            Up Money Ltd
                         </div>
                     </div>
                     <div class="com11 animatable fadeIn">
@@ -424,7 +424,7 @@ $this->registerCss('
 /*try now sec*/
 .fixed-bttn{
     padding:60px 0 100px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
+    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
     background-size: cover;
     background-attachment:fixed;
     background-repeat:no-repeat;

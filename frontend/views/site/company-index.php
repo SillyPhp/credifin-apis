@@ -25,6 +25,26 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+    <section class="showcase">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="showcase-heading">
+                        <span>Showcase Your employer brand</span>
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                <div class="showcase-subparts">
+                    <div class="col-md-4">
+                        Create Company Profile
+                    </div>
+                    <div class="col-md-4">Hiring Posters</div>
+                    <div class="col-md-4">Responsiveness to Candidates</div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="how-it-works">
         <div class="container">
             <div class="row">
@@ -197,6 +217,35 @@ $this->params['header_dark'] = false;
 <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+/*showcase starts*/
+.showcase{
+    padding:80px 0 110px;
+    background:url(' . Url::to('@eyAssets/images/pages/index2/showcase-bg.jpg') . '); 
+    background-size: cover;
+    background-repeat:no-repeat;
+    background-attachment: fixed;
+}
+.showcase-heading{
+    text-align:center;
+}
+.showcase-heading span{
+    text-transform:capitalize;
+    font-size:35px;
+    text-align:center;
+    padding:5px 15px;
+    color:#fff;
+    background:#000;
+    font-family:lobster;
+
+}
+.showcase-subparts{
+    text-align:center;
+    padding-top:50px;
+    color:#000;
+    text-transform:uppercase;
+    font-weight:bold;
+}
+/*showcase ends*/
 .step-heading{
     text-transform:Uppercase;
     text-align:center;
