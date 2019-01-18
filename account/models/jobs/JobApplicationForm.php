@@ -243,7 +243,7 @@ class JobApplicationForm extends Model
                     $employerApplicationsModel->slug = $utilitiesModel->create_slug();
                 }
             } else {
-                print_r($categoriesModel->getErrors());
+                return false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
@@ -254,13 +254,12 @@ class JobApplicationForm extends Model
             $employerApplicationsModel->slug = $utilitiesModel->create_slug();
         }
 
-        $image_information = $this->_createSharingImage($employerApplicationsModel->title);
-
-        if(!$image_information) {
-            return false;
-        } else {
-
-        }
+//        $image_information = $this->_createSharingImage($employerApplicationsModel->title);
+//        if (!$image_information) {
+//            return false;
+//        } else {
+//
+//        }
 
         if (!empty($this->designations)) {
             $chk_d = Designations::find()
@@ -285,7 +284,7 @@ class JobApplicationForm extends Model
                 if ($desigModel->save()) {
                     $employerApplicationsModel->designation_enc_id = $desigModel->designation_enc_id;
                 } else {
-                    print_r($desigModel->getError());
+                    return false;
                 }
             } else {
                 $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
@@ -320,7 +319,7 @@ class JobApplicationForm extends Model
                         $processModel->created_on = date('Y-m-d H:i:s');
                         $processModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$processModel->save()) {
-                            print_r($processModel->getErrors());
+                            return false;
                         }
                     }
                 }
@@ -337,7 +336,7 @@ class JobApplicationForm extends Model
                         $benefitModel->created_on = date('Y-m-d H:i:s');
                         $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$benefitModel->save()) {
-                            print_r($benefitModel->getErrors());
+                            return false;
                         }
                     }
                 }
@@ -365,8 +364,7 @@ class JobApplicationForm extends Model
                 $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
                 $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if (!$applicationoptionsModel->save()) {
-
-                    print_r($applicationoptionsModel->getErrors());
+                    return false;
                 }
             }
             $locations = json_decode($this->placement_loc);
@@ -382,8 +380,7 @@ class JobApplicationForm extends Model
                     $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationPlacementLocationsModel->save()) {
-
-                        print_r($applicationPlacementLocationsModel->getErrors());
+                        return false;
                     }
                 }
             }
@@ -399,8 +396,7 @@ class JobApplicationForm extends Model
                     $applicationInterviewLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationInterviewLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationInterviewLocationsModel->save()) {
-
-                        print_r($applicationInterviewLocationsModel->getErrors());
+                        return false;
                     }
                 }
             }
@@ -423,11 +419,9 @@ class JobApplicationForm extends Model
                     $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                     $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationSkillsModel->save()) {
-                        print_r($applicationSkillsModel->getErrors());
+                        return false;
                     }
-                    //new skill//
                     $this->assignedSkill($skills_set['skill_enc_id'], $cat_id);
-                    //new skill//
                 } else {
                     $skillsModel = new Skills();
                     $utilitiesModel = new Utilities();
@@ -447,11 +441,9 @@ class JobApplicationForm extends Model
                         $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                         $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationSkillsModel->save()) {
-                            print_r($applicationSkillsModel->getErrors());
+                            return false;
                         }
-                        //new skill//
                         $this->assignedSkill($skillsModel->skill_enc_id, $cat_id);
-                        //new skill//
                     }
                 }
             }
@@ -472,7 +464,7 @@ class JobApplicationForm extends Model
                     $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationJobDescriptionModel->save()) {
-                        print_r($applicationJobDescriptionModel->getErrors());
+                        return false;
                     }
 
                     //new code added//
@@ -497,7 +489,7 @@ class JobApplicationForm extends Model
                         $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                         $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationJobDescriptionModel->save()) {
-                            print_r($applicationJobDescriptionModel->getErrors());
+                            return false;
                         }
                         //new code added//
                         $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id);
@@ -524,8 +516,7 @@ class JobApplicationForm extends Model
                     $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                     $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationEducationalModel->save()) {
-
-                        print_r($applicationEducationalModel->getErrors());
+                        return false;
                     }
                     //new code//
                     $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id);
@@ -549,8 +540,7 @@ class JobApplicationForm extends Model
                         $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                         $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationEducationalModel->save()) {
-
-                            print_r($applicationEducationalModel->getErrors());
+                            return false;
                         }
                         //new code//
                         $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id);
@@ -561,8 +551,7 @@ class JobApplicationForm extends Model
 
             return true;
         } else {
-
-            print_r($employerApplicationsModel->getErrors());
+            return false;
         }
     }
 
@@ -577,7 +566,7 @@ class JobApplicationForm extends Model
         $asignedJobModel->created_on = date('Y-m-d H:i:s');
         $asignedJobModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedJobModel->save()) {
-            print_r($asignedJobModel->getErrors());
+            return false;
         }
     }
 
@@ -592,8 +581,7 @@ class JobApplicationForm extends Model
         $asignedEduModel->created_on = date('Y-m-d H:i:s');
         $asignedEduModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedEduModel->save()) {
-
-            print_r($asignedEduModel->getErrors());
+            return false;
         }
     }
 
@@ -608,14 +596,18 @@ class JobApplicationForm extends Model
         $asignedSkillModel->created_on = date('Y-m-d H:i:s');
         $asignedSkillModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedSkillModel->save()) {
-
-            print_r($asignedSkillModel->getErrors());
+            return false;
         }
     }
 
     private function _createSharingImage($category)
     {
-
+        $client = new \yii\httpclient\Client(['baseUrl' => Url::base(true)]);
+        $response = $client->createRequest()
+            ->setUrl('jobs/job-card/' . $category)
+            ->addHeaders(['content-type' => 'application/json'])
+            ->send();
+        print_r($response);
     }
 
     public function getQuestionnnaireList($type = 1)
@@ -646,7 +638,6 @@ class JobApplicationForm extends Model
         $p_list = $q_list->asArray()->all();
         $total = $q_list->count();
         $p_list[($total - 1)]['total'] = $total;
-
         return $p_list;
     }
 
@@ -664,11 +655,9 @@ class JobApplicationForm extends Model
             }], false)
             ->orderBy(['a.id' => SORT_DESC]);
 
-
         $l_list = $loc_list->asArray()->all();
         $total = $loc_list->count();
         $l_list[($total - 1)]['total'] = $total;
-
         return $l_list;
     }
 
@@ -730,10 +719,10 @@ class JobApplicationForm extends Model
                 $b->select(['b.application_enc_id', 'b.option_enc_id', 'b.option_name', 'b.value']);
             }])
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
-                    $b->onCondition(['c.is_deleted' => 0]);
-                    $b->joinWith(['benefitEnc d'], false);
-                    $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
-                }])
+                $b->onCondition(['c.is_deleted' => 0]);
+                $b->joinWith(['benefitEnc d'], false);
+                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
+            }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
@@ -766,9 +755,9 @@ class JobApplicationForm extends Model
                 $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
-                    $b->onCondition(['q.is_deleted' => 0]);
-                    $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
-                }])
+                $b->onCondition(['q.is_deleted' => 0]);
+                $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
+            }])
             ->asArray()
             ->one();
 
