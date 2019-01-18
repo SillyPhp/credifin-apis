@@ -1569,6 +1569,16 @@ hr .flare :after {
     -ms-transition:.3s all;
     -o-transition:.3s all;
 }
+.btn-primary{
+    color: #fff !important;
+    background-color: #00A0E3 !important;
+    border-color: #00A0E3 !important;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:active:focus, .btn-primary:active:hover{
+    color: #fff !important;
+    background-color: #00A0E3 !important;
+    border-color: #00A0E3 !important;
+}
 .main-blue-btn{
     width:100%;
     color: #ffffff;

@@ -105,4 +105,19 @@ class QuestionnaireController extends Controller
         ]);
     }
 
+    public function actionDelete()
+    {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post('data');
+            $update = Yii::$app->db->createCommand()
+                ->update(OrganizationQuestionnaire::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['questionnaire_enc_id' => $id])
+                ->execute();
+            if ($update) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
 }

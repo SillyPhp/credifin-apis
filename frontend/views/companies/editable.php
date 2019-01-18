@@ -79,9 +79,9 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
             <img id="cover_img" src="<?= Url::to($cover_image); ?>" class="img-fluid">
             <?php
             $formm = ActiveForm::begin([
-                'id' => 'change-cover-image',
-                'options' => ['enctype' => 'multipart/form-data'],
-            ])
+                        'id' => 'change-cover-image',
+                        'options' => ['enctype' => 'multipart/form-data'],
+                    ])
             ?>
             <div class="cover-edit">
                 <a class="fa fa-pencil dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
@@ -132,7 +132,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                 </div>
             </div>
         </div>
-
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -426,118 +425,116 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     </section>
     <section>
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="t-heading">
-                        Employee Benefits
-                        <div class="button_location pull-right">
-                            <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit">
-                                <span class="i-review-button-tx">Add New <span
-                                            class="fa fa-long-arrow-right"></span></span></button>
-                        </div>
+            <div class="content">
+                <div class="t-heading">
+                    Employee Benefits
+                    <div class="button_location pull-right">
+                        <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit">
+                            <span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span>
+                        </button>
                     </div>
                 </div>
-            </div>
-            <?php
-            Pjax::begin(['id' => 'pjax_benefit']);
-            if (!empty($benefit)) {
-                $rows = ceil(count($benefit) / 4);
-                $next = 0;
-                for ($i = 0; $i < $rows; $i++) {
-                    ?>
-                    <div class="cat-sec">
-                        <div class="row no-gape">
-                            <?php
-                            for ($j = 0; $j < 4; $j++) {
-                                if (!empty($benefit[$next]['benefit'])) {
-                                    ?>
-                                    <div class="col-lg-3 col-md-3 col-sm-6">
-                                        <div class="p-category">
-                                            <div class="p-category-view">
-                                                <?php
-                                                if (empty($benefit[$next]['icon'])) {
-                                                    $benefit[$next]['icon'] = 'plus-icon.svg';
-                                                }
-                                                ?>
-                                                <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>"/>
-                                                <span><?= $benefit[$next]['benefit'] ?></span>
+                <?php
+                Pjax::begin(['id' => 'pjax_benefit']);
+                if (!empty($benefit)) {
+                    $rows = ceil(count($benefit) / 4);
+                    $next = 0;
+                    for ($i = 0; $i < $rows; $i++) {
+                        ?>
+                        <div class="cat-sec">
+                            <div class="row no-gape">
+                                <?php
+                                for ($j = 0; $j < 4; $j++) {
+                                    if (!empty($benefit[$next]['benefit'])) {
+                                        ?>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="p-category">
+                                                <div class="p-category-view">
+                                                    <?php
+                                                    if (empty($benefit[$next]['icon'])) {
+                                                        $benefit[$next]['icon'] = 'plus-icon.svg';
+                                                    }
+                                                    ?>
+                                                    <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>"/>
+                                                    <span><?= $benefit[$next]['benefit'] ?></span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <?php
+                                        <?php
+                                    }
+                                    $next++;
                                 }
-                                $next++;
-                            }
-                            ?>
+                                ?>
+                            </div>
                         </div>
-                    </div>
-                    <?php
+                        <?php
+                    }
+                } else {
+                    echo "no benefits found";
                 }
-            } else {
-                echo "no benefits found";
-            }
-            Pjax::end();
-            ?>
-        </div>
-    </section>
-    <section id="image1">
-        <div class="image">
-            <div class="container">
-                <div class="content">
-                    <div class="t-heading">Image Gallery</div>
-                    <div class="row imgrows">
-                        <div class="row imgrow">
-                            <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                   data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                         class="img-fluid img-thumbnail">
-                                </a>
-                            </div>
-                            <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                   data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                         class="img-fluid img-thumbnail">
-                                </a>
-                            </div>
-                            <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                   data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                         class="img-fluid img-thumbnail">
-                                </a>
-                            </div>
-                            <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                   data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                         class="img-fluid img-thumbnail">
-                                </a>
-                            </div>
-                            <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                   data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                         class="img-fluid img-thumbnail">
-                                </a>
-                            </div>
-                            <div class="col-md-2 video1">
-                                <a href="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                   data-fancybox="image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?>"
-                                         class="img-fluid img-thumbnail">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="view-main">
-                    <a id="loadmore">View More</a>
-                </div>
+                Pjax::end();
+                ?>
             </div>
         </div>
     </section>
+<!--    <section id="image1">-->
+<!--        <div class="image">-->
+<!--            <div class="container">-->
+<!--                <div class="content">-->
+<!--                    <div class="t-heading">Image Gallery</div>-->
+<!--                    <div class="row imgrows">-->
+<!--                        <div class="row imgrow">-->
+<!--                            <div class="col-md-2 video1">-->
+<!--                                <a href="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                   data-fancybox="image">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                         class="img-fluid img-thumbnail">-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 video1">-->
+<!--                                <a href="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                   data-fancybox="image">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                         class="img-fluid img-thumbnail">-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 video1">-->
+<!--                                <a href="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                   data-fancybox="image">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                         class="img-fluid img-thumbnail">-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 video1">-->
+<!--                                <a href="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                   data-fancybox="image">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                         class="img-fluid img-thumbnail">-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 video1">-->
+<!--                                <a href="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                   data-fancybox="image">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                         class="img-fluid img-thumbnail">-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 video1">-->
+<!--                                <a href="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                   data-fancybox="image">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-profile/img-thumbnail.jpg'); ?><!--"-->
+<!--                                         class="img-fluid img-thumbnail">-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="view-main">-->
+<!--                    <a id="loadmore">View More</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section id="jobs">
         <div class="about">
             <div class="container">
@@ -583,8 +580,8 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                             $i = 1;
                             foreach ($locations as $info) {
                                 ?>
-                                <li><span><?= $info['location_name']; ?>
-                                        :-</span> <?= $info['address'] . ', ' . $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ' ' . $info['postal_code']; ?>
+                                <li>
+                                    <span><?= $info['location_name']; ?>:-</span> <?= $info['address'] . ', ' . $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ' ' . $info['postal_code']; ?>
                                     <a href="#" class="remove_location"><i class="fa fa fa-times-circle"></i></a>
                                     <div id="remove_location_confirm" class="confirm_remove_loc">
                                         <button id="confirm_loc" type="button" value="<?= $info['location_enc_id']; ?>"

@@ -14,9 +14,9 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/mslider1.jpg') ?>" alt=""/></li>
-                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/mslider2.jpg') ?>" alt=""/></li>
-                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/mslider3.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt=""/></li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
@@ -155,7 +155,7 @@ $this->params['header_dark'] = false;
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5 col-sm-5">
                     <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/em2.svg') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/get_hired.svg') ?>">
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7">

@@ -21,7 +21,7 @@ for ($i = 1; $i <= $rows; $i++) {
                                 </button>
                             </div>
                             <div class="lt-bttn">
-                                <button type="button" class="e-bttn set-right-align one">
+                                <button type="button" class="e-bttn set-right-align one delete_interview_process" value="<?= $processes[$next]['id']; ?>">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>

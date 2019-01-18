@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 ?>
 <div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
 <div class="row">
@@ -56,7 +55,7 @@ use yii\widgets\Pjax;
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        <span data-counter="counterup" data-value="89">0</span> </div>
+                        <span data-counter="counterup" data-value="89"><?= $total_accepted; ?></span> </div>
                     <div class="desc"> Applications Accepted</div>
                 </div>
             </a>
@@ -153,9 +152,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $review['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $review['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -217,9 +213,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $shortlist['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $shortlist['name']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -277,9 +270,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $apply['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $apply['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -317,14 +307,14 @@ use yii\widgets\Pjax;
                                 </div>
                                 <div id="tab-4" class="tab-con" > 
                                     <?php
-                                    if ($accepted) {
-                                        foreach ($accepted as $accept) {
+                                    if ($accepted_jobs) {
+                                        foreach ($accepted_jobs as $accept) {
                                             ?>  
                                             <div class="col-md-3">
                                                 <div class="topic-con"> 
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('/assets/common/logos/logo-vertical.svg'); ?>" class="img-responsive ">
+                                                            <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
                                                             <?= $accept['org_name']; ?>
@@ -333,7 +323,7 @@ use yii\widgets\Pjax;
                                                             <?= $accept['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
-                                                            <?= $accept['positions']; ?> Openings Openings
+                                                            <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
                                                             <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
@@ -357,7 +347,7 @@ use yii\widgets\Pjax;
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Applied any jobs.</div>
+                                                    <div class="">You haven't any accepted jobs.</div>
                                                 </div>
                                             </div>
                                         </div>

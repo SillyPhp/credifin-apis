@@ -11,7 +11,7 @@ use yii\widgets\Pjax;
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
 $process = ArrayHelper::map($process_list, 'interview_process_enc_id', 'process_name');
-$benefits = ArrayHelper::map($benefit, 'benefit_enc_id', 'benefit');
+$benefits = ArrayHelper::index($benefit, 'benefit_enc_id');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
@@ -478,8 +478,8 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="md-radio-inline text-right clearfix">
                                             <?=
                                             $form->field($model, 'benefit_selection')->inline()->radioList([
-                                                1 => 'Add Employee Benefits',
-                                                0 => 'Skip Employee Benefits',
+                                                1 => 'Add Jobs Benefits',
+                                                0 => 'Skip Benefits',
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
@@ -501,44 +501,47 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 </div>
                                 <div class="divider"></div>
                                 <div id="benefits_hide">
-                                 <div id="b_error"></div>
-                                <?php
-                                Pjax::begin(['id' => 'pjax_benefits']);
-                                if (!empty($benefits)) {
-                                    ?>
-                                    <div class="cat-sec">
-                                        <div class="row no-gape">
-                                            <?=
-                                            $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
-                                                'item' => function ($index, $label, $name, $checked, $value) {
-                                                    $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                                                    $return .= '<div class="p-category">';
-                                                    $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                                    $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
-                                                    $return .= '<div class="checkbox-text">';
-                                                    $return .= '<span class="checkbox-text--title">';
-                                                    $return .= '<i class="fa fa-user"></i>';
-                                                    $return .= '</span><br/>';
-                                                    $return .= '<span class="checkbox-text--description2">';
-                                                    $return .= $label;
-                                                    $return .= '</span>';
-                                                    $return .= '</div>';
-                                                    $return .= '</label>';
-                                                    $return .= '</div>';
-                                                    $return .= '</div>';
-                                                    return $return;
-                                                }
-                                            ])->label(false);
-                                            ?>
+                                    <div id="b_error"></div>
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_benefits']);
+                                    if (!empty($benefits)) {
+                                        ?>
+                                        <div class="cat-sec">
+                                            <div class="row no-gape">
+                                                <?=
+                                                $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
+                                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                                        if (empty($label['icon'])) {
+                                                            $label['icon'] = 'plus-icon.svg';
+                                                        }
+                                                        $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
+                                                        $return .= '<div class="p-category">';
+                                                        $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                                        $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                                        $return .= '<div class="checkbox-text">';
+                                                        $return .= '<span class="checkbox-text--title">';
+                                                        $return .= '<img src="' . Url::to("@commonAssets/employee_benefits/" . $label['icon']) . '">';
+                                                        $return .= '</span><br/>';
+                                                        $return .= '<span class="checkbox-text--description2">';
+                                                        $return .= $label['benefit'];
+                                                        $return .= '</span>';
+                                                        $return .= '</div>';
+                                                        $return .= '</label>';
+                                                        $return .= '</div>';
+                                                        $return .= '</div>';
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                <?php } else { ?>
+                                    <?php } else { ?>
 
-                                    <div class="empty-section-text"> No Benefits Yet Added to display</div>
+                                        <div class="empty-section-text"> No Benefits Yet Added to display</div>
 
-                                <?php } ?>
-                                <?php Pjax::end() ?>
-                                <input type="text" name="benefit_calc" id="benefit_calc" readonly>
+                                    <?php } ?>
+                                    <?php Pjax::end() ?>
+                                    <input type="text" name="benefit_calc" id="benefit_calc" readonly>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-10 col-md-offset-1">
@@ -560,96 +563,95 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <?= $form->field($model, 'question_process', ['template' => '{input}', 'options' => []])->hiddenInput(['id' => 'question_process'])->label(false) ?>
                                     </div>
                                 </div>
-                                    <div class="row">
-                                        <div class="col-md-12  m-padd">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <h3 class="module2-heading">Choose Application Process</h3>
-                                                </div>
-                                                <div class="col-md-6  ">
-                                                    <div class="pull-right c-btn-top">
-                                                        <a onclick="window.open('/account/interview-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
-                                                            <?= Html::button('Create Application Process', ['class' => 'btn btn-md btn-primary custom-buttons2 custom_color-set2', 'id' => 'add2']); ?>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <?php
-                                        Pjax::begin(['id' => 'pjax_process']);
-                                        if (!empty($process)) {
-                                            ?>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <?=
-                                                    $form->field($model, 'interview_process')->radioList($process, [
-                                                        'item' => function ($index, $label, $name, $checked, $value) {
-                                                            $return .= '<div class="col-md-4 text-center">';
-                                                            $return .= '<div class="radio_questions">';
-                                                            $return .= '<div class="overlay-left"><a href="#" data-id="'.$value.'" class="text process_display">View</a></div>';
-                                                            $return .= '<div class="inputGroup process_radio">';
-                                                            $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                                            $return .= '<label for="' . $value . '">' . $label . '</label>';
-                                                            $return .= '</div>';
-                                                            $return .= '</div>';
-                                                            $return .= '</div>';
-
-                                                            return $return;
-                                                        }
-                                                    ])->label(false);
-                                                    ?>
-                                                </div>
-                                            </div>
-
-                                        <?php } else {
-                                            ?>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="empty-section-text">No Process Found</div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                        Pjax::end();
-                                        ?>
-                                    </div>
-                                    <input type="text" name="process_calc" id="process_calc" readonly>
-                                    <div class="divider"></div>
-                                    <div class="col-md-12 no-padd">
-                                        <div id="select_ques_err"></div>
+                                <div class="row">
+                                    <div class="col-md-12  m-padd">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <h3 class="module2-heading">Choose Questionnaire</h3>
+                                                <h3 class="module2-heading">Choose Application Process</h3>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="md-radio-inline text-right clearfix">
-                                                    <?=
-                                                    $form->field($model, 'questionnaire_selection')->inline()->radioList([
-                                                        1 => 'Add Questionnaire',
-                                                        0 => 'Skip Questionnaire',
-                                                    ], [
-                                                        'item' => function ($index, $label, $name, $checked, $value) {
-                                                            $return = '<div class="md-radio">';
-                                                            $return .= '<input type="radio" id="que' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
-                                                            $return .= '<label for="que' . $index . '">';
-                                                            $return .= '<span></span>';
-                                                            $return .= '<span class="check"></span>';
-                                                            $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                                            $return .= '</div>';
-                                                            return $return;
-                                                        }
-                                                    ])->label(false);
-                                                    ?>
-                                                </div>
-                                                <div class="pull-right c-btn-top clearfix">
-                                                    <a onclick="window.open('/account/questionnaire/create', '_blank', 'width=1200,height=900,left=200,top=100');">
-                                                        <?= Html::button('Create Questionnaire', ['class' => 'btn btn-primary btn-md custom-buttons2 custom_color-set2', 'id' => 'add']); ?>
+                                            <div class="col-md-6  ">
+                                                <div class="pull-right c-btn-top">
+                                                    <a onclick="window.open('/account/interview-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
+                                                        <?= Html::button('Create Application Process', ['class' => 'btn btn-md btn-primary custom-buttons2 custom_color-set2', 'id' => 'add2']); ?>
                                                     </a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="questionnaire_hide">
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_process']);
+                                    if (!empty($process)) {
+                                        ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <?=
+                                                $form->field($model, 'interview_process')->radioList($process, [
+                                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                                        $return .= '<div class="col-md-4 text-center">';
+                                                        $return .= '<div class="radio_questions">';
+                                                        $return .= '<div class="overlay-left"><a href="#" data-id="' . $value . '" class="text process_display">View</a></div>';
+                                                        $return .= '<div class="inputGroup process_radio">';
+                                                        $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                                        $return .= '<label for="' . $value . '">' . $label . '</label>';
+                                                        $return .= '</div>';
+                                                        $return .= '</div>';
+                                                        $return .= '</div>';
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?>
+                                            </div>
+                                        </div>
+
+                                    <?php } else {
+                                        ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="empty-section-text">No Process Found</div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    Pjax::end();
+                                    ?>
+                                </div>
+                                <input type="text" name="process_calc" id="process_calc" readonly>
+                                <div class="divider"></div>
+                                <div class="col-md-12 no-padd">
+                                    <div id="select_ques_err"></div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h3 class="module2-heading">Choose Questionnaire</h3>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="md-radio-inline text-right clearfix">
+                                                <?=
+                                                $form->field($model, 'questionnaire_selection')->inline()->radioList([
+                                                    1 => 'Add Questionnaire',
+                                                    0 => 'Skip Questionnaire',
+                                                ], [
+                                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                                        $return = '<div class="md-radio">';
+                                                        $return .= '<input type="radio" id="que' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                        $return .= '<label for="que' . $index . '">';
+                                                        $return .= '<span></span>';
+                                                        $return .= '<span class="check"></span>';
+                                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                        $return .= '</div>';
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?>
+                                            </div>
+                                            <div class="pull-right c-btn-top clearfix">
+                                                <a onclick="window.open('/account/questionnaire/create', '_blank', 'width=1200,height=900,left=200,top=100');">
+                                                    <?= Html::button('Create Questionnaire', ['class' => 'btn btn-primary btn-md custom-buttons2 custom_color-set2', 'id' => 'add']); ?>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="questionnaire_hide">
                                     <div id="que_error"></div>
                                     <?php
                                     Pjax::begin(['id' => 'pjax_questionnaire']);
@@ -661,7 +663,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return .= '<div class="col-md-9">';
                                                     $return .= '<div class="radio_questions">';
-                                                    $return .= '<div class="overlay-left"><a href="#" data-id="'.$value.'" class="text questionnaier_display">View</a></div>';
+                                                    $return .= '<div class="overlay-left"><a href="#" data-id="' . $value . '" class="text questionnaier_display">View</a></div>';
                                                     $return .= '<div class="inputGroup question_checkbox">';
                                                     $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
                                                     $return .= '<label for="' . $value . '">' . $label . '</label>';
@@ -691,7 +693,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     Pjax::end();
                                     ?>
                                     <input type="text" name="ques_calc" id="ques_calc" readonly>
-                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane" id="tab4">
                                 <div class="row">
@@ -1027,6 +1029,10 @@ $this->registerCss("
   cursor: pointer;
   font-weight: 400;
   margin-bottom:0px;
+}
+.p-category img, .checkbox-text--title img{
+    width: 80px;
+    height: 50px;
 }
 .checkbox-label-v2:before {
   content: '';
@@ -3604,7 +3610,6 @@ JS;
 
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerCssFile('https://cdn.rawgit.com/claviska/jquery-alertable/master/jquery.alertable.css');
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -3616,4 +3621,3 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://rawgit.com/claviska/jquery-alertable/master/jquery.alertable.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
