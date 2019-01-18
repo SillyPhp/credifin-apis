@@ -25,6 +25,7 @@ class JobsController extends ApiBaseController {
     public function behaviors(){
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
+            'except' => ['detail'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -36,6 +37,7 @@ class JobsController extends ApiBaseController {
         return $behaviors;
     }
 
+    
     //create, update, delete, view, index
 //    public $modelClass = 'common\models\EmployerApplications';
 
