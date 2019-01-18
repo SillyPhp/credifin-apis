@@ -36,7 +36,6 @@ class JobsController extends ApiBaseController {
         ];
         return $behaviors;
     }
-
     
     //create, update, delete, view, index
 //    public $modelClass = 'common\models\EmployerApplications';
