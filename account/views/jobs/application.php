@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use dosamigos\ckeditor\CKEditor;
 
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
@@ -544,10 +545,34 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <input type="text" name="benefit_calc" id="benefit_calc" readonly>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-10 col-md-offset-1">
-                                        <?=
-                                        $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
-                                        ?>
+                                    <div class="col-md-12">
+                                        <div class="module2-heading">
+                                            Additional Information
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <?= $form->field($model, 'othrdetail')->widget(CKEditor::className(), [
+                                            'options' => ['rows' => 6],
+                                            'preset' => 'custom',
+                                            'clientOptions' => [
+                                                'toolbar' => [
+                                                    [
+                                                        'name' => 'row1',
+                                                        'items' => [
+                                                            'Undo', 'Redo', '-',
+                                                            'Cut', 'Copy', 'Paste', '-',
+                                                            'Bold', 'Italic', 'Underline', '-',
+                                                            'NumberedList', 'BulletedList', '-',
+                                                            'ShowBlocks', 'Maximize',
+                                                        ],
+                                                    ],
+                                                ],
+                                            ],
+
+                                        ])->label(false) ?>
+                                        <!--                                    --><?//=
+                                        //                                    $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
+                                        //                                    ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>

@@ -63,7 +63,7 @@ class JobsController extends Controller
 
         $job_cards = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id as id', 'a.created_on', 'h.value as salary', 'a.slug', 'f.name as city', 'a.experience', 'a.type', 'c.name as title', 'd.name as org_name', 'd.logo', 'd.logo_location'])
+            ->select(['a.application_enc_id as id', 'a.created_on', 'h.value as salary', 'a.slug', 'f.name as city', 'a.experience', 'a.type', 'c.name as title', 'd.name as org_name', 'd.logo', 'd.logo_location', 'd.initials_color color'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')

@@ -56,7 +56,7 @@ if ($type == 'card') {
                                 } else {
                                     ?>
                                     <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>"
-                                            width="80" height="80" color="" font="35px"></canvas>
+                                            width="80" height="80" color="<?= $cards[$i]['color'] ?>" font="35px"></canvas>
                                     <?php
                                 }
                                 ?>
