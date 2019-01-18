@@ -180,6 +180,7 @@ class JobsController extends Controller
         return $this->render('list');
     }
 
+
     private function _getCardsFromJobs($options = [])
     {
         $jobcards = EmployerApplications::find()
@@ -197,6 +198,10 @@ class JobsController extends Controller
             ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
             ->where(['j.name' => $options['type'], 'a.is_deleted' => 0, 'm.option_name' => 'salary']);
+        if (isset($options['type']))
+        {
+            $jobcards->andWhere(['j.name'=>'Internships']);
+        }
         if (isset($options['company'])) {
             $jobcards->andWhere([
                 'or',

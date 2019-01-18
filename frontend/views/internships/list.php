@@ -599,7 +599,7 @@ function getJobs(type = "Internships") {
     data['type'] = type;
     $.ajax({
         method: "POST",
-        url : window.location.pathname,
+        url : '/jobs/list',
         data: data,
         beforeSend: function(){
            $('.loader-main').show();
