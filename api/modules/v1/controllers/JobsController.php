@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use yii\helpers\Url;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use common\models\ApplicationPlacementLocations;
@@ -25,7 +26,7 @@ class JobsController extends ApiBaseController {
     public function behaviors(){
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['detail'],
+            'except' => ['detail', 'list'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -36,12 +37,13 @@ class JobsController extends ApiBaseController {
         ];
         return $behaviors;
     }
-    
+
     //create, update, delete, view, index
 //    public $modelClass = 'common\models\EmployerApplications';
 
     public function actionList(){
         $parameters = \Yii::$app->request->post();
+        $result = [];
         $options = [];
         $limit = 20;
 
@@ -70,7 +72,7 @@ class JobsController extends ApiBaseController {
 
         $jobcards = EmployerApplications::find()
                     ->alias('a')
-                    ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'a.created_on', 'i.name category', 'l.designation', 'a.slug link', 'd.initials_color color', 'd.slug organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'd.logo', 'd.logo_location'])
+                    ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'a.created_on', 'i.name category', 'l.designation', 'a.slug link', 'd.initials_color color', 'd.slug organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NULL THEN NULL ELSE CONCAT("'.Yii::$app->params->upload_directories->organizations->logo.'",d.logo_location, "/", d.logo) END logo'])
                     ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                     ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
                     ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
@@ -82,6 +84,7 @@ class JobsController extends ApiBaseController {
                     ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
                     ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
                     ->where(['j.name' => $options['type'], 'a.is_deleted' => 0]);
+
 
         if (isset($options['company'])) {
             $jobcards->andWhere([
@@ -118,14 +121,19 @@ class JobsController extends ApiBaseController {
 
         $cards = $jobcards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
 
+        foreach ($cards as $jobcard) {
+            $result[] = $jobcard;
+        }
+
         if (count($cards) > 0) {
-            return $this->response(200, $cards);
+            return $this->response(200, $result);
         } else {
             return $this->response(201, 'No data found');
         }
     }
 
     public function actionDetail($id){
+        $result = [];
         $application_details = EmployerApplications::find()
                                 ->where([
                                     'application_enc_id' => $id,
@@ -138,9 +146,21 @@ class JobsController extends ApiBaseController {
 
         $organization_details = $application_details
                         ->getOrganizationEnc()
-                        ->select(['name org_name', 'initials_color color', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                        ->select(['name org_name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("'.Yii::$app->params->upload_directories->organizations->logo.'",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("'.Yii::$app->params->upload_directories->organizations->cover_image.'",cover_image_location, "/", cover_image) END cover_image'])
                         ->asArray()
                         ->one();
+
+        if($organization_details['logo']) {
+            $result['logo'] = Url::to($organization_details['logo'], true);
+        } else {
+            $result['logo'] = $organization_details['logo'];
+        }
+
+        if($organization_details['cover_image']) {
+            $result['cover_image'] = Url::to($organization_details['cover_image'], true);
+        } else {
+            $result['cover_image'] = $organization_details['cover_image'];
+        }
 
         $applied_jobs = AppliedApplications::find()
                         ->where(['application_enc_id' => $application_details->application_enc_id])
@@ -166,6 +186,8 @@ class JobsController extends ApiBaseController {
                 ->getCloneData($application_details->application_enc_id);
 
         $model = new JobApplied();
+//        return $organization_details;
+        return $result['cover_image'];
         return [
             'Organizational Details' => $organization_details,
             'applied_jobs' => $applied_jobs,

@@ -62,7 +62,7 @@ class OauthController extends ApiBaseController{
             if($user > 0) {
                 return $this->response(201, 'User already exists');
             }else{
-                return $this->response(201, "Password can't be empty");
+                return $this->response(201, "User doesn't exist");
             }
         }
         if($model->load(\Yii::$app->getRequest()->getBodyParams(), '') && $model->login()){
