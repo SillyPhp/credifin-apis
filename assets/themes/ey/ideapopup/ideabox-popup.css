@@ -547,7 +547,7 @@ Primary use : Web & Mobile
   height: 32px;
   float: right;
   margin: 0 5px;
-  background-image: url('../img/star-empty.png');
+  background-image: url('/assets/themes/ey/ideapopup/star-empty.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -558,11 +558,11 @@ Primary use : Web & Mobile
 }
 
 .i-review-star:hover, .i-review-star:hover ~ label{
-  background-image: url('../img/star-full.png') !important;
+  background-image: url('/assets/themes/ey/ideapopup/star-full.png') !important;
 }
 
 .i-review-star.i-full{
-  background-image: url('../img/star-full.png');
+  background-image: url('/assets/themes/ey/ideapopup/star-full.png');
 }
 
 /*-------------------------------------------------------------------

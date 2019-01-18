@@ -143,8 +143,9 @@ use yii\bootstrap\ActiveForm;
                                 </div>
                             </div>
                         </div>
-                        <div class="slimScrollDiv">
-                            <div class="f-ratings f-rating-box-2 scroller">
+                        <div class="row">
+                        <div class="col-md-12">
+                            <div class="f-ratings f-rating-box-2" id="industry-scroll">
                                 <div class="overall-box-heading">Industry Names </div>
                                 <div class="form-group form-md-checkboxes">
                                     <div class="md-checkbox-list">
@@ -260,6 +261,9 @@ use yii\bootstrap\ActiveForm;
                                 </div>
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
                         <div class="f-ratings f-rating-box-2">
                             <div class="overall-box-heading">Work Profile </div>
                             <div class="form-group form-md-checkboxes">
@@ -373,6 +377,8 @@ use yii\bootstrap\ActiveForm;
                                         </label>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
                             </div>
                         </div>
                     </div>
@@ -1171,14 +1177,16 @@ $this->registerCss('
 ');
 $script = <<< JS
 
-       
+     var ps = new PerfectScrollbar('#industry-scroll');   
 JS;
 $this->registerJs($script);
 
 $this->registerCssFile('@eyAssets/ideaboxpopup/ideabox-popup.css');
-$this->registerCssFile('http://www.empoweryouth.in/assets/themes/dashboard/global/css/components-md.min.css');
-//$this->registerJsFile('http://www.empoweryouth.in/assets/themes/dashboard/global/scripts/app.min.js');
+$this->registerCssFile('@backendAssets/global/css/components-md.min.css');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@eyAssets/ideaboxpopup/ideabox-popup.js');
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <!--<script type="text/javascript">
     function showSearch(){
