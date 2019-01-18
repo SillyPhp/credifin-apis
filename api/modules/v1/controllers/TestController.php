@@ -22,7 +22,6 @@ class TestController extends Controller{
         ];
         return $behaviors;
     }
-
     public function actionIndex(){
         return 'hello';
     }

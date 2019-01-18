@@ -5,18 +5,13 @@ namespace api\modules\v1\models;
 use Yii;
 use common\models\Users;
 
-class Clients extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
-
-    public static function tableName(){
-        return "{{%users}}";
-    }
+class Clients extends Users implements \yii\web\IdentityInterface{
 
     public static function findIdentity($id){
         return static::findOne([
             'id' => $id
         ]);
     }
-
     public static function findIdentityByAccessToken($token, $type=null){
         if($user=static::findOne(['access_token' => $token])){
             $expires = strtotime("+5 minute", strtotime($user->token_expiration_time));

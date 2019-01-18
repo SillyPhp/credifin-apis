@@ -26,6 +26,7 @@ class ApiBaseController extends Controller{
         echo json_encode($response);
         die();
     }
+
     private function getStatusCodeMessage($status){
         $codes = [
             //Success 2XX

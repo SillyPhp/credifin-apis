@@ -3,82 +3,176 @@
 namespace api\modules\v1\controllers;
 
 use Yii;
-use yii\filters\VerbFilter;
-use yii\helpers\Url;
-use yii\web\Response;
-//use yii\web\Controller;
-use yii\rest\ActiveController;
-//use common\models\EmployerApplications;
-//use common\models\ApplicationTypes;
-//use common\models\ApplicationOptions;
-//use common\models\ApplicationPlacementLocations;
-//use common\models\Organizations;
-//use common\models\OrganizationLocations;
-//use common\models\Categories;
-//use common\models\AssignedCategories;
-//use common\models\Cities;
+use yii\filters\auth\HttpBearerAuth;
+use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationTypes;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\Designations;
+use common\models\Industries;
+use common\models\OrganizationLocations;
+use common\models\Organizations;
+use common\models\EmployerApplications;
+use common\models\AppliedApplications;
+use common\models\UserResume;
+use common\models\ApplicationInterviewQuestionnaire;
+use common\models\InterviewProcessFields;
+use frontend\models\JobApplied;
 
-class JobsController extends ActiveController {
-    
+class JobsController extends ApiBaseController {
 
-    public function behaviors() {
-        return [
-            [
-                'class' => 'yii\filters\ContentNegotiator',
-                'formats' => [
-                    'application/json' => Response::FORMAT_JSON,
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'index' => ['GET'],
-                ],
-            ],
+    public function behaviors(){
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className()
         ];
+        $behaviors['verbs'] = [
+            'class' => \yii\filters\VerbFilter::className(),
+            'actions' => [
+                'list' => ['POST']
+            ]
+        ];
+        return $behaviors;
     }
-    
-    public $modelClass = 'api\modules\v1\models\Jobs';
 
-//    public function actions() {
-//        $actions = parent::actions();
-//        unset($actions['index'], $actions['view'], $actions['create'], $actions['update'], $actions['delete']);
-//        return $actions;
-//    }
-    
-//    public function actionIndex(){
-//        $jobs = new \api\modules\v1\models\Jobs();
-//        return $jobs->getJobs();
-//    }
+    //create, update, delete, view, index
+//    public $modelClass = 'common\models\EmployerApplications';
 
-    public function actionJobCard() {
-        Yii::$app->response->format = Response::FORMAT_HTML;
-        $application_id = Yii::$app->request->get('application');
-        $details = EmployerApplications::find()
-                ->alias('a')
-                ->select(['c.name category', 'CONCAT("'.Url::to('@commonAssets/categories/').'", d.icon) icon', 'e.name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("http://www.eygb.co/", "'.Url::to(Yii::$app->params->upload_directories->organizations->logo, false) .'", e.logo_location, "/", e.logo) ELSE CONCAT("https://ui-avatars.com/api/?", "size=200&rounded=false&color=000000&name=", e.name) END logo'])
-                ->innerJoin(AssignedCategories::tableName() . ' b', 'b.assigned_category_enc_id = a.title')
-                ->innerJoin(Categories::tableName() . ' c', 'b.category_enc_id = c.category_enc_id')
-                ->innerJoin(Categories::tableName() . ' d', 'd.category_enc_id = b.parent_enc_id')
-                ->innerJoin(Organizations::tableName() . ' e', 'e.organization_enc_id = a.organization_enc_id')
-                ->where(['a.application_enc_id' => $application_id, 'e.is_deleted' => 0])
-                ->asArray()
-                ->one();
-        
-        if($details && !empty(Yii::$app->request->post('image'))) {
-            $data = $_POST['photo'];
-    list($type, $data) = explode(';', $data);
-    list(, $data)      = explode(',', $data);
-    $data = base64_decode($data);
-    mkdir($_SERVER['DOCUMENT_ROOT'] . "/photos");
-    file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/photos/".time().'.png', $data);
-    die;  
+    public function actionList(){
+        $parameters = \Yii::$app->request->post();
+        $options = [];
+        $limit = 20;
+
+        if ($parameters['page'] && (int)$parameters['page'] >= 1) {
+            $page = $parameters['page'];
+        } else {
+            $page = 1;
         }
-        if ($details) {
-            return $this->renderPartial('og-image', [
-                    'details' => $details,
+
+        $options['limit'] = $limit;
+        $options['offset'] = ($page - 1) * $limit;
+
+        if ($parameters['location'] && !empty($parameters['location'])) {
+            $options['location'] = $parameters['location'];
+        }
+
+        if ($parameters['keyword'] && !empty($parameters['keyword'])) {
+            $options['keyword'] = $parameters['keyword'];
+        }
+
+        if ($parameters['company'] && !empty($parameters['company'])) {
+            $options['company'] = $parameters['company'];
+        }
+
+        $options['type'] = 'Jobs';
+
+        $jobcards = EmployerApplications::find()
+                    ->alias('a')
+                    ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'a.created_on', 'i.name category', 'l.designation', 'a.slug link', 'd.initials_color color', 'd.slug organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'd.logo', 'd.logo_location'])
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+                    ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+                    ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
+                    ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
+                    ->innerJoin(ApplicationPlacementLocations::tablename() . 'as e', 'e.application_enc_id = a.application_enc_id')
+                    ->innerJoin(OrganizationLocations::tablename() . 'as f', 'f.location_enc_id = e.location_enc_id')
+                    ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
+                    ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
+                    ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                    ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
+                    ->where(['j.name' => $options['type'], 'a.is_deleted' => 0]);
+
+        if (isset($options['company'])) {
+            $jobcards->andWhere([
+                'or',
+                ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
+
+        if (isset($options['location'])) {
+            $jobcards->andWhere([
+                'or',
+                ['g.name' => $options['location']]
+            ]);
+        }
+
+        if (isset($options['keyword'])) {
+            $jobcards->andWhere([
+                'or',
+                ['like', 'l.designation', $options['keyword']],
+                ['like', 'a.type', $options['keyword']],
+                ['like', 'c.name', $options['keyword']],
+                ['like', 'h.industry', $options['keyword']],
+                ['like', 'i.name', $options['keyword']],
+            ]);
+        }
+
+        if (isset($options['limit'])) {
+            $jobcards->limit = $options['limit'];
+        }
+
+        if (isset($options['offset'])) {
+            $jobcards->offset = $options['offset'];
+        }
+
+        $cards = $jobcards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+
+        if (count($cards) > 0) {
+            return $this->response(200, $cards);
+        } else {
+            return $this->response(201, 'No data found');
+        }
+    }
+
+    public function actionDetail($id){
+        $application_details = EmployerApplications::find()
+                                ->where([
+                                    'application_enc_id' => $id,
+                                    'is_deleted' => 0
+                                ])
+                                ->one();
+        if (!$application_details) {
+            return $this->response(201, 'No data found');
+        }
+
+        $organization_details = $application_details
+                        ->getOrganizationEnc()
+                        ->select(['name org_name', 'initials_color color', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                        ->asArray()
+                        ->one();
+
+        $applied_jobs = AppliedApplications::find()
+                        ->where(['application_enc_id' => $application_details->application_enc_id])
+                        ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                        ->exists();
+
+        $resume = UserResume::find()
+                    ->select(['user_enc_id', 'resume_enc_id', 'title'])
+                    ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                    ->asArray()
+                    ->all();
+
+        $application_questionnaire = ApplicationInterviewQuestionnaire::find()
+                    ->alias('a')
+                    ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
+                    ->where(['a.application_enc_id' => $application_details->application_enc_id])
+                    ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
+                    ->andWhere(['b.field_name' => 'Get Applications'])
+                    ->exists();
+
+        $object = new \account\models\jobs\JobApplicationForm();
+        $data = $object
+                ->getCloneData($application_details->application_enc_id);
+
+        $model = new JobApplied();
+        return [
+            'Organizational Details' => $organization_details,
+            'applied_jobs' => $applied_jobs,
+            'resume' => $resume,
+            'Application Questionnaire' => $application_questionnaire,
+            'data' => $data,
+            'model' => $model
+        ];
     }
 
 }
