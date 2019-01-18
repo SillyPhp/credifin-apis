@@ -98,8 +98,8 @@ class JobsController extends Controller
                 ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                 ->execute();
             $count = AppliedApplicationProcess::find()
-                ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active','COUNT(is_completed) as total'])
-                ->where(['applied_application_enc_id'=>$app_id])
+                ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active', 'COUNT(is_completed) as total'])
+                ->where(['applied_application_enc_id' => $app_id])
                 ->asArray()
                 ->one();
             if ($update == 1) {
@@ -107,10 +107,9 @@ class JobsController extends Controller
                     'status' => true,
                     'active' => $count['active']
                 ];
-                if($count['active']==$count['total'])
-                {
+                if ($count['active'] == $count['total']) {
                     $update_status = Yii::$app->db->createCommand()
-                        ->update(AppliedApplications::tableName(), ['status' => 'Hired' , 'last_updated_on' => date('Y-m-d h:i:s') , 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
                         ->execute();
                 }
                 return json_encode($response);
@@ -120,11 +119,12 @@ class JobsController extends Controller
         }
     }
 
-    public function actionRejectCandidate() {
+    public function actionRejectCandidate()
+    {
         if (Yii::$app->request->isAjax) {
             $id = Yii::$app->request->post('app_id');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Rejected' , 'last_updated_on' => date('Y-m-d h:i:s') , 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                ->update(AppliedApplications::tableName(), ['status' => 'Rejected', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
                 ->execute();
             if ($update == 1) {
                 return true;
@@ -284,7 +284,7 @@ class JobsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -340,7 +340,7 @@ class JobsController extends Controller
     {
         $accepted_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active','SUM(k.positions) as positions'])
+            ->select(['g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -364,21 +364,21 @@ class JobsController extends Controller
     public function actionPending()
     {
         $pending_applications = AppliedApplications::find()
-                ->alias('a')
-                ->select(['a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
-                ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending'])
-                ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-                ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-                ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-                ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-                ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-                ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-                ->groupBy(['b.application_enc_id'])
-                ->orderBy(['a.id' => SORT_DESC])
-                ->asArray()
-                ->all();
+            ->alias('a')
+            ->select(['a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending'])
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->groupBy(['b.application_enc_id'])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
 
 
         return $this->render('individual/pending-jobs', [
@@ -735,26 +735,14 @@ class JobsController extends Controller
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
             ->all();
-//        $candidate_applications = AppliedApplications::find()
-//                ->alias('a')
-//                ->select(['SQL_CALC_FOUND_ROWS (0)', 'a.applied_application_enc_id', 'a.id', 'a.created_by', 'b.application_enc_id', 'b.organization_enc_id', 'd.name as title', 'e.first_name', 'e.last_name', 'e.image', 'e.image_location'])
-//                ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-//                ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-//                ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-//                ->innerJoin(Users::tableName() . 'as e', 'e.user_enc_id = a.created_by')
-//                ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-//                ->groupBy(['a.applied_application_enc_id'])
-//                ->limit($limit)
-//                ->asArray()
-//                ->all();
 
         $total_applications = AppliedApplications::find()
             ->alias('a')
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName().'as f','f.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = b.application_type_enc_id')
             ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['b.is_deleted'=>0])
-            ->andWhere(['f.name'=>'Jobs'])
+            ->andWhere(['b.is_deleted' => 0])
+            ->andWhere(['f.name' => 'Jobs'])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Users::tableName() . 'as e', 'e.user_enc_id = a.created_by')
@@ -769,18 +757,6 @@ class JobsController extends Controller
 
     public function actionJobCard($cidk)
     {
-//        return Url::to(Yii::$app->params->upload_directories->employer_application->image . $application->image_location . DIRECTORY_SEPARATOR . $application->image, true);
-//        $details = EmployerApplications::find()
-//                ->alias('a')
-//                ->select(['c.name category', 'CONCAT("' . Url::to('@commonAssets/categories/') . '", d.icon_png) icon', 'e.name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", e.logo_location, "/", e.logo) ELSE NULL) END logo'])
-//                ->innerJoin(AssignedCategories::tableName() . ' b', 'b.assigned_category_enc_id = a.title')
-//                ->innerJoin(Categories::tableName() . ' c', 'b.category_enc_id = c.category_enc_id')
-//                ->innerJoin(Categories::tableName() . ' d', 'd.category_enc_id = b.parent_enc_id')
-//                ->innerJoin(Organizations::tableName() . ' e', 'e.organization_enc_id = a.organization_enc_id')
-//                ->where(['a.application_enc_id' => $application_id, 'e.is_deleted' => 0])
-//                ->asArray()
-//                ->one();
-
         $category = AssignedCategories::find()
             ->alias('a')
             ->select(['b.name',
@@ -792,58 +768,41 @@ class JobsController extends Controller
             ->asArray()
             ->one();
 
-//        $organization = Organizations::findOne([
-//            'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-//            'is_deleted' => 0,
-//        ]);
-
-//        print_r($category);
-//        exit;
-
         if ($category) {
+            if (Yii::$app->request->post('image')) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $image = Yii::$app->request->post('image');
+                $image_parts = explode(";base64,", $image);
+                $image_base64 = base64_decode($image_parts[1]);
+                $utilitiesModel = new Utilities();
+                $image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $image = $utilitiesModel->encrypt() . '.png';
+                if (!is_dir($base_path)) {
+                    if (!mkdir($base_path, 0755, true)) {
+                        return [
+                            'status' => 201,
+                        ];
+                    }
+                }
+
+                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
+                    return [
+                        'status' => 200,
+                        'image_location' => $image_location,
+                        'image' => $image,
+                    ];
+                }
+            }
             return $this->renderPartial('og-image', [
                 'category' => $category,
             ]);
+        } else {
+            return [
+                'status' => 201,
+            ];
         }
-
-//        if ($details && !empty(Yii::$app->request->post('image'))) {
-//            Yii::$app->response->format = Response::FORMAT_JSON;
-//            $image = Yii::$app->request->post('image');
-//            $image_parts = explode(";base64,", $image);
-//            $image_base64 = base64_decode($image_parts[1]);
-//            $utilitiesModel = new Utilities();
-//            $application = EmployerApplications::find()
-//                    ->where(['application_enc_id' => $application_id])
-//                    ->one();
-//            if ($application) {
-//                $application->image_location = Yii::$app->getSecurity()->generateRandomString();
-//                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $application->image_location;
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $application->image = $utilitiesModel->encrypt() . '.png';
-//                if (!is_dir($base_path)) {
-//                    if (!mkdir($base_path, 0755, true)) {
-//                        return false;
-//                    }
-//                }
-//
-//                if (!file_put_contents($base_path . DIRECTORY_SEPARATOR . $application->image, $image_base64)) {
-//                    return false;
-//                }
-//
-//                if ($application->validate() && $application->save()) {
-//                    return true;
-//                } else {
-//                    return false;
-//                }
-//            } else {
-//                return false;
-//            }
-//        }
-//        if ($details) {
-//            return $this->renderPartial('og-image', [
-//                        'details' => $details,
-//            ]);
-//        }
     }
 
 }
