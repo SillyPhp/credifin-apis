@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
     ?>
     <div class="widget-row">
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/jobs/reviewed') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/internships/reviewed') ?>">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
                 </div>
@@ -23,7 +23,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/jobs/shortlisted') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/internships/shortlisted') ?>">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
@@ -36,7 +36,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/jobs/applied') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/internships/applied') ?>">
                 <div class="visual">
                     <i class="fa fa-shopping-cart"></i>
                 </div>
@@ -49,7 +49,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/jobs/accepted') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/internships/accepted') ?>">
                 <div class="visual">
                     <i class="fa fa-globe"></i>
                 </div>
@@ -61,7 +61,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/jobs/pending') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/internships/pending') ?>">
                 <div class="visual">
                     <i class="fa fa-globe"></i>
                 </div>
@@ -119,18 +119,18 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line text-center">
                 <div class="caption col-lg-11">
                     <ul class="tabs" id="head-tabs">
-                        <li data-tab="tab-1" data-url="/account/jobs/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
+                        <li data-tab="tab-1" data-url="/account/internships/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li> 
+                        <li data-tab="tab-2" data-url="/account/internships/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li>
                         |
-                        <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
+                        <li data-tab="tab-3" data-url="/account/internships/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
-                        <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
+                        <li data-tab="tab-4" data-url="/account/internships/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
 
                     </ul>
                 </div>
                 <div class="actions col-lg-1">
-                    <a href="/account/jobs/reviewed" class="viewall-jobs" id="view-all">View All</a>
+                    <a href="/account/internships/reviewed" class="viewall-jobs" id="view-all">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -582,7 +582,7 @@ $("ul[id*=head-tabs] li").click(function(){
 $(document).on('click','#shortlist',function(){
    var app_id = $(this).attr('value');
     $.ajax({
-        url:'/account/jobs/shortlist-job',
+        url:'/account/internships/shortlist-job',
         data: {app_id:app_id},
         method: 'post',
         success:function(data){
@@ -618,7 +618,7 @@ function Ajax_call(rmv_id,url,pjax_refresh_id)
         
 $(document).on('click','.rmv_list',function()
     {
-      var  url = '/account/jobs/shortlist-delete';
+      var  url = '/account/internships/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
       Ajax_call(rmv_id,url,pjax_refresh_id);
@@ -626,7 +626,7 @@ $(document).on('click','.rmv_list',function()
         
 $(document).on('click','.rmv_review',function()
     {
-      var  url = '/account/jobs/review-delete';
+      var  url = '/account/internships/review-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_review';
       Ajax_call(rmv_id,url,pjax_refresh_id);
@@ -634,7 +634,7 @@ $(document).on('click','.rmv_review',function()
         
 $(document).on('click','.rmv_org',function()
     {
-      var  url = '/account/jobs/org-delete';
+      var  url = '/account/internships/org-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_org';
       Ajax_call(rmv_id,url,pjax_refresh_id);
