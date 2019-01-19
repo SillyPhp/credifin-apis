@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-use dosamigos\ckeditor\CKEditor;
+//use dosamigos\ckeditor\CKEditor;
 
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
@@ -551,28 +551,27 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'othrdetail')->widget(CKEditor::className(), [
-                                            'options' => ['rows' => 6],
-                                            'preset' => 'custom',
-                                            'clientOptions' => [
-                                                'toolbar' => [
-                                                    [
-                                                        'name' => 'row1',
-                                                        'items' => [
-                                                            'Undo', 'Redo', '-',
-                                                            'Cut', 'Copy', 'Paste', '-',
-                                                            'Bold', 'Italic', 'Underline', '-',
-                                                            'NumberedList', 'BulletedList', '-',
-                                                            'ShowBlocks', 'Maximize',
-                                                        ],
-                                                    ],
-                                                ],
-                                            ],
-
-                                        ])->label(false) ?>
-                                        <!--                                    --><?//=
-                                        //                                    $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
-                                        //                                    ?>
+<!--                                        --><?//= $form->field($model, 'othrdetail')->widget(CKEditor::className(), [
+//                                            'options' => ['rows' => 6],
+//                                            'preset' => 'custom',
+//                                            'clientOptions' => [
+//                                                'toolbar' => [
+//                                                    [
+//                                                        'name' => 'row1',
+//                                                        'items' => [
+//                                                            'Undo', 'Redo', '-',
+//                                                            'Cut', 'Copy', 'Paste', '-',
+//                                                            'Bold', 'Italic', 'Underline', '-',
+//                                                            'NumberedList', 'BulletedList', '-',
+//                                                            'ShowBlocks', 'Maximize',
+//                                                        ],
+//                                                    ],
+//                                                ],
+//                                            ],
+//
+//                                        ])->label(false) ?>
+                                        <?= $form->field($model, 'othrdetail')->textarea(['rows' => 6, 'cols' => 50])->label(false);
+                                        ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>
@@ -722,13 +721,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             </div>
                             <div class="tab-pane" id="tab4">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <h3 class="module2-heading">Walk In Interview Details </h3>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="md-radio-inline">
+                                    <div class="col-md-6 pull-right">
+                                        <div class="md-radio-inline text-right clearfix">
                                             <?=
                                             $form->field($model, 'interradio')->inline()->radioList([
                                                 1 => 'Yes',
@@ -1005,7 +1002,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
     </div>
 
     <div class="fader"></div>
-
 <?php
 $this->registerCss("
 .md-radio-inline.text-right.clearfix{padding-top:20px;}
@@ -1202,6 +1198,7 @@ textarea{
     font-size: 22px;
     padding: 20px 0 0 0;
     color: #00a0e3; 
+    margin-top:5px;
     font-weight: initial;
 }
 .has-success .md-radio label, .has-success.md-radio label {
@@ -2274,6 +2271,12 @@ height:17px !important;
 .place_no{
     text-align: center !important;
     border: 1px solid #ddd !important;
+}
+.ck-editor__editable {
+    min-height: 200px !important;
+}
+:host ::ng-deep .ck-editor__editable {
+    min-height: 200px !important;
 }
 ");
 
@@ -3631,6 +3634,14 @@ var ps = new PerfectScrollbar('#md-checkbox');
 var ps = new PerfectScrollbar('#quali_list');        
 var ps = new PerfectScrollbar('#suggestionbox');        
 var ps = new PerfectScrollbar('.placeble-area');
+ ClassicEditor
+    .create( document.querySelector( '#othrdetail' ), {
+        removePlugins: [ 'Heading', 'Link' ],
+        toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
+    }  )
+    .catch( error => {
+        console.error( error );
+    } );
 JS;
 
 $this->registerJs($script);
@@ -3646,3 +3657,4 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
