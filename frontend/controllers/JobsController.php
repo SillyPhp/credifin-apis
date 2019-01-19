@@ -200,7 +200,7 @@ class JobsController extends Controller
             ->where(['j.name' => $options['type'], 'a.is_deleted' => 0, 'm.option_name' => 'salary']);
         if (isset($options['type']))
         {
-            $jobcards->andWhere(['j.name'=>'Internships']);
+            $jobcards->andWhere(['j.name'=> $options['type']]);
         }
         if (isset($options['company'])) {
             $jobcards->andWhere([
