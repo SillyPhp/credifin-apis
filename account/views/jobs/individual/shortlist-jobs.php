@@ -36,6 +36,9 @@ use yii\widgets\Pjax;
                                                         <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
                                                     </div>
                                                     <div class="hr-com-name">
+                                                        <?= $shortlist['org_name']; ?>
+                                                    </div>
+                                                    <div class="hr-com-field">
                                                         <?= $shortlist['name']; ?>
                                                     </div>
                                                     <div class="opening-txt">
