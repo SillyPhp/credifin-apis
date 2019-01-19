@@ -37,10 +37,23 @@ $this->params['header_dark'] = false;
                 <div class="row">
                 <div class="showcase-subparts">
                     <div class="col-md-4">
+                        <div class="showcase-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
+                        </div>
                         Create Company Profile
                     </div>
-                    <div class="col-md-4">Hiring Posters</div>
-                    <div class="col-md-4">Responsiveness to Candidates</div>
+                    <div class="col-md-4">
+                        <div class="showcase-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hiring.png')?>">
+                        </div>
+                        Hiring Posters
+                    </div>
+                    <div class="col-md-4">
+                        <div class="showcase-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/responsive.png.png')?>">
+                        </div>
+                        Responsiveness to Candidates
+                    </div>
                 </div>
             </div>
         </div>
