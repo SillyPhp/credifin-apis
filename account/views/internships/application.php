@@ -12,7 +12,7 @@ use dosamigos\ckeditor\CKEditor;
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
 $process = ArrayHelper::map($process_list, 'interview_process_enc_id', 'process_name');
-$benefits = ArrayHelper::map($benefit, 'benefit_enc_id', 'benefit');
+$benefits = ArrayHelper::index($benefit, 'benefit_enc_id');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
@@ -524,7 +524,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                         <div class="button_location pull-right clearfix">
-                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -540,16 +540,19 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 <?=
                                                 $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                                                     'item' => function ($index, $label, $name, $checked, $value) {
+                                                        if (empty($label['icon'])) {
+                                                            $label['icon'] = 'plus-icon.svg';
+                                                        }
                                                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                                                         $return .= '<div class="p-category">';
-                                                        $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                                        $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                                        $return .= '<input type="checkbox" id="benefit' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                                        $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<i class="fa fa-user"></i>';
+                                                        $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
-                                                        $return .= $label;
+                                                        $return .= $label['benefit'];
                                                         $return .= '</span>';
                                                         $return .= '</div>';
                                                         $return .= '</label>';
@@ -1027,7 +1030,10 @@ $this->registerCss("
 .radio_questions:hover .overlay-left {
   width: 130px;
 }
-
+.p-category img, .checkbox-text--title img {
+    width: 80px;
+    height: 50px;
+}
 .text {
   color: white;
   font-size: 15px;
