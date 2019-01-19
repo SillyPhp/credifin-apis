@@ -30,6 +30,18 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
             </div>
         </div>
     </div>
+
+    <div class="modal fade bs-modal-lg in" id="modal_benefit" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="portlet light" id="form_wizard_1">
             <div class="portlet-title">
@@ -496,15 +508,17 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                         <div class="button_location pull-right clearfix">
-                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-benefit']); ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
                                 <div id="benefits_hide">
-                                    <div id="b_error"></div>
                                     <?php
                                     Pjax::begin(['id' => 'pjax_benefits']);
+                                    ?>
+                                    <div id="b_error"></div>
+                                    <?php
                                     if (!empty($benefits)) {
                                         ?>
                                         <div class="cat-sec">
@@ -517,11 +531,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                         }
                                                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                                                         $return .= '<div class="p-category">';
-                                                        $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                                        $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                                        $return .= '<input type="checkbox" id="benefit' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                                        $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<img src="' . Url::to("@commonAssets/employee_benefits/" . $label['icon']) . '">';
+                                                        $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
                                                         $return .= $label['benefit'];
@@ -2278,6 +2292,20 @@ height:17px !important;
 ");
 
 $script = <<< JS
+// $(document).on("click", '.p-category label', function(){
+//     var checkedbox = $(this).prev('input');
+//     if(!checkedbox.prop("checked")){
+//         console.log('checked');
+//         $(this).prev('input').attr('checked', 'checked');
+//     }
+//     else{
+//         console.log('unchecked');
+//         $(this).prev('input').prop('checked', false);
+//     } 
+//     console.log(check);
+//     $(this).closest('input').attr('checked', 'checked');
+//  })
+
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2784,6 +2812,10 @@ $('#designations').typeahead(null, {
     $('.desig_wrapper .Typeahead-spinner').hide();
   });  
 $(document).on('click', '.modal-load-class', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
+
+$(document).on('click', '.modal-load-benefit', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
 
