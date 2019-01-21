@@ -164,7 +164,7 @@ use yii\helpers\Url;
                         <div class="benifit-heading">Unquestionable <span>Reputation</span> </div>
                         <div class=""> Consumers share their experiences, unveiling the working atmosphere.
                             Know more by going through and make a right choice.</div>
-                        <div class="benifit-bttn"><a href="/site/review-index">Read Reviews</a></div>
+                        <div class="benifit-bttn"><a href="/site/review-company-list">Read Reviews</a></div>
                     </div>
                     <div class="col-md-4">
                         <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
@@ -180,7 +180,7 @@ use yii\helpers\Url;
                         <div class="benifit-heading">Perception <span>overview</span></div>
                         <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
                             Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
-                        <div class="benifit-bttn"><a href="/site/ndex">Read Reviews</a></div>
+                        <div class="benifit-bttn"><a href="/site/review-company-list">Read Reviews</a></div>
                     </div>
                 </div>
             </div>
@@ -362,7 +362,7 @@ $this->registerCss('
 .fivestar-box{
     border-bottom:2px solid #fd7100;
 }
-.fivestar-box:hover{
+.fivestar-box:hover, .fourstar-box:hover, .threestar-box:hover, twostar-box:hover, onestar-box:hover{
     box-shadow: 0 0 13px rgba(120, 120, 120, 0.2);
 }
 .fivestar-box:hover .com-name {
