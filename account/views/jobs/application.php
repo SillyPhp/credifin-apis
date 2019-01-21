@@ -7,7 +7,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-//use dosamigos\ckeditor\CKEditor;
 
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
@@ -16,16 +15,15 @@ $benefits = ArrayHelper::index($benefit, 'benefit_enc_id');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
-
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
                          alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
@@ -35,9 +33,9 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
                          alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
@@ -535,7 +533,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                         $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
+                                                        $return .= '<img src="' . Url::to('/assets/icons/') . $label["icon_location"] . '/' . $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
                                                         $return .= $label['benefit'];
@@ -565,25 +563,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-<!--                                        --><?//= $form->field($model, 'othrdetail')->widget(CKEditor::className(), [
-//                                            'options' => ['rows' => 6],
-//                                            'preset' => 'custom',
-//                                            'clientOptions' => [
-//                                                'toolbar' => [
-//                                                    [
-//                                                        'name' => 'row1',
-//                                                        'items' => [
-//                                                            'Undo', 'Redo', '-',
-//                                                            'Cut', 'Copy', 'Paste', '-',
-//                                                            'Bold', 'Italic', 'Underline', '-',
-//                                                            'NumberedList', 'BulletedList', '-',
-//                                                            'ShowBlocks', 'Maximize',
-//                                                        ],
-//                                                    ],
-//                                                ],
-//                                            ],
-//
-//                                        ])->label(false) ?>
                                         <?= $form->field($model, 'othrdetail')->textarea(['rows' => 6, 'cols' => 50])->label(false);
                                         ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>

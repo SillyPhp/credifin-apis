@@ -23,8 +23,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
@@ -549,7 +548,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                         $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
+                                                        $return .= '<img src="' . Url::to('/assets/icons/') . $label["icon_location"] . '/' . $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
                                                         $return .= $label['benefit'];
@@ -598,9 +597,9 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ],
 
                                         ])->label(false) ?>
-<!--                                        --><?//=
-//                                        $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
-//                                        ?>
+                                        <!--                                        --><? //=
+                                        //                                        $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
+                                        //                                        ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>
