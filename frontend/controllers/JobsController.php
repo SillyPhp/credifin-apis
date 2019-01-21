@@ -358,7 +358,7 @@ class JobsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $int_loc = [];
+            $int_loc = '';
             if (!empty($object->interviewcity)) {
                 foreach ($object->interviewcity as $id) {
                     $int_arr = OrganizationLocations::find()
