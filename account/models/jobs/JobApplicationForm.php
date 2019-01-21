@@ -698,11 +698,11 @@ class JobApplicationForm extends Model
 
     public function getBenefits()
     {
-        $benefits = OrganizationEmployeeBenefits::find()
+        $benefits =  OrganizationEmployeeBenefits::find()
             ->alias('a')
-            ->select(['a.benefit_enc_id', 'b.benefit', 'b.icon', 'b.icon_location'])
-            ->joinWith(['benefitEnc b'], false)
-            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->select(['a.benefit_enc_id','b.benefit','b.icon','b.icon_location'])
+            ->joinWith(['benefitEnc b'],false)
+            ->where(['a.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id])
             ->asArray()
             ->all();
         return $benefits;

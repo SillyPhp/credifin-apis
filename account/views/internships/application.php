@@ -27,6 +27,17 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
             </div>
         </div>
     </div>
+    <div class="modal fade bs-modal-lg in" id="modal_benefit" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="portlet light" id="form_wizard_1">
             <div class="portlet-title">
@@ -128,7 +139,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
                                                     $return .= '<label for="sti' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -283,7 +294,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
                                                     $return .= '<label for="pre' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -743,13 +754,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             </div>
                             <div class="tab-pane" id="tab4">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <h3 class="module2-heading">Walk In Interview Details </h3>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="md-radio-inline">
+                                    <div class="col-md-6 pull-right">
+                                        <div class="md-radio-inline text-right clearfix">
                                             <?=
                                             $form->field($model, 'interradio')->inline()->radioList([
                                                 1 => 'Yes',
@@ -1206,7 +1215,8 @@ textarea{
     text-transform: uppercase;
     font-size: 22px;
     padding: 20px 0 0 0;
-    color: #00a0e3; 
+    color: #00a0e3;
+    margin-top:5px;
     font-weight: initial;
 }
 .has-success .md-radio label, .has-success.md-radio label {
@@ -2884,7 +2894,11 @@ $('#designations').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.desig_wrapper .Typeahead-spinner').hide();
   });  
+
 $(document).on('click', '.modal-load-class', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
+$(document).on('click', '.modal-load-benefit', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
 
@@ -3585,7 +3599,7 @@ function init() {
                     } else if (input.is("select")) {
                         $(this).html(input.find('option:selected').text());
                     } else if (input.is(":radio") && input.is(":checked")) {
-                        $(this).html(input.attr("data-title"));
+                        $(this).html(input.attr("data-name"));
                     } 
                   else if ($(this).attr("data-display") == 'checkbox[]') {
                    var arr_val = [];
