@@ -1141,7 +1141,7 @@ $('#establishment_year').editable({
     toggle: 'manual',
     combodate: {
         minYear: 1956,
-        maxYear: 2018,
+        maxYear: 2019,
     }
 });
 
