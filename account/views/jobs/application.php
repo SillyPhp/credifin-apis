@@ -115,14 +115,22 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     </div>
                                     <div class="col-md-4">
                                         <div class="cat_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <div class="load-suggestions Typeahead-spinner">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
                                             <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="desig_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <div class="load-suggestions Typeahead-spinner">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
                                             <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
                                         </div>
 
@@ -357,7 +365,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-6">
                                         <div id="manual_questions">
                                             <div class="descrip_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <div class="load-suggestions Typeahead-spinner">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
                                                 <input type="text" class="form-control" maxlength="150"
                                                        id="question_field"
                                                        placeholder="Type Custom Job Description And Press Enter.">
@@ -402,7 +414,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-6">
                                         <div id="manual_questions">
                                             <div class="edu_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <div class="load-suggestions Typeahead-spinner">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
                                                 <input type="text" class="form-control" maxlength="150" id="quali_field"
                                                        placeholder="Type custom educational requirements and press enter.">
                                             </div>
@@ -444,7 +460,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="skill_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <div class="load-suggestions Typeahead-spinner">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
                                                     <input type="text" id="inputfield" name="inputfield"
                                                            class="form-control"
                                                            placeholder="Type required skills and press enter.">
@@ -1490,13 +1510,6 @@ display:none;
 .tt-suggestion p {
   margin: 0;
 }
-.cat_wrapper .Typeahead-spinner, .desig_wrapper .Typeahead-spinner {
-    position: absolute;
-    right: 20px;
-    bottom: 46px;
-    display: none;
-    font-size: 22px;
-}
 
 .empty-message {
 
@@ -1508,16 +1521,13 @@ display:none;
 margin-bottom:8px;
 }
 
-.skill_wrapper .Typeahead-spinner,.descrip_wrapper .Typeahead-spinner,.edu_wrapper .Typeahead-spinner
-{
-    position: absolute;
-    top: 10px;
-    z-index: 999;
-    right: 20px;
-    display:none;
-    font-size:22px;
+.skill_wrapper .Typeahead-spinner,.descrip_wrapper .Typeahead-spinner,.edu_wrapper .Typeahead-spinner{
+    top: -16px;
+    z-index: 99;
 }
-
+#jobtitle, #designations, #inputfield, #quali_field, #question_field{
+    padding-right:60px;
+}
 .Typeahead-input {
     position: relative;
     background-color: transparent;
@@ -2270,6 +2280,49 @@ height:17px !important;
 :host ::ng-deep .ck-editor__editable {
     min-height: 200px !important;
 }
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ");
 
 $script = <<< JS
