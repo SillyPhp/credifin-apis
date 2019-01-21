@@ -7,24 +7,21 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-use dosamigos\ckeditor\CKEditor;
 
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
 $process = ArrayHelper::map($process_list, 'interview_process_enc_id', 'process_name');
-$benefits = ArrayHelper::map($benefit, 'benefit_enc_id', 'benefit');
+$benefits = ArrayHelper::index($benefit, 'benefit_enc_id');
 $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
-
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
@@ -524,7 +521,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                         <div class="button_location pull-right clearfix">
-                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -540,16 +537,19 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 <?=
                                                 $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                                                     'item' => function ($index, $label, $name, $checked, $value) {
+                                                        if (empty($label['icon'])) {
+                                                            $label['icon'] = 'plus-icon.svg';
+                                                        }
                                                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                                                         $return .= '<div class="p-category">';
-                                                        $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                                        $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                                        $return .= '<input type="checkbox" id="benefit' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                                        $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<i class="fa fa-user"></i>';
+                                                        $return .= '<img src="' . Url::to('/assets/icons/') . $label["icon_location"] . '/' . $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
-                                                        $return .= $label;
+                                                        $return .= $label['benefit'];
                                                         $return .= '</span>';
                                                         $return .= '</div>';
                                                         $return .= '</label>';
@@ -576,28 +576,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'othrdetail')->widget(CKEditor::className(), [
-                                            'options' => ['rows' => 6],
-                                            'preset' => 'custom',
-                                            'clientOptions' => [
-                                                'toolbar' => [
-                                                    [
-                                                        'name' => 'row1',
-                                                        'items' => [
-                                                            'Undo', 'Redo', '-',
-                                                            'Cut', 'Copy', 'Paste', '-',
-                                                            'Bold', 'Italic', 'Underline', '-',
-                                                            'NumberedList', 'BulletedList', '-',
-                                                            'ShowBlocks', 'Maximize',
-                                                        ],
-                                                    ],
-                                                ],
-                                            ],
-
-                                        ])->label(false) ?>
-<!--                                        --><?//=
-//                                        $form->field($model, 'othrdetail')->textarea(['rows' => 4, 'cols' => 50])->label('Any Other Detail(optional)');
-//                                        ?>
+                                        <?= $form->field($model, 'othrdetail')->textarea(['rows' => 6, 'cols' => 50])->label(false); ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>
@@ -1027,7 +1006,10 @@ $this->registerCss("
 .radio_questions:hover .overlay-left {
   width: 130px;
 }
-
+.p-category img, .checkbox-text--title img {
+    width: 80px;
+    height: 50px;
+}
 .text {
   color: white;
   font-size: 15px;
@@ -2969,7 +2951,7 @@ $(document).on('click', '.modal-load-class', function() {
                     function explode(){
                      $('#loading_img').removeClass('show');
                      $('.button-submit').prop('disabled','');
-                     window.location.replace('/account/jobs/dashboard'); 
+                     window.location.replace('/account/internships/dashboard'); 
                      }
                        setTimeout(explode, 3000); 
                      }
@@ -3718,6 +3700,15 @@ var ps = new PerfectScrollbar('#md-checkbox');
 var ps = new PerfectScrollbar('#quali_list');        
 var ps = new PerfectScrollbar('#suggestionbox');        
 var ps = new PerfectScrollbar('.placeble-area');
+
+ClassicEditor
+    .create( document.querySelector( '#othrdetail' ), {
+        removePlugins: [ 'Heading', 'Link' ],
+        toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
+    }  )
+    .catch( error => {
+        console.error( error );
+    } );
 JS;
 
 $this->registerJs($script);
@@ -3733,3 +3724,4 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

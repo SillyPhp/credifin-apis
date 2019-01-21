@@ -51,7 +51,7 @@ $this->beginPage();
                                     <div class="<?= (isset($this->params['grid_size']) ? $this->params['grid_size'] : 'col-md-6 col-md-push-3'); ?>">
                                         <div class="text-center col-md-12 mb-60">
                                             <a href="/">
-                                                <img width="50%" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                                <img width="275px" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
                                             </a>
                                         </div>
                                         <?= $content; ?>

@@ -29,6 +29,7 @@ use common\models\OrganizationLocations;
 use common\models\OrganizationQuestionnaire;
 use common\models\EmployeeBenefits;
 use common\models\OrganizationInterviewProcess;
+use common\models\OrganizationEmployeeBenefits;
 
 class JobApplicationForm extends Model
 {
@@ -697,11 +698,11 @@ class JobApplicationForm extends Model
 
     public function getBenefits()
     {
-        $benefits = EmployeeBenefits::find()
-            ->select(['benefit_enc_id', 'benefit'])
-            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->orderBy(['id' => SORT_DESC])
+        $benefits = OrganizationEmployeeBenefits::find()
+            ->alias('a')
+            ->select(['a.benefit_enc_id', 'b.benefit', 'b.icon', 'b.icon_location'])
+            ->joinWith(['benefitEnc b'], false)
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
             ->asArray()
             ->all();
         return $benefits;
