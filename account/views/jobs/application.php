@@ -563,8 +563,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'othrdetail')->textarea(['rows' => 6, 'cols' => 50])->label(false);
-                                        ?>
+                                        <?= $form->field($model, 'othrdetail')->textarea(['rows' => 6, 'cols' => 50])->label(false); ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>

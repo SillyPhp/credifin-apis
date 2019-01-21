@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -26,9 +27,9 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -41,8 +42,7 @@ echo $this->render('/widgets/header/secondary-header', [
                             'per_row' => 4,
                             'col_width' => 'col-lg-3 col-md-3 col-sm-3',
                         ]);
-                    }
-                    else {
+                    } else {
                         ?>
                         <h3>No Active Internships</h3>
                     <?php }
@@ -61,9 +61,9 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('questionnaire/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($questionnaire['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('questionnaire'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/questionnaire'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -78,8 +78,7 @@ echo $this->render('/widgets/header/secondary-header', [
                                     'per_row' => 2,
                                     'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                                 ]);
-                            }
-                            else {
+                            } else {
                                 ?>
                                 <h3>No Questionnaire To Display</h3>
                             <?php }
@@ -96,9 +95,9 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('interview-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/interview-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('interview-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/interview-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -113,8 +112,7 @@ echo $this->render('/widgets/header/secondary-header', [
                                     'per_row' => 2,
                                     'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                                 ]);
-                            }
-                            else {
+                            } else {
                                 ?>
                                 <h3>No Processes To Display</h3>
                             <?php }
@@ -155,7 +153,7 @@ echo $this->render('/widgets/header/secondary-header', [
                                                 <a href="/user/<?= $candiates['username'] ?>">
                                                     <?php if (!empty($candiates['image_location']) && !empty($candiates['image'])) { ?>
                                                         <?php $user_img = Yii::$app->params->upload_directories->users->image . $candiates['image_location'] . DIRECTORY_SEPARATOR . $candiates['image']; ?>
-                                                        <img src="<?= $user_img; ?>" width="50px" height="50" class="img-circle" />
+                                                        <img src="<?= $user_img; ?>" width="50px" height="50" class="img-circle"/>
 
                                                         <?php
                                                     } else {

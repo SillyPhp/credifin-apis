@@ -54,7 +54,7 @@ class Benefits extends Model
             return true;
 
         } else if (!empty($this->predefind_benefit)) {
-            foreach ($this->predefind_benefit as $id){
+            foreach ($this->predefind_benefit as $id) {
                 $this->checkBenefit($id);
             }
             return true;

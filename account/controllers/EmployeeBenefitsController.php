@@ -7,7 +7,6 @@ use yii\web\Controller;
 use yii\web\Response;
 use account\models\benefits\Benefits;
 use common\models\EmployeeBenefits;
-use account\models\jobs\JobApplicationForm;
 
 class EmployeeBenefitsController extends Controller
 {
