@@ -93,72 +93,10 @@ $this->params['header_dark'] = false;
                         </ul>
                     </div>
 
-                    <a href="#" class="btn btn-success">Make An Offer</a>
+                    <a href="#" class="btn offer-bttn">Make An Offer</a>
 
                 </div>
 
-                <!-- Similar Jobs -->
-                <div class="container-detail-box">
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h4>Review</h4>
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <!-- Single Review -->
-                        <div class="review-list">
-                            <div class="review-thumb">
-                                <img src="http://via.placeholder.com/180x180" class="img-responsive img-circle" alt="" />
-                            </div>
-                            <div class="review-detail">
-                                <h4>Daniel Luke<span>3 days ago</span></h4>
-                                <span class="re-designation">Web Developer</span>
-                                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
-                            </div>
-                        </div>
-
-                        <!-- Single Review -->
-                        <div class="review-list">
-                            <div class="review-thumb">
-                                <img src="http://via.placeholder.com/180x180" class="img-responsive img-circle" alt="" />
-                            </div>
-                            <div class="review-detail">
-                                <h4>Daniel Luke<span>3 days ago</span></h4>
-                                <span class="re-designation">Web Developer</span>
-                                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
-                            </div>
-                        </div>
-
-                        <!-- Single Review -->
-                        <div class="review-list">
-                            <div class="review-thumb">
-                                <img src="http://via.placeholder.com/180x180" class="img-responsive img-circle" alt="" />
-                            </div>
-                            <div class="review-detail">
-                                <h4>Daniel Luke<span>3 days ago</span></h4>
-                                <span class="re-designation">Web Developer</span>
-                                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
-                            </div>
-                        </div>
-
-                        <!-- Single Review -->
-                        <div class="review-list">
-                            <div class="review-thumb">
-                                <img src="http://via.placeholder.com/180x180" class="img-responsive img-circle" alt="" />
-                            </div>
-                            <div class="review-detail">
-                                <h4>Daniel Luke<span>3 days ago</span></h4>
-                                <span class="re-designation">Web Developer</span>
-                                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
             </div>
 
             <!-- Sidebar Start-->
@@ -195,82 +133,6 @@ $this->params['header_dark'] = false;
                     <a href="sidebarr-detail.html" class="btn btn-sidebar bt-1 bg-success">Make An Offer</a>
                 </div>
 
-                <!-- Website & Portfolio -->
-<!--                <div class="sidebar-wrapper">-->
-<!--                    <div class="sidebar-box-header bb-1">-->
-<!--                        <h4>Website & Portfolio</h4>-->
-<!--                    </div>-->
-<!---->
-<!--                    <ul class="block-list">-->
-<!--                        <li><i class="fa fa-globe cl-success"></i>www.mysite.com</li>-->
-<!--                        <li><i class="fa fa-briefcase cl-success"></i>Portfolio</li>-->
-<!--                        <li><i class="fa fa-pencil cl-success"></i>My Blog</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-
-                <!-- Similar Profile -->
-                <div class="sidebar-wrapper">
-
-                    <div class="sidebar-box-header bb-1">
-                        <h4>Similar Profiles</h4>
-                    </div>
-
-                    <div class="member-profile-list">
-                        <div class="member-profile-thumb">
-                            <a href="company-detail.html">
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="" />
-                            </a>
-                        </div>
-                        <div class="member-profile-detail">
-                            <h4><a href="company-detail.html">Adam Crivatinly</a></h4>
-                            <span>Web Developer</span>
-                            <span class="cl-success">Freelancer</span>
-                        </div>
-                    </div>
-
-                    <div class="member-profile-list">
-                        <div class="member-profile-thumb">
-                            <a href="company-detail.html">
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="" />
-                            </a>
-                        </div>
-                        <div class="member-profile-detail">
-                            <h4><a href="company-detail.html">Adam Crivatinly</a></h4>
-                            <span>Web Developer</span>
-                            <a href="company-detail.html"><span class="cl-success">Freelancer</span></a>
-                        </div>
-                    </div>
-
-                    <div class="member-profile-list">
-                        <div class="member-profile-thumb">
-                            <a href="company-detail.html">
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="" />
-                            </a>
-                        </div>
-                        <div class="member-profile-detail">
-                            <h4><a href="company-detail.html">Adam Crivatinly</a></h4>
-                            <span>Web Developer</span>
-                            <a href="company-detail.html"><span class="cl-success">Freelancer</span></a>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Share This Job -->
-                <div class="sidebar-wrapper">
-                    <div class="sidebar-box-header bb-1">
-                        <h4>Share This Job</h4>
-                    </div>
-
-                    <ul class="social-share">
-                        <li><a href="#" class="fb-share"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#" class="tw-share"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="#" class="gp-share"><i class="fa fa-google-plus"></i></a></li>
-                        <li><a href="#" class="in-share"><i class="fa fa-instagram"></i></a></li>
-                        <li><a href="#" class="li-share"><i class="fa fa-linkedin"></i></a></li>
-                        <li><a href="#" class="be-share"><i class="fa fa-behance"></i></a></li>
-                    </ul>
-                </div>
 
             </div>
             <!-- End Sidebar -->
@@ -283,7 +145,7 @@ $this->registerCss('
     padding:150px 0 50px;
 	text-align:left;
 	background:#f5f6f7;
-    border-bottom:2px solid #11b719;	
+    border-bottom:2px solid #00a0e3;	
 }
 .left-side-container {
     display: table;
@@ -425,7 +287,7 @@ $this->registerCss('
 }
 span.available-status {
     margin-left: 10px;
-    background: #00a0e3;
+    background: #ff7803;
     padding: 5px 15px;
     border-radius: 4px;
     color: #ffffff;
@@ -487,75 +349,6 @@ ul.job-requirements li span{
 /*---------- Login -------------*/
 img.img-responsive.payment-img {
     margin-top: 20px;
-}
-/*------------- Review & New Detail Page -----------*/
-.review-list {
-    display: table;
-    width: 100%;
-    margin-bottom: 50px;
-}
-.review-thumb {
-    max-width: 80px;
-    float: left;
-    display: table-cell;
-}
-.review-detail {
-    display: table;
-    margin-left: 100px;
-}
-.review-detail h4 {
-    margin: 0 0 3px 0;
-}
-.review-detail h4 span {
-    float:right;
-	opacity:0.8;
-	font-weight:400;
-	font-size:13px;
-}
-.review-detail .re-designation{
-	font-size:14px;
-	opacity:0.9;
-}
-.review-detail p{
-	margin:15px 0 25px 0;
-}
-
-ul.block-list {
-    padding: 0;
-    margin: 0;
-}
-ul.block-list li{
-	list-style:none;
-	margin-bottom:10px;
-	font-size:16px;
-	font-weight:600;
-	display:block;
-	font-family: \'Josefin Slab\', serif;
-}
-ul.block-list li i{
-	margin-right:12px;
-}
-
-ul.language{
-    padding: 0;
-    margin: 0;
-}
-ul.language li{
-	list-style:none;
-	margin-bottom:10px;
-	font-size:15px;
-	margin-right:20px;
-	display:inline-block;
-}
-ul.language li img{
-	height: 16px;
-    border-radius: 3px;
-    position: relative;
-    top: -1px;
-    display: inline-block;
-    box-shadow: 0 0 3px rgba(0,0,0,.2);
-    margin-right: 5px;
-    cursor: default;
 }
 /*--------------------------------------------------- 
 	Default Sidebar
@@ -635,7 +428,7 @@ ul.language li img{
     position: absolute;
     left:32px;
     top: 25px;
-    background:#00a0e3;
+    background:#ff7803;
     color: #ffffff;
     padding: 4px 18px;
     border-radius: 50px;
@@ -740,72 +533,23 @@ ul.status-detail li>strong {
     font-size: 16px;
 }
 
-
-/*---------- Sidebar: Job Share Sidebar ---------------*/
-ul.social-share {
-    display: table;
-    width: 100%;
-    margin: 0;
-	padding: 0;
+.offer-bttn{
+    border:2px solid #00a0e3;
+    color:#00a0e3;
+      -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
 }
-ul.social-share li {
-    width: 33.3333%;
-    display: inline-block;
-    padding: 10px;
-}
-ul.social-share li>a {
-    box-shadow:0 5px 25px 0 rgba(41,128,185,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(41,128,185,0.15);
-    width: 100%;
-    height: 80px;
-    text-align: center;
-    display: inline-block;
-    line-height: 80px;
-    border-radius: 4px;
-    font-size: 25px;
-	color: #b7c4d0;
-}
-
-ul.social-share li>a.fb-share{
-	color:#3b5998;
-	box-shadow:0 5px 25px 0 rgba(59,89,152,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(59,89,152,0.15);
-}
-
-ul.social-share li>a.tw-share{
-	color:#4ac9ff;
-	box-shadow:0 5px 25px 0 rgba(74,201,255,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(74,201,255,0.15);
-}
-
-ul.social-share li>a.gp-share{
-	color:#f3222a;
-	box-shadow:0 5px 25px 0 rgba(243,34,42,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(243,34,42,0.15);
-}
-
-ul.social-share li>a.li-share{
-	color:#007aaa;
-	box-shadow:0 5px 25px 0 rgba(0,122,170,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(0,122,170,0.15);
-}
-
-ul.social-share li>a.in-share{
-	color:#ec3e7d;
-	box-shadow:0 5px 25px 0 rgba(236,62,125,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(236,62,125,0.15);
-}
-
-ul.social-share li>a.pi-share{
-	color:#d80954;
-	box-shadow:0 5px 25px 0 rgba(216,9,84,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(216,9,84,0.15);
-}
-
-ul.social-share li>a.be-share{
-	color:#0067ff;
-	box-shadow:0 5px 25px 0 rgba(0,103,255,0.15);
-	-webkit-box-shadow:0 5px 25px 0 rgba(0,103,255,0.15);
+.offer-bttn:hover{
+    background:#00a0e3;
+    color:#fff;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
 }
 
 

@@ -37,10 +37,23 @@ $this->params['header_dark'] = false;
                 <div class="row">
                 <div class="showcase-subparts">
                     <div class="col-md-4">
-                        Create Company Profile
+                        <div class="showcase-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
+                        </div>
+                        <div class="showcase-title"><span>Create Company Profile</span></div>
                     </div>
-                    <div class="col-md-4">Hiring Posters</div>
-                    <div class="col-md-4">Responsiveness to Candidates</div>
+                    <div class="col-md-4">
+                        <div class="showcase-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hiring.png')?>">
+                        </div>
+                        <div class="showcase-title"><span>Hiring Posters</span></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="showcase-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/responsive.png')?>">
+                        </div>
+                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,26 +174,26 @@ $this->params['header_dark'] = false;
                                             </div>-->
                         <div class="com8 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>">
                             </div>
                             <div class="com-name">
-                                Empower youth
+                                Amrit Malwa Capital Bank
                             </div>
                         </div>
                         <div class="com9 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                             </div>
                             <div class="com-name">
-                                Empower youth
+                                Hamco Ispat
                             </div>
                         </div>
                         <div class="com10 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/text-logo.png') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>">
                             </div>
                             <div class="com-name">
-                                Empower youth
+                                Up Money Ltd
                             </div>
                         </div>
                         <div class="com11 animatable fadeIn">
@@ -220,13 +233,26 @@ $this->registerCss('
 /*showcase starts*/
 .showcase{
     padding:80px 0 110px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/showcase-bg.jpg') . '); 
+    background:url(' . Url::to('@eyAssets/images/pages/index2/showcase-bg.png') . '); 
     background-size: cover;
     background-repeat:no-repeat;
     background-attachment: fixed;
 }
 .showcase-heading{
     text-align:center;
+}
+.showcase-title{
+    padding-top:20px;
+    font-size:20px;
+}
+.showcase-title span{
+    background:#000;
+    color:#fff;
+    padding:5px;
+    
+}
+.showcase-icon img{ 
+    max-width:250px;
 }
 .showcase-heading span{
     text-transform:capitalize;
@@ -242,8 +268,7 @@ $this->registerCss('
     text-align:center;
     padding-top:50px;
     color:#000;
-    text-transform:uppercase;
-    font-weight:bold;
+    text-transform:capitalize;
 }
 /*showcase ends*/
 .step-heading{
@@ -355,6 +380,7 @@ $this->registerCss('
     border-radius:50%;
     box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.1);
     padding: 18px !important; 
+    line-height: 0px;
 }
 .com-name{ 
     padding-top:8px;
@@ -562,7 +588,7 @@ $this->registerCss('
 
 .fixed-bttn{
     padding:80px 0 110px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
+    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
     background-size: cover;
     background-repeat:no-repeat;
     background-attachment: fixed;

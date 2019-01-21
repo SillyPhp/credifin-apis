@@ -58,7 +58,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="col-md-3 col-sm-3">
-                <div class="circle1"> 
+                <div class="circle1">
                     <img src="<?= $category['icon']; ?>" />
                 </div>
             </div>
@@ -75,28 +75,27 @@ use yii\helpers\Url;
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.min.js'); ?>" type="text/javascript"></script>
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.svg.min.js'); ?>" type="text/javascript"></script>
         <script src="<?= Url::to('@eyAssets/js/functions.js'); ?>"></script>
-<!--        <script type="text/javascript">-->
-<!--            function getUrlVars() {-->
-<!--                var vars = {};-->
-<!--                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {-->
-<!--                    vars[key] = value;-->
-<!--                });-->
-<!--                return vars;-->
-<!--            }-->
-<!--            $(document).ready(function () {-->
-<!--                html2canvas(document.body, {background: '#B5E0F3', width: 1583, height: 738, imageTimeout: 0}).then(function (canvas) {-->
-<!---->
-<!--                    var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');-->
-<!--                    $.ajax({-->
-<!--                        url: '/account/jobs/job-card?application=' + getUrlVars()["application"],-->
-<!--                        type: 'post',-->
-<!--                        data: {image: base64URL, _csrf: '--><?//= Yii::$app->request->getCsrfToken(); ?>//'},
-<!--//                        success: function (data) {-->
-<!--//                            console.log('Upload successfully');-->
-<!--//                        }-->
-<!--//                    });-->
-<!--//                });-->
-<!--//            });-->
-<!--//        </script>-->
+        <script type="text/javascript">
+            function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+            $(document).ready(function () {
+                html2canvas(document.body, {background: '#B5E0F3', width: 1583, height: 738, imageTimeout: 0}).then(function (canvas) {
+                    var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
+                    $.ajax({
+                        url: '/account/jobs/job-card?application=' + getUrlVars()["application"],
+                        type: 'post',
+                        data: {image: base64URL, _csrf: '<?= Yii::$app->request->getCsrfToken(); ?>//'},
+                       success: function (data) {
+                           console.log('Upload successfully');
+                       }
+                   });
+               });
+           });
+        </script>
     </body>
 </html>
