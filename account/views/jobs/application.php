@@ -1016,6 +1016,19 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
     <div class="fader"></div>
 <?php
 $this->registerCss("
+.step {
+   -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge*/
+   user-select: none;   
+   -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+   user-drag: none;
+}
 .md-radio-inline.text-right.clearfix{padding-top:20px;}
 #benefits_hide,#questionnaire_hide,#benefitPopup,#add
 {
