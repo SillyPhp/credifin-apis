@@ -24,13 +24,6 @@ use common\models\AssignedSkills;
 use common\models\AssignedJobDescription;
 use common\models\AssignedEducationalRequirements;
 
-/**
- * LoginForm is the model behind the login form.
- *
- * @property User|null $user This property is read-only.
- *
- */
-
 class InternshipApplicationForm extends Model
 {
 
@@ -201,30 +194,23 @@ class InternshipApplicationForm extends Model
 
     public function saveValues()
     {
-        if($this->stipendtype==2||$this->stipendtype==3)
-        {
+        if ($this->stipendtype == 2 || $this->stipendtype == 3) {
             $min = $this->minstip;
             $max = $this->maxstip;
             $duration = $this->stipendur;
             $stipendpaid = null;
-        }
-        else if ($this->stipendtype==4)
-        {
+        } else if ($this->stipendtype == 4) {
             $stipendpaid = $this->stipendpaid;
-        }
-        else
-        {
-          $max = null;
-          $min = null;
-          $duration = null;
-          $stipendpaid = null;
+        } else {
+            $max = null;
+            $min = null;
+            $duration = null;
+            $stipendpaid = null;
         }
 
-        if ($this->pre_place==1)
-        {
+        if ($this->pre_place == 1) {
             $sal = $this->pre_sal;
-        }
-        else{
+        } else {
             $sal = null;
         }
         $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
@@ -352,29 +338,27 @@ class InternshipApplicationForm extends Model
                 $weekoptionsund = null;
             }
 
-            if ($this->interradio==1)
-            {
+            if ($this->interradio == 1) {
                 $strt = $this->startdate;
                 $enddate = $this->enddate;
                 $strttime = $this->interviewstarttime;
                 $endtime = $this->interviewendtime;
-            }
-            else{
+            } else {
                 $strt = null;
                 $enddate = null;
                 $strttime = null;
                 $endtime = null;
             }
 
-     $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
-                    'sund_frequency' => $weekoptionsund,'salary_duration' => $this->ctctype,
-                    'interview_start_date' => (($strt) ? date('Y-m-d', strtotime($strt)) : null),
-                    'interview_end_date' => (($enddate) ? date('Y-m-d', strtotime($enddate)) : null), 'interview_start_time' => (($strttime) ? date('Y-m-d', strtotime($strttime)) : null),
-                    'interview_end_time' => (($endtime) ? date('Y-m-d', strtotime($endtime)) : null),'salary'=>$sal,'stipend_type'=>$this->stipendtype,
-                    'min_stipend'=>$min,'max_stipend'=>$max,
-                    'stipend_duration'=>$duration,
-                    'pre_placement_offer'=>$this->pre_place,
-                    'fixed_stipend'=>$stipendpaid];
+            $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
+                'sund_frequency' => $weekoptionsund, 'salary_duration' => $this->ctctype,
+                'interview_start_date' => (($strt) ? date('Y-m-d', strtotime($strt)) : null),
+                'interview_end_date' => (($enddate) ? date('Y-m-d', strtotime($enddate)) : null), 'interview_start_time' => (($strttime) ? date('Y-m-d', strtotime($strttime)) : null),
+                'interview_end_time' => (($endtime) ? date('Y-m-d', strtotime($endtime)) : null), 'salary' => $sal, 'stipend_type' => $this->stipendtype,
+                'min_stipend' => $min, 'max_stipend' => $max,
+                'stipend_duration' => $duration,
+                'pre_placement_offer' => $this->pre_place,
+                'fixed_stipend' => $stipendpaid];
 
             foreach ($options as $key => $value) {
                 $applicationoptionsModel = new ApplicationOptions();
@@ -391,7 +375,7 @@ class InternshipApplicationForm extends Model
                 }
             }
             $locations = json_decode($this->placement_loc);
-            if (!empty($locations)){
+            if (!empty($locations)) {
                 foreach ($locations as $array) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
                     $utilitiesModel = new Utilities();
@@ -427,7 +411,7 @@ class InternshipApplicationForm extends Model
             }
 
 
-            $skills_array = array_unique(json_decode($this->skillsArray,true));
+            $skills_array = array_unique(json_decode($this->skillsArray, true));
             foreach ($skills_array as $skill) {
                 $skills_set = Skills::find()
                     ->select(['skill_enc_id'])
@@ -450,8 +434,7 @@ class InternshipApplicationForm extends Model
                     //new skill//
                     $this->assignedSkill($skills_set['skill_enc_id'], $cat_id);
                     //new skill//
-                }
-                else {
+                } else {
                     $skillsModel = new Skills();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -478,7 +461,7 @@ class InternshipApplicationForm extends Model
                     }
                 }
             }
-            $job_desc_array = array_unique(json_decode($this->checkboxArray,true));
+            $job_desc_array = array_unique(json_decode($this->checkboxArray, true));
             foreach ($job_desc_array as $jd) {
                 $job_desc = JobDescription::find()
                     ->select(['job_description_enc_id'])
@@ -530,7 +513,7 @@ class InternshipApplicationForm extends Model
             }
 
 
-            $job_edu_array = array_unique((json_decode($this->qualifications_arr,true)));
+            $job_edu_array = array_unique((json_decode($this->qualifications_arr, true)));
             foreach ($job_edu_array as $edu) {
                 $edu_quali = EducationalRequirements::find()
                     ->select(['educational_requirement_enc_id'])
@@ -554,9 +537,7 @@ class InternshipApplicationForm extends Model
                     //new code//
                     $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id);
                     //new code//
-                }
-
-                else {
+                } else {
                     $qualificationsModel = new EducationalRequirements();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
