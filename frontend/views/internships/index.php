@@ -1,11 +1,13 @@
 <?php
+
 use yii\helpers\Url;
+
 $this->params['header_dark'] = false;
 ?>
     <div class="fixed-btn background-logo-blue">
         <a href="/site/company-index">
             <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
-        Are you an Employer?<br/>
+            Are you an Employer?<br/>
             <span>Want to post an Internship or a Job?</span></a>
     </div>
     <section class="backgrounds">
@@ -17,10 +19,11 @@ $this->params['header_dark'] = false;
                 <div class="col-md-offset-1 col-md-5 col-sm-6 text-center">
                     <h2 class="text-white"><i><?= Yii::t('frontend', 'Intern with the best...'); ?></i></h2>
                     <div class="search-by-type">
-                        <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>" >
+                        <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
                             <div class="input-group mb-10 set-col-2">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input type="text" name="keyword" class="form-control" placeholder="Job Title or Skill"/>
+                                <input type="text" name="keyword" class="form-control"
+                                       placeholder="Job Title or Skill"/>
                             </div>
                             <div class="input-group mb-10 set-col-2">
                                 <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
@@ -28,15 +31,16 @@ $this->params['header_dark'] = false;
                             </div>
                             <div class="input-group mb-10 set-col-2">
                                 <span class="input-group-addon"><i class="fa fa-map-marker fa-lg"></i></span>
-                                <input type="text" id="cities" name="location" class="form-control" autocomplete="off" placeholder="City or State"/>
+                                <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
+                                       placeholder="City or State"/>
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
                             <div class="form-group mb-10 set-col-2">
-                                <input type="submit" class="form-control submit-next hvr-float" id="form_control_1" value="Search">
+                                <input type="submit" class="form-control submit-next hvr-float" id="form_control_1"
+                                       value="Search">
                             </div>
                         </form>
                     </div>
-<!--                    <img src="--><?//= Url::to('@eyAssets/images/pages/internships/c5.png'); ?><!--" width="75%" align="right"/>-->
                 </div>
             </div>
         </div>
@@ -54,7 +58,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-    <section><!--- style="background-color:#edeeef"--->
+    <section>
         <div class="container">
             <center>
                 <h2>
@@ -71,7 +75,8 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <iframe class="video-style" src="<?= Url::to('https://www.youtube.com/embed/TEDR6Jg2Pls'); ?>" frameborder="0" allowfullscreen></iframe>
+                    <iframe class="video-style" src="<?= Url::to('https://www.youtube.com/embed/TEDR6Jg2Pls'); ?>"
+                            frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -94,9 +99,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="row blogbox">
-
-                </div>
+                <div class="blogbox"></div>
             </div>
         </div>
     </section>
@@ -604,7 +607,7 @@ $this->registerCss('
 }
 /* animated menu css ends */
 ');
-
+echo $this->render('/widgets/mustache/application-card');
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -617,7 +620,7 @@ var city = new Bloodhound({
              return list;
         }
   }
-});    
+});
             
 $('#cities').typeahead(null, {
   name: 'cities',
@@ -632,6 +635,8 @@ $('#cities').typeahead(null, {
     
     $('.Typeahead-spinner').hide();
   });
+type = "Internships";
+getCards();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -644,8 +649,4 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
 echo $this->render('/widgets/application-card', [
     'type' => 'mustache-category',
-]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache',
 ]);

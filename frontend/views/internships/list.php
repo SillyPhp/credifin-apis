@@ -545,27 +545,8 @@ a:hover {
         </div>
     </section>
 <?php
+echo $this->render('/widgets/mustache/application-card');
 $script = <<<JS
-let page = 0;
-function jobcards(cards){
-    
-    var card = $('#application-card').html();
-    var cardslength = cards.length;
-    if(cardslength%3 !==0)
-        $('#loadMore').hide();
-    var norows = Math.ceil(cardslength / 3);
-    var j = 0;
-    for(var i=1; i<=norows; i++){
-        $(".blogbox").append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
-        j+=3;
-    }
-}
-        
-$('#loadMore').on('click', function(e){
-    e.preventDefault();
-    getJobs();
-});
-
 $('#review-internships').scroll(function(){
     if($(this).scrollTop() + $(this).height() >= $(window).height()){
         sidebarpage+=2;
@@ -582,53 +563,9 @@ $('#review-internships').scroll(function(){
         });
     }
 });
-
-function getJobs(type = "Internships") {
-    let data = {};
-    page += 1;
-    const searchParams = new URLSearchParams(window.location.search);
-    if(searchParams.has('page')) {
-        searchParams.set("page", page);
-    } else {
-        searchParams.append("page", page);
-    }
-    for(var pair of searchParams.entries()) {
-        data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
-    }
-    
-    data['type'] = type;
-    $.ajax({
-        method: "POST",
-        url : '/jobs/list',
-        data: data,
-        beforeSend: function(){
-           $('.loader-main').show();
-           $('.load-more-text').css('visibility', 'hidden');
-           $('.load-more-spinner').css('visibility', 'visible');
-        },
-        success: function(response) {
-            $('.loader-main').hide();
-            $('.load-more-text').css('visibility', 'visible');
-            $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.status === 200) {
-                jobcards(response.jobcards);
-                utilities.initials();
-            } else {
-                utilities.initials();
-                $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Internships not found.</h2>');
-                $('#loadMore').hide();
-            }
-        }
-    }).done(function(){
-        $.each($('.application-card-main'), function(){
-            $(this).draggable({
-                helper: "clone",
-            });
-        });
-    });
-}
-
-getJobs();
+loader = true;
+type = "Internships";
+getCards();
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -636,12 +573,5 @@ $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\boots
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
 echo $this->render('/widgets/application-card', [
-    'type' => 'mustache',
-]);
-
-echo $this->render('/widgets/application-card', [
     'type' => 'mustache-company',
 ]);
-
-//echo $this->render('/widgets/job-alerts');
-?>

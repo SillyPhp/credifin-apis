@@ -95,7 +95,7 @@ class JobsController extends Controller
 
         return $this->render('index', [
             'posts' => $posts,
-            'job_cards' => $job_cards,
+            'cards' => $job_cards,
             'job_categories' => $job_categories,
         ]);
     }
@@ -185,7 +185,7 @@ class JobsController extends Controller
     {
         $jobcards = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'm.value as salary', 'a.created_on', 'i.name category', 'l.designation', 'a.slug link', 'd.initials_color color', 'd.slug organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
+            ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'm.value as salary', 'a.last_date', 'i.name category', 'l.designation', 'CONCAT("/job/", a.slug) link', 'd.initials_color color', 'CONCAT("/company/", d.slug) organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
@@ -197,10 +197,9 @@ class JobsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
-            ->where(['j.name' => $options['type'], 'a.is_deleted' => 0, 'm.option_name' => 'salary']);
-        if (isset($options['type']))
-        {
-            $jobcards->andWhere(['j.name'=> $options['type']]);
+            ->where(['j.name' => $options['type'], 'a.status' => 'Active', 'a.is_deleted' => 0, 'm.option_name' => 'salary']);
+        if (isset($options['type'])) {
+            $jobcards->andWhere(['j.name' => $options['type']]);
         }
         if (isset($options['company'])) {
             $jobcards->andWhere([
@@ -383,7 +382,7 @@ class JobsController extends Controller
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
-            if ($object->benefit_selection==1){
+            if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
                         ->select(['benefit'])
@@ -391,10 +390,8 @@ class JobsController extends Controller
                         ->asArray()
                         ->one();
                 }
-            }
-            else
-            {
-                $benefits=null;
+            } else {
+                $benefits = null;
             }
 
             return $this->render('job-preview', [
