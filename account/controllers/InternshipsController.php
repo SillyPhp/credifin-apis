@@ -548,7 +548,7 @@ class InternshipsController extends Controller
 
         $shortlist_org = ShortlistedOrganizations::find()
             ->alias('a')
-            ->select(['SQL_CALC_FOUND_ROWS (0)', 'a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->select(['b.establishment_year','a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
             ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
@@ -558,11 +558,11 @@ class InternshipsController extends Controller
             ->all();
         $total_shortlist_org = ShortlistedOrganizations::find()
             ->alias('a')
-            ->select(['a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.shortlisted' => 1])
+            ->select(['b.establishment_year','a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
             ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->orderBy(['a.id' => SORT_DESC])
             ->count();
 
         $review_list = ReviewedApplications::find()

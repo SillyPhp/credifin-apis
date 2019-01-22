@@ -159,8 +159,23 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob1">Apply</a></div>
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob2" id="shortlist" value="<?= $review['app_id']; ?>">Shortlist</a></div>
+                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-7">
+                                                                    <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
+                                                                        <?php if (!empty($review) && $review['shortlisted'] == 1) {
+                                                                            ?>
+                                                                            <span class="hover-change col_pink">
+                                                                                    <i class="fa fa-heart-o"></i> Shortlisted
+                                                                                </span>
+                                                                            <?php
+                                                                        } else {
+                                                                            ?>
+                                                                            <span class="hover-change">
+                                                                                    <i class="fa fa-heart-o"></i> Shortlist
+                                                                                </span>
+                                                                        <?php } ?>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
@@ -620,7 +635,31 @@ function Ajax_call(rmv_id,url,pjax_refresh_id)
                        }
               })
     }
-        
+    
+$(document).on('click', '.shortlist', function(e)
+    {
+         e.preventDefault();
+        var app_id = $(this).attr('data-key');
+        var parent = $(this);
+         $.ajax({
+                url:'/account/jobs/shortlist-job',                        
+                method: 'post',
+                data : {app_id:app_id},
+                 beforeSend:function()
+                 {
+                    parent.find('span').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                 },
+                 success:function(data){
+                 console.log(data);
+                    if(data=='short'){
+                        parent.find('span').html('<i class="fa fa-heart-o"></i> Shortlisted');
+                    }      
+                    else if(data=='unshort'){
+                        parent.find('span').html('<i class="fa fa-heart-o"></i> Shortlist');
+                    }
+                } 
+        });        
+    });
         
 $(document).on('click','.rmv_list',function()
     {
