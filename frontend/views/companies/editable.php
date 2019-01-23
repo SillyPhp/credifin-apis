@@ -1140,7 +1140,7 @@ $('#establishment_year').editable({
     url: '/companies/update-profile',
     toggle: 'manual',
     combodate: {
-        minYear: 1956,
+        minYear: 1900,
         maxYear: 2019,
     }
 });
