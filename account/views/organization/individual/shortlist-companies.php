@@ -41,8 +41,8 @@ use yii\widgets\Pjax;
                                             <div class="hr-com-name">
                                                 <?= $short['org_name']; ?>
                                             </div>
-                                            <div class="hr-com-name">
-                                                <?= $short['name']; ?>
+                                            <div class="hr-com">
+                                                <?= $short['establishment_year']; ?>
                                             </div>
                                             <div class="overlay2">
                                                 <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $short['slug']; ?>">Apply</a></div>
@@ -74,7 +74,7 @@ use yii\widgets\Pjax;
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">There are no Jobs to show.</div>
+                                        <div class="">There are no company to show.</div>
                                         <div class="">You haven't Shortlisted any company jobs.</div>
                                     </div>
                                 </div>

@@ -112,7 +112,7 @@ if ($type == 'card') {
                         </a>
                     </div>
                     <div class="application-card-description">
-                        <a href="/job/{{link}}"><h4 class="application-title">{{title}}</h4></a>
+                        <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                         <h5 class="location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations=""><i
                                     class="fa fa-map-marker"></i>&nbsp;{{city}}</h5>
                         <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
@@ -134,7 +134,7 @@ if ($type == 'card') {
                 </div>
                 {{/last_date}}
                 <div class="application-card-wrapper">
-                    <a href="/job/{{link}}" class="application-card-open">View Detail</a>
+                    <a href="{{link}}" class="application-card-open">View Detail</a>
                     <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
                 </div>
             </div>

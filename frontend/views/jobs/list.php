@@ -639,4 +639,3 @@ echo $this->render('/widgets/application-card', [
 ]);
 
 //echo $this->render('/widgets/job-alerts');
-?>

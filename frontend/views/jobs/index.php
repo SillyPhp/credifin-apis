@@ -6,9 +6,10 @@ use yii\helpers\Url;
 
 ?>
     <div class="fixed-btn background-logo-blue">
-        <a href="/site/company-index"> <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
-        <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
-        <span><?= Yii::t('frontend', 'Want to post a Job or an Intenship?'); ?></span></a>
+        <a href="/site/company-index"> <img
+                    src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
+            <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
+            <span><?= Yii::t('frontend', 'Want to post a Job or an Intenship?'); ?></span></a>
     </div>
     <section class="backgrounds">
         <div class="container">
@@ -107,7 +108,7 @@ use yii\helpers\Url;
                 <?=
                 $this->render('/widgets/application-card', [
                     'type' => 'card',
-                    'cards' => $job_cards,
+                    'cards' => $cards,
                 ]);
                 ?>
             </div>
