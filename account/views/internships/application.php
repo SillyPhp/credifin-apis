@@ -2886,7 +2886,7 @@ var que_type = $('#question_field').typeahead(null, {
       var id = datum.job_description_enc_id;
       var questions = datum.job_description;  
       drop_options(id,questions); 
-      que_type.typeahead('val','');
+      
    }); 
         
  var designations = new Bloodhound({
@@ -2978,6 +2978,10 @@ $(document).on('click', '.modal-load-benefit', function() {
                         quesn_count++
                         quesn_upt();
                 }
+           $('#question_field').blur(function(){
+                         $(this).val('');
+                            });
+           
         }
         
         function drop_edu(id,qualification)
@@ -2995,6 +2999,9 @@ $(document).on('click', '.modal-load-benefit', function() {
               count_edu++;
               edu_counter_set();
                 }
+           $('#quali_field').blur(function(){
+                         $(this).val('');
+                            });
        
        }
         
@@ -3126,7 +3133,10 @@ function setTags(){ //Gets string of existing tags separated by commas
 		}
 		}
 		$("#shownlist").append(listnews);
-		$("#inputfield").val("");
+		$('#inputfield').val('');
+		$('#inputfield').blur(function(){
+            $(this).val('');
+        });
 	};        
         
 $("#inputfield").keypress(function(e){
