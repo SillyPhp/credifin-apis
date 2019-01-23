@@ -4,35 +4,59 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 $benefit = ArrayHelper::index($benefits, 'benefit_enc_id');
 ?>
-    <div class="modal-header">
+    <div class="modal-header modal_title">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
         <h4 class="modal-title"><?= Yii::t('account', 'Employee Benefits'); ?></h4>
     </div>
 <?php
 $form = ActiveForm::begin([
     'id' => 'benefits-form',
+    'options' => ['data-pjax' => true],
     'fieldConfig' => [
         'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
     ]
 ]);
 ?>
+<!--    <div class="row">-->
+<!--        <div class="col-md-12">-->
+<!--            --><?//=$form->field($BenefitsModel, 'benefit')->label('<i class="fa fa-building"></i> Add Employer Benefits'); ?>
+<!--        </div>-->
+<!--    </div>-->
     <div class="row">
-        <div class="col-md-12">
-            <?= $form->field($BenefitsModel, 'benefit')->label('<i class="fa fa-building"></i> Add Employer Benefits'); ?>
+        <div class="col-md-9">
+            <div class="form-group">
+                <input type="text" id="text" placeholder="Search Here.. Or Add New Benefit" class="form-control">
+            </div>
+        </div>
+<!--        <div class="col-md-4">-->
+<!--            <div class="form-group">-->
+<!--                <input type="text" id="add_new" placeholder="Add New Benefit.." class="form-control">-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="col-md-3">
+            <div class="form-group">
+                <button type="button" id="add_new_btn" class="btn btn-default">Add To The List</button>
+            </div>
         </div>
     </div>
-    <div class="cat-sec">
+  <?php
+ if (!empty($benefit)){ ?>
+    <div class="cat-sec fix_height">
         <div class="row no-gape">
+            <?php
+            $BenefitsModel->predefind_benefit = ArrayHelper::getColumn($org_benefits, 'benefit_enc_id');
+            ?>
             <?=
-            $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefits, [
+            $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     if(empty($label['icon'])){$label['icon'] = 'plus-icon.svg';}
                     $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                    $return .= '<div class="p-category">';
-                    $return .= '<input type="checkbox" id="' . $label['benefit_enc_id'] . '" name="' . $name . '" value="' . $label['benefit_enc_id'] . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                    $return .= '<label for="' . $label['benefit_enc_id'] . '" class="checkbox-label-v2">';
+                    $return .= '<div class="p-category search_benefits">';
+                    $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                    $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
                     $return .= '<div class="checkbox-text">';
                     $return .= '<span class="checkbox-text--title">';
                     $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
@@ -50,13 +74,31 @@ $form = ActiveForm::begin([
             ?>
         </div>
     </div>
+  <?php } else { ?>
+     <h3>No Benefits To Display</h3>
+ <?php }
+ ?>
     <div class="modal-footer">
-        <?= Html::submitbutton('Add', ['class' => 'btn btn-primary custom-buttons2 sav_benft']); ?>
+        <?= Html::submitbutton('Save', ['class' => 'btn btn-primary custom-buttons2 sav_benft']); ?>
         <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
     </div>
 <?php ActiveForm::end(); ?>
 <?php
 $script = <<< JS
+// $(":checkbox").each(function () {
+//     $(this).add(this.nextSibling)
+//         .add(this.nextSibling.nextSibling)
+//         .wrapAll("<div class='p-category'></div>")
+// });
+
+$("#text").keyup(function () {
+    var re = new RegExp($(this).val(), "i")
+    $('.search_benefits').each(function () {
+        var text = $(this).text(),
+            matches = !! text.match(re);
+        $(this).toggle(matches)
+    });
+});
     $(document).on('submit', '#benefits-form', function (event) {
         event.stopImmediatePropagation();
         event.preventDefault();
@@ -77,12 +119,49 @@ $script = <<< JS
                 } else {
                     toastr.error(response.message, response.title);
                 }
-                $('#modal').modal('toggle');
+                $('#modal_benefit').modal('toggle');
             }
         });
     });
+    
+  $(document).on('click','#add_new_btn',function(event) {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      var str = $.trim($('#text').val());
+     if (str != '')
+         {
+         $.ajax({
+            url: '/account/employee-benefits/create-benefit',
+            type: 'post',
+            data: {str:str},
+             beforeSend: function (){
+                $('#add_new_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>Loading');
+            },
+            success: function (response)
+            {
+                $('#add_new_btn').html('Add To The List');
+                 if (response.status == 'success') {
+                    toastr.success(response.message, response.title);
+                    $.pjax.reload({container: '#pjax_benefits', async: false});
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+                $('#modal_benefit').modal('toggle'); 
+            }
+            })
+         }
+  }) 
 JS;
 $this->registerJs($script);
 $this->registerCss("
-
+.modal_title
+{
+border-bottom:0 !important;
+}
+.fix_height
+{
+max-height:350px;
+overflow-y:scroll;
+overflow-x: hidden;
+}
 ");

@@ -703,6 +703,7 @@ class JobApplicationForm extends Model
             ->select(['a.benefit_enc_id','b.benefit','b.icon','b.icon_location'])
             ->joinWith(['benefitEnc b'],false)
             ->where(['a.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id])
+            ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
         return $benefits;
