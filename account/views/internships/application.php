@@ -2681,7 +2681,9 @@ $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#jobtitle').val('');
-      $('.tt-dataset').empty();  
+      $('.tt-dataset').empty(); 
+      fetchJd();
+      fetchEr();
    })
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -2827,17 +2829,21 @@ function skils_update(data)
        $.pjax.reload({container: '#pjax_process', async: false});
      }
 window.ChildFunction = ChildFunction;
-var Education = new Bloodhound({
+
+function fetchEr()
+{
+    var Education = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('educational_requirement'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/educations?q=%QUERY', 
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
+  prefetch: '/account/categories-list/fetch-er',
+  // remote: {
+  //   url: '/account/categories-list/educations?q=%QUERY', 
+  //   wildcard: '%QUERY',
+  //   cache: false,     
+  //       filter: function(list) {
+  //           return list;
+  //       }
+  // }
 });   
         
 var edu_type = $('#quali_field').typeahead(null, {
@@ -2856,19 +2862,24 @@ var edu_type = $('#quali_field').typeahead(null, {
       var qualification = datum.educational_requirement;  
       drop_edu(id,qualification);
       edu_type.typeahead('val','');  
-   });         
+   }); 
+}
         
-var Descriptions = new Bloodhound({
+        
+function fetchJd()
+{
+  var Descriptions = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('job_description'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/description?q=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
+  prefetch: '/account/categories-list/fetch-jd',
+  // remote: {
+  //   url: '/account/categories-list/description?q=%QUERY',
+  //   wildcard: '%QUERY',
+  //   cache: false,     
+  //       filter: function(list) {
+  //           return list;
+  //       }
+  // }
 });   
         
 var que_type = $('#question_field').typeahead(null, {
@@ -2888,6 +2899,7 @@ var que_type = $('#question_field').typeahead(null, {
       drop_options(id,questions); 
       
    }); 
+}
         
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
