@@ -504,6 +504,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="module2-heading">
                                             Employee Benefits
                                         </div>
+                                        (Selected Benefits Will Be Applicable To This Job Only)
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="md-radio-inline text-right clearfix">
@@ -538,6 +539,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div id="b_error"></div>
                                     <?php
                                     if (!empty($benefits)) {
+                                        $model->emp_benefit = ArrayHelper::getColumn($benefit, 'benefit_enc_id');
                                         ?>
                                         <div class="cat-sec">
                                             <div class="row no-gape">
@@ -2345,20 +2347,10 @@ height:17px !important;
 ");
 
 $script = <<< JS
-// $(document).on("click", '.p-category label', function(){
-//     var checkedbox = $(this).prev('input');
-//     if(!checkedbox.prop("checked")){
-//         console.log('checked');
-//         $(this).prev('input').attr('checked', 'checked');
-//     }
-//     else{
-//         console.log('unchecked');
-//         $(this).prev('input').prop('checked', false);
-//     } 
-//     console.log(check);
-//     $(this).closest('input').attr('checked', 'checked');
-//  })
-
+if(window.location.hash)
+    {
+        window.location = window.location.pathname;
+    }
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2869,7 +2861,7 @@ $(document).on('click', '.modal-load-class', function() {
 });
 
 $(document).on('click', '.modal-load-benefit', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+    $('#modal_benefit').modal('show').find('.modal-body').load($(this).attr('value'));
 });
 
 
@@ -2930,6 +2922,9 @@ $(document).on('click', '.modal-load-benefit', function() {
                         quesn_count++
                         quesn_upt();
                 }
+           $('#question_field').blur(function(){
+                         $(this).val('');
+                            });
         }
         
         function drop_edu(id,qualification)
@@ -2947,6 +2942,9 @@ $(document).on('click', '.modal-load-benefit', function() {
               count_edu++;
               edu_counter_set();
                 }
+           $('#quali_field').blur(function(){
+                         $(this).val('');
+                            });
        
        }
         
@@ -3078,7 +3076,10 @@ function setTags(){ //Gets string of existing tags separated by commas
 		}
 		}
 		$("#shownlist").append(listnews);
-		$("#inputfield").val("");
+		$('#inputfield').val('');
+		$('#inputfield').blur(function(){
+            $(this).val('');
+        });
 	};        
         
 $("#inputfield").keypress(function(e){
@@ -3731,8 +3732,6 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerCssFile('@eyAssets/materialized/materialize-tags/css/materialize-tags.css');
-$this->registerJsFile('@eyAssets/materialized/materialize-tags/js/materialize-tags.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/gmaps/gmaps.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
