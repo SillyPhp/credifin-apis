@@ -1038,13 +1038,13 @@ $this->registerCss("
 }
 .overlay-left {
   position: absolute;
-  top: 1px;
-  left: 8px;
+  top: 0px;
+  left: 6px;
   right: 0;
   background-color: #008CBA;
   overflow: hidden;
   width: 0;
-  height: 53px;
+  height: 100%;
   z-index:99;
   transition: .5s ease;
   border-radius: 8px 0px 0px 8px;
@@ -1671,7 +1671,6 @@ margin-bottom:8px;
   font-weight: 600;
   line-height: 36px;
   position:relative;
-  padding-bottom: 10px;
 }
 
 #skill_counter,#qualific_count,#desc_count,#placement_calc,#interview_calc,#benefit_calc,#process_calc,#ques_calc
@@ -2288,6 +2287,13 @@ height:17px !important;
 .place_no{
     text-align: center !important;
     border: 1px solid #ddd !important;
+}
+.kv-container-from, .kv-container-to {
+    padding: 0 !important;
+    border: 0 !important;
+}
+.has-success .md-radio label, .has-success.md-radio label{
+    color:inherit;
 }
 .ck-editor__editable {
     min-height: 200px !important;
