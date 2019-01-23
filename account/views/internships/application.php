@@ -2293,6 +2293,10 @@ height:17px !important;
 {
  display:none;
 }
+.kv-container-from, .kv-container-to {
+    padding: 0 !important;
+    border: 0 !important;
+}
 .ck-editor__editable {
     min-height: 200px !important;
 }

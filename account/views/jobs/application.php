@@ -2287,6 +2287,10 @@ height:17px !important;
     text-align: center !important;
     border: 1px solid #ddd !important;
 }
+.kv-container-from, .kv-container-to {
+    padding: 0 !important;
+    border: 0 !important;
+}
 .ck-editor__editable {
     min-height: 200px !important;
 }

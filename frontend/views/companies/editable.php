@@ -1238,10 +1238,10 @@ $(document).on('submit', '#upload-logo', function(event) {
         cache:false,
         processData: false,
         beforeSend:function(){     
-            $('.loader-aj-main').fadeIn(1000);  
+            $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
-        $('.loader-aj-main').fadeOut(1000);
+        $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
@@ -1263,10 +1263,10 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
         method: "POST",
         data: {type:type},
         beforeSend:function(){
-            $('.loader-aj-main').fadeIn(1000);  
+            $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
-        $('.loader-aj-main').fadeOut(1000);
+        $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
@@ -1300,10 +1300,10 @@ $(document).on('submit', '#change-cover-image', function(event) {
         cache:false,
         processData: false,
         beforeSend:function(){     
-            $('.loader-aj-main').fadeIn(1000);  
+            $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
-        $('.loader-aj-main').fadeOut(1000);
+        $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 hide_remove_cover();
                 toastr.success(response.message, response.title);
@@ -1324,10 +1324,10 @@ $(document).on('click', '#confirm_remove_cover', function(event) {
         method: "POST",
         data: {type:type},
         beforeSend:function(){
-            $('.loader-aj-main').fadeIn(1000);  
+            $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
-        $('.loader-aj-main').fadeOut(1000);
+        $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 $('#cover_img').attr('src',default_cover_path);
                 toastr.success(response.message, response.title);
@@ -1398,10 +1398,10 @@ $(document).on('click', '#confirm_video', function(event) {
         method: "POST",
         data: {id:id},
         beforeSend:function(){     
-            $('.loader-aj-main').fadeIn(1000);  
+            $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
-        $('.loader-aj-main').fadeOut(1000);
+        $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_locations3', async: false});
@@ -1421,10 +1421,10 @@ $(document).on('click', '#confirm_loc', function(event) {
         method: "POST",
         data: {id:id},
         beforeSend:function(){     
-            $('.loader-aj-main').fadeIn(1000);  
+            $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
-        $('.loader-aj-main').fadeOut(1000);
+        $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_locations1', async: false});
