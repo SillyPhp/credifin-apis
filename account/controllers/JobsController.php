@@ -408,9 +408,10 @@ class JobsController extends Controller
                     if ($res = $model->saveValues()) {
                         return json_encode($res);
                     } else {
-                        return $status = [
+                         $status = [
                             'status' => false,
                         ];
+                        return json_encode($status);
                     }
                 } else if (Yii::$app->request->post("check") == 0) {
                     $arr_loc = Yii::$app->request->post("json_loc");
@@ -421,9 +422,10 @@ class JobsController extends Controller
                     if ($res = $model->upload()) {
                         return json_encode($res);
                     } else {
-                        return $status = [
+                        $status = [
                             'status' => false,
                         ];
+                        return json_encode($status);
                     }
                 }
             }
