@@ -571,7 +571,6 @@ top : 20%;
         width: 100%;
         height: 100%;
         content: '';
-        background-image: url('../images/lines.png');
         z-index: 0;
         opacity: 0.14;
     }
