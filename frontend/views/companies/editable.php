@@ -56,23 +56,6 @@ if ($organization['cover_image']) {
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 ?>
-
-<div class="loader-aj-main">
-    <div class="loader-aj">
-        <div class="dot first"></div>
-        <div class="dot second"></div>
-    </div>
-</div>
-<div id="fab-message-open" class="fab-message" style="">
-    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
-    <!--<i class="fa fa-envelope"></i>-->
-    <div class="fab-hover-message" style="">
-        <div class="fab-hover-image">
-            <img src="<?= Url::to('@eyAssets/images/pages/company-profile/cv.png') ?>">
-        </div>
-    </div>
-    <!--<div class="fab-hover-message" style="">Want to post your CV</div>-->
-</div>
 <div class="sections">
     <section id="home">
         <div class="coverpic">
@@ -94,7 +77,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                 'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'coverImageUpload', 'accept' => '.png, .jpg, .jpeg']);
                             ?>
                             <label for="coverImageUpload">Change Cover Picture</label>
-
                         </a>
                     </li>
                     <li><a href="#" class="remove_cover_image">Remove</a></li>
@@ -186,12 +168,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                 </div>
                                 <div class="col-md-5 col-sm-9">
                                     <div class="cname"><?= $organization['name']; ?></div>
-                                    <!--                                    <div>-->
-                                    <!--                                        <div class="tagline" id="tagline1" >-->
-                                    <!--                                            <span href="#" class="select-industries" data-pk="industry_enc_id" data-name="industry_enc_id" data-type="select" data-title="Select feild of working"></span>-->
-                                    <!--                                            <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
                                     <div>
                                         <div class="tagline" id="tagline2">
                                             <span href="#" class="model" data-type="text" data-pk="tag_line"
@@ -344,7 +320,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                         </p>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -574,7 +549,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                         <div id="map" style="height:400px"></div>
                     </div>
                     <div class="col-md-6 content loc">
-
                         <ul class="loc-list">
                             <?php
                             $i = 1;
@@ -615,7 +589,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
-
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
@@ -629,110 +602,23 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
 </section>
 <?php $this->registerCss("
-.fab-message{
-    position:fixed;
-    bottom: 20px;
-    cursor:pointer;
-    right:20px;
-    z-index:9999;
-    color: #fff;
-    font-size: 20px;
-    border-radius: 50%;
-    width:100px;
-    height:80px;
-    line-height: 60px;
-    text-align: center;
-        -webkit-transition: all .2s ease-in-out;
-        -moz-transition: all .2s ease-in-out;
-        -o-transition: all .2s ease-in-out;
-        transition: all .2s ease-in-out;
-}
-#fab-message-open:hover .fab-hover-message{
-  -webkit-animation-name: example1; /* Safari 4.0 - 8.0 */
-    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
-    -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
-    animation-name: example1;
-    opacity:1;
-    animation-duration: 2s;
-    animation-iteration-count: 2;
-}
-@-webkit-keyframes example1 {
-  0%   { right:6px; bottom:120px;}
-  100%  { right:6px; bottom:55px;}
-}
-@keyframes example1{
-  0%   {right:6px; bottom:120px;}
-  100%  {right:6px; bottom:55px;}
-}
-.fab-hover-message{
-    bottom: 120px;
-    right: 6px;
-    color:#222;
-    opacity: 0; 
-//  display: none;
-    position: absolute;
-    font-size: 18px; 
-    padding: 15px;
-     border-radius: 3px;
-     z-index:9; 
-}
-
-.fab-hover-image img{
-    width:85px;
-    height:85px;
-}
-
 .coverpic{
     text-align: center;
     position:relative;
 }
-.i-review-question-title{
-    color:#fff;
-}
-.i-review-box{
-    color:#fff;
-}
-
-
-.apply-job-btn {
-    background: #ffffff;
-    -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-    -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-    -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-    -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-    -webkit-border-radius: 40px;
-    -moz-border-radius: 40px;
-    -ms-border-radius: 40px;
-    -o-border-radius: 40px;
-    border-radius: 40px;
-    font-family: Open Sans;
-    font-size: 14px;
-    color: #ef7706;
-    width: 200px;
-    height: auto;
-    padding: 15px 30px;
-    text-align: center;
-    margin: auto;
-}    
-
 .button_location{
     padding: 14px 0px;
     float:right;
 }
-
 .videoLink > .img-fluid{
     float: right;
 }
-
 .img-circle{height: 200px;width: 200px;box-shadow: 0px 0px 25px rgb(0,0,0,.3); }
 .remove_video{
     position: absolute;
@@ -819,7 +705,7 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     padding: 10px 15px;
     border-radius: 8px 0px 0px;
 }
-.hiden{
+.hiden, .hiden2{
     display:none;
     position: absolute;
     width: 100%;
@@ -832,7 +718,7 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     left: 159px;
     z-index: 999;
 }
-.hiden:before{
+.hiden:before, .hiden2:before{
     content: '';
     left: -15px;
     top: 15px;
@@ -842,26 +728,12 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     border-bottom: 10px solid transparent;
 }
 .hiden2{
-    display:none;
-    position: absolute;
-    width: 100%;
-    background-color: #f9f9f9;
-    padding: 10px 5px;
-    box-shadow: 0px 0px 12px 2px #cecece;
-    border-radius: 6px;
-    text-align: center;
     top: 12px;
     left: 0px;
-    z-index: 999;
 }
 .hiden2:before{
-    content: '';
     right: 36px;
     top: -13px;
-    position: absolute;
-    border-left: 10px solid transparent;
-    border-bottom: 15px solid #f9f9f9;
-    border-right: 10px solid transparent;
 }
 .social-inner{
     position:relative;
@@ -905,88 +777,18 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
 .popover .arrow, .popover .arrow:after{
     display: block !important;
 }
-.pen_top{
+.pen_top, .pen_ttop, .pen_top2{
     position: absolute;
     top: 8px;
     left: 140px;
 }
 .pen_ttop{
-    position: absolute;
-    top: 8px;
     left: 160px;
 }
 .pen_top2{
-    position: absolute;
     left: 162px;
-    top: 8px;
 }
 /*Bootstrap editable css ends */
-/*Loader css starts */
-.loader-aj-main{
-    display:none;
-    position:fixed;
-    background-color:#f9f9f9b0;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:99999;
-}
-.loader-aj {
-    display: flex;
-    animation: rotate 1s ease-in-out infinite;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-.loader-aj .dot {
-    width: 50px;
-    height: 50px;
-    background: #4aa1e3;
-    border-radius: 50%;
-  }
-.loader-aj .dot.first {
-    animation: dot-1 1s ease-in-out infinite;
-  }
-.loader-aj .dot.second {
-    animation: dot-2 1s ease-in-out infinite;
-  }
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-@keyframes dot-1 {
-  0% {
-    transform: translate(0px, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(-50px, 0) rotate(180deg);
-  }
-  100% {
-    transform: translate(0px, 0) rotate(360deg);
-  }
-}
-@keyframes dot-2 {
-  0% {
-    transform: translate(0px, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(50px, 0) rotate(180deg);
-  }
-  100% {
-    transform: translate(0px, 0) rotate(360deg);
-  }
-}
-/*Loader css ends */
 .dropdown-menu{
     padding:0px;
 }
@@ -1010,8 +812,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
   display: none;
 }
 .checkbox-label {
-/*   display: inline-block; */
-/*   position: relative; */
   vertical-align: top;
   width: 100%;
   cursor: pointer;
@@ -1044,7 +844,6 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
   -webkit-transform: translate(0, -8px);
   transform: translate(0, -8px);
 }
-
 .cat-sec {
     float: left;
     width: 100%;
@@ -1199,7 +998,7 @@ $('#logo-img').on('load', function () {
    }
 });
 $('#cover_img').on('load', function () {
-    if($("#cover_img").attr('src') != cover_path ){
+    if($("#cover_img").attr('src') != cover_path && $("#cover_img").attr('src') != default_cover_path){
         $('#pop-content2').fadeIn(1000);
    }
 });
@@ -1270,6 +1069,7 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#pjax_jobs_cards', async: false});
+                utilities.initials();
                 $('#logo-img').attr('src',logo_name_path);
                 hide_remove_logo();
             } else {
@@ -1331,7 +1131,6 @@ $(document).on('click', '#confirm_remove_cover', function(event) {
             if (response.title == 'Success') {
                 $('#cover_img').attr('src',default_cover_path);
                 toastr.success(response.message, response.title);
-                $.pjax.reload({container: '#pjax_jobs_cards', async: false});
                 hide_remove_cover();
             } else {
                 toastr.error(response.message, response.title);
@@ -1480,120 +1279,6 @@ $(document).on('click', '#confirm_loc', function(event) {
 	  });
 		  
   });
-  
-
-    
-    var popup = new ideaboxPopup({
-        background: '#234b8f',
-        popupView: 'full',
-        endPage: {
-            msgTitle : 'Profile has been updated',
-            msgDescription : 'Thanks for submitting your profile',
-            showCloseBtn: true,
-            closeBtnText : 'Close All',
-            inAnimation: 'zoomIn'
-        },
-        data: [
-           {
-                    question 	: 'Select Job Profile',
-                    answerType	: 'radio2',
-                    //database field name
-                    formName	: 'job_profile',
-                    //values from database
-                    choices		: [
-                            { label : 'Information Technology', value : 'Information Technology' },
-                            { label : 'Marketing', value : 'Marketing' },
-                            { label : 'Green', value : 'GREEN' },
-                            { label : 'Yellow', value : 'YELLOW' }
-                    ],
-                    description	: 'Please select your job profile',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Select the choices.</b>'
-            },
-           {
-                    question 	: 'Select Job Title',
-                    answerType	: 'checkbox2',
-                    formName	: 'job_title',
-                    choices		: [
-                            { label : 'Frontend Developer', value : 'Frontend Developer' },
-                            { label : 'Backend Developer', value : 'Backend Developer' },
-                            { label : 'Graphic Designer', value : 'Graphic Designer' },
-                            { label : 'SEO', value : 'SEO' }
-                    ],
-                    description	: 'Please select job titles that you are interested in and press next button',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
-            },
-          {
-                    question 	: 'Preffered Location',
-                    answerType	: 'checkbox2',
-                    formName	: 'locations',
-                    choices		: [
-                            { label : 'Ludhiana', value : 'Ludhiana' },
-                            { label : 'Jalandhar', value : 'Jalandhar' },
-                            { label : 'Chandigarh', value : 'Chandigarh' },
-                            { label : 'Amritsar', value : 'Amritsar' },
-                            { label : 'United States', value : 'USA' },
-                            { label : 'England', value : 'EN' },
-                            { label : 'Spain', value : 'ESP' },
-                            { label : 'Turkey', value : 'TUR' },
-                            { label : 'Argentina', value : 'ARG' },
-                            { label : 'India', value : 'END' },
-                            { label : 'Brazi', value : 'BRA' },
-                            { label : 'French', value : 'FRA' },
-                            { label : 'Germany', value : 'DEU' },
-                            { label : 'Greece', value : 'GRC' },
-                            { label : 'Hong Kong', value : 'HKG' },
-                            { label : 'Italy', value : 'ITA' },
-                            { label : 'South Korea', value : 'KOR' },
-                            { label : 'United Kingdom', value : 'GBR' },
-                            { label : 'Russia', value : 'RUS' }
-                    ],
-                    description	: 'Please select your preffered location and press next button',
-                    required	: true,
-                    errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
-            },
-            {
-                question 	: 'Experience',
-                answerType	: 'radio2',
-                formName	: 'experience',
-                choices		: [
-                        { label : 'No Experince', value : 'No' },
-                        { label : '<1 Year', value : '0' },
-                        { label : '1 Year', value : '1' },
-                        { label : '2-3 Years', value : '2-3' },
-                        { label : '3-5 Years', value : '3-5' },
-                        { label : '5-10 Years', value : '5-10' }, 
-                        { label : '10+ Years', value : '10+' },
-                ],
-                description	: 'How much experience do you have?',
-                nextLabel : 'Apply Now',
-                required	: true,
-                errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
-            
-             },
-            {
-                question: '<h2 style="color: #fff; font-weight: 900;">You have applied with your empower youth profile </h2>',
-                answerType: 'updatebtn',
-                formName : 'is_applied',
-                 choices		: [
-                     {label: 'http://www.eygb.me/user/ajay'}
-                 ],
-                description: '',
-                nextLabel : 'Finish',
-            },
-
-        ]
-    });
-    
-    document.getElementById("fab-message-open").addEventListener("click", function (e) {
-        if($('#loggedIn').val())
-            popup.open();
-        else
-            $('#myModal').modal('toggle');
-    });
-    
-
 
 JS;
 
@@ -1656,7 +1341,6 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1664,5 +1348,4 @@ $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => 
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
 ?>
