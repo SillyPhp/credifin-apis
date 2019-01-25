@@ -32,6 +32,17 @@ use common\models\OrganizationEmployeeBenefits;
 class JobsController extends Controller
 {
 
+    private function reviewZero(){
+        $update = Yii::$app->db->createCommand()
+            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id])
+            ->execute();
+        if ($update) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -216,11 +227,7 @@ class JobsController extends Controller
         $object = new JobApplicationForm();
         if ($model->load(Yii::$app->request->post())) {
             return json_encode($model->updateValues($aidk));
-            // if ($model->updateValues($aidk)) {
-            //     return true;
-            // } else {
-            //     return false;
-            // }
+
         } else {
             $application = $object->getCloneData($aidk);
             $questions_list = $object->getQuestionnnaireList();
@@ -261,21 +268,24 @@ class JobsController extends Controller
     {
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.application_enc_id','k.shortlisted_enc_id','k.shortlisted','a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(ShortlistedApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
+            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','e.slug','f.name parent_category','f.icon','f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
+            ->joinWith(['applicationEnc b' => function($b){
+                $b->distinct();
+                $b->joinWith(['applicationTypeEnc c']);
+                $b->joinWith(['title d' => function($c){
+                    $c->joinWith(['categoryEnc e']);
+                    $c->joinWith(['parentEnc f']);
+                }]);
+                $b->joinWith(['organizationEnc g']);
+                $b->joinWith(['applicationPlacementLocations h']);
+                $b->groupBy(['h.application_enc_id']);
+            }],false)
             ->having(['type' => 'Jobs'])
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
+
         return $this->render('individual/review-jobs', [
             'reviewlist' => $review_list,
         ]);
@@ -435,7 +445,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['review_enc_id' => $rmv_id])
+                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'review' => 1])
                 ->execute();
             if ($update) {
                 return true;
@@ -444,6 +454,72 @@ class JobsController extends Controller
             }
         }
     }
+
+    public function actionShortlistDelete()
+    {
+        if (Yii::$app->request->isPost) {
+            $rmv_id = Yii::$app->request->post('rmv_id');
+            $update = Yii::$app->db->createCommand()
+                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
+                ->execute();
+            if ($update) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function actionReviewShortlist()
+    {
+
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                $app_id = Yii::$app->request->post('rmv_id');
+
+                $chkuser = ShortlistedApplications::find()
+                    ->select('shortlisted')
+                    ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                    ->asArray()
+                    ->one();
+                $status = $chkuser['shortlisted'];
+                if (empty($chkuser)) {
+                    $shortlist = new ShortlistedApplications();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
+                    $shortlist->application_enc_id = $app_id;
+                    $shortlist->shortlisted = 1;
+                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
+                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    if ($shortlist->save()) {
+                        $update = Yii::$app->db->createCommand()
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->execute();
+                        if ($update == 1) {
+                            return true;
+                        }
+                    }
+                } else if ($status == 0) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->execute();
+                    if ($update == 1) {
+                        $update1 = Yii::$app->db->createCommand()
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                        ->execute();
+                        if($update1 == 1) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 
     public function actionOrgDelete()
     {
@@ -511,7 +587,7 @@ class JobsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id','j.name type','a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -621,37 +697,43 @@ class JobsController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.application_enc_id','k.shortlisted_enc_id','k.shortlisted','a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(ShortlistedApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
+            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','e.slug','f.name parent_category','f.icon','f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
+            ->joinWith(['applicationEnc b' => function($b){
+                $b->distinct();
+                $b->joinWith(['applicationTypeEnc c']);
+                $b->joinWith(['title d' => function($c){
+                    $c->joinWith(['categoryEnc e']);
+                    $c->joinWith(['parentEnc f']);
+                }]);
+                $b->joinWith(['organizationEnc g']);
+                $b->joinWith(['applicationPlacementLocations h']);
+                $b->groupBy(['h.application_enc_id']);
+            }],false)
             ->having(['type' => 'Jobs'])
             ->limit(8)
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
+
         $total_reviews = ReviewedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.application_enc_id','k.shortlisted_enc_id','k.shortlisted','a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(ShortlistedApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
+            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','e.slug','f.name parent_category','f.icon','f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
+            ->joinWith(['applicationEnc b' => function($b){
+                $b->distinct();
+                $b->joinWith(['applicationTypeEnc c']);
+                $b->joinWith(['title d' => function($c){
+                    $c->joinWith(['categoryEnc e']);
+                    $c->joinWith(['parentEnc f']);
+                }]);
+                $b->joinWith(['organizationEnc g']);
+                $b->joinWith(['applicationPlacementLocations h']);
+                $b->groupBy(['h.application_enc_id']);
+            }],false)
             ->having(['type' => 'Jobs'])
             ->count();
+
         $accepted_jobs = AppliedApplications::find()
             ->alias('a')
             ->select(['j.name type','g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active','SUM(k.positions) as positions'])
