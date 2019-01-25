@@ -24,13 +24,14 @@ foreach ($data['applicationOptions'] as $value) {
 $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
 $application_object = json_encode($applied_data);
 
-$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $cover_location . DIRECTORY_SEPARATOR . $cover;
-$cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
-if (empty($cover)) {
+$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
+//$cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
+if (empty($org['cover_image'])) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
+
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
@@ -210,7 +211,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                     <div class="job-single-head style2">
                         <div class="job-thumb">
                             <?php
-                            if (!empty($logo)) {
+                            if (!empty($org['logo'])) {
                                 ?>
                                 <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="<?= $org['org_name']; ?>"/>
                                 <?php
@@ -548,7 +549,6 @@ top : 20%;
         width: 100%;
         height: 100%;
         content: '';
-        background-image: url('../images/lines.png');
         z-index: 0;
         opacity: 0.14;
     }

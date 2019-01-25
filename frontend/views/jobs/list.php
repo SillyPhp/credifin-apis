@@ -56,7 +56,7 @@ a:hover {
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -67,9 +67,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -84,28 +82,20 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -116,9 +106,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -133,28 +121,20 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -165,9 +145,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -182,30 +160,22 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -216,9 +186,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -233,28 +201,20 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -265,9 +225,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -282,28 +240,20 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -314,9 +264,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -331,30 +279,22 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -365,9 +305,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -382,28 +320,20 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -414,9 +344,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -431,28 +359,20 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
+                                <span class="tag-load">
                                     <div class="loader anim"></div>
                                 </span>
                                     <div class="row">
@@ -463,9 +383,7 @@ a:hover {
                                         </div>
                                         <div class="col-md-8 col-xs-8 pt-20">
                                             <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
+                                                <div class="loader anim"></div>
                                             </h4>
                                             <h5>
                                                 <i class="locations">
@@ -480,23 +398,15 @@ a:hover {
                                         </div>
                                     </div>
                                     <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
+                                    <h6 class="pull-left custom_set2">
+                                        <div class="loader anim"></div>
+                                        <div class="last-date">
+                                            <div class="loader anim"></div>
+                                        </div>
+                                    </h6>
+                                    <h4 class="pull-right pt-20 custom_set">
+                                        <div class="loader anim"></div>
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -540,7 +450,6 @@ a:hover {
                     <hr class="change-hr">
                     <?= $this->render('/widgets/featured-employers-carousel'); ?>
                 </div>
-                <!--</div>-->
             </div>
         </div>
     </section>

@@ -62,7 +62,7 @@ $this->registerCss('
     top:0px;
 }
 #review-internships{
-    height: calc(100vh - 40px);
+    height: calc(102vh - 52px);
     overflow-x:hidden;
     position:relative;
     width:218px;

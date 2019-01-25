@@ -21,12 +21,14 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade bs-modal-lg in" id="modal_benefit" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -489,7 +491,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                     <input type="text" id="inputfield" name="inputfield"
                                                            class="form-control"
                                                            placeholder="Type required skills and press enter.">
-
                                                 </div>
                                             </div>
                                         </div>
@@ -525,7 +526,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="module2-heading">
                                             Employee Benefits
                                         </div>
-
+                                        (Selected Benefits Will Be Applicable To This Internship Only)
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="md-radio-inline text-right clearfix">
@@ -548,16 +549,19 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                         <div class="button_location pull-right clearfix">
-                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-benefit']); ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
                                 <div id="benefits_hide">
-                                    <div id="b_error"></div>
                                     <?php
                                     Pjax::begin(['id' => 'pjax_benefits']);
+                                    ?>
+                                    <div id="b_error"></div>
+                                    <?php
                                     if (!empty($benefits)) {
+                                        $model->emp_benefit = ArrayHelper::getColumn($benefit, 'benefit_enc_id');
                                         ?>
                                         <div class="cat-sec">
                                             <div class="row no-gape">
@@ -1029,13 +1033,13 @@ $this->registerCss("
 }
 .overlay-left {
   position: absolute;
-  top: 1px;
-  left: 8px;
+  top: 0px;
+  left: 6px;
   right: 0;
   background-color: #008CBA;
   overflow: hidden;
   width: 0;
-  height: 53px;
+  height: 100%;
   z-index:99;
   transition: .5s ease;
   border-radius: 8px 0px 0px 8px;
@@ -2297,6 +2301,12 @@ height:17px !important;
     padding: 0 !important;
     border: 0 !important;
 }
+.has-success .md-radio label, .has-success.md-radio label{
+    color:inherit;
+}
+.has-success .md-radio label>.box, .has-success.md-radio label>.box{
+    border-color: #666;
+}
 .ck-editor__editable {
     min-height: 200px !important;
 }
@@ -2349,6 +2359,10 @@ height:17px !important;
 ");
 
 $script = <<< JS
+if(window.location.hash)
+    {
+        window.location = window.location.pathname;
+    }
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2667,7 +2681,9 @@ $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#jobtitle').val('');
-      $('.tt-dataset').empty();  
+      $('.tt-dataset').empty(); 
+      fetchJd();
+      fetchEr();
    })
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -2813,17 +2829,21 @@ function skils_update(data)
        $.pjax.reload({container: '#pjax_process', async: false});
      }
 window.ChildFunction = ChildFunction;
-var Education = new Bloodhound({
+
+function fetchEr()
+{
+    var Education = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('educational_requirement'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/educations?q=%QUERY', 
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
+  prefetch: '/account/categories-list/fetch-er',
+  // remote: {
+  //   url: '/account/categories-list/educations?q=%QUERY', 
+  //   wildcard: '%QUERY',
+  //   cache: false,     
+  //       filter: function(list) {
+  //           return list;
+  //       }
+  // }
 });   
         
 var edu_type = $('#quali_field').typeahead(null, {
@@ -2842,19 +2862,24 @@ var edu_type = $('#quali_field').typeahead(null, {
       var qualification = datum.educational_requirement;  
       drop_edu(id,qualification);
       edu_type.typeahead('val','');  
-   });         
+   }); 
+}
         
-var Descriptions = new Bloodhound({
+        
+function fetchJd()
+{
+  var Descriptions = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('job_description'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/description?q=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
+  prefetch: '/account/categories-list/fetch-jd',
+  // remote: {
+  //   url: '/account/categories-list/description?q=%QUERY',
+  //   wildcard: '%QUERY',
+  //   cache: false,     
+  //       filter: function(list) {
+  //           return list;
+  //       }
+  // }
 });   
         
 var que_type = $('#question_field').typeahead(null, {
@@ -2872,8 +2897,9 @@ var que_type = $('#question_field').typeahead(null, {
       var id = datum.job_description_enc_id;
       var questions = datum.job_description;  
       drop_options(id,questions); 
-      que_type.typeahead('val','');
+      
    }); 
+}
         
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
@@ -2903,7 +2929,7 @@ $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
 $(document).on('click', '.modal-load-benefit', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+    $('#modal_benefit').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
 
 
@@ -2964,6 +2990,10 @@ $(document).on('click', '.modal-load-benefit', function() {
                         quesn_count++
                         quesn_upt();
                 }
+           $('#question_field').blur(function(){
+                         $(this).val('');
+                            });
+           
         }
         
         function drop_edu(id,qualification)
@@ -2981,6 +3011,9 @@ $(document).on('click', '.modal-load-benefit', function() {
               count_edu++;
               edu_counter_set();
                 }
+           $('#quali_field').blur(function(){
+                         $(this).val('');
+                            });
        
        }
         
@@ -3112,7 +3145,10 @@ function setTags(){ //Gets string of existing tags separated by commas
 		}
 		}
 		$("#shownlist").append(listnews);
-		$("#inputfield").val("");
+		$('#inputfield').val('');
+		$('#inputfield').blur(function(){
+            $(this).val('');
+        });
 	};        
         
 $("#inputfield").keypress(function(e){

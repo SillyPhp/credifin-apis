@@ -7,6 +7,8 @@ use yii\web\Controller;
 use yii\web\Response;
 use account\models\benefits\Benefits;
 use common\models\EmployeeBenefits;
+use account\models\jobs\JobApplicationForm;
+use yii\helpers\ArrayHelper;
 
 class EmployeeBenefitsController extends Controller
 {
@@ -40,12 +42,12 @@ class EmployeeBenefitsController extends Controller
     public function actionCreateBenefit()
     {
         $BenefitsModel = new Benefits();
-        $benefits = EmployeeBenefits::find()
-            ->select(['benefit_enc_id', 'benefit', 'icon', 'icon_location'])
-            ->orderBy(['id' => SORT_ASC])
-            ->asArray()
-            ->all();
-        if ($BenefitsModel->load(Yii::$app->request->post()) && $BenefitsModel->validate()) {
+        $model = new JobApplicationForm();
+        $benefits = $BenefitsModel->getAllBenefits();
+        $org_benefits = $model->getBenefits();
+        if ($BenefitsModel->load(Yii::$app->request->post()))
+        {
+            $BenefitsModel->benefit = Yii::$app->request->post('str');
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($BenefitsModel->Add()) {
                 return [
@@ -56,16 +58,21 @@ class EmployeeBenefitsController extends Controller
             } else {
                 return [
                     'status' => 'error',
-                    'title' => 'Opps!!',
-                    'message' => 'Something went wrong. Please try again.'
+                    'title' => 'Already Added!!',
+                    'message' => 'Benefit Already Added or Something Went Wrong..'
                 ];
             }
         }
-
-        return $this->renderAjax('add-benefit', [
-            'BenefitsModel' => $BenefitsModel,
-            'benefits' => $benefits,
-        ]);
+       else
+       {
+           return $this->renderAjax('add-benefit', [
+               'BenefitsModel' => $BenefitsModel,
+               'benefits' => $benefits,
+               'org_benefits' => $org_benefits,
+           ]);
+       }
     }
+
+
 
 }

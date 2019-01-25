@@ -418,9 +418,10 @@ class JobsController extends Controller
                     if ($res = $model->saveValues()) {
                         return json_encode($res);
                     } else {
-                        return $status = [
+                         $status = [
                             'status' => false,
                         ];
+                        return json_encode($status);
                     }
                 } else if (Yii::$app->request->post("check") == 0) {
                     $arr_loc = Yii::$app->request->post("json_loc");
@@ -431,9 +432,10 @@ class JobsController extends Controller
                     if ($res = $model->upload()) {
                         return json_encode($res);
                     } else {
-                        return $status = [
+                        $status = [
                             'status' => false,
                         ];
+                        return json_encode($status);
                     }
                 }
             }
@@ -619,7 +621,7 @@ class JobsController extends Controller
             ->count();
         $applied_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type','a.id','a.application_enc_id as app_id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['or',
                 ['a.status' => 'Pending'],
@@ -967,6 +969,20 @@ class JobsController extends Controller
         return [
             'test' => $test,
         ];
+    }
+
+    public function actionCancelApplication() {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post('data');
+            $update = Yii::$app->db->createCommand()
+                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id,'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->execute();
+            if ($update) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
 }

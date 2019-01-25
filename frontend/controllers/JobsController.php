@@ -119,7 +119,6 @@ class JobsController extends Controller
                     ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
                     ->andwhere(['b.is_deleted' => 0])
                     ->groupBy(['b.application_enc_id'])
-                    ->limit(4)
                     ->orderBy(['a.id' => SORT_DESC])
                     ->asArray()
                     ->all();

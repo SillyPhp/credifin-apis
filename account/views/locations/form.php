@@ -216,13 +216,14 @@ $script = <<<JS
     tab_count = $('.tab-pane.active').attr('id');
 
     $(document).on('submit', '#location-form', function (event) {
-        // event.stopImmediatePropagation();
         event.preventDefault();
         // var url = $(this).attr('action');
         // var data = $(this).serialize();
         $.ajax({
             url: '/account/locations/create',
             type: 'post',
+            async: false,
+            cache: false,
             data: $(this).serialize(),
             beforeSend: function () {
                 $("#page-loading").css("display", "block");
@@ -250,6 +251,7 @@ $script = <<<JS
                 }
             }
         });
+        event.stopImmediatePropagation();
         return false;
         
     });

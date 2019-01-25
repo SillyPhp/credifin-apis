@@ -179,6 +179,36 @@ class CategoriesListController extends Controller
         return $list;
     }
 
+    public function actionFetchJd()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = JobDescription::find()
+            ->select(['id', 'job_description_enc_id', 'job_description'])
+            ->andWhere([
+                'or',
+                ['!=', 'status', 'Pending'],
+                ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->all();
+        return $list;
+    }
+
+    public function actionFetchEr()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = EducationalRequirements::find()
+            ->select(['id', 'educational_requirement_enc_id', 'educational_requirement'])
+            ->andWhere([
+                'or',
+                ['!=', 'status', 'Pending'],
+                ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->all();
+        return $list;
+    }
+
     public function actionProcessList()
     {
 
