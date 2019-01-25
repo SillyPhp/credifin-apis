@@ -51,7 +51,7 @@ use yii\widgets\Pjax;
                                                         <div class="row ">
                                                             <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                 <div class=" j-cross">
-                                                                    <button class="rmv_list" value="<?= $shortlist['shortlisted_enc_id']; ?>">
+                                                                    <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
                                                                         <i class="fa fa-times"></i>
                                                                     </button>
                                                                 </div> 
@@ -415,16 +415,11 @@ button.over-bttn, .ob2{
 }
 ');
 $script = <<<JS
-                                    
-//$(document).on("click", "#uploadcv", function () {
-//    $(".load-modal").load($(this).attr("url"));
-//});    
-    
+   
          $(document).on("click", ".rmv_list", function() {
                 var rmv_id = $(this).val();
-                console.log(rmv_id);
                 $.ajax({
-                url : '/account/shortlist-delete',
+                url : '/account/jobs/shortlist-delete',
                 method : 'post',
                 data : {rmv_id:rmv_id},
                 beforeSend: function()
