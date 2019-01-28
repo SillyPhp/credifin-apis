@@ -20,22 +20,12 @@ $form = ActiveForm::begin([
     ]
 ]);
 ?>
-<!--    <div class="row">-->
-<!--        <div class="col-md-12">-->
-<!--            --><?//=$form->field($BenefitsModel, 'benefit')->label('<i class="fa fa-building"></i> Add Employer Benefits'); ?>
-<!--        </div>-->
-<!--    </div>-->
     <div class="row">
         <div class="col-md-9">
             <div class="form-group">
                 <input type="text" id="text" placeholder="Search Here.. Or Add New Benefit" class="form-control">
             </div>
         </div>
-<!--        <div class="col-md-4">-->
-<!--            <div class="form-group">-->
-<!--                <input type="text" id="add_new" placeholder="Add New Benefit.." class="form-control">-->
-<!--            </div>-->
-<!--        </div>-->
         <div class="col-md-3">
             <div class="form-group">
                 <button type="button" id="add_new_btn" class="btn btn-default">Add To The List</button>
@@ -85,12 +75,6 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end(); ?>
 <?php
 $script = <<< JS
-// $(":checkbox").each(function () {
-//     $(this).add(this.nextSibling)
-//         .add(this.nextSibling.nextSibling)
-//         .wrapAll("<div class='p-category'></div>")
-// });
-
 $("#text").keyup(function () {
     var re = new RegExp($(this).val(), "i")
     $('.search_benefits').each(function () {
@@ -163,5 +147,44 @@ border-bottom:0 !important;
 max-height:350px;
 overflow-y:scroll;
 overflow-x: hidden;
+}
+.checkbox-label-v2 {
+    width: 100%;
+    cursor: pointer;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+.p-category img, .checkbox-text--title img{
+    width: 80px;
+    height: 50px;
+}
+.checkbox-label-v2:before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  opacity: 0;
+  background-color: #00A0E3;
+  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
+  background-position: 80% 80%;
+  background-repeat: no-repeat;
+  background-size: 30px;
+  border-radius: 50%;
+  -webkit-transform: translate(0%, -50%);
+  transform: translate(0%, -50%);
+  transition: all 0.4s ease;
+}
+.checkbox-input:checked + .checkbox-label-v2:before {
+  top: 0;
+  opacity: 1;
+}
+.checkbox-input:checked + .checkbox-label-v2 .checkbox-text span {
+  -webkit-transform: translate(0, -8px);
+  transform: translate(0, -8px);
+}
+.p-category:hover .checkbox-label-v2 i{
+    color: #f07d1d;
 }
 ");
