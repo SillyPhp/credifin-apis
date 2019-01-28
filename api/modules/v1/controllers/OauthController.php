@@ -16,12 +16,25 @@ class OauthController extends ApiBaseController{
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'signup' => ['POST'],
-                'login' => ['POST']
+                'login' => ['POST'],
+                'refresh-token' => ['POST']
             ]
         ];
         return $behaviors;
     }
 
+    /**
+     * This is the signup endpoint
+     * @var http://www.aditya.eygb.me/api/v1/oauth/signup
+     * @param first_name
+     * @param last_name
+     * @param email
+     * @param password
+     * @param password_confirm
+     * @param phone
+     * @param username
+     * @return Returns access token and auth key
+     */
     public function actionSignup(){
         $model = new IndividualSignup();
         if($model->load(\Yii::$app->getRequest()->getBodyParams(), '') && $model->validate()){
@@ -36,6 +49,7 @@ class OauthController extends ApiBaseController{
             $user->initials_color = RandomColors::one();
             $user->access_token = \Yii::$app->security->generateRandomString(32);
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
+            $user->token_expiration_time = date('Y-m-d H:i:s', time());
             $user->setPassword($model->password);
             $user->generateAuthKey();
             if($user->save()) {
@@ -51,6 +65,14 @@ class OauthController extends ApiBaseController{
         return $this->response(201, $model->getErrors(), false);
 
     }
+
+    /**
+     * This is the login endpoint
+     * @var http://www.aditya.eygb.me/api/v1/oauth/login
+     * @param username It can be email too
+     * @param password
+     * @return Returns access token only
+     */
     public function actionLogin(){
         $model = new LoginForm();
         $username = \Yii::$app->request->post('username');
@@ -72,7 +94,10 @@ class OauthController extends ApiBaseController{
             $user->access_token = \Yii::$app->security->generateRandomString();
             $user->token_expiration_time = date('Y-m-d H:i:s', time());
             if($user->save()) {
-                return $this->response(200, $user->access_token);
+                $data = [
+                    'access_token' => $user->access_token,
+                ];
+                return $this->response(200, $data);
             }else{
                 return $this->response(201, "Couldnt log you in");
             }
@@ -80,6 +105,12 @@ class OauthController extends ApiBaseController{
         return $this->response(201, $model->getErrors(), false);
     }
 
+    /**
+     * This is the refresh token endpoint
+     * @var http://www.aditya.eygb.me/api/v1/oauth/refresh-token
+     * @param auth_key
+     * @return Returns access token
+     */
     public function actionRefreshToken(){
         if(\Yii::$app->request->post('auth_key')){
             $user = Clients::findOne([
@@ -90,8 +121,7 @@ class OauthController extends ApiBaseController{
                 $user->token_expiration_time = date('Y-m-d H:i:s', time());
                 if ($user->save()) {
                     $data = [
-                        'access_token' => $user->access_token,
-                        'auth_key' => $user->auth_key
+                        'access_token' => $user->access_token
                     ];
                     return $this->response(200, $data);
                 } else {

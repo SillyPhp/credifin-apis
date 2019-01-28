@@ -14,7 +14,7 @@ class Clients extends Users implements \yii\web\IdentityInterface{
     }
     public static function findIdentityByAccessToken($token, $type=null){
         if($user=static::findOne(['access_token' => $token])){
-            $expires = strtotime("+5 minute", strtotime($user->token_expiration_time));
+            $expires = strtotime("+10080 minute", strtotime($user->token_expiration_time));
             if($expires > time()){
                 $user->token_expiration_time = date('Y-m-d H:i:s', strtotime('now'));
                 $user->save();

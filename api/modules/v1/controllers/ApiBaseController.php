@@ -13,13 +13,13 @@ class ApiBaseController extends Controller{
             $response = [
                 'status' => $code,
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
         }else{
             $response = [
                 'status' => $code,
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
         }
         $this->setHeader($code);
