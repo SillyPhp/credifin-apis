@@ -1422,7 +1422,7 @@ hr .flare :after {
         overflow: hidden;
     }
 }
-.opens.product.set-scrollbar.iconbox-border.iconbox-theme-colored.shadow.pb-5, .text-wrap-ellipsis{
+.text-wrap-ellipsis{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
