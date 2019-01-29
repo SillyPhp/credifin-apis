@@ -44,14 +44,11 @@ use yii\widgets\Pjax;
                                             <div class="opening-txt">
                                                 <?= $accept["positions"]; ?> Openings
                                             </div>
-                                            <div class="overlay2">
-                                                <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $accept['slug']; ?>">Apply</a></div>
-                                            </div>
                                             <div class="hr-com-jobs">
                                                 <div class="row ">
                                                     <div class="col-md-12 col-sm-12 minus-15-pad">
                                                         <div class=" j-cross">
-                                                            <button class="rmv_list" value="<?= $accept['shortlisted_enc_id']; ?>">
+                                                            <button class="rmv_list" value="<?= $accept['app_id']; ?>">
                                                                 <i class="fa fa-times"></i>
                                                             </button>
                                                         </div> 
@@ -353,18 +350,13 @@ a:hover{
 //}
 ');
 $script = <<<JS
-                                    
-//$(document).on("click", "#uploadcv", function () {
-//    $(".load-modal").load($(this).attr("url"));
-//});         
-        
+   
         $(document).on("click", ".rmv_list", function() {
-        var rmv_id = $(this).val();
-//        console.log(rmv_id);
+        var data = $(this).val();
         $.ajax({
-        url : '/account/review-delete',
+        url : '/account/jobs/cancel-application',
         method : 'post',
-        data : {rmv_id:rmv_id},
+        data : {data:data},
         beforeSend: function()
             {
                 $(".loader").css("display", "block");
@@ -374,9 +366,9 @@ $script = <<<JS
                         $(".loader").css("display", "none");
                         $.pjax.reload({container: '#pjax_shortlist', async: false});
                     }
-           },
-   });
-});
+                },
+           });
+        });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
