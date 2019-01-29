@@ -176,7 +176,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
-                                                    echo 'No Preference';;
+                                                    echo 'No Preference';
                                                     break;
                                                 case 1:
                                                     echo 'Male';
@@ -186,6 +186,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     break;
                                                 case 3:
                                                     echo 'Trans';
+                                                    break;
                                                 default:
                                                     echo 'not found';
                                             }
