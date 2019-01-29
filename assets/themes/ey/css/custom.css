@@ -1318,6 +1318,9 @@ hr .flare :after {
     box-shadow: 0 1px 3px 0px #797979;
     background-color: #fff;
     margin-bottom: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .application-card-main *:not(i) {
     font-family: Georgia !important;
@@ -1335,6 +1338,7 @@ hr .flare :after {
     font-weight: 600;
 }
 .application-card-img{
+    position: relative;
     height: 80px;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -1418,6 +1422,11 @@ hr .flare :after {
         white-space: nowrap;
         overflow: hidden;
     }
+}
+.text-wrap-ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* New Cards css ends*/
 
@@ -1734,7 +1743,7 @@ hr .flare :after {
     top: 50%;
 }
 .btn--primary.btn-border {
-    display: inline-block;
+    display: block;
     position:relative;
     background-color: transparent;
     color: #0083ff;
@@ -1747,6 +1756,8 @@ hr .flare :after {
     text-transform: uppercase;
     font-weight: 900;
     line-height: 1;
+    margin: auto;
+    width: 240px;
 }
 .load-more-spinner:not(:root){
     overflow: hidden;

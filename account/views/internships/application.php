@@ -1953,9 +1953,11 @@ float:right;}
     color: #a2a2a2;
     bottom: 16px;
 }
-.checkbox-text
-{
-  margin-bottom:8px;
+.checkbox-text{
+    margin-bottom:8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -2173,7 +2175,7 @@ height:17px !important;
     padding: 10px;
     color: #fff;
     z-index: 1000;
-    bottom: -3px;
+    bottom: 10px;
     border-radius:4px;
 }
 .tooltips:before{

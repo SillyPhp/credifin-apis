@@ -156,7 +156,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div id="addct">
                                             <a id="addctc"><span class="fa fa-plus"></span> Add Annual CTC</a>
                                         </div>
-                                        <div id="ctc">
+                                        <div id="ctc-main">
                                             <?= $form->field($model, 'ctc')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('CTC'); ?>
                                             <a class="close-ctc"><i class="fa fa-times"></i></a>
                                         </div>
@@ -1439,7 +1439,7 @@ border-bottom: 1px solid #e73d4a;
 {
 display:none;
 }
-#ctc
+#ctc-main
 {
   display:none;
 }
@@ -1955,9 +1955,11 @@ float:right;}
     color: #a2a2a2;
     bottom: 16px;
 }
-.checkbox-text
-{
-  margin-bottom:8px;
+.checkbox-text{
+    margin-bottom:8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -2169,7 +2171,7 @@ height:17px !important;
     padding: 10px;
     color: #fff;
     z-index: 1000;
-    bottom: -3px;
+    bottom: 10px;
     border-radius:4px;
 }
 .tooltips:before{
@@ -3152,18 +3154,15 @@ function init() {
     }).disableSelection();
 }       
    
-     $('#addctc').on('click',function()
-         {
-        $('#addct').hide();
-        $('#ctc').show();     
-   }); 
+$('#addctc').on('click',function(){
+    $('#addct').hide();
+    $('#ctc-main').show();     
+});
         
-    $('.close-ctc').on('click',function()
-        {
-            $('#ctc').hide();
-            $('#addct').show();
-       
-   });
+$('.close-ctc').on('click',function(){
+    $('#ctc-main').hide();
+    $('#addct').show();
+});
        function skills_arr()
        {
         var array_val = [];

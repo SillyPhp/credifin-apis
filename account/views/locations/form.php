@@ -130,7 +130,8 @@ $form->field($locationFormModel, 'longitude', [
 <?php
 $this->registerCss('
 .has-error .form-group .help-block.help-block-error{
-    opacity: 1;
+    opacity: 1 !important;
+    color: #e73d4a !important;
     filter: alpha(opacity=100);
 }
 ');
