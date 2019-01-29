@@ -235,17 +235,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
                                 <?php } ?>
                             </ul>
+                            <?php
+                                if (!empty($data['applicationEmployeeBenefits'])){
+                            ?>
                             <h3>Employer Benefits</h3>
                             <ul>
                                 <?php
-                                if (!empty($data['applicationEmployeeBenefits'])){
                                     foreach ($data['applicationEmployeeBenefits'] as $benefit) {
                                         ?>
                                         <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                    <?php } } else { ?>
-                                    <li> No Benefits  </li>
-                                <?php } ?>
+                                    <?php }?>
                             </ul>
+                                <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
@@ -257,7 +258,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span>
+                                        <?php
+                                        $fromtime = strtotime($option['interview_start_time']);
+                                        $interviewfrom = date("g:i A", $fromtime);
+                                        $totime = strtotime($option['interview_end_time']);
+                                        $interviewto = date("g:i A", $totime);
+                                        ?>
+                                        <span><?php echo $interviewfrom ?> To <?php echo $interviewto ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
