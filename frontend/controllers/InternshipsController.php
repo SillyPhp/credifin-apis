@@ -3,22 +3,14 @@
 namespace frontend\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\db\Expression;
 use yii\helpers\Url;
-use yii\web\UploadedFile;
-use common\models\Organizations;
 use common\models\OrganizationLocations;
 use common\models\Cities;
 use common\models\EmployerApplications;
-use common\models\ApplicationPlacementLocations;
-use common\models\AssignedCategories;
 use common\models\Categories;
-use common\models\ApplicationTypes;
-use common\models\Designations;
-use common\models\Posts;
-use common\models\ApplicationOptions;
 use common\models\Industries;
 use common\models\EmployeeBenefits;
 use common\models\AppliedApplications;
@@ -26,58 +18,44 @@ use common\models\UserResume;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
 use frontend\models\JobApplied;
+use frontend\models\applications\ApplicationCards;
 
 class InternshipsController extends Controller
 {
 
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['internship-preview'],
+                'rules' => [
+                    [
+                        'actions' => ['internship-preview'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
-        $posts = Posts::find()
-            ->where(['status' => 'Active', 'is_deleted' => 'false'])
-            ->orderby(['created_on' => SORT_ASC])
-            ->limit(4)
-            ->asArray()
-            ->all();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $type = Yii::$app->request->post('type');
-            if ($type === 'Categories') {
-                $categories = AssignedCategories::find()
-                    ->select(['a.category_enc_id', 'b.name', 'b.slug', 'b.icon', 'c.name as sub', 'COUNT(d.id) as total', 'e.application_type_enc_id', 'e.name as type'])
-                    ->alias('a')
-                    ->joinWith(['parentEnc b'], false)
-                    ->joinWith(['categoryEnc c'], false)
-                    ->joinWith(['employerApplications d' => function ($b) {
-                        $b->joinWith(['applicationTypeEnc e']);
-                        $b->where(['e.name' => 'Internships']);
-                    }], false)
-                    ->groupBy(['a.parent_enc_id'])
-                    ->orderBy(['total' => SORT_DESC])
-                    ->limit(8)
-                    ->asArray()
-                    ->all();
-            } elseif ($type === 'Categories') {
-                $companycards = Organizations::find()
-                    ->alias('a')
-                    ->select(['a.is_sponsored', 'a.name', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
-                    ->where(['a.is_sponsored' => 1])
-                    ->limit(10)
-                    ->asArray()
-                    ->all();
-            }
             $options = [];
-            $limit = 3;
-            $page = 1;
-            $options['limit'] = $limit;
-            $options['offset'] = ($page - 1) * $limit;
-            $options['type'] = 'Internships';
-            $cards = $this->_getCardsFromInternships($options);
-
+            $options['limit'] = 3;
+            $options['page'] = 1;
+            $cards = ApplicationCards::internships($options);
             if ($cards) {
                 $response = [
                     'status' => 200,
                     'message' => 'Success',
-                    'cards' => $cards['cards'],
+                    'cards' => $cards,
                 ];
             } else {
                 $response = [
@@ -85,11 +63,9 @@ class InternshipsController extends Controller
                 ];
             }
             return $response;
-        } else {
-            return $this->render('index', [
-                'posts' => $posts,
-            ]);
         }
+
+        return $this->render('index');
     }
 
     public function actionInternshipPreview()
@@ -155,18 +131,15 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
-            $options = [];
-            $limit = 9;
 
+            $options = [];
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
-                $page = $parameters['page'];
+                $options['page'] = $parameters['page'];
             } else {
-                $page = 1;
+                $options['page'] = 1;
             }
 
-            $options['limit'] = $limit;
-
-            $options['offset'] = ($page - 1) * $limit;
+            $options['limit'] = 9;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -180,13 +153,19 @@ class InternshipsController extends Controller
                 $options['company'] = $parameters['company'];
             }
 
-            if ($parameters['type'] && !empty($parameters['type'])) {
-                $options['type'] = $parameters['type'];
+            $cards = ApplicationCards::internships($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
             } else {
-                $options['type'] = 'Internships';
+                $response = [
+                    'status' => 201,
+                ];
             }
-
-            return $this->_getCardsFromInternships($options);
+            return $response;
         }
 
         return $this->render('list');
@@ -246,87 +225,4 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionFeaturedCompanies()
-    {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $companycards = Organizations::find()
-                ->select(['initials_color color', 'CONCAT("/company/", slug) link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
-                ->where(['is_sponsored' => 1])
-                ->limit(10)
-                ->asArray()
-                ->all();
-            if ($companycards) {
-                $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'companycards' => $companycards
-                ];
-            } else {
-                $response = [
-                    'status' => 201,
-                ];
-            }
-            return $response;
-        }
-    }
-
-    private function _getCardsFromInternships($options = [])
-    {
-        $jobcards = EmployerApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id application_id', 'f.location_enc_id location_id', 'a.created_on', 'i.name category', 'CONCAT("/internship/", a.slug) link', 'd.initials_color color', 'CONCAT("/company/", d.slug) organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
-            ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tablename() . 'as e', 'e.application_enc_id = a.application_enc_id')
-            ->innerJoin(OrganizationLocations::tablename() . 'as f', 'f.location_enc_id = e.location_enc_id')
-            ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => $options['type'], 'a.status' => 'Active', 'a.is_deleted' => 0]);
-        if (isset($options['company'])) {
-            $jobcards->andWhere([
-                'or',
-                ($options['company']) ? ['like', 'd.name', $options['company']] : ''
-            ]);
-        }
-        if (isset($options['location'])) {
-            $jobcards->andWhere([
-                'or',
-                ['g.name' => $options['location']]
-            ]);
-        }
-        if (isset($options['keyword'])) {
-            $jobcards->andWhere([
-                'or',
-                ['like', 'a.type', $options['keyword']],
-                ['like', 'c.name', $options['keyword']],
-                ['like', 'i.name', $options['keyword']],
-            ]);
-        }
-
-        if (isset($options['limit'])) {
-            $jobcards->limit = $options['limit'];
-        }
-
-        if (isset($options['offset'])) {
-            $jobcards->offset = $options['offset'];
-        }
-
-        $cards = $jobcards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
-
-        if (count($cards) > 0) {
-            $response = [
-                'status' => 200,
-                'title' => 'Success',
-                'cards' => $cards,
-            ];
-        } else {
-            $response = [
-                'status' => 201,
-            ];
-        }
-        return $response;
-    }
 }
