@@ -119,12 +119,12 @@ if ($type == 'card') {
                     </div>
                 </div>
                 {{#last_date}}
-                <h6 class="pull-left pl-20 custom_set2" align="center">
+                <h6 class="col-md-5 pl-20 custom_set2" align="center">
                     <strong>Last Date to Apply</strong>
                     <br>
                     {{last_date}}
                 </h6>
-                <h4 class="pull-right org_name text-right pr-10" align="center">
+                <h4 class="col-md-7 org_name text-right pr-10" align="center">
                     <strong>{{organization_name}}</strong>
                 </h4>
                 {{/last_date}}

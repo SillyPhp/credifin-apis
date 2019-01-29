@@ -1,8 +1,6 @@
 <?php
 $this->title = Yii::t('frontend', 'Internships');
 $this->params['header_dark'] = true;
-
-
 $this->registerCss('
 .change-hr{
     margin-bottom: 30px;
@@ -10,30 +8,12 @@ $this->registerCss('
     border-top: 1px solid #ccc;
     width:100%;
 }
-.blogbox{
-    margin:0px;
-    margin-bottom: 20px;
-}
-a:hover {
-    text-decoration: none;
-}
-.btn-div{
-    border-top: 1px solid transparent;
-    margin-top: 20px;
-    padding-top: 20px;
-    margin-bottom: 20px;
-}
 .border-top-set{
     border-top: 1px solid #ccc;
     padding-top: 20px;
 }
 .main-content{
     min-height:100vh !important;
-}
-.not-found{
-    width: 300px;
-    margin: auto;
-    display: block;
 }
 ');
 ?>
@@ -52,9 +32,8 @@ a:hover {
                 $this->render('/widgets/search-bar1');
                 ?>
                 <div class="col-md-12 col-sm-12">
-                    <div id="cardBlock" class="row work-load blogbox border-top-set"></div>
+                    <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card'); ?>
-                    <div class="btn-div" align="center">
                         <a href="#" id="loadMore"
                            class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
                             <span class="load-more-text">Load More</span>
@@ -87,7 +66,6 @@ a:hover {
                                 </g>
                             </svg>
                         </a>
-                    </div>
                     <hr class="change-hr">
                     <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>

@@ -31,12 +31,12 @@
                 </div>
             </div>
             {{#last_date}}
-            <h6 class="pull-left pl-20 custom_set2 text-center">
+            <h6 class="col-md-5 pl-20 custom_set2 text-center">
                 Last Date to Apply
                 <br>
                 {{last_date}}
             </h6>
-            <h4 class="pull-right org_name text-right pr-10">
+            <h4 class="col-md-7 org_name text-right pr-10">
                 {{organization_name}}
             </h4>
             {{/last_date}}
@@ -123,4 +123,11 @@ function getCards(type = 'Jobs') {
 }
 JS;
 $this->registerJs($script);
+$this->registerCss('
+.not-found{
+    width: 300px;
+    margin: auto;
+    display: block;
+}
+');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
