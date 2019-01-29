@@ -1338,6 +1338,7 @@ hr .flare :after {
     font-weight: 600;
 }
 .application-card-img{
+    position: relative;
     height: 80px;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
