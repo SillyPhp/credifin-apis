@@ -96,7 +96,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-puzzle-piece"></i>
                                         <h3>Profile</h3><span><?= $data['name']; ?></span></li>
                                     <li><i class="fa fa-puzzle-piece"></i>
-                                        <h3>Industry</h3><span><?= $data['industry']; ?></span></li>
+                                        <h3>Preferred Industry</h3><span><?= $data['industry']; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Designation</h3><span><?= $data['designation']; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i>
@@ -108,7 +108,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                         <h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
-                                                    echo 'No Preference';;
+                                                    echo 'No Preference';
                                                     break;
                                                 case 1:
                                                     echo 'Male';
@@ -118,6 +118,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     break;
                                                 case 3:
                                                     echo 'Trans';
+                                                    break;
                                                 default:
                                                     echo 'not found';
                                             }
@@ -170,17 +171,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
                                 <?php } ?>
                             </ul>
+                            <?php
+                                if (!empty($data['applicationEmployeeBenefits'])){
+                            ?>
                             <h3>Employer Benefits</h3>
                             <ul>
                                 <?php
-                                if (!empty($data['applicationEmployeeBenefits'])){
                                 foreach ($data['applicationEmployeeBenefits'] as $benefit) {
                                     ?>
                                     <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                <?php } } else { ?>
-                                    <li> No Benefits  </li>
-                                    <?php } ?>
+                                <?php }?>
                             </ul>
+                                <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
@@ -192,7 +194,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span>
+                                        <?php
+                                            $fromtime = strtotime($option['interview_start_time']);
+                                            $interviewfrom = date("g:i A", $fromtime);
+                                            $totime = strtotime($option['interview_end_time']);
+                                            $interviewto = date("g:i A", $totime);
+                                        ?>
+                                        <span><?php echo $interviewfrom ?> To <?php echo $interviewto ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
