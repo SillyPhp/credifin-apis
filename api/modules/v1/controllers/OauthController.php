@@ -37,33 +37,43 @@ class OauthController extends ApiBaseController{
      */
     public function actionSignup(){
         $model = new IndividualSignup();
-        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '') && $model->validate()){
-            $user = new Clients();
-            $user->username = $model->username;
-            $user->first_name = $model->first_name;
-            $user->last_name = $model->last_name;
-            $user->phone = $model->phone;
-            $user->email = $model->email;
-            $user->user_enc_id = time().mt_rand(10,99);
-            $user->user_type_enc_id = 'VkRqU1NjSGZNOWQzZnV2NDB0ckY5Zz09';
-            $user->initials_color = RandomColors::one();
-            $user->access_token = \Yii::$app->security->generateRandomString(32);
-            $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
-            $user->token_expiration_time = date('Y-m-d H:i:s', time());
-            $user->setPassword($model->password);
-            $user->generateAuthKey();
-            if($user->save()) {
-                $data = [
-                    'access_token' => $user->access_token,
-                    'auth_key' => $user->auth_key
-                ];
-                return $this->response(200, $data);
-            }else{
-                return $this->response(201, "Couldnt save the data");
+        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
+            if($model->validate()) {
+                $user = new Clients();
+                $user->username = $model->username;
+                $user->first_name = $model->first_name;
+                $user->last_name = $model->last_name;
+                $user->phone = $model->phone;
+                $user->email = $model->email;
+                $user->user_enc_id = time() . mt_rand(10, 99);
+                $user->user_type_enc_id = 'VkRqU1NjSGZNOWQzZnV2NDB0ckY5Zz09';
+                $user->initials_color = RandomColors::one();
+                $user->access_token = \Yii::$app->security->generateRandomString(32);
+                $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
+                $user->token_expiration_time = date('Y-m-d H:i:s', time());
+                $user->status = "Active";
+                $user->setPassword($model->password);
+                $user->generateAuthKey();
+                if ($user->save()) {
+                    $data = [
+                        'user_id' => $user->user_enc_id,
+                        'username' => $user->username,
+                        'email' => $user->email,
+                        'first_name' => $user->first_name,
+                        'last_name' => $user->last_name,
+                        'phone' => $user->phone,
+                        'address' => $user->address,
+                        'access_token' => $user->access_token,
+                        'auth_key' => $user->auth_key
+                    ];
+                    return $this->response(200, $data);
+                } else {
+                    return $this->response(204);
+                }
             }
+            return $this->response(203, $model->getErrors());
         }
-        return $this->response(201, $model->getErrors(), false);
-
+        return $this->response(600);
     }
 
     /**
@@ -75,6 +85,7 @@ class OauthController extends ApiBaseController{
      */
     public function actionLogin(){
         $model = new LoginForm();
+
         $username = \Yii::$app->request->post('username');
         $password = \Yii::$app->request->post('password');
         if(!isset($password) && isset($username)){
@@ -82,27 +93,38 @@ class OauthController extends ApiBaseController{
                 'username' => $username
             ]);
             if($user > 0) {
-                return $this->response(201, 'User already exists');
+                return $this->response(200, 'User Exists');
             }else{
-                return $this->response(201, "User doesn't exist");
+                return $this->response(201);
             }
         }
-        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '') && $model->login()){
-            $user = Clients::findOne([
-                'username' => $model->username
-            ]);
-            $user->access_token = \Yii::$app->security->generateRandomString();
-            $user->token_expiration_time = date('Y-m-d H:i:s', time());
-            if($user->save()) {
-                $data = [
-                    'access_token' => $user->access_token,
-                ];
-                return $this->response(200, $data);
-            }else{
-                return $this->response(201, "Couldnt log you in");
+
+        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
+            if($model->login()) {
+                $user = Clients::findOne([
+                    'username' => $model->username
+                ]);
+                $user->access_token = \Yii::$app->security->generateRandomString();
+                $user->token_expiration_time = date('Y-m-d H:i:s', time());
+                if ($user->save()) {
+                    $data = [
+                        'user_id' => $user->user_enc_id,
+                        'username' => $user->username,
+                        'email' => $user->email,
+                        'first_name' => $user->first_name,
+                        'last_name' => $user->last_name,
+                        'phone' => $user->phone,
+                        'address' => $user->address,
+                        'access_token' => $user->access_token,
+                    ];
+                    return $this->response(200, $data);
+                } else {
+                    return $this->response(101);
+                }
             }
+            return $this->response(203, $model->getErrors());
         }
-        return $this->response(201, $model->getErrors(), false);
+        return $this->response(600);
     }
 
     /**
@@ -125,12 +147,12 @@ class OauthController extends ApiBaseController{
                     ];
                     return $this->response(200, $data);
                 } else {
-                    return $this->response(201, "Couldnt refresh the token");
+                    return $this->response(102);
                 }
             }else{
-                return $this->response(201, "Invalid access token");
+                return $this->response(201);
             }
         }
-        return $this->response(201, 'Invalid Request');
+        return $this->response(202);
     }
 }

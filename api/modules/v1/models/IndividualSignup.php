@@ -22,7 +22,7 @@ class IndividualSignup extends Model{
             ['first_name', 'trim'],
 
             ['phone', 'required'],
-            [['phone'], 'string', 'max' => 15],
+            [['phone'], 'string', 'max' => 15, 'min'=>10],
             ['phone', 'unique', 'targetClass'=>'api\modules\v1\models\Clients', 'message'=>'phone number already registered'],
 
             ['username', 'trim'],

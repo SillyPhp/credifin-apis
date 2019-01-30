@@ -30,7 +30,7 @@ class JobsController extends ApiBaseController {
     public function behaviors(){
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-//            'except' => ['detail', 'list'],
+            'except' => ['detail', 'list'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -143,7 +143,7 @@ class JobsController extends ApiBaseController {
         if (count($cards) > 0) {
             return $this->response(200, $result);
         } else {
-            return $this->response(201, 'No data found');
+            return $this->response(201);
         }
     }
 
@@ -163,7 +163,7 @@ class JobsController extends ApiBaseController {
                 ->one();
 
             if (!$application_details) {
-                return $this->response(201, 'No data found');
+                return $this->response(201);
             }
 
             $organization_details = $application_details
@@ -299,6 +299,7 @@ class JobsController extends ApiBaseController {
      */
     public function actionApply(){
         $model = new JobApply();
+
         if(Yii::$app->request->post('old') == true){
 
             $application_questionnaire = ApplicationInterviewQuestionnaire::find()
@@ -322,7 +323,7 @@ class JobsController extends ApiBaseController {
             if ($res = $model->saveValues()) {
                 return $this->response(200, $res);
             } else {
-                return $this->response(201, "Failed to apply");
+                return $this->response(204);
             }
 
         }else if(Yii::$app->request->post('new') == true){
@@ -346,7 +347,7 @@ class JobsController extends ApiBaseController {
             if ($res = $model->upload()) {
                 return $this->response(200, $res);
             } else {
-                return $this->response(201, "Failed to apply");
+                return $this->response(204);
             }
         }
     }
