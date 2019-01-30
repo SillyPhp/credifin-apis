@@ -315,7 +315,6 @@ $script = <<<JS
      
     $(".form_bal_textfield").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getTextFieldHTML();
             
         },
@@ -323,28 +322,24 @@ $script = <<<JS
     });
     $(".form_bal_textarea").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getTextAreaFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_number").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getNumberFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_email").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getEmailFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_date").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getDateFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -352,7 +347,6 @@ $script = <<<JS
 
     $(".form_bal_time").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getTimeFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -360,28 +354,24 @@ $script = <<<JS
 
     $(".form_bal_button").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getButtonFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_select").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getSelectFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_radio").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getRadioFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_checkbox").draggable({
         helper: function () {
-            document.querySelector('input[type=text]').focus();
             return getCheckboxFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -405,51 +395,60 @@ $script = <<<JS
     function getTextFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="text" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Enter Short Question" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="placeholder_' + field + '" data-field="' + field + '" class="form-control form_input_placeholder" placeholder="Placeholder" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "text-field_' + field + '"/></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getNumberFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="number" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Field Name" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="placeholder_' + field + '" data-field="' + field + '" class="form-control form_input_placeholder" placeholder="Placeholder"/></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "number_' + field + '"/></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getEmailFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-12"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div></div></div><hr/><div class="row li_row form_output" data-type="email" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Field Name" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="placeholder_' + field + '" data-field="' + field + '" class="form-control form_input_placeholder" placeholder="Placeholder"/></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "name_' + field + '"/></div></div><div class="col-md-12"><div class="form-check"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req">Required</label></div></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getDateFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="date" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Date Field" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "date-field_' + field + '"/></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function getTimeFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="time" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Time Inputs" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "time-field_' + field + '" /></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function getTextAreaFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="textarea" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Long Question" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="placeholder_' + field + '" data-field="' + field + '" class="form-control form_input_placeholder" placeholder="Placeholder"/></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "text-area_' + field + '"/></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getSelectFieldHTML() {
         var field = generateField();
         var opt1 = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-12"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div></div><hr/><div class="row li_row form_output" data-type="select" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Dropdown Select Field" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "name_' + field + '"/></div></div><div class="col-md-12"><div class="form-group"><select name="select_' + field + '" class="form-control"><option data-opt="' + opt1 + '" value="Value">Option</option></select></div></div></div><div class="row li_row"><div class="col-md-12"><div class="field_extra_info_' + field + '"><div data-field="' + field + '" class="row select_row_' + field + '" data-opt="' + opt1 + '"><div class="col-md-4"><div class="form-group"><input autofocus type="text" placeholder="Option" class="s_opt form-control valid_input" /></div></div><div class="col-md-4"><i class="margin-top-5 fa fa-plus-circle fa-2x default_blue add_more_select" data-field="' + field + '"></i></div><div class="col-md-4"><div class="form-group"><input type="hidden" value="Value" class="s_val form-control"/></div></div>  </div></div></div></div></div>';
+       $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getRadioFieldHTML() {
         var field = generateField();
         var opt1 = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-12"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div></div><hr/><div class="row li_row form_output" data-type="radio" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Choice Fields" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "radio_' + field + '"/></div></div><div class="col-md-12"><div class="form-group"><div class="mt-radio-list radio_list_' + field + '"><label class="mt-radio mt-radio-outline"><input data-opt="' + opt1 + '" type="radio" name="radio_' + field + '" value="Value"> <p class="r_opt_name_' + opt1 + '">Option</p><span></span></label></div></div></div></div><div class="row li_row"><div class="col-md-12"><div class="field_extra_info_' + field + '"><div data-field="' + field + '" class="row radio_row_' + field + '" data-opt="' + opt1 + '"><div class="col-md-4"><div class="form-group"><input autofocus type="text" placeholder="Option" class="r_opt form-control valid_input" /></div></div><div class="col-md-4"><i class="margin-top-5 fa fa-plus-circle fa-2x default_blue add_more_radio" data-field="' + field + '"></i></div><div class="col-md-4"><div class="form-group"><input type="hidden" value="Value" class="r_val form-control"/></div></div></div></div></div></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getCheckboxFieldHTML() {
         var field = generateField();
         var opt1 = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-12"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div></div><hr/><div class="row li_row form_output" data-type="checkbox" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input" placeholder="Multi Selectbox Field" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "checkbox_' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><div class="mt-checkbox-list checkbox_list_' + field + '"><label class="mt-checkbox mt-checkbox-outline"><input data-opt="' + opt1 + '" type="checkbox" name="checkbox_' + field + '" value="Value"> <p class="c_opt_name_' + opt1 + '">Option</p><span></span></label></div></div></div></div><div class="row li_row"><div class="col-md-12"><div class="field_extra_info_' + field + '"><div data-field="' + field + '" class="row checkbox_row_' + field + '" data-opt="' + opt1 + '"><div class="col-md-4"><div class="form-group"><input autofocus type="text" placeholder="Option" class="c_opt form-control valid_input" /></div></div><div class="col-md-4"><i class="margin-top-5 fa fa-plus-circle fa-2x default_blue add_more_checkbox" data-field="' + field + '"></i></div><div class="col-md-4"><div class="form-group"><input type="hidden" value="Value" class="c_val form-control"/></div></div></div></div></div></div></div>';
+        $('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
    
