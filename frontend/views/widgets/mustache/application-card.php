@@ -31,17 +31,20 @@
                 </div>
             </div>
             {{#last_date}}
-            <h6 class="pull-left pl-20 custom_set2" align="center">
-                <strong>Last Date to Apply</strong>
+            <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                Last Date to Apply
                 <br>
                 {{last_date}}
             </h6>
+            <h4 class="col-md-7 org_name text-right pr-10">
+                {{organization_name}}
+            </h4>
             {{/last_date}}
-            {{#organization_name}}
+            {{^last_date}}
             <div class="col-md-12">
                 <h4 class="org_name text-right">{{organization_name}}</h4>
             </div>
-            {{/organization_name}}
+            {{/last_date}}
             <div class="application-card-wrapper">
                 <a href="{{link}}" class="application-card-open">View Detail</a>
                 <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
@@ -52,9 +55,9 @@
 </script>
 <?php
 $script = <<<JS
-let loader = true;
+let loader = false;
+let draggable = false;
 let page = 0;
-let type = "Jobs";
 function renderCards(cards){
     var card = $('#application-card').html();
     var cardsLength = cards.length;
@@ -69,7 +72,7 @@ function renderCards(cards){
     }
 }
 
-function getCards(type) {
+function getCards(type = 'Jobs') {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -100,15 +103,16 @@ function getCards(type) {
                 renderCards(response.cards);
                 utilities.initials();
             } else {
-                utilities.initials();
                 if(loader === true) {
-                    $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Jobs not found.</h2>');
+                    if(page === 1) {
+                        $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Jobs not found.</h2>');
+                    }
                     $('#loadMore').hide();
                 }
             }
         }
     }).done(function(){
-        if(loader === true) {
+        if(draggable === true) {
             $.each($('.application-card-main'), function(){
                 $(this).draggable({
                     helper: "clone",
@@ -117,10 +121,13 @@ function getCards(type) {
         }
     });
 }
-
-$('#loadMore').on('click', function(e){
-    e.preventDefault();
-    getCards();
-});
 JS;
 $this->registerJs($script);
+$this->registerCss('
+.not-found{
+    width: 300px;
+    margin: auto;
+    display: block;
+}
+');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

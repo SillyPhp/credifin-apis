@@ -1241,21 +1241,11 @@ hr .flare :after {
 .set_logo img{
     height: 100%;
     width: 100%;
-    /*    border-radius: 50%;
-        box-shadow: 0px 2px 20px 0px;*/
 }
 .set_logo {
-    /*    display: table-cell;
-        vertical-align: middle;*/
-    height: 80px;
-    /*padding: 0px 5px;*/
-    border-radius: 50%;
     display: block;
-    box-shadow: 0px 2px 20px 1px #bbbbbb8c;
-    /*padding: 15px 8px;*/
-    width: 80px;
     margin-top: 20px;
-    overflow: hidden;
+    margin-left: 6px;
 }
 .btn-add-to-cart-wrapper {
     margin-bottom: 10px !important;
@@ -1328,6 +1318,9 @@ hr .flare :after {
     box-shadow: 0 1px 3px 0px #797979;
     background-color: #fff;
     margin-bottom: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .application-card-main *:not(i) {
     font-family: Georgia !important;
@@ -1345,6 +1338,7 @@ hr .flare :after {
     font-weight: 600;
 }
 .application-card-img{
+    position: relative;
     height: 80px;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -1429,17 +1423,22 @@ hr .flare :after {
         overflow: hidden;
     }
 }
+.text-wrap-ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /* New Cards css ends*/
 
 /* Cards loader css starts*/
 .loader-main .product{
     margin-bottom: 15px !important;
 }
-.loader-inner-main .tag-load .anim{
-    max-width: 50%;
-    float: right;
+.tag-load .anim{
     height: 25px;
-    border-radius: 0;
+    top: -5px;
+    right: -10px;
+    width: 85px;
 }
 .icon .anim{
     max-width: 80px;
@@ -1460,13 +1459,18 @@ hr .flare :after {
     height: 14px;
 }
 .custom_set2 .anim{
-    max-width:80%;
+    max-width:65%;
     margin:auto;
     margin-top: 5px;
 }
 .last-date .anim{
-    max-width:60%;
+    max-width:46%;
     margin: 5px auto;
+}
+.custom_set .anim{
+    width: 140px;
+    height: 20px;
+    margin-top: -2px;
 }
 .company-name .anim{
     max-width: 90%;
@@ -1485,7 +1489,7 @@ hr .flare :after {
 .loader {
     display: block;
     position:relative;
-    width: 160px;
+    width: 150px;
     height: 10px;
     background-color: #ECEFF1;
     border-radius: 4px;
@@ -1739,7 +1743,7 @@ hr .flare :after {
     top: 50%;
 }
 .btn--primary.btn-border {
-    display: inline-block;
+    display: block;
     position:relative;
     background-color: transparent;
     color: #0083ff;
@@ -1752,6 +1756,8 @@ hr .flare :after {
     text-transform: uppercase;
     font-weight: 900;
     line-height: 1;
+    margin: auto;
+    width: 240px;
 }
 .load-more-spinner:not(:root){
     overflow: hidden;

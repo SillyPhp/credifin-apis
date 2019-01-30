@@ -1,0 +1,21 @@
+<svg id="6fafc2f9-5fbc-4bb8-92e2-8c9de85ce14d" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <title>finance</title>
+  <g>
+    <rect x="2" y="19.6" width="2.8" height="2.4" fill="#ee2c3c"/>
+    <rect x="6.4" y="18.4" width="2.8" height="3.6" fill="#f9a13f"/>
+    <rect x="10.8" y="16.4" width="2.8" height="5.6" fill="#ffc429"/>
+    <rect x="15.2" y="13.6" width="2.8" height="8.4" fill="#00ab53"/>
+    <rect x="19.6" y="8" width="2.8" height="14" fill="#0072b5"/>
+    <rect x="2" y="2.4" width="5.2" height="0.8" fill="#0b050c"/>
+    <rect x="2" y="4" width="5.2" height="0.8" fill="#0b050c"/>
+    <rect x="2" y="5.6" width="3.6" height="0.8" fill="#0b050c"/>
+    <rect x="2" y="7.2" width="3.6" height="0.8" fill="#0b050c"/>
+    <rect y="23.2" width="24" height="0.8" fill="#0b050c"/>
+    <path d="M395,223l0.65-1.84,1.18,2.35a0.4,0.4,0,0,0,.72-0.36l-1.6-3.2a0.4,0.4,0,0,0-.54-0.18h0l-3.2,1.6a0.4,0.4,0,1,0,.36.72l2.32-1.16-0.63,1.81a21.35,21.35,0,0,1-18.3,14.19l0.07,0.8A22.15,22.15,0,0,0,395,223h0Z" transform="translate(-374.33 -219.72)" fill="#0b050c" fill-rule="evenodd"/>
+    <path d="M378.73,241.32h-2v-1.6h2v1.6h0Zm-2.4-2.4a0.4,0.4,0,0,0-.4.4v2.4a0.4,0.4,0,0,0,.4.4h2.8a0.4,0.4,0,0,0,.4-0.4v-2.4a0.4,0.4,0,0,0-.4-0.4h-2.8Z" transform="translate(-374.33 -219.72)" fill="#0b050c" fill-rule="evenodd"/>
+    <path d="M383.13,241.32h-2v-2.8h2v2.8h0Zm-2.4-3.6a0.4,0.4,0,0,0-.4.4v3.6a0.4,0.4,0,0,0,.4.4h2.8a0.4,0.4,0,0,0,.4-0.4v-3.6a0.4,0.4,0,0,0-.4-0.4h-2.8Z" transform="translate(-374.33 -219.72)" fill="#0b050c" fill-rule="evenodd"/>
+    <path d="M387.53,241.32h-2v-4.8h2v4.8h0Zm-2.4-5.6a0.4,0.4,0,0,0-.4.4v5.6a0.4,0.4,0,0,0,.4.4h2.8a0.4,0.4,0,0,0,.4-0.4v-5.6a0.4,0.4,0,0,0-.4-0.4h-2.8Z" transform="translate(-374.33 -219.72)" fill="#0b050c" fill-rule="evenodd"/>
+    <path d="M391.93,241.32h-2v-7.6h2v7.6h0Zm-2.4-8.4a0.4,0.4,0,0,0-.4.4v8.4a0.4,0.4,0,0,0,.4.4h2.8a0.4,0.4,0,0,0,.4-0.4v-8.4a0.4,0.4,0,0,0-.4-0.4h-2.8Z" transform="translate(-374.33 -219.72)" fill="#0b050c" fill-rule="evenodd"/>
+    <path d="M396.33,241.32h-2v-13.2h2v13.2h0Zm-2.4-14a0.4,0.4,0,0,0-.4.4v14a0.4,0.4,0,0,0,.4.4h2.8a0.4,0.4,0,0,0,.4-0.4v-14a0.4,0.4,0,0,0-.4-0.4h-2.8Z" transform="translate(-374.33 -219.72)" fill="#0b050c" fill-rule="evenodd"/>
+  </g>
+</svg>

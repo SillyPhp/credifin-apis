@@ -1,8 +1,6 @@
 <?php
 $this->title = Yii::t('frontend', 'Internships');
 $this->params['header_dark'] = true;
-
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Crimson+Text');
 $this->registerCss('
 .change-hr{
     margin-bottom: 30px;
@@ -10,30 +8,12 @@ $this->registerCss('
     border-top: 1px solid #ccc;
     width:100%;
 }
-.blogbox{
-    margin:0px;
-    margin-bottom: 20px;
-}
-a:hover {
-    text-decoration: none;
-}
-.btn-div{
-    border-top: 1px solid transparent;
-    margin-top: 20px;
-    padding-top: 20px;
-    margin-bottom: 20px;
-}
 .border-top-set{
     border-top: 1px solid #ccc;
     padding-top: 20px;
 }
 .main-content{
     min-height:100vh !important;
-}
-.not-found{
-    width: 300px;
-    margin: auto;
-    display: block;
 }
 ');
 ?>
@@ -47,463 +27,13 @@ a:hover {
                 ]);
                 ?>
             </div>
-            <div class="col-md-10 col-sm-9 ">
+            <div class="col-md-10 col-sm-9">
                 <?=
                 $this->render('/widgets/search-bar1');
                 ?>
-                <div class=" col-md-12 col-sm-12">
-                    <div id="cardBlock" class="row work-load blogbox border-top-set"></div>
-                    <div class="loader-main">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="btn-div" align="center">
+                <div class="col-md-12 col-sm-12">
+                    <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
+                    <?= $this->render('/widgets/preloader-application-card'); ?>
                         <a href="#" id="loadMore"
                            class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
                             <span class="load-more-text">Load More</span>
@@ -536,11 +66,9 @@ a:hover {
                                 </g>
                             </svg>
                         </a>
-                    </div>
                     <hr class="change-hr">
-                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
+                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>
-                <!--</div>-->
             </div>
         </div>
     </section>
@@ -563,15 +91,14 @@ $('#review-internships').scroll(function(){
         });
     }
 });
+$('#loadMore').on('click', function(e){
+    e.preventDefault();
+    getCards("Internships");
+});
 loader = true;
-type = "Internships";
-getCards();
+draggable = true;
+getCards("Internships");
 JS;
 $this->registerJs($script);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-company',
-]);

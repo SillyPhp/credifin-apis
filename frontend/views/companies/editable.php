@@ -404,7 +404,7 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                 <div class="t-heading">
                     Employee Benefits
                     <div class="button_location pull-right">
-                        <button type="submit" class="i-review-nx modal-load-class" value="/companies/add-benefit">
+                        <button type="submit" class="i-review-nx modal-load-class" value="/account/employee-benefits/create-benefit">
                             <span class="i-review-button-tx">Add New <span class="fa fa-long-arrow-right"></span></span>
                         </button>
                     </div>
@@ -424,7 +424,16 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
                                         ?>
                                         <div class="col-lg-3 col-md-3 col-sm-6">
                                             <div class="p-category">
-                                                <div class="p-category-view">
+                                                <div id="confirmation_benefit" class="confirm_hiden">
+                                                    <button id="confirm_remove_benefit" type="button" value="<?= $benefit[$next]['organization_benefit_enc_id'] ?>" class="btn btn-danger btn-sm editable-submit">
+                                                        Delete
+                                                    </button>
+                                                    <button id="cancel_remove_benefit" type="button" class="btn btn-default btn-sm editable-cancel">
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                                <div class="p-category-view p-category-inner-main">
+                                                    <a class="remove-benefit-item"><i class="fa fa-times"></i></a>
                                                     <?php
                                                     if (empty($benefit[$next]['icon'])) {
                                                         $benefit[$next]['icon'] = 'plus-icon.svg';
@@ -651,6 +660,12 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     color: #fff;
     font-size: 16px;
     padding-top: 100px;
+}
+.p-category .confirm_hiden{
+    padding-top: 65px;
+    width: 100%;
+    background-color: #dedede5c;
+    z-index:999;
 }
 .loc-list li{
     position:relative;
@@ -917,6 +932,43 @@ $no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
     border-right-color: #ffffff;
 }
 /* Feature, categories css ends */
+/* Benefit remove css starts */
+.p-category-inner-main:before{
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 0px 0px 0;
+    border-color: transparent #ff0000;
+    transition: all ease .3s;
+}
+.p-category-inner-main:hover:before {
+    border-width: 0 50px 50px 0;
+    border-color: transparent #ff0000;
+}
+.remove-benefit-item{
+    display:none;
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: 40px;
+    line-height: 28px;
+    height: 40px;
+    text-align: right;
+    padding-right: 8px;
+    font-size: 17px;
+    opacity:0;
+    transition: opacity 500ms;
+}
+.remove-benefit-item i{
+    color:#fff !important;
+}
+.p-category-inner-main:hover .remove-benefit-item{
+    display:block;
+    opacity:1;
+}
+/* Benefit remove css ends */
 ") ?>
 
 <?php
@@ -1072,6 +1124,35 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
                 utilities.initials();
                 $('#logo-img').attr('src',logo_name_path);
                 hide_remove_logo();
+            } else {
+                toastr.error(response.message, response.title);
+            }
+        }
+    });
+});
+$(document).on('click', '.remove-benefit-item', function(e){
+    e.preventDefault();
+    $(this).parent().prev("#confirmation_benefit").fadeIn(500);
+});
+$(document).on('click', '#cancel_remove_benefit', function(){
+    $(this).parent("#confirmation_benefit").fadeOut(500);
+});
+$(document).on('click', '#confirm_remove_benefit', function(event) {
+    event.preventDefault();
+    $(this).parent("#confirmation_benefit").fadeOut(500);
+    var type = $(this).val();
+    $.ajax({
+        url: "/companies/remove-benefit",
+        method: "POST",
+        data: {type:type},
+        beforeSend:function(){
+            $('#page-loading').fadeIn(1000);  
+        },
+        success: function (response) {
+        $('#page-loading').fadeOut(1000);
+            if (response.status == 200) {
+                toastr.success(response.message, response.title);
+                $.pjax.reload({container: '#pjax_benefit', async: false});
             } else {
                 toastr.error(response.message, response.title);
             }

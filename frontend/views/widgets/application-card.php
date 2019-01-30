@@ -71,8 +71,8 @@ if ($type == 'card') {
                             </h5>
                         </div>
                     </div>
-                    <div class="col-md-offset-3 col-md-9 text-right">
-                        <h4><?= Yii::t('frontend', $cards[$i]['org_name']); ?></h4>
+                    <div class="col-md-12">
+                        <h4 class="org_name text-right"><?= Yii::t('frontend', $cards[$i]['org_name']); ?></h4>
                     </div>
                     <div class="application-card-wrapper">
                         <a href="/job/<?= Yii::t('frontend', $cards[$i]['slug']); ?>" class="application-card-open">View
@@ -101,7 +101,7 @@ if ($type == 'card') {
                 {{/salary}}
                 <div class="col-md-12 application-card-border-bottom">
                     <div class="application-card-img">
-                        <a href="/company/{{organization_link}}">
+                        <a href="{{organization_link}}">
                             {{#logo}}
                             <img src="{{logo}}">
                             {{/logo}}
@@ -119,13 +119,13 @@ if ($type == 'card') {
                     </div>
                 </div>
                 {{#last_date}}
-                <h6 class="pull-left pl-20 custom_set2" align="center">
+                <h6 class="col-md-5 pl-20 custom_set2" align="center">
                     <strong>Last Date to Apply</strong>
                     <br>
                     {{last_date}}
                 </h6>
-                <h4 class="pull-right pr-10 pt-20 custom_set" align="center">
-                    <strong>{{org_name}}</strong>
+                <h4 class="col-md-7 org_name text-right pr-10" align="center">
+                    <strong>{{organization_name}}</strong>
                 </h4>
                 {{/last_date}}
                 {{^last_date}}
