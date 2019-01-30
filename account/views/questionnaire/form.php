@@ -315,6 +315,7 @@ $script = <<<JS
      
     $(".form_bal_textfield").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getTextFieldHTML();
             
         },
@@ -322,24 +323,28 @@ $script = <<<JS
     });
     $(".form_bal_textarea").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getTextAreaFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_number").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getNumberFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_email").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getEmailFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_date").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getDateFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -347,6 +352,7 @@ $script = <<<JS
 
     $(".form_bal_time").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getTimeFieldHTML();
         },
         connectToSortable: ".form_builder_area"
@@ -354,24 +360,28 @@ $script = <<<JS
 
     $(".form_bal_button").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getButtonFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_select").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getSelectFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_radio").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getRadioFieldHTML();
         },
         connectToSortable: ".form_builder_area"
     });
     $(".form_bal_checkbox").draggable({
         helper: function () {
+            document.querySelector('input[type=text]').focus();
             return getCheckboxFieldHTML();
         },
         connectToSortable: ".form_builder_area"
