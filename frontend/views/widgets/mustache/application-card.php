@@ -121,6 +121,33 @@ function getCards(type = 'Jobs') {
         }
     });
 }
+
+function addToReviewList(){
+    if(loader === false){
+        $(document).on('click','.application-card-add', function(event){
+             event.preventDefault();
+            var itemid = $(this).closest('.application-card-main').attr('data-id');
+            $.ajax({
+                url: "/jobs/item-id",
+                method: "POST",
+                data: {'itemid': itemid},
+                beforeSend:function(){
+        //            $('.loader-aj-main').fadeIn(1000);  
+                },
+                success: function (response) {
+        //        $('.loader-aj-main').fadeOut(1000);
+                    if (response.status == '200' || response == 'short') {
+                        toastr.success('Added to your Review list', 'Success');
+                    } else if (response == 'unshort') {
+                        toastr.success('Delete from your Review list', 'Success');
+                    } else {
+                        toastr.error('Please try again Later', 'Error');
+                    }
+                }
+            });
+        });
+    }
+}
 JS;
 $this->registerJs($script);
 $this->registerCss('

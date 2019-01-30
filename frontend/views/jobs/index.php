@@ -672,6 +672,7 @@ $('#cities').typeahead(null, {
 loader = false;
 getCategories();
 getCards();
+addToReviewList();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
