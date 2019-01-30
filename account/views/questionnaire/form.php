@@ -395,7 +395,7 @@ $script = <<<JS
     function getTextFieldHTML() {
         var field = generateField();
         var html = '<div class="all_div"><div class="row li_row"><div class="col-md-6"><button type="button" class="btn btn-primary btn-sm remove_bal_field " data-field="' + field + '"><i class="fa fa-times"></i></button></div><div class="col-md-6"><div class="form-check pull-right"><label class="form-check-label"><input data-field="' + field + '" type="checkbox" class="form-check-input form_input_req" checked>Required</label></div></div></div></div></div><hr/><div class="row li_row form_output" data-type="text" data-field="' + field + '"><div class="col-md-12"><div class="form-group"><input autofocus type="text" name="label_' + field + '" class="form-control form_input_label valid_input autofocus_text_field" placeholder="Enter Short Question" data-field="' + field + '" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="placeholder_' + field + '" data-field="' + field + '" class="form-control form_input_placeholder" placeholder="Placeholder" /></div></div><div class="col-md-12"><div class="form-group"><input type="hidden" name="text_' + field + '" class="form-control form_input_name" placeholder="Name" value = "text-field_' + field + '"/></div></div>';
-        $('.autofocus_text_field').focus();
+        $(this).closest('div.form-check').find('input[type=text]').focus();
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
     function getNumberFieldHTML() {
