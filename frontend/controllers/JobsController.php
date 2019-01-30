@@ -306,6 +306,12 @@ class JobsController extends Controller
                 ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                 ->andWhere(['b.field_name' => 'Get Applications'])
                 ->exists();
+
+            $shortlist = \common\models\ShortlistedApplications::find()
+                ->select('shortlisted')
+                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->asArray()
+                ->one();
         }
         $model = new JobApplied();
         return $this->render('detail', [
@@ -316,6 +322,7 @@ class JobsController extends Controller
             'model' => $model,
             'resume' => $resumes,
             'que' => $app_que,
+            'shortlist' => $shortlist,
         ]);
     }
 

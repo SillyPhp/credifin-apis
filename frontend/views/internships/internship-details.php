@@ -228,7 +228,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             <?php } ?>
 
 
-                            <h3>Education + Experience</h3>
+                            <h3>Education</h3>
                             <ul>
                                 <?php
                                 foreach ($data['applicationEducationalRequirements'] as $qualification) {
@@ -639,6 +639,8 @@ top : 20%;
         -ms-border-radius: 20px;
         -o-border-radius: 20px;
         border-radius: 20px;
+        background: #00a0e3;
+        border-color: #00a0e3;
     }
     .job-statistic p {
         float: none;
@@ -750,6 +752,7 @@ top : 20%;
         color: #202020;
         margin-bottom: 15px;
         margin-top: 10px;
+        font-weight: 600;
     }
     .job-details p,
     .job-details li {
@@ -796,6 +799,8 @@ top : 20%;
         width: 100%;
         font-family: Open Sans;
         font-size: 15px;
+        color: #202020;
+        font-weight: 600;
     }
     .job-overview ul {
         float: left;
@@ -831,12 +836,14 @@ top : 20%;
         font-size: 13px;
         font-family: Open Sans;
         margin: 0;
+        color: #1e1e1e;
+        font-weight: 600;
     }
     .job-overview ul > li span {
         float: left;
         width: 100%;
         font-size: 13px;
-        color: #888888;
+        color: #545454;
         margin-top: 4px;
     }
     .job-single-sec .job-overview ul {
@@ -1055,7 +1062,8 @@ top : 20%;
         float: left;
         width: 100%;
         font-family: Open Sans;
-        font-size: 15px;
+        font-size: 17px;
+        font-weight: 600;
         color: #202020;
         margin: 0;
         margin-bottom: 0px;
@@ -1101,7 +1109,7 @@ top : 20%;
         color: #ef7706;
         width: 200px;
         height: auto;
-        padding: 15px 30px;
+        padding: 15px 15px;
         text-align: center;
         margin:auto;
     }
@@ -1204,8 +1212,8 @@ top : 20%;
     }
     .col_pink
     {
-    background: #ef7706;
-    border-color: #ef7706;
+    background: #ef7706 !important;
+    border-color: #ef7706 !important;
     color: #ffffff;
     }
     .hover-change:hover {
