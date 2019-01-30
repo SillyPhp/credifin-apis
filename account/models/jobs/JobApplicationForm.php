@@ -39,6 +39,9 @@ class JobApplicationForm extends Model
     public $jobtype;
     public $ctc;
     public $salaryinhand;
+    public $max_salary;
+    public $min_salary;
+    public $salary_type;
     public $ctctype;
     public $jobdescription;
     public $othrdetail;
@@ -121,6 +124,9 @@ class JobApplicationForm extends Model
                 'weekdays',
                 'checkboxArray',
                 'skillsArray',
+                'max_salary',
+                'min_salary',
+                'salary_type',
                 'questions',
                 'startdate',
                 'enddate',
@@ -187,7 +193,19 @@ class JobApplicationForm extends Model
 
     public function saveValues()
     {
-        $sal = str_replace(',', '', $this->salaryinhand);
+        if ($this->salary_type==1)
+        {
+            $sal = str_replace(',', '', $this->salaryinhand);
+            $min = null;
+            $max = null;
+        }
+        else if ($this->salary_type==2)
+        {
+            $sal = null;
+            $min = str_replace(',', '', $this->min_salary);
+            $max = str_replace(',', '', $this->max_salary);
+        }
+
         $ctc_val = str_replace(',', '', $this->ctc);
         $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
         $employerApplicationsModel = new EmployerApplications();
@@ -351,9 +369,9 @@ class JobApplicationForm extends Model
                 $weekoptionsund = NULL;
             }
             if ($this->interradio == 1) {
-                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => date('Y-m-d', strtotime($this->startdate)), 'interview_end_date' => date('Y-m-d', strtotime($this->enddate)), 'interview_start_time' => date("H:i:s", strtotime($this->interviewstarttime)), 'interview_end_time' => date("H:i:s", strtotime($this->interviewendtime))];
+                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => date('Y-m-d', strtotime($this->startdate)), 'interview_end_date' => date('Y-m-d', strtotime($this->enddate)), 'interview_start_time' => date("H:i:s", strtotime($this->interviewstarttime)), 'interview_end_time' => date("H:i:s", strtotime($this->interviewendtime)),'salary_type'=>$this->salary_type,'min_salary'=>$min,'max_salary'=>$max];
             } else {
-                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => NULL, 'interview_end_date' => NULL, 'interview_start_time' => NULL, 'interview_end_time' => NULL];
+                $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat, 'sund_frequency' => $weekoptionsund, 'salary' => $sal, 'salary_duration' => $this->ctctype, 'ctc' => $ctc_val, 'interview_start_date' => NULL, 'interview_end_date' => NULL, 'interview_start_time' => NULL, 'interview_end_time' => NULL,'salary_type'=>$this->salary_type,'min_salary'=>$min,'max_salary'=>$max];
             }
             foreach ($options as $key => $value) {
                 $applicationoptionsModel = new ApplicationOptions();
