@@ -102,12 +102,17 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
-                                        <h3>Offered Salary (<?php echo ucwords($option['salary_duration']); ?>)</h3>
-                                        <?php
+                                        <h3>Offered Salary (<?php if($option['salary_type']==1){echo 'Fixed';
                                         $amount = $option['salary'];
                                         setlocale(LC_MONETARY, 'en_IN');
                                         $amount = utf8_encode(money_format('%!.0n', $amount));
-                                        ?>
+                                        } else if($option['salary_type']==2){
+                                            echo 'Negotiable';
+                                                $amount1 = $option['min_salary'];
+                                                $amount2 = $option['max_salary'];
+                                                setlocale(LC_MONETARY, 'en_IN');
+                                                $amount = utf8_encode(money_format('%!.0n', $amount1)).'&nbspTo&nbsp'.utf8_encode(money_format('%!.0n', $amount2));
+                                        } ?>)</h3>
                                         <span><?= '&#8377 ' . $amount; ?></span></li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
