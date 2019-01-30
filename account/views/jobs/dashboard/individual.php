@@ -145,7 +145,7 @@ use yii\widgets\Pjax;
 
                                         foreach ($reviewlist as $review) {
                                             ?>
-                                            <div class="col-md-3 col-sm-6 hr-j-box">
+                                            <div class="col-md-3 col-sm-6 hr-j-box rev_box" id="<?= $review['application_enc_id']; ?>">
                                                 <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>"> 
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
@@ -612,24 +612,28 @@ function Ajax_call(rmv_id,url,pjax_refresh_id)
               })
     }
     
-    function Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd)
+    function Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent)
     {
         $.ajax({
-                url:url,
-                data:{rmv_id:rmv_id},
-                method:'post',
+                url : url,
+                data : {rmv_id:rmv_id},
+                method : 'POST',
                 beforeSend: function()
-                {
-                    $(".loader").css("display", "block");
+                {   
+                    parent.hide();
+                    // $(".loader").css("display", "block");
                 },
-                success:function(data)
-                       {
-                        if(data == true)
+                success:function(data){
+                        if(data.status == 'true')
                           {
-                            $(".loader").css("display", "none");
+                            // $(".loader").css("display", "none");
                             $.pjax.reload({container: pjax_refresh_id, async: false});
                             $.pjax.reload({container: pjax_refresh_idd, async: false});
-                            $.pjax.reload({container: '#widgets', async: false});
+                            toastr.success(data.message, data.title);
+                           } 
+                        else if(data.status == 'false') {
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            toastr.error(data.message, data.title);
                            }
                        }
               })
@@ -657,7 +661,8 @@ $(document).on('click','.rmv_review',function()
       var rmv_id = $(this).attr('data-key');
       var  pjax_refresh_id = '#pjax_review';
       var  pjax_refresh_idd = '#pjax_shortlist';
-      Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd);
+      var parent = $(this).parents().eq(5);
+      Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
         
 $(document).on('click','.rmv_org',function()

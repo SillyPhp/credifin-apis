@@ -45,58 +45,28 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-<?php if ($total_categories = count($job_categories) > 0): ?>
     <section>
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12 col-sm-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Top Rated Jobs'); ?></h2>
+                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
                 </div>
             </div>
-            <?php
-            $total_categories = count($job_categories);
-            $rows = ceil($total_categories / 4);
-            $next = 0;
-            for ($i = 1; $i <= $rows; $i++) {
-                ?>
-                <div class="row">
-                    <?php
-                    for ($j = 0; $j < 4; $j++) {
-                        if ($next < $total_categories) {
-                            ?>
-                            <div class="col-md-3 col-sm-6 categories">
-                                <a href="<?= Url::to('jobs/list?keyword=' . $job_categories[$next]['slug']) . '&company=&location='; ?>">
-                                    <div class="grids">
-                                        <img class="grids-image"
-                                             src="<?= Url::to('@commonAssets/categories/') . $job_categories[$next]["icon"] ?>">
-                                    </div>
-                                    <h4><?= Yii::t('frontend', $job_categories[$next]['name']); ?></h4>
-                                </a>
-                            </div>
-                            <?php
-                        }
-                        $next++;
-                    }
-                    ?>
-                </div>
-                <?php
-            }
-            ?>
-        </div>
+            <div class="col-md-12">
+                <div class="categories"></div>
+            </div>
         </div>
     </section>
-<?php endif; ?>
-<?php if ($total_cards = count($job_cards) > 0): ?>
-    <section class="bg-lighter pb-20">
+    <section class="bg-lighter">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Profiles'); ?></h3>
+                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Jobs'); ?></h3>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="type-1">
                         <div>
-                            <a href="/jobs/list" class="btn btn-3">
+                            <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
                                 <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
                                 <span class="round"><i class="fa fa-chevron-right"></i></span>
                             </a>
@@ -105,30 +75,25 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="col-md-12">
-                <?=
-                $this->render('/widgets/application-card', [
-                    'type' => 'card',
-                    'cards' => $cards,
-                ]);
-                ?>
+                <div class="blogbox"></div>
             </div>
         </div>
     </section>
-<?php endif;
-?>
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
+                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
     </section>
 <?php
-echo $this->render('/widgets/blog-slider', [
-    'posts' => $posts,
-]);
+echo $this->render('/widgets/mustache/category-card');
+echo $this->render('/widgets/mustache/application-card');
+//echo $this->render('/widgets/blog-slider', [
+//    'posts' => $posts,
+//]);
 $this->registerCss('
 .backgrounds{
     background-size: 100% 520px;
@@ -381,48 +346,6 @@ $this->registerCss('
 }
 .background-logo-blue a{
     background-color: #49a1e3;
-}
-.categories{
-    text-align: center;
-    min-height: 150px;
-    margin-bottom: 20px;
-}
-.grids {
-    display: block;
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 24px;
-    border-radius: 50%;
-    -webkit-transition: all .2s ease-out;
-    transition: all .2s ease-out;
-}
-.grids-image {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    margin-top: 44px;
-}
-.grids::after {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 148px;
-    height: 148px;
-    border: 2px solid #afafaf;/* #DEDEDE*/
-    border-radius: 50%;
-    content: "";
-    -webkit-transition: all .1s ease-out;
-    transition: all .1s ease-out;
-}
-.categories:hover .grids::after {
-    /*opacity: .3;*/
-    top: -1px;
-    left: -1px;
-    border: 2px solid #f08440;
-    -webkit-transform: scale(.9);
-    transform: scale(.9);
 }
 .search-by-type {
     width: 88%;
@@ -719,7 +642,6 @@ $this->registerCss('
     float:left;
 }
 ');
-
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -732,7 +654,7 @@ var city = new Bloodhound({
              return list;
         }
   }
-});    
+});
             
 $('#cities').typeahead(null, {
   name: 'cities',
@@ -747,8 +669,9 @@ $('#cities').typeahead(null, {
     
     $('.Typeahead-spinner').hide();
   });
-
-var ps = new PerfectScrollbar('.tt-menu');
+loader = false;
+getCategories();
+getCards();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -757,4 +680,3 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

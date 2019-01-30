@@ -447,7 +447,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'review' => 1])
+                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -477,8 +477,8 @@ class JobsController extends Controller
 
         if (Yii::$app->request->isPost) {
             if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $app_id = Yii::$app->request->post('rmv_id');
-
                 $chkuser = ShortlistedApplications::find()
                     ->select('shortlisted')
                     ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
@@ -501,8 +501,27 @@ class JobsController extends Controller
                             ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
                         if ($update == 1) {
-                            return true;
+                            $response = [
+                                'status' => 'true',
+                                'title' => 'Success',
+                                'message' => 'Successfully Created',
+                            ];
+                            return $response;
+                        } else {
+                            $response = [
+                                'status' => 'false',
+                                'title' => 'Error',
+                                'message' => 'Something went wrong in creating new shortlist.',
+                            ];
+                            return $response;
                         }
+                    } else {
+                        $response = [
+                            'status' => 'false',
+                            'title' => 'Error',
+                            'message' => 'Something went wrong in saveing new entry.',
+                        ];
+                        return $response;
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
@@ -513,9 +532,54 @@ class JobsController extends Controller
                         ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                         ->execute();
                         if($update1 == 1) {
-                            return true;
+                            $response = [
+                                'status' => 'true',
+                                'title' => 'Success',
+                                'message' => 'Successfully Updated Review and shortlist status',
+                            ];
+                            return $response;
+                        } else {
+                            $response = [
+                                'status' => 'false',
+                                'title' => 'Error',
+                                'message' => 'Something went wrong. review status not update.',
+                            ];
+                            return $response;
                         }
+                    } else {
+                        $response = [
+                            'status' => 'false',
+                            'title' => 'Error',
+                            'message' => 'Something went wrong. review and shortlist status not update.',
+                        ];
+                        return $response;
                     }
+                } else if ($status == 1) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                        ->execute();
+                    if ($update == 1) {
+                        $response = [
+                            'status' => 'true',
+                            'title' => 'Success',
+                            'message' => 'Successfully Updated review status',
+                        ];
+                        return $response;
+                    } else {
+                        $response = [
+                            'status' => 'false',
+                            'title' => 'Error',
+                            'message' => 'Something went wrong while review updating.',
+                        ];
+                        return $response;
+                    }
+                } else {
+                    $response = [
+                        'status' => 'false',
+                        'title' => 'Error',
+                        'message' => 'Shortlisted but something went wrong while review updating.',
+                    ];
+                    return $response;
                 }
             }
         }
@@ -699,7 +763,7 @@ class JobsController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','e.slug','f.name parent_category','f.icon','f.icon_png'])
+            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','b.slug','f.name parent_category','f.icon','f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
             ->joinWith(['applicationEnc b' => function($b){
                 $b->distinct();
@@ -975,7 +1039,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id,'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;

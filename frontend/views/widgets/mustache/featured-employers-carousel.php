@@ -114,11 +114,11 @@ $script = <<<JS
 function getCompanies(){
     $.ajax({
         method: "POST",
-        url : '/jobs/featured-companies',
+        url : '/organizations/featured',
         success: function(response) {
         if(response.status === 200) {
             var card2 = $('#company-card').html();
-            $(".companies").append(Mustache.render(card2, response.companycards));
+            $(".companies").append(Mustache.render(card2, response.organizations));
             $('#company-slider').owlCarousel({
                     loop: true,
                     nav: true,
@@ -156,5 +156,4 @@ function getCompanies(){
 getCompanies();
 JS;
 $this->registerJs($script);
-
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
