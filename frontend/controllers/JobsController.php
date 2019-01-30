@@ -122,7 +122,7 @@ class JobsController extends Controller
                 $options['page'] = 1;
             }
 
-            $options['limit'] = 9;
+            $options['limit'] = 18;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -312,4 +312,5 @@ class JobsController extends Controller
             }
         }
     }
+
 }

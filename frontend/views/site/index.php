@@ -14,9 +14,15 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt=""/></li>
-                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt=""/></li>
-                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
+                                        alt=""/></li>
+                            <li class="slideHome"><img
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt=""/>
+                            </li>
+                            <li class="slideHome"><img
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
+                                        alt=""/></li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
@@ -32,7 +38,8 @@ $this->params['header_dark'] = false;
                                             </div>
                                             <div class="col-lg-3 col-md-2 col-sm-4">
                                                 <div class="job-field">
-                                                    <select data-placeholder="Any category" id="search_type" class="chosen-city">
+                                                    <select data-placeholder="Any category" id="search_type"
+                                                            class="chosen-city">
                                                         <option value="jobs">Jobs</option>
                                                         <option value="internships">Internships</option>
                                                     </select>
@@ -57,28 +64,23 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="header-boxs">
                 <div class="box-border fade-in one">
-                    <!--<div class="box-overlay"></div>-->
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
-                    <div class="h-heading">Corporates</div>
-                    <div class="h-text">Ask and answer questions, share results</div>
-
-                    <!--                    <div class="middle">
-                                            <div class="text">John Doe</div>
-                                        </div>-->
+                    <div class="h-heading">Employers</div>
+                    <div class="h-text">I want to recruit talent</div>
                 </div>
                 <div class="box-border fade-in two">
                     <div class="icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
                     </div>
                     <div class="h-heading">Candidates</div>
-                    <div class="h-text">Consultants, test preparation, travel services</div>
+                    <div class="h-text">I'm the talent</div>
                 </div>
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
                         </div>
                         <div class="h-heading">Universities & Colleges</div>
-                        <div class="h-text">Search or let universities find you</div>
+                        <div class="h-text">I want to enroll talent</div>
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
@@ -89,7 +91,7 @@ $this->params['header_dark'] = false;
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
                         </div>
                         <div class="h-heading">Recruiters</div>
-                        <div class="h-text">Latest news & everything you need to know</div>
+                        <div class="h-text">I want to find the best match for talent</div>
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
