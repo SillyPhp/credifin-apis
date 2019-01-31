@@ -50,7 +50,36 @@ for ($i = 1; $i <= $rows; $i++) {
     </div>
     <?php
 }
-
+$script = <<<JS
+$(document).on('click','.delete_questionnaire',function(e){
+    e.preventDefault();
+    if (window.confirm("Do you really want to Delete the current Questionnaire?")) { 
+        var data = $(this).attr('value');
+        var url = "/account/questionnaire/delete";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'POST',
+            beforeSend:function(){
+                $("#page-loading").css("display", "block");
+              },
+            success:function(data)
+                {
+                  if(data==true)
+                    {
+                      $("#page-loading").css("display", "none");
+                      $.pjax.reload({container: "#pjax_active_questionnaire", async: false});
+                    }
+                   else
+                   {
+                      alert('Something went wrong.. !');
+                   }
+                 }
+          });
+    }
+});
+JS;
+$this->registerJs($script);
 function used_for($n) {
     switch ($n) {
         case 1:
