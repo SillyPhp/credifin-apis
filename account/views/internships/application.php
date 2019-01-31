@@ -21,8 +21,21 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bs-modal-lg in" id="modal_benefit" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
@@ -101,7 +114,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     </div>
                                     <div class="col-md-4">
                                         <div class="cat_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <div class="load-suggestions Typeahead-spinner">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
                                             <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                         </div>
@@ -124,7 +141,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
                                                     $return .= '<label for="sti' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -279,7 +296,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
                                                     $return .= '<label for="pre' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -371,7 +388,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-6">
                                         <div id="manual_questions">
                                             <div class="descrip_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <div class="load-suggestions Typeahead-spinner">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
                                                 <input type="text" class="form-control" maxlength="150"
                                                        id="question_field"
                                                        placeholder="Type Custom Job Description And Press Enter.">
@@ -416,7 +437,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-6">
                                         <div id="manual_questions">
                                             <div class="edu_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <div class="load-suggestions Typeahead-spinner">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
                                                 <input type="text" class="form-control" maxlength="150" id="quali_field"
                                                        placeholder="Type custom educational requirements and press enter.">
                                             </div>
@@ -458,11 +483,14 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="skill_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <div class="load-suggestions Typeahead-spinner">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
                                                     <input type="text" id="inputfield" name="inputfield"
                                                            class="form-control"
                                                            placeholder="Type required skills and press enter.">
-
                                                 </div>
                                             </div>
                                         </div>
@@ -498,7 +526,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="module2-heading">
                                             Employee Benefits
                                         </div>
-
+                                        (Selected Benefits Will Be Applicable To This Internship Only)
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="md-radio-inline text-right clearfix">
@@ -521,16 +549,19 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                         <div class="button_location pull-right clearfix">
-                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-class']); ?>
+                                            <?= Html::button('Add New', ['value' => URL::to('/account/employee-benefits/create-benefit'), 'id' => 'benefitPopup', 'class' => 'btn btn-primary custom-buttons2 custom_color-set2 modal-load-benefit']); ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
                                 <div id="benefits_hide">
-                                    <div id="b_error"></div>
                                     <?php
                                     Pjax::begin(['id' => 'pjax_benefits']);
+                                    ?>
+                                    <div id="b_error"></div>
+                                    <?php
                                     if (!empty($benefits)) {
+                                        $model->emp_benefit = ArrayHelper::getColumn($benefit, 'benefit_enc_id');
                                         ?>
                                         <div class="cat-sec">
                                             <div class="row no-gape">
@@ -727,13 +758,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             </div>
                             <div class="tab-pane" id="tab4">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <h3 class="module2-heading">Walk In Interview Details </h3>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="md-radio-inline">
+                                    <div class="col-md-6 pull-right">
+                                        <div class="md-radio-inline text-right clearfix">
                                             <?=
                                             $form->field($model, 'interradio')->inline()->radioList([
                                                 1 => 'Yes',
@@ -989,15 +1018,28 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
 <?php
 $this->registerCss("
+.step {
+   -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge*/
+   user-select: none;   
+   -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+   user-drag: none;
+}
 .overlay-left {
   position: absolute;
-  top: 1px;
-  left: 8px;
+  top: 0px;
+  left: 6px;
   right: 0;
   background-color: #008CBA;
   overflow: hidden;
   width: 0;
-  height: 53px;
+  height: 100%;
   z-index:99;
   transition: .5s ease;
   border-radius: 8px 0px 0px 8px;
@@ -1177,7 +1219,8 @@ textarea{
     text-transform: uppercase;
     font-size: 22px;
     padding: 20px 0 0 0;
-    color: #00a0e3; 
+    color: #00a0e3;
+    margin-top:5px;
     font-weight: initial;
 }
 .has-success .md-radio label, .has-success.md-radio label {
@@ -1481,14 +1524,6 @@ display:none;
 .tt-suggestion p {
   margin: 0;
 }
-.cat_wrapper .Typeahead-spinner, .desig_wrapper .Typeahead-spinner {
-    position: absolute;
-    right: 20px;
-    bottom: 46px;
-    display: none;
-    font-size: 22px;
-}
-
 .empty-message {
 
  text-align: center;
@@ -1499,16 +1534,13 @@ display:none;
 margin-bottom:8px;
 }
 
-.skill_wrapper .Typeahead-spinner,.descrip_wrapper .Typeahead-spinner,.edu_wrapper .Typeahead-spinner
-{
-    position: absolute;
-    top: 10px;
-    z-index: 999;
-    right: 20px;
-    display:none;
-    font-size:22px;
+.skill_wrapper .Typeahead-spinner,.descrip_wrapper .Typeahead-spinner,.edu_wrapper .Typeahead-spinner{
+    top: -16px;
+    z-index: 99;
 }
-
+#jobtitle, #question_field, #quali_field, #inputfield{
+    padding-right:60px;
+}
 .Typeahead-input {
     position: relative;
     background-color: transparent;
@@ -1921,9 +1953,11 @@ float:right;}
     color: #a2a2a2;
     bottom: 16px;
 }
-.checkbox-text
-{
-  margin-bottom:8px;
+.checkbox-text{
+    margin-bottom:8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -2141,7 +2175,7 @@ height:17px !important;
     padding: 10px;
     color: #fff;
     z-index: 1000;
-    bottom: -3px;
+    bottom: 10px;
     border-radius:4px;
 }
 .tooltips:before{
@@ -2265,9 +2299,72 @@ height:17px !important;
 {
  display:none;
 }
+.kv-container-from, .kv-container-to {
+    padding: 0 !important;
+    border: 0 !important;
+}
+.has-success .md-radio label, .has-success.md-radio label{
+    color:inherit;
+}
+.has-success .md-radio label>.box, .has-success.md-radio label>.box{
+    border-color: #666;
+}
+.ck-editor__editable {
+    min-height: 200px !important;
+}
+:host ::ng-deep .ck-editor__editable {
+    min-height: 200px !important;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ");
 
 $script = <<< JS
+if(window.location.hash)
+    {
+        window.location = window.location.pathname;
+    }
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2586,7 +2683,9 @@ $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#jobtitle').val('');
-      $('.tt-dataset').empty();  
+      $('.tt-dataset').empty(); 
+      fetchJd();
+      fetchEr();
    })
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -2732,17 +2831,21 @@ function skils_update(data)
        $.pjax.reload({container: '#pjax_process', async: false});
      }
 window.ChildFunction = ChildFunction;
-var Education = new Bloodhound({
+
+function fetchEr()
+{
+    var Education = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('educational_requirement'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/educations?q=%QUERY', 
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
+  prefetch: '/account/categories-list/fetch-er',
+  // remote: {
+  //   url: '/account/categories-list/educations?q=%QUERY', 
+  //   wildcard: '%QUERY',
+  //   cache: false,     
+  //       filter: function(list) {
+  //           return list;
+  //       }
+  // }
 });   
         
 var edu_type = $('#quali_field').typeahead(null, {
@@ -2761,19 +2864,24 @@ var edu_type = $('#quali_field').typeahead(null, {
       var qualification = datum.educational_requirement;  
       drop_edu(id,qualification);
       edu_type.typeahead('val','');  
-   });         
+   }); 
+}
         
-var Descriptions = new Bloodhound({
+        
+function fetchJd()
+{
+  var Descriptions = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('job_description'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/description?q=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
+  prefetch: '/account/categories-list/fetch-jd',
+  // remote: {
+  //   url: '/account/categories-list/description?q=%QUERY',
+  //   wildcard: '%QUERY',
+  //   cache: false,     
+  //       filter: function(list) {
+  //           return list;
+  //       }
+  // }
 });   
         
 var que_type = $('#question_field').typeahead(null, {
@@ -2791,8 +2899,9 @@ var que_type = $('#question_field').typeahead(null, {
       var id = datum.job_description_enc_id;
       var questions = datum.job_description;  
       drop_options(id,questions); 
-      que_type.typeahead('val','');
+      
    }); 
+}
         
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
@@ -2817,8 +2926,12 @@ $('#designations').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.desig_wrapper .Typeahead-spinner').hide();
   });  
+
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
+$(document).on('click', '.modal-load-benefit', function() {
+    $('#modal_benefit').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
 
 
@@ -2879,6 +2992,10 @@ $(document).on('click', '.modal-load-class', function() {
                         quesn_count++
                         quesn_upt();
                 }
+           $('#question_field').blur(function(){
+                         $(this).val('');
+                            });
+           
         }
         
         function drop_edu(id,qualification)
@@ -2896,6 +3013,9 @@ $(document).on('click', '.modal-load-class', function() {
               count_edu++;
               edu_counter_set();
                 }
+           $('#quali_field').blur(function(){
+                         $(this).val('');
+                            });
        
        }
         
@@ -3027,7 +3147,10 @@ function setTags(){ //Gets string of existing tags separated by commas
 		}
 		}
 		$("#shownlist").append(listnews);
-		$("#inputfield").val("");
+		$('#inputfield').val('');
+		$('#inputfield').blur(function(){
+            $(this).val('');
+        });
 	};        
         
 $("#inputfield").keypress(function(e){
@@ -3518,7 +3641,7 @@ function init() {
                     } else if (input.is("select")) {
                         $(this).html(input.find('option:selected').text());
                     } else if (input.is(":radio") && input.is(":checked")) {
-                        $(this).html(input.attr("data-title"));
+                        $(this).html(input.attr("data-name"));
                     } 
                   else if ($(this).attr("data-display") == 'checkbox[]') {
                    var arr_val = [];

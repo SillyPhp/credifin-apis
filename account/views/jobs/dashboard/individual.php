@@ -145,7 +145,7 @@ use yii\widgets\Pjax;
 
                                         foreach ($reviewlist as $review) {
                                             ?>
-                                            <div class="col-md-3 col-sm-6 hr-j-box">
+                                            <div class="col-md-3 col-sm-6 hr-j-box rev_box" id="<?= $review['application_enc_id']; ?>">
                                                 <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>"> 
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
@@ -159,15 +159,19 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob1">Apply</a></div>
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob2" id="shortlist" value="<?= $review['app_id']; ?>">Shortlist</a></div>
+                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-7">
+                                                                    <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
+                                                                            <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class="j-cross">
-                                                                        <button value="<?= $review['review_enc_id']; ?>" class="rmv_review">
+                                                                        <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div>
@@ -228,7 +232,7 @@ use yii\widgets\Pjax;
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-cross">
-                                                                        <button class="rmv_list" value="<?= $shortlist['shortlisted_enc_id']; ?>">
+                                                                        <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div> 
@@ -283,7 +287,7 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay1">
                                                             <div class="text-o">
-                                                                <a class="over-bttn ob1">View Application</a>
+                                                                <a href="/account/process-applications/<?= $apply['app_id']; ?>" class="over-bttn ob1">View Application</a>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
@@ -585,20 +589,7 @@ $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
 })
 
-$(document).on('click','#shortlist',function(){
-   var app_id = $(this).attr('value');
-    $.ajax({
-        url:'/account/jobs/shortlist-job',
-        data: {app_id:app_id},
-        method: 'post',
-        success:function(data){
-            console.log("in success");
-            console.log(data);
-        }
-
-    });
-});
-            
+      
 function Ajax_call(rmv_id,url,pjax_refresh_id)
     {
         $.ajax({
@@ -620,7 +611,33 @@ function Ajax_call(rmv_id,url,pjax_refresh_id)
                        }
               })
     }
-        
+    
+    function Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent)
+    {
+        $.ajax({
+                url : url,
+                data : {rmv_id:rmv_id},
+                method : 'POST',
+                beforeSend: function()
+                {   
+                    parent.hide();
+                    // $(".loader").css("display", "block");
+                },
+                success:function(data){
+                        if(data.status == 'true')
+                          {
+                            // $(".loader").css("display", "none");
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            $.pjax.reload({container: pjax_refresh_idd, async: false});
+                            toastr.success(data.message, data.title);
+                           } 
+                        else if(data.status == 'false') {
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            toastr.error(data.message, data.title);
+                           }
+                       }
+              })
+    }
         
 $(document).on('click','.rmv_list',function()
     {
@@ -636,6 +653,16 @@ $(document).on('click','.rmv_review',function()
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_review';
       Ajax_call(rmv_id,url,pjax_refresh_id);
+   }) 
+   
+   $(document).on('click','.shortlist',function()
+    {
+      var  url = '/account/jobs/review-shortlist';
+      var rmv_id = $(this).attr('data-key');
+      var  pjax_refresh_id = '#pjax_review';
+      var  pjax_refresh_idd = '#pjax_shortlist';
+      var parent = $(this).parents().eq(5);
+      Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
         
 $(document).on('click','.rmv_org',function()

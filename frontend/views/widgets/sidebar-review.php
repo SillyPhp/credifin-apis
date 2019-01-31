@@ -62,7 +62,7 @@ $this->registerCss('
     top:0px;
 }
 #review-internships{
-    height: calc(100vh - 40px);
+    height: calc(102vh - 52px);
     overflow-x:hidden;
     position:relative;
     width:218px;
@@ -231,7 +231,7 @@ function widget(selector) {
 function droppingWidgets(type, logo, logo_main, internship, company, location, period, lastDate, lat, long, dataKey, dataId) {
     if ($("#review-internships > ul > li").length == 0) {
         Ajax_call(dataId);
-        $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0"><strong>' + internship + '</strong><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a></p><p class="mb-5">' + company + '</p></div></div></div></li>');
+        $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
         utilities.initials();
         check_list();
     } else {
@@ -244,7 +244,7 @@ function droppingWidgets(type, logo, logo_main, internship, company, location, p
             return false;
         } else {
             Ajax_call(dataId);
-            $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0"><strong>' + internship + '</strong><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a></p><p class="mb-5">' + company + '</p></div></div></div></li>');
+            $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
             utilities.initials();
             check_list();
         }
@@ -342,13 +342,13 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     </div>
     </div>
     <div class="col-md-9 col-xs-9 pt-5 p-0">
-    <p class="mb-0">
-    <strong>{{title}}</strong>
+    <p class="mb-0 text-wrap-ellipsis">
     <a class="close" data-id="{{application_id}}" href="#" aria-label="Close">
     <span aria-hidden="true">&times;</span>
     </a>
+    <strong>{{title}}</strong>
     </p>
-    <p class="mb-5">{{org_name}}</p>
+    <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
     </div>
     </div>
     </li>

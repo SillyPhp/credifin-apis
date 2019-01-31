@@ -67,9 +67,9 @@ class CompaniesController extends Controller {
                     ->all();
             $benefit = OrganizationEmployeeBenefits::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'b.benefit', 'b.icon'])
+                ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'b.icon'])
                 ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
-                ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
@@ -394,22 +394,29 @@ class CompaniesController extends Controller {
         }
     }
 
-//    public function actionBenifitInsert(){
-//        $model =new  EmployeeBenefits;
-//        $utilitiesModel = new Utilities();
-//        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//        $model->benefit_enc_id = $utilitiesModel->encrypt();
-//        $model->benefit = 'Work From Home';
-//        $model->icon  = 'work_from_home.svg';
-//        $model->created_on =   date('Y-m-d h:i:s');
-//        $model->created_by  = Yii::$app->user->identity->user_enc_id;
-//        if ($model->save()) {
-//            return 'ok';
-//        }
-//        else {
-//            print_r($model->getErrors());
-//        }
-//    }
+    public function actionRemoveBenefit(){
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('type');
+            $update = Yii::$app->db->createCommand()
+                ->update(OrganizationEmployeeBenefits::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_benefit_enc_id' => $id,'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+                ->execute();
+            if ($update) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Employee Benefit has been Removed.',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.',
+                ];
+            }
+        }
+    }
+
 
     private function getYouTubeID($URL) {
         $YouTubeCheck = preg_match('![?&]{1}v=([^&]+)!', $URL . '&', $Data);

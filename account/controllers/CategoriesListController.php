@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\AssignedSkills;
 use Yii;
 use common\models\CategoriesList;
 use yii\web\Controller;
@@ -47,6 +48,19 @@ class CategoriesListController extends Controller
             ->all();
 
         return json_encode($categories);
+    }
+
+    public function actionJobProfiles()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $categories = Categories::find()
+            ->alias('a')
+            ->select(['a.name as value', 'a.category_enc_id as id'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->andWhere(['not', ['b.parent_enc_id' => null]])
+            ->all();
+
+        return $categories;
     }
 
     public function actionJobDescription()
@@ -179,6 +193,47 @@ class CategoriesListController extends Controller
         return $list;
     }
 
+    public function actionFetchJd()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = JobDescription::find()
+            ->select(['id', 'job_description_enc_id', 'job_description'])
+            ->andWhere([
+                'or',
+                ['!=', 'status', 'Pending'],
+                ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->all();
+        return $list;
+    }
+
+    public function actionFetchEr()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = EducationalRequirements::find()
+            ->select(['id', 'educational_requirement_enc_id', 'educational_requirement'])
+            ->andWhere([
+                'or',
+                ['!=', 'status', 'Pending'],
+                ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->all();
+        return $list;
+    }
+
+    public function actionFetchSkills($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = Skills::find()
+            ->select(['skill','skill_enc_id'])
+            ->where('skill LIKE "%' . $q . '%"')
+            ->where(['is_deleted'=>0])
+            ->asArray()
+            ->all();
+        return $list;
+    }
     public function actionProcessList()
     {
 

@@ -108,33 +108,76 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="tab-pane active" id="tab1">
 
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="select">
                                             <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="cat_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <div class="load-suggestions Typeahead-spinner">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
                                             <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="desig_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                            <div class="load-suggestions Typeahead-spinner">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </div>
                                             <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
                                         </div>
-
+                                    </div>
+                                    <div class="col-md-3">
+                                        <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+                                        <div id="radio_rules"></div>
+                                        <label>Salary Type</label>
+                                        <div class="md-radio-inline">
+                                            <?= $form->field($model, 'salary_type')->inline()->radioList([
+                                                1 => 'Fixed',
+                                                2 => 'Negotiable',
+                                            ], [
+                                                'item' => function ($index, $label, $name, $checked, $value) {
+                                                    $return = '<div class="md-radio">';
+                                                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
+                                                    $return .= '<label for="sltype' . $index . $name . '">';
+                                                    $return .= '<span></span>';
+                                                    $return .= '<span class="check"></span>';
+                                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                    $return .= '</div>';
+                                                    return $return;
+                                                }
+                                            ])->label(false); ?>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
+                                    <div id="fixed_stip">
+                                        <div class="col-md-3">
+                                            <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
+                                        </div>
                                     </div>
+                                    <div id="min_max">
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <?= $form->field($model, 'min_salary')->label('Min(Opt)') ?>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <?= $form->field($model, 'max_salary')->label('Max(Opt)') ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-3">
                                         <?=
                                         $form->field($model, 'ctctype')->dropDownList([
@@ -148,7 +191,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div id="addct">
                                             <a id="addctc"><span class="fa fa-plus"></span> Add Annual CTC</a>
                                         </div>
-                                        <div id="ctc">
+                                        <div id="ctc-main">
                                             <?= $form->field($model, 'ctc')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('CTC'); ?>
                                             <a class="close-ctc"><i class="fa fa-times"></i></a>
                                         </div>
@@ -321,7 +364,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
                                             $return .= '<div class="form-group">';
                                             $return .= '<div class="input-group spinner">';
-                                            $return .= '<input type="text" class="form-control place_no" value="1">';
+                                            $return .= '<input type="text" class="form-control place_no" value="1" >';
                                             $return .= '<div class="input-group-btn-vertical">';
                                             $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
                                             $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
@@ -357,7 +400,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-6">
                                         <div id="manual_questions">
                                             <div class="descrip_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <div class="load-suggestions Typeahead-spinner">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
                                                 <input type="text" class="form-control" maxlength="150"
                                                        id="question_field"
                                                        placeholder="Type Custom Job Description And Press Enter.">
@@ -402,7 +449,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-6">
                                         <div id="manual_questions">
                                             <div class="edu_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <div class="load-suggestions Typeahead-spinner">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
                                                 <input type="text" class="form-control" maxlength="150" id="quali_field"
                                                        placeholder="Type custom educational requirements and press enter.">
                                             </div>
@@ -444,7 +495,11 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="skill_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <div class="load-suggestions Typeahead-spinner">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
                                                     <input type="text" id="inputfield" name="inputfield"
                                                            class="form-control"
                                                            placeholder="Type required skills and press enter.">
@@ -484,6 +539,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <div class="module2-heading">
                                             Employee Benefits
                                         </div>
+                                        (Selected Benefits Will Be Applicable To This Job Only)
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="md-radio-inline text-right clearfix">
@@ -518,6 +574,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div id="b_error"></div>
                                     <?php
                                     if (!empty($benefits)) {
+                                        $model->emp_benefit = ArrayHelper::getColumn($benefit, 'benefit_enc_id');
                                         ?>
                                         <div class="cat-sec">
                                             <div class="row no-gape">
@@ -996,6 +1053,19 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
     <div class="fader"></div>
 <?php
 $this->registerCss("
+.step {
+   -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge*/
+   user-select: none;   
+   -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+   user-drag: none;
+}
 .md-radio-inline.text-right.clearfix{padding-top:20px;}
 #benefits_hide,#questionnaire_hide,#benefitPopup,#add
 {
@@ -1003,13 +1073,13 @@ $this->registerCss("
 }
 .overlay-left {
   position: absolute;
-  top: 1px;
-  left: 8px;
+  top: 0px;
+  left: 6px;
   right: 0;
   background-color: #008CBA;
   overflow: hidden;
   width: 0;
-  height: 53px;
+  height: 100%;
   z-index:99;
   transition: .5s ease;
   border-radius: 8px 0px 0px 8px;
@@ -1073,7 +1143,10 @@ $this->registerCss("
   -webkit-transform: translate(0, -8px);
   transform: translate(0, -8px);
 }
-
+#fixed_stip,#min_max
+{
+ display:none;
+}
 .cat-sec {
     float: left;
     width: 100%;
@@ -1404,7 +1477,7 @@ border-bottom: 1px solid #e73d4a;
 {
 display:none;
 }
-#ctc
+#ctc-main
 {
   display:none;
 }
@@ -1490,13 +1563,6 @@ display:none;
 .tt-suggestion p {
   margin: 0;
 }
-.cat_wrapper .Typeahead-spinner, .desig_wrapper .Typeahead-spinner {
-    position: absolute;
-    right: 20px;
-    bottom: 46px;
-    display: none;
-    font-size: 22px;
-}
 
 .empty-message {
 
@@ -1508,16 +1574,13 @@ display:none;
 margin-bottom:8px;
 }
 
-.skill_wrapper .Typeahead-spinner,.descrip_wrapper .Typeahead-spinner,.edu_wrapper .Typeahead-spinner
-{
-    position: absolute;
-    top: 10px;
-    z-index: 999;
-    right: 20px;
-    display:none;
-    font-size:22px;
+.skill_wrapper .Typeahead-spinner,.descrip_wrapper .Typeahead-spinner,.edu_wrapper .Typeahead-spinner{
+    top: -16px;
+    z-index: 99;
 }
-
+#inputfield, #quali_field, #question_field{
+    padding-right:60px;
+}
 .Typeahead-input {
     position: relative;
     background-color: transparent;
@@ -1646,7 +1709,6 @@ margin-bottom:8px;
   font-weight: 600;
   line-height: 36px;
   position:relative;
-  padding-bottom: 10px;
 }
 
 #skill_counter,#qualific_count,#desc_count,#placement_calc,#interview_calc,#benefit_calc,#process_calc,#ques_calc
@@ -1931,9 +1993,11 @@ float:right;}
     color: #a2a2a2;
     bottom: 16px;
 }
-.checkbox-text
-{
-  margin-bottom:8px;
+.checkbox-text{
+    margin-bottom:8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -2145,7 +2209,7 @@ height:17px !important;
     padding: 10px;
     color: #fff;
     z-index: 1000;
-    bottom: -3px;
+    bottom: 10px;
     border-radius:4px;
 }
 .tooltips:before{
@@ -2264,29 +2328,91 @@ height:17px !important;
     text-align: center !important;
     border: 1px solid #ddd !important;
 }
+.kv-container-from, .kv-container-to {
+    padding: 0 !important;
+    border: 0 !important;
+}
+.has-success .md-radio label, .has-success.md-radio label{
+    color:inherit;
+}
 .ck-editor__editable {
     min-height: 200px !important;
 }
 :host ::ng-deep .ck-editor__editable {
     min-height: 200px !important;
 }
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ");
 
 $script = <<< JS
-// $(document).on("click", '.p-category label', function(){
-//     var checkedbox = $(this).prev('input');
-//     if(!checkedbox.prop("checked")){
-//         console.log('checked');
-//         $(this).prev('input').attr('checked', 'checked');
-//     }
-//     else{
-//         console.log('unchecked');
-//         $(this).prev('input').prop('checked', false);
-//     } 
-//     console.log(check);
-//     $(this).closest('input').attr('checked', 'checked');
-//  })
-
+if(window.location.hash)
+    {
+        window.location = window.location.pathname;
+    }
+    
+ $('input[name= "salary_type"]').on('change',function(){
+        var sl_type = $(this).attr("data-title");
+   if(sl_type=='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        $('#minstip').val('');
+        $('#maxstip').val('');
+        $('#salaryinhand').val('');
+        }
+     
+     else if(sl_type=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        $('#minstip').val('');
+        $('#maxstip').val('');
+        $('#salaryinhand').val('');
+        }
+     
+   })    
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2341,6 +2467,7 @@ $("#jobtitle").prop("disabled", false);
 $('.selectBox').prop("disabled", true);    
    
 $('#salaryinhand, #ctc').mask("#,#0,#00", {reverse: true});
+$('#max_salary, #min_salary').mask("#,#0,#00", {reverse: true});
 $('[data-toggle="tooltip"]').tooltip();
     $(document).on("keypress",'.place_no', function (evt) {
     if (evt.which < 48 || evt.which > 57)
@@ -2797,7 +2924,7 @@ $(document).on('click', '.modal-load-class', function() {
 });
 
 $(document).on('click', '.modal-load-benefit', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+    $('#modal_benefit').modal('show').find('.modal-body').load($(this).attr('value'));
 });
 
 
@@ -2858,6 +2985,9 @@ $(document).on('click', '.modal-load-benefit', function() {
                         quesn_count++
                         quesn_upt();
                 }
+           $('#question_field').blur(function(){
+                         $(this).val('');
+                            });
         }
         
         function drop_edu(id,qualification)
@@ -2875,6 +3005,9 @@ $(document).on('click', '.modal-load-benefit', function() {
               count_edu++;
               edu_counter_set();
                 }
+           $('#quali_field').blur(function(){
+                         $(this).val('');
+                            });
        
        }
         
@@ -3006,7 +3139,10 @@ function setTags(){ //Gets string of existing tags separated by commas
 		}
 		}
 		$("#shownlist").append(listnews);
-		$("#inputfield").val("");
+		$('#inputfield').val('');
+		$('#inputfield').blur(function(){
+            $(this).val('');
+        });
 	};        
         
 $("#inputfield").keypress(function(e){
@@ -3079,18 +3215,15 @@ function init() {
     }).disableSelection();
 }       
    
-     $('#addctc').on('click',function()
-         {
-        $('#addct').hide();
-        $('#ctc').show();     
-   }); 
+$('#addctc').on('click',function(){
+    $('#addct').hide();
+    $('#ctc-main').show();     
+});
         
-    $('.close-ctc').on('click',function()
-        {
-            $('#ctc').hide();
-            $('#addct').show();
-       
-   });
+$('.close-ctc').on('click',function(){
+    $('#ctc-main').hide();
+    $('#addct').show();
+});
        function skills_arr()
        {
         var array_val = [];
@@ -3209,6 +3342,9 @@ function init() {
                     'jobtitle': {
                         required: true
                     },
+                    'salary_type': {
+                        required: true
+                    },
                     'questionnaire_selection':
                     {
                         required:true
@@ -3315,6 +3451,10 @@ function init() {
         
                 },
                 messages: { 
+                    'salary_type': {
+                      
+                       required:'<div class = "color_red">Please Select One Option From The List</div>',
+                    },
                     'benefit_selection':
                     {
                         required:'<div class = "color_red">Please Select From the options</div>'
@@ -3380,6 +3520,10 @@ function init() {
                     } else if (element.attr("name") == "desc_count") { 
                         error.insertAfter("#error-checkbox-msg");
                     } 
+              else if(element.attr("name") == "salary_type")
+               { 
+                    error.insertAfter("#radio_rules");
+                }      
               else if (element.attr("name") == "qualific_count") { 
                         error.insertAfter("#error-edu-msg");
                     } 
@@ -3659,8 +3803,6 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerCssFile('@eyAssets/materialized/materialize-tags/css/materialize-tags.css');
-$this->registerJsFile('@eyAssets/materialized/materialize-tags/js/materialize-tags.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/gmaps/gmaps.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

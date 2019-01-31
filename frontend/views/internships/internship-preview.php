@@ -108,7 +108,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                 ?>
                             </ul>
                             <h3>Other Details</h3>
-                            <p></p>
+                            <?php if (!empty($object->othrdetail)){ ?>
+                                <p><?= $object->othrdetail ?></p>
+                          <?php  } else{ ?>
+                                <p> Nil</p>
+                        <?php } ?>
                             <h3>Education + Experience</h3>
                             <ul>
                                 <?php
