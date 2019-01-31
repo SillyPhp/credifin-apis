@@ -154,18 +154,12 @@ li.draggable-item.ui-sortable-placeholder {
 ');
 
 $script = <<<JS
-//var internships = ;
-var sidebarpage = 0;
-//$(document).ready(function () {
-        
-    $.ajax({
-        method: "GET",
-        url : "/jobs/review-list?sidebarpage="+sidebarpage,
-        success: function(response) {
-            reviewlists(response);
-            check_list();
-        }
-    });
+$('#review-internships').on('scroll',function(){
+    if($(this).scrollTop() + $(this).height() >= $(window).height()){
+        sidebarpage += 1;
+        getReviewList(sidebarpage);
+    }
+});
                 
 function reviewlists(response){
         
