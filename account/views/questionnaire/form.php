@@ -384,13 +384,15 @@ $script = <<<JS
             ui.placeholder.height(ui.helper.outerHeight());
         },
         stop: function (ev, ui) {
-            console.log(1);
+            var droppedElem = ui['item'][0];
+            droppedElem.querySelector('.form_output').querySelector('.form-group').querySelector('input[type=text]').focus();
             count_elem++;
             elem_chk();
             getPreview();
             checkDiv();
         }
     });
+    
     $(".form_builder_area").disableSelection();
 
     function getTextFieldHTML() {
