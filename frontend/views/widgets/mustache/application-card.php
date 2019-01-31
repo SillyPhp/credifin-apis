@@ -148,6 +148,22 @@ function addToReviewList(){
         });
     }
 }
+
+function getReviewList(sidebarpage){
+    if(draggable === true){
+        var type ='$type';
+        $.ajax({
+            method: "POST",
+            url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,
+            data:{type:type},
+            success: function(response) {
+                reviewlists(response);
+                check_list();
+                utilities.initials();
+            }
+        });
+    }
+}
 JS;
 $this->registerJs($script);
 $this->registerCss('
