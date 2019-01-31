@@ -593,6 +593,7 @@ $('#cities').typeahead(null, {
 
 getCards("Internships");
 getCategories("Internships");
+addToReviewList();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

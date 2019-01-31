@@ -81,7 +81,7 @@ class JobsController extends Controller
                 $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
                 $review_list = ReviewedApplications::find()
                     ->alias('a')
-                    ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
+                    ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'h.name', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
                     ->offset($sidebarpage)
                     ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
                     ->andwhere(['a.review' => 1])
@@ -91,10 +91,20 @@ class JobsController extends Controller
                     ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
                     ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
                     ->andwhere(['b.is_deleted' => 0])
+                    ->joinWith(['applicationEnc g' => function($g){
+                        $g->distinct();
+                        $g->joinWith(['applicationTypeEnc h']);
+                        $g->joinWith(['title i' => function($h){
+                            $h->joinWith(['categoryEnc j']);
+                            $h->joinWith(['parentEnc k']);
+                        }]);
+                    }],false)
+                    ->andwhere(['h.name' => 'Jobs'])
                     ->groupBy(['b.application_enc_id'])
                     ->orderBy(['a.id' => SORT_DESC])
                     ->asArray()
                     ->all();
+                print_r($review_list);
                 return [
                     'cards' => $review_list,
                     'status' => 200,
