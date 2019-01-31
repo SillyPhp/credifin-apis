@@ -384,6 +384,8 @@ $script = <<<JS
             ui.placeholder.height(ui.helper.outerHeight());
         },
         stop: function (ev, ui) {
+            var droppedElem = ui['item'][0];
+            droppedElem.querySelector('.form_output').querySelector('.form-group').querySelector('input[type=text]').focus();
             count_elem++;
             elem_chk();
             getPreview();
