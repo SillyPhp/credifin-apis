@@ -133,7 +133,7 @@ class JobsController extends Controller
         }
 
         $object = new \account\models\jobs\JobApplicationForm();
-        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
