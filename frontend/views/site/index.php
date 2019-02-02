@@ -70,10 +70,10 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="box-border fade-in two">
                     <div class="icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>"> 
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
                     </div>
                     <div class="h-heading">Candidates</div>
-                    <div class="h-text">I'm the talent, skill Enhancement</div>
+                    <div class="h-text">I'm the talent, skill Enhancement </div>
                 </div>
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
