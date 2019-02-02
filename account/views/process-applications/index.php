@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 ?>
 
 <!--<div class="row">
@@ -161,7 +160,7 @@ Html::button('Add New Company', [
 
 
                                                 <div class="cd-box-border-hide" >
-
+                                                    <?php if (!empty($que)){?>
                                                     <table class="table table-bordered">
                                                         <thead>
                                                         <tr>
@@ -172,13 +171,16 @@ Html::button('Add New Company', [
                                                         <tbody class="qu_data">
                                                         <?php foreach($que as $list_que){ ?>
                                                             <tr>
-                                                                <td><a class="blue question_list" href="/account/answers-display?q=<?=$list_que['qid']; ?>&a=<?= $arr['applied_application_enc_id']; ?>" data-questionId="<?= $list_que['qid']; ?>" data-appliedId="<?= $arr['applied_application_enc_id']; ?>" target="_blank"><?= $list_que['name'];?></a></td>
+                                                                <td><a class="blue question_list" href="/account/questionnaire/answers-display?q=<?=$list_que['qid']; ?>&a=<?= $arr['applied_application_enc_id']; ?>" data-questionId="<?= $list_que['qid']; ?>" data-appliedId="<?= $arr['applied_application_enc_id']; ?>" target="_blank"><?= $list_que['name'];?></a></td>
                                                                 <td><?=$list_que['field_label']; ?></td>
 
                                                             </tr>
                                                         <?php } ?>
                                                         </tbody>
                                                     </table>
+                                                    <?php } else { ?>
+                                                    <h3>No Questionnaire To Display</h3>
+                                                  <?php  } ?>
                                                 </div>
                                             </div>
                                             <?php
