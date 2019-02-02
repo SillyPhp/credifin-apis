@@ -135,7 +135,7 @@ Html::button('Add New Company', [
 
                                                         </div>
                                                         <div class="cd-btns col-md-2">
-                                                            <?php if($arr['active']==$arr['total']){ ?>
+                                                            <?php if($arr['status']=='Hired'){ ?>
                                                                 <button type="button" class="btn btn-outline btn-circle btn-sm btn_hired"><i class="glyphicon glyphicon-ok"></i>Hired</button>
                                                             <?php } elseif($arr['status']=='Rejected'){ ?>
                                                                 <button type="button" class="btn btn-outline btn-circle btn-sm btn_reject"><i class="glyphicon glyphicon-remove"></i>Rejected</button>

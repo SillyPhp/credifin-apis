@@ -21,7 +21,7 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="m-widget4__info">
                                             <span class="m-widget4__title">
-                                                <?= $apply['title']; ?>
+                                                <?= $apply['title'].' ( '.$apply['type'].' ) '; ?>
                                             </span><br>
                                         <span class="m-widget4__sub">
                                                 <?= $apply['org_name']; ?>
@@ -39,14 +39,29 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                     <div class="m-widget4__ext">
-                                        <?php if ($apply['status'] == 'Cancelled') { ?>
-                                            <a data="<?= $apply['applied_id']; ?>"
-                                               class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app"
-                                               disabled>Cancel</a>
-                                        <?php } else { ?>
-                                            <a data="<?= $apply['applied_id']; ?>"
-                                               class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>
-                                        <?php } ?>
+                                        <?php switch ($apply['status']) {
+                                            case 'Cancelled':
+                                                echo '<a 
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm reject_btn">Cancelled</a>';
+                                                break;
+                                            case 'Pending':
+                                                echo '<a data="'.$apply['applied_id'].'"
+                                               class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>';
+                                                break;
+                                            case 'Incomplete':
+                                                echo '<a data="'.$apply['applied_id'].'"
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>';
+                                                break;
+                                            case 'Hired':
+                                                echo '<a
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm hired_btn">Hired</a>';
+                                                break;
+                                            case 'Rejected':
+                                                echo '<a 
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm reject_btn">Rejected</a>';
+                                                break;
+                                        }
+                                            ?>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -149,8 +164,54 @@ use yii\helpers\Url;
         </div>
     </div>
 <?php
+$this->registerCss("
+.hired_btn
+{
+ color: #fdfbfb;
+ background: #26c281 !important;
+}
+.reject_btn
+{
+ color: #fdfbfb;
+ background: #e43a45 !important;
+}
+");
 $script = <<< JS
-
+$(document).on('click','.cancel-app',function(e)
+       {
+          e.preventDefault();
+             if($(this).attr("disabled") == "disabled")
+            {
+               return false;
+            }
+         if (window.confirm("Do you really want to Cancel the current Application?")) { 
+            
+            var data = $(this).attr('data');
+            $.ajax({
+                url:'/account/jobs/cancel-application',
+                data:{data:data},
+                method:'post',
+                beforeSend:function()
+                {
+                    $('.cancel-app').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                },
+                success:function(data)
+                    {
+                      if(data==true)
+                        {
+                          $('.cancel-app').addClass('reject_btn');
+                          $('.cancel-app').prop('disabled',true);  
+                          $('.cancel-app').html('Cancelled'); 
+                          $('.cancel-app').removeClass('cancel-app');
+                        }
+                      else {
+                          alert('something went wrong');
+                      }
+                     }
+              })
+        }
+          
+       })
 // function dashboard_individual_guide(){
 //         var intro = introJs();
 //
