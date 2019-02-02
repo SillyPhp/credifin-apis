@@ -48,13 +48,13 @@ if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     if (!file_exists($cover_image_path)) {
-        $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
+        $cover_image = "/assets/themes/ey/images/backgrounds/default_cover.png";
     }
 } else {
-    $cover_image = "/assets/themes/ey/images/pages/jobs/default-cover.png";
+    $cover_image = "/assets/themes/ey/images/backgrounds/default_cover.png";
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=true&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
-$no_cover = "/assets/themes/ey/images/pages/jobs/default-cover.png";
+$no_cover = "/assets/themes/ey/images/backgrounds/default_cover.png";
 ?>
 <div class="sections">
     <section id="home">

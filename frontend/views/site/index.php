@@ -289,7 +289,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com11 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
                         </div>
                         <div class="com-name">
                             Empower youth
@@ -607,6 +607,7 @@ $this->registerCss('
     text-align: center;
     box-shadow: 0 0 5px rgba(0,0,0,.1); 
     margin-bottom: 20px; 
+    min-width: 200px;
     max-width: 200px;
     margin-left: 20px;
     position:relative;

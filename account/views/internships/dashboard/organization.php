@@ -213,81 +213,26 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-    $(document).on('click', '.approv_btn', function (e) {
-        e.preventDefault();
-        var data = $(this).attr('data-key');
-        $.ajax({
-            url: '/account/accept-application',
-            data: {data: data},
-            method: 'post',
-            beforeSend: function () {
-            },
-            success: function (data) {
-            }
-        });
+$(document).on('click', '.approv_btn', function (e) {
+    e.preventDefault();
+    var data = $(this).attr('data-key');
+    $.ajax({
+        url: '/account/accept-application',
+        data: {data: data},
+        method: 'post',
+        beforeSend: function () {
+        },
+        success: function (data) {
+        }
     });
-    $(document).on('click', '.remov_btn', function (e) {
-        e.preventDefault();
-    });
+});
+$(document).on('click', '.remov_btn', function (e) {
+    e.preventDefault();
+});
 
-    $(document).on('click', '.share_btn', function (e) {
-        e.preventDefault();
-    });
-    
-  $(document).on('click','.j-delete',function(e)
-       {
-         e.preventDefault();
-         if (window.confirm("Do you really want to Delete the current Application?")) { 
-            var data = $(this).attr('value');
-            url = "/account/jobs/delete-application";
-            pjax_container = "#pjax_active_internships";
-            Ajax_delete(data,url,pjax_container);
-        }
-       })
-    $(document).on('click','.delete_questionnaire',function(e)
-       {
-          e.preventDefault();
-         if (window.confirm("Do you really want to Delete the current Questionnaire?")) { 
-            var data = $(this).attr('value');
-            url = "/account/questionnaire/delete";
-            pjax_container = "#pjax_active_questionnaire";
-            Ajax_delete(data,url,pjax_container);
-        }
-       })    
-       
-       $(document).on('click','.delete_interview_process',function(e)
-       {
-          e.preventDefault();
-         if (window.confirm("Do you really want to Delete the current Process?")) { 
-            var data = $(this).attr('value');
-            url = "/account/interview-processes/delete";
-            pjax_container = "#pjax_active_process";
-            Ajax_delete(data,url,pjax_container);
-        }
-       })     
- function Ajax_delete(data,url,pjax_container)
-        {
-          $.ajax({
-                url:url,
-                data:{data:data},
-                method:'post',
-                beforeSend:function(){
-                    $(".loader").css("display", "block");
-                  },
-                success:function(data)
-                    {
-                      if(data==true)
-                        {
-                          $(".loader").css("display", "none");
-                          $.pjax.reload({container: pjax_container, async: false});
-                        }
-                       else
-                       {
-                          alert('Something went wrong.. !');
-                       }
-                     }
-              })
-        }    
+$(document).on('click', '.share_btn', function (e) {
+    e.preventDefault();
+});
 JS;
 $this->registerJs($script);
 ?>

@@ -139,7 +139,7 @@ class InternshipsController extends Controller
                 $options['page'] = 1;
             }
 
-            $options['limit'] = 18;
+            $options['limit'] = 27;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -186,7 +186,7 @@ class InternshipsController extends Controller
             return 'Application Not found';
         }
         $object = new \account\models\jobs\JobApplicationForm;
-        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'email', 'slug', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()

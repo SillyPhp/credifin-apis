@@ -312,6 +312,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 <div class="col-lg-4 col-md-4">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
+                            <a href="/company/<?= $org['slug']; ?>">
                             <?php
                             if (!empty($org['logo'])) {
                                 ?>
@@ -323,9 +324,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php
                             }
                             ?>
+                            </a>
                         </div>
                         <div class="job-head-info">
-                            <h4><?= $org['org_name']; ?></h4>
+                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
                             <?php if ($org['website']): ?>
                                 <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
                             <?php endif; ?>
@@ -373,7 +375,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
             <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From YOur Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From Your Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>
