@@ -25,39 +25,39 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-    <section class="showcase">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="showcase-heading">
-                        <span>Showcase Your employer brand</span>
-                    </div>
-                </div>
-                </div>
-                <div class="row">
-                <div class="showcase-subparts">
-                    <div class="col-md-4">
-                        <div class="showcase-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
-                        </div>
-                        <div class="showcase-title"><span>Create Company Profile</span></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="showcase-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hiring.png')?>">
-                        </div>
-                        <div class="showcase-title"><span>Hiring Posters</span></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="showcase-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/responsive.png')?>">
-                        </div>
-                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="showcase">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="showcase-heading">-->
+<!--                        <span>Showcase Your employer brand</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                <div class="showcase-subparts">-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="showcase-icon">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/index2/create-profile.png')?><!--">-->
+<!--                        </div>-->
+<!--                        <div class="showcase-title"><span>Create Company Profile</span></div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="showcase-icon">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/index2/hiring.png')?><!--">-->
+<!--                        </div>-->
+<!--                        <div class="showcase-title"><span>Hiring Posters</span></div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-4">-->
+<!--                        <div class="showcase-icon">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/index2/responsive.png')?><!--">-->
+<!--                        </div>-->
+<!--                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section class="how-it-works">
         <div class="container">
             <div class="row">
@@ -198,7 +198,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="com11 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
                             </div>
                             <div class="com-name">
                                 Empower youth

@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
 ]);
@@ -33,9 +32,10 @@ endif;
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
-                    'applied' => $applied_app
-                ]);
-                ?>
+                    'applied' => $applied,
+                    'que_li' => $que_li
+                ]); ?>
+
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="portlet light portlet-fit">
                     <div class="portlet-title" style="border-bottom:none;">
