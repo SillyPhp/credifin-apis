@@ -338,7 +338,6 @@ $script = <<< JS
     });
     
     $(document).on('click', '.todo-remove', function (e) {
-        console.log('click');
         e.preventDefault();
             var id = $(this).parent().prev().children('input').attr('id');
             var remove = $(this).closest('li');
@@ -408,7 +407,6 @@ $script = <<< JS
             },
             success: function (response) {
                 $('#spin-attr').hide();
-                console.log(response);
                 if (response.status == 200) {
                     $('.widget-todo-list').append(Mustache.render(todo_template, response.tasks));
                     action = 1;
