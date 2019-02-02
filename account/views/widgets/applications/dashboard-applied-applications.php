@@ -1,11 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
-
 ?>
-
-
     <div class="portlet applied_app light portlet-fit">
         <div class="portlet-title">
             <div class="caption">
@@ -59,6 +55,41 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="portlet light view_applications">
+    <div class="portlet-title tabbable-line">
+        <div class="caption">
+            <i class=" icon-social-twitter font-dark hide"></i>
+            <span class="caption-subject font-dark bold uppercase">Pending Questionnaire</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <?php if(!empty($que_li)){ ?>
+                    <div class="col-md-12">
+                        <div class="mt-actions">
+                            <div class="mt-action">
+                                <div class="mt-action-body">
+                                    <div class="mt-action-row mb-3">
+                                        <div class="mt-action-info col-md-12">
+                                            <div class="mt-action-details ">
+                                                <p class="mt-action-author"><?= $que_li['applicationEnc']['name'] ?></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php foreach($que_li['applicationEnc']['applicationInterviewQuestionnaires'] as $q){ ?>
+                                        <a href="/account/questionnaire/fill-questionnaire?qidk=<?= $q['questionnaire_enc_id']; ?>&aaid=<?= $que_li['applied_application_enc_id'] ?>" class="btn btn-primary btn-sm" target="_blank"><?= $q['questionnaire_name'] ?></a>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php  } else { ?>
+                <h1>No Questionnaire Pending..!</h1>
+            <?php } ?>
+        </div>
+    </div>
     </div>
     <div class="portlet light portlet-fit">
         <div class="portlet-title" style="border-bottom:none;">
