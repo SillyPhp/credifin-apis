@@ -73,51 +73,6 @@ class JobsController extends Controller
         return $this->render('index');
     }
 
-    public function actionReviewList()
-    {
-        if (Yii::$app->request->isAjax) {
-            if (!Yii::$app->user->isGuest) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
-                $review_list = ReviewedApplications::find()
-                    ->alias('a')
-                    ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'h.name', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', 'e.name as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
-                    ->offset($sidebarpage)
-                    ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-                    ->andwhere(['a.review' => 1])
-                    ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-                    ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-                    ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-                    ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-                    ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
-                    ->andwhere(['b.is_deleted' => 0])
-                    ->joinWith(['applicationEnc g' => function($g){
-                        $g->distinct();
-                        $g->joinWith(['applicationTypeEnc h']);
-                        $g->joinWith(['title i' => function($h){
-                            $h->joinWith(['categoryEnc j']);
-                            $h->joinWith(['parentEnc k']);
-                        }]);
-                    }],false)
-                    ->andwhere(['h.name' => 'Jobs'])
-                    ->groupBy(['b.application_enc_id'])
-                    ->orderBy(['a.id' => SORT_DESC])
-                    ->asArray()
-                    ->all();
-                print_r($review_list);
-                return [
-                    'cards' => $review_list,
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Your Experience has been added.',
-                ];
-            } else {
-                return [
-                    'status' => 201,
-                ];
-            }
-        }
-    }
 
     public function actionList()
     {
@@ -178,7 +133,7 @@ class JobsController extends Controller
         }
 
         $object = new \account\models\jobs\JobApplicationForm();
-        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()

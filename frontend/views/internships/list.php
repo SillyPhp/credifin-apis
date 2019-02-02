@@ -73,24 +73,10 @@ $this->registerCss('
         </div>
     </section>
 <?php
-echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/mustache/application-card', [
+    'type' => 'Internships',
+]);
 $script = <<<JS
-$('#review-internships').scroll(function(){
-    if($(this).scrollTop() + $(this).height() >= $(window).height()){
-        sidebarpage+=2;
-        $.ajax({
-            method: "GET",
-            url : "/internships/review-list?sidebarpage="+sidebarpage,
-            beforeSend: function(){
-                $('.side-loader').show();
-            },
-            success: function(response) {
-                $('.side-loader').hide();
-                reviewlists(response);
-            }
-        });
-    }
-});
 $('#loadMore').on('click', function(e){
     e.preventDefault();
     getCards("Internships");
@@ -98,6 +84,8 @@ $('#loadMore').on('click', function(e){
 loader = true;
 draggable = true;
 getCards("Internships");
+var sidebarpage = 1;
+getReviewList(sidebarpage);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
