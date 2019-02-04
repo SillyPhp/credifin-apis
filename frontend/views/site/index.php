@@ -140,7 +140,7 @@ $this->params['header_dark'] = false;
                     Its Free To Get Hired On Empower Youth
                 </div>
                 <div class="post-job-bttn">
-                    <a href="#" id="myBttn" class="hvr-float-shadow">
+                    <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
                         Get Hired
                     </a>
                 </div>
