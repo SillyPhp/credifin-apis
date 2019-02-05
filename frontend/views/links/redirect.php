@@ -31,7 +31,7 @@ list($width, $height, $type, $attr) = getimagesize($image);
         var url = document.getElementById("url");
         setTimeout(function () {
             window.location.href = url.value;
-        }, 5000);
+        }, 1000);
     </script>
     <div class="message">
         <img width="100%" src="/assets/common/images/tagline.svg"/>

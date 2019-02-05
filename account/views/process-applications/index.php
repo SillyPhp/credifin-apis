@@ -3,42 +3,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-?>
-
-<!--<div class="row">
-    <div class="col-md-5 col-md-offset-7">
-        <div class="col-md-4">
-            <a class="btn btn-primary custom-buttons" href="/account/jobs/application">
-                Create a Job
-            </a>
-        </div>
-        <div class="col-md-4">
-<?=
-Html::button('Add New Candidate', [
-    'class' => 'btn btn-primary custom-buttons',
-    'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'add-candidate-profile'),
-    'id' => 'addpro',
-    'data-toggle' => 'modal',
-    'data-target' => '#addprofile',
+echo $this->render('/widgets/header/secondary-header', [
+    'for' => 'Questionnaire',
 ]);
 ?>
-        </div>
-        <div class="col-md-4">
-                  <a class="btn btn-primary custom-buttons" href="/account/companies">
-                               Add new company
-                            </a>
-<?=
-Html::button('Add New Company', [
-    'class' => 'btn btn-primary custom-buttons',
-    'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
-    'id' => 'open-modal',
-    'data-toggle' => 'modal',
-    'data-target' => '#add-new',
-]);
-?>
-        </div>
-    </div>
-</div>-->
 
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
