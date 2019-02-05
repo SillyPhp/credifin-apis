@@ -150,7 +150,10 @@ AppAssets::register($this);
                                     <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
                                     <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
                                 </ul>
-                            </div>  
+                            </div>
+                            <div class="feed-btn">
+                                <a href="<?= Url::to('/contact-us'); ?>">Send Feedback</a>
+                            </div>
                         </div>
                         <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
 <!--                            <ul>-->
@@ -192,11 +195,52 @@ AppAssets::register($this);
         </div>
         <?php
         $this->registerCss('
-        .menuzord-brand{position:relative;}
-        .logo-beta{font-size: 11px;position: absolute;bottom: -2px;right: -25px;color: #444;}
-        .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #444;}
-        .add-padding nav .menuzord-brand .logo_beta{color:#fff;}
-        .add-padding nav .menuzord-brand .logo-beta{color:#fff;}
+         .feed-btn a{
+            border:2px solid #00a0e3;
+            color:#00a0e3;
+            padding:5px 10px;
+            border-radius:20px;
+            margin-top:20px !important;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all;
+            
+         }
+         .feed-btn a:hover{
+            color:#fff;
+            background:#00a0e3;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all;
+            
+         }
+        .menuzord-brand{
+            position:relative;
+         }
+        .logo-beta{
+            font-size: 11px;
+            position: absolute;
+            bottom: -2px;
+            right: -25px;
+            color: #444;
+         }
+        .logo_beta{
+            font-size: 11px;
+             position: absolute;
+             bottom: -2px; 
+             right: -15px;
+             color: #444;
+         }
+        .add-padding nav .menuzord-brand .logo_beta{
+            color:#fff;
+         }
+        .add-padding nav .menuzord-brand .logo-beta{
+            color:#fff;
+         }
         .page-loading {
             background-color: #ffffff;
             content: "";
