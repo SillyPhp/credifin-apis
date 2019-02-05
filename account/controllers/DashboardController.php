@@ -74,6 +74,7 @@ class DashboardController extends Controller
             $applications_applied = AppliedApplications::find()
                       ->select(['applied_application_enc_id id','current_round'])
                       ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
+                      ->orderBy(['id'=>SORT_DESC])
                       ->asArray()
                       ->all();
             $object = new Applied();
@@ -86,7 +87,6 @@ class DashboardController extends Controller
                 }
             }
         }
-
         $services = \common\models\Services::find()
             ->alias('a')
             ->select(['a.service_enc_id', 'a.name', 'b.selected_service_enc_id', 'b.is_selected'])

@@ -23,7 +23,7 @@ class Applied extends AppliedApplications
         $questionnaires = self::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.application_enc_id','f.name as title','a.applied_application_enc_id','a.is_deleted'])
+            ->select(['a.application_enc_id','f.name as title','a.applied_application_enc_id','a.is_deleted','a.current_round'])
             ->where(['a.created_by'=>Yii::$app->user->identity->user_enc_id])
             ->andWhere(['a.applied_application_enc_id'=>$id])
             ->joinWith(['question b'=>function($b) use ($current)
