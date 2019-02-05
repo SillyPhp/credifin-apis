@@ -28,7 +28,18 @@ class ApplicationCards
     {
         $cards = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'm.value as salary', 'a.last_date', 'i.name category', 'l.designation', 'CONCAT("/job/", a.slug) link', 'd.initials_color color', 'CONCAT("/company/", d.slug) organization_link', 'a.experience', "g.name as city", 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
+            ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'm.value as salary', 'a.last_date', 'i.name category', 'l.designation', 'CONCAT("/job/", a.slug) link', 'd.initials_color color', 'CONCAT("/company/", d.slug) organization_link', "g.name as city", 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                '(CASE 
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
+                WHEN a.experience = "2" THEN "1 Year Experience"
+                WHEN a.experience = "3" THEN "2-3 Years Experience"
+                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
+                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
+                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
+                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                ELSE "No Experience"
+                END) as experience'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')

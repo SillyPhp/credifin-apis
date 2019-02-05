@@ -171,8 +171,8 @@ class SiteController extends Controller {
     public function actionTrainer() {
         return $this->render('trainer');
     }
-    public function actionCompanyIndex() {
-        return $this->render('company-index');
+    public function actionEmployers() {
+        return $this->render('employers');
     }
     public function actionCandidateList() {
         return $this->render('candidate-list');

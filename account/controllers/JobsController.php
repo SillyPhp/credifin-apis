@@ -119,10 +119,24 @@ class JobsController extends Controller
                 ];
                 if ($count['active'] == $count['total']) {
                     $update_status = Yii::$app->db->createCommand()
-                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
                         ->execute();
                 }
                 return json_encode($response);
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function actionCancelApplication() {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post('data');
+            $update = Yii::$app->db->createCommand()
+                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                ->execute();
+            if ($update) {
+                return true;
             } else {
                 return false;
             }
@@ -1047,20 +1061,6 @@ class JobsController extends Controller
         return [
             'test' => $test,
         ];
-    }
-
-    public function actionCancelApplication() {
-        if (Yii::$app->request->isPost) {
-            $id = Yii::$app->request->post('data');
-            $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
-                ->execute();
-            if ($update) {
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
 }

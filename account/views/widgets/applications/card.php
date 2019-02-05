@@ -83,3 +83,33 @@ for ($i = 1; $i <= $rows; $i++) {
     </div>
     <?php
 }
+$script = <<<JS
+$(document).on('click','.j-delete',function(e){
+     e.preventDefault();
+     if (window.confirm("Do you really want to Delete the current Application?")) { 
+        var data = $(this).attr('value');
+        var url = "/account/jobs/delete-application";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            beforeSend:function(){
+                $("#page-loading").css("display", "block");
+              },
+            success:function(data)
+                {
+                  if(data==true)
+                    {
+                      $("#page-loading").css("display", "none");
+                      $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                    }
+                   else
+                   {
+                      alert('Something went wrong.. !');
+                   }
+                 }
+          });
+    }
+});
+JS;
+$this->registerJs($script);

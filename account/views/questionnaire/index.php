@@ -1,3 +1,9 @@
+<?php
+use yii\widgets\Pjax;
+echo $this->render('/widgets/header/secondary-header', [
+    'for' => 'Questionnaire',
+]);
+?>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
         <div class="portlet light ">
@@ -16,6 +22,7 @@
                                     <div class="padding-left">
                                         <div class="manage-jobs-sec">
                                             <?php
+                                            Pjax::begin(['id' => 'pjax_active_questionnaire']);
                                             if ($questionnaire['total'] > 0) {
                                                 echo $this->render('/widgets/questionnaire/card', [
                                                     'questionnaire' => $questionnaire['data'],
@@ -23,6 +30,7 @@
                                                     'col_width' => 'col-lg-3 col-md-3 col-sm-6',
                                                 ]);
                                             }
+                                            Pjax::end();
                                             ?>
                                         </div>
                                     </div>

@@ -154,18 +154,12 @@ li.draggable-item.ui-sortable-placeholder {
 ');
 
 $script = <<<JS
-//var internships = ;
-var sidebarpage = 0;
-//$(document).ready(function () {
-        
-    $.ajax({
-        method: "GET",
-        url : "/jobs/review-list?sidebarpage="+sidebarpage,
-        success: function(response) {
-            reviewlists(response);
-            check_list();
-        }
-    });
+$('#review-internships').on('scroll',function(){
+    if($(this).scrollTop() + $(this).height() >= $(window).height()){
+        sidebarpage += 1;
+        getReviewList(sidebarpage);
+    }
+});
                 
 function reviewlists(response){
         
@@ -260,7 +254,17 @@ function Ajax_call(itemid) {
         }
     }).done(function(data) {
         check_list();
-        if (data == 'error') {
+        if(data.status == 200){
+            console.log(data.message,'test2');
+            toastr.success(data.message, 'Success');
+        } else if(data.status == 201) {
+            console.log(data.message,'test');
+            toastr.error(data.message, 'Error');
+        } else if (data.status == 'short') {
+            toastr.success(data.message, 'Reviewed Success');
+        } else if (data.status == 'unshort') {
+            toastr.success(data.message, 'Unreviewd Success');
+        } else if (data == 'error') {
             alert('Please Login first..');
         }
     });
@@ -324,6 +328,8 @@ JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
 <script id="review-cards" type="text/template">

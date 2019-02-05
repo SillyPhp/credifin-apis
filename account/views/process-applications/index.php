@@ -3,43 +3,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
-?>
-
-<!--<div class="row">
-    <div class="col-md-5 col-md-offset-7">
-        <div class="col-md-4">
-            <a class="btn btn-primary custom-buttons" href="/account/jobs/application">
-                Create a Job
-            </a>
-        </div>
-        <div class="col-md-4">
-<?=
-Html::button('Add New Candidate', [
-    'class' => 'btn btn-primary custom-buttons',
-    'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'add-candidate-profile'),
-    'id' => 'addpro',
-    'data-toggle' => 'modal',
-    'data-target' => '#addprofile',
+echo $this->render('/widgets/header/secondary-header', [
+    'for' => 'Questionnaire',
 ]);
 ?>
-        </div>
-        <div class="col-md-4">
-                  <a class="btn btn-primary custom-buttons" href="/account/companies">
-                               Add new company
-                            </a>
-<?=
-Html::button('Add New Company', [
-    'class' => 'btn btn-primary custom-buttons',
-    'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
-    'id' => 'open-modal',
-    'data-toggle' => 'modal',
-    'data-target' => '#add-new',
-]);
-?>
-        </div>
-    </div>
-</div>-->
 
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -136,7 +103,7 @@ Html::button('Add New Company', [
 
                                                         </div>
                                                         <div class="cd-btns col-md-2">
-                                                            <?php if($arr['active']==$arr['total']){ ?>
+                                                            <?php if($arr['status']=='Hired'){ ?>
                                                                 <button type="button" class="btn btn-outline btn-circle btn-sm btn_hired"><i class="glyphicon glyphicon-ok"></i>Hired</button>
                                                             <?php } elseif($arr['status']=='Rejected'){ ?>
                                                                 <button type="button" class="btn btn-outline btn-circle btn-sm btn_reject"><i class="glyphicon glyphicon-remove"></i>Rejected</button>
@@ -161,7 +128,7 @@ Html::button('Add New Company', [
 
 
                                                 <div class="cd-box-border-hide" >
-
+                                                    <?php if (!empty($que)){?>
                                                     <table class="table table-bordered">
                                                         <thead>
                                                         <tr>
@@ -172,13 +139,16 @@ Html::button('Add New Company', [
                                                         <tbody class="qu_data">
                                                         <?php foreach($que as $list_que){ ?>
                                                             <tr>
-                                                                <td><a class="blue question_list" href="/account/answers-display?q=<?=$list_que['qid']; ?>&a=<?= $arr['applied_application_enc_id']; ?>" data-questionId="<?= $list_que['qid']; ?>" data-appliedId="<?= $arr['applied_application_enc_id']; ?>" target="_blank"><?= $list_que['name'];?></a></td>
+                                                                <td><a class="blue question_list" href="/account/questionnaire/answers-display?q=<?=$list_que['qid']; ?>&a=<?= $arr['applied_application_enc_id']; ?>" data-questionId="<?= $list_que['qid']; ?>" data-appliedId="<?= $arr['applied_application_enc_id']; ?>" target="_blank"><?= $list_que['name'];?></a></td>
                                                                 <td><?=$list_que['field_label']; ?></td>
 
                                                             </tr>
                                                         <?php } ?>
                                                         </tbody>
                                                     </table>
+                                                    <?php } else { ?>
+                                                    <h3>No Questionnaire To Display</h3>
+                                                  <?php  } ?>
                                                 </div>
                                             </div>
                                             <?php
@@ -1117,10 +1087,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-tagsinput/bootstr
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/css/components.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerCssFile('http://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile('/assets/themes/backend/vendor/bootstrap-multiselect/bootstrap-multiselect.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('http://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('/assets/themes/backend/vendor/bootstrap-multiselect/bootstrap-multiselect.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/multi_tab_modal.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
