@@ -10,11 +10,12 @@ namespace common\models;
  * @property int $application_number Application Number
  * @property string $application_enc_id Foreign Key to Employer Applications Table
  * @property string $resume_enc_id Foreign Key to User Resume Table
+ * @property int $current_round Current Hiring Round
  * @property string $created_on On which date Application information was added to database
  * @property string $created_by By which User Application information was added
  * @property string $last_updated_on On which date Application information was updated
  * @property string $last_updated_by By which User Application information was updated
- * @property string $status Application Status (Accepted, Rejected, Pending)
+ * @property string $status Application Status (Accepted, Rejected, Pending, Hired, Cancelled)
  * @property int $is_deleted Is Application Deleted (0 as False, 1 as True)
  *
  * @property AnsweredQuestionnaire[] $answeredQuestionnaires
@@ -25,22 +26,24 @@ namespace common\models;
  * @property Users $lastUpdatedBy
  * @property UserResume $resumeEnc
  */
-class AppliedApplications extends \yii\db\ActiveRecord {
-
+class AppliedApplications extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%applied_applications}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['applied_application_enc_id', 'application_number', 'application_enc_id', 'created_on', 'created_by'], 'required'],
-            [['application_number', 'is_deleted'], 'integer'],
+            [['application_number', 'current_round', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['status'], 'string'],
             [['applied_application_enc_id', 'application_enc_id', 'resume_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
@@ -56,50 +59,56 @@ class AppliedApplications extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAnsweredQuestionnaires() {
+    public function getAnsweredQuestionnaires()
+    {
         return $this->hasMany(AnsweredQuestionnaire::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAppliedApplicationLocations() {
+    public function getAppliedApplicationLocations()
+    {
         return $this->hasMany(AppliedApplicationLocations::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAppliedApplicationProcesses() {
+    public function getAppliedApplicationProcesses()
+    {
         return $this->hasMany(AppliedApplicationProcess::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationEnc() {
+    public function getApplicationEnc()
+    {
         return $this->hasOne(EmployerApplications::className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getResumeEnc() {
+    public function getResumeEnc()
+    {
         return $this->hasOne(UserResume::className(), ['resume_enc_id' => 'resume_enc_id']);
     }
-
 }
