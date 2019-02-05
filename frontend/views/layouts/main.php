@@ -140,20 +140,21 @@ AppAssets::register($this);
 <!--                            </ul>-->
                         </div>
                         <div class="set1 col-sm-12 col-md-4">
+
                             <div class="footer-widget ">
                                 <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                                 <ul class="styled-icons icon-bordered icon-sm mb-5">
                                     <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fa fa-facebook"></i></a></li>
                                     <li><a href="https://twitter.com/EmpowerYouth2" target="_blank" class="overtw"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="https://plus.google.com/104048743553712680190" target="_blank" class="overgp"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="https://www.youtube.com/channel/UCEF_0LfJ9zMa99aPoGwNdtg" target="_blank" class="overyt"><i class="fa fa-youtube"></i></a></li>
+<!--                                    <li><a href="https://plus.google.com/104048743553712680190" target="_blank" class="overgp"><i class="fa fa-google-plus"></i></a></li>-->
+<!--                                    <li><a href="https://www.youtube.com/channel/UCEF_0LfJ9zMa99aPoGwNdtg" target="_blank" class="overyt"><i class="fa fa-youtube"></i></a></li>-->
                                     <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
                                     <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
                                 </ul>
                             </div>
-                            <div class="feed-btn">
-                                <a href="<?= Url::to('/contact-us'); ?>">Send Feedback</a>
-                            </div>
+<!--                            <div class="feed-btn">-->
+<!--                                <a href="--><?//= Url::to('/contact-us'); ?><!--">Send Feedback</a>-->
+<!--                            </div>-->
                         </div>
                         <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
 <!--                            <ul>-->
@@ -314,6 +315,7 @@ AppAssets::register($this);
             .footer-widget{
                 text-align:center;
                 color:#00a0e3;
+                margin: 0 auto;
             }
             .icons-ss{
                 padding-top:15px;

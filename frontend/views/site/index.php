@@ -31,13 +31,13 @@ $this->params['header_dark'] = false;
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/jobs/list'); ?>">
                                         <div class="row no-gape">
-                                            <div class="col-lg-7 col-md-7 col-sm-4">
+                                            <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
                                                 <div class="job-field">
                                                     <input type="text" name="keyword" placeholder="Keywords"/>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-2 col-sm-4">
-                                                <div class="job-field">
+                                            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
+                                                <div class="job-field job-field2">
                                                     <select data-placeholder="Any category" id="search_type"
                                                             class="chosen-city">
                                                         <option value="jobs">Jobs</option>
@@ -45,7 +45,7 @@ $this->params['header_dark'] = false;
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4">
+                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-12">
                                                 <button type="submit">Search <i class="fa fa-search"></i></button>
                                             </div>
                                         </div>
@@ -63,11 +63,14 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
+                <div class="col-md-3 col-sm-6 col-xs-6 no-padd">
                 <div class="box-border fade-in one">
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
                     <div class="h-heading">Employers</div>
                     <div class="h-text">I want to recruit talent</div>
                 </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6 no-padd">
                 <div class="box-border fade-in two">
                     <div class="icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
@@ -75,6 +78,8 @@ $this->params['header_dark'] = false;
                     <div class="h-heading">Candidates</div>
                     <div class="h-text">I'm the talent</div>
                 </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6 no-padd">
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
@@ -86,6 +91,8 @@ $this->params['header_dark'] = false;
                         <div class="text">Coming Soon</div>
                     </div>
                 </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6 ">
                 <div class="box-border fade-in four">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
@@ -96,6 +103,7 @@ $this->params['header_dark'] = false;
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -108,7 +116,7 @@ $this->params['header_dark'] = false;
     <div class="container">
         <div class="heading-style ">Our Services</div>
         <div class="services row">
-            <div class="col-md-6 serv-center">
+            <div class="col-md-6 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
@@ -118,7 +126,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
@@ -130,6 +138,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </div>
+
 </section>
 <!---->
 <section class="fixed-bttn">
@@ -556,7 +565,10 @@ $this->registerCss('
 	}
 }
 
-
+.header-boxs{
+    max-width:850px;
+    margin:0 auto;
+}
 .box-border:hover{
     -ms-transform: scale(1.1,1.1); 
     -webkit-transform: scale(1.1,1.1); 
@@ -573,9 +585,6 @@ $this->registerCss('
     text-align: center;
     box-shadow: 0 0 5px rgba(0,0,0,.1); 
     margin-bottom: 20px; 
-    min-width: 200px;
-    max-width: 200px;
-    margin-left: 20px;
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
@@ -776,11 +785,7 @@ $this->registerCss('
         margin-right: 0;
     }
 }
-@media only screen and (min-width: 992px) {
-    .box-border{
-        height: 260px;
-    }
-}
+
 /*Modal css starts */
 .content-wrapper {
     position: relative;
@@ -1076,6 +1081,156 @@ textarea {
     left: 32%;
 }
 /*companies css ends*/
+@media screen and (min-width: 993px){
+    .box-border{
+         min-width: 200px !important;
+         max-width: 200px !important;
+         height: 260px;
+    }
+}
+@media screen and (max-width: 992px) {
+    .header-boxs{
+        display:inline;
+    }
+    .box-border{
+        min-height:270px;
+        margin-left:0px;
+    }
+}
+
+@media screen and (max-width: 767px){
+    .how-icon{
+        text-align:center;
+        padding:0 0 20px 0;
+    }
+    .how-text-box{
+        padding:10px 0 20px 0;
+    }
+    .job-search-sec{
+        min-width:100%;
+    }
+  .job-field .chosen-container-single .chosen-single{
+    border-radius:0 30px 0 0;
+    border:none;
+  }
+  .search-job2 form .row > div:last-child button{
+        border-radius: 0px 0px 33px 33px;
+  }
+  .search-job2 .job-field2::before{
+    background:transparent;
+  }
+  .search-job2{
+    padding:9px 20px;
+  }
+    .partner-btn button{
+        margin-bottom:10px;
+    }
+    .com-grid{
+        min-height:480px;
+    }
+    .com1{
+        top: 0%;
+        left: 75%;
+    }
+    .com5{
+        top: 28%;
+        left: 5%;;
+    }
+    .com2{
+       top: 30%;
+        left: 41%;
+    }
+    .com3{
+        top:33%;
+        left:75%;
+    }
+    .com4{
+       top: 59%;
+        left: 30%;
+    }
+    .com6{
+        top: 62%;
+        left: 66%;
+    } 
+    .com7{
+        top: 80%;
+        left: 5%;
+    }
+    .com8{
+       top: 90%;
+       left: 47%;
+    }
+    .com9{
+        top: 93%;
+        left: 77%;
+    }
+    .com10{
+        top: 65%;
+        left: 2%;
+    }
+    .com11{
+       display:none;
+    }
+}
+@media screen and (max-width: 495px){
+    .com-grid{
+        min-height:580px;
+    }
+    .header-row{
+        margin-top:10px;
+    }
+    .com1{
+        top: 18%;
+        left: 0%;
+    }
+    .com5{
+        top: 18%;
+        left: 38%;;
+    }
+    .com2{
+       top: 18%;
+        left: 75%;
+    }
+    .com3{
+        top:43%;
+        left:0%;
+    }
+    .com4{
+       top: 43%;
+        left: 38%;
+    }
+    .com6{
+        top: 43%;
+        left: 75%;
+    } 
+//    .com7{
+//        top: 78%;
+//        left: 5%;
+//    }
+    .com8{
+       top: 68%;
+       left: 0%;
+    }
+    .com9{
+        top: 68%;
+        left: 38%;
+    }
+    .com10{
+        top: 68%;
+        left: 75%;
+    }
+    .com11{
+        top: 91%;
+        left: 24%;
+    } 
+}
+
+@media screen and (max-width: 375px){
+     .box-border{
+            min-height:310px;
+            margin-left:0px;
+        }
+}
 
 ');
 $script = <<< JS
