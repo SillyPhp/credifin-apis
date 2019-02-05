@@ -114,7 +114,7 @@ class JobsController extends Controller
                 ->one();
             if ($update == 1) {
                 Yii::$app->db->createCommand()
-                    ->update(AppliedApplications::tableName(), ['current_round' => ($count['active']-1), 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                    ->update(AppliedApplications::tableName(), ['current_round' => ($count['active']+1), 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
                     ->execute();
                 $response = [
                     'status' => true,
