@@ -140,17 +140,21 @@ AppAssets::register($this);
 <!--                            </ul>-->
                         </div>
                         <div class="set1 col-sm-12 col-md-4">
+
                             <div class="footer-widget ">
                                 <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                                 <ul class="styled-icons icon-bordered icon-sm mb-5">
                                     <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fa fa-facebook"></i></a></li>
                                     <li><a href="https://twitter.com/EmpowerYouth2" target="_blank" class="overtw"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="https://plus.google.com/104048743553712680190" target="_blank" class="overgp"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="https://www.youtube.com/channel/UCEF_0LfJ9zMa99aPoGwNdtg" target="_blank" class="overyt"><i class="fa fa-youtube"></i></a></li>
+<!--                                    <li><a href="https://plus.google.com/104048743553712680190" target="_blank" class="overgp"><i class="fa fa-google-plus"></i></a></li>-->
+<!--                                    <li><a href="https://www.youtube.com/channel/UCEF_0LfJ9zMa99aPoGwNdtg" target="_blank" class="overyt"><i class="fa fa-youtube"></i></a></li>-->
                                     <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
                                     <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
                                 </ul>
-                            </div>  
+                            </div>
+<!--                            <div class="feed-btn">-->
+<!--                                <a href="--><?//= Url::to('/contact-us'); ?><!--">Send Feedback</a>-->
+<!--                            </div>-->
                         </div>
                         <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
 <!--                            <ul>-->
@@ -192,11 +196,52 @@ AppAssets::register($this);
         </div>
         <?php
         $this->registerCss('
-        .menuzord-brand{position:relative;}
-        .logo-beta{font-size: 11px;position: absolute;bottom: -2px;right: -25px;color: #444;}
-        .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #444;}
-        .add-padding nav .menuzord-brand .logo_beta{color:#fff;}
-        .add-padding nav .menuzord-brand .logo-beta{color:#fff;}
+         .feed-btn a{
+            border:2px solid #00a0e3;
+            color:#00a0e3;
+            padding:5px 10px;
+            border-radius:20px;
+            margin-top:20px !important;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all;
+            
+         }
+         .feed-btn a:hover{
+            color:#fff;
+            background:#00a0e3;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all;
+            
+         }
+        .menuzord-brand{
+            position:relative;
+         }
+        .logo-beta{
+            font-size: 11px;
+            position: absolute;
+            bottom: -2px;
+            right: -25px;
+            color: #444;
+         }
+        .logo_beta{
+            font-size: 11px;
+             position: absolute;
+             bottom: -2px; 
+             right: -15px;
+             color: #444;
+         }
+        .add-padding nav .menuzord-brand .logo_beta{
+            color:#fff;
+         }
+        .add-padding nav .menuzord-brand .logo-beta{
+            color:#fff;
+         }
         .page-loading {
             background-color: #ffffff;
             content: "";
@@ -270,6 +315,7 @@ AppAssets::register($this);
             .footer-widget{
                 text-align:center;
                 color:#00a0e3;
+                margin: 0 auto;
             }
             .icons-ss{
                 padding-top:15px;
