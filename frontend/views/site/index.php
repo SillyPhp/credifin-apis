@@ -10,8 +10,8 @@ $this->params['header_dark'] = false;
 <section class="slider">
     <div class="block no-padding">
         <div class="container fluid">
-            <div class="row">
-                <div class="col-lg-12">
+            <div class="">
+                <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
                             <li class="slideHome"><img
@@ -38,8 +38,7 @@ $this->params['header_dark'] = false;
                                             </div>
                                             <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
                                                 <div class="job-field job-field2">
-                                                    <select data-placeholder="Any category" id="search_type"
-                                                            class="chosen-city">
+                                                    <select data-placeholder="Any category" id="search_type" class="chosen-city">
                                                         <option value="jobs">Jobs</option>
                                                         <option value="internships">Internships</option>
                                                     </select>
@@ -63,14 +62,14 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-3 col-sm-6 col-xs-6 no-padd">
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in one">
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
                     <div class="h-heading">Employers</div>
                     <div class="h-text">I want to recruit talent</div>
                 </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6 no-padd">
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in two">
                     <div class="icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
@@ -79,7 +78,7 @@ $this->params['header_dark'] = false;
                     <div class="h-text">I'm the talent</div>
                 </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6 no-padd">
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
@@ -92,7 +91,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6 ">
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in four">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
@@ -398,6 +397,11 @@ $this->params['header_dark'] = false;
 <?php
 echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+
+.no-padd{
+   padding-left:0px !important; 
+   padding-right:0px !important; 
+}
 /*try now sec*/
 .fixed-bttn{
     padding:60px 0 100px;
@@ -1110,17 +1114,18 @@ textarea {
         min-width:100%;
     }
   .job-field .chosen-container-single .chosen-single{
-    border-radius:0 30px 0 0;
+    border-radius:0 23px 0 0;
     border:none;
   }
   .search-job2 form .row > div:last-child button{
-        border-radius: 0px 0px 33px 33px;
+        border-radius: 0px 0px 23px 23px;
   }
   .search-job2 .job-field2::before{
     background:transparent;
   }
   .search-job2{
     padding:9px 20px;
+    background:none;
   }
     .partner-btn button{
         margin-bottom:10px;
@@ -1176,53 +1181,73 @@ textarea {
     .com-grid{
         min-height:580px;
     }
+    .job-field select{
+        float: left;
+        width: 100%;
+        background: no-repeat;
+        border: none;
+        font-size: 13px;
+        color: #888888;
+        margin: 0;
+        padding: 0 70px 0 30px;
+        height: 61px;
+        line-height: 61px;
+        background-color: #FFF;
+        border-radius: 23px;
+    }
+    .job-field input{
+        border-radius: 23px !important;
+    }
+    .companies{
+        padding: 0px 0 55px 0;
+    }
+    .search-job2{
+        border-radius: 25px;
+        background:none;
+    }
     .header-row{
         margin-top:10px;
     }
     .com1{
-        top: 18%;
-        left: 0%;
+        top: 22%;
+        left: -2%;
     }
     .com5{
-        top: 18%;
-        left: 38%;;
+        top: 19%;
+        left: 36%;;
     }
     .com2{
-       top: 18%;
-        left: 75%;
+       top: 22%;
+        left: 73%;
     }
     .com3{
-        top:43%;
-        left:0%;
+        top:50%;
+        left:-2%;
     }
     .com4{
-       top: 43%;
-        left: 38%;
+       top: 47%;
+        left: 36%;
     }
     .com6{
-        top: 43%;
-        left: 75%;
+        top: 50%;
+        left: 73%;
     } 
 //    .com7{
 //        top: 78%;
 //        left: 5%;
 //    }
     .com8{
-       top: 68%;
-       left: 0%;
+       top: 80%;
+       left: -2%;
     }
     .com9{
-        top: 68%;
-        left: 38%;
+        top: 77%;
+        left: 36%;
     }
     .com10{
-        top: 68%;
-        left: 75%;
-    }
-    .com11{
-        top: 91%;
-        left: 24%;
-    } 
+        top: 80%;
+        left: 73%;
+    }   
 }
 
 @media screen and (max-width: 375px){
