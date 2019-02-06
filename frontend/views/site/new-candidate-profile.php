@@ -14,7 +14,7 @@ $this->params['header_dark'] = false;
                         <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="">
                     </a></div>
                 <div class="header-details">
-                    <h4>Janelia Fragrintio<span class="pull-right">$44/hr</span></h4>
+                    <h4>Janelia Fragrintio</h4>
                     <p>Full Stack PHP Developer</p>
                     <ul>
                         <li><a href="single-company-profile.html"><i class="fa fa-building"></i> Mack Star</a></li>
@@ -86,10 +86,10 @@ $this->params['header_dark'] = false;
 
                     <div class="apply-job-detail">
                         <h5>Language</h5>
-                        <ul class="language">
-                            <li><img class="flag" src="assets/img/gb.svg" alt="">English</li>
-                            <li><img class="flag" src="assets/img/gb.svg" alt="">French</li>
-                            <li><img class="flag" src="assets/img/gb.svg" alt="">Hindi</li>
+                        <ul class="skills">
+                            <li>English</li>
+                            <li>French</li>
+                            <li>Hindi</li>
                         </ul>
                     </div>
 
@@ -106,7 +106,7 @@ $this->params['header_dark'] = false;
                 <div class="sidebar-container">
                     <div class="sidebar-box">
                         <span class="sidebar-status">Available</span>
-                        <h4 class="flc-rate">$17/hr</h4>
+<!--                        <h4 class="flc-rate">$17/hr</h4>-->
                         <div class="sidebar-inner-box">
                             <div class="sidebar-box-thumb">
                                 <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="" />
@@ -124,9 +124,9 @@ $this->params['header_dark'] = false;
                                 <li class="more-skill bg-primary">+3</li>
                             </ul>
                             <ul class="status-detail">
-                                <li class="br-1"><strong>$44/hr</strong>Hourly Rate</li>
-                                <li class="br-1"><strong>52 Jobs</strong>Done job</li>
-                                <li><strong>44</strong>Rehired</li>
+                                <li class="br-1"><strong>5 Years</strong>Experience</li>
+<!--                                <li class="br-1"><strong>52 Jobs</strong>Done job</li>-->
+<!--                                <li><strong>44</strong>Rehired</li>-->
                             </ul>
                         </div>
                     </div>
@@ -152,10 +152,10 @@ $this->registerCss('
     width: 100%;
 }
 .bl-1 {
-    border-left: 1px solid #eaeff5 !important;
+    border-left: 1px solid #00a0e3 !important;
 }
 .inner-header-page .freelance-image {
-    height: 140px;
+    height: 160px;
     flex: 0 0 140px;
     margin-right: 35px;
     background: #fff;
@@ -167,7 +167,7 @@ $this->registerCss('
     float: left;
 }
 .inner-header-page .freelance-image img{
-	max-width:120px;
+	max-width:140px;
 	margin-top:10px;
 }
 .header-details h4{
@@ -329,7 +329,7 @@ ul.skills li {
     list-style: none;
     padding: 3px 15px;
     border: 1px solid #b9c5ce;
-    border-radius: 50px;
+    border-radius: 6px;
     margin: 5px;
     font-weight: 500;
     color: #657180;
@@ -431,7 +431,7 @@ img.img-responsive.payment-img {
     background:#ff7803;
     color: #ffffff;
     padding: 4px 18px;
-    border-radius: 50px;
+    border-radius: 4px;
     font-weight: 500;
 }
 
