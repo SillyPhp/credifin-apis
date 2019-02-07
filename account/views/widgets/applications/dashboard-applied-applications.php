@@ -92,7 +92,7 @@ use yii\helpers\Url;
                             </thead>
                             <?php foreach($list['question'] as $q){ ?>
                                 <tr>
-                                    <td><a href="/account/questionnaire/fill-questionnaire?qidk=<?= $q['questionnaire_enc_id']; ?>&aaid=<?= $list['applied_application_enc_id'] ?>" class="btn btn-primary btn-sm" target="_blank"><?= $q['questionnaire_name'] ?></a></td>
+                                    <td><a href="/account/questionnaire/fill-questionnaire/<?= $q['questionnaire_enc_id']; ?>/<?= $list['applied_application_enc_id'] ?>" class="btn btn-primary btn-sm" target="_blank"><?= $q['questionnaire_name'] ?></a></td>
                                     <td><?= $list['title']; ?></td>
                                     <td><?= $q['sequence']; ?></td>
                                 </tr>
@@ -209,43 +209,7 @@ $(document).on('click','.cancel-app',function(e)
                      }
               })
         }
-          
-       })
-// function dashboard_individual_guide(){
-//         var intro = introJs();
-//
-//         intro.setOptions({
-//             steps: [
-//                 {
-//                     element: document.querySelector('.applied_app'),
-//                     intro: "application applied enables you to view the recruitment you’ve applied for.",
-//                     disableInteraction: true
-//                 },
-//             ]
-//         });
-//
-//         intro.start();
-//     }
+       });
 
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-$this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-
-//$options = [
-////    'where' => ['and',
-////        ['a.name' => 'individual_dashboard_applied_applications'],
-////        ['b.is_viewed' => 0],
-////    ],
-//    ['a.name' => 'individual_dashboard_applied_applications'],
-//];
-
-//$tutorials = Yii::$app->tutorials->getTutorialsByUser();
-//print_r();
-//print_r($tutorials);
-if (!Yii::$app->session->has("tutorial_individual_dashboard")) {
-    echo '<script>dashboard_individual_guide()</script>';
-    Yii::$app->session->set("tutorial_individual_dashboard", "Yes");
-}
-?>
