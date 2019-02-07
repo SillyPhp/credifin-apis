@@ -10,8 +10,8 @@ $this->params['header_dark'] = false;
 <section class="slider">
     <div class="block no-padding">
         <div class="container fluid">
-            <div class="row">
-                <div class="col-lg-12">
+            <div class="">
+                <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
                             <li class="slideHome"><img
@@ -31,21 +31,20 @@ $this->params['header_dark'] = false;
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/jobs/list'); ?>">
                                         <div class="row no-gape">
-                                            <div class="col-lg-7 col-md-7 col-sm-4">
+                                            <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
                                                 <div class="job-field">
                                                     <input type="text" name="keyword" placeholder="Keywords"/>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-2 col-sm-4">
-                                                <div class="job-field">
-                                                    <select data-placeholder="Any category" id="search_type"
-                                                            class="chosen-city">
+                                            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
+                                                <div class="job-field job-field2">
+                                                    <select data-placeholder="Any category" id="search_type" class="chosen-city">
                                                         <option value="jobs">Jobs</option>
                                                         <option value="internships">Internships</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4">
+                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-12">
                                                 <button type="submit">Search <i class="fa fa-search"></i></button>
                                             </div>
                                         </div>
@@ -63,11 +62,14 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in one">
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
                     <div class="h-heading">Employers</div>
                     <div class="h-text">I want to recruit talent</div>
                 </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in two">
                     <div class="icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
@@ -75,6 +77,8 @@ $this->params['header_dark'] = false;
                     <div class="h-heading">Candidates</div>
                     <div class="h-text">I'm the talent</div>
                 </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
@@ -86,6 +90,8 @@ $this->params['header_dark'] = false;
                         <div class="text">Coming Soon</div>
                     </div>
                 </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in four">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
@@ -96,6 +102,7 @@ $this->params['header_dark'] = false;
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -108,7 +115,7 @@ $this->params['header_dark'] = false;
     <div class="container">
         <div class="heading-style ">Our Services</div>
         <div class="services row">
-            <div class="col-md-6 serv-center">
+            <div class="col-md-6 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
@@ -118,7 +125,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
@@ -130,6 +137,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </div>
+
 </section>
 <!---->
 <section class="fixed-bttn">
@@ -389,6 +397,11 @@ $this->params['header_dark'] = false;
 <?php
 echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+
+.no-padd{
+   padding-left:0px !important; 
+   padding-right:0px !important; 
+}
 /*try now sec*/
 .fixed-bttn{
     padding:60px 0 100px;
@@ -556,7 +569,10 @@ $this->registerCss('
 	}
 }
 
-
+.header-boxs{
+    max-width:850px;
+    margin:0 auto;
+}
 .box-border:hover{
     -ms-transform: scale(1.1,1.1); 
     -webkit-transform: scale(1.1,1.1); 
@@ -573,9 +589,6 @@ $this->registerCss('
     text-align: center;
     box-shadow: 0 0 5px rgba(0,0,0,.1); 
     margin-bottom: 20px; 
-    min-width: 200px;
-    max-width: 200px;
-    margin-left: 20px;
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
@@ -776,11 +789,7 @@ $this->registerCss('
         margin-right: 0;
     }
 }
-@media only screen and (min-width: 992px) {
-    .box-border{
-        height: 260px;
-    }
-}
+
 /*Modal css starts */
 .content-wrapper {
     position: relative;
@@ -1076,6 +1085,177 @@ textarea {
     left: 32%;
 }
 /*companies css ends*/
+@media screen and (min-width: 993px){
+    .box-border{
+         min-width: 200px !important;
+         max-width: 200px !important;
+         height: 260px;
+    }
+}
+@media screen and (max-width: 992px) {
+    .header-boxs{
+        display:inline;
+    }
+    .box-border{
+        min-height:270px;
+        margin-left:0px;
+    }
+}
+
+@media screen and (max-width: 767px){
+    .how-icon{
+        text-align:center;
+        padding:0 0 20px 0;
+    }
+    .how-text-box{
+        padding:10px 0 20px 0;
+    }
+    .job-search-sec{
+        min-width:100%;
+    }
+  .job-field .chosen-container-single .chosen-single{
+    border-radius:0 23px 0 0;
+    border:none;
+  }
+  .search-job2 form .row > div:last-child button{
+        border-radius: 0px 0px 23px 23px;
+  }
+  .search-job2 .job-field2::before{
+    background:transparent;
+  }
+  .search-job2{
+    padding:9px 20px;
+    background:none;
+  }
+    .partner-btn button{
+        margin-bottom:10px;
+    }
+    .com-grid{
+        min-height:480px;
+    }
+    .com1{
+        top: 0%;
+        left: 75%;
+    }
+    .com5{
+        top: 28%;
+        left: 5%;;
+    }
+    .com2{
+       top: 30%;
+        left: 41%;
+    }
+    .com3{
+        top:33%;
+        left:75%;
+    }
+    .com4{
+       top: 59%;
+        left: 30%;
+    }
+    .com6{
+        top: 62%;
+        left: 66%;
+    } 
+    .com7{
+        top: 80%;
+        left: 5%;
+    }
+    .com8{
+       top: 90%;
+       left: 47%;
+    }
+    .com9{
+        top: 93%;
+        left: 77%;
+    }
+    .com10{
+        top: 65%;
+        left: 2%;
+    }
+    .com11{
+       display:none;
+    }
+}
+@media screen and (max-width: 495px){
+    .com-grid{
+        min-height:580px;
+    }
+    .job-field select{
+        float: left;
+        width: 100%;
+        background: no-repeat;
+        border: none;
+        font-size: 13px;
+        color: #888888;
+        margin: 0;
+        padding: 0 70px 0 30px;
+        height: 61px;
+        line-height: 61px;
+        background-color: #FFF;
+        border-radius: 23px;
+    }
+    .job-field input{
+        border-radius: 23px !important;
+    }
+    .companies{
+        padding: 0px 0 55px 0;
+    }
+    .search-job2{
+        border-radius: 25px;
+        background:none;
+    }
+    .header-row{
+        margin-top:10px;
+    }
+    .com1{
+        top: 22%;
+        left: -2%;
+    }
+    .com5{
+        top: 19%;
+        left: 36%;;
+    }
+    .com2{
+       top: 22%;
+        left: 73%;
+    }
+    .com3{
+        top:50%;
+        left:-2%;
+    }
+    .com4{
+       top: 47%;
+        left: 36%;
+    }
+    .com6{
+        top: 50%;
+        left: 73%;
+    } 
+//    .com7{
+//        top: 78%;
+//        left: 5%;
+//    }
+    .com8{
+       top: 80%;
+       left: -2%;
+    }
+    .com9{
+        top: 77%;
+        left: 36%;
+    }
+    .com10{
+        top: 80%;
+        left: 73%;
+    }   
+}
+
+@media screen and (max-width: 375px){
+     .box-border{
+            min-height:310px;
+            margin-left:0px;
+        }
+}
 
 ');
 $script = <<< JS

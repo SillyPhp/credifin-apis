@@ -211,7 +211,7 @@ use yii\helpers\Url;
                                 <div class="reviews-rate"> of 1.5k review</div>
                             </div>
                             <div class="read-bttn">
-                                <a href="/site/review-home">Read Reviews</a>
+                                <a href="/site/review-company">Read Reviews</a>
                             </div>
                         </div>
                     </div>
@@ -236,7 +236,7 @@ use yii\helpers\Url;
                                 <div class="reviews-rate"> of 1.5k review</div>
                             </div>
                             <div class="read-bttn">
-                                <a href="/site/review-home">Read Reviews</a>
+                                <a href="/site/review-company">Read Reviews</a>
                             </div>
                         </div>
                     </div>
@@ -261,7 +261,7 @@ use yii\helpers\Url;
                                 <div class="reviews-rate"> of 1.5k review</div>
                             </div>
                             <div class="read-bttn">
-                                <a href="/site/review-home">Read Reviews</a>
+                                <a href="/site/review-company">Read Reviews</a>
                             </div>
                         </div>
                     </div>
@@ -285,7 +285,7 @@ use yii\helpers\Url;
                                 <div class="reviews-rate"> of 1.5k review</div>
                             </div>
                             <div class="read-bttn">
-                                <a href="/site/review-home">Read Reviews</a>
+                                <a href="/site/review-company">Read Reviews</a>
                             </div>
                         </div>
                     </div>

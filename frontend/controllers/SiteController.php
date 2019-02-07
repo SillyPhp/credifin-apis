@@ -357,6 +357,9 @@ class SiteController extends Controller {
     public function actionCareerMove() {
         return $this->render('career-move');
     }
+    public function actionNewCompanyProfile() {
+        return $this->render('new-company-profile');
+    }
     public function actionCompanyJobsIndex() {
         return $this->render('company-jobs-index');
     }

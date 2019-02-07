@@ -80,7 +80,7 @@ $this->title = Yii::t('frontend', 'Internships');
                 <div class="col-md-6 col-sm-6">
                     <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?= Url::to('/internships/list'); ?>" class="btn btn-3">
@@ -528,6 +528,11 @@ $this->registerCss('
 @media only screen and (max-width: 992px){
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
+}
+@media only screen and (max-width: 425px){
+    .set-col-2{
+        width:100%;
+    }
 }
 /* animated menu css ends */
 ');
