@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\ShortlistedApplications;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -234,51 +235,74 @@ class JobsController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('itemid');
-            $chkuser = ReviewedApplications::find()
-                ->select(['review'])
+            $chkshort = ShortlistedApplications::find()
+                ->select(['shortlisted'])
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                 ->asArray()
                 ->one();
-            $status = $chkuser['review'];
-            if (empty($chkuser)) {
-                $model = new ReviewedApplications();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->review_enc_id = $utilitiesModel->encrypt();
-                $model->application_enc_id = $id;
-                $model->review = 1;
-                $model->created_on = date('Y-m-d H:i:s');
-                $model->created_by = Yii::$app->user->identity->user_enc_id;
-                if ($model->validate() && $model->save()) {
-                    $response = [
-                        'status' => 200,
-                        'message' => 'Job successfully added to review list.',
-                    ];
-                    return $response;
-                } else {
-                    $response = [
-                        'status' => 201,
-                        'message' => 'An error has occurred. Please try again.',
-                    ];
-                }
+            $short_status = $chkshort['shortlisted'];
+            if($short_status == 1){
+                $response = [
+                    'status' => 201,
+                    'message' => 'Can not add, it is already shortlisted.',
+                ];
                 return $response;
-            } else if ($status == 1) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
-                    ->execute();
+            } else {
+                $chkuser = ReviewedApplications::find()
+                    ->select(['review'])
+                    ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                    ->asArray()
+                    ->one();
+                $status = $chkuser['review'];
+                if (empty($chkuser)) {
+                    $model = new ReviewedApplications();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->review_enc_id = $utilitiesModel->encrypt();
+                    $model->application_enc_id = $id;
+                    $model->review = 1;
+                    $model->created_on = date('Y-m-d H:i:s');
+                    $model->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($model->validate() && $model->save()) {
+                        $response = [
+                            'status' => 200,
+                            'message' => 'Job successfully created in review list.',
+                        ];
+                        return $response;
+                    } else {
+                        $response = [
+                            'status' => 201,
+                            'message' => 'Job not created in review list',
+                        ];
+                        return $response;
+                    }
+                } else if ($status == 1) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->execute();
 
-                if ($update) {
-                    return 'unshort';
-                }
-            } else if ($status == 0) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
-                    ->execute();
+                    if ($update) {
+                        $response = [
+                            'status' => 'unshort',
+                            'message' => 'Job removed from review list',
+                        ];
+                        return $response;
+                    }
+                } else if ($status == 0) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->execute();
 
-                if ($update) {
-                    return 'short';
+                    if ($update) {
+                        $response = [
+                            'status' => 'short',
+                            'message' => 'Job added in review list successfully',
+                        ];
+                        return $response;
+                    }
                 }
             }
+
         }
     }
 

@@ -2,6 +2,11 @@
 
 namespace account\controllers;
 
+use account\models\applications\Applied;
+use account\models\applications\AppliedProcess;
+use common\models\ApplicationInterviewQuestionnaire;
+use common\models\ApplicationTypes;
+use common\models\OrganizationInterviewProcess;
 use Yii;
 use yii\web\Controller;
 use common\models\EmployerApplications;
@@ -52,7 +57,8 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->select(['a.application_enc_id application_id','i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->innerJoin(ApplicationTypes::tableName().'as i','i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
                 ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = b.parent_enc_id')
@@ -61,36 +67,25 @@ class DashboardController extends Controller
                 ->where(['f.created_by' => Yii::$app->user->identity->user_enc_id])
                 ->leftJoin(AppliedApplicationProcess::tableName() . 'as h', 'h.applied_application_enc_id = f.applied_application_enc_id')
                 ->groupBy(['h.applied_application_enc_id'])
-                ->orderBy(['a.id' => SORT_DESC])
+                ->orderBy(['f.id' => SORT_DESC])
                 ->asArray()
                 ->all();
 
-            $questionnair_li = AppliedApplications::find()
-                ->alias('a')
-                ->distinct()
-                ->select(['a.application_enc_id','a.applied_application_enc_id','a.created_by'])
-                ->where(['a.created_by'=>Yii::$app->user->identity->user_enc_id])
-                ->joinWith(['applicationEnc b'=>function($b)
+            $applications_applied = AppliedApplications::find()
+                      ->select(['applied_application_enc_id id','current_round'])
+                      ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
+                      ->orderBy(['id'=>SORT_DESC])
+                      ->asArray()
+                      ->all();
+            $object = new Applied();
+            $question = [];
+            foreach ($applications_applied as $v) {
+                $array = $object->getCurrentQuestions($v['id'],$v['current_round']);
+                if (!empty($array))
                 {
-                    $b->select(['b.application_enc_id','e.name']);
-                    $b->joinWith(['title d'=>function($b)
-                    {
-                        $b->joinWith(['categoryEnc e'],false);
-                    }],false);
-                    $b->joinWith(['applicationInterviewQuestionnaires c'=>function($b)
-                    {
-                        $b->select(['c.application_enc_id','c.questionnaire_enc_id','f.field_name','g.questionnaire_name']);
-                        $b->joinWith(['fieldEnc f'=>function($b)
-                        {
-                            $b->andWhere(['f.field_name'=>'Get Applications']);
-                        }],true);
-                        $b->joinWith(['questionnaireEnc g'],true);
-                    }],true);
-                }])
-                ->asArray()
-                ->one();
-
-
+                    $question[] = $array;
+                }
+            }
         }
         $services = \common\models\Services::find()
             ->alias('a')
@@ -108,7 +103,7 @@ class DashboardController extends Controller
             'services' => $services,
             'model' => $model,
             'applications' => $applications,
-            'que_li' => $questionnair_li,
+            'question_list' => $question,
         ]);
     }
 

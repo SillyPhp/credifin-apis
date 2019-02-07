@@ -33,8 +33,8 @@ if ($organization['cover_image']) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 ?>
-<div class="sections">
-    <section id="home">
+    <div class="sections">
+        <section id="home">
             <div class="coverpic">
                 <img src="<?= Url::to($cover_image); ?>" class="img-fluid">
                 <div class="shortlist_main">
@@ -49,145 +49,94 @@ if ($organization['cover_image']) {
                     <?php } ?>
                 </div>
             </div>
-        <!-- Page Content  -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="content">
-                        <button type="button" id="sidebarCollapse" class="btn btn-info">
-                            <i class="fa fa-align-left"></i>
-                            <span></span>
-                        </button>
-                        <div class="home">
-                            <div class="home-heading">
-                                <div class="c-logo col-md-2">
-                                    <?php
-                                    if (!empty($image_path)):
-                                        ?>
-                                        <img src="<?= Url::to($image); ?>">
-                                    <?php else: ?>
-                                        <canvas class="user-icon img-circle img-thumbnail " name="<?= $image; ?>" color="<?= $organization['initials_color'] ?>" width="130" height="130" font="65px"></canvas>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="cname"><?= $organization['name']; ?></div>
-                                    <input type="hidden" id="organisation_id" value="<?= $organization['organization_enc_id'] ?>"/>
-                                    <div class="tagline"><?= $organization['tag_line']; ?></div>
-                                    <?php
-                                    if(!empty($organization['establishment_year'])){
-                                        ?>
-                                    <div class="tagline">Establishment in <?= $organization['establishment_year']; ?></div>
-                                    <?php
-                                    }
-                                    ?>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="social-btns">
+            <!-- Page Content  -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content">
+                            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                                <i class="fa fa-align-left"></i>
+                                <span></span>
+                            </button>
+                            <div class="home">
+                                <div class="home-heading">
+                                    <div class="c-logo col-md-2">
                                         <?php
-                                        if (!empty($organization['facebook'])) {
+                                        if (!empty($image_path)):
                                             ?>
-                                            <a class="btns facebook" href="<?= $organization['facebook']; ?>">
-                                                <i class="fa fa-facebook"></i>
-                                            </a>
-                                            <?php
-                                        }
-                                        if (!empty($organization['twitter'])) {
+                                            <img src="<?= Url::to($image); ?>">
+                                        <?php else: ?>
+                                            <canvas class="user-icon img-circle img-thumbnail " name="<?= $image; ?>" color="<?= $organization['initials_color'] ?>" width="130" height="130" font="65px"></canvas>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="cname"><?= $organization['name']; ?></div>
+                                        <input type="hidden" id="organisation_id" value="<?= $organization['organization_enc_id'] ?>"/>
+                                        <div class="tagline"><?= $organization['tag_line']; ?></div>
+                                        <?php
+                                        if(!empty($organization['establishment_year'])){
                                             ?>
-                                            <a class="btns twitter" href="<?= $organization['twitter']; ?>">
-                                                <i class="fa fa-twitter"></i>
-                                            </a>
-                                            <?php
-                                        }
-                                        if (!empty($organization['google'])) {
-                                            ?>
-                                            <a class="btns google" href="<?= $organization['google']; ?>">
-                                                <i class="fa fa-google"></i>
-                                            </a>
-                                            <?php
-                                        }
-                                        if (!empty($organization['instagram'])) {
-                                            ?>
-                                            <a class="btns instagram" href="<?= $organization['instagram']; ?>">
-                                                <i class="fa fa-instagram"></i>
-                                            </a>
-                                            <?php
-                                        }
-                                        if (!empty($organization['youtube'])) {
-                                            ?>
-                                            <a class="btns youtube" href="<?= $organization['youtube']; ?>">
-                                                <i class="fa fa-youtube"></i>
-                                            </a>
-                                            <?php
-                                        }
-                                        if (!empty($organization['linkedin'])) {
-                                            ?>
-                                            <a class="btns linkedin" href="<?= $organization['linkedin']; ?>">
-                                                <i class="fa fa-linkedin"></i>
-                                            </a>
-                                            <?php
-                                        }
-                                        if (!empty($organization['website'])) {
-                                            ?>
-                                            <a class="btns website" href="<?= $organization['website']; ?>">
-                                                <i class="fa fa-globe"></i>
-                                            </a>
+                                            <div class="tagline">Establishment in <?= $organization['establishment_year']; ?></div>
                                             <?php
                                         }
                                         ?>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="social-btns">
+                                            <?php
+                                            if (!empty($organization['facebook'])) {
+                                                ?>
+                                                <a class="btns facebook" href="<?= $organization['facebook']; ?>">
+                                                    <i class="fa fa-facebook"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            if (!empty($organization['twitter'])) {
+                                                ?>
+                                                <a class="btns twitter" href="<?= $organization['twitter']; ?>">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            if (!empty($organization['google'])) {
+                                                ?>
+                                                <a class="btns google" href="<?= $organization['google']; ?>">
+                                                    <i class="fa fa-google"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            if (!empty($organization['instagram'])) {
+                                                ?>
+                                                <a class="btns instagram" href="<?= $organization['instagram']; ?>">
+                                                    <i class="fa fa-instagram"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            if (!empty($organization['youtube'])) {
+                                                ?>
+                                                <a class="btns youtube" href="<?= $organization['youtube']; ?>">
+                                                    <i class="fa fa-youtube"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            if (!empty($organization['linkedin'])) {
+                                                ?>
+                                                <a class="btns linkedin" href="<?= $organization['linkedin']; ?>">
+                                                    <i class="fa fa-linkedin"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            if (!empty($organization['website'])) {
+                                                ?>
+                                                <a class="btns website" href="<?= $organization['website']; ?>">
+                                                    <i class="fa fa-globe"></i>
+                                                </a>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <?php
-    if (!empty($organization['vision']) || !empty($organization['mission']) || !empty($organization['description'])) {
-        ?>
-        <section id="about">
-            <div id="vision" class="vision ">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="content">
-                                <?php
-                                if (!empty($organization['vision']) && !empty($organization['mission'])) {
-                                    $vision = 'col-md-6';
-                                    $mission = 'c2 col-md-6';
-                                } elseif (!empty($organization['vision']) && empty($organization['mission'])) {
-                                    $vision = 'col-md-12';
-                                    $mission = '';
-                                } elseif (empty($organization['vision']) && !empty($organization['vision'])) {
-                                    $vision = '';
-                                    $mission = 'col-md-12';
-                                }
-                                if (!empty($organization['description'])) {
-                                    ?>
-                                    <div class="col-md-12">
-                                        <div class="t-heading">Who We Are</div>
-                                        <div class="a-details"><p><?= $organization['description']; ?></p></div>
-                                    </div>
-                                    <?php
-                                }
-                                if (!empty($organization['vision'])) {
-                                    ?>
-                                    <div class="<?= $vision; ?>">
-                                        <div class="t-heading">Our Vision</div>
-                                        <div class="a-details"><p><?= $organization['vision']; ?></p></div>
-                                    </div>
-                                    <?php
-                                }
-                                if (!empty($organization['mission'])) {
-                                    ?>
-                                    <div class="<?= $misssion; ?>">
-                                        <div class="t-heading">Our Mission</div>
-                                        <div class="a-details"><p><?= $organization['mission']; ?></p></div>
-                                    </div>
-                                    <?php
-                                }
-                                ?>
                             </div>
                         </div>
                     </div>
@@ -195,119 +144,170 @@ if ($organization['cover_image']) {
             </div>
         </section>
         <?php
-    }
-    ?>
-    <div class="clearfix"></div>
-
-    <?php
-    if (count($videos) > 0) {
+        if (!empty($organization['vision']) || !empty($organization['mission']) || !empty($organization['description'])) {
+            ?>
+            <section id="about">
+                <div id="vision" class="vision ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="content">
+                                    <?php
+                                    if (!empty($organization['vision']) && !empty($organization['mission'])) {
+                                        $vision = 'col-md-6';
+                                        $mission = 'c2 col-md-6';
+                                    } elseif (!empty($organization['vision']) && empty($organization['mission'])) {
+                                        $vision = 'col-md-12';
+                                        $mission = '';
+                                    } elseif (empty($organization['vision']) && !empty($organization['vision'])) {
+                                        $vision = '';
+                                        $mission = 'col-md-12';
+                                    }
+                                    if (!empty($organization['description'])) {
+                                        ?>
+                                        <div class="col-md-12">
+                                            <div class="t-heading">Who We Are</div>
+                                            <div class="a-details"><p><?= $organization['description']; ?></p></div>
+                                        </div>
+                                        <?php
+                                    }
+                                    if (!empty($organization['vision'])) {
+                                        ?>
+                                        <div class="<?= $vision; ?>">
+                                            <div class="t-heading">Our Vision</div>
+                                            <div class="a-details"><p><?= $organization['vision']; ?></p></div>
+                                        </div>
+                                        <?php
+                                    }
+                                    if (!empty($organization['mission'])) {
+                                        ?>
+                                        <div class="<?= $misssion; ?>">
+                                            <div class="t-heading">Our Mission</div>
+                                            <div class="a-details"><p><?= $organization['mission']; ?></p></div>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <?php
+        }
         ?>
-        <section id="video">
+        <div class="clearfix"></div>
+
+        <?php
+        if (count($videos) > 0) {
+            ?>
+            <section id="video">
                 <div class="container">
                     <div class="content">
                         <div class="t-heading">Video Gallery </div>
-                            <?php
-                            $rows = ceil(count($videos) / 3);
-                            $next = 0;
-                            for ($i = 0; $i < $rows; $i++) {
-                                ?>
-                                <div class="row videorow">
-                                    <?php
-                                    for ($j = 0; $j < 3; $j++) {
-                                        ?>
-                                        <div class="col-md-4">
-                                            <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
-                                                <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
-                                            </a>
-                                            <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
-                                                <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                            </div>
-                                        </div>
-                                        <?php
-                                        $next++;
-                                    }
-                                    ?>
-                                </div>
-                                <?php
-                            }
+                        <?php
+                        $rows = ceil(count($videos) / 3);
+                        $next = 0;
+                        for ($i = 0; $i < $rows; $i++) {
                             ?>
-                    </div>
-                </div>
-        </section>
-        <?php
-    }
-    if(!empty($benefit)){
-    ?>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="t-heading">
-                        Employee Benefits
-                    </div>
-                </div>
-            </div>
-            <?php
-                $rows = ceil(count($benefit) / 4);
-                $next = 0;
-                for ($i = 0; $i < $rows; $i++) {
-                    ?>
-                    <div class="cat-sec">
-                        <div class="row no-gape">
-                            <?php
-                            for ($j = 0; $j < 4; $j++) {
-                                if(!empty($benefit[$next]['benefit'])){
+                            <div class="row videorow">
+                                <?php
+                                for ($j = 0; $j < 3; $j++) {
                                     ?>
-                                    <div class="col-lg-3 col-md-3 col-sm-6">
-                                        <div class="p-category">
-                                            <div class="p-category-view">
-                                                <?php
-                                                if(empty($benefit[$next]['icon'])){
-                                                    $benefit[$next]['icon'] = 'plus-icon.svg';
-                                                }
-                                                ?>
-                                                <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
-                                                <span><?= $benefit[$next]['benefit'] ?></span>
-                                            </div>
+                                    <div class="col-md-4">
+                                        <a href="#<?= $videos[$next]['video_enc_id'] ?>" class="videoLink">
+                                            <img src="<?= $videos[$next]['cover_image']; ?>" alt="<?= $videos[$next]['name']; ?>" class="img-fluid" />
+                                        </a>
+                                        <div id="<?= $videos[$next]['video_enc_id'] ?>" class="mfp-hide video-container" style="max-width: 75%; margin: 0 auto;">
+                                            <iframe width="100%" height="480px" src="https://www.youtube.com/embed/<?= $videos[$next]['link']; ?>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                                         </div>
                                     </div>
                                     <?php
+                                    $next++;
                                 }
-                                $next++;
-                            }
-                            ?>
-                        </div>
-                    </div>
-                    <?php
-                }
-            ?>
-        </div>
-    </section>
-    <?php
-    }
-    if (count($jobcards) > 0) {
-        ?>
-
-        <section id="jobs">
-            <div class="about">
-                <div class="container">
-                    <div class="content">
-                        <div class="t-heading">Available Job</div>
-                        <?php
-                        echo $this->render('/widgets/application-card', [
-                            'type' => 'card',
-                            'cards' => $jobcards,
-                        ]);
+                                ?>
+                            </div>
+                            <?php
+                        }
                         ?>
                     </div>
                 </div>
-            </div>  
-        </section>
-        <?php
-    }
-    if (count($locations) > 0) {
-        ?>
-        <section id="offices">
+            </section>
+            <?php
+        }
+        if(!empty($benefit)){
+            ?>
+            <section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="t-heading">
+                                Employee Benefits
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    $rows = ceil(count($benefit) / 4);
+                    $next = 0;
+                    for ($i = 0; $i < $rows; $i++) {
+                        ?>
+                        <div class="cat-sec">
+                            <div class="row no-gape">
+                                <?php
+                                for ($j = 0; $j < 4; $j++) {
+                                    if(!empty($benefit[$next]['benefit'])){
+                                        ?>
+                                        <div class="col-lg-3 col-md-3 col-sm-6">
+                                            <div class="p-category">
+                                                <div class="p-category-view">
+                                                    <?php
+                                                    if(empty($benefit[$next]['icon'])){
+                                                        $benefit[$next]['icon'] = 'plus-icon.svg';
+                                                    }
+                                                    ?>
+                                                    <img src="<?= Url::to('@commonAssets/employee_benefits/' . $benefit[$next]['icon']) ?>" />
+                                                    <span><?= $benefit[$next]['benefit'] ?></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    $next++;
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </section>
+            <?php
+        }
+        if (count($jobcards) > 0) {
+            ?>
+
+            <section id="jobs">
+                <div class="about">
+                    <div class="container">
+                        <div class="content">
+                            <div class="t-heading">Available Job</div>
+                            <?php
+                            echo $this->render('/widgets/application-card', [
+                                'type' => 'card',
+                                'cards' => $jobcards,
+                            ]);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <?php
+        }
+        if (count($locations) > 0) {
+            ?>
+            <section id="offices">
                 <div class="container">
                     <div class="row content">
                         <div class="t-heading col-md-12">Our Offices</div>
@@ -330,11 +330,11 @@ if ($organization['cover_image']) {
                         </div>
                     </div>
                 </div>
-        </section>
-        <?php
-    }
-    ?>
-</div>
+            </section>
+            <?php
+        }
+        ?>
+    </div>
     <section>
         <div class="container">
             <div class="empty-field">

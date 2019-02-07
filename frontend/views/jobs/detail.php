@@ -102,24 +102,26 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
-                                        <h3>Offered Salary (<?php if($option['salary_type']==1){echo 'Fixed';
+                                        <h3>Offered Salary <?php if($option['salary_type']==1){echo '(Fixed)';
                                         $amount = $option['salary'];
                                         setlocale(LC_MONETARY, 'en_IN');
-                                        $amount = utf8_encode(money_format('%!.0n', $amount));
+                                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
                                         } else if($option['salary_type']==2){
-                                            echo 'Negotiable';
+                                            if(!empty($option['min_salary']) || !empty($option['max_salary'])){echo '(Negotiable)';}
                                                 $amount1 = $option['min_salary'];
                                                 $amount2 = $option['max_salary'];
                                                 setlocale(LC_MONETARY, 'en_IN');
                                                 if (!empty($option['min_salary']) && !empty($option['max_salary'])) {
-                                                    $amount = utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . utf8_encode(money_format('%!.0n', $amount2));
                                                 } elseif(!empty($option['min_salary'])){
-                                                    $amount = 'From '.utf8_encode(money_format('%!.0n', $amount1));
+                                                    $amount = '&#8377 From '.utf8_encode(money_format('%!.0n', $amount1));
                                                 } elseif (!empty($option['max_salary'])){
-                                                    $amount = 'Upto '.utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 Upto '.utf8_encode(money_format('%!.0n', $amount2));
+                                                } elseif(empty($option['min_salary']) && empty($option['max_salary'])){
+                                                    $amount = 'Negotiable';
                                                 }
-                                        } ?>)</h3>
-                                        <span><?= '&#8377 ' . $amount; ?></span></li>
+                                        } ?></h3>
+                                        <span><?= $amount; ?></span></li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
@@ -308,7 +310,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
+            <p class="sub_description_1">Your Application Has been successfully registerd with the recruiter. keep check
                 your Dashboard Regularly for further confirmation from the Requiter side.</p>
             <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
                 Questionnaire Pending From Your Side you can fill them now By clicking <a

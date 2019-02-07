@@ -1,6 +1,6 @@
 <script id="category-card" type="text/template">
     {{#.}}
-    <div class="col-md-3 col-sm-6 category">
+    <div class="col-md-3 col-sm-6 col-xs-6 category">
         <a href="{{link}}">
             <div class="grids">
                 <img class="grids-image" src="{{icon}}">
@@ -56,7 +56,13 @@ $this->registerCss("
     border: 2px solid #f08440;
     -webkit-transform: scale(.9);
     transform: scale(.9);
-}");
+}
+@media only screen and (max-width: 425px){
+    .category{
+        min-height: 250px;
+    }
+}
+");
 $script = <<<JS
 function renderCategories(cards){
     var card = $('#category-card').html();
