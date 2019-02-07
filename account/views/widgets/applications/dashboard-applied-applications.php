@@ -99,7 +99,7 @@ use yii\helpers\Url;
                             <?php } ?>
                         </table>
                     <?php }  } else { ?>
-                    <h1>No Questionnaire Pending..!</h1>
+                    <h1>No Questionnaires Pending..!</h1>
                 <?php } ?>
             </div>
         </div>
