@@ -181,15 +181,13 @@ class QuestionnaireController extends Controller
 
     }
 
-    public function actionAnswersDisplay()
+    public function actionDisplayAnswers($qidk, $aaidk)
     {
         $this->layout = 'main-secondary';
-        $a = Yii::$app->getRequest()->getQueryParam('a');
-        $q = Yii::$app->getRequest()->getQueryParam('q');
         $answers = AnsweredQuestionnaire::find()
             ->alias('a')
             ->distinct()
-            ->where(['a.applied_application_enc_id' => $a, 'a.questionnaire_enc_id' => $q])
+            ->where(['a.applied_application_enc_id' => $aaidk, 'a.questionnaire_enc_id' => $qidk])
             ->select(['a.answered_questionnaire_enc_id', 'a.rating', 'a.created_by'])
             ->joinWith([
                 'answeredQuestionnaireFields b' => function ($b) {
