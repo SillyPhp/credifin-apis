@@ -33,9 +33,8 @@ endif;
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
-                    'que_li' => $que_li
+                    'question_list' => $question_list
                 ]); ?>
-
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="portlet light portlet-fit">
                     <div class="portlet-title" style="border-bottom:none;">
