@@ -1,4 +1,5 @@
 <?php
+
 namespace account\models\questionnaire;
 
 use Yii;
@@ -14,7 +15,7 @@ class QuestionnaireViewForm extends Model
 
     public $field;
 
-    public function saveAnswer($applied_id,$data,$qidk)
+    public function saveAnswer($applied_id, $data, $qidk)
     {
         $arr = json_decode($data);
         $utilitiesModel = new Utilities();

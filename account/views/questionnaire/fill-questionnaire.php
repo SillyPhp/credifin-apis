@@ -189,7 +189,7 @@ JS;
 $this->registerJs($script);
 $this->registerCss('
 body  {
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco.png") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
