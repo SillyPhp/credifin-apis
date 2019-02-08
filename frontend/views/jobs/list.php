@@ -560,7 +560,6 @@ function jobcards(cards){
         j+=3;
     }
 }
-        
 $('#loadMore').on('click', function(e){
     e.preventDefault();
     getJobs();
@@ -597,6 +596,7 @@ function getJobs(type = "Jobs") {
     }
     
     data['type'] = type;
+    console.log(data);
     $.ajax({
         method: "POST",
         url : window.location.pathname,
@@ -637,6 +637,4 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 echo $this->render('/widgets/application-card', [
     'type' => 'mustache',
 ]);
-
-//echo $this->render('/widgets/job-alerts');
 ?>

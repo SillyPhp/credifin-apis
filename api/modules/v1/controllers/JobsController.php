@@ -13,6 +13,7 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
 use common\models\Categories;
+use common\models\ApplicationOptions;
 use common\models\Cities;
 use common\models\Designations;
 use common\models\Industries;
@@ -30,7 +31,7 @@ class JobsController extends ApiBaseController {
     public function behaviors(){
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['detail', 'list'],
+            'except' => ['list'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -87,7 +88,7 @@ class JobsController extends ApiBaseController {
 
         $jobcards = EmployerApplications::find()
                     ->alias('a')
-                    ->select(['a.application_enc_id application_id', 'i.name category', 'l.designation', 'd.initials_color color', 'CONCAT("'.Yii::$app->request->hostInfo . '/company/'. '", d.slug) organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NULL THEN NULL ELSE CONCAT("'.Url::to(Yii::$app->params->upload_directories->organizations->logo, true).'",d.logo_location, "/", d.logo) END logo'])
+                    ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id','m.value as salary', 'a.last_date', 'i.name category', 'l.designation', 'd.initials_color color', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) END logo'])
                     ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                     ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
                     ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
@@ -98,7 +99,9 @@ class JobsController extends ApiBaseController {
                     ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
                     ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
                     ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
-                    ->where(['j.name' => $options['type'], 'a.is_deleted' => 0]);
+                    ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
+                    ->where(['j.name' => $options['type'], 'a.is_deleted' => 0, 'm.option_name' => 'salary']);
+
 
 
         if (isset($options['company'])) {
@@ -152,9 +155,11 @@ class JobsController extends ApiBaseController {
      * @var http://www.aditya.eygb.me/api/v1/jobs/detail?id= application id
      * @return Returns organization name , color, email, website, logo, cover image, has applied, resume, Are there questionnaire, Industry, title, Preferred gender, designation, Profile, Job Type, Experience, Timings from , Timings To, Joining Date, Last Date, Working Days, Salary, Salary Duration , Benefits, Educational Requirement, Skill, Job Description, Placement Locations data, Total Vacancies and Interview Locations
      */
-    public function actionDetail($id){
+    public function actionDetail(){
+        $bodyparam = \Yii::$app->request->post();
+        if($bodyparam['id'] && !empty($bodyparam['id'])) {
             $result = [];
-
+            $id = $bodyparam['id'];
             $application_details = EmployerApplications::find()
                 ->where([
                     'application_enc_id' => $id,
@@ -203,9 +208,9 @@ class JobsController extends ApiBaseController {
                 ->where(['user_enc_id' => $user->user_enc_id])
                 ->asArray()
                 ->all();
-            if(sizeof($resume) != 0) {
+            if (sizeof($resume) != 0) {
                 $result['resume'] = $resume;
-            }else{
+            } else {
                 $result ['resume'] = 'No Resume Found';
             }
 
@@ -234,41 +239,41 @@ class JobsController extends ApiBaseController {
             $result['timings_to'] = $data['timings_to'];
             $result['joining_date'] = $data['joining_date'];
             $result['last_date'] = $data['last_date'];
-            foreach($data['applicationOptions'] as $datum){
-                if($datum['option_name'] == "working_days") $result['working_days'] = $datum['value'];
-                else if($datum['option_name'] == "salary") $result['salary'] = $datum['value'];
-                else if($datum['option_name'] == "salary_duration") $result['salary_duration'] = $datum['value'];
+            foreach ($data['applicationOptions'] as $datum) {
+                if ($datum['option_name'] == "working_days") $result['working_days'] = $datum['value'];
+                else if ($datum['option_name'] == "salary") $result['salary'] = $datum['value'];
+                else if ($datum['option_name'] == "salary_duration") $result['salary_duration'] = $datum['value'];
             }
             $result['benefits'] = [];
             $aa = 0;
-            foreach($data['applicationEmployeeBenefits'] as $aeb){
+            foreach ($data['applicationEmployeeBenefits'] as $aeb) {
                 $result['benefits'][$aa] = $aeb['benefit'];
                 $aa++;
             }
             $result['educational_requirement'] = [];
             $bb = 0;
-            foreach($data['applicationEducationalRequirements'] as $aer){
+            foreach ($data['applicationEducationalRequirements'] as $aer) {
                 $result['educational_requirement'][$bb] = $aer['educational_requirement'];
                 $bb++;
             }
             $result['skill'] = [];
             $cc = 0;
-            foreach($data['applicationSkills'] as $as){
+            foreach ($data['applicationSkills'] as $as) {
                 $result['skill'][$cc] = $as['skill'];
                 $cc++;
             }
             $result['job_description'] = [];
             $ii = 0;
-            foreach($data['applicationJobDescriptions'] as $jd){
+            foreach ($data['applicationJobDescriptions'] as $jd) {
                 $result['job_description'][$ii] = $jd['job_description'];
                 $ii++;
             }
             $result['placement_locations_data'] = [];
             $dd = 0;
 
-            foreach($data['applicationPlacementLocations'] as $apl){
+            foreach ($data['applicationPlacementLocations'] as $apl) {
                 $result['placement_locations_data'][] = [
-                    'vacancies' =>  $apl['positions'],
+                    'vacancies' => $apl['positions'],
                     'city_id' => $apl['city_enc_id'],
                     'placement_locations' => $apl['name']
                 ];
@@ -278,14 +283,16 @@ class JobsController extends ApiBaseController {
             $result['total_vacancies'] = count($result['vacancies']);
             $ee = 0;
             $result['interview_locations'] = [];
-            foreach($data['applicationInterviewLocations'] as $ail){
+            foreach ($data['applicationInterviewLocations'] as $ail) {
                 $result['interview_locations'][$ee] = $ail['name'];
                 $ee++;
             }
             unset($result['vacancies']);
 //            $model = new JobApplied();
             return $this->response(200, $result);
-
+        }else{
+            return $this->response(202);
+        }
     }
 
     /**
@@ -299,9 +306,10 @@ class JobsController extends ApiBaseController {
      */
     public function actionApply(){
         $model = new JobApply();
-
-        if(Yii::$app->request->post('old') == true){
-
+        $reqParams = Yii::$app->request->post();
+        if($reqParams['job_id'] && !empty($reqParams['job_id']) && $reqParams['resume_enc_id'] && !empty($reqParams['resume_enc_id'])
+            && $reqParams['city_id'] && !empty($reqParams['city_id']) && $reqParams['old'] == true
+        ){
             $application_questionnaire = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
@@ -326,7 +334,7 @@ class JobsController extends ApiBaseController {
                 return $this->response(204);
             }
 
-        }else if(Yii::$app->request->post('new') == true){
+        }else if($reqParams['job_id'] && !empty($reqParams['job_id']) && $reqParams['city_id'] && !empty($reqParams['city_id']) && $reqParams['new'] == true){
             $model->id = Yii::$app->request->post("job_id");
             $model->resume_file = UploadedFile::getInstanceByName('resume_file');
             $model->location_pref = Yii::$app->request->post('city_id');
@@ -349,6 +357,8 @@ class JobsController extends ApiBaseController {
             } else {
                 return $this->response(204);
             }
+        }else{
+            return $this->response(202);
         }
     }
 

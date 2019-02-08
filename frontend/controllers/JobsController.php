@@ -143,7 +143,7 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
             $options = [];
-            $limit = 9;
+            $limit = 3;
 
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $page = $parameters['page'];
@@ -181,6 +181,7 @@ class JobsController extends Controller
 
     private function _getCardsFromJobs($options = [])
     {
+
         $jobcards = EmployerApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id', 'a.created_on', 'i.name category', 'l.designation', 'a.slug link', 'd.initials_color color', 'd.slug organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'd.logo', 'd.logo_location'])
@@ -352,37 +353,40 @@ class JobsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            foreach ($object->interviewcity as $id) {
-                $int_arr = OrganizationLocations::find()
-                    ->alias('a')
-                    ->select(['b.name AS city_name'])
-                    ->where(['a.location_enc_id' => $id])
-                    ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
-                    ->asArray()
-                    ->one();
-
-                $int_loc .= $int_arr['city_name'] . ',';
+            $int_loc = '';
+            if (!empty($object->interviewcity)) {
+                foreach ($object->interviewcity as $id) {
+                    $int_arr = OrganizationLocations::find()
+                        ->alias('a')
+                        ->select(['b.name AS city_name'])
+                        ->where(['a.location_enc_id' => $id])
+                        ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
+                        ->asArray()
+                        ->one();
+                    $int_loc .= $int_arr['city_name'] . ',';
+                }
             }
             $indstry = Industries::find()
                 ->where(['industry_enc_id' => $object->pref_inds])
                 ->select(['industry'])
                 ->asArray()
                 ->one();
-
             $primary_cat = Categories::find()
                 ->select(['name'])
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
-
-            foreach ($object->emp_benefit as $benefit) {
-                $benefits[] = EmployeeBenefits::find()
-                    ->select(['benefit'])
-                    ->where(['benefit_enc_id' => $benefit])
-                    ->asArray()
-                    ->one();
+            if ($object->benefit_selection == 1) {
+                foreach ($object->emp_benefit as $benefit) {
+                    $benefits[] = EmployeeBenefits::find()
+                        ->select(['benefit'])
+                        ->where(['benefit_enc_id' => $benefit])
+                        ->asArray()
+                        ->one();
+                }
+            } else {
+                $benefits = null;
             }
-
             return $this->render('job-preview', [
                 'object' => $object,
                 'interview' => $int_loc,
@@ -446,5 +450,47 @@ class JobsController extends Controller
                 }
             }
         }
+    }
+
+    public function actionNearMe(){
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return Yii::$app->request->post();
+            $options = [];
+            $limit = 3;
+
+            if ($parameters['page'] && (int)$parameters['page'] >= 1) {
+                $page = $parameters['page'];
+            } else {
+                $page = 1;
+            }
+
+            $options['limit'] = $limit;
+
+            $options['offset'] = ($page - 1) * $limit;
+
+            if ($parameters['location'] && !empty($parameters['location'])) {
+                $options['location'] = $parameters['location'];
+            }
+
+            if ($parameters['keyword'] && !empty($parameters['keyword'])) {
+                $options['keyword'] = $parameters['keyword'];
+            }
+
+            if ($parameters['company'] && !empty($parameters['company'])) {
+                $options['company'] = $parameters['company'];
+            }
+
+            if ($parameters['type'] && !empty($parameters['type'])) {
+                $options['type'] = $parameters['type'];
+            } else {
+                $options['type'] = 'Jobs';
+            }
+
+            return $this->_getCardsFromJobs($options);
+        }
+
+        return $this->render('jobs-near-me');
     }
 }

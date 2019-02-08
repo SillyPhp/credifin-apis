@@ -90,10 +90,15 @@ class OauthController extends ApiBaseController{
         $password = \Yii::$app->request->post('password');
         if(!isset($password) && isset($username)){
             $user = Clients::findOne([
-                'username' => $username
+                'username' => $username,
             ]);
+            if(!$user){
+                $user = Clients::findOne([
+                    'email' => $username,
+                ]);
+            }
             if($user > 0) {
-                return $this->response(200, 'User Exists');
+                return $this->response(103);
             }else{
                 return $this->response(201);
             }
@@ -102,8 +107,13 @@ class OauthController extends ApiBaseController{
         if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
             if($model->login()) {
                 $user = Clients::findOne([
-                    'username' => $model->username
+                    'username' => $model->username,
                 ]);
+                if(!$user){
+                    $user = Clients::findOne([
+                        'email' => $model->username,
+                    ]);
+                }
                 $user->access_token = \Yii::$app->security->generateRandomString();
                 $user->token_expiration_time = date('Y-m-d H:i:s', time());
                 if ($user->save()) {
