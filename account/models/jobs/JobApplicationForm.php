@@ -223,13 +223,14 @@ class JobApplicationForm extends Model
         $employerApplicationsModel->image_location = '1';
         $employerApplicationsModel->status = 'Active';
 
-        $chk_cat = Categories::find()
+        $category_execute = Categories::find()
             ->alias('a')
-            ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id'])
+            ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['name' => $this->jobtitle])
-            ->asArray()
-            ->one();
+            ->andWhere(['b.assigned_to'=>'Jobs']);
+
+        $chk_cat = $category_execute->asArray()->one();
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
             $utilitiesModel = new Utilities();
@@ -245,32 +246,24 @@ class JobApplicationForm extends Model
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
-                $assignedCategoryModel = new AssignedCategories();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
-                $assignedCategoryModel->category_enc_id = $categoriesModel->category_enc_id;
-                $assignedCategoryModel->parent_enc_id = $this->primaryfield;
-                $assignedCategoryModel->assigned_to = 'Jobs';
-                $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
-                $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if ($assignedCategoryModel->save()) {
-                    $employerApplicationsModel->title = $assignedCategoryModel->assigned_category_enc_id;
-                    $utilitiesModel->variables['name'] = $this->custom_job_title . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
-                    $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
-                    $utilitiesModel->variables['field_name'] = 'slug';
-                    $employerApplicationsModel->slug = $utilitiesModel->create_slug();
-                }
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id,$employerApplicationsModel);
             } else {
                 return false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
-            $employerApplicationsModel->title = $chk_cat['assigned_category_enc_id'];
-            $utilitiesModel->variables['name'] = $chk_cat['name'] . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
-            $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
-            $utilitiesModel->variables['field_name'] = 'slug';
-            $employerApplicationsModel->slug = $utilitiesModel->create_slug();
+            $chk_assigned = $category_execute->andWhere(['not',['b.parent_enc_id'=>null]])->asArray()->one();
+            if (empty($chk_assigned))
+            {
+                $this->addNewAssignedCategory($chk_cat['category_enc_id'],$employerApplicationsModel);
+            }
+            else{
+                $employerApplicationsModel->title = $chk_assigned['assigned_category_enc_id'];
+                $utilitiesModel->variables['name'] = $chk_assigned['name'] . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
+                $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $employerApplicationsModel->slug = $utilitiesModel->create_slug();
+            }
         }
 
 //        $image_information = $this->_createSharingImage($employerApplicationsModel->title);
@@ -619,6 +612,29 @@ class JobApplicationForm extends Model
         }
     }
 
+    private function addNewAssignedCategory($category_id,$employerApplicationsModel)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $this->primaryfield;
+        $assignedCategoryModel->assigned_to = 'Jobs';
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $employerApplicationsModel->title = $assignedCategoryModel->assigned_category_enc_id;
+            $utilitiesModel->variables['name'] = $this->jobtitle . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
+            $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $employerApplicationsModel->slug = $utilitiesModel->create_slug();
+        }
+        else
+        {
+            return false;
+        }
+    }
     private function _createSharingImage($category)
     {
         $client = new \yii\httpclient\Client(['baseUrl' => Url::base(true)]);
