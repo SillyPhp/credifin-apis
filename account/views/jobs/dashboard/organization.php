@@ -7,9 +7,6 @@ echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Jobs',
 ]);
 ?>
-    <div class="loader"><img
-                src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/>
-    </div>
     <div class="row widget-row">
         <?=
         $this->render('/widgets/jobs/stats', [
@@ -39,7 +36,6 @@ echo $this->render('/widgets/header/secondary-header', [
                 </div>
                 <div class="portlet-body">
                     <?php
-                    Pjax::begin(['id' => 'pjax_active_jobs']);
                     if ($applications['total'] > 0) {
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['data'],
@@ -49,7 +45,6 @@ echo $this->render('/widgets/header/secondary-header', [
                         ?>
                         <h3>No Active Jobs</h3>
                     <?php }
-                    Pjax::end();
                     ?>
                 </div>
             </div>
@@ -76,7 +71,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="row">
                         <div class="col-lg-12">
                             <?php
-                            Pjax::begin(['id' => 'pjax_active_questionnaire']);
                             if ($questionnaire['total'] > 0) {
                                 echo $this->render('/widgets/questionnaire/card', [
                                     'questionnaire' => $questionnaire['data'],
@@ -87,7 +81,6 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ?>
                                 <h3>No Questionnaire To Display</h3>
                             <?php }
-                            Pjax::end();
                             ?>
                         </div>
                     </div>
@@ -114,7 +107,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="row">
                         <div class="col-lg-12">
                             <?php
-                            Pjax::begin(['id' => 'pjax_active_process']);
                             if ($interview_processes['total'] > 0) {
                                 echo $this->render('/widgets/processes/card', [
                                     'processes' => $interview_processes['data'],
@@ -125,7 +117,6 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ?>
                                 <h3>No Processes To Display</h3>
                             <?php }
-                            Pjax::end();
                             ?>
                         </div>
                     </div>
