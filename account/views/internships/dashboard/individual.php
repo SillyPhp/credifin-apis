@@ -159,8 +159,8 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob1">Apply</a></div>
-                                                                <div class="text-o col-md-6">
+                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-7">
                                                                     <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
                                                                         <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
                                                                     </a>
