@@ -1101,6 +1101,20 @@ textarea {
         margin-left:0px;
     }
 }
+.job-field .chosen-container-single .chosen-single{
+//    border-radius:0 23px 0 0;
+    border:none;
+  }
+//  .search-job2 form .row > div:last-child button{
+//        border-radius: 0px 0px 23px 23px;
+//  }
+  .search-job2 .job-field2::before{
+    background:transparent;
+  }
+  .search-job2{
+    padding:9px 20px;
+    background:none;
+  }
 
 @media screen and (max-width: 767px){
     .how-icon{
@@ -1113,20 +1127,7 @@ textarea {
     .job-search-sec{
         min-width:100%;
     }
-  .job-field .chosen-container-single .chosen-single{
-    border-radius:0 23px 0 0;
-    border:none;
-  }
-  .search-job2 form .row > div:last-child button{
-        border-radius: 0px 0px 23px 23px;
-  }
-  .search-job2 .job-field2::before{
-    background:transparent;
-  }
-  .search-job2{
-    padding:9px 20px;
-    background:none;
-  }
+  
     .partner-btn button{
         margin-bottom:10px;
     }
@@ -1177,34 +1178,36 @@ textarea {
        display:none;
     }
 }
+.job-field select{
+    float: left;
+    width: 100%;
+    background: no-repeat;
+    border: none;
+    font-size: 13px;
+    color: #888888;
+    margin: 0;
+    padding: 0 70px 0 30px;
+    height: 61px;
+    line-height: 61px;
+    background-color: #FFF;
+    border-radius: 23px;
+}
+.job-field input{
+    border-radius: 23px !important;
+}
+.search-job2{
+        border-radius: 25px;
+        background:none;
+    }
 @media screen and (max-width: 495px){
     .com-grid{
         min-height:580px;
     }
-    .job-field select{
-        float: left;
-        width: 100%;
-        background: no-repeat;
-        border: none;
-        font-size: 13px;
-        color: #888888;
-        margin: 0;
-        padding: 0 70px 0 30px;
-        height: 61px;
-        line-height: 61px;
-        background-color: #FFF;
-        border-radius: 23px;
-    }
-    .job-field input{
-        border-radius: 23px !important;
-    }
+    
     .companies{
         padding: 0px 0 55px 0;
     }
-    .search-job2{
-        border-radius: 25px;
-        background:none;
-    }
+    
     .header-row{
         margin-top:10px;
     }
