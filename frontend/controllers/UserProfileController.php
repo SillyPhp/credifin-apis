@@ -6,6 +6,7 @@ use common\models\Cities;
 use common\models\States;
 use common\models\Users;
 
+use common\models\UserSkills;
 use frontend\models\profile\UserProfilePictureEdit;
 use Yii;
 use yii\web\Controller;
@@ -17,7 +18,7 @@ class UserProfileController extends Controller
 {
     public function actionEdit()
     {
-        if (!Yii::$app->user->isGuest)
+        if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization))
         {
             $userProfilePicture = new UserProfilePictureEdit();
             $basicDetails = new UserProfileBasicEdit();
@@ -26,7 +27,13 @@ class UserProfileController extends Controller
             $getName = $basicDetails->getJobFunction();
             $getCurrentCity = $basicDetails->getCurrentCity();
             $getExperience = $basicDetails->getExperience();
-            return $this->render('index',['userProfilePicture'=>$userProfilePicture,'getExperience'=>$getExperience,'getCurrentCity'=>$getCurrentCity,'getName'=>$getName,'basicDetails'=>$basicDetails,'socialDetails'=>$socialDetails,'statesModel'=>$statesModel]);
+            $getSkills = $basicDetails->getUserSkills();
+            $getlanguages = $basicDetails->getUserlanguages();
+            return $this->render('index',['userProfilePicture'=>$userProfilePicture,'userLanguage'=>$getlanguages,'userSkills'=>$getSkills,'getExperience'=>$getExperience,'getCurrentCity'=>$getCurrentCity,'getName'=>$getName,'basicDetails'=>$basicDetails,'socialDetails'=>$socialDetails,'statesModel'=>$statesModel]);
+        }
+        else
+        {
+            return 'You are not Login as candidate login';
         }
 
 
@@ -51,8 +58,8 @@ class UserProfileController extends Controller
             {
                 $response = [
                     'status' => 'error',
-                    'title' => 'failed',
-                    'message' => 'Failed To Update.'
+                    'title' => 'Updated',
+                    'message' => 'Already Updated.'
                 ];
                 return $response;
             }
@@ -65,7 +72,25 @@ class UserProfileController extends Controller
         $socialDetails = new UserProfileSocialEdit();
         if ($socialDetails->load(Yii::$app->request->post()))
         {
-            return 2;
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($socialDetails->updateValues())
+            {
+                $response = [
+                    'status' => 'success',
+                    'title' => 'Success',
+                    'message' => 'Successfully Updated.'
+                ];
+                return $response;
+            }
+            else
+            {
+                $response = [
+                    'status' => 'error',
+                    'title' => 'Updated',
+                    'message' => 'Already Updated.'
+                ];
+                return $response;
+            }
         }
     }
 
@@ -89,12 +114,13 @@ class UserProfileController extends Controller
             {
                 $response = [
                     'status' => 'error',
-                    'title' => 'failed',
-                    'message' => 'Failed To Update.'
+                    'title' => 'Updated',
+                    'message' => 'Already Updated.'
                 ];
                 return $response;
             }
         }
     }
+
 
 }
