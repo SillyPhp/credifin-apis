@@ -86,8 +86,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
     <section>
         <!--<div class="block">-->
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8">
+            <div class="row m-0">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="job-single-sec">
                         <div class="job-single-head2">
                             <div class="job-overview">
@@ -233,7 +233,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
                             <a href="/company/<?= $org['slug']; ?>">
@@ -781,7 +781,7 @@ top : 20%;
     .job-details > ul li::before {
         position: absolute;
         left: 0;
-        top: 13px;
+        top: 10px;
         width: 10px;
         height: 1px;
         background: #888888;
@@ -1150,14 +1150,13 @@ top : 20%;
         margin-right: 0px;
         margin-right: 20px;
     }
-.radio_questions {
-  padding: 0 16px;
-  max-width: 100%;
-
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
-}
+    .radio_questions {
+      padding: 0 16px;
+      max-width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
     .parallax{
         height:100%;
         width:100%;
@@ -1200,24 +1199,28 @@ top : 20%;
         margin-bottom:5px;
         position: relative;
     }
-    .shortlist_job,.shortlist_job:hover
-    {
-     color:#fff;
+    .shortlist_job,.shortlist_job:hover{
+        color:#fff;
     }
     .shortlist_job:focus{
         color:#fff;
     }
-    .col_pink
-    {
-    background: #ef7706 !important;
-    border-color: #ef7706 !important;
-    color: #ffffff;
+    .col_pink{
+        background: #ef7706 !important;
+        border-color: #ef7706 !important;
+        color: #ffffff;
     }
     .hover-change:hover {
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
-    }");
+    }
+    @media only screen and (max-width: 575px) {
+        .job-overview ul li{
+             width: 50% !important;
+        }
+    }
+    ");
 
 $script = <<< JS
 $(document).on('click','.shortlist_job',function(e)

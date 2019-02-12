@@ -39,4 +39,10 @@ $this->registerCss('
 .menuzord-menu > li.active > a, .menuzord-menu > li:hover > a {
     background-color:#49a1e3 !important;
     color:#fff !important;
-}');
+}
+@media only screen and (max-width: 900px) {
+    .menuzord .showhide{
+        padding: 19px 0 0 !important;
+    }
+}
+');
