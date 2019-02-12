@@ -176,6 +176,11 @@
 .slideHome {
     height: 700px !important;
 }
+@media only screen and (max-width: 575px) {
+    .slideHome {
+        height: 500px !important;
+    }
+}
 .slick-slide {
     display: none;
     float: left;
@@ -245,6 +250,16 @@
     text-align: center;
     line-height: 50px;
     margin-bottom: 13px;
+}
+@media only screen and (max-width: 768px) {
+    .job-search > h3 {
+        font-size: 34px;
+    }
+}
+@media only screen and (max-width: 500px) {
+    .job-search > h3 {
+        font-size: 25px;
+    }
 }
 .job-search-sec .job-search.style2 > span {
     opacity: 1;
@@ -380,6 +395,11 @@
         min-width:1000px;
     }
 }
+@media only screen and (max-width: 575px) {
+    .job-search-sec {
+        transform: translateY(18%) translateX(-50%);
+    }
+}
 .chosen-container {
     position: relative;
     display: inline-block;
@@ -454,7 +474,7 @@
     overflow: hidden;
     padding: 0 0 0 8px;
     height: 25px;
-    border-radius: 8px;
+    /*border-radius: 8px;*/
     background-color: #fff;
     color: #888888;
     text-decoration: none;
