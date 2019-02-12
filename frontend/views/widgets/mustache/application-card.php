@@ -1,6 +1,6 @@
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-12 pt-5">
+    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main">
             {{#salary}}
@@ -9,7 +9,7 @@
             {{#type}}
             <span class="application-card-type">{{type}}</span>
             {{/type}}
-            <div class="col-md-12 application-card-border-bottom">
+            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
                     <a href="{{organization_link}}">
                         {{#logo}}
@@ -41,7 +41,7 @@
             </h4>
             {{/last_date}}
             {{^last_date}}
-            <div class="col-md-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
                 <h4 class="org_name text-right">{{organization_name}}</h4>
             </div>
             {{/last_date}}

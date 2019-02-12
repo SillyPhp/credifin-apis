@@ -346,7 +346,12 @@ $script = <<< JS
             method: "POST",
             data: {id:id},
             success: function (response) {
-                $(remove).remove();
+                if (response.status == 200) {
+                    $(remove).remove();
+                    toastr.success(response.message, response.title);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
             }
         });
     });
@@ -362,7 +367,7 @@ $script = <<< JS
         }
     });
 
-    $(document).on('change', '.list input', function () {
+    $(document).on('change', '.checkbox-custom input', function () {
         if ($(this).hasClass('todo-check')) {
             $(this).closest('li').find('.todo-label').addClass('line-pass');
             $(this).removeClass('todo-check');
@@ -372,6 +377,43 @@ $script = <<< JS
             $(this).removeClass('uncheck');
             $(this).addClass('todo-check');
         }
+    });
+    
+    $(document).on('click', '.todo-check', function () {
+        var id = $(this).attr('id');
+        //        console.log(id);
+       if ($(this).is(':checked')){
+            $.ajax({
+            url: "/account/tasks/task-complete",
+            method: "POST",
+            data: {id:id},
+            success: function (response) {
+                if (response.status == 200) {
+                    toastr.success(response.message, response.title);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+       }
+    });
+    
+    $(document).on('click', '.uncheck', function () {
+        var id = $(this).attr('id');
+       if (id){
+            $.ajax({
+            url: "/account/tasks/task-incomplete",
+            method: "POST",
+            data: {id:id},
+            success: function (response) {
+                if (response.status == 200) {
+                    toastr.success(response.message, response.title);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+       }
     });
         
     load_list();
@@ -387,6 +429,66 @@ $script = <<< JS
             }, 100);
             $('#spin-attr').show();
         }
+    });
+    
+    $(function() {
+        var default_val;
+    
+        $(document).on('dblclick', '.todo-label', function() {
+            if($(this).children().length > 0){
+                return false;
+            }
+            default_val = $(this).text();
+            var name = $(this).text();
+            var edit_id = $(this).prev().attr('id');
+            
+            if($(this).prev('input:checkbox').prop("checked") == true){
+                alert('You cannot edit completed tasks.');
+            } else { 
+                $(this).html('<input type="text" id="editing_task" class="edit_task" value="'+name+'" autofocus>');
+                $('.widget-todo-list li').find('input:text:visible').focus();
+            }
+                
+            return default_val;
+        });
+        
+        $(document).on('keypress','.edit_task',function(a){
+            if(a.which==13){
+                var name = $(this).val();
+                var parent = $(this).parent();
+                var task_id = $(this).closest('label').prev().attr('id');
+            
+                if($(this).val()=='' || $(this).val() == default_val){
+                    $('.edit_task').hide();
+                    parent.text(default_val);
+                } else {
+                    $.ajax({
+                        url: '/account/tasks/update',
+                        method: 'POST',
+                        data:{name:name, task_id:task_id},
+                        success: function(response){
+                            if(response.status == 200){
+                                toastr.success(response.message, response.title);
+                                var dattaa = $('.edit_task').val();
+                                $('.edit_task').hide();
+                                parent.text(dattaa);
+                            } else {
+                                toastr.error(response.message, response.title);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        $(document).on('focusout', '.edit_task', function(){
+            var name = $(this).val();
+            var parent = $(this).parent();
+            var edit_id = $(this).closest('label').prev().attr('id');
+            $('#editing_task').hide();
+            parent.text(default_val);
+        }); 
+        
     });
         
     function load_list() {
@@ -408,6 +510,13 @@ $script = <<< JS
             success: function (response) {
                 $('#spin-attr').hide();
                 if (response.status == 200) {
+                    for(i=0; i<response['tasks'].length;i++){
+                        if(response.tasks[i]['is_completed'] == 1){
+                            response.tasks[i]['is_completed'] = true;
+                        }else{
+                            response.tasks[i]['is_completed'] = false;
+                        }
+                    }
                     $('.widget-todo-list').append(Mustache.render(todo_template, response.tasks));
                     action = 1;
                 } else {
@@ -624,9 +733,9 @@ if (!Yii::$app->session->has("tutorial_organization_tasks")) {
 <script type="text/template" id="todo-template">
     {{#.}}
     <li>
-        <div class="checkbox-custom checkbox-default" style="text-align:left;">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}}uncheck{{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}}checked{{/is_completed}} />
-            <label class="todo-label {{#is_completed}}line-pass{{/is_completed}}" data-type="text">{{name}}</label>
+        <div class="checkbox-custom checkbox-default text-left">
+            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}} checked {{/is_completed}} />
+            <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
         </div>
         <div class="todo-actions">
             <a class="todo-remove" href="#">

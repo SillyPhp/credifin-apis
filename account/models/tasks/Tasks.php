@@ -5,7 +5,8 @@ namespace account\models\tasks;
 use Yii;
 use common\models\extended\UserTasks;
 
-class Tasks extends UserTasks {
+class Tasks extends UserTasks
+{
 
     private $_limit;
     private $_pageNumber;
@@ -14,22 +15,13 @@ class Tasks extends UserTasks {
     private $_data = [];
     private $_flag = false;
 
-    private function __setOptions($options = []) {
-        if ($options) {
-            $this->_limit = ((int) $options['limit']) ? $options['limit'] : NULL;
-            $this->_pageNumber = ((int) $options['pageNumber']) ? $options['pageNumber'] : 1;
-            $this->_where = ($options['where']) ? $options['where'] : [];
-            $this->_orderBy = ($options['orderBy']) ? $options['orderBy'] : [];
-            $this->_data = ($options['data']) ? $options['data'] : [];
-        }
-    }
-
-    public function getTasks($options = []) {
+    public function getTasks($options = [])
+    {
         $this->__setOptions($options);
 
         $tasks = self::find()
-                ->select(['name', 'task_enc_id task_id', 'is_completed'])
-                ->where(['is_deleted' => 0]);
+            ->select(['name', 'task_enc_id task_id', 'is_completed'])
+            ->where(['is_deleted' => 0]);
 
         if ($this->_where) {
             $tasks->andWhere($this->_where);
@@ -40,7 +32,7 @@ class Tasks extends UserTasks {
         if ($this->_limit) {
             $offset = ($this->_pageNumber - 1) * $this->_limit;
             $tasks->limit($this->_limit)
-                    ->offset($offset);
+                ->offset($offset);
         }
 
         if ($this->_orderBy) {
@@ -53,7 +45,19 @@ class Tasks extends UserTasks {
         ];
     }
 
-    public function addTask($options = []) {
+    private function __setOptions($options = [])
+    {
+        if ($options) {
+            $this->_limit = ((int)$options['limit']) ? $options['limit'] : NULL;
+            $this->_pageNumber = ((int)$options['pageNumber']) ? $options['pageNumber'] : 1;
+            $this->_where = ($options['where']) ? $options['where'] : [];
+            $this->_orderBy = ($options['orderBy']) ? $options['orderBy'] : [];
+            $this->_data = ($options['data']) ? $options['data'] : [];
+        }
+    }
+
+    public function addTask($options = [])
+    {
         $this->__setOptions($options);
 
         foreach ($options['data'] as $key => $value) {
@@ -93,11 +97,13 @@ class Tasks extends UserTasks {
         }
     }
 
-    public function editTask($options = []) {
+    public function editTask($options = [])
+    {
         $this->__setOptions($options);
     }
 
-    public function deleteTask($options = []) {
+    public function deleteTask($options = [])
+    {
         $this->__setOptions($options);
     }
 

@@ -167,7 +167,7 @@ AppAssets::register($this);
                 </div>
                 <div class="footer-bottom">
                     <div class="container pt-20 pb-20">
-                        <div class="row">
+<!--                        <div class="row">-->
                             <div class="col-md-12 col-sm-12 text-center">
                                 <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
                             </div>
@@ -184,7 +184,7 @@ AppAssets::register($this);
 <!--                                    </ul>-->
 <!--                                </div>-->
 <!--                            </div>-->
-                        </div>
+<!--                        </div>-->
                     </div>
                 </div>
             </footer>
