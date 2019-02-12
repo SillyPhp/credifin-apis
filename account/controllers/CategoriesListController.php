@@ -3,6 +3,9 @@
 namespace account\controllers;
 
 use common\models\AssignedSkills;
+use common\models\EmployerApplications;
+use common\models\SpokenLanguages;
+use common\models\Utilities;
 use Yii;
 use common\models\CategoriesList;
 use yii\web\Controller;
@@ -17,7 +20,6 @@ use common\models\Designations;
 
 class CategoriesListController extends Controller
 {
-
     public function actionCategories($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -50,19 +52,32 @@ class CategoriesListController extends Controller
         return json_encode($categories);
     }
 
-    public function actionJobProfiles()
+    public function actionJobProfiles($q)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $categories = Categories::find()
-            ->alias('a')
-            ->select(['a.name as value', 'a.category_enc_id as id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->andWhere(['not', ['b.parent_enc_id' => null]])
-            ->all();
+        $categories = AssignedCategories::find()
+                      ->alias('a')
+                      ->select(['a.category_enc_id cat_id','b.name value'])
+                      ->joinWith(['categoryEnc b'],false,'INNER JOIN')
+                      ->where(['a.status'=>'Approved'])
+                      ->andWhere('b.name LIKE "%' . $q . '%"')
+                      ->andWhere(['not',['a.parent_enc_id'=>null]])
+                      ->asArray()
+                      ->all();
 
-        return $categories;
+       return $categories;
     }
 
+    public function actionLanguages($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $languages = SpokenLanguages::find()
+                ->select(['language_enc_id id','language value'])
+                ->where('language LIKE "%' . $q . '%"')
+                ->asArray()
+                ->all();
+        return $languages;
+    }
     public function actionJobDescription()
     {
         $id = Yii::$app->request->post("data");
