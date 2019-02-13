@@ -317,22 +317,30 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         <?php endif; ?>
                         <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all Internships</a>
                         <div class="share-bar no-border">
+                            <?php $link = Url::to('internship/' . $application_details["slug"], true); ?>
                             <h3>Share</h3>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
+                            <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
                                 <i class="fa fa-facebook"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
+                            <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
+                            <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
                                 <i class="fa fa-linkedin"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
+                            <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
+                            <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
                                 <i class="fa fa-envelope"></i>
                             </a>
+                        </div>
+                        <div class="col-lg-12">
+                            <h4>or</h4>
+                            <div class="pf-field">
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?= $link ?>" readonly>
+                                <i class="fa fa-clipboard"></i>
+                            </div>
                         </div>
                     </div><!-- Job Head -->
                 </div>
@@ -351,6 +359,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
         </div>
     </div>
     <div class="fader"></div>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("share_manually");
+            copyText.select();
+            document.execCommand("copy");
+            alert("Copied the text: " + copyText.value);
+        }
+    </script>
 <?php
 $this->registerCss("
      .sub_description_1,sub_description_2{
@@ -856,7 +872,6 @@ $this->registerCss("
         float: left;
         width: 100%;
         padding-top: 20px;
-        padding-bottom: 20px;
         border-top: 1px solid #e8ecec;
         border-bottom: 1px solid #e8ecec;
     }
@@ -1181,6 +1196,38 @@ $this->registerCss("
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
+    }
+    .pf-field {
+        float: left;
+        width: 100%;
+        position: relative;
+    }
+    .pf-field > input {
+        height: 56px;
+        float: left;
+        width: 100%;
+        border: 2px solid #e8ecec;
+        margin-bottom: 20px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        padding: 14px 45px 14px 15px;
+        background: #ffffff !important;
+        font-family: Open Sans;
+        font-size: 13px;
+        font-weight: 400;
+        color: #101010;
+        line-height: 24px;
+    }
+    .pf-field > i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        font-size: 20px;
+        color: #848484;
+        line-height: 56px;
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{

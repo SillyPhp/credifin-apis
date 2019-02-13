@@ -299,6 +299,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <i class="fa fa-envelope"></i>
                             </a>
                         </div>
+                        <div class="col-lg-12">
+                            <h4>or</h4>
+                            <div class="pf-field">
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?= $link ?>" readonly>
+                                <i class="fa fa-clipboard"></i>
+                            </div>
+                        </div>
                     </div><!-- Job Head -->
                 </div>
             </div>
@@ -375,6 +382,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
         </div>
     </div>
 <?php ActiveForm::end(); ?>
+<script>
+    function copyToClipboard() {
+        var copyText = document.getElementById("share_manually");
+        copyText.select();
+        document.execCommand("copy");
+        alert("Copied the text: " + copyText.value);
+    }
+</script>
 <?php
 $this->registerCss("
  .sub_description_1,sub_description_2
@@ -889,7 +904,6 @@ top : 20%;
         float: left;
         width: 100%;
         padding-top: 20px;
-        padding-bottom: 20px;
         border-top: 1px solid #e8ecec;
         border-bottom: 1px solid #e8ecec;
     }
@@ -1214,6 +1228,38 @@ top : 20%;
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
+    }
+    .pf-field {
+        float: left;
+        width: 100%;
+        position: relative;
+    }
+    .pf-field > input {
+        height: 56px;
+        float: left;
+        width: 100%;
+        border: 2px solid #e8ecec;
+        margin-bottom: 20px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        padding: 14px 45px 14px 15px;
+        background: #ffffff !important;
+        font-family: Open Sans;
+        font-size: 13px;
+        font-weight: 400;
+        color: #101010;
+        line-height: 24px;
+    }
+    .pf-field > i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        font-size: 20px;
+        color: #848484;
+        line-height: 56px;
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{
