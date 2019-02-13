@@ -364,7 +364,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
             var copyText = document.getElementById("share_manually");
             copyText.select();
             document.execCommand("copy");
-            alert("Copied the text: " + copyText.value);
+            toastr.success("", "Copied");
+            // alert("Copied the text: " + copyText.value);
         }
     </script>
 <?php
@@ -1220,6 +1221,7 @@ $this->registerCss("
         font-weight: 400;
         color: #101010;
         line-height: 24px;
+        cursor: pointer;
     }
     .pf-field > i {
         position: absolute;
@@ -1228,6 +1230,7 @@ $this->registerCss("
         font-size: 20px;
         color: #848484;
         line-height: 56px;
+        cursor: pointer;
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{
@@ -1441,3 +1444,5 @@ $(document).on('click','.shortlist_job',function(e)
 })          
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
