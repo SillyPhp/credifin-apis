@@ -11,8 +11,11 @@ use frontend\models\AddExperienceForm;
 use frontend\models\AddQualificationForm;
 use frontend\models\AddSkillForm;
 use common\models\Users;
+use common\models\Cities;
+use common\models\Categories;
 use common\models\UserWorkExperience;
 use common\models\UserEducation;
+use common\models\UserSpokenLanguages;
 use yii\web\UploadedFile;
 
 class UsersController extends Controller
@@ -251,6 +254,49 @@ class UsersController extends Controller
                 'message' => 'An error has occurred. Please try again.',
             ];
         }
+    }
+
+    public function actionCandidateProfile(){
+        $user = Users::find()
+            ->alias('a')
+            ->select(['a.*',
+                '(CASE 
+                WHEN a.is_available = "0" THEN "Not Available"
+                WHEN a.is_available = "1" THEN "Available"
+                WHEN a.is_available = "2" THEN "Open For Opportunities"
+                WHEN a.is_available = "3" THEN "Actively Looking for Opportunities"
+                WHEN a.is_available = "4" THEN "Exploring Possibilities"
+                ELSE "Undefined"
+                END) as availability', 'ROUND(DATEDIFF(CURDATE(), a.dob)/ 365.25) as age', 'b.name as city', 'c.name as job_profile'])
+            ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
+            ->where(['username' => 'ajay', 'status' => 'Active', 'is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        $skills = \common\models\UserSkills::find()
+            ->alias('a')
+            ->select(['a.skill_enc_id', 'b.skill skills'])
+            ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
+            ->where(['a.created_by' => $user['user_enc_id']])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $language = \common\models\UserSpokenLanguages::find()
+            ->alias('a')
+            ->select(['a.language_enc_id', 'b.language language'])
+            ->innerJoin(\common\models\SpokenLanguages::tableName() . 'b', 'b.language_enc_id = a.language_enc_id')
+            ->where(['a.created_by' => $user['user_enc_id']])
+            ->asArray()
+            ->all();
+
+
+        return $this->render('new_candidate_profile', [
+            'user' => $user,
+            'skills' => $skills,
+            'language' => $language,
+        ]);
     }
 
 }
