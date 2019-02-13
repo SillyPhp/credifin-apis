@@ -30,7 +30,7 @@ return [
 //            ]
         ],
         'user' => [
-            'identityClass' => 'api\modules\v1\models\Clients',
+            'identityClass' => 'api\modules\v1\models\Candidates',
             'enableAutoLogin' => false,
             'enableSession' => false
 //            'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],

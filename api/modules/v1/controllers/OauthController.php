@@ -39,6 +39,7 @@ class OauthController extends ApiBaseController{
         $model = new IndividualSignup();
         if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
             if($model->validate()) {
+
                 $user = new Clients();
                 $user->username = $model->username;
                 $user->first_name = $model->first_name;
@@ -68,6 +69,7 @@ class OauthController extends ApiBaseController{
                     ];
                     return $this->response(200, $data);
                 } else {
+//                    return $user->getErrors();
                     return $this->response(204);
                 }
             }
@@ -105,6 +107,7 @@ class OauthController extends ApiBaseController{
         }
 
         if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
+//            return $model->login();
             if($model->login()) {
                 $user = Clients::findOne([
                     'username' => $model->username,
@@ -126,6 +129,7 @@ class OauthController extends ApiBaseController{
                         'phone' => $user->phone,
                         'address' => $user->address,
                         'access_token' => $user->access_token,
+                        'auth_key' => $user->auth_key
                     ];
                     return $this->response(200, $data);
                 } else {
@@ -156,6 +160,7 @@ class OauthController extends ApiBaseController{
                         'access_token' => $user->access_token
                     ];
                     return $this->response(200, $data);
+
                 } else {
                     return $this->response(102);
                 }

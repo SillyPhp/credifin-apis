@@ -4,8 +4,9 @@ namespace api\modules\v1\models;
 
 use Yii;
 use common\models\Users;
+use common\models\UserAccessTokens;
 
-class Clients extends Users implements \yii\web\IdentityInterface{
+class Candidates extends Users implements \yii\web\IdentityInterface{
 
     public static function findIdentity($id){
         return static::findOne([
@@ -13,25 +14,22 @@ class Clients extends Users implements \yii\web\IdentityInterface{
         ]);
     }
     public static function findIdentityByAccessToken($token, $type=null){
-        if($user=static::findOne(['access_token' => $token])){
-            $expires = strtotime("+10800 minute", strtotime($user->token_expiration_time));
-            if($expires > time()){
-                $user->token_expiration_time = date('Y-m-d H:i:s', strtotime('now'));
-                $user->save();
-                return $user;
-            }else{
-                //$user->access_token = '';
-                //$user->save();
-		return false;
+
+        $access_token = UserAccessTokens::findOne(['access_token' => $token]);
+        if(!empty($access_token) && Yii::$app->request->headers->get('source-id') == $access_token->source){
+            if(strtotime($access_token->access_token_expiration) > strtotime("now")) {
+                return static::findOne(['user_enc_id' => $access_token->user_enc_id]);
             }
+            return false;
         }
+        return false;
     }
 
     public static function findByUsername($username){
         return static::find()
-                ->where(['username' => $username])
-                ->orWhere(['email' => $username])
-                ->one();
+            ->where(['username' => $username])
+            ->orWhere(['email' => $username])
+            ->one();
     }
 
     public function getId(){
@@ -43,10 +41,7 @@ class Clients extends Users implements \yii\web\IdentityInterface{
     }
 
     public function setPassword($password){
-//        $utilitiesModel = new \common\models\Utilities();
-//        $utilitiesModel->variables['password'] = $password;
-//        $this->password = $utilitiesModel->encrypt_pass();
-        $this->password = \Yii::$app->security->generatePasswordHash($password);
+      $this->password = \Yii::$app->security->generatePasswordHash($password);
     }
 
     public function generateAuthKey(){

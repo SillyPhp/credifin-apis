@@ -26,31 +26,11 @@ use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
 use frontend\models\JobApplied;
 
-class JobsController extends ApiBaseController {
-
-    public function behaviors(){
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'except' => ['list', 'detail'],
-            'class' => HttpBearerAuth::className()
-        ];
-        $behaviors['verbs'] = [
-            'class' => \yii\filters\VerbFilter::className(),
-            'actions' => [
-                'list' => ['POST'],
-                'detail' => ['POST'],
-                'apply' => ['POST']
-            ]
-        ];
-        return $behaviors;
-    }
-
-    //create, update, delete, view, index
-//    public $modelClass = 'common\models\EmployerApplications';
+class InternshipsController extends ApiBaseController {
 
     /**
      * This is the compaies list endpoint
-     * @var http://www.aditya.eygb.me/api/v1/jobs/list
+     * @var http://www.aditya.eygb.me/api/v1/internships/list
      * @param Input page
      * @param Input location
      * @param Input keyword
@@ -84,25 +64,20 @@ class JobsController extends ApiBaseController {
             $options['company'] = $parameters['company'];
         }
 
-        $options['type'] = 'Jobs';
+        $options['type'] = 'Internships';
 
         $jobcards = EmployerApplications::find()
-                    ->alias('a')
-                    ->select(['a.application_enc_id application_id', 'e.location_enc_id location_id','m.value as salary', 'a.last_date', 'i.name category', 'l.designation', 'd.initials_color color', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) END logo'])
-                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-                    ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-                    ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
-                    ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
-                    ->innerJoin(ApplicationPlacementLocations::tablename() . 'as e', 'e.application_enc_id = a.application_enc_id')
-                    ->innerJoin(OrganizationLocations::tablename() . 'as f', 'f.location_enc_id = e.location_enc_id')
-                    ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
-                    ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
-                    ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-                    ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
-                    ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
-                    ->where(['j.name' => $options['type'], 'a.is_deleted' => 0, 'm.option_name' => 'salary']);
-
-
+            ->alias('a')
+            ->select(['a.application_enc_id application_id', 'f.location_enc_id location_id', 'a.created_on', 'i.name category', 'CONCAT("/internship/", a.slug) link', 'd.initials_color color', 'CONCAT("/company/", d.slug) organization_link', 'a.experience', "g.name as city", 'a.type', 'c.name as title', 'd.name as organization_name', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as i', 'i.category_enc_id = b.parent_enc_id')
+            ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tablename() . 'as e', 'e.application_enc_id = a.application_enc_id')
+            ->innerJoin(OrganizationLocations::tablename() . 'as f', 'f.location_enc_id = e.location_enc_id')
+            ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0]);
 
         if (isset($options['company'])) {
             $jobcards->andWhere([
@@ -152,7 +127,7 @@ class JobsController extends ApiBaseController {
 
     /**
      * This is the compaies detail endpoint
-     * @var http://www.aditya.eygb.me/api/v1/jobs/detail?id= application id
+     * @var http://www.aditya.eygb.me/api/v1/internships/detail
      * @return Returns organization name , color, email, website, logo, cover image, has applied, resume, Are there questionnaire, Industry, title, Preferred gender, designation, Profile, Job Type, Experience, Timings from , Timings To, Joining Date, Last Date, Working Days, Salary, Salary Duration , Benefits, Educational Requirement, Skill, Job Description, Placement Locations data, Total Vacancies and Interview Locations
      */
     public function actionDetail(){
@@ -165,6 +140,9 @@ class JobsController extends ApiBaseController {
                     'application_enc_id' => $id,
                     'is_deleted' => 0
                 ])
+                ->joinWith(['applicationTypeEnc b' => function ($b) {
+                    $b->andWhere(['b.name' => 'internships']);
+                }])
                 ->one();
 
             if (!$application_details) {
@@ -230,48 +208,60 @@ class JobsController extends ApiBaseController {
                 ->getCloneData($application_details->application_enc_id);
 
             $result['industry'] = $data['industry'];
+            $result['description'] = $data['description'];
             $result['title'] = $data['cat_name'];
             $result['preferred_gender'] = $data['preferred_gender'];
             $result['designation'] = $data['designation'];
             $result['profile'] = $data['name'];
             $result['job_type'] = $data['type'];
-            $result['experience'] = $data['experience'];
             $result['timings_from'] = $data['timings_from'];
             $result['timings_to'] = $data['timings_to'];
             $result['joining_date'] = $data['joining_date'];
             $result['last_date'] = $data['last_date'];
+
             foreach ($data['applicationOptions'] as $datum) {
-                if ($datum['option_name'] == "working_days") $result['working_days'] = $datum['value'];
-                else if ($datum['option_name'] == "salary") $result['salary'] = $datum['value'];
-                else if ($datum['option_name'] == "salary_duration") $result['salary_duration'] = $datum['value'];
+                $o[$datum['option_name']] = $datum['value'];
             }
+            $result['stipened_type'] = $o['stipened_type'];
+            $result['pre_placement_offer'] = $o['pre_placement_offer'];
+            $result['max_stipened'] = $o['max_stipened'];
+            $result['min_stipened'] = $o['min_stipened'];
+            $result['fixed_stipened'] = $o['fixed_stipened'];
+            $result['interview_start_date'] = $o['interview_start_date'];
+            $result['interview_start_time'] = $o['interview_start_time'];
+            $result['interview_end_date'] = $o['interview_end_date'];
+            $result['interview_end_time'] = $o['interview_end_time'];
+
             $result['benefits'] = [];
             $aa = 0;
             foreach ($data['applicationEmployeeBenefits'] as $aeb) {
                 $result['benefits'][$aa] = $aeb['benefit'];
                 $aa++;
             }
+
             $result['educational_requirement'] = [];
             $bb = 0;
             foreach ($data['applicationEducationalRequirements'] as $aer) {
                 $result['educational_requirement'][$bb] = $aer['educational_requirement'];
                 $bb++;
             }
+
             $result['skill'] = [];
             $cc = 0;
             foreach ($data['applicationSkills'] as $as) {
                 $result['skill'][$cc] = $as['skill'];
                 $cc++;
             }
+
             $result['job_description'] = [];
             $ii = 0;
             foreach ($data['applicationJobDescriptions'] as $jd) {
                 $result['job_description'][$ii] = $jd['job_description'];
                 $ii++;
             }
+
             $result['placement_locations_data'] = [];
             $dd = 0;
-
             foreach ($data['applicationPlacementLocations'] as $apl) {
                 $result['placement_locations_data'][] = [
                     'vacancies' => $apl['positions'],
@@ -282,12 +272,14 @@ class JobsController extends ApiBaseController {
                 $dd++;
             }
             $result['total_vacancies'] = count($result['vacancies']);
+
             $ee = 0;
             $result['interview_locations'] = [];
             foreach ($data['applicationInterviewLocations'] as $ail) {
                 $result['interview_locations'][$ee] = $ail['name'];
                 $ee++;
             }
+
             unset($result['vacancies']);
 //            $model = new JobApplied();
             return $this->response(200, $result);
@@ -296,70 +288,4 @@ class JobsController extends ApiBaseController {
         }
     }
 
-    /**
-     * This is the job application endpoint
-     * @var http://www.aditya.eygb.me/api/v1/jobs/apply
-     * @param Input old or new Resume as true
-     * @param Input job id
-     * @param Input resume enc id
-     * @param Input city id
-     * @return Returns applied application enc id
-     */
-    public function actionApply(){
-        $model = new JobApply();
-        $reqParams = Yii::$app->request->post();
-        if($reqParams['job_id'] && !empty($reqParams['job_id']) && $reqParams['resume_enc_id'] && !empty($reqParams['resume_enc_id'])
-            && $reqParams['city_id'] && !empty($reqParams['city_id']) && $reqParams['old'] == true
-        ){
-            $application_questionnaire = ApplicationInterviewQuestionnaire::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => Yii::$app->request->post("job_id")])
-                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
-                ->exists();
-
-            $model->id = Yii::$app->request->post("job_id");
-            $model->resume_list = Yii::$app->request->post("resume_enc_id");
-            $model->location_pref = Yii::$app->request->post("city_id");
-
-            if($application_questionnaire){
-                $model->status = 'incomplete';
-            }else{
-                $model->status = 'Pending';
-            }
-
-            if ($res = $model->saveValues()) {
-                return $this->response(200, $res);
-            } else {
-                return $this->response(204);
-            }
-
-        }else if($reqParams['job_id'] && !empty($reqParams['job_id']) && $reqParams['city_id'] && !empty($reqParams['city_id']) && $reqParams['new'] == true){
-            $model->id = Yii::$app->request->post("job_id");
-            $model->resume_file = UploadedFile::getInstanceByName('resume_file');
-            $model->location_pref = Yii::$app->request->post('city_id');
-            $application_questionnaire = ApplicationInterviewQuestionnaire::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => Yii::$app->request->post("job_id")])
-                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
-                ->exists();
-
-            if($application_questionnaire){
-                $model->status = 'incomplete';
-            }else{
-                $model->status = 'Pending';
-            }
-
-            if ($res = $model->upload()) {
-                return $this->response(200, $res);
-            } else {
-                return $this->response(204);
-            }
-        }else{
-            return $this->response(202);
-        }
-    }
 }
