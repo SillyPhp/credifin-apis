@@ -58,11 +58,11 @@ $this->params['header_dark'] = false;
                         <li><span class="detail-info">Age</span><?= $user['age'] ?> Years</li>
                     </ul>
                     <ul class="social-info">
-                        <li><a href="<?= $user['facebook'] ?>"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="<?= $user['twitter'] ?>"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="<?= $user['linkedin'] ?>"><i class="fa fa-linkedin"></i></a></li>
-                        <li><a href="<?= $user['instagram'] ?>"><i class="fa fa-instagram"></i></a></li>
-                        <li><a href="<?= $user['youtube'] ?>"><i class="fa fa-youtube"></i></a></li>
+                        <li><a href="<?= $user['facebook'] ?>" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="<?= $user['twitter'] ?>" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="<?= $user['linkedin'] ?>" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a href="<?= $user['instagram'] ?>" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                        <li><a href="<?= $user['youtube'] ?>" target="_blank"><i class="fa fa-youtube"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -103,7 +103,7 @@ $this->params['header_dark'] = false;
                         </ul>
                     </div>
 
-                    <a href="#" class="btn offer-bttn">Make An Offer</a>
+<!--                    <a href="#" class="btn offer-bttn">Make An Offer</a>-->
 
                 </div>
 
@@ -461,7 +461,7 @@ img.img-responsive.payment-img {
 }
 .sidebar-status {
     position: absolute;
-    left:32px;
+    right:30px;
     top: 25px;
     background:#ff7803;
     color: #ffffff;
