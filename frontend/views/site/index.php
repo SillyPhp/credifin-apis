@@ -151,7 +151,7 @@ $this->params['header_dark'] = false;
     <div class="block">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 col-md-12">
+                <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="tab-sec">
                         <ul class="nav nav-tabs">
                             <li><a class="current" data-tab="fjobs">Featured Jobs</a></li>
@@ -161,88 +161,97 @@ $this->params['header_dark'] = false;
                             <div class="job-listings-tabs">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
-
                                             <div class="job-listing wtabs">
+                                                <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Web Designer / Developer</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Front End Developer</a></h3>
+                                                <span>Empower Youth</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
                                             </div>
+                                                </a>
                                         </div><!-- Job -->
-
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Social Media Marketing</a></h3>
+                                                <span>Empower Youth</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
-                                                <span class="job-is pt fill">Part time</span>
-                                               </div>
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Regional Sales Manager South</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Chartered Accountant</a></h3>
+                                                <span>Agile Finserv Pvt. Ltd.</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
                                             </div>
-                                        </div><!-- Job -->
+                                        </div>
+                                        </a><!-- Job -->
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png')?>" alt="" />
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Marketing Dairector</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Company Secretary</a></h3>
+                                                <span>Agile Finserv Pvt. Ltd.</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
                                               </div>
+                                            </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Application Developer</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Head Of Collection</a></h3>
+                                                <span>Up Money Limited</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
-                                                <span class="job-is pt fill">Part time</span>
+                                                <span class="job-is ft fill">Full time</span>
                                             </div>
+                                            </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Social Media and Public</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Head Of Audit</a></h3>
+                                                <span>Up Money Limited</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
-                                                <span class="job-is fl fill">Freelance</span>
-                                                <span class="fav-job"><i class="la la-heart-o"></i></span>
+                                                <span class="job-is ft fill">Full time</span>
                                             </div>
+                                            </a>
                                         </div><!-- Job -->
                                     </div>
                                 </div>
@@ -251,95 +260,105 @@ $this->params['header_dark'] = false;
                         <div id="rjobs" class="tab-content">
                             <div class="job-listings-tabs">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Marketing Dairector</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Chartered Accountant</a></h3>
+                                                <span>KMG Consultants</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
-                                                <span class="fav-job"><i class="la la-heart-o"></i></span>
                                             </div>
+                                            </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Application Developer</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Chartered Accountant</a></h3>
+                                                <span>KMG Consultants</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
-                                                <span class="job-is pt fill">Part time</span>
-                                                <span class="fav-job"><i class="la la-heart-o"></i></span>
+                                                <span class="job-is ft fill">Full time</span>
                                             </div>
+                                            </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Social Media and Public</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Senior Financial Controller</a></h3>
+                                                <span>Up Money Limited</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
-                                                <span class="job-is fl fill">Freelance</span>
+                                                <span class="job-is ft fill">Full time</span>
                                             </div>
+                                            </a>
                                         </div><!-- Job -->
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Web Designer / Developer</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Company Secretary</a></h3>
+                                                <span>Agile Finserv Pvt. Ltd.</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
                                             </div>
+                                            </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
-                                                </div>
-                                                <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is pt fill">Part time</span>
-                                            </div>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
+                                            <a href="">
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
                                                 </div>
-                                                <h3><a href="#" title="">Regional Sales Manager South</a></h3>
-                                                <span>Massimo Artemisis</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Sacramento, California</div>
+                                                <h3><a href="#" title="">Social Media Marketing</a></h3>
+                                                <span>Empower Youth</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
                                             </div>
+                                            </a>
+                                        </div><!-- Job -->
+                                        <div class="job-listing wtabs">
+                                            <a href="">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                </div>
+                                                <h3><a href="#" title="">Chartered Accountant</a></h3>
+                                                <span>Agile Finserv Pvt. Ltd.</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            </a>
                                         </div><!-- Job -->
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="browse-all-cat">
-                            <a href="#" title="" class="style2">Load more listings</a>
+                            <a href="jobs/list" title="" class="style2">Show all listings</a>
                         </div>
                     </div>
                 </div>
