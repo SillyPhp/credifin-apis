@@ -10,7 +10,6 @@ $this->params['header_dark'] = false;
             <div class="col-md-8">
                 <div class="left-side-container">
                     <div class="freelance-image">
-                        <a href="company-detail.html">
                             <?php
                             $name = $image = NULL;
                             if (!empty($user['image'])) {
@@ -20,13 +19,12 @@ $this->params['header_dark'] = false;
 
                             if ($image):
                                 ?>
-                                <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle img-responsive "/>
+                                <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle"/>
                             <?php else: ?>
                                 <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
                                         color="<?= $user['initials_color']; ?>" width="140" height="140"
                                         font="70px"></canvas>
                             <?php endif; ?>
-                        </a>
                     </div>
                     <div class="header-details">
                         <h4><?= $user['first_name'] ." ". $user['last_name'] ?></h4>
@@ -121,7 +119,7 @@ $this->params['header_dark'] = false;
                                 <?php
                                 if ($image):
                                 ?>
-                                <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle img-responsive "/>
+                                <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle "/>
                                 <?php else: ?>
                                 <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
                                         color="<?= $user['initials_color']; ?>" width="140" height="140"
@@ -176,6 +174,10 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.freelance-image img{
+    width:100%;
+    height:88%;
+}
  .inner-header-page{
     padding:150px 0 50px;
 	text-align:left;
@@ -488,6 +490,10 @@ img.img-responsive.payment-img {
 	box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 	-webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 	-moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+}
+.sidebar-box-thumb img{
+    width:100%;
+    height:100%;
 }
 .style-2 .sidebar-box-thumb {
     width: 100px;
