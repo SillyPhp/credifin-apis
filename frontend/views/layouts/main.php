@@ -141,63 +141,48 @@ AppAssets::register($this);
                                     <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
                                     <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
                                 </ul>
-                                <i class="fa fa-envelope-o mt-10"></i> <a class="text-gray mt-10" href="mailto:info@dsbedutech.com">info@dsbedutech.com</a>
+                                <a class="text-gray mt-10 send_mail" href="mailto:info@empoweryouth.com"><i class="fa fa-envelope-o mt-10"></i> info@empoweryouth.com</a>
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-2">
                             <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Jobs By Location'); ?></div>
                             <ul class="footer-list">
-                                <li>Jobs in Ludhiana</li>
-                                <li>Jobs in Jalandhar</li>
-                                <li>Jobs in Chandigarh</li>
+                                <li><a href="/jobs/list?location=Ludhiana">Jobs in Ludhiana</a></li>
+                                <li><a href="/jobs/list?location=Jalandhar">Jobs in Jalandhar</a></li>
+                                <li><a href="/jobs/list?location=Chandigarh">Jobs in Chandigarh</a></li>
                             </ul>
                         </div>
                         <div class="col-md-2">
                             <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Jobs By Profile'); ?></div>
                             <ul class="footer-list">
-                                <li>IT Jobs</li>
-                                <li>Human Resources Jobs</li>
-                                <li>Marketing Jobs</li>
+                                <li><a href="/jobs/list?keyword=Information%20Technology">IT Jobs</a></li>
+                                <li><a href="/jobs/list?keyword=Social%20Services">Social Services Jobs</a></li>
+                                <li><a href="/jobs/list?keyword=Business%20Development">Business Development Jobs</a></li>
                             </ul>
                         </div>
                         <div class="col-md-2">
                             <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Internships By Location'); ?></div>
                             <ul class="footer-list">
-                                <li>Internships in Ludhiana</li>
-                                <li>Internships in Jalandhar</li>
-                                <li>Internships in Chandigarh</li>
+                                <li><a href="/internships/list?location=Ludhiana">Internships in Ludhiana</a></li>
+                                <li><a href="/internships/list?location=Jalandhar">Internships in Jalandhar</a></li>
+                                <li><a href="/internships/list?location=Chandigarh">Internships in Chandigarh</a></li>
                             </ul>
                         </div>
                         <div class="col-md-2">
                             <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Internships By Profile'); ?></div>
                             <ul class="footer-list">
-                                <li>Business Development Internships</li>
-                                <li>IT Internships</li>
-                                <li>Media & Communication Internships</li>
+                                <li><a href="/internships/list?keyword=Marketing">Marketing Internships</a></li>
+                                <li><a href="/internships/list?keyword=Arts%20and%20Design">Arts and Design Internships</a></li>
+                                <li><a href="/internships/list?keyword=Administrative">Administrative Internships</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="footer-bottom">
                     <div class="container pt-20 pb-20">
-<!--                        <div class="row">-->
                             <div class="col-md-12 col-sm-12 text-center">
                                 <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
                             </div>
-<!--                            <div class="col-md-6 col-sm-6 text-right">-->
-<!--                                <div class="widget no-border m-0">-->
-<!--                                    <ul class="list-inline  sm-text-center mt-5 font-12">-->
-<!--                                        <li>-->
-<!--                                            <a href="--><?//= Url::to('/about-us'); ?><!--" class="">Terms & Conditions</a>-->
-<!--                                        </li>-->
-<!--                                        |-->
-<!--                                        <li>-->
-<!--                                            <a href="--><?//= Url::to('/contact-us'); ?><!--" class="">Privacy Policies</a>-->
-<!--                                        </li>    -->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
                 </div>
             </footer>
@@ -209,6 +194,8 @@ AppAssets::register($this);
         </div>
         <?php
         $this->registerCss('
+        .send_mail{word-wrap: break-word;margin:0px -12px;}
+        .send_mail i{color:#00a0e3;}
          .feed-btn a{
             border:2px solid #00a0e3;
             color:#00a0e3;
