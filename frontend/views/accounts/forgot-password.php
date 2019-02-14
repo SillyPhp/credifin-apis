@@ -28,6 +28,6 @@ $form->field($model, 'email')->textInput([
 ]);
 ?>
 <div class="form-group pull-right mt-10">
-    <?= Html::submitButton('Send', ['class' => 'btn btn-success btn-md btn-block', 'name' => 'forgot-password-button']); ?>
+    <?= Html::submitButton('Send', ['class' => 'btn btn-success btn-md btn-block main-blue-btn', 'name' => 'forgot-password-button']); ?>
 </div>
 <?php ActiveForm::end(); ?>

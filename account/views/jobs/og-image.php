@@ -23,26 +23,31 @@ use yii\helpers\Url;
             .botom-row{ position: absolute; right: 20px; bottom: 10px; width: 200px; }
             img { margin: auto; }
             .circle1 img {width: 100%;}
+            .circle1[data-info~="logo"]{padding: 0px;}
+            canvas{border-radius: 50%;}
         </style>
     </head>
     <body>
         <?php
         $name = $logo = $color = NULL;
-        if (Yii::$app->user->identity->organization->organization_enc_id) {
+        if (Yii::$app->user->identity->organization) {
             if (Yii::$app->user->identity->organization->logo) {
                 $logo = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
             }
             $name = Yii::$app->user->identity->organization->name;
             $color = Yii::$app->user->identity->organization->initials_color;
         }
+        if(empty($logo)){
+            $check_logo = 'logo';
+        }
         ?>
         <div class="top-row">
             <div class="col-md-3 col-sm-3">
-                <div class="circle1">
+                <div class="circle1" data-info="<?= $check_logo ?>">
                     <?php if ($logo): ?>
                         <img src="<?= Url::to($logo); ?>" />
                     <?php else: ?>
-                        <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100" height="100" font="20px"></canvas>
+                        <canvas class="user-icon" name="<?= $name ?>" color="<?= $color; ?>" width="150" height="150" font="70px"></canvas>
                     <?php endif; ?>
                 </div>
                 <p><?= $details['name']; ?></p>
@@ -53,7 +58,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="col-md-3 col-sm-3">
-                <div class="circle1"> 
+                <div class="circle1">
                     <img src="<?= $category['icon']; ?>" />
                 </div>
             </div>
@@ -69,7 +74,7 @@ use yii\helpers\Url;
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.min.js'); ?>" type="text/javascript"></script>
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.svg.min.js'); ?>" type="text/javascript"></script>
-        <script src="<?= Url::to('@eyAssets/assets/themes/ey/js/functions.js'); ?>"></script>
+        <script src="<?= Url::to('@eyAssets/js/functions.js'); ?>"></script>
         <script type="text/javascript">
             function getUrlVars() {
                 var vars = {};
@@ -80,18 +85,17 @@ use yii\helpers\Url;
             }
             $(document).ready(function () {
                 html2canvas(document.body, {background: '#B5E0F3', width: 1583, height: 738, imageTimeout: 0}).then(function (canvas) {
-
                     var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
                     $.ajax({
                         url: '/account/jobs/job-card?application=' + getUrlVars()["application"],
                         type: 'post',
-                        data: {image: base64URL, _csrf: '<?= Yii::$app->request->getCsrfToken(); ?>'},
-                        success: function (data) {
-                            console.log('Upload successfully');
-                        }
-                    });
-                });
-            });
+                        data: {image: base64URL, _csrf: '<?= Yii::$app->request->getCsrfToken(); ?>//'},
+                       success: function (data) {
+                           console.log('Upload successfully');
+                       }
+                   });
+               });
+           });
         </script>
     </body>
 </html>

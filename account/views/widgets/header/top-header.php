@@ -1,18 +1,25 @@
 <?php
 
 use yii\widgets\Menu;
+use yii\helpers\Url;
 
-$jobs_visibility = $internships_visibility = $freelancers_visibility = false;
 $services = Yii::$app->user->identity->services;
 $result = [];
 
 foreach ($services['menu_items'] as $service) {
     $new = [
         'label' => '<i class="' . $service['icon'] . '"></i>' . Yii::t('account', $service['name']),
-        'url' => $service['link'],
+        'url' => Url::toRoute($service['link']),
     ];
     array_push($result, $new);
 }
+
+$profile = [
+    'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
+    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/company/' . Yii::$app->user->identity->organization->slug : '/user/' . Yii::$app->user->identity->username),
+    'template' => '<a href="{url}" target="_blank">{label}</a>',
+];
+array_push($result, $profile);
 
 echo Menu::widget([
     'activateItems' => true,
@@ -29,3 +36,14 @@ echo Menu::widget([
     'linkTemplate' => '<a href="{url}">{label}</a>',
     'submenuTemplate' => '<ul class="sub-menu">{items}</ul>',
 ]);
+$script = <<<JS
+var thispageurl = window.location.pathname;
+
+$(".dropdown-fw.dropdown-fw-disabled a").each(function(){
+    var attr = $(this).attr('href');
+      if (attr === thispageurl) {
+        $(this).parent().addClass('open');
+      }
+});
+JS;
+$this->registerJs($script);

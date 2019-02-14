@@ -12,6 +12,7 @@ $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_i
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
+
 $total_vac = 0;
 
 foreach ($data['applicationPlacementLocations'] as $placements) {
@@ -23,13 +24,14 @@ foreach ($data['applicationOptions'] as $value) {
 $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
 $application_object = json_encode($applied_data);
 
-$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $cover_location . DIRECTORY_SEPARATOR . $cover;
-$cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
-if (empty($cover)) {
+$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
+//$cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
+if (empty($org['cover_image'])) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
+
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
@@ -84,8 +86,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
     <section>
         <!--<div class="block">-->
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8">
+            <div class="row m-0">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="job-single-sec">
                         <div class="job-single-head2">
                             <div class="job-overview">
@@ -94,19 +96,37 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                     <li><i class="fa fa-puzzle-piece"></i>
                                         <h3>Profile</h3><span><?= $data['name']; ?></span></li>
                                     <li><i class="fa fa-puzzle-piece"></i>
-                                        <h3>Industry</h3><span><?= $data['industry']; ?></span></li>
+                                        <h3>Preferred Industry</h3><span><?= $data['industry']; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Designation</h3><span><?= $data['designation']; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
-                                        <h3>Offered Salary (<?php echo ucwords($option['salary_duration']); ?>)</h3>
-                                        <span><?= '&#8377 ' . $option['salary']; ?></span></li>
+                                        <h3>Offered Salary <?php if($option['salary_type']==1){echo '(Fixed)';
+                                        $amount = $option['salary'];
+                                        setlocale(LC_MONETARY, 'en_IN');
+                                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
+                                        } else if($option['salary_type']==2){
+                                            if(!empty($option['min_salary']) || !empty($option['max_salary'])){echo '(Negotiable)';}
+                                                $amount1 = $option['min_salary'];
+                                                $amount2 = $option['max_salary'];
+                                                setlocale(LC_MONETARY, 'en_IN');
+                                                if (!empty($option['min_salary']) && !empty($option['max_salary'])) {
+                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . utf8_encode(money_format('%!.0n', $amount2));
+                                                } elseif(!empty($option['min_salary'])){
+                                                    $amount = '&#8377 From '.utf8_encode(money_format('%!.0n', $amount1));
+                                                } elseif (!empty($option['max_salary'])){
+                                                    $amount = '&#8377 Upto '.utf8_encode(money_format('%!.0n', $amount2));
+                                                } elseif(empty($option['min_salary']) && empty($option['max_salary'])){
+                                                    $amount = 'Negotiable';
+                                                }
+                                        } ?></h3>
+                                        <span><?= $amount; ?></span></li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
-                                                    echo 'No Preference';;
+                                                    echo 'No Preference';
                                                     break;
                                                 case 1:
                                                     echo 'Male';
@@ -116,6 +136,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                                     break;
                                                 case 3:
                                                     echo 'Trans';
+                                                    break;
                                                 default:
                                                     echo 'not found';
                                             }
@@ -123,7 +144,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                     <li><i class="fa fa-shield"></i>
                                         <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
                                     <li><i class="fa fa-line-chart "></i>
-                                        <h3>Total Vacancy</h3><span><?= $total_vac; ?></span></li>
+                                        <h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
                                     <li><i class="fa fa-map-marker "></i>
                                         <h3>Locations</h3><span> <?php
                                             $str = "";
@@ -160,7 +181,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                             <?php } ?>
 
 
-                            <h3>Education + Experience</h3>
+                            <h3>Education</h3>
                             <ul>
                                 <?php
                                 foreach ($data['applicationEducationalRequirements'] as $qualification) {
@@ -168,14 +189,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                     <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
                                 <?php } ?>
                             </ul>
+                            <?php
+                                if (!empty($data['applicationEmployeeBenefits'])){
+                            ?>
                             <h3>Employer Benefits</h3>
                             <ul>
                                 <?php
                                 foreach ($data['applicationEmployeeBenefits'] as $benefit) {
                                     ?>
                                     <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                <?php } ?>
+                                <?php }?>
                             </ul>
+                                <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
@@ -187,7 +212,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span>
+                                        <?php
+                                            $fromtime = strtotime($option['interview_start_time']);
+                                            $interviewfrom = date("g:i A", $fromtime);
+                                            $totime = strtotime($option['interview_end_time']);
+                                            $interviewto = date("g:i A", $totime);
+                                        ?>
+                                        <span><?php echo $interviewfrom ?> To <?php echo $interviewto ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
@@ -200,41 +231,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                         ?></span></li>
                             </ul>
                         </div>
-                        <div class="share-bar">
-                            <span>Share</span>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-fb">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-twitter">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-linkedin">
-                                <i class="fa fa-linkedin"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-whatsapp">
-                                <i class="fa fa-whatsapp"></i>
-                            </a>
-                            <a href="#"
-                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="share-google">
-                                <i class="fa fa-envelope"></i>
-                            </a>
-                        </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
+                            <a href="/company/<?= $org['slug']; ?>">
                             <?php
-                            if (!empty($logo)) {
+                            if (!empty($org['logo'])) {
                                 ?>
                                 <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="<?= $org['org_name']; ?>"/>
                                 <?php
@@ -245,11 +249,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                                 <?php
                             }
                             ?>
+                            </a>
                         </div>
                         <div class="job-head-info">
-                            <h4><?= $org['org_name']; ?></h4>
-                            <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
-                            <p><i class="fa fa-envelope-o"></i> <?= $org['email']; ?></p>
+                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
+                            <?php if ($org['website']): ?>
+                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php endif; ?>
                         </div>
                         <?php if (Yii::$app->user->isGuest): ?>
                             <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
@@ -265,32 +271,40 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                         <?php endif; ?>
                         <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                         <div class="share-bar no-border">
+                            <?php $link = Url::to('job/' . $application_details["slug"], true); ?>
                             <h3>Share</h3>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-fb">
                                 <i class="fa fa-facebook"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-linkedin">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="share-google">
                                 <i class="fa fa-envelope"></i>
                             </a>
+                        </div>
+                        <div class="col-lg-12">
+                            <h4>or</h4>
+                            <div class="pf-field">
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?= $link ?>" readonly>
+                                <i class="fa fa-clipboard"></i>
+                            </div>
                         </div>
                     </div><!-- Job Head -->
                 </div>
@@ -303,10 +317,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
-                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the recruiter. keep check
+                your Dashboard Regularly for further confirmation from the recruiter side.</p>
             <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
-                Questionnaire Pending From YOur Side you can fill them now By clicking <a
+                Questionnaire Pending From Your Side you can fill them now By clicking <a
                         href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
                 <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
@@ -359,16 +373,24 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo
                             <?php } ?>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <?= Html::submitbutton('Save', ['class' => 'btn btn - primary btn - shape btn - col sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn default btn - shape btn - colour', 'data - dismiss' => 'modal']); ?>
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary btn-shape btn-col sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn default btn-shape btn-colour', 'data-dismiss' => 'modal']); ?>
                 </div>
             </div>
         </div>
     </div>
 <?php ActiveForm::end(); ?>
+<script>
+    function copyToClipboard() {
+        var copyText = document.getElementById("share_manually");
+        copyText.select();
+        document.execCommand("copy");
+        toastr.success("", "Copied");
+        // alert("Copied the text: " + copyText.value);
+    }
+</script>
 <?php
 $this->registerCss("
  .sub_description_1,sub_description_2
@@ -570,7 +592,6 @@ top : 20%;
         width: 100%;
         height: 100%;
         content: '';
-        background-image: url('../images/lines.png');
         z-index: 0;
         opacity: 0.14;
     }
@@ -631,6 +652,8 @@ top : 20%;
         -ms-border-radius: 20px;
         -o-border-radius: 20px;
         border-radius: 20px;
+        background: #00a0e3;
+        border-color: #00a0e3;
     }
     .job-statistic p {
         float: none;
@@ -742,6 +765,7 @@ top : 20%;
         color: #202020;
         margin-bottom: 15px;
         margin-top: 10px;
+        font-weight: 600;
     }
     .job-details p,
     .job-details li {
@@ -773,7 +797,7 @@ top : 20%;
     .job-details > ul li::before {
         position: absolute;
         left: 0;
-        top: 13px;
+        top: 10px;
         width: 10px;
         height: 1px;
         background: #888888;
@@ -788,6 +812,8 @@ top : 20%;
         width: 100%;
         font-family: Open Sans;
         font-size: 15px;
+        color: #202020;
+        font-weight: 600;
     }
     .job-overview ul {
         float: left;
@@ -823,12 +849,14 @@ top : 20%;
         font-size: 13px;
         font-family: Open Sans;
         margin: 0;
+        color: #1e1e1e;
+        font-weight: 600;
     }
     .job-overview ul > li span {
         float: left;
         width: 100%;
         font-size: 13px;
-        color: #888888;
+        color: #545454;
         margin-top: 4px;
     }
     .job-single-sec .job-overview ul {
@@ -877,7 +905,6 @@ top : 20%;
         float: left;
         width: 100%;
         padding-top: 20px;
-        padding-bottom: 20px;
         border-top: 1px solid #e8ecec;
         border-bottom: 1px solid #e8ecec;
     }
@@ -1047,7 +1074,8 @@ top : 20%;
         float: left;
         width: 100%;
         font-family: Open Sans;
-        font-size: 15px;
+        font-size: 17px;
+        font-weight: 600;
         color: #202020;
         margin: 0;
         margin-bottom: 0px;
@@ -1137,14 +1165,13 @@ top : 20%;
         margin-right: 0px;
         margin-right: 20px;
     }
-.radio_questions {
-  padding: 0 16px;
-  max-width: 100%;
-
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
-}
+    .radio_questions {
+      padding: 0 16px;
+      max-width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
     .parallax{
         height:100%;
         width:100%;
@@ -1187,24 +1214,62 @@ top : 20%;
         margin-bottom:5px;
         position: relative;
     }
-    .shortlist_job,.shortlist_job:hover
-    {
-     color:#fff;
+    .shortlist_job,.shortlist_job:hover{
+        color:#fff;
     }
     .shortlist_job:focus{
         color:#fff;
     }
-    .col_pink
-    {
-    background: #ef7706;
-    border-color: #ef7706;
-    color: #ffffff;
+    .col_pink{
+        background: #ef7706 !important;
+        border-color: #ef7706 !important;
+        color: #ffffff;
     }
     .hover-change:hover {
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
-    }");
+    }
+    .pf-field {
+        float: left;
+        width: 100%;
+        position: relative;
+    }
+    .pf-field > input {
+        height: 56px;
+        float: left;
+        width: 100%;
+        border: 2px solid #e8ecec;
+        margin-bottom: 20px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        padding: 14px 45px 14px 15px;
+        background: #ffffff !important;
+        font-family: Open Sans;
+        font-size: 13px;
+        font-weight: 400;
+        color: #101010;
+        line-height: 24px;
+        cursor: pointer;
+    }
+    .pf-field > i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        font-size: 20px;
+        color: #848484;
+        line-height: 56px;
+        cursor: pointer;
+    }
+    @media only screen and (max-width: 575px) {
+        .job-overview ul li{
+             width: 50% !important;
+        }
+    }
+    ");
 
 $script = <<< JS
 $(document).on('click','.shortlist_job',function(e)
@@ -1411,3 +1476,5 @@ $(document).on('click','.shortlist_job',function(e)
 })          
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -11,7 +11,7 @@ use yii\helpers\Url;
                     <div class="profile-picture">
                         <?php
                         $name = $image = $link = NULL;
-                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                        if (!empty(Yii::$app->user->identity->organization)) {
                             if (Yii::$app->user->identity->organization->logo) {
                                 $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                             }
@@ -159,6 +159,7 @@ ul.widget-todo-list {
     margin: 0;
     position: relative;
     max-height: 600px;
+    min-height:205px;
     display: block;
     overflow-x: scroll;
 }
@@ -250,6 +251,9 @@ ul.widget-todo-list li .todo-actions .todo-remove {
     border: 4px solid #fff;
     border-radius: 50px;
 }
+.widget-profile-info .profile-picture img{
+    background-color:#fff;
+}
 .font-weight-semibold {
     font-weight: 600 !important;
 }
@@ -334,7 +338,6 @@ $script = <<< JS
     });
     
     $(document).on('click', '.todo-remove', function (e) {
-        console.log('click');
         e.preventDefault();
             var id = $(this).parent().prev().children('input').attr('id');
             var remove = $(this).closest('li');
@@ -343,7 +346,12 @@ $script = <<< JS
             method: "POST",
             data: {id:id},
             success: function (response) {
-                $(remove).remove();
+                if (response.status == 200) {
+                    $(remove).remove();
+                    toastr.success(response.message, response.title);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
             }
         });
     });
@@ -359,7 +367,7 @@ $script = <<< JS
         }
     });
 
-    $(document).on('change', '.list input', function () {
+    $(document).on('change', '.checkbox-custom input', function () {
         if ($(this).hasClass('todo-check')) {
             $(this).closest('li').find('.todo-label').addClass('line-pass');
             $(this).removeClass('todo-check');
@@ -369,6 +377,43 @@ $script = <<< JS
             $(this).removeClass('uncheck');
             $(this).addClass('todo-check');
         }
+    });
+    
+    $(document).on('click', '.todo-check', function () {
+        var id = $(this).attr('id');
+        //        console.log(id);
+       if ($(this).is(':checked')){
+            $.ajax({
+            url: "/account/tasks/task-complete",
+            method: "POST",
+            data: {id:id},
+            success: function (response) {
+                if (response.status == 200) {
+                    toastr.success(response.message, response.title);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+       }
+    });
+    
+    $(document).on('click', '.uncheck', function () {
+        var id = $(this).attr('id');
+       if (id){
+            $.ajax({
+            url: "/account/tasks/task-incomplete",
+            method: "POST",
+            data: {id:id},
+            success: function (response) {
+                if (response.status == 200) {
+                    toastr.success(response.message, response.title);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+       }
     });
         
     load_list();
@@ -384,6 +429,66 @@ $script = <<< JS
             }, 100);
             $('#spin-attr').show();
         }
+    });
+    
+    $(function() {
+        var default_val;
+    
+        $(document).on('dblclick', '.todo-label', function() {
+            if($(this).children().length > 0){
+                return false;
+            }
+            default_val = $(this).text();
+            var name = $(this).text();
+            var edit_id = $(this).prev().attr('id');
+            
+            if($(this).prev('input:checkbox').prop("checked") == true){
+                alert('You cannot edit completed tasks.');
+            } else { 
+                $(this).html('<input type="text" id="editing_task" class="edit_task" value="'+name+'" autofocus>');
+                $('.widget-todo-list li').find('input:text:visible').focus();
+            }
+                
+            return default_val;
+        });
+        
+        $(document).on('keypress','.edit_task',function(a){
+            if(a.which==13){
+                var name = $(this).val();
+                var parent = $(this).parent();
+                var task_id = $(this).closest('label').prev().attr('id');
+            
+                if($(this).val()=='' || $(this).val() == default_val){
+                    $('.edit_task').hide();
+                    parent.text(default_val);
+                } else {
+                    $.ajax({
+                        url: '/account/tasks/update',
+                        method: 'POST',
+                        data:{name:name, task_id:task_id},
+                        success: function(response){
+                            if(response.status == 200){
+                                toastr.success(response.message, response.title);
+                                var dattaa = $('.edit_task').val();
+                                $('.edit_task').hide();
+                                parent.text(dattaa);
+                            } else {
+                                toastr.error(response.message, response.title);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        $(document).on('focusout', '.edit_task', function(){
+            var name = $(this).val();
+            var parent = $(this).parent();
+            var edit_id = $(this).closest('label').prev().attr('id');
+            $('#editing_task').hide();
+            parent.text(default_val);
+        }); 
+        
     });
         
     function load_list() {
@@ -404,8 +509,14 @@ $script = <<< JS
             },
             success: function (response) {
                 $('#spin-attr').hide();
-                console.log(response);
                 if (response.status == 200) {
+                    for(i=0; i<response['tasks'].length;i++){
+                        if(response.tasks[i]['is_completed'] == 1){
+                            response.tasks[i]['is_completed'] = true;
+                        }else{
+                            response.tasks[i]['is_completed'] = false;
+                        }
+                    }
                     $('.widget-todo-list').append(Mustache.render(todo_template, response.tasks));
                     action = 1;
                 } else {
@@ -414,23 +525,7 @@ $script = <<< JS
             }
         });
     }
-    if(!$.session.get("guide")){
-        $.session.set("guide", true);
-        var intro = introJs();
-           intro.setOptions({
-             steps: [
-               {
-                 element: document.querySelector('.card-body'),
-                 intro: "Add your tasks to be done for reminder. Once you’re done, go for next.",
-                 disableInteraction: true
-               },
-             ]
-           });
-        intro.start();
-        
-     }else{
-        
-     }
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -440,7 +535,24 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('https://ciphertrick.com/demo/jquerysession/js/jquerysession.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+
+//$options = [
+//    'where' => ['and',
+//        ['a.name' => 'taskbar_card'],
+//        ['b.is_viewed' => 0],
+//    ],
+//];
+//
+//$tutorials = Yii::$app->Tutorials->getTutorialsByUser($options);
+//echo "Hello";
+//print_r($tutorials);
+
+if (!Yii::$app->session->has("tutorial_organization_tasks")) {
+    echo '<script>dashboard_organization_taskbar()</script>';
+    Yii::$app->session->set("tutorial_organization_tasks", "Yes");
+}
 ?>
 
 <!--<script type="text/javascript">
@@ -621,9 +733,9 @@ $this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii
 <script type="text/template" id="todo-template">
     {{#.}}
     <li>
-        <div class="checkbox-custom checkbox-default" style="text-align:left;">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}}uncheck{{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}}checked{{/is_completed}} />
-            <label class="todo-label {{#is_completed}}line-pass{{/is_completed}}" data-type="text">{{name}}</label>
+        <div class="checkbox-custom checkbox-default text-left">
+            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}} checked {{/is_completed}} />
+            <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
         </div>
         <div class="todo-actions">
             <a class="todo-remove" href="#">

@@ -56,7 +56,7 @@ if ($type == 'card') {
                                 } else {
                                     ?>
                                     <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>"
-                                            width="80" height="80" color="" font="35px"></canvas>
+                                            width="80" height="80" color="<?= $cards[$i]['color'] ?>" font="35px"></canvas>
                                     <?php
                                 }
                                 ?>
@@ -71,8 +71,8 @@ if ($type == 'card') {
                             </h5>
                         </div>
                     </div>
-                    <div class="col-md-offset-3 col-md-9 text-right">
-                        <h4><?= Yii::t('frontend', $cards[$i]['org_name']); ?></h4>
+                    <div class="col-md-12">
+                        <h4 class="org_name text-right"><?= Yii::t('frontend', $cards[$i]['org_name']); ?></h4>
                     </div>
                     <div class="application-card-wrapper">
                         <a href="/job/<?= Yii::t('frontend', $cards[$i]['slug']); ?>" class="application-card-open">View
@@ -101,7 +101,7 @@ if ($type == 'card') {
                 {{/salary}}
                 <div class="col-md-12 application-card-border-bottom">
                     <div class="application-card-img">
-                        <a href="/company/{{organization_link}}">
+                        <a href="{{organization_link}}">
                             {{#logo}}
                             <img src="{{logo}}">
                             {{/logo}}
@@ -112,20 +112,20 @@ if ($type == 'card') {
                         </a>
                     </div>
                     <div class="application-card-description">
-                        <a href="/job/{{link}}"><h4 class="application-title">{{title}}</h4></a>
+                        <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                         <h5 class="location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations=""><i
                                     class="fa fa-map-marker"></i>&nbsp;{{city}}</h5>
                         <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
                     </div>
                 </div>
                 {{#last_date}}
-                <h6 class="pull-left pl-20 custom_set2" align="center">
+                <h6 class="col-md-5 pl-20 custom_set2" align="center">
                     <strong>Last Date to Apply</strong>
                     <br>
                     {{last_date}}
                 </h6>
-                <h4 class="pull-right pr-10 pt-20 custom_set" align="center">
-                    <strong>{{org_name}}</strong>
+                <h4 class="col-md-7 org_name text-right pr-10" align="center">
+                    <strong>{{organization_name}}</strong>
                 </h4>
                 {{/last_date}}
                 {{^last_date}}
@@ -134,7 +134,7 @@ if ($type == 'card') {
                 </div>
                 {{/last_date}}
                 <div class="application-card-wrapper">
-                    <a href="/job/{{link}}" class="application-card-open">View Detail</a>
+                    <a href="{{link}}" class="application-card-open">View Detail</a>
                     <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
                 </div>
             </div>
@@ -176,32 +176,6 @@ if ($type == 'card') {
                 </div>
                 <h4>{{name}}</h4>
             </a>
-        </div>
-        {{/.}}
-    </script>
-    <?php
-} elseif ($type == 'mustache-company-card') {
-    ?>
-    <script id="explore-company-card" type="text/template">
-        {{#.}}
-        <div class="col-md-3 col-sm-6">
-            <div class="cards-outer">
-                <a href="/company/{{organization_link}}">
-                    <div class="post-module">
-                        <div class="thumbnail">
-                            <img src="{{cover_image}}"/>
-                        </div>
-                        <div class="post-content">
-                            <div class="profile__picture">
-                                <img class="logos-img" src="{{logo}}">
-                            </div>
-                            <h1 class="title">{{org_name}}</h1>
-                            <h2 class="sub_title">Empowering Youth &amp; Going Beyond.</h2>
-                            <p class="description">{{description}}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
         </div>
         {{/.}}
     </script>
@@ -265,94 +239,4 @@ $(document).on('click','.application-card-add', function(event){
 });
 JS;
     $this->registerJs($script);
-}
-if ($type == 'mustache-company') {
-    $this->registerCss('
-.owl-item{
-    min-height:150px !important;
-}
-.partners-flex-box .logo-box:hover {
-    -webkit-box-shadow: 0 17px 27px -9px #757575;
-    box-shadow: 0 17px 27px -9px #757575;
-    -webkit-transition: -webkit-box-shadow .7s !important;
-    transition: -webkit-box-shadow .7s !important;
-    transition: box-shadow .7s !important;
-    transition: box-shadow .7s, -webkit-box-shadow .7s !important;
-}
-.partners-flex .partners-flex-box {
-    width: 130px;
-    -o-object-fit: contain;
-    object-fit: contain;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
-.partners-flex .partners-flex-box .logo-box {
-    height: 120px;
-    width: 120px;
-    background-color: #fff;
-}
-.partners-flex .partners-flex-box .image-partners {
-    height: 114px;
-    margin: 2px;
-    cursor: pointer;
-    padding: 6px;
-    width: 116px;
-}
-.partners-flex {
-    width: 90%;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -ms-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    margin: 0px auto;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-}
-.item{
-    display: block;
-    margin: 5px;
-    color: #FFF;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    text-align: center;
-}
-.owl-controls .nav div {
-    padding: 5px 9px;
-}
-.owl-nav i{
-    margin-top: 2px;
-}
-.owl-controls .owl-nav div {
-    position: absolute;
-}
-.owl-controls .owl-nav .owl-prev{
-    left: -60px;
-    top: 50px;
-}
-.owl-controls .owl-nav .owl-prev i,.owl-controls .owl-nav .owl-next i{
-    font-size:64px !important;
-}
-.owl-controls .owl-nav .owl-prev,.owl-controls .owl-nav .owl-next{
-    background: transparent !important;
-}
-.owl-controls .owl-nav .owl-next{
-    right: -60px;
-    top: 50px;
-}
-.set_icon{
-    background:transparent !important;
-}
-
-');
 }

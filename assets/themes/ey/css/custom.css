@@ -1241,21 +1241,11 @@ hr .flare :after {
 .set_logo img{
     height: 100%;
     width: 100%;
-    /*    border-radius: 50%;
-        box-shadow: 0px 2px 20px 0px;*/
 }
 .set_logo {
-    /*    display: table-cell;
-        vertical-align: middle;*/
-    height: 80px;
-    /*padding: 0px 5px;*/
-    border-radius: 50%;
     display: block;
-    box-shadow: 0px 2px 20px 1px #bbbbbb8c;
-    /*padding: 15px 8px;*/
-    width: 80px;
     margin-top: 20px;
-    overflow: hidden;
+    margin-left: 6px;
 }
 .btn-add-to-cart-wrapper {
     margin-bottom: 10px !important;
@@ -1328,6 +1318,9 @@ hr .flare :after {
     box-shadow: 0 1px 3px 0px #797979;
     background-color: #fff;
     margin-bottom: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .application-card-main *:not(i) {
     font-family: Georgia !important;
@@ -1345,12 +1338,17 @@ hr .flare :after {
     font-weight: 600;
 }
 .application-card-img{
+    position: relative;
     height: 80px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -khtml-border-radius: 50%;
     border-radius: 50%;
     display: block;
     box-shadow: 0px 2px 20px 1px #bbbbbb8c;
     width: 80px;
     margin-top: 25px;
+    margin-bottom: 5px;
     overflow: hidden;
     float: left;
 }
@@ -1365,6 +1363,9 @@ hr .flare :after {
 }
 .application-card-description h4, .application-card-description h5{
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .application-card-description h5:last-child{
     font-weight: normal;
@@ -1378,17 +1379,12 @@ hr .flare :after {
     position: absolute;
     bottom: 0px;
     left: -60px;
-    margin: 0px 0px 15px;
+    margin: 0px 0px 5px;
     transition: all 400ms ease 0s;
 }
 .application-card-main:hover .application-card-wrapper{
     left: 0px;
     opacity: 1;
-}
-.application-card-description h5{
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
 }
 .application-card-wrapper a{
     padding: 8px 18px;
@@ -1425,17 +1421,22 @@ hr .flare :after {
         overflow: hidden;
     }
 }
+.text-wrap-ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /* New Cards css ends*/
 
 /* Cards loader css starts*/
 .loader-main .product{
     margin-bottom: 15px !important;
 }
-.loader-inner-main .tag-load .anim{
-    max-width: 50%;
-    float: right;
+.tag-load .anim{
     height: 25px;
-    border-radius: 0;
+    top: -5px;
+    right: -10px;
+    width: 85px;
 }
 .icon .anim{
     max-width: 80px;
@@ -1456,13 +1457,18 @@ hr .flare :after {
     height: 14px;
 }
 .custom_set2 .anim{
-    max-width:80%;
+    max-width:65%;
     margin:auto;
     margin-top: 5px;
 }
 .last-date .anim{
-    max-width:60%;
+    max-width:46%;
     margin: 5px auto;
+}
+.custom_set .anim{
+    width: 140px;
+    height: 20px;
+    margin-top: -2px;
 }
 .company-name .anim{
     max-width: 90%;
@@ -1481,7 +1487,7 @@ hr .flare :after {
 .loader {
     display: block;
     position:relative;
-    width: 160px;
+    width: 150px;
     height: 10px;
     background-color: #ECEFF1;
     border-radius: 4px;
@@ -1549,6 +1555,7 @@ hr .flare :after {
 /*Dashboard button css starts*/
 .custom-buttons{
     width:100%;
+    color: #ffffff;
     background:#00a0e3 !important;
     font-size: 10px !important;
     padding: 8px 0px !important;
@@ -1562,6 +1569,60 @@ hr .flare :after {
 .custom-buttons:hover{
     color: #ffffff;
     box-shadow:0 0 10px rgba(0,0,0,.5) !important;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -ms-transition:.3s all;
+    -o-transition:.3s all;
+}
+.btn-primary{
+    color: #fff !important;
+    background-color: #00A0E3 !important;
+    border-color: #00A0E3 !important;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:active:focus, .btn-primary:active:hover{
+    color: #fff !important;
+    background-color: #00A0E3 !important;
+    border-color: #00A0E3 !important;
+}
+.main-blue-btn{
+    width:100%;
+    color: #ffffff;
+    border: 0px;
+    background:#00a0e3 !important;
+    margin-bottom:20px;
+     -webkit-border-radius: 6px !important;
+    -moz-border-radius: 6px !important;
+    -ms-border-radius: 6px !important;
+    -o-border-radius: 6px !important;
+    border-radius: 6px !important;
+}
+.main-blue-btn:hover, .main-blue-btn:focus{
+    color: #ffffff;
+    border: 0px;
+    box-shadow:0 0 10px rgba(0,0,0,.5) !important;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -ms-transition:.3s all;
+    -o-transition:.3s all;
+}
+.main-orange-btn{
+    width:100%;
+    color: #ffffff;
+    border: 0px;
+    background:#ff7803 !important;
+    margin-bottom:20px;
+     -webkit-border-radius: 6px !important;
+    -moz-border-radius: 6px !important;
+    -ms-border-radius: 6px !important;
+    -o-border-radius: 6px !important;
+    border-radius: 6px !important;
+}
+.main-orange-btn:hover, .main-orange-btn:focus{
+    color: #ffffff;
+    box-shadow:0 0 10px rgba(0,0,0,.5) !important;
+    border: 0px;
     transition:.3s all;
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
@@ -1680,7 +1741,7 @@ hr .flare :after {
     top: 50%;
 }
 .btn--primary.btn-border {
-    display: inline-block;
+    display: block;
     position:relative;
     background-color: transparent;
     color: #0083ff;
@@ -1693,6 +1754,8 @@ hr .flare :after {
     text-transform: uppercase;
     font-weight: 900;
     line-height: 1;
+    margin: auto;
+    width: 240px;
 }
 .load-more-spinner:not(:root){
     overflow: hidden;

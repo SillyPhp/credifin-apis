@@ -1,19 +1,18 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
-<ul class="menuzord-menu">
-    <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
-    <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
-    <?php if (!Yii::$app->user->isGuest): ?>
-        <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
-    <?php else: ?>
-        <li><a href="<?= Url::to('/login'); ?>"><?= Yii::t('frontend', 'Login'); ?></a></li>
-    <?php endif; ?>
-    <?php if (Yii::$app->user->identity->organization): ?>
-        <li><a href="<?= Url::to('/logout'); ?>" data-method="post"><?= Yii::t('frontend', 'Logout'); ?></a></li>
-    <?php endif; ?>
-</ul>
+    <ul class="menuzord-menu">
+        <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
+        <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
+        <?php if (!Yii::$app->user->isGuest): ?>
+            <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
+<!--            <li><a href="--><?//= Url::to('/logout'); ?><!--" data-method="post">--><?//= Yii::t('frontend', 'Logout'); ?><!--</a></li>-->
+        <?php else: ?>
+            <li><a href="<?= Url::to('/login'); ?>"><?= Yii::t('frontend', 'Login'); ?></a></li>
+        <?php endif; ?>
+    </ul>
 <?php
 $this->registerCss('
 .bg-theme-colored {
@@ -40,4 +39,10 @@ $this->registerCss('
 .menuzord-menu > li.active > a, .menuzord-menu > li:hover > a {
     background-color:#49a1e3 !important;
     color:#fff !important;
-}');
+}
+@media only screen and (max-width: 900px) {
+    .menuzord .showhide{
+        padding: 19px 0 0 !important;
+    }
+}
+');

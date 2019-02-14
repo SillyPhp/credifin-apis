@@ -171,7 +171,15 @@ class SiteController extends Controller {
     public function actionTrainer() {
         return $this->render('trainer');
     }
-
+    public function actionEmployers() {
+        return $this->render('employers');
+    }
+    public function actionCandidateList() {
+        return $this->render('candidate-list');
+    }
+    public function actionCandidateGrid() {
+        return $this->render('candidate-grid');
+    }
     public function actionAddNewSubscriber() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
@@ -349,7 +357,27 @@ class SiteController extends Controller {
     public function actionCareerMove() {
         return $this->render('career-move');
     }
-
+    public function actionNewCompanyProfile() {
+        return $this->render('new-company-profile');
+    }
+    public function actionCompanyJobsIndex() {
+        return $this->render('company-jobs-index');
+    }
+    public function actionCompanyInternshipsIndex() {
+        return $this->render('company-internships-index');
+    }
+    public function actionReviewCompanyList() {
+        return $this->render('review-company-list');
+    }
+    public function actionReviewCompany() {
+        return $this->render('review-company');
+    }
+    public function actionReviewIndex() {
+        return $this->render('review-index');
+    }
+    public function actionNewCandidateProfile() {
+        return $this->render('new-candidate-profile');
+    }
     public function actionWalkInInterview() {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;

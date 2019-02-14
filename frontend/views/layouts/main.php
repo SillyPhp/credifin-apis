@@ -55,14 +55,34 @@ AppAssets::register($this);
                     <div class="container-fluid">
                         <nav id="menuzord-right" class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
                             <a class="menuzord-brand pull-left flip mt-15" href="<?= Url::to('/'); ?>">
-                                <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
                                 <?php
-                                if (!$this->params['header_dark']) {
+                                if (!Yii::$app->user->isGuest) {
                                     ?>
-                                <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
-                                <?php
+                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
+                                    <?php
+                                    if (!$this->params['header_dark']) {
+                                        ?>
+                                    <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus_white.svg'); ?>">
+                                    <?php
+                                    }
+                                    ?>
+                                    <span class="logo_beta">Beta</span>
+                                    <?php
+                                } else{
+                                ?>
+                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                    <?php
+                                    if (!$this->params['header_dark']) {
+                                        ?>
+                                    <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
+                                    <?php
+                                    }
+                                    ?>
+                                    <span class="logo-beta">Beta</span>
+                                    <?php
                                 }
                                 ?>
+
                             </a>
                             <?php
                             if (!Yii::$app->user->isGuest) {
@@ -101,6 +121,9 @@ AppAssets::register($this);
                 <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
             </header>
             <div class="main-content">
+                <div id="page-loading" class="page-loading">
+                    <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+                </div>
                 <?= $content; ?>
             </div>
             <footer id="footer" class="footer">
@@ -109,66 +132,138 @@ AppAssets::register($this);
                 </div>
                 <div class="set_container container">
                     <div class="row">
-                        <div class="mt-6 useful-links col-sm-12 col-md-4">
-                            <ul>
-                                <li><a href="<?= Url::to('/about-us'); ?>">About Us</a></li> |
-                                <li><a href="">Team</a></li> |
-                                <li><a href="">Vision</a></li>
-                            </ul>
-                        </div>
-                        <div class="set1 col-sm-12 col-md-4">
+                        <div class="mt-6 useful-links col-sm-12 col-md-2 col-md-offset-1">
                             <div class="footer-widget ">
                                 <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                                 <ul class="styled-icons icon-bordered icon-sm mb-5">
                                     <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fa fa-facebook"></i></a></li>
                                     <li><a href="https://twitter.com/EmpowerYouth2" target="_blank" class="overtw"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="https://plus.google.com/104048743553712680190" target="_blank" class="overgp"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="https://www.youtube.com/channel/UCEF_0LfJ9zMa99aPoGwNdtg" target="_blank" class="overyt"><i class="fa fa-youtube"></i></a></li>
                                     <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
                                     <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
                                 </ul>
-                            </div>  
+                                <a class="text-gray mt-10 send_mail" href="mailto:info@empoweryouth.com"><i class="fa fa-envelope-o mt-10"></i> info@empoweryouth.com</a>
+                            </div>
                         </div>
-                        <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
-                            <ul>
-                                <li><a href="<?= Url::to('/contact-us'); ?>">Contact Us</a></li> |
-                                <li><a href="">FAQ'S</a></li> |
-                                <li><a href="">Help Counter</a></li>
+                        <div class="col-sm-12 col-md-2">
+                            <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Jobs By Location'); ?></div>
+                            <ul class="footer-list">
+                                <li><a href="/jobs/list?location=Ludhiana">Jobs in Ludhiana</a></li>
+                                <li><a href="/jobs/list?location=Jalandhar">Jobs in Jalandhar</a></li>
+                                <li><a href="/jobs/list?location=Chandigarh">Jobs in Chandigarh</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Jobs By Profile'); ?></div>
+                            <ul class="footer-list">
+                                <li><a href="/jobs/list?keyword=Information%20Technology">IT Jobs</a></li>
+                                <li><a href="/jobs/list?keyword=Social%20Services">Social Services Jobs</a></li>
+                                <li><a href="/jobs/list?keyword=Business%20Development">Business Development Jobs</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Internships By Location'); ?></div>
+                            <ul class="footer-list">
+                                <li><a href="/internships/list?location=Ludhiana">Internships in Ludhiana</a></li>
+                                <li><a href="/internships/list?location=Jalandhar">Internships in Jalandhar</a></li>
+                                <li><a href="/internships/list?location=Chandigarh">Internships in Chandigarh</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Internships By Profile'); ?></div>
+                            <ul class="footer-list">
+                                <li><a href="/internships/list?keyword=Marketing">Marketing Internships</a></li>
+                                <li><a href="/internships/list?keyword=Arts%20and%20Design">Arts and Design Internships</a></li>
+                                <li><a href="/internships/list?keyword=Administrative">Administrative Internships</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="footer-bottom">
                     <div class="container pt-20 pb-20">
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 ">
+                            <div class="col-md-12 col-sm-12 text-center">
                                 <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
                             </div>
-                            <div class="col-md-6 col-sm-6 text-right">
-                                <div class="widget no-border m-0">
-                                    <ul class="list-inline  sm-text-center mt-5 font-12">
-                                        <li>
-                                            <a href="<?= Url::to('/about-us'); ?>" class="">Terms & Conditions</a>
-                                        </li>
-                                        |
-                                        <li>
-                                            <a href="<?= Url::to('/contact-us'); ?>" class="">Privacy Policies</a>
-                                        </li>    
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </footer>
             <?php
-            if (!Yii::$app->user->identity->organization) {
+            if (!Yii::$app->user->isGuest) {
                 echo $this->render('/widgets/user-profile-sidebar-right');
             }
             ?>
         </div>
         <?php
         $this->registerCss('
+        .send_mail{word-wrap: break-word;margin:0px -12px;}
+        .send_mail i{color:#00a0e3;}
+         .feed-btn a{
+            border:2px solid #00a0e3;
+            color:#00a0e3;
+            padding:5px 10px;
+            border-radius:20px;
+            margin-top:20px !important;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all;
+            
+         }
+         .feed-btn a:hover{
+            color:#fff;
+            background:#00a0e3;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+            transition: .3s all;
+            
+         }
+        .menuzord-brand{
+            position:relative;
+         }
+        .logo-beta{
+            font-size: 11px;
+            position: absolute;
+            bottom: -2px;
+            right: -25px;
+            color: #444;
+         }
+        .logo_beta{
+            font-size: 11px;
+             position: absolute;
+             bottom: -2px; 
+             right: -15px;
+             color: #444;
+         }
+        .add-padding nav .menuzord-brand .logo_beta{
+            color:#fff;
+         }
+        .add-padding nav .menuzord-brand .logo-beta{
+            color:#fff;
+         }
+        .page-loading {
+            background-color: #ffffff;
+            content: "";
+            height: 100%;
+            left: 0;
+            position: fixed;
+            text-align: center;
+            margin:0px;
+            top: 0;
+            width: 100%;
+            z-index: 2147483647;
+        }
+        .page-loading > img {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -ms-transform: translateX(-50%) translateY(-50%);
+            -o-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
             #main-header #logo-black{
                 display:none;
             }
@@ -193,15 +288,20 @@ AppAssets::register($this);
                
             }
             .useful-links ul{
-                padding-top:40px;
+//                padding-top:40px;
             }
             .useful-links ul li{
                 display:inline;
-                padding:10px;
+//                padding:10px;
             }
+            .footer a {
+                text-align: center;
+                width: 100%;
+             }
             .footer-border{
                 text-align:center; 
                 border-top:5px solid #00a0e3;
+                position:relative;
             }
             .footer-border img{
                 margin-top:-50px
@@ -213,8 +313,9 @@ AppAssets::register($this);
                 margin-top: 60px;
             } 
             .footer-widget{
-                text-align:center;
+//                text-align:center;
                 color:#00a0e3;
+                margin: 0 auto;
             }
             .icons-ss{
                 padding-top:15px;
@@ -302,13 +403,44 @@ AppAssets::register($this);
                 line-height:normal;
                 margin-top:5px;
             }
-            .my-profiles-sec span canvas{
+            .my-profiles-sec > span > img, .cst img, .my-profiles-sec span canvas{
+                -webkit-border-radius: 50% !important;
+                -moz-border-radius: 50% !important;
+                -ms-border-radius: 50% !important;
+                -o-border-radius: 50% !important;
+                border-radius: 50% !important;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+            }
+            .profiles-sidebar .close-profile{
                 -webkit-border-radius: 50% !important;
                 -moz-border-radius: 50% !important;
                 -ms-border-radius: 50% !important;
                 -o-border-radius: 50% !important;
                 border-radius: 50% !important;
             }
+            .footer-list li{
+                float: left;
+                width: 100%;
+                margin: 0;
+                margin-bottom: 0px;
+                position: relative;
+                padding-left: 10px;
+                line-height: 21px;
+                margin-bottom: 10px;
+                font-size: 13px;
+                color: #888888;
+            }
+//            .footer-list li::before {
+//               position: absolute;
+//                left: 0;
+//                top: 10px;
+//                width: 10px;
+//                height: 1px;
+//                background: #888888;
+//                content: "";
+//            }
             ');
 
         if ($this->params['header_dark']) {
@@ -333,6 +465,20 @@ AppAssets::register($this);
                     function gtag(){dataLayer.push(arguments);}
                     gtag("js", new Date());
                     gtag("config", "UA-121432126-1");
+         
+//         document.onreadystatechange = function () {
+//          var state = document.readyState
+//          if (state == "interactive") {
+//                 document.getElementById("page-loading").style.visibility="visible";
+//                 console.log("if");
+//          } else if (state == "complete") {
+//              setTimeout(function(){
+//                 document.getElementById("page-loading").style.visibility="hidden";
+//                 console.log("else if");
+//              },1000);
+//          }
+//        }
+            $(".page-loading").fadeOut();
                     
         ');
         

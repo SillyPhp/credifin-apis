@@ -18,12 +18,14 @@ use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
 use frontend\models\accounts\UserEmails;
 
-class AccountsController extends Controller {
+class AccountsController extends Controller
+{
 
     /**
      * @inheritdoc
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -47,27 +49,33 @@ class AccountsController extends Controller {
 
     public $layout = 'main-secondary';
 
-    public function actionLogin() {
+    public function actionLogin()
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $loginFormModel = new LoginForm();
+        if (!Yii::$app->session->has("backURL")) {
+            Yii::$app->session->set("backURL", Yii::$app->request->referrer);
+        }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
-            return $this->redirect((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : '/account/dashboard'));
+            return $this->redirect(Yii::$app->session->get("backURL"));
         }
 
         return $this->render('login', [
-                    'loginFormModel' => $loginFormModel,
+            'loginFormModel' => $loginFormModel,
         ]);
     }
 
-    public function actionLogout() {
+    public function actionLogout()
+    {
         Yii::$app->user->logout();
         return $this->redirect('/login');
     }
 
-    public function actionSignup($type) {
+    public function actionSignup($type)
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -98,26 +106,20 @@ class AccountsController extends Controller {
                 }
             }
             return $this->render('signup/individual', [
-                        'model' => $model,
+                'model' => $model,
             ]);
         } elseif ($type == 'organization') {
             $model = new OrganizationSignUpForm();
             $organization_types = \common\models\extended\OrganizationTypes::find()
-                    ->select(['organization_type_enc_id', 'organization_type'])
-                    ->orderBy(['organization_type' => SORT_ASC])
-                    ->asArray()
-                    ->all();
+                ->select(['organization_type_enc_id', 'organization_type'])
+                ->orderBy([new \yii\db\Expression('FIELD (organization_type, "Others") ASC, organization_type ASC')])
+                ->asArray()
+                ->all();
             $business_activities = \common\models\extended\BusinessActivities::find()
-                    ->select(['business_activity_enc_id', 'business_activity'])
-                    ->orderBy(['business_activity' => SORT_ASC])
-                    ->asArray()
-                    ->all();
-            $industries = \common\models\extended\Industries::find()
-                    ->select(['industry_enc_id', 'industry'])
-                    ->where(['NOT IN', 'industry', ['Same Industry', 'No Preference']])
-                    ->orderBy(['industry' => SORT_ASC])
-                    ->asArray()
-                    ->all();
+                ->select(['business_activity_enc_id', 'business_activity'])
+                ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
+                ->asArray()
+                ->all();
 
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -139,17 +141,17 @@ class AccountsController extends Controller {
                 }
             }
             return $this->render('signup/organization', [
-                        'model' => $model,
-                        'organization_types' => $organization_types,
-                        'business_activities' => $business_activities,
-                        'industries' => $industries,
+                'model' => $model,
+                'organization_types' => $organization_types,
+                'business_activities' => $business_activities,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
 
-    public function actionResendVerificationEmail() {
+    public function actionResendVerificationEmail()
+    {
         if (Yii::$app->user->isGuest) {
             return false;
         }
@@ -180,7 +182,8 @@ class AccountsController extends Controller {
         }
     }
 
-    public function actionVerify($token) {
+    public function actionVerify($token)
+    {
         try {
             $verifyEmailModel = new \frontend\models\accounts\VerifyEmail($token);
         } catch (InvalidParamException $e) {
@@ -189,20 +192,21 @@ class AccountsController extends Controller {
 
         if ($verifyEmailModel->emailVerification()) {
             return $this->render('/site/message', [
-                        'status' => 'success',
-                        'title' => 'Congratulations',
-                        'message' => 'Your email has been verified.'
+                'status' => 'success',
+                'title' => 'Congratulations',
+                'message' => 'Your email has been verified.'
             ]);
         } else {
             return $this->render('/site/message', [
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => 'Your account verification failed.'
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'Your account verification failed.'
             ]);
         }
     }
 
-    public function actionForgotPassword() {
+    public function actionForgotPassword()
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -211,24 +215,25 @@ class AccountsController extends Controller {
             if ($model->forgotPassword()) {
                 $model = new ForgotPasswordForm();
                 return $this->render('/site/message', [
-                            'status' => 'success',
-                            'title' => 'Congratulations',
-                            'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
+                    'status' => 'success',
+                    'title' => 'Congratulations',
+                    'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
             } else {
                 return $this->render('/site/message', [
-                            'status' => 'error',
-                            'title' => 'Error',
-                            'message' => 'An error has occurred. Please try again.'
+                    'status' => 'error',
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.'
                 ]);
             }
         }
         return $this->render('forgot-password', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
-    public function actionResetPassword($token) {
+    public function actionResetPassword($token)
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -242,25 +247,26 @@ class AccountsController extends Controller {
         if ($model->load(Yii::$app->request->post())) {
             if ($model->resetPassword()) {
                 return $this->render('/site/message', [
-                            'status' => 'success',
-                            'title' => 'Congratulations',
-                            'message' => 'Your password has been changed. You can login into your account now.'
+                    'status' => 'success',
+                    'title' => 'Congratulations',
+                    'message' => 'Your password has been changed. You can login into your account now.'
                 ]);
             } else {
                 return $this->render('/site/message', [
-                            'status' => 'error',
-                            'title' => 'Error',
-                            'message' => 'An error has occurred. Please try again.'
+                    'status' => 'error',
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.'
                 ]);
             }
         }
 
         return $this->render('reset-password', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
-    private function login($data = []) {
+    private function login($data = [])
+    {
         $loginFormModel = new LoginForm();
         $loginFormModel->username = $data['username'];
         $loginFormModel->password = $data['password'];

@@ -2,25 +2,33 @@
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
 ?>
 <section class="status-activity">
-    <div class="module-active"><i class="fa fa-check mr-1"></i> Module Active Status</div>
     <?php
     $form = ActiveForm::begin([
-                'id' => 'services_form',
-                'enableClientValidation' => true,
-                'validateOnBlur' => false,
-                'fieldConfig' => [
-                    'template' => "",
-                ]
+        'id' => 'services_form',
+        'enableClientValidation' => true,
+        'validateOnBlur' => false,
+        'fieldConfig' => [
+            'template' => "",
+        ]
     ]);
     ?>
+    <div class="module-active"><i class="fa fa-check mr-1"></i> Active Modules
+        <div class="edit-btn">
+            <button type="button" id="edit" class="edit" onclick="changeStatus()">Edit</button>
+            <button type="submit" id="save" class="save">Save</button>
+        </div>
+    </div>
     <div class="modules">
         <div class="module-active-row row">
             <?php
             foreach ($services as $service) {
                 ?>
-                <div class="col-md-8 ac-text"><?= $service['name']; ?></div><div class="col-md-4 ac-text-2" id="jstatus"><?= ($service['is_selected'] == 1) ? 'Active' : 'Inactive'; ?></div>
+                <div class="col-md-8 ac-text"><?= $service['name']; ?></div>
+                <div class="col-md-4 ac-text-2"
+                     id="jstatus"><?= ($service['is_selected'] == 1) ? 'Active' : 'Inactive'; ?></div>
                 <?php
             }
             ?>
@@ -30,7 +38,7 @@ use yii\helpers\ArrayHelper;
                 <?php
                 $mapped_services = ArrayHelper::index($services, 'service_enc_id');
                 echo $form->field($model, 'services')->inline()->checkBoxList($mapped_services, [
-                    'item' => function($index, $label, $name) {
+                    'item' => function ($index, $label, $name) {
                         $return = '<div class="activity-row">';
                         $return .= '<div class="col-md-8 ac-text">' . $label['name'] . '</div>';
                         $return .= '<div class="ch-box col-md-4">';
@@ -48,10 +56,6 @@ use yii\helpers\ArrayHelper;
                 ?>
             </div>
         </div>
-    </div>
-    <div class="edit-btn">
-        <button type="button" id="edit" class="edit" onclick="changeStatus()">Edit</button>
-        <button type="submit" id="save" class="save">Save</button>
     </div>
     <?php ActiveForm::end(); ?>
 </section>
@@ -141,7 +145,7 @@ input:checked + .slider:before {
 }
 .module-active{
     background:#e7eaed;
-    padding:15px 20px;
+    padding: 15px 10px 15px 20px;
     color: #00A0E3;
 //    color: #337ab7;
     font-size:20px;
@@ -154,7 +158,8 @@ input:checked + .slider:before {
 }
 .edit-btn{
     text-align:center;
-    padding: 6px 10px;
+    float:right;
+//    padding: 6px 10px;
 //    margin-right:10px;
 }
 .edit-btn button{
@@ -163,7 +168,7 @@ input:checked + .slider:before {
     padding: 7px 15px;
     font-size: 12px;
     text-transform: uppercase;
-    background: #e7eaed;
+    background: #fff;
     color: #00A0E3;
     margin:auto;
     transition:.3s all;
