@@ -3,21 +3,18 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 $total_applications = count($applications);
-$rows = ceil($total_applications / $per_row);
+//$rows = ceil($total_applications / $per_row);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_jobs']);
 if (!empty($total_applications)) {
-    for ($i = 1; $i <= $rows; $i++) {
+//    for ($i = 1; $i <= $rows; $i++) {
         ?>
-        <div class="loader"><img
-                    src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/>
-        </div>
         <div class="row">
             <?php
-            for ($j = 0; $j < $per_row; $j++) {
+            for ($j = 0; $j < $total_applications; $j++) {
                 if ($next < $total_applications) {
                     ?>
-                    <div class="<?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
+                    <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
                         <div class="hr-company-box">
                             <div class="rt-bttns">
                                 <a href=""
@@ -87,27 +84,21 @@ if (!empty($total_applications)) {
             ?>
         </div>
         <?php
-    }
+//    }
 } else
 { ?>
     <h3>No Active Jobs</h3>
 <?php }
 Pjax::end();
 $this->registerCss("
-.loader
-{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
+
 ");
 $script = <<<JS
 $(document).on('click','.j-delete',function(e){
      e.preventDefault();
+     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
      if (window.confirm("Do you really want to Delete the current Application?")) { 
+        main_card.remove();
         var data = $(this).attr('value');
         var url = "/account/jobs/delete-application";
         $.ajax({
@@ -115,18 +106,16 @@ $(document).on('click','.j-delete',function(e){
             data:{data:data},
             method:'post',
             beforeSend:function(){
-                $(".loader").css("display", "block");
+                // $(".loader").css("display", "block");
               },
-            success:function(data)
-                {
-                  if(data==true)
-                    {
-                      $(".loader").css("display", "none");
-                      $.pjax.reload({container: "#pjax_active_jobs", async: false});
+            success:function(data){
+                $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                  if(data==true) {
+                      toastr.success('Deleted Successfully', 'Success');
+                      // $(".loader").css("display", "none");
                     }
-                   else
-                   {
-                      alert('Something went wrong.. !');
+                   else {
+                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
                    }
                  }
           });
