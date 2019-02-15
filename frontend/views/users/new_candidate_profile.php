@@ -30,8 +30,7 @@ $this->params['header_dark'] = false;
                         <h4><?= $user['first_name'] ." ". $user['last_name'] ?></h4>
                         <p><?= $user['job_profile'] ?></p>
                         <ul>
-                            <li><a href="single-company-profile.html"><i class="fa fa-building"></i> Mack Star</a></li>
-                            <li> <?= $user['city'] ?></li>
+                            <li><i class="fa fa-map-marker"></i> <?= $user['city'] ?></li>
                         </ul>
                     </div>
                 </div>
@@ -50,7 +49,6 @@ $this->params['header_dark'] = false;
                             } if($strToArr[3] != 0){
                                 echo $strToArr[3] . ' Month(s)';
                             }
-//                            echo $strToArr[1]. ' Year(s) '. $strToArr[3] . ' Month(s)'
                             ?>
                         </li>
                         <li><span class="detail-info">Age</span><?= $user['age'] ?> Years</li>
