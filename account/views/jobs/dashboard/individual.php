@@ -645,6 +645,8 @@ $(document).on('click','.rmv_list',function()
       var  url = '/account/jobs/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
+      var main_card = $(this).parentsUntil(".topic-con").closest('.hr-j-box');
+      main_card.remove();
       Ajax_call(rmv_id,url,pjax_refresh_id);
    })   
         
@@ -654,7 +656,7 @@ $(document).on('click','.rmv_review',function(){
       var  pjax_refresh_id = '#pjax_review';
       var main_card = $(this).parentsUntil(".topic-con").closest('.rev_box');
       main_card.remove();
-      // Ajax_call(rmv_id,url,pjax_refresh_id);
+      Ajax_call(rmv_id,url,pjax_refresh_id);
    }) 
    
    $(document).on('click','.shortlist',function()
