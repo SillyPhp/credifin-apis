@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
+<!--<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>-->
 <div class="row">
     <?php
         Pjax::begin(['id' => 'widgets']);
@@ -486,14 +486,14 @@ $this->registerCss('
   height: 0;
   transition: .5s ease;
 }
-.loader{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
+//.loader{
+//    display:none;
+//    position:fixed;
+//    top:50%;
+//    left:50%;
+//    padding:2px;
+//    z-index:99999;
+//}
 .topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
   height: 80%;
   border-radius:10px 10px 0px 0px !important;
@@ -593,23 +593,24 @@ $("ul[id*=head-tabs] li").click(function(){
 function Ajax_call(rmv_id,url,pjax_refresh_id)
     {
         $.ajax({
-                url:url,
-                data:{rmv_id:rmv_id},
-                method:'post',
-                beforeSend: function()
-                {
-                    $(".loader").css("display", "block");
-                },
-                success:function(data)
-                       {
-                        if(data == true)
-                          {
-                            $(".loader").css("display", "none");
-                            $.pjax.reload({container: pjax_refresh_id, async: false});
-                            $.pjax.reload({container: '#widgets', async: false});
-                           }
-                       }
-              })
+            url:url,
+            data:{rmv_id:rmv_id},
+            method:'post',
+            beforeSend: function()
+            {
+                // $(".loader").css("display", "block");
+            },
+            success:function(data){
+                $.pjax.reload({container: pjax_refresh_id, async: false});
+                $.pjax.reload({container: '#widgets', async: false});
+                if(data == true) {
+                    // $(".loader").css("display", "none");
+                    toastr.success(data.message, 'Success');
+                } else{
+                    toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                }
+            }
+        })
     }
     
     function Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent)
@@ -647,12 +648,13 @@ $(document).on('click','.rmv_list',function()
       Ajax_call(rmv_id,url,pjax_refresh_id);
    })   
         
-$(document).on('click','.rmv_review',function()
-    {
+$(document).on('click','.rmv_review',function(){
       var  url = '/account/jobs/review-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_review';
-      Ajax_call(rmv_id,url,pjax_refresh_id);
+      var main_card = $(this).parentsUntil(".topic-con").closest('.rev_box');
+      main_card.remove();
+      // Ajax_call(rmv_id,url,pjax_refresh_id);
    }) 
    
    $(document).on('click','.shortlist',function()
