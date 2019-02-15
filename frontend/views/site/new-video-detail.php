@@ -24,8 +24,16 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-6">
                         <div class="flex-view align-right">
-                            <div class="likebtn"><button id="like"><i class="fa fa-thumbs-o-up like"></i></button>20</div>
-                            <div class="dislikebtn"><button id="dislike"><i class="fa fa-thumbs-o-down dislike"></i></button>0</div>
+                            <div class="likebtn">
+                                <button id="like" data-toggle="tooltip" title="Like this">
+                                    <span class="imageGray" id="imageOn"></span>
+                                </button>20
+                            </div>
+                            <div class="dislikebtn">
+                                <button id="dislike" data-toggle="tooltip" title="Don't like this">
+                                    <span class="dislikeGray" id="imageOff"></span>
+                                </button>0
+                            </div>
                         </div>
                     </div>
                     </div>
@@ -35,16 +43,16 @@ use yii\helpers\Url;
                 </div>
                 <div class="v-category">
                     <ul>
-                        <li>Category: <span>Web Designing</span></li>
-                        <li>Sub Category: <span>Web Designing</span></li>
+                        <li>Category: <span><a href=""> Web Designing </a></span></li>
+                        <li>Sub Category: <span><a href=""> Web Designing</a></span></li>
                     </ul>
                 </div>
                 <div class="v-tags">
                     <ul>
-                        <li>Web Design</li>
-                        <li>Html</li>
-                        <li>CSS</li>
-                        <li>Bootstrap</li>
+                        <a href=""><li> Web Design</li></a>
+                        <a href=""><li> Html</li></a>
+                        <a href=""><li> CSS</li></a>
+                        <a href=""><li> Bootstrap</li></a>
                     </ul>
                 </div>
                 <div class="divider"></div>
@@ -65,18 +73,24 @@ use yii\helpers\Url;
                         standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
                         scrambled it to make
                         a type specimen book.</p>
+                    <div class="">
+                        <button class="load-more">Load More</button>
+                    </div>
                 </div>
 
             </div>
             <div class="col-md-4">
                 <div class="channel">
+                    <a href="">
                     <div class="channel-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>">
                     </div>
+                    </a>
                     <div class="channel-details">
-                        <div class="channel-name"> Empower Youth</div>
+                        <div class="channel-name"><a href=""> Empower Youth </a></div>
                         <div class="publish-date">Published on 1 Jan 2019</div>
                     </div>
+
                 </div>
                 <div class="divider"></div>
                 <div class="about-video">Related Videos</div>
@@ -235,6 +249,36 @@ $this->registerCss('
 .padd-left-0{
     padding-left:0px !important;
 }
+.imageGray{
+     background:url(' . Url::to('@eyAssets/images/pages/learning-corner/like.png') . ');
+     width:20px;
+     height:20px; 
+     display:block;
+}
+.imageBlue{
+    background:url('. Url::to('@eyAssets/images/pages/learning-corner/likeb.png').');
+     width:20px;
+     height:20px; 
+     display:block;
+}
+.imageBlue2{
+    background:url('. Url::to('@eyAssets/images/pages/learning-corner/likeb.png').') !important;
+}
+.dislikeGray{
+     background:url(' . Url::to('@eyAssets/images/pages/learning-corner/dislike.png') . ');
+     width:20px;
+     height:20px; 
+     display:block;
+}
+.dislikeBlue{
+      background:url(' . Url::to('@eyAssets/images/pages/learning-corner/dislikeb.png') . ');
+     width:20px;
+     height:20px; 
+     display:block;  
+}
+.dislikeBlue2{
+    background:url('. Url::to('@eyAssets/images/pages/learning-corner/dislikeb.png').') !important;
+}
 .video-options{
     padding:5px 10px;
     border:1px solid #eee;
@@ -378,6 +422,7 @@ $this->registerCss('
 }
 .likebtn, .dislikebtn{
     font-size:14px;
+    margin: 0px 5px;
 }
 .views i, .share i{
     font-size:18px;
@@ -408,7 +453,37 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-  
+  $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+
+var like = document.getElementById('like');
+var imageOn = document.getElementById('imageOn'); 
+    like.onmouseover = function() {
+        imageOn.classList.add('imageBlue');
+        imageOn.classList.remove('imageGray');
+    } 
+    like.onmouseleave = function() {
+      imageOn.classList.add('imageGray');
+      imageOn.classList.remove('imageBlue');
+    }
+    like.onclick = function() {
+      imageOn.classList.toggle('imageBlue2');
+    }
+    
+ var dislike = document.getElementById('dislike');
+ var imageOff = document.getElementById('imageOff');
+    dislike.onmouseover = function() {
+      imageOff.classList.add('dislikeBlue');
+      imageOff.classList.remove('dislikeGray');
+    }
+    dislike.onmouseleave = function() {
+      imageOff.classList.add('dislikeGray');
+      imageOff.classList.remove('dislikeBlue');
+    }
+    dislike.onclick = function() {
+      imageOff.classList.toggle('dislikeBlue2');
+    }
 JS;
 $this->registerJs($script);
 ?>
