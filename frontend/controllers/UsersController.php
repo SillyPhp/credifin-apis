@@ -30,7 +30,7 @@ class UsersController extends Controller
                 WHEN a.is_available = "0" THEN "Not Available"
                 WHEN a.is_available = "1" THEN "Available"
                 WHEN a.is_available = "2" THEN "Open For Opportunities"
-                WHEN a.is_available = "3" THEN "Actively Looking for Opportunities"
+                WHEN a.is_available = "3" THEN "Actively Looking"
                 WHEN a.is_available = "4" THEN "Exploring Possibilities"
                 ELSE "Undefined"
                 END) as availability', 'ROUND(DATEDIFF(CURDATE(), a.dob)/ 365.25) as age', 'b.name as city', 'c.name as job_profile'])

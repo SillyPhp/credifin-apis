@@ -56,11 +56,11 @@ $this->params['header_dark'] = false;
                         <li><span class="detail-info">Age</span><?= $user['age'] ?> Years</li>
                     </ul>
                     <ul class="social-info">
-                        <li><a href="<?= $user['facebook'] ?>" target="_blank"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="<?= $user['twitter'] ?>" target="_blank"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="<?= $user['linkedin'] ?>" target="_blank"><i class="fa fa-linkedin"></i></a></li>
-                        <li><a href="<?= $user['instagram'] ?>" target="_blank"><i class="fa fa-instagram"></i></a></li>
-                        <li><a href="<?= $user['youtube'] ?>" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                        <?php if(!empty($user['facebook'])){ ?><li><a href="<?= $user['facebook'] ?>" target="_blank"><i class="fa fa-facebook"></i></a></li><?php }?>
+                        <?php if(!empty($user['twitter'])){ ?><li><a href="<?= $user['twitter'] ?>" target="_blank"><i class="fa fa-twitter"></i></a></li><?php }?>
+                        <?php if(!empty($user['linkedin'])){ ?><li><a href="<?= $user['linkedin'] ?>" target="_blank"><i class="fa fa-linkedin"></i></a></li><?php }?>
+                        <?php if(!empty($user['instagram'])){ ?><li><a href="<?= $user['instagram'] ?>" target="_blank"><i class="fa fa-instagram"></i></a></li><?php }?>
+                        <?php if(!empty($user['youtube'])){ ?><li><a href="<?= $user['youtube'] ?>" target="_blank"><i class="fa fa-youtube"></i></a></li><?php }?>
                     </ul>
                 </div>
             </div>
@@ -463,12 +463,12 @@ img.img-responsive.payment-img {
 }
 .sidebar-status {
     position: absolute;
-    right:30px;
-    top: 25px;
+    right:0px;
+    top: 0px;
     background:#ff7803;
     color: #ffffff;
     padding: 4px 18px;
-    border-radius: 4px;
+    border-radius: 0px 4px;
     font-weight: 500;
 }
 
