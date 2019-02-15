@@ -138,8 +138,8 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                             <?php $basicDetails->availability = ((Yii::$app->user->identity->is_available) ? Yii::$app->user->identity->is_available : 1); ?>
                             <?= $form->field($basicDetails, 'availability')->inline()->radioList([
                                     1 => 'Available',
-                                    2 => 'Open For Opportunities',
-                                    3 => 'Actively Looking for Opportunities',
+                                    2 => 'Open',
+                                    3 => 'Actively Looking',
                                     4 => 'Exploring Possibilities',
                                     0 => 'Not Available',
                                 ], [
@@ -520,6 +520,7 @@ function add_tags(thisObj,tag_class,name,duplicates)
                 thisObj.val('');
                     } else {
                      $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+                     thisObj.val('');
                 }
 }    
 $(document).on('submit','#basicDetailForm',function(event)
@@ -590,7 +591,6 @@ $('#search-skill').typeahead(null, {
   display: 'value',
   source: skills,
    limit: 6,
-   hint:false,
 }).on('typeahead:asyncrequest', function() {
      $('.skill_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
@@ -621,7 +621,6 @@ $('#search-language').typeahead(null, {
   display: 'value',
   source: languages,
    limit: 6,
-   hint:false,
 }).on('typeahead:asyncrequest', function() {
     $('.language_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
