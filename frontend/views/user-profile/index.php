@@ -98,7 +98,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <ul class="tags languages_tag_list">
                                     <?php if (!empty($userLanguage)) {
                                         foreach ($userLanguage as $language){  ?>
-                                            <li class="addedTag"><?= $language['language'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="languages[]" value="<?= $language['language_enc_id'] ?>"></li>
+                                            <li class="addedTag"><?= $language['language'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="languages[]" value="<?= $language['language'] ?>"></li>
                                         <?php }
                                     } ?>
                                     <li class="tagAdd taglist">
@@ -118,7 +118,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <ul class="tags skill_tag_list">
                                     <?php if(!empty($userSkills)){
                                         foreach ($userSkills as $skill){ ?>
-                                        <li class="addedTag"><?= $skill['skill'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="skills[]" value="<?= $skill['skill_enc_id'] ?>"></li>
+                                        <li class="addedTag"><?= $skill['skill'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="skills[]" value="<?= $skill['skill'] ?>"></li>
                                     <?php } } ?>
                                     <li class="tagAdd taglist">
                                         <div class="skill_wrapper">
@@ -446,9 +446,20 @@ $(document).on('keypress','input',function(e)
             return false;
         }
 })
-$(document).on('focus','#search-skill',function(e)
+$(document).on('keyup','#search-skill',function(e)
 {
-    $(this).val('');
+    if(e.which==13)
+        {
+          add_tags($(this),'skill_tag_list','skills');  
+        }
+})
+
+$(document).on('keyup','#search-language',function(e)
+{
+    if(e.which==13)
+        {
+          add_tags($(this),'languages_tag_list','languages');
+        }
 })
 function setCity()
 {
@@ -470,7 +481,6 @@ function setCity()
                 }
                 }
                 );
-           
         }
 }
 setCity();
@@ -481,7 +491,7 @@ $.expr[":"].contains = $.expr.createPseudo(function(arg) {
 });
 
     $('#addTagBtn').on('click', function(){
-        $('#tags option:selected').each(function() {
+        $('#tags option:selected').each(function() { 
             $(this).appendTo($('#selectedTags'));
         });
     });
@@ -498,15 +508,20 @@ $.expr[":"].contains = $.expr.createPseudo(function(arg) {
         $('#search-field').focus();
     });
     var tag_class;
-    function customTag(thisObj,tag_class,name,value,data)
-    {
-            if ((thisObj.val() != '') && ($("."+tag_class+" .addedTag:contains('" + thisObj.val() + "')").length == 0 ))  {
-                    $('<li class="addedTag">' + data + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + value + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
-                    thisObj.val('');
-            } else {
+    
+function add_tags(thisObj,tag_class,name,duplicates)
+{
+    var duplicates = [];
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+                        {
+                         duplicates.push($.trim($(this).val()).toUpperCase());
+                        });
+    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
                 thisObj.val('');
-            }
-    }
+                    } else {
+                     $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+                }
+}    
 $(document).on('submit','#basicDetailForm',function(event)
 {
     event.preventDefault();
@@ -563,7 +578,7 @@ var skills = new Bloodhound({
              settings.url += '?q=' +$('#search-skill').val();
              return settings;
         },   
-    cache: true,    
+    cache: false,    
     filter: function(list) {
              return list;
         }
@@ -577,14 +592,12 @@ $('#search-skill').typeahead(null, {
    limit: 6,
    hint:false,
 }).on('typeahead:asyncrequest', function() {
-    $('.skill_wrapper .Typeahead-spinner').show();
+     $('.skill_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    $('.skill_wrapper .Typeahead-spinner').hide();
+     $('.skill_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
   {
-      var skillsdata = datum.value;
-      var value = datum.id;
-      customTag($(this),'skill_tag_list','skills',value,skillsdata);
+      add_tags($(this),'skill_tag_list','skills');
    }).blur(validateSelection);
 
 var languages = new Bloodhound({
@@ -596,7 +609,7 @@ var languages = new Bloodhound({
              settings.url += '?q=' +$('#search-language').val();
              return settings;
         },   
-    cache: true,    
+    cache: false,    
     filter: function(list) {
              return list;
         }
@@ -615,9 +628,7 @@ $('#search-language').typeahead(null, {
    $('.language_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
   {
-      var languagedata = datum.value;
-      var value = datum.id;
-      customTag($(this),'languages_tag_list','languages',value,languagedata);
+      add_tags($(this),'languages_tag_list','languages');
    }).blur(validateSelection);
 
 fetchJobProfile();
@@ -677,7 +688,6 @@ function readURL(input) {
     reader.onload = function(e) {
       $('.preview_img').attr('src', e.target.result);
     }
-
     reader.readAsDataURL(input.files[0]);
   }
 }
