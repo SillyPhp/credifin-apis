@@ -7,6 +7,8 @@
  */
 namespace frontend\models\profile;
 
+use common\models\Skills;
+use common\models\SpokenLanguages;
 use common\models\UserPreferredSkills;
 use common\models\Users;
 use common\models\Categories;
@@ -48,14 +50,6 @@ class UserProfileBasicEdit extends Model {
 
     public function update()
     {
-        if (empty($this->skills))
-        {
-            $this->skills = [];
-        }
-        if (empty($this->languages))
-        {
-            $this->languages = [];
-        }
         $flag = 0;
         $usersModel = new Users();
         $user = $usersModel->find()
@@ -71,14 +65,49 @@ class UserProfileBasicEdit extends Model {
         {
             $flag++;
         }
+        if (!empty($this->skills))
+        {
+            $skill_set = [];
+            foreach ($this->skills as $val){
+                $chk_skill = Skills::find()
+                    ->distinct()
+                    ->select(['skill_enc_id'])
+                    ->where(['skill'=>$val])
+                    ->asArray()
+                    ->one();
+                if (!empty($chk_skill))
+                {
+                    $skill_set[] = $chk_skill['skill_enc_id'];
+                }
+                else
+                {
+                    $skillsModel = new Skills();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
+                    $skillsModel->skill = $val;
+                    $skillsModel->created_on = date('Y-m-d H:i:s');
+                    $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$skillsModel->save())
+                    {
+                        return false;
+                    }
+                    $skill_set[] = $skillsModel->skill_enc_id;
+                }
+            }
+        }
+        else
+        {
+            $skill_set = [];
+        }
         $userSkills = UserSkills::find()
                          ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
                          ->andWhere(['is_deleted'=>0])
                          ->asArray()
                          ->all();
             $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
-            $new_skill = array_diff($this->skills, $skillArray);
-            $delet_skill = array_diff($skillArray, $this->skills);
+            $new_skill = array_diff($skill_set, $skillArray);
+            $delet_skill = array_diff($skillArray, $skill_set);
             if (!empty($new_skill)) {
                 foreach ($new_skill as $val) {
                     $skillsModel = new UserSkills();
@@ -97,7 +126,6 @@ class UserProfileBasicEdit extends Model {
                     }
                 }
             }
-
             if (!empty($delet_skill)) {
                 foreach ($delet_skill as $val) {
                     $update = Yii::$app->db->createCommand()
@@ -112,15 +140,49 @@ class UserProfileBasicEdit extends Model {
                     }
                 }
             }
+            if (!empty($this->languages)) {
+                $language_set = [];
+                foreach ($this->languages as $val) {
+                    $chk_language = SpokenLanguages::find()
+                        ->distinct()
+                        ->select(['language_enc_id'])
+                        ->where(['language' => $val])
+                        ->asArray()
+                        ->one();
+                    if (!empty($chk_language))
+                    {
+                        $language_set[] = $chk_language['language_enc_id'];
+                    }
+                    else
+                    {
+                        $languageModel = new SpokenLanguages();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $languageModel->language_enc_id = $utilitiesModel->encrypt();
+                        $languageModel->language = $val;
+                        $languageModel->created_on = date('Y-m-d H:i:s');
+                        $languageModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$languageModel->save())
+                        {
+                            return false;
+                        }
+                        $language_set[] = $languageModel->language_enc_id;
+                    }
 
+                }
+            }
+            else
+            {
+                $language_set = [];
+            }
             $userLanguage = UserSpokenLanguages::find()
                            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
                            ->andWhere(['is_deleted'=>0])
                            ->asArray()
                            ->all();
             $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
-            $new_language = array_diff($this->languages, $languageArray);
-            $delte_language = array_diff($languageArray, $this->languages);
+            $new_language = array_diff($language_set, $languageArray);
+            $delte_language = array_diff($languageArray, $language_set);
 
             if (!empty($new_language)) {
                 foreach ($new_language as $val) {

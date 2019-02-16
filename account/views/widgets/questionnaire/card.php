@@ -4,22 +4,19 @@ use yii\helpers\Url;
 use yii\helpers\Json;
 use yii\widgets\Pjax;
 $total_questionnaire = count($questionnaire);
-$rows = ceil($total_questionnaire / $per_row);
+//$rows = ceil($total_questionnaire / $per_row);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_questionnaire']);
 if (!empty($total_questionnaire)) {
-    for ($i = 1; $i <= $rows; $i++) {
+//    for ($i = 1; $i <= $rows; $i++) {
         ?>
-        <div class="loader"><img
-                    src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/>
-        </div>
         <div class="cat-sec">
             <div class="row no-gape">
                 <?php
-                for ($j = 0; $j < $per_row; $j++) {
+                for ($j = 0; $j < $total_questionnaire; $j++) {
                     if ($next < $total_questionnaire) {
                         ?>
-                        <div class="<?= $col_width; ?>">
+                        <div class="box-main-col <?= $col_width; ?>">
                             <div class="p-category">
                                 <div class="rt-bttns">
                                     <button class="clone-bttn set-right-align two" type="button"
@@ -56,27 +53,21 @@ if (!empty($total_questionnaire)) {
             </div>
         </div>
         <?php
-    }
+//    }
 } else
 { ?>
     <h3>No Questionnaire To Display</h3>
 <?php }
 Pjax::end();
 $this->registerCss("
-.loader
-{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
+
 ");
 $script = <<<JS
 $(document).on('click','.delete_questionnaire',function(e){
     e.preventDefault();
-    if (window.confirm("Do you really want to Delete the current Questionnaire?")) { 
+    var main_card = $(this).parentsUntil(".p-category").closest('.box-main-col');
+    if (window.confirm("Do you really want to Delete the current Questionnaire?")) {
+        main_card.remove();
         var data = $(this).attr('value');
         var url = "/account/questionnaire/delete";
         $.ajax({
@@ -84,20 +75,17 @@ $(document).on('click','.delete_questionnaire',function(e){
             data:{data:data},
             method:'POST',
             beforeSend:function(){
-                $(".loader").css("display", "block");
+                // $(".loader").css("display", "block");
               },
-            success:function(data)
-                {
-                  if(data==true)
-                    {
-                      $(".loader").css("display", "none");
-                      $.pjax.reload({container: "#pjax_active_questionnaire", async: false});
-                    }
-                   else
-                   {
-                      alert('Something went wrong.. !');
-                   }
-                 }
+            success:function(data){
+                $.pjax.reload({container: "#pjax_active_questionnaire", async: false});
+                if(data==true) {
+                    toastr.success('Questionnaire Successfully Deleted', 'Success');
+                      // $(".loader").css("display", "none");
+                } else {
+                    toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                }
+            }
           });
     }
 });
