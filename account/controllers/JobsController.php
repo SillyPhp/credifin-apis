@@ -989,6 +989,7 @@ class JobsController extends Controller
 
     public function actionJobCard($cidk)
     {
+
         $category = AssignedCategories::find()
             ->alias('a')
             ->select(['b.name',
@@ -999,34 +1000,35 @@ class JobsController extends Controller
             ->where(['a.assigned_category_enc_id' => $cidk])
             ->asArray()
             ->one();
-
+//        print_r($category);
+//        exit();
         if ($category) {
-            if (Yii::$app->request->post('image')) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $image = Yii::$app->request->post('image');
-                $image_parts = explode(";base64,", $image);
-                $image_base64 = base64_decode($image_parts[1]);
-                $utilitiesModel = new Utilities();
-                $image_location = Yii::$app->getSecurity()->generateRandomString();
-                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $image = $utilitiesModel->encrypt() . '.png';
-                if (!is_dir($base_path)) {
-                    if (!mkdir($base_path, 0755, true)) {
-                        return [
-                            'status' => 201,
-                        ];
-                    }
-                }
-
-                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
-                    return [
-                        'status' => 200,
-                        'image_location' => $image_location,
-                        'image' => $image,
-                    ];
-                }
-            }
+//            if (Yii::$app->request->post('image')) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                $image = Yii::$app->request->post('image');
+//                $image_parts = explode(";base64,", $image);
+//                $image_base64 = base64_decode($image_parts[1]);
+//                $utilitiesModel = new Utilities();
+//                $image_location = Yii::$app->getSecurity()->generateRandomString();
+//                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $image = $utilitiesModel->encrypt() . '.png';
+//                if (!is_dir($base_path)) {
+//                    if (!mkdir($base_path, 0755, true)) {
+//                        return [
+//                            'status' => 201,
+//                        ];
+//                    }
+//                }
+//
+//                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
+//                    return [
+//                        'status' => 200,
+//                        'image_location' => $image_location,
+//                        'image' => $image,
+//                    ];
+//                }
+//            }
             return $this->renderPartial('og-image', [
                 'category' => $category,
             ]);

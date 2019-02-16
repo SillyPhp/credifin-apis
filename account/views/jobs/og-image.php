@@ -14,12 +14,13 @@ use yii\helpers\Url;
         <?= Html::csrfMetaTags(); ?>
         <style>
             body{margin: 0 auto; padding: 0; background: #b5e0f3; font-family: 'Sorts Mill Goudy', serif;}
-            .top-row{text-align: center; padding-top: 50px;}
+            .top-row{text-align: center; padding-top: 30px;}
             .circle1{max-width: 150px; margin: 0 auto; background: #fff; border-radius:50%;height: 150px; line-height: 150px; padding: 0 30px;}
             .box{background: #fff;border-radius: 25px;height: 140px;margin-top: 5px;line-height: 140px;text-align: center;}
             .box span{display: inline-block;vertical-align: middle;line-height: normal;font-size: 50px;width: 80%;}
             .circle1 ~ p {font-size: 30px; line-height: 30px; width: 80%; margin: auto;}
             .main-img{ max-width: 100%; height: auto; margin: 0 auto; }
+            .main-img img{max-height: 460px;}
             .botom-row{ position: absolute; right: 20px; bottom: 10px; width: 200px; }
             img { margin: auto; }
             .circle1 img {width: 100%;}
@@ -68,7 +69,7 @@ use yii\helpers\Url;
                 <img src="<?= Url::to('@commonAssets/images/hiring.svg'); ?>" class="img-responsive" />
             </div>
             <div class="botom-row">
-                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg'); ?>" class="img-responsive" />
+                <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>" class="img-responsive" />
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
