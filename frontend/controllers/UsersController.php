@@ -29,7 +29,7 @@ class UsersController extends Controller
                 '(CASE 
                 WHEN a.is_available = "0" THEN "Not Available"
                 WHEN a.is_available = "1" THEN "Available"
-                WHEN a.is_available = "2" THEN "Open For Opportunities"
+                WHEN a.is_available = "2" THEN "Open"
                 WHEN a.is_available = "3" THEN "Actively Looking"
                 WHEN a.is_available = "4" THEN "Exploring Possibilities"
                 ELSE "Undefined"
@@ -45,6 +45,7 @@ class UsersController extends Controller
             ->select(['a.skill_enc_id', 'b.skill skills'])
             ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
             ->where(['a.created_by' => $user['user_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
@@ -54,9 +55,13 @@ class UsersController extends Controller
             ->select(['a.language_enc_id', 'b.language language'])
             ->innerJoin(\common\models\SpokenLanguages::tableName() . 'b', 'b.language_enc_id = a.language_enc_id')
             ->where(['a.created_by' => $user['user_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->all();
 
+        if (!count($user) > 0) {
+            return 'No User Found';
+        }
 
         return $this->render('new_candidate_profile', [
             'user' => $user,
