@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Questionnaire',
+    'for' => 'ScheduleInterview',
 ]);
 ?>
 

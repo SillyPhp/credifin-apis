@@ -54,6 +54,28 @@ use yii\helpers\Url;
                         <?= Yii::t('account', 'Create Job'); ?>
                     </a>
                 </div>
+            <?php elseif ($for == 'ScheduleInterview'): ?>
+                <div class="col-md-2 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/questionnaire/create'); ?>">
+                        <?= Yii::t('account', 'Create Questionnaire'); ?>
+                    </a>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/internships/create'); ?>">
+                        <?= Yii::t('account', 'Create Internship'); ?>
+                    </a>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/create'); ?>">
+                        <?= Yii::t('account', 'Create Job'); ?>
+                    </a>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <a class="btn btn-primary custom-buttons" id="schedule-interview">
+                        <?= Yii::t('account', 'Schedule Interview'); ?>
+                    </a>
+                    <?= $this->render('/widgets/schedule_interview/main'); ?>
+                </div>
             <?php endif; ?>
         <?php endif; ?>
     </div>
