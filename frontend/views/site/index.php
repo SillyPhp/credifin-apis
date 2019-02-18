@@ -191,8 +191,8 @@ $this->params['seo_tags'] = [
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="tab-sec">
                         <ul class="nav nav-tabs">
-                            <li><a class="current" data-tab="fjobs">Featured Jobs</a></li>
-                            <li><a data-tab="rjobs">Recent Jobs</a></li>
+                            <li><a class="current" data-tab="fjobs">Featured Opportunities</a></li>
+                            <li><a data-tab="rjobs">Recent Opportunities</a></li>
                         </ul>
                         <div id="fjobs" class="tab-content current">
                             <div class="job-listings-tabs">
@@ -223,7 +223,7 @@ $this->params['seo_tags'] = [
                                                         <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
                                                     </a>
                                                 </div>
-                                                <h3><a href="/job/social-media-marketing-social-media-executive-1902051549351284" title="">Social Media Marketing</a></h3>
+                                                <h3><a href="/internship/full-stack-developer-1902011549002251" title="">Full Stack Developer</a></h3>
                                                 <span>Empower Youth</span>
                                                 <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
@@ -261,7 +261,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                                 <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
                                                 <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
@@ -312,19 +312,19 @@ $this->params['seo_tags'] = [
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/kmg">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/agile">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/internship/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
+                                                    <span>Agile Finserv Pvt. Ltd.</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/job/chartered-accountant-chartered-accountant-1901301548848703" title="">Chartered Accountant</a></h3>
-                                                <span>KMG Consultants</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -365,19 +365,19 @@ $this->params['seo_tags'] = [
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/kmg">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/internship/chartered-accountant-1901301548848101" title="">Chartered Accountant</a></h3>
+                                                    <span>KMG Consultants</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                                 </div>
-                                                <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
-                                                <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -405,9 +405,9 @@ $this->params['seo_tags'] = [
                                                         <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
                                                     </a>
                                                 </div>
-                                                <h3><a href="/job/1901301548841707" title="">Chartered Accountant</a></h3>
+                                                <h3><a href="/internship/1901301548841707" title="">Chartered Accountant</a></h3>
                                                 <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
@@ -666,7 +666,11 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-
+.job-field input:focus{
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
 .no-padd{
    padding-left:0px !important; 
    padding-right:0px !important; 

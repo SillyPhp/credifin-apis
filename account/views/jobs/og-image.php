@@ -70,6 +70,7 @@ use yii\helpers\Url;
             </div>
             <div class="botom-row">
                 <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>" class="img-responsive" />
+<!--                <input type="hidden" id="share_image" value="--><?//=Yii::$app->request->getCsrfToken()?><!--">-->
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
@@ -77,24 +78,27 @@ use yii\helpers\Url;
         <script src="<?= Url::to('@adminAssets/vendor/html2canvas/html2canvas.svg.min.js'); ?>" type="text/javascript"></script>
         <script src="<?= Url::to('@eyAssets/js/functions.js'); ?>"></script>
         <script type="text/javascript">
-            function getUrlVars() {
-                var vars = {};
-                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
-                    vars[key] = value;
-                });
-                return vars;
-            }
+            // function getUrlVars() {
+            //     var vars = {};
+            //     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            //         vars[key] = value;
+            //     });
+            //     return vars;
+            // }
             $(document).ready(function () {
                 html2canvas(document.body, {background: '#B5E0F3', width: 1583, height: 738, imageTimeout: 0}).then(function (canvas) {
                     var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
-                    $.ajax({
-                        url: '/account/jobs/job-card?application=' + getUrlVars()["application"],
-                        type: 'post',
-                        data: {image: base64URL, _csrf: '<?= Yii::$app->request->getCsrfToken(); ?>//'},
-                       success: function (data) {
-                           console.log('Upload successfully');
-                       }
-                   });
+                    // var share_image = $('#share_image').val();
+                    var csrfToken = $('meta[name="csrf-token"]').attr("content");
+                    console.log(base64URL);
+                   //  $.ajax({
+                   //      url: window.location.href,
+                   //      type: 'post',
+                   //      data: {image: base64URL, '_csrf-common': csrfToken},
+                   //      success: function (data) {
+                   //         console.log('Upload successfully');
+                   //     }
+                   // });
                });
            });
         </script>

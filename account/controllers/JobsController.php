@@ -1000,8 +1000,7 @@ class JobsController extends Controller
             ->where(['a.assigned_category_enc_id' => $cidk])
             ->asArray()
             ->one();
-//        print_r($category);
-//        exit();
+
         if ($category) {
 //            if (Yii::$app->request->post('image')) {
 //                Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1037,35 +1036,6 @@ class JobsController extends Controller
                 'status' => 201,
             ];
         }
-    }
-
-    public function actionRicky(){
-        $test = ReviewedApplications::find()
-            ->alias('a')
-            ->select(['j.name type','a.application_enc_id','k.shortlisted_enc_id','k.shortlisted','a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(ShortlistedApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->limit(8)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        echo '<pre>';
-        print_r($test);
-        echo '</pre>';
-
-        return [
-            'test' => $test,
-        ];
     }
 
 }
