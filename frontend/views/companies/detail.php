@@ -291,7 +291,7 @@ if ($organization['cover_image']) {
                 <div class="about">
                     <div class="container">
                         <div class="content">
-                            <div class="t-heading">Available Job</div>
+                            <div class="t-heading">Available Opportunities</div>
                             <div class="blogbox"></div>
                         </div>
                     </div>
@@ -477,6 +477,7 @@ $(document).on('click','.shortlist_org',function(e){
     
 loader = false;
 getCards();
+getCards("Internships");
 JS;
 
 if (count($locations) > 0) {

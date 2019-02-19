@@ -75,11 +75,16 @@ class CompaniesController extends Controller {
                 ->all();
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
+                $type = Yii::$app->request->post('type');
                 $options = [];
                 $options['limit'] = 3;
                 $options['page'] = 1;
                 $options['company'] = $organization['name'];
-                $cards = ApplicationCards::jobs($options);
+                if($type == 'Jobs') {
+                    $cards = ApplicationCards::jobs($options);
+                } else {
+                    $cards = ApplicationCards::internships($options);
+                }
                 if ($cards) {
                     $response = [
                         'status' => 200,

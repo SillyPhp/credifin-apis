@@ -1366,6 +1366,7 @@ $(document).on('click', '#confirm_loc', function(event) {
     
 loader = false;
 getCards();
+getCards("Internships");
 JS;
 
 $this->registerJs("
