@@ -7,7 +7,9 @@ use yii\web\Controller;
 use common\models\OrganizationQuestionnaire;
 use common\models\QuestionnaireFields;
 use common\models\QuestionnaireFieldOptions;
+use common\models\AnsweredQuestionnaire;
 use account\models\questionnaire\QuestionnaireForm;
+use \account\models\questionnaire\QuestionnaireViewForm;
 
 class QuestionnaireController extends Controller
 {
@@ -71,7 +73,7 @@ class QuestionnaireController extends Controller
     {
 
         $this->layout = 'main-secondary';
-        $model = new \account\models\questionnaire\QuestionnaireViewForm();
+        $model = new QuestionnaireViewForm();
         $result = OrganizationQuestionnaire::find()
             ->select(['questionnaire_enc_id', 'questionnaire_name'])
             ->where(['questionnaire_enc_id' => $qidk])
@@ -119,5 +121,106 @@ class QuestionnaireController extends Controller
             }
         }
     }
+
+    public function actionFillQuestionnaire($qidk, $aaidk)
+    {
+        if (Yii::$app->user->identity->organization) {
+            return 'You have no access to this page';
+        }
+        $this->layout = 'main-secondary';
+
+        $chk = AnsweredQuestionnaire::find()
+            ->where([
+                'applied_application_enc_id' => $aaidk,
+                'questionnaire_enc_id' => $qidk,
+                'created_by' => Yii::$app->user->identity->user_enc_id,
+                ])
+            ->asArray()
+            ->one();
+        $result = OrganizationQuestionnaire::find()
+            ->select(['questionnaire_enc_id', 'questionnaire_name'])
+            ->where(['questionnaire_enc_id' => $qidk])
+            ->asArray()
+            ->one();
+
+        $fields = QuestionnaireFields::find()
+            ->alias('a')
+            ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+            ->where(['a.questionnaire_enc_id' => $result['questionnaire_enc_id']])
+            ->asArray()
+            ->all();
+
+        foreach ($fields as $field) {
+            $field_option = QuestionnaireFieldOptions::find()
+                ->select(['field_option_enc_id', 'field_option'])
+                ->where(['field_enc_id' => $field['field_enc_id']])
+                ->asArray()
+                ->all();
+            $field['options'] = $field_option;
+            $arr['fields'][] = $field;
+        }
+
+        if ($arr) {
+            $model = new QuestionnaireViewForm();
+            if (Yii::$app->request->isPost) {
+                $data = Yii::$app->request->post('data');
+                if ($model->saveAnswer($aaidk, $data, $qidk)) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            } else {
+                return $this->render('fill-questionnaire', [
+                    'fields' => $arr,
+                    'model' => $model,
+                    'chk' => $chk,
+                ]);
+            }
+        }
+
+    }
+
+    public function actionDisplayAnswers($qidk, $aaidk)
+    {
+        $this->layout = 'main-secondary';
+        $answers = AnsweredQuestionnaire::find()
+            ->alias('a')
+            ->distinct()
+            ->where(['a.applied_application_enc_id' => $aaidk, 'a.questionnaire_enc_id' => $qidk])
+            ->select(['a.answered_questionnaire_enc_id', 'a.rating', 'a.created_by'])
+            ->joinWith([
+                'answeredQuestionnaireFields b' => function ($b) {
+                    $b->joinWith(['fieldEnc c'], false);
+                    $b->joinWith(['fieldOptionEnc e'], false);
+                    $b->select(['b.answered_questionnaire_enc_id', 'b.answer', 'c.field_enc_id', 'c.field_type', 'c.field_label', 'e.field_option']);
+                }
+            ], true)
+            ->joinWith(['createdBy d' => function ($d) {
+                $d->select(['d.user_enc_id', 'd.username', 'd.first_name']);
+            }], true)
+            ->asArray()
+            ->one();
+        return $this->render('view-answer', ['answers' => $answers]);
+    }
+
+    public function actionRating()
+    {
+        $rating = Yii::$app->request->post('rate');
+        $que = Yii::$app->request->post('que');
+        $aid = Yii::$app->request->post('aid');
+        $ratingModel = AnsweredQuestionnaire::find()
+            ->where(['applied_application_enc_id' => $aid])
+            ->andWhere(['questionnaire_enc_id' => $que])
+            ->one();
+        $ratingModel->rating = $rating;
+        if ($ratingModel->update()) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 
 }

@@ -60,7 +60,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 <?php
 $this->registerCss('
 body  {
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco.png") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;

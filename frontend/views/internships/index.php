@@ -4,12 +4,6 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Internships');
 ?>
-    <div class="fixed-btn background-logo-blue">
-        <a href="/site/company-index">
-            <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
-            Are you an Employer?<br/>
-            <span>Want to post an Internship or a Job?</span></a>
-    </div>
     <section class="backgrounds">
         <div class="container">
             <div class="row">
@@ -86,7 +80,7 @@ $this->title = Yii::t('frontend', 'Internships');
                 <div class="col-md-6 col-sm-6">
                     <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?= Url::to('/internships/list'); ?>" class="btn btn-3">
@@ -114,6 +108,7 @@ $this->title = Yii::t('frontend', 'Internships');
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/employers-landing-page-floating-widget');
 //echo $this->render('/widgets/blog-slider', [
 //    'posts' => $posts,
 //]);
@@ -399,33 +394,6 @@ $this->registerCss('
 }
 
 /*<!---- view-all button css ends --->*/
-.fixed-btn a{
-    position: fixed;
-    text-align: center;
-    width: 150px;
-    color: #fff !important;
-    bottom: 0px;
-    left:0px;
-    border-right: 4px solid orange;
-    z-index: 999999;
-    height: 112px;
-    opacity: 0.9;
-    padding: 10px 0px;
-    transition: ease-in-out .3s;
-    cursor: pointer;
-    bottom: -42px;
-    border-top-right-radius: 28px;
-}
-.fixed-btn a span{
-    font-weight: 700;
-}
-.fixed-btn a:hover{
-    opacity: 1;
-    bottom: 0px;
-}
-.background-logo-blue a{
-    background-color: #49a1e3;
-}
 .background-mirror {
     background: linear-gradient(180deg, #2b2d32 55%, #fff 55%);
 }
@@ -561,6 +529,11 @@ $this->registerCss('
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
 }
+@media only screen and (max-width: 425px){
+    .set-col-2{
+        width:100%;
+    }
+}
 /* animated menu css ends */
 ');
 $script = <<<JS
@@ -593,6 +566,7 @@ $('#cities').typeahead(null, {
 
 getCards("Internships");
 getCategories("Internships");
+addToReviewList();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

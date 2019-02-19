@@ -108,12 +108,12 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="tab-pane active" id="tab1">
 
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="select">
                                             <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="cat_wrapper">
                                             <div class="load-suggestions Typeahead-spinner">
                                                 <span></span>
@@ -124,7 +124,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="desig_wrapper">
                                             <div class="load-suggestions Typeahead-spinner">
                                                 <span></span>
@@ -133,16 +133,51 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             </div>
                                             <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
                                         </div>
-
+                                    </div>
+                                    <div class="col-md-3">
+                                        <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+                                        <div id="radio_rules"></div>
+                                        <label>Salary Type</label>
+                                        <div class="md-radio-inline">
+                                            <?= $form->field($model, 'salary_type')->inline()->radioList([
+                                                1 => 'Fixed',
+                                                2 => 'Negotiable',
+                                            ], [
+                                                'item' => function ($index, $label, $name, $checked, $value) {
+                                                    $return = '<div class="md-radio">';
+                                                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
+                                                    $return .= '<label for="sltype' . $index . $name . '">';
+                                                    $return .= '<span></span>';
+                                                    $return .= '<span class="check"></span>';
+                                                    $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                    $return .= '</div>';
+                                                    return $return;
+                                                }
+                                            ])->label(false); ?>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
+                                    <div id="fixed_stip">
+                                        <div class="col-md-3">
+                                            <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
+                                        </div>
                                     </div>
+                                    <div id="min_max">
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <?= $form->field($model, 'min_salary')->label('Min(Opt)') ?>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <?= $form->field($model, 'max_salary')->label('Max(Opt)') ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-3">
                                         <?=
                                         $form->field($model, 'ctctype')->dropDownList([
@@ -329,7 +364,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
                                             $return .= '<div class="form-group">';
                                             $return .= '<div class="input-group spinner">';
-                                            $return .= '<input type="text" class="form-control place_no" value="1">';
+                                            $return .= '<input type="text" class="form-control place_no" value="1" >';
                                             $return .= '<div class="input-group-btn-vertical">';
                                             $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
                                             $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
@@ -1108,7 +1143,10 @@ $this->registerCss("
   -webkit-transform: translate(0, -8px);
   transform: translate(0, -8px);
 }
-
+#fixed_stip,#min_max
+{
+ display:none;
+}
 .cat-sec {
     float: left;
     width: 100%;
@@ -1540,7 +1578,7 @@ margin-bottom:8px;
     top: -16px;
     z-index: 99;
 }
-#jobtitle, #designations, #inputfield, #quali_field, #question_field{
+#inputfield, #quali_field, #question_field{
     padding-right:60px;
 }
 .Typeahead-input {
@@ -2353,6 +2391,28 @@ if(window.location.hash)
     {
         window.location = window.location.pathname;
     }
+    
+ $('input[name= "salary_type"]').on('change',function(){
+        var sl_type = $(this).attr("data-title");
+   if(sl_type=='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        $('#minstip').val('');
+        $('#maxstip').val('');
+        $('#salaryinhand').val('');
+        }
+     
+     else if(sl_type=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        $('#minstip').val('');
+        $('#maxstip').val('');
+        $('#salaryinhand').val('');
+        }
+     
+   })    
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2407,6 +2467,7 @@ $("#jobtitle").prop("disabled", false);
 $('.selectBox').prop("disabled", true);    
    
 $('#salaryinhand, #ctc').mask("#,#0,#00", {reverse: true});
+$('#max_salary, #min_salary').mask("#,#0,#00", {reverse: true});
 $('[data-toggle="tooltip"]').tooltip();
     $(document).on("keypress",'.place_no', function (evt) {
     if (evt.which < 48 || evt.which > 57)
@@ -3281,6 +3342,9 @@ $('.close-ctc').on('click',function(){
                     'jobtitle': {
                         required: true
                     },
+                    'salary_type': {
+                        required: true
+                    },
                     'questionnaire_selection':
                     {
                         required:true
@@ -3387,6 +3451,10 @@ $('.close-ctc').on('click',function(){
         
                 },
                 messages: { 
+                    'salary_type': {
+                      
+                       required:'<div class = "color_red">Please Select One Option From The List</div>',
+                    },
                     'benefit_selection':
                     {
                         required:'<div class = "color_red">Please Select From the options</div>'
@@ -3452,6 +3520,10 @@ $('.close-ctc').on('click',function(){
                     } else if (element.attr("name") == "desc_count") { 
                         error.insertAfter("#error-checkbox-msg");
                     } 
+              else if(element.attr("name") == "salary_type")
+               { 
+                    error.insertAfter("#radio_rules");
+                }      
               else if (element.attr("name") == "qualific_count") { 
                         error.insertAfter("#error-edu-msg");
                     } 
