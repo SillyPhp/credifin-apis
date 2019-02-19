@@ -74,7 +74,6 @@ use yii\helpers\Url;
                     <a class="btn btn-primary custom-buttons" id="schedule-interview">
                         <?= Yii::t('account', 'Schedule Interview'); ?>
                     </a>
-                    <?= $this->render('/widgets/schedule_interview/main'); ?>
                 </div>
             <?php endif; ?>
         <?php endif; ?>

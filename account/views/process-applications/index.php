@@ -7,6 +7,7 @@ use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'ScheduleInterview',
 ]);
+echo $this->render('/widgets/schedule_interview/main');
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
