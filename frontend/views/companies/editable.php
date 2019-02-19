@@ -527,11 +527,12 @@ $no_cover = "/assets/themes/ey/images/backgrounds/default_cover.png";
                     <?php
                     Pjax::begin(['id' => 'pjax_jobs_cards']);
 
-                    echo $this->render('/widgets/application-card', [
-                        'type' => 'card',
-                        'cards' => $jobcards,
-                    ]);
+//                    echo $this->render('/widgets/application-card', [
+//                        'type' => 'card',
+//                        'cards' => $jobcards,
+//                    ]);
                     ?>
+                    <div class="blogbox"></div>
                 </div>
                 <?php Pjax::end(); ?>
             </div>
@@ -616,7 +617,9 @@ $no_cover = "/assets/themes/ey/images/backgrounds/default_cover.png";
     </div>
 
 </section>
-<?php $this->registerCss("
+<?php
+echo $this->render('/widgets/mustache/application-card');
+$this->registerCss("
 .coverpic{
     text-align: center;
     position:relative;
@@ -1360,7 +1363,9 @@ $(document).on('click', '#confirm_loc', function(event) {
 	  });
 		  
   });
-
+    
+loader = false;
+getCards();
 JS;
 
 $this->registerJs("
