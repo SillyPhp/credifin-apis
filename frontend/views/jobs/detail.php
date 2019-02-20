@@ -98,7 +98,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                         <h3>Preferred Industry</h3><span><?= $data['industry']; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Designation</h3><span><?= $data['designation']; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i>
+                                    <li><i class="fa fa-suitcase"></i>
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Offered Salary <?php if($data['wage_type']=='Fixed'){echo '(Fixed)';
@@ -140,7 +140,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-shield"></i>
+                                    <li><i class="fa fa-clock-o"></i>
                                         <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
                                     <li><i class="fa fa-line-chart "></i>
                                         <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
@@ -337,15 +337,22 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     }
                     ?>
                     <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
-                    <?= $form->field($model, 'check')->inline()->radioList([0 => 'Use Existing One', 1 => 'Upload New'])->label('Upload Resume') ?>
+                    <?php
+                        if($resume) {
+                            $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
+                        } else{
+                            $checkList = [1 => 'Upload New'];
+                        }
+                    ?>
+                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
 
                     <div id="new_resume">
                         <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
                     </div>
-                    <div id="use_existing">
-                        <div class="row">
-                            <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
-                            <?php if ($resume) { ?>
+                    <?php if ($resume) { ?>
+                        <div id="use_existing">
+                            <div class="row">
+                                <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
                                 <?php foreach ($resume as $res) {
                                     ?>
                                     <div class="col-md-offset-1 col-md-10">
@@ -359,47 +366,43 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     </div>
                                 <?php }
                                 ?>
-                            <?php } ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
                 <div class="modal-footer">
-                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary btn-shape btn-col sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn default btn-shape btn-colour', 'data-dismiss' => 'modal']); ?>
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
                 </div>
             </div>
         </div>
     </div>
 <?php ActiveForm::end(); ?>
-<script>
-    function copyToClipboard() {
-        var copyText = document.getElementById("share_manually");
-        copyText.select();
-        document.execCommand("copy");
-        toastr.success("", "Copied");
-        // alert("Copied the text: " + copyText.value);
-    }
-</script>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("share_manually");
+            copyText.select();
+            document.execCommand("copy");
+            toastr.success("", "Copied");
+            // alert("Copied the text: " + copyText.value);
+        }
+    </script>
 <?php
 $this->registerCss("
- .sub_description_1,sub_description_2
- {
+.sub_description_1,sub_description_2{
     display:none;
- }   
- .heading_submit
- {
+}   
+.heading_submit{
     color:#fff;
- } 
- .sub_description
- {
+} 
+.sub_description{
     font-size:15px;
- }  
- #msg
- {
+}
+#msg{
     color:#fff;
     padding: 5px 5px;
     text-align:center;
- }   
+} 
 #close_btn {
     float: right;
     display: inline-block;
@@ -408,29 +411,24 @@ $this->registerCss("
     font-size: 28px;
     cursor: pointer;
 }
-
-#message_img
-{
+#message_img{
   display:none;
 }
-
-#message_img.show
-{
-display : block;
-position : fixed;
-z-index: 100;
-background-color:#33cdbb;
-opacity : 1;
-background-repeat : no-repeat;
-background-position : center;
-width:60%;
-height:60%;
-left : 20%;
-bottom : 0;
-right : 0;
-top : 20%;
+#message_img.show{
+    display : block;
+    position : fixed;
+    z-index: 100;
+    background-color:#33cdbb;
+    opacity : 1;
+    background-repeat : no-repeat;
+    background-position : center;
+    width:60%;
+    height:60%;
+    left : 20%;
+    bottom : 0;
+    right : 0;
+    top : 20%;
 }
-    
 .fader{
   width:100%;
   height:100%;
@@ -522,47 +520,32 @@ top : 20%;
   cursor: pointer;
   visibility: hidden;
 }
-
 .block {
-        float: left;
-        padding: 60px 0;
-        position: relative;
-        width: 100%;
-        z-index: 1;
-    }
-#new_resume,#use_existing
-{display:none;}
-.btn-colour
-{
-    background: #fff;
-    border: 1px solid white;
-    box-shadow: 1px 1px 8px 1px;
+    float: left;
+    padding: 60px 0;
+    position: relative;
+    width: 100%;
+    z-index: 1;
 }
-.btn-col
-{background:#4aa1e3}
-.btn-shape
-{
-    line-height: 15px;
-    height: 38px;
-    border-radius: 19px;
-    border: 1px;
-}
-    #logo_img
-    {
+#new_resume,#use_existing{display:none;}
+#logo_img{
     width: 124px;
     height: 124px; 
-    }
-    .block .container{padding:0}
-    .block.remove-top{padding-top:0}
-    .block.no-padding{padding-top:0; padding-bottom:0; }
-    .block.dark{background:#111111}
-    .block.remove-bottom{padding-bottom:0}
-    .block.overlape {
-        z-index: 2;
-    }
-    section.overlape {
-        z-index: 2;
-    }
+}
+.block .container{padding:0}
+.block.remove-top{padding-top:0}
+.block.no-padding{padding-top:0; padding-bottom:0; }
+.block.dark{background:#111111}
+.block.remove-bottom{padding-bottom:0}
+.block.overlape {
+    z-index: 2;
+}
+section.overlape {
+    z-index: 2;
+}
+.has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
+    color:inherit;
+}
     .inner-header::before {
         position: absolute;
         left: 0;
