@@ -57,6 +57,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="header-boxs">
                 <div class="box-border fade-in one">
+                    <a href="/employers">
                     <!--<div class="box-overlay"></div>-->
                     <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
                     <div class="h-heading">Corporates</div>
@@ -65,6 +66,7 @@ $this->params['header_dark'] = false;
                     <!--                    <div class="middle">
                                             <div class="text">John Doe</div>
                                         </div>-->
+                    </a>
                 </div>
                 <div class="box-border fade-in two">
                     <div class="icon">
@@ -394,57 +396,55 @@ $this->params['header_dark'] = false;
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
-        <div class="heading-style ">Solutions</div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/get_hired.svg') ?>">
-                    </div>
+        <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
+        <div class="row ">
+            <div class="col-md-3">
+                <div class="fade-in one">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
                 </div>
-                <div class="col-md-7 col-sm-7">
-                    <div class="how-text-box">
-                        <div class="how-heading">Get Hired</div>
-                        <div class="how-text">Create a profile with your past education and experience details, add
-                            goals and preferences to let people know you better.
-                        </div>
-                    </div>
+                <div class="how-text-box">
+                    <div class="how-heading">Create your Exclusive Profile </div>
                 </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in two">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>">
+                </div>
+                <div class="how-text-box">
+                     <div class="how-heading"> Get discovered by top employers </div>
+                </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in three">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>">
+                </div>
+                <div class="how-text-box">
+                    <div class="how-heading">Evaluate Offer</div>
+                </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in four">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
+                </div>
+                <div class="how-text-box">
+                    <div class="how-heading">Recive Custom Job Notifications</div>
+                </div>
+                </div>
+            </div>
+         </div>
+        <div class="row">
+            <div class="signupbttns">
+                <a href="/login" class="login-bttn">Login</a>
+                <a href="/signup/individual" class="sign-up">Sign Up</a>
             </div>
         </div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-7 col-sm-7">
-                    <div class="how-text-box">
-                        <div class="how-heading">Evaluate Offer</div>
-                        <div class="how-text">Browse our portal, check out the services that we offer and find the
-                            service that you are looking for.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon how-icon-right animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/se1.svg') ?>">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-resume.png') ?>">
-                    </div>
-                </div>
-                <div class="col-md-7 col-sm-7">
-                    <div class="how-text-box">
-                        <div class="how-heading">Create your Exclusive Profile</div>
-                        <div class="how-text">Once you have found the service that you desire than why wait avail it
-                            right away
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -637,6 +637,55 @@ $this->params['header_dark'] = false;
 
 <?php
 $this->registerCss('
+.hiw-heading{
+    text-align: center;
+    padding-bottom: 30px;
+    font-size: 28px;
+    color: #00a0e3;
+    line-height: 33px;
+    font-family: lobster;
+    text-transform: capitalize;  
+}
+.hiw-heading p{
+    color:#ff7803;
+}
+.signupbttns{
+    text-align:center;
+    padding-top:30px;
+}
+.signupbttns a{
+    margin:0 8px;
+}
+.login-bttn{
+    padding: 6px 15px;
+    border:2px solid #00a0e3;
+    border-radius:5px;
+    color:#00a0e3;
+    text-transform:uppercase;
+}
+.login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
+    -o-transition:.3s all;
+    -ms-transition:.3s all;
+    -moz-transition:.3s all;
+    -webkit-transition:.3s all;
+    transition:.3s all;
+}
+.login-bttn:hover{
+    border:2px solid #00a0e3;
+    color:#fff; 
+    background:#00a0e3; 
+}
+.sign-up{
+     padding: 6px 17px;
+    border:2px solid #ff7803;
+    border-radius:5px;
+    color:#ff7803;
+    text-transform:uppercase;
+}
+.sign-up:hover{
+   color:#fff; 
+    background:#ff7803;  
+}
 .fixed-btn a{
     position: fixed;
     text-align: center;
@@ -975,13 +1024,13 @@ $this->registerCss('
 /*services section ends*/
 /*how it works section starts*/
 .how-it-works{
-    padding: 0px 0 30px 0;
+    padding: 20px 0 45px 0;
     background:#ecf5fe;
 }
 .how-heading{
-    color:#f07706;
-    font-size: 20px;
-    font-family: lobster;
+//    color:#f07706;
+    font-size: 15px;
+//    font-family: lobster;
 //    font-weight: bold;
 //    text-transform: uppercase;
 }
@@ -989,16 +1038,17 @@ $this->registerCss('
     padding: 30px 0;
 }
 .how-text-box{
-    padding:60px 0 0 0;
+    padding:10px 0 0 0;
+    text-align:center;
+}
+how-icon{
     text-align:center;
 }
 .how-icon img{
-    width:300px;
-    max-height:300px;    
+    width:220px;
+    max-height:250px;    
 }
-.how-icon-right{
-    text-align:right;
-}
+
 /*how it works section ends*/
 /*-------------------------------------*/
 /*partner with us*/
