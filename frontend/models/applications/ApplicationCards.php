@@ -40,23 +40,11 @@ class ApplicationCards
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
                 END) as experience',
-                '(CASE
-                WHEN o.value = "1" THEN CONCAT(m.value)
-                WHEN o.value = "2" AND q.value > 0 AND p.value > 0 THEN CONCAT(p.value," to ",q.value)
-                WHEN o.value = "2" AND p.value > 0 THEN CONCAT("From ", p.value)
-                WHEN o.value = "2" AND q.value > 0 THEN CONCAT("Upto ", q.value)
-                ELSE "Negotiable"
-                END) as salary',
-//                '(CASE
-//                WHEN n.value = "monthly" THEN salary * 12
-//                WHEN n.value = "hourly" THEN salary * 40 * 52
-//                WHEN n.value = "weekly" THEN salary * 52
-//                ELSE salary
-//                END) as annual_salary',
-//                'm.value fixed_salary',
-//                'n.value salary_duration',
-//                'p.value min_salary',
-//                'q.value max_salary',
+                'm.value as fixed_salary',
+                'o.value salary_type',
+                'q.value as max_salary',
+                'p.value as min_salary',
+                'n.value as salary_duration'
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -120,7 +108,47 @@ class ApplicationCards
             $cards->offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        return $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+        $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+        $i = 0;
+        foreach ($result as $val){
+            if($val['salary_type'] == 1){
+                if($val['salary_duration'] == "monthly") {
+                    $result[$i]['salary'] = $val['fixed_salary'] * 12;
+                }elseif ($val['salary_duration'] == "hourly"){
+                    $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52;
+                }elseif ($val['salary_duration'] == "weekly"){
+                    $result[$i]['salary'] = $val['fixed_salary'] * 52;
+                }
+            } elseif ($val['salary_type'] == 2){
+                if(!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "monthly") {
+                        $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12;
+                    } elseif ($val['salary_duration'] == "hourly") {
+                        $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52);
+                    } elseif ($val['salary_duration'] == "weekly") {
+                        $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52);
+                    }
+                }elseif (!empty($val['min_salary']) && empty($val['max_salary'])){
+                    if ($val['salary_duration'] == "monthly") {
+                        $result[$i]['salary'] = (string)$val['min_salary'] * 12;
+                    } elseif ($val['salary_duration'] == "hourly") {
+                        $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52);
+                    } elseif ($val['salary_duration'] == "weekly") {
+                        $result[$i]['salary'] = (string)($val['min_salary'] * 52);
+                    }
+                }elseif (empty($val['min_salary']) && !empty($val['max_salary'])){
+                    if ($val['salary_duration'] == "monthly") {
+                        $result[$i]['salary'] = (string)$val['max_salary'] * 12;
+                    } elseif ($val['salary_duration'] == "hourly") {
+                        $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52);
+                    } elseif ($val['salary_duration'] == "weekly") {
+                        $result[$i]['salary'] = (string)($val['max_salary'] * 52);
+                    }
+                }
+            }
+            $i++;
+        }
+        return $result;
     }
 
     public static function internships($options = [])

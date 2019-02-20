@@ -108,6 +108,14 @@ $this->registerCss('
 .set_icon{
     background:transparent !important;
 }
+@media only screen and (max-width: 768px) {
+    .owl-controls .owl-nav .owl-prev{
+        left: -30px !important;
+    }
+    .owl-controls .owl-nav .owl-next{
+        right: -30px !important;
+    }
+}
 ');
 
 $script = <<<JS

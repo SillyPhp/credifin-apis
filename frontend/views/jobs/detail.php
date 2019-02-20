@@ -86,8 +86,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
     <section>
         <!--<div class="block">-->
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8">
+            <div class="row m-0">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="job-single-sec">
                         <div class="job-single-head2">
                             <div class="job-overview">
@@ -233,7 +233,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
                             <a href="/company/<?= $org['slug']; ?>">
@@ -299,6 +299,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <i class="fa fa-envelope"></i>
                             </a>
                         </div>
+                        <div class="col-lg-12">
+                            <h4>or</h4>
+                            <div class="pf-field">
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?= $link ?>" readonly>
+                                <i class="fa fa-clipboard"></i>
+                            </div>
+                        </div>
                     </div><!-- Job Head -->
                 </div>
             </div>
@@ -311,7 +318,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
             <p class="sub_description_1">Your Application Has been successfully registerd with the recruiter. keep check
-                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+                your Dashboard Regularly for further confirmation from the recruiter side.</p>
             <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
                 Questionnaire Pending From Your Side you can fill them now By clicking <a
                         href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
@@ -375,6 +382,15 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
         </div>
     </div>
 <?php ActiveForm::end(); ?>
+<script>
+    function copyToClipboard() {
+        var copyText = document.getElementById("share_manually");
+        copyText.select();
+        document.execCommand("copy");
+        toastr.success("", "Copied");
+        // alert("Copied the text: " + copyText.value);
+    }
+</script>
 <?php
 $this->registerCss("
  .sub_description_1,sub_description_2
@@ -781,7 +797,7 @@ top : 20%;
     .job-details > ul li::before {
         position: absolute;
         left: 0;
-        top: 13px;
+        top: 10px;
         width: 10px;
         height: 1px;
         background: #888888;
@@ -889,7 +905,6 @@ top : 20%;
         float: left;
         width: 100%;
         padding-top: 20px;
-        padding-bottom: 20px;
         border-top: 1px solid #e8ecec;
         border-bottom: 1px solid #e8ecec;
     }
@@ -1150,14 +1165,13 @@ top : 20%;
         margin-right: 0px;
         margin-right: 20px;
     }
-.radio_questions {
-  padding: 0 16px;
-  max-width: 100%;
-
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
-}
+    .radio_questions {
+      padding: 0 16px;
+      max-width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
     .parallax{
         height:100%;
         width:100%;
@@ -1200,24 +1214,62 @@ top : 20%;
         margin-bottom:5px;
         position: relative;
     }
-    .shortlist_job,.shortlist_job:hover
-    {
-     color:#fff;
+    .shortlist_job,.shortlist_job:hover{
+        color:#fff;
     }
     .shortlist_job:focus{
         color:#fff;
     }
-    .col_pink
-    {
-    background: #ef7706 !important;
-    border-color: #ef7706 !important;
-    color: #ffffff;
+    .col_pink{
+        background: #ef7706 !important;
+        border-color: #ef7706 !important;
+        color: #ffffff;
     }
     .hover-change:hover {
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
-    }");
+    }
+    .pf-field {
+        float: left;
+        width: 100%;
+        position: relative;
+    }
+    .pf-field > input {
+        height: 56px;
+        float: left;
+        width: 100%;
+        border: 2px solid #e8ecec;
+        margin-bottom: 20px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        padding: 14px 45px 14px 15px;
+        background: #ffffff !important;
+        font-family: Open Sans;
+        font-size: 13px;
+        font-weight: 400;
+        color: #101010;
+        line-height: 24px;
+        cursor: pointer;
+    }
+    .pf-field > i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        font-size: 20px;
+        color: #848484;
+        line-height: 56px;
+        cursor: pointer;
+    }
+    @media only screen and (max-width: 575px) {
+        .job-overview ul li{
+             width: 50% !important;
+        }
+    }
+    ");
 
 $script = <<< JS
 $(document).on('click','.shortlist_job',function(e)
@@ -1424,3 +1476,5 @@ $(document).on('click','.shortlist_job',function(e)
 })          
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

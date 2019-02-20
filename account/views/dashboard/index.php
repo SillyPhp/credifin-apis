@@ -17,7 +17,6 @@ if (!$is_email_verified):
     echo $this->render('/widgets/verification/resend-email');
 endif;
 ?>
-    <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
     <div class="row">
         <div class="col-md-3">
             <?= $this->render('/widgets/tasks/taskbar-card'); ?>
@@ -167,15 +166,6 @@ endif;
     </div>
 <?php
 $this->registerCss("
-.loader
-{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
 /*how it works section css starts*/
 .how-icon img{
     height:84px;
@@ -349,38 +339,6 @@ p{
 /* Application process css ends */
 ");
 $script = <<<JS
-$(document).on('click','.j-delete',function(e)
-       {
-         e.preventDefault();
-         if (window.confirm("Do you really want to Delete the current Application?")) { 
-            var data = $(this).attr('value');
-            url = "/account/internships/delete-application";
-            Ajax_delete(data,url);
-        }
-       })
-function Ajax_delete(data,url)
-        {
-          $.ajax({
-                url:url,
-                data:{data:data},
-                method:'post',
-                beforeSend:function(){
-                    $(".loader").css("display", "block");
-                  },
-                success:function(data)
-                    {
-                      if(data==true)
-                        {
-                          $(".loader").css("display", "none");
-                          $.pjax.reload({container: "#pjax_active_internships", async: false});
-                          $.pjax.reload({container: "#pjax_active_jobs", async: false});
-                        }
-                       else
-                       {
-                          alert('Something went wrong.. !');
-                       }
-                     }
-              })
-        }   
+
 JS;
 $this->registerJs($script);
