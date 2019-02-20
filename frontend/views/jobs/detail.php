@@ -146,7 +146,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                         <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
                                     <li><i class="fa fa-map-marker "></i>
                                         <h3>Locations</h3>
-                                        <span> <?= (($str) ? rtrim($str,',') : 'All India'); ?></span></li>
+                                        <span> <?= (($str) ? rtrim($str,',') : 'Work From Home'); ?></span></li>
                                 </ul>
                             </div><!-- Job Overview -->
                         </div><!-- Job Head -->

@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%employer_applications}}".
  *
@@ -27,6 +29,7 @@ namespace common\models;
  * @property int $has_benefits Has Benefits (0 as No, 1 as Yes)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)
+ * @property int $has_online_interview Has Online Interview (0 as No, 1 as Yes)
  * @property string $published_on On which date application was published
  * @property string $image Application Image
  * @property string $image_location Application Image Path
@@ -47,7 +50,7 @@ namespace common\models;
  * @property ApplicationSkills[] $applicationSkills
  * @property AppliedApplications[] $appliedApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title
+ * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Designations $designationEnc
@@ -75,7 +78,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_number', 'organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location', 'created_by'], 'required'],
-            [['application_number', 'has_questionnaire', 'has_benefits', 'is_sponsored', 'is_featured', 'is_deleted'], 'integer'],
+            [['application_number', 'has_questionnaire', 'has_benefits', 'is_sponsored', 'is_featured', 'has_online_interview', 'is_deleted'], 'integer'],
             [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
             [['application_enc_id', 'organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
@@ -92,6 +95,10 @@ class EmployerApplications extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
