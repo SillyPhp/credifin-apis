@@ -8,7 +8,7 @@ $this->params['header_dark'] = false;
 $this->title = Yii::t('frontend', 'Empower Youth');
 $keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,latest it jobs for freshers,apply for internship in india,jobs near me,internships near me,top career sites,best career sites in india';
 $description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.svg');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/text-logo.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -30,6 +30,7 @@ $this->params['seo_tags'] = [
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
+//        'fb:app_id' => '383925102019276'
     ],
 ];
 ?>
