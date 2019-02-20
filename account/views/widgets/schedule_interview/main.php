@@ -14,11 +14,11 @@
                             <div class="form-group">
                                 <div class="with-icon">
                                     <select id="candidates" class="mt-multiselect btn btn-default" multiple="multiple" data-label="left" data-width="100%" data-filter="true" data-height="300">
-                                            <option value="User 1">User 1</option>
-                                            <option value="User 2">User 2</option>
-                                            <option value="User 3" selected="selected">User 3</option>
-                                            <option value="User 4">User 4</option>
-                                            <option value="User 5">User 5</option>
+                                            <option value="User 1" style="background-image:url(/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg);">User 1</option>
+                                            <option value="User 2"><canvas class="user-icon" name="ajay" color="#000" width="20" height="20" font="10px"></canvas>User 2</option>
+                                            <option value="User 3" selected="selected"><img src="/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg" class="interviewer_avatar"/>User 3</option>
+                                            <option value="User 4"><canvas class="user-icon" name="aditya" color="#6f0b0b" width="20" height="20" font="10px"></canvas>User 4</option>
+                                            <option value="User 5"><img src="/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg" class="interviewer_avatar"/>User 5</option>
                                     </select>
                                     <i class="utouch-icon utouch-icon-user fa fa-user"></i>
                                 </div>
@@ -156,10 +156,17 @@ $this->registerCss('
     padding-top: 4px;
     width: 100%;
     text-align: left;
+    background-color:#fff !important;
+}
+.multiselect.dropdown-toggle.btn.btn-default:hover, .multiselect.dropdown-toggle.btn.btn-default:focus, .multiselect.dropdown-toggle.btn.btn-default:active{
+    background-color:#fff;
 }
 .multiselect.dropdown-toggle.btn.btn-default b.caret{
     float: right;
     margin-top: 6px;
+}
+.btn-group.open .multiselect-container.dropdown-menu{
+    left:51px;
 }
 /* Modal light box css starts */
 .tab{
