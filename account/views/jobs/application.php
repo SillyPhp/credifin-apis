@@ -3764,7 +3764,13 @@ $('.close-ctc').on('click',function(){
                         $('input[name = "placement_locations[]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
-                      $('#place_locations').html(placement_city.join(" "));
+                      if ($('#jobtype').val()=='Work From Home'){
+                           $('#place_locations').html('');
+                       }
+                       else
+                           {
+                               $('#place_locations').html(placement_city.join(" "));
+                           }
            
                        var skills_list = getTags();
                        $('#skillvalues').html(skills_list.toString());
