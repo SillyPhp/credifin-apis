@@ -98,7 +98,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                         <h3>Preferred Industry</h3><span><?= $data['industry']; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Designation</h3><span><?= $data['designation']; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i>
+                                    <li><i class="fa fa-suitcase"></i>
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Offered Salary <?php if($data['wage_type']=='Fixed'){echo '(Fixed)';
@@ -140,7 +140,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-shield"></i>
+                                    <li><i class="fa fa-clock-o"></i>
                                         <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
                                     <li><i class="fa fa-line-chart "></i>
                                         <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
@@ -543,10 +543,7 @@ $this->registerCss("
 section.overlape {
     z-index: 2;
 }
-.has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline{
-    color:inherit;
-}
-.has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
+.has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
     color:inherit;
 }
     .inner-header::before {
