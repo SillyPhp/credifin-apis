@@ -2,25 +2,24 @@
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-
-$location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
+if (!empty($data['applicationPlacementLocations']))
+{
+    $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
+    $total_vac = 0;
+    $str = "";
+    foreach ($data['applicationPlacementLocations'] as $placements) {
+        $total_vac += $placements['positions'];
+        $str .= $placements['name'] . ',';
+    }
+}
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
 
-$total_vac = 0;
-
-foreach ($data['applicationPlacementLocations'] as $placements) {
-    $total_vac += $placements['positions'];
-}
-foreach ($data['applicationOptions'] as $value) {
-    $option[$value['option_name']] = $value['value'];
-}
 $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
 $application_object = json_encode($applied_data);
 
@@ -66,12 +65,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                 ?>
                                 <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                                class="fa fa-heart-o"></i> Shortlisted</a></span>
+                                        class="fa fa-heart-o"></i> Shortlisted</a></span>
                                 <?php
                             } else {
                                 ?>
                                 <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                                class="fa fa-heart-o"></i> Shortlist</a></span>
+                                        class="fa fa-heart-o"></i> Shortlist</a></span>
                                 <?php
                             }
                         }
@@ -102,28 +101,25 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-thumb-tack"></i>
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
-                                        <h3>Offered Salary <?php if ($option['salary_type'] == 1) {
-                                                echo '(Fixed)';
-                                                $amount = $option['salary'];
+                                        <h3>Offered Salary <?php if($data['wage_type']=='Fixed'){echo '(Fixed)';
+                                        $amount = $data['fixed_wage'];
+                                        setlocale(LC_MONETARY, 'en_IN');
+                                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
+                                        } else if($data['wage_type']=='Negotiable'){
+                                            if(!empty($data['min_wage']) || !empty($data['max_wage'])){echo '(Negotiable)';}
+                                                $amount1 = $data['min_wage'];
+                                                $amount2 = $data['max_wage'];
                                                 setlocale(LC_MONETARY, 'en_IN');
-                                                $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
-                                            } else if ($option['salary_type'] == 2) {
-                                                if (!empty($option['min_salary']) || !empty($option['max_salary'])) {
-                                                    echo '(Negotiable)';
-                                                }
-                                                $amount1 = $option['min_salary'];
-                                                $amount2 = $option['max_salary'];
-                                                setlocale(LC_MONETARY, 'en_IN');
-                                                if (!empty($option['min_salary']) && !empty($option['max_salary'])) {
+                                                if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
                                                     $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . utf8_encode(money_format('%!.0n', $amount2));
-                                                } elseif (!empty($option['min_salary'])) {
-                                                    $amount = '&#8377 From ' . utf8_encode(money_format('%!.0n', $amount1));
-                                                } elseif (!empty($option['max_salary'])) {
-                                                    $amount = '&#8377 Upto ' . utf8_encode(money_format('%!.0n', $amount2));
-                                                } elseif (empty($option['min_salary']) && empty($option['max_salary'])) {
+                                                } elseif(!empty($data['min_wage'])){
+                                                    $amount = '&#8377 From '.utf8_encode(money_format('%!.0n', $amount1));
+                                                } elseif (!empty($data['max_wage'])){
+                                                    $amount = '&#8377 Upto '.utf8_encode(money_format('%!.0n', $amount2));
+                                                } elseif(empty($data['min_wage']) && empty($data['max_wage'])){
                                                     $amount = 'Negotiable';
                                                 }
-                                            } ?></h3>
+                                        } ?></h3>
                                         <span><?= $amount; ?></span></li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
@@ -147,15 +143,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-shield"></i>
                                         <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
                                     <li><i class="fa fa-line-chart "></i>
-                                        <h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
+                                        <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
                                     <li><i class="fa fa-map-marker "></i>
-                                        <h3>Locations</h3><span> <?php
-                                            $str = "";
-                                            foreach ($data['applicationPlacementLocations'] as $job_placement) {
-                                                $str .= $job_placement['name'] . ',';
-                                            }
-                                            echo rtrim($str, ',');
-                                            ?></span></li>
+                                        <h3>Locations</h3>
+                                        <span> <?= (($str) ? rtrim($str,',') : 'All India'); ?></span></li>
                                 </ul>
                             </div><!-- Job Overview -->
                         </div><!-- Job Head -->
@@ -193,35 +184,29 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php } ?>
                             </ul>
                             <?php
-                            if (!empty($data['applicationEmployeeBenefits'])) {
-                                ?>
-                                <h3>Employer Benefits</h3>
-                                <ul>
-                                    <?php
-                                    foreach ($data['applicationEmployeeBenefits'] as $benefit) {
-                                        ?>
-                                        <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                    <?php } ?>
-                                </ul>
-                            <?php } ?>
+                                if (!empty($data['applicationEmployeeBenefits'])){
+                            ?>
+                            <h3>Employer Benefits</h3>
+                            <ul>
+                                <?php
+                                foreach ($data['applicationEmployeeBenefits'] as $benefit) {
+                                    ?>
+                                    <li> <?php echo ucwords($benefit['benefit']); ?> </li>
+                                <?php }?>
+                            </ul>
+                                <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
+                                <?php if (!empty($data['interview_start_date']) && $data['interview_end_date']) { ?>
                                     <li><i class="fa fa-calendar-check-o"></i>
                                         <h3>Interview Dates</h3>
-                                        <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
+                                        <span><?= date('d-M-y', strtotime($data['interview_start_date'])); ?> To <?= date('d-M-y', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <?php
-                                        $fromtime = strtotime($option['interview_start_time']);
-                                        $interviewfrom = date("g:i A", $fromtime);
-                                        $totime = strtotime($option['interview_end_time']);
-                                        $interviewto = date("g:i A", $totime);
-                                        ?>
-                                        <span><?php echo $interviewfrom ?> To <?php echo $interviewto ?></span>
+                                        <span><?=date('H:i A', strtotime($data['interview_start_date'])); ?> To <?= date('H:i A', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
@@ -240,19 +225,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <div class="job-single-head style2">
                         <div class="job-thumb">
                             <a href="/company/<?= $org['slug']; ?>">
-                                <?php
-                                if (!empty($org['logo'])) {
-                                    ?>
-                                    <img src="<?= Url::to($logo_image); ?>" id="logo_img"
-                                         alt="<?= $org['org_name']; ?>"/>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
-                                            color="<?= $org['color']; ?>" font="55px"></canvas>
-                                    <?php
-                                }
+                            <?php
+                            if (!empty($org['logo'])) {
                                 ?>
+                                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="<?= $org['org_name']; ?>"/>
+                                <?php
+                            } else {
+                                ?>
+                                <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
+                                        color="<?= $org['color']; ?>" font="55px"></canvas>
+                                <?php
+                            }
+                            ?>
                             </a>
                         </div>
                         <div class="job-head-info">
@@ -306,8 +290,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         <div class="col-lg-12">
                             <h4>or</h4>
                             <div class="pf-field">
-                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
-                                       class="form-control" value="<?= $link ?>" readonly>
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?= $link ?>" readonly>
                                 <i class="fa fa-clipboard"></i>
                             </div>
                         </div>
@@ -340,8 +323,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <h4 class="modal-title">Fill Out The Details</h4>
                 </div>
                 <div class="modal-body">
-
-                    <?= $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location') ?>
+                    <?php if (!empty($location)){
+                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
+                    } ?>
                     <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
                     <?php
                     if ($que > 0) {
