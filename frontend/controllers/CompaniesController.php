@@ -26,6 +26,7 @@ use common\models\Categories;
 use common\models\ApplicationOptions;
 use common\models\ShortlistedOrganizations;
 use common\models\EmployeeBenefits;
+use frontend\models\applications\ApplicationCards;
 
 class CompaniesController extends Controller {
 
@@ -49,22 +50,22 @@ class CompaniesController extends Controller {
                     ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
                     ->asArray()
                     ->all();
-            $jobcards = EmployerApplications::find()
-                    ->alias('a')
-                    ->select(['a.application_enc_id', 'f.location_enc_id', 'h.name as city', 'd.organization_enc_id', 'a.created_on', 'a.slug', 'a.experience', 'a.type', 'c.name as title', 'd.name as org_name', 'd.logo', 'd.logo_location', 'e.option_name', 'e.value as salary'])
-                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-                    ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-                    ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
-                    ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
-                    ->innerJoin(OrganizationLocations::tablename() . 'as g', 'f.location_enc_id = g.location_enc_id')
-                    ->leftJoin(ApplicationOptions::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id')
-                    ->leftJoin(Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
-                    ->where(['e.option_name' => 'salary'])
-                    ->andWhere(['a.organization_enc_id' => $organization['organization_enc_id']])
-                    ->orderBy(['a.id' => SORT_DESC])
-                    ->limit(3)
-                    ->asArray()
-                    ->all();
+//            $jobcards = EmployerApplications::find()
+//                    ->alias('a')
+//                    ->select(['a.application_enc_id', 'f.location_enc_id', 'h.name as city', 'd.organization_enc_id', 'a.created_on', 'a.slug', 'a.experience', 'a.type', 'c.name as title', 'd.name as org_name', 'd.logo', 'd.logo_location', 'e.option_name', 'e.value as salary'])
+//                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+//                    ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+//                    ->innerJoin(Organizations::tablename() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
+//                    ->innerJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
+//                    ->innerJoin(OrganizationLocations::tablename() . 'as g', 'f.location_enc_id = g.location_enc_id')
+//                    ->leftJoin(ApplicationOptions::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id')
+//                    ->leftJoin(Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+//                    ->where(['e.option_name' => 'salary'])
+//                    ->andWhere(['a.organization_enc_id' => $organization['organization_enc_id']])
+//                    ->orderBy(['a.id' => SORT_DESC])
+//                    ->limit(3)
+//                    ->asArray()
+//                    ->all();
             $benefit = OrganizationEmployeeBenefits::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'b.icon'])
@@ -72,6 +73,31 @@ class CompaniesController extends Controller {
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+            if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $type = Yii::$app->request->post('type');
+                $options = [];
+                $options['limit'] = 3;
+                $options['page'] = 1;
+                $options['company'] = $organization['name'];
+                if($type == 'Jobs') {
+                    $cards = ApplicationCards::jobs($options);
+                } else {
+                    $cards = ApplicationCards::internships($options);
+                }
+                if ($cards) {
+                    $response = [
+                        'status' => 200,
+                        'message' => 'Success',
+                        'cards' => $cards,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            }
 
             if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization_enc_id == $organization['organization_enc_id']) {
                 $industries = \common\models\Industries::find()
@@ -90,7 +116,7 @@ class CompaniesController extends Controller {
                             'companyLogoFormModel' => $companyLogoFormModel,
                             'companyCoverImageForm' => $companyCoverImageForm,
                             'addEmployeeBenefitForm' => $addEmployeeBenefitForm,
-                            'jobcards' => $jobcards,
+//                            'jobcards' => $jobcards,
                             'industries' => $industries,
                             'benefit' => $benefit,
                 ]);
@@ -104,7 +130,7 @@ class CompaniesController extends Controller {
                             'organization' => $organization,
                             'locations' => $organizationLocations,
                             'videos' => $organizationVideos,
-                            'jobcards' => $jobcards,
+//                            'jobcards' => $jobcards,
                             'shortlist' => $chkuser,
                             'benefit' => $benefit,
                 ]);

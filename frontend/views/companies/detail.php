@@ -285,26 +285,19 @@ if ($organization['cover_image']) {
             </section>
             <?php
         }
-        if (count($jobcards) > 0) {
             ?>
 
             <section id="jobs">
                 <div class="about">
                     <div class="container">
                         <div class="content">
-                            <div class="t-heading">Available Job</div>
-                            <?php
-                            echo $this->render('/widgets/application-card', [
-                                'type' => 'card',
-                                'cards' => $jobcards,
-                            ]);
-                            ?>
+                            <div class="t-heading">Available Opportunities</div>
+                            <div class="blogbox"></div>
                         </div>
                     </div>
                 </div>
             </section>
             <?php
-        }
         if (count($locations) > 0) {
             ?>
             <section id="offices">
@@ -365,6 +358,7 @@ if ($organization['cover_image']) {
 
     </section>
 <?php
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 /* Feature, categories css starts */
 .cat-sec {
@@ -480,7 +474,10 @@ $(document).on('click','.shortlist_org',function(e){
         }
     });        
 });
-
+    
+loader = false;
+getCards();
+getCards("Internships");
 JS;
 
 if (count($locations) > 0) {

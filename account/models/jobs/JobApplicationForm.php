@@ -270,7 +270,8 @@ class JobApplicationForm extends Model
 //        if (!$image_information) {
 //            return false;
 //        } else {
-//
+//            $employerApplicationsModel->image_location = $image_information['image_location'];
+//            $employerApplicationsModel->image = $image_information['image'];
 //        }
 
         if (!empty($this->designations)) {

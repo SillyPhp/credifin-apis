@@ -5,6 +5,33 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = false;
+$this->title = Yii::t('frontend', 'Empower Youth');
+$keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,latest it jobs for freshers,apply for internship in india,jobs near me,internships near me,top career sites,best career sites in india';
+$description = '';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.svg');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth2',
+        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+    ],
+];
 ?>
 
 <section class="slider">
@@ -16,13 +43,13 @@ $this->params['header_dark'] = false;
                         <ul class="main-slider-sec style2 text-arrows">
                             <li class="slideHome"><img
                                         src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                        alt=""/></li>
+                                        alt="Empower Youth"/></li>
                             <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt=""/>
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="Empower Youth"/>
                             </li>
                             <li class="slideHome"><img
                                         src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                        alt=""/></li>
+                                        alt="Empower Youth"/></li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
@@ -64,7 +91,7 @@ $this->params['header_dark'] = false;
             <div class="header-boxs">
                 <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in one">
-                    <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
+                    <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>" alt="Employers"></div>
                     <div class="h-heading">Employers</div>
                     <div class="h-text">I want to recruit talent</div>
                 </div>
@@ -72,7 +99,7 @@ $this->params['header_dark'] = false;
                 <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in two">
                     <div class="icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates">
                     </div>
                     <div class="h-heading">Candidates</div>
                     <div class="h-text">I'm the talent</div>
@@ -81,7 +108,7 @@ $this->params['header_dark'] = false;
                 <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
-                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
+                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>" alt="Universities & Colleges">
                         </div>
                         <div class="h-heading">Universities & Colleges</div>
                         <div class="h-text">I want to enroll talent</div>
@@ -119,7 +146,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs">
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
@@ -129,7 +156,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships">
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -164,8 +191,8 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="tab-sec">
                         <ul class="nav nav-tabs">
-                            <li><a class="current" data-tab="fjobs">Featured Jobs</a></li>
-                            <li><a data-tab="rjobs">Recent Jobs</a></li>
+                            <li><a class="current" data-tab="fjobs">Featured Opportunities</a></li>
+                            <li><a data-tab="rjobs">Recent Opportunities</a></li>
                         </ul>
                         <div id="fjobs" class="tab-content current">
                             <div class="job-listings-tabs">
@@ -176,7 +203,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/front-end-developer-junior-front-end-developer-1902051549353855" title="">Front End Developer</a></h3>
@@ -193,10 +220,10 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
                                                     </a>
                                                 </div>
-                                                <h3><a href="/job/social-media-marketing-social-media-executive-1902051549351284" title="">Social Media Marketing</a></h3>
+                                                <h3><a href="/internship/full-stack-developer-1902011549002251" title="">Full Stack Developer</a></h3>
                                                 <span>Empower Youth</span>
                                                 <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
@@ -210,7 +237,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/1901301548841707" title="">Chartered Accountant</a></h3>
@@ -229,12 +256,12 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
                                                 <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
@@ -246,7 +273,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/head-of-collection-1901291548756849" title="">Head Of Collection</a></h3>
@@ -263,7 +290,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/head-of-audit-1901291548755297" title="">Head Of Audit</a></h3>
@@ -285,19 +312,19 @@ $this->params['header_dark'] = false;
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/kmg">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/agile">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/internship/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
+                                                    <span>Agile Finserv Pvt. Ltd.</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/job/chartered-accountant-chartered-accountant-1901301548848703" title="">Chartered Accountant</a></h3>
-                                                <span>KMG Consultants</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -305,7 +332,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/kmg">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/chartered-accountant-chartered-accountant-1901301548848703" title="">Chartered Accountant</a></h3>
@@ -322,7 +349,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/senior-financial-controller-1901291548756005" title="">Senior Financial Controller</a></h3>
@@ -338,19 +365,19 @@ $this->params['header_dark'] = false;
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/kmg">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/internship/chartered-accountant-1901301548848101" title="">Chartered Accountant</a></h3>
+                                                    <span>KMG Consultants</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                                 </div>
-                                                <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
-                                                <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -358,7 +385,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/social-media-marketing-social-media-executive-1902051549351284" title="">Social Media Marketing</a></h3>
@@ -375,12 +402,12 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
                                                     </a>
                                                 </div>
-                                                <h3><a href="/job/1901301548841707" title="">Chartered Accountant</a></h3>
+                                                <h3><a href="/internship/1901301548841707" title="">Chartered Accountant</a></h3>
                                                 <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
@@ -409,7 +436,7 @@ $this->params['header_dark'] = false;
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5 col-sm-5">
                     <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/get_hired.svg') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/get_hired.svg') ?>" alt="Get Hired">
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7">
@@ -434,7 +461,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="col-md-5 col-sm-5">
                     <div class="how-icon how-icon-right animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/se1.svg') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/se1.svg') ?>" alt="Evaluate Offer">
                     </div>
                 </div>
             </div>
@@ -443,7 +470,7 @@ $this->params['header_dark'] = false;
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5 col-sm-5">
                     <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-resume.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-resume.png') ?>" alt="Create Resume">
                     </div>
                 </div>
                 <div class="col-md-7 col-sm-7">
@@ -469,7 +496,7 @@ $this->params['header_dark'] = false;
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>" alt="Capital Small Finance Bank">
                         </div>
                         <div class="com-name">
                             Capital Small Finance Bank
@@ -477,7 +504,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com2 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>" alt="Midland MicroFin">
                         </div>
                         <div class="com-name">
                             Midland MicroFin
@@ -485,7 +512,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com3 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group">
                         </div>
                         <div class="com-name">
                             DSB Law Group
@@ -493,7 +520,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com4 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>" alt="HAG India">
                         </div>
                         <div class="com-name">
                             HAG India
@@ -501,7 +528,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com5 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv">
                         </div>
                         <div class="com-name">
                             Agile Finserv
@@ -509,7 +536,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com6 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>" alt="Olready">
                         </div>
                         <div class="com-name">
                             Olready
@@ -517,7 +544,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com8 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="Amrit Malwa Capital Bank">
                         </div>
                         <div class="com-name">
                             Amrit Malwa Capital Bank
@@ -525,7 +552,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com9 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat">
                         </div>
                         <div class="com-name">
                             Hamco Ispat
@@ -533,7 +560,7 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com10 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd">
                         </div>
                         <div class="com-name">
                             Up Money Ltd
@@ -541,14 +568,12 @@ $this->params['header_dark'] = false;
                     </div>
                     <div class="com11 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>" alt="Empower youth">
                         </div>
                         <div class="com-name">
                             Empower youth
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -641,7 +666,11 @@ $this->params['header_dark'] = false;
 <?php
 echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-
+.job-field input:focus{
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
 .no-padd{
    padding-left:0px !important; 
    padding-right:0px !important; 
@@ -1542,7 +1571,7 @@ textarea {
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
     border-radius: 8px;
-
+    cursor: pointer;
     margin-top: 4px;
 }
 .nav.nav-tabs > li a.current {
