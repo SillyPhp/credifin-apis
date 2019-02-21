@@ -217,7 +217,7 @@ class InternshipApplicationForm extends Model
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $employerApplicationsModel->application_enc_id = $utilitiesModel->encrypt();
-        $employerApplicationsModel->application_number = date('ymd') . time();
+        $employerApplicationsModel->application_number = rand(1000,10000).time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
@@ -228,10 +228,7 @@ class InternshipApplicationForm extends Model
 
         $category_execute = Categories::find()
             ->alias('a')
-            ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['name' => $this->jobtitle])
-            ->andWhere(['b.assigned_to'=>'Internships']);
+            ->where(['name' => $this->jobtitle]);
         $chk_cat = $category_execute->asArray()->one();
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
@@ -254,7 +251,13 @@ class InternshipApplicationForm extends Model
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
-            $chk_assigned = $category_execute->andWhere(['not',['b.parent_enc_id'=>null]])->asArray()->one();
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                ->andWhere(['not',['b.parent_enc_id'=>null]])
+                ->andWhere(['b.assigned_to'=>'Internships','b.parent_enc_id'=>$this->primaryfield])
+                ->asArray()
+                ->one();
             if (empty($chk_assigned))
             {
                 $this->addNewAssignedCategory($chk_cat['category_enc_id'],$employerApplicationsModel);

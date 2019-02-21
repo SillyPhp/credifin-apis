@@ -82,7 +82,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 <div class="row">
                     <?=
                     $form->field($basicDetails, 'dob',['template'=>'<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-y", strtotime(Yii::$app->user->identity->dob)) : '')],
+                        'options' => ['placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
                         'readonly' => true,
                         'type' => DatePicker::TYPE_INPUT,
                         'name' => 'dob',

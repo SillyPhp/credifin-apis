@@ -160,7 +160,6 @@ class JobApplicationForm extends Model
 
     public function saveValues()
     {
-
         if ($this->salary_type==1)
         {
             $sal = str_replace(',', '', $this->salaryinhand);
@@ -181,7 +180,7 @@ class JobApplicationForm extends Model
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $employerApplicationsModel->application_enc_id = $utilitiesModel->encrypt();
-        $employerApplicationsModel->application_number = date('ymd') . time();
+        $employerApplicationsModel->application_number = rand(1000,10000).time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
@@ -191,11 +190,7 @@ class JobApplicationForm extends Model
         $employerApplicationsModel->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
-            ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['name' => $this->jobtitle])
-            ->andWhere(['b.assigned_to'=>'Jobs']);
-
+            ->where(['name' => $this->jobtitle]);
         $chk_cat = $category_execute->asArray()->one();
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
@@ -218,7 +213,13 @@ class JobApplicationForm extends Model
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
-            $chk_assigned = $category_execute->andWhere(['not',['b.parent_enc_id'=>null]])->asArray()->one();
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                ->andWhere(['not',['b.parent_enc_id'=>null]])
+                ->andWhere(['b.assigned_to'=>'Jobs','b.parent_enc_id'=>$this->primaryfield])
+                ->asArray()
+                ->one();
             if (empty($chk_assigned))
             {
                 $this->addNewAssignedCategory($chk_cat['category_enc_id'],$employerApplicationsModel);
@@ -379,7 +380,7 @@ class JobApplicationForm extends Model
                     $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationPlacementLocationsModel->save()) {
-                        print_r($applicationPlacementLocationsModel->getErrors());
+                        return false;
                     }
                 }
             }
