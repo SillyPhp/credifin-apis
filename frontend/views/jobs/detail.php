@@ -11,10 +11,12 @@ if (!empty($data['applicationPlacementLocations']))
     $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
     $total_vac = 0;
     $str = "";
+    $locations= [];
     foreach ($data['applicationPlacementLocations'] as $placements) {
         $total_vac += $placements['positions'];
-        $str .= $placements['name'] . ',';
+        array_push($locations, $placements['name']);
     }
+    $str = implode(", ", $locations);
 }
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
@@ -24,9 +26,8 @@ $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $d
 $application_object = json_encode($applied_data);
 
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
-//$cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
 if (empty($org['cover_image'])) {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    $cover_image = "@eyAssets/images/backgrounds/default_cover.png";
 }
 
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
@@ -111,7 +112,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                 $amount2 = $data['max_wage'];
                                                 setlocale(LC_MONETARY, 'en_IN');
                                                 if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
-                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2));
                                                 } elseif(!empty($data['min_wage'])){
                                                     $amount = '&#8377 From '.utf8_encode(money_format('%!.0n', $amount1));
                                                 } elseif (!empty($data['max_wage'])){
@@ -137,7 +138,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'Trans';
                                                     break;
                                                 default:
-                                                    echo 'not found';
+                                                    echo 'N/A';
                                             }
                                             ?></span></li>
                                     <li><i class="fa fa-clock-o"></i>
@@ -212,9 +213,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <li><i class="fa fa-map-marker"></i>
                                     <h3>Interview Locations</h3><span> <?php
                                         $str2 = "";
+                                        $interview_locations= [];
                                         foreach ($data['applicationInterviewLocations'] as $loc) {
-                                            $str2 .= $loc['name'] . ',';
+                                            array_push($interview_locations, $loc['name']);
                                         }
+                                        $str2 = implode(", ", $interview_locations);
                                         echo rtrim($str2, ',');
                                         ?></span></li>
                             </ul>

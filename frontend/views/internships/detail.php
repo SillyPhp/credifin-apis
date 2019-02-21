@@ -2,22 +2,25 @@
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-if (!empty($data['applicationPlacementLocations']))
-{
+if (!empty($data['applicationPlacementLocations'])) {
     $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
     $total_vac = 0;
     $str = "";
+    $locations = [];
     foreach ($data['applicationPlacementLocations'] as $placements) {
         $total_vac += $placements['positions'];
-        $str .= $placements['name'] . ',';
+        array_push($locations, $placements['name']);
     }
+    $str = implode(", ", $locations);
 }
 $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
 $application_object = json_encode($applied_data);
@@ -25,12 +28,12 @@ $application_object = json_encode($applied_data);
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
 if (empty($org['cover_image'])) {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    $cover_image = "@eyAssets/images/backgrounds/default_cover.png";
 }
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location']. DIRECTORY_SEPARATOR . $org['logo'];
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
 ?>
 
-    <div class="modal fade bs-modal-lg in" id="modal_que"  aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -38,13 +41,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
                 </div>
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -52,12 +56,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 </div>
                 <div class="modal-body">
                     <?php $form = ActiveForm::begin(['id' => 'resume_form']) ?>
-                    <?php if (!empty($location)){
+                    <?php if (!empty($location)) {
                         echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
                     } ?>
                     <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
                     <?php
-                    if ($que>0) {
+                    if ($que > 0) {
 
                         $ques = 1;
                     } else {
@@ -66,35 +70,43 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     }
                     ?>
                     <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
-                    <?= $form->field($model, 'check')->inline()->radioList([0 => 'Use Existing One', 1 => 'Upload New'])->label('Upload Resume') ?>
+                    <?php
+                    if ($resume) {
+                        $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
+                    } else {
+                        $checkList = [1 => 'Upload New'];
+                    }
+                    ?>
+                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
 
                     <div id="new_resume">
                         <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
                     </div>
-                    <div id="use_existing">
-                        <div class="row">
-                            <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
-                            <?php if ($resume) { ?>
+                    <?php if ($resume) { ?>
+                        <div id="use_existing">
+                            <div class="row">
+                                <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
                                 <?php foreach ($resume as $res) {
                                     ?>
                                     <div class="col-md-offset-1 col-md-10">
                                         <div class="radio_questions">
                                             <div class="inputGroup">
-                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]" type="radio" value="<?= $res['resume_enc_id']; ?>"/>
+                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
+                                                       type="radio" value="<?= $res['resume_enc_id']; ?>"/>
                                                 <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
                                             </div>
                                         </div>
                                     </div>
                                 <?php }
                                 ?>
-                            <?php } ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
 
                 </div>
                 <div class="modal-footer">
-                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary btn-shape btn-col sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn default btn-shape btn-colour', 'data-dismiss' => 'modal']); ?>
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
                 </div>
             </div>
         </div>
@@ -102,7 +114,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
 <?php ActiveForm::end(); ?>
     <section class="overlape">
         <!--<div class="block no-padding">-->
-        <div data-velocity="-.1" style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
+        <div data-velocity="-.1"
+             style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
+             class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
         <!--<div class="container fluid">-->
         <div class="row m-0">
             <div class="col-lg-12 p-0">
@@ -139,10 +153,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <div class="job-single-sec">
                         <div class="job-single-head2">
                             <div class="job-overview">
-                                <h3>Job Overview</h3>
+                                <h3>Internship Overview</h3>
                                 <?php
-                                switch ($data['has_placement_offer'])
-                                {
+                                switch ($data['has_placement_offer']) {
                                     case 1;
                                         $offer = 'Yes';
                                         break;
@@ -152,13 +165,24 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 }
                                 ?>
                                 <ul>
-                                    <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
-                                    <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type <?= '('.$data['wage_duration'].')';?></h3><span><?= $data['wage_type']; ?></span></li>
-                                    <li><i class="fa fa-gift"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
+                                    <li><i class="fa fa-puzzle-piece"></i>
+                                        <h3>Profile</h3><span><?= $data['name']; ?></span></li>
+                                    <li><i class="fa fa-puzzle-piece"></i>
+                                        <h3>Stipend Type <?= '(' . $data['wage_duration'] . ')'; ?></h3>
+                                        <span><?= $data['wage_type']; ?></span></li>
+                                    <li><i class="fa fa-gift"></i>
+                                        <h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
                                     <?php setlocale(LC_MONETARY, 'en_IN'); ?>
-                                    <li><i class="fa fa-money"></i><h3>Maximum Stipend</h3><span><?= (($data['max_wage']) ? '&#8377 '.utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'Nil'); ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($data['min_wage']) ? '&#8377 '.utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'Nil'); ?></span></li>
-                                    <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Maximum Stipend</h3>
+                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A'); ?></span>
+                                    </li>
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Minimum stipend</h3>
+                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A'); ?></span>
+                                    </li>
+                                    <li><i class="fa fa-mars-double"></i>
+                                        <h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
                                                     echo 'No Preference';
@@ -176,12 +200,16 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Fixed Stipend</h3><span><?= (($data['fixed_wage']) ? '&#8377 '.utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Fixed Stipend</h3>
+                                        <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'N/A') ?></span>
+                                    </li>
                                     <li><i class="fa fa-line-chart "></i>
-                                        <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
+                                        <h3>Total Vacancies</h3>
+                                        <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
                                     <li><i class="fa fa-map-marker "></i>
                                         <h3>Locations</h3>
-                                        <span> <?= (($str) ? rtrim($str,',') : 'Work From Home'); ?></span></li>
+                                        <span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span></li>
                                 </ul>
                             </div><!-- Job Overview -->
                         </div><!-- Job Head -->
@@ -219,17 +247,17 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php } ?>
                             </ul>
                             <?php
-                                if (!empty($data['applicationEmployeeBenefits'])){
-                            ?>
-                            <h3>Employer Benefits</h3>
-                            <ul>
-                                <?php
+                            if (!empty($data['applicationEmployeeBenefits'])) {
+                                ?>
+                                <h3>Employer Benefits</h3>
+                                <ul>
+                                    <?php
                                     foreach ($data['applicationEmployeeBenefits'] as $benefit) {
                                         ?>
                                         <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                    <?php }?>
-                            </ul>
-                                <?php } ?>
+                                    <?php } ?>
+                                </ul>
+                            <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
@@ -241,15 +269,17 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <span><?=date('H:i A', strtotime($data['interview_start_date'])); ?> To <?= date('H:i A', strtotime($data['interview_end_date'])); ?></span>
+                                        <span><?= date('H:i A', strtotime($data['interview_start_date'])); ?> To <?= date('H:i A', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
                                     <h3>Interview Locations</h3><span> <?php
                                         $str2 = "";
+                                        $interview_locations = [];
                                         foreach ($data['applicationInterviewLocations'] as $loc) {
-                                            $str2 .= $loc['name'] . ',';
+                                            array_push($interview_locations, $loc['name']);
                                         }
+                                        $str2 = implode(", ", $interview_locations);
                                         echo rtrim($str2, ',');
                                         ?></span></li>
                             </ul>
@@ -260,17 +290,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <div class="job-single-head style2">
                         <div class="job-thumb">
                             <a href="/company/<?= $org['slug']; ?>">
-                            <?php
-                            if (!empty($org['logo'])) {
-                                ?>
-                                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="" />
                                 <?php
-                            } else {
+                                if (!empty($org['logo'])) {
+                                    ?>
+                                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
+                                            color="" font="55px"></canvas>
+                                    <?php
+                                }
                                 ?>
-                                <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125" color="" font="55px"></canvas>
-                                <?php
-                            }
-                            ?>
                             </a>
                         </div>
                         <div class="job-head-info">
@@ -291,30 +322,42 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     Internship</a>
                             <?php endif; ?>
                         <?php endif; ?>
-                        <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all Internships</a>
+                        <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all
+                            Internships</a>
                         <div class="share-bar no-border">
                             <?php $link = Url::to('internship/' . $application_details["slug"], true); ?>
                             <h3>Share</h3>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-fb">
                                 <i class="fa fa-facebook"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-linkedin">
                                 <i class="fa fa-linkedin"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
-                            <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
+                            <a href="#"
+                               onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               class="share-google">
                                 <i class="fa fa-envelope"></i>
                             </a>
                         </div>
                         <div class="col-lg-12">
                             <h4>or</h4>
                             <div class="pf-field">
-                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?= $link ?>" readonly>
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
+                                       class="form-control" value="<?= $link ?>" readonly>
                                 <i class="fa fa-clipboard"></i>
                             </div>
                         </div>
@@ -329,8 +372,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From Your Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
+                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
+                Questionnaire Pending From Your Side you can fill them now By clicking <a
+                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
+                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>
@@ -488,20 +535,6 @@ $this->registerCss("
     }
     #new_resume,#use_existing{
         display:none;
-    }
-    .btn-colour{
-        background: #fff;
-        border: 1px solid white;
-        box-shadow: 1px 1px 8px 1px;
-    }
-    .btn-col{
-        background:#4aa1e3
-    }
-    .btn-shape{
-        line-height: 15px;
-        height: 38px;
-        border-radius: 19px;
-        border: 1px;
     }
     #logo_img{
         width: 124px;
@@ -1212,6 +1245,9 @@ $this->registerCss("
         .job-overview ul li{
              width: 50% !important;
         }
+    }
+    .has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
+        color:inherit;
     }
     ");
 
