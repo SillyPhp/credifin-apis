@@ -5,51 +5,18 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = false;
-$keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,latest it jobs for freshers,apply for internship in india,jobs near me,internships near me,top career sites,best career sites in india';
-$description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/text-logo.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Url::canonical(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-//        'fb:app_id' => '383925102019276'
-    ],
-];
 ?>
 
 <section class="slider">
     <div class="block no-padding">
         <div class="container fluid">
-            <div class="">
-                <div class="col-lg-12 no-padd">
+            <div class="row">
+                <div class="col-lg-12">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                        alt="Empower Youth"/></li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="Empower Youth"/>
-                            </li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                        alt="Empower Youth"/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt=""/></li>
+                            <li class="slideHome"><img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt=""/></li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
@@ -58,20 +25,20 @@ $this->params['seo_tags'] = [
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/jobs/list'); ?>">
                                         <div class="row no-gape">
-                                            <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
+                                            <div class="col-lg-7 col-md-7 col-sm-4">
                                                 <div class="job-field">
                                                     <input type="text" name="keyword" placeholder="Keywords"/>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
-                                                <div class="job-field job-field2">
+                                            <div class="col-lg-3 col-md-2 col-sm-4">
+                                                <div class="job-field">
                                                     <select data-placeholder="Any category" id="search_type" class="chosen-city">
                                                         <option value="jobs">Jobs</option>
                                                         <option value="internships">Internships</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-12">
+                                            <div class="col-lg-2  col-md-3 col-sm-4">
                                                 <button type="submit">Search <i class="fa fa-search"></i></button>
                                             </div>
                                         </div>
@@ -89,47 +56,46 @@ $this->params['seo_tags'] = [
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in one">
-                    <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>" alt="Employers"></div>
-                    <div class="h-heading">Employers</div>
-                    <div class="h-text">I want to recruit talent</div>
+                    <a href="/employers">
+                    <!--<div class="box-overlay"></div>-->
+                    <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"></div>
+                    <div class="h-heading">Corporates</div>
+                    <div class="h-text">Ask and answer questions, share results</div>
+
+                    <!--                    <div class="middle">
+                                            <div class="text">John Doe</div>
+                                        </div>-->
+                    </a>
                 </div>
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in two">
                     <div class="icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>">
                     </div>
                     <div class="h-heading">Candidates</div>
-                    <div class="h-text">I'm the talent</div>
+                    <div class="h-text">Consultants, test preparation, travel services</div>
                 </div>
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in three">
                     <div class="box-overlay">
-                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>" alt="Universities & Colleges">
+                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>">
                         </div>
                         <div class="h-heading">Universities & Colleges</div>
-                        <div class="h-text">I want to enroll talent</div>
+                        <div class="h-text">Search or let universities find you</div>
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
                     </div>
                 </div>
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="box-border fade-in four">
                     <div class="box-overlay">
                         <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
                         </div>
                         <div class="h-heading">Recruiters</div>
-                        <div class="h-text">I want to find the best match for talent</div>
+                        <div class="h-text">Latest news & everything you need to know</div>
                     </div>
                     <div class="overlay">
                         <div class="text">Coming Soon</div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -142,21 +108,21 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="heading-style ">Our Services</div>
         <div class="services row">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-6 serv-center">
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>">
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-6">
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>">
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -164,7 +130,6 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </div>
-
 </section>
 <!---->
 <section class="fixed-bttn">
@@ -175,7 +140,7 @@ $this->params['seo_tags'] = [
                     Its Free To Get Hired On Empower Youth
                 </div>
                 <div class="post-job-bttn">
-                    <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
+                    <a href="#" id="myBttn" class="hvr-float-shadow">
                         Get Hired
                     </a>
                 </div>
@@ -191,8 +156,8 @@ $this->params['seo_tags'] = [
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="tab-sec">
                         <ul class="nav nav-tabs">
-                            <li><a class="current" data-tab="fjobs">Featured Opportunities</a></li>
-                            <li><a data-tab="rjobs">Recent Opportunities</a></li>
+                            <li><a class="current" data-tab="fjobs">Featured Jobs</a></li>
+                            <li><a data-tab="rjobs">Recent Jobs</a></li>
                         </ul>
                         <div id="fjobs" class="tab-content current">
                             <div class="job-listings-tabs">
@@ -203,7 +168,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/front-end-developer-junior-front-end-developer-1902051549353855" title="">Front End Developer</a></h3>
@@ -220,10 +185,10 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
                                                     </a>
                                                 </div>
-                                                <h3><a href="/internship/full-stack-developer-1902011549002251" title="">Full Stack Developer</a></h3>
+                                                <h3><a href="/job/social-media-marketing-social-media-executive-1902051549351284" title="">Social Media Marketing</a></h3>
                                                 <span>Empower Youth</span>
                                                 <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
@@ -237,7 +202,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/1901301548841707" title="">Chartered Accountant</a></h3>
@@ -256,12 +221,12 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
                                                 <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
@@ -273,7 +238,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/head-of-collection-1901291548756849" title="">Head Of Collection</a></h3>
@@ -290,7 +255,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/head-of-audit-1901291548755297" title="">Head Of Audit</a></h3>
@@ -312,19 +277,19 @@ $this->params['seo_tags'] = [
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/company/agile">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
-                                                    <span>Agile Finserv Pvt. Ltd.</span>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/company/kmg">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="" />
+                                                    </a>
                                                 </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
+                                                <h3><a href="/job/chartered-accountant-chartered-accountant-1901301548848703" title="">Chartered Accountant</a></h3>
+                                                <span>KMG Consultants</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -332,7 +297,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/kmg">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/chartered-accountant-chartered-accountant-1901301548848703" title="">Chartered Accountant</a></h3>
@@ -349,7 +314,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/senior-financial-controller-1901291548756005" title="">Senior Financial Controller</a></h3>
@@ -365,19 +330,19 @@ $this->params['seo_tags'] = [
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/company/kmg">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/chartered-accountant-1901301548848101" title="">Chartered Accountant</a></h3>
-                                                    <span>KMG Consultants</span>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/company/agile">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
+                                                    </a>
                                                 </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
+                                                <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
+                                                <span>Agile Finserv Pvt. Ltd.</span>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -385,7 +350,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="" />
                                                     </a>
                                                 </div>
                                                 <h3><a href="/job/social-media-marketing-social-media-executive-1902051549351284" title="">Social Media Marketing</a></h3>
@@ -402,12 +367,12 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="" />
                                                     </a>
                                                 </div>
-                                                <h3><a href="/internship/1901301548841707" title="">Chartered Accountant</a></h3>
+                                                <h3><a href="/job/1901301548841707" title="">Chartered Accountant</a></h3>
                                                 <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
+                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                             </div>
                                             <div class="job-style-bx">
                                                 <span class="job-is ft fill">Full time</span>
@@ -431,57 +396,55 @@ $this->params['seo_tags'] = [
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
-        <div class="heading-style ">Solutions</div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/get_hired.svg') ?>" alt="Get Hired">
-                    </div>
+        <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
+        <div class="row ">
+            <div class="col-md-3">
+                <div class="fade-in one">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
                 </div>
-                <div class="col-md-7 col-sm-7">
-                    <div class="how-text-box">
-                        <div class="how-heading">Get Hired</div>
-                        <div class="how-text">Create a profile with your past education and experience details, add
-                            goals and preferences to let people know you better.
-                        </div>
-                    </div>
+                <div class="how-text-box">
+                    <div class="how-heading">Create your Exclusive Profile </div>
                 </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in two">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>">
+                </div>
+                <div class="how-text-box">
+                     <div class="how-heading"> Get discovered by top employers </div>
+                </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in three">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>">
+                </div>
+                <div class="how-text-box">
+                    <div class="how-heading">Evaluate Offer</div>
+                </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in four">
+                <div class="how-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
+                </div>
+                <div class="how-text-box">
+                    <div class="how-heading">Recive Custom Job Notifications</div>
+                </div>
+                </div>
+            </div>
+         </div>
+        <div class="row">
+            <div class="signupbttns">
+                <a href="/login" class="login-bttn">Login</a>
+                <a href="/signup/individual" class="sign-up">Sign Up</a>
             </div>
         </div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-7 col-sm-7">
-                    <div class="how-text-box">
-                        <div class="how-heading">Evaluate Offer</div>
-                        <div class="how-text">Browse our portal, check out the services that we offer and find the
-                            service that you are looking for.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon how-icon-right animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/se1.svg') ?>" alt="Evaluate Offer">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-resume.png') ?>" alt="Create Resume">
-                    </div>
-                </div>
-                <div class="col-md-7 col-sm-7">
-                    <div class="how-text-box">
-                        <div class="how-heading">Create your Exclusive Profile</div>
-                        <div class="how-text">Once you have found the service that you desire than why wait avail it
-                            right away
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -496,7 +459,7 @@ $this->params['seo_tags'] = [
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>" alt="Capital Small Finance Bank">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>">
                         </div>
                         <div class="com-name">
                             Capital Small Finance Bank
@@ -504,7 +467,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com2 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>" alt="Midland MicroFin">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
                         </div>
                         <div class="com-name">
                             Midland MicroFin
@@ -512,7 +475,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com3 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>">
                         </div>
                         <div class="com-name">
                             DSB Law Group
@@ -520,7 +483,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com4 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>" alt="HAG India">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>">
                         </div>
                         <div class="com-name">
                             HAG India
@@ -528,7 +491,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com5 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>">
                         </div>
                         <div class="com-name">
                             Agile Finserv
@@ -536,7 +499,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com6 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>" alt="Olready">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>">
                         </div>
                         <div class="com-name">
                             Olready
@@ -544,15 +507,15 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com8 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="Amrit Malwa Capital Bank">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>">
                         </div>
                         <div class="com-name">
-                            Amrit Malwa Capital Bank
+                            Empower youth
                         </div>
                     </div>
                     <div class="com9 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                         </div>
                         <div class="com-name">
                             Hamco Ispat
@@ -560,20 +523,22 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com10 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd">
-                        </div>
-                        <div class="com-name">
-                            Up Money Ltd
-                        </div>
-                    </div>
-                    <div class="com11 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>" alt="Empower youth">
+                            <img src="<?= Url::to('@commonAssets/logos/text-logo.png') ?>">
                         </div>
                         <div class="com-name">
                             Empower youth
                         </div>
                     </div>
+                    <div class="com11 animatable fadeIn">
+                        <div class="com-logo">
+                            <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                        </div>
+                        <div class="com-name">
+                            Empower youth
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -663,22 +628,96 @@ $this->params['seo_tags'] = [
         </div>
     </article>
 </div>
+<div class="fixed-btn background-logo-blue">
+    <a href="/site/company-index"> <img
+                src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
+        <?= Yii::t('frontend', 'Are you an Employer?'); ?><br/>
+        <span><?= Yii::t('frontend', 'Want to post a Job or an Intenship?'); ?></span></a>
+</div>
+
 <?php
-echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-.job-field input:focus{
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+.hiw-heading{
+    text-align: center;
+    padding-bottom: 30px;
+    font-size: 28px;
+    color: #00a0e3;
+    line-height: 33px;
+    font-family: lobster;
+    text-transform: capitalize;  
 }
-.no-padd{
-   padding-left:0px !important; 
-   padding-right:0px !important; 
+.hiw-heading p{
+    color:#ff7803;
+}
+.signupbttns{
+    text-align:center;
+    padding-top:30px;
+}
+.signupbttns a{
+    margin:0 8px;
+}
+.login-bttn{
+    padding: 6px 15px;
+    border:2px solid #00a0e3;
+    border-radius:5px;
+    color:#00a0e3;
+    text-transform:uppercase;
+}
+.login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
+    -o-transition:.3s all;
+    -ms-transition:.3s all;
+    -moz-transition:.3s all;
+    -webkit-transition:.3s all;
+    transition:.3s all;
+}
+.login-bttn:hover{
+    border:2px solid #00a0e3;
+    color:#fff; 
+    background:#00a0e3; 
+}
+.sign-up{
+     padding: 6px 17px;
+    border:2px solid #ff7803;
+    border-radius:5px;
+    color:#ff7803;
+    text-transform:uppercase;
+}
+.sign-up:hover{
+   color:#fff; 
+    background:#ff7803;  
+}
+.fixed-btn a{
+    position: fixed;
+    text-align: center;
+    width: 150px;
+    color: #fff !important;
+    bottom: 0px;
+    left:0px;
+    border-right: 4px solid orange;
+    z-index: 999999;
+    height: 112px;
+    opacity: 0.9;
+    padding: 10px 0px;
+    transition: ease-in-out .3s;
+    cursor: pointer;
+    bottom: -42px;
+    border-top-right-radius: 28px;
+}
+.fixed-btn a span{
+    font-weight: 700;
+    color: #fff;
+}
+.fixed-btn a:hover{
+    opacity: 1;
+    bottom: 0px;
+}
+.background-logo-blue a{
+    background-color: #49a1e3;
 }
 /*try now sec*/
 .fixed-bttn{
     padding:60px 0 100px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
+    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
     background-size: cover;
     background-attachment:fixed;
     background-repeat:no-repeat;
@@ -842,10 +881,7 @@ $this->registerCss('
 	}
 }
 
-.header-boxs{
-    max-width:850px;
-    margin:0 auto;
-}
+
 .box-border:hover{
     -ms-transform: scale(1.1,1.1); 
     -webkit-transform: scale(1.1,1.1); 
@@ -862,6 +898,8 @@ $this->registerCss('
     text-align: center;
     box-shadow: 0 0 5px rgba(0,0,0,.1); 
     margin-bottom: 20px; 
+    max-width: 200px;
+    margin-left: 20px;
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
@@ -986,13 +1024,13 @@ $this->registerCss('
 /*services section ends*/
 /*how it works section starts*/
 .how-it-works{
-    padding: 0px 0 30px 0;
+    padding: 20px 0 45px 0;
     background:#ecf5fe;
 }
 .how-heading{
-    color:#f07706;
-    font-size: 20px;
-    font-family: lobster;
+//    color:#f07706;
+    font-size: 15px;
+//    font-family: lobster;
 //    font-weight: bold;
 //    text-transform: uppercase;
 }
@@ -1000,16 +1038,17 @@ $this->registerCss('
     padding: 30px 0;
 }
 .how-text-box{
-    padding:60px 0 0 0;
+    padding:10px 0 0 0;
+    text-align:center;
+}
+how-icon{
     text-align:center;
 }
 .how-icon img{
-    width:300px;
-    max-height:300px;    
+    width:220px;
+    max-height:250px;    
 }
-.how-icon-right{
-    text-align:right;
-}
+
 /*how it works section ends*/
 /*-------------------------------------*/
 /*partner with us*/
@@ -1062,7 +1101,11 @@ $this->registerCss('
         margin-right: 0;
     }
 }
-
+@media only screen and (min-width: 992px) {
+    .box-border{
+        height: 260px;
+    }
+}
 /*Modal css starts */
 .content-wrapper {
     position: relative;
@@ -1358,180 +1401,6 @@ textarea {
     left: 32%;
 }
 /*companies css ends*/
-@media screen and (min-width: 993px){
-    .box-border{
-         min-width: 200px !important;
-         max-width: 200px !important;
-         height: 260px;
-    }
-}
-@media screen and (max-width: 992px) {
-    .header-boxs{
-        display:inline;
-    }
-    .box-border{
-        min-height:270px;
-        margin-left:0px;
-    }
-}
-.job-field .chosen-container-single .chosen-single{
-//    border-radius:0 23px 0 0;
-    border:none;
-  }
-//  .search-job2 form .row > div:last-child button{
-//        border-radius: 0px 0px 23px 23px;
-//  }
-  .search-job2 .job-field2::before{
-    background:transparent;
-  }
-  .search-job2{
-    padding:9px 20px;
-    background:none;
-  }
-
-@media screen and (max-width: 767px){
-    .how-icon{
-        text-align:center;
-        padding:0 0 20px 0;
-    }
-    .how-text-box{
-        padding:10px 0 20px 0;
-    }
-    .job-search-sec{
-        min-width:100%;
-    }
-  
-    .partner-btn button{
-        margin-bottom:10px;
-    }
-    .com-grid{
-        min-height:480px;
-    }
-    .com1{
-        top: 0%;
-        left: 75%;
-    }
-    .com5{
-        top: 28%;
-        left: 5%;;
-    }
-    .com2{
-       top: 30%;
-        left: 41%;
-    }
-    .com3{
-        top:33%;
-        left:75%;
-    }
-    .com4{
-       top: 59%;
-        left: 30%;
-    }
-    .com6{
-        top: 62%;
-        left: 66%;
-    } 
-    .com7{
-        top: 80%;
-        left: 5%;
-    }
-    .com8{
-       top: 90%;
-       left: 47%;
-    }
-    .com9{
-        top: 93%;
-        left: 77%;
-    }
-    .com10{
-        top: 65%;
-        left: 2%;
-    }
-    .com11{
-       display:none;
-    }
-}
-.job-field select{
-    float: left;
-    width: 100%;
-    background: no-repeat;
-    border: none;
-    font-size: 13px;
-    color: #888888;
-    margin: 0;
-    padding: 0 70px 0 30px;
-    height: 61px;
-    line-height: 61px;
-    background-color: #FFF;
-    border-radius: 23px;
-}
-.job-field input{
-    border-radius: 23px !important;
-}
-.search-job2{
-        border-radius: 25px;
-        background:none;
-    }
-@media screen and (max-width: 495px){
-    .com-grid{
-        min-height:580px;
-    }
-    
-    .companies{
-        padding: 0px 0 55px 0;
-    }
-    
-    .header-row{
-        margin-top:10px;
-    }
-    .com1{
-        top: 22%;
-        left: -2%;
-    }
-    .com5{
-        top: 19%;
-        left: 36%;;
-    }
-    .com2{
-       top: 22%;
-        left: 73%;
-    }
-    .com3{
-        top:50%;
-        left:-2%;
-    }
-    .com4{
-       top: 47%;
-        left: 36%;
-    }
-    .com6{
-        top: 50%;
-        left: 73%;
-    } 
-//    .com7{
-//        top: 78%;
-//        left: 5%;
-//    }
-    .com8{
-       top: 80%;
-       left: -2%;
-    }
-    .com9{
-        top: 77%;
-        left: 36%;
-    }
-    .com10{
-        top: 80%;
-        left: 73%;
-    }   
-}
-
-@media screen and (max-width: 375px){
-     .box-border{
-            min-height:310px;
-            margin-left:0px;
-        }
-}
 
 .tab-sec {
     float: left;
@@ -1571,7 +1440,7 @@ textarea {
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
     border-radius: 8px;
-    cursor: pointer;
+
     margin-top: 4px;
 }
 .nav.nav-tabs > li a.current {
