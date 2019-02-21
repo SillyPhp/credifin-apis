@@ -45,7 +45,8 @@ $this->params['seo_tags'] = [
                                         src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
                                         alt="Empower Youth"/></li>
                             <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="Empower Youth"/>
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>"
+                                        alt="Empower Youth"/>
                             </li>
                             <li class="slideHome"><img
                                         src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
@@ -65,7 +66,8 @@ $this->params['seo_tags'] = [
                                             </div>
                                             <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
                                                 <div class="job-field job-field2">
-                                                    <select data-placeholder="Any category" id="search_type" class="chosen-city">
+                                                    <select data-placeholder="Any category" id="search_type"
+                                                            class="chosen-city">
                                                         <option value="jobs">Jobs</option>
                                                         <option value="internships">Internships</option>
                                                     </select>
@@ -90,46 +92,52 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="header-boxs">
                 <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="box-border fade-in one">
-                    <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>" alt="Employers"></div>
-                    <div class="h-heading">Employers</div>
-                    <div class="h-text">I want to recruit talent</div>
-                </div>
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="box-border fade-in two">
-                    <div class="icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates">
+                    <div class="box-border fade-in one">
+                        <a href="/employers">
+                            <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
+                                                   alt="Employers"></div>
+                            <div class="h-heading">Employers</div>
+                            <div class="h-text">I want to recruit talent</div>
+                        </a>
                     </div>
-                    <div class="h-heading">Candidates</div>
-                    <div class="h-text">I'm the talent</div>
-                </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="box-border fade-in three">
-                    <div class="box-overlay">
-                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>" alt="Universities & Colleges">
+                    <div class="box-border fade-in two">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates">
                         </div>
-                        <div class="h-heading">Universities & Colleges</div>
-                        <div class="h-text">I want to enroll talent</div>
+                        <div class="h-heading">Candidates</div>
+                        <div class="h-text">I'm the talent</div>
                     </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
-                    </div>
-                </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
-                <div class="box-border fade-in four">
-                    <div class="box-overlay">
-                        <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
+                    <div class="box-border fade-in three">
+                        <div class="box-overlay">
+                            <div class="icon"><img
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"
+                                        alt="Universities & Colleges">
+                            </div>
+                            <div class="h-heading">Universities & Colleges</div>
+                            <div class="h-text">I want to enroll talent</div>
                         </div>
-                        <div class="h-heading">Recruiters</div>
-                        <div class="h-text">I want to find the best match for talent</div>
-                    </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
+                        <div class="overlay">
+                            <div class="text">Coming Soon</div>
+                        </div>
                     </div>
                 </div>
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                    <div class="box-border fade-in four">
+                        <div class="box-overlay">
+                            <div class="icon"><img
+                                        src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
+                            </div>
+                            <div class="h-heading">Recruiters</div>
+                            <div class="h-text">I want to find the best match for talent</div>
+                        </div>
+                        <div class="overlay">
+                            <div class="text">Coming Soon</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,7 +164,8 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>"
+                                 alt="Internships">
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -198,108 +207,124 @@ $this->params['seo_tags'] = [
                             <div class="job-listings-tabs">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
-                                            <div class="job-listing wtabs">
-                                                <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
-                                                    </a>
-                                                </div>
-                                                <h3><a href="/job/front-end-developer-junior-front-end-developer-1902051549353855" title="">Front End Developer</a></h3>
-                                                <span>Empower Youth</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
-                                                </a>
-                                        </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/empoweryouth">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
+                                                                 alt="Empower Youth"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3>
+                                                        <a href="/job/front-end-developer-junior-front-end-developer-1902051549353855"
+                                                           title="">Front End Developer</a></h3>
+                                                    <span>Empower Youth</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/internship/full-stack-developer-1902011549002251" title="">Full Stack Developer</a></h3>
-                                                <span>Empower Youth</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/empoweryouth">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
+                                                                 alt="Empower Youth"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/internship/full-stack-developer-1902011549002251"
+                                                           title="">Full Stack Developer</a></h3>
+                                                    <span>Empower Youth</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
+                                                    </div>
                                                 </div>
-                                                <h3><a href="/job/1901301548841707" title="">Chartered Accountant</a></h3>
-                                                <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
+                                            </a>
+                                        </div><!-- Job -->
+                                        <div class="job-listing wtabs">
+                                            <a href="">
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/agile">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
+                                                                 alt="Agile Finserv"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/job/1901301548841707" title="">Chartered
+                                                            Accountant</a></h3>
+                                                    <span>Agile Finserv Pvt. Ltd.</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
+                                                    </div>
+                                                </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                         </div>
                                         </a><!-- Job -->
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/agile">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
+                                                                 alt="Agile Finserv"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/job/company-secretary-1901301548840332" title="">Company
+                                                            Secretary</a></h3>
+                                                    <span>Agile Finserv Pvt. Ltd.</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
+                                                    </div>
                                                 </div>
-                                                <h3><a href="/job/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
-                                                <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                              </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/upmoney">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>"
+                                                                 alt="Up Money Limited"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/job/head-of-collection-1901291548756849" title="">Head
+                                                            Of Collection</a></h3>
+                                                    <span>Up Money Limited</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/job/head-of-collection-1901291548756849" title="">Head Of Collection</a></h3>
-                                                <span>Up Money Limited</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/upmoney">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>"
+                                                                 alt="Up Money Limited"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/job/head-of-audit-1901291548755297" title="">Head Of
+                                                            Audit</a></h3>
+                                                    <span>Up Money Limited</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/job/head-of-audit-1901291548755297" title="">Head Of Audit</a></h3>
-                                                <span>Up Money Limited</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                     </div>
@@ -315,10 +340,12 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/company/agile">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
+                                                                 alt="Agile Finserv"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/company-secretary-1901301548840332" title="">Company Secretary</a></h3>
+                                                    <h3><a href="/internship/company-secretary-1901301548840332"
+                                                           title="">Company Secretary</a></h3>
                                                     <span>Agile Finserv Pvt. Ltd.</span>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
@@ -329,36 +356,41 @@ $this->params['seo_tags'] = [
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/kmg">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/kmg">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png') ?>"
+                                                                 alt="KMG Consultants"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3>
+                                                        <a href="/job/chartered-accountant-chartered-accountant-1901301548848703"
+                                                           title="">Chartered Accountant</a></h3>
+                                                    <span>KMG Consultants</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/job/chartered-accountant-chartered-accountant-1901301548848703" title="">Chartered Accountant</a></h3>
-                                                <span>KMG Consultants</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/upmoney">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png')?>" alt="Up Money Limited" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/upmoney">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>"
+                                                                 alt="Up Money Limited"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/job/senior-financial-controller-1901291548756005"
+                                                           title="">Senior Financial Controller</a></h3>
+                                                    <span>Up Money Limited</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/job/senior-financial-controller-1901291548756005" title="">Senior Financial Controller</a></h3>
-                                                <span>Up Money Limited</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                     </div>
@@ -368,12 +400,15 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/company/kmg">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png')?>" alt="KMG Consultants" />
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png') ?>"
+                                                                 alt="KMG Consultants"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/chartered-accountant-1901301548848101" title="">Chartered Accountant</a></h3>
+                                                    <h3><a href="/internship/chartered-accountant-1901301548848101"
+                                                           title="">Chartered Accountant</a></h3>
                                                     <span>KMG Consultants</span>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
+                                                    </div>
                                                 </div>
                                                 <div class="job-style-bx">
                                                     <span class="job-is ft fill">Full time</span>
@@ -382,36 +417,42 @@ $this->params['seo_tags'] = [
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/empoweryouth">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>" alt="Empower Youth" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/empoweryouth">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
+                                                                 alt="Empower Youth"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3>
+                                                        <a href="/job/social-media-marketing-social-media-executive-1902051549351284"
+                                                           title="">Social Media Marketing</a></h3>
+                                                    <span>Empower Youth</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
+                                                    </div>
                                                 </div>
-                                                <h3><a href="/job/social-media-marketing-social-media-executive-1902051549351284" title="">Social Media Marketing</a></h3>
-                                                <span>Empower Youth</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
                                             <a href="">
-                                            <div class="job-title-sec">
-                                                <div class="c-logo">
-                                                    <a href="/company/agile">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>" alt="Agile Finserv" />
-                                                    </a>
+                                                <div class="job-title-sec">
+                                                    <div class="c-logo">
+                                                        <a href="/company/agile">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
+                                                                 alt="Agile Finserv"/>
+                                                        </a>
+                                                    </div>
+                                                    <h3><a href="/internship/1901301548841707" title="">Chartered
+                                                            Accountant</a></h3>
+                                                    <span>Agile Finserv Pvt. Ltd.</span>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
-                                                <h3><a href="/internship/1901301548841707" title="">Chartered Accountant</a></h3>
-                                                <span>Agile Finserv Pvt. Ltd.</span>
-                                                <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                            </div>
-                                            <div class="job-style-bx">
-                                                <span class="job-is ft fill">Full time</span>
-                                            </div>
+                                                <div class="job-style-bx">
+                                                    <span class="job-is ft fill">Full time</span>
+                                                </div>
                                             </a>
                                         </div><!-- Job -->
                                     </div>
@@ -428,61 +469,66 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 
+
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
-        <div class="heading-style ">Solutions</div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/get_hired.svg') ?>" alt="Get Hired">
+        <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
+        <div class="row ">
+            <div class="col-md-3">
+                <div class="fade-in one">
+                    <div class="how-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
                     </div>
-                </div>
-                <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
-                        <div class="how-heading">Get Hired</div>
-                        <div class="how-text">Create a profile with your past education and experience details, add
-                            goals and preferences to let people know you better.
-                        </div>
+                        <div class="how-heading">Create your Exclusive Profile </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-7 col-sm-7">
+            <div class="col-md-3">
+                <div class="fade-in two">
+                    <div class="how-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>">
+                    </div>
+                    <div class="how-text-box">
+                        <div class="how-heading"> Get discovered by top employers </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="fade-in three">
+                    <div class="how-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>">
+                    </div>
                     <div class="how-text-box">
                         <div class="how-heading">Evaluate Offer</div>
-                        <div class="how-text">Browse our portal, check out the services that we offer and find the
-                            service that you are looking for.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon how-icon-right animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/se1.svg') ?>" alt="Evaluate Offer">
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row steps-row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-5 col-sm-5">
-                    <div class="how-icon animatable fadeIn">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-resume.png') ?>" alt="Create Resume">
+            <div class="col-md-3">
+                <div class="fade-in four">
+                    <div class="how-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
                     </div>
-                </div>
-                <div class="col-md-7 col-sm-7">
                     <div class="how-text-box">
-                        <div class="how-heading">Create your Exclusive Profile</div>
-                        <div class="how-text">Once you have found the service that you desire than why wait avail it
-                            right away
-                        </div>
+                        <div class="how-heading">Recive Custom Job Notifications</div>
                     </div>
                 </div>
             </div>
         </div>
+        <?php
+            if(Yii::$app->user->isGuest) {
+                ?>
+                <div class="row">
+                    <div class="signupbttns">
+                        <a href="/login" class="login-bttn">Login</a>
+                        <a href="/signup/individual" class="sign-up">Sign Up</a>
+                    </div>
+                </div>
+                <?php
+            }
+        ?>
+    </div>
     </div>
 </section>
 <!--how it works ends-->
@@ -496,7 +542,8 @@ $this->params['seo_tags'] = [
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>" alt="Capital Small Finance Bank">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>"
+                                 alt="Capital Small Finance Bank">
                         </div>
                         <div class="com-name">
                             Capital Small Finance Bank
@@ -504,7 +551,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com2 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>" alt="Midland MicroFin">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
+                                 alt="Midland MicroFin">
                         </div>
                         <div class="com-name">
                             Midland MicroFin
@@ -544,7 +592,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="com8 animatable fadeIn">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="Amrit Malwa Capital Bank">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
+                                 alt="Amrit Malwa Capital Bank">
                         </div>
                         <div class="com-name">
                             Amrit Malwa Capital Bank
@@ -666,6 +715,55 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.hiw-heading{
+    text-align: center;
+    padding-bottom: 30px;
+    font-size: 28px;
+    color: #00a0e3;
+    line-height: 33px;
+    font-family: lobster;
+    text-transform: capitalize;  
+}
+.hiw-heading p{
+    color:#ff7803;
+}
+.signupbttns{
+    text-align:center;
+    padding-top:30px;
+}
+.signupbttns a{
+    margin:0 8px;
+}
+.login-bttn{
+    padding: 6px 15px;
+    border:2px solid #00a0e3;
+    border-radius:5px;
+    color:#00a0e3;
+    text-transform:uppercase;
+}
+.login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
+    -o-transition:.3s all;
+    -ms-transition:.3s all;
+    -moz-transition:.3s all;
+    -webkit-transition:.3s all;
+    transition:.3s all;
+}
+.login-bttn:hover{
+    border:2px solid #00a0e3;
+    color:#fff; 
+    background:#00a0e3; 
+}
+.sign-up{
+     padding: 6px 17px;
+    border:2px solid #ff7803;
+    border-radius:5px;
+    color:#ff7803;
+    text-transform:uppercase;
+}
+.sign-up:hover{
+   color:#fff; 
+    background:#ff7803;  
+}
 .job-field input:focus{
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -986,13 +1084,13 @@ $this->registerCss('
 /*services section ends*/
 /*how it works section starts*/
 .how-it-works{
-    padding: 0px 0 30px 0;
+    padding: 20px 0 45px 0;
     background:#ecf5fe;
 }
 .how-heading{
-    color:#f07706;
-    font-size: 20px;
-    font-family: lobster;
+//    color:#f07706;
+    font-size: 15px;
+//    font-family: lobster;
 //    font-weight: bold;
 //    text-transform: uppercase;
 }
@@ -1000,16 +1098,17 @@ $this->registerCss('
     padding: 30px 0;
 }
 .how-text-box{
-    padding:60px 0 0 0;
+    padding:10px 0 0 0;
+    text-align:center;
+}
+how-icon{
     text-align:center;
 }
 .how-icon img{
-    width:300px;
-    max-height:300px;    
+    width:220px;
+    max-height:250px;    
 }
-.how-icon-right{
-    text-align:right;
-}
+
 /*how it works section ends*/
 /*-------------------------------------*/
 /*partner with us*/
@@ -1670,6 +1769,16 @@ textarea {
     border: 1px solid #e8ecec;
     background: none;
     color: #707070;
+}
+.browse-all-cat a.style2:hover{
+    background-color:#00a0e3;
+    color:#fff;
+    border-color:transparent;
+    -o-transition:.3s all;
+    -ms-transition:.3s all;
+    -moz-transition:.3s all;
+    -webkit-transition:.3s all;
+    transition:.3s all;
 }
 .back-top:hover {
     color: #FFF;

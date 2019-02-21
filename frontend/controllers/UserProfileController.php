@@ -31,11 +31,15 @@ class UserProfileController extends Controller
                 WHEN a.is_available = "4" THEN "Exploring Possibilities"
                 ELSE "Undefined"
                 END) as availability', 'ROUND(DATEDIFF(CURDATE(), a.dob)/ 365.25) as age', 'b.name as city', 'c.name as job_profile'])
-            ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
+            ->leftJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+            ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
             ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
             ->asArray()
             ->one();
+
+        if (!count($user) > 0) {
+            return 'No User Found';
+        }
 
         $skills = \common\models\UserSkills::find()
             ->alias('a')
@@ -55,10 +59,6 @@ class UserProfileController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->all();
-
-        if (!count($user) > 0) {
-            return 'No User Found';
-        }
 
         return $this->render('view', [
             'user' => $user,
