@@ -1242,7 +1242,7 @@ $(document).on('click','.shortlist_job',function(e)
                  }
                     
                     });        
-    })        
+    });        
    
         $(document).on('click','.apply-btn',function(e)
             {
@@ -1252,13 +1252,13 @@ $(document).on('click','.shortlist_job',function(e)
                return false;
             }
          $('#modal').modal('show'); 
-         })
+         });
    
    $('input[name="JobApplied[check]"]').on('change',function()
        {
         if($(this).val() == 1)
         {
-          $('#use_existing').css('display','none')
+          $('#use_existing').css('display','none');
           $('#new_resume').css('display','block');
         }
         else if($(this).val() == 0)
@@ -1268,7 +1268,7 @@ $(document).on('click','.shortlist_job',function(e)
             $('#use_existing').css('display','block');
             
         }
-        })
+        });
         
          var que_id = $('#question_id').val();
          var fill_que = $('#fill_question').val();
@@ -1362,7 +1362,7 @@ $(document).on('click','.shortlist_job',function(e)
          $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
          return false;
             }
-            })
+            });
         
         function ajax_call(formData)
         {
