@@ -47,8 +47,8 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : '')])->label(false) ?>
                     </div>
                     <div class="row">
-                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
-                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
                         <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : '');  ?>
                         <?= $form->field($basicDetails, 'state',['template'=>'<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
                             $states, [
@@ -98,7 +98,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <ul class="tags languages_tag_list">
                                     <?php if (!empty($userLanguage)) {
                                         foreach ($userLanguage as $language){  ?>
-                                            <li class="addedTag"><?= $language['language'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="languages[]" value="<?= $language['language_enc_id'] ?>"></li>
+                                            <li class="addedTag"><?= $language['language'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="languages[]" value="<?= $language['language'] ?>"></li>
                                         <?php }
                                     } ?>
                                     <li class="tagAdd taglist">
@@ -118,7 +118,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <ul class="tags skill_tag_list">
                                     <?php if(!empty($userSkills)){
                                         foreach ($userSkills as $skill){ ?>
-                                        <li class="addedTag"><?= $skill['skill'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="skills[]" value="<?= $skill['skill_enc_id'] ?>"></li>
+                                        <li class="addedTag"><?= $skill['skill'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="skills[]" value="<?= $skill['skill'] ?>"></li>
                                     <?php } } ?>
                                     <li class="tagAdd taglist">
                                         <div class="skill_wrapper">
@@ -138,8 +138,8 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                             <?php $basicDetails->availability = ((Yii::$app->user->identity->is_available) ? Yii::$app->user->identity->is_available : 1); ?>
                             <?= $form->field($basicDetails, 'availability')->inline()->radioList([
                                     1 => 'Available',
-                                    2 => 'Open For Opportunities',
-                                    3 => 'Actively Looking for Opportunities',
+                                    2 => 'Open',
+                                    3 => 'Actively Looking',
                                     4 => 'Exploring Possibilities',
                                     0 => 'Not Available',
                                 ], [
@@ -166,10 +166,10 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 <h3>Social Edit</h3>
                 <?php ActiveForm::begin(['id'=>'socialDetailForm','action'=>'/user-profile/update-social-detail']) ?>
                     <div class="row">
-                        <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'www.facebook.com/EmpowerYouth','value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'www.twitter.com/EmpowerYouth','value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'google',['template'=>'<div class="col-lg-6"><span class="pf-title">Google</span><div class="pf-field gplus">{input}{error}<i class="fa fa-google"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'www.google-plus.com/EmpowerYouth','value'=>((Yii::$app->user->identity->google) ? Yii::$app->user->identity->google : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'linkedin',['template'=>'<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'www.Linkedin.com/EmpowerYouth','value'=>((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Facebook Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Twitter Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'skype',['template'=>'<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Skype Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->google : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'linkedin',['template'=>'<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Linkedin Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_contact','id'=>'contact_submit']); ?>
                         </div>
@@ -446,10 +446,26 @@ $(document).on('keypress','input',function(e)
             return false;
         }
 })
-$(document).on('focus','#search-skill',function(e)
+$(document).on('keyup','#search-skill',function(e)
 {
-    $(this).val('');
+    if(e.which==13)
+        {
+          add_tags($(this),'skill_tag_list','skills');  
+        }
 })
+$(document).on('keyup','#search-language',function(e)
+{
+    if(e.which==13)
+        {
+          add_tags($(this),'languages_tag_list','languages');
+        }
+})
+ $("#exp_year, #exp_month").on("keypress keyup blur",function (event) {    
+           $(this).val($(this).val().replace(/[^\d].+/, ""));
+            if ((event.which < 48 || event.which > 57)) {
+                event.preventDefault();
+            }
+        });
 function setCity()
 {
     if(!$('#current_city').val()=='')
@@ -470,7 +486,6 @@ function setCity()
                 }
                 }
                 );
-           
         }
 }
 setCity();
@@ -481,7 +496,7 @@ $.expr[":"].contains = $.expr.createPseudo(function(arg) {
 });
 
     $('#addTagBtn').on('click', function(){
-        $('#tags option:selected').each(function() {
+        $('#tags option:selected').each(function() { 
             $(this).appendTo($('#selectedTags'));
         });
     });
@@ -498,15 +513,21 @@ $.expr[":"].contains = $.expr.createPseudo(function(arg) {
         $('#search-field').focus();
     });
     var tag_class;
-    function customTag(thisObj,tag_class,name,value,data)
-    {
-            if ((thisObj.val() != '') && ($("."+tag_class+" .addedTag:contains('" + thisObj.val() + "')").length == 0 ))  {
-                    $('<li class="addedTag">' + data + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + value + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
-                    thisObj.val('');
-            } else {
+    
+function add_tags(thisObj,tag_class,name,duplicates)
+{
+    var duplicates = [];
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+                        {
+                         duplicates.push($.trim($(this).val()).toUpperCase());
+                        });
+    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
                 thisObj.val('');
-            }
-    }
+                    } else {
+                     $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+                     thisObj.val('');
+                }
+}    
 $(document).on('submit','#basicDetailForm',function(event)
 {
     event.preventDefault();
@@ -532,6 +553,10 @@ $(document).on('submit','#userProfilePicture',function(event)
 });   
 
 function runAjax(thisObj,data,btn) {
+  if(btn.attr("disabled") == "disabled")
+            {
+               return false;
+            }  
   $.ajax({
      url:thisObj.attr('action'),
      data:data,
@@ -541,9 +566,11 @@ function runAjax(thisObj,data,btn) {
      processData: false,
      beforeSend:function() {
        btn.append('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+       btn.attr("disabled","true");
      },
      success:function(response) {
        btn.html('Update');
+       btn.removeAttr("disabled");
         if (response.status == 'success') {
                     toastr.success(response.message, response.title);
                     }
@@ -563,7 +590,7 @@ var skills = new Bloodhound({
              settings.url += '?q=' +$('#search-skill').val();
              return settings;
         },   
-    cache: true,    
+    cache: false,    
     filter: function(list) {
              return list;
         }
@@ -575,16 +602,13 @@ $('#search-skill').typeahead(null, {
   display: 'value',
   source: skills,
    limit: 6,
-   hint:false,
 }).on('typeahead:asyncrequest', function() {
-    $('.skill_wrapper .Typeahead-spinner').show();
+     $('.skill_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    $('.skill_wrapper .Typeahead-spinner').hide();
+     $('.skill_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
   {
-      var skillsdata = datum.value;
-      var value = datum.id;
-      customTag($(this),'skill_tag_list','skills',value,skillsdata);
+      add_tags($(this),'skill_tag_list','skills');
    }).blur(validateSelection);
 
 var languages = new Bloodhound({
@@ -596,7 +620,7 @@ var languages = new Bloodhound({
              settings.url += '?q=' +$('#search-language').val();
              return settings;
         },   
-    cache: true,    
+    cache: false,    
     filter: function(list) {
              return list;
         }
@@ -608,16 +632,13 @@ $('#search-language').typeahead(null, {
   display: 'value',
   source: languages,
    limit: 6,
-   hint:false,
 }).on('typeahead:asyncrequest', function() {
     $('.language_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
    $('.language_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
   {
-      var languagedata = datum.value;
-      var value = datum.id;
-      customTag($(this),'languages_tag_list','languages',value,languagedata);
+      add_tags($(this),'languages_tag_list','languages');
    }).blur(validateSelection);
 
 fetchJobProfile();
@@ -677,7 +698,6 @@ function readURL(input) {
     reader.onload = function(e) {
       $('.preview_img').attr('src', e.target.result);
     }
-
     reader.readAsDataURL(input.files[0]);
   }
 }

@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\Cities;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -65,12 +66,12 @@ class JobsController extends Controller
     {
         if (Yii::$app->user->identity->organization) {
             $model = new JobApplicationForm();
-            $questions_list = $model->getQuestionnnaireList();
-            $p_list = $model->getOrganizationLocationOffice();
-            $l_list = $model->getOrganizationLocationInterview();
-            $primaryfields = $model->getPrimaryFields();
-            $industries = $model->getndustry();
-            $interview_process = $model->getInterviewProcess();
+            $que = $model->getQuestionnnaireList();
+            $loc_list = $model->getOrganizationLocationOffice();
+            $int_list = $model->getOrganizationLocationInterview();
+            $primary_cat = $model->getPrimaryFields();
+            $industry = $model->getndustry();
+            $process = $model->getInterviewProcess();
             $benefits = $model->getBenefits();
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
@@ -85,13 +86,13 @@ class JobsController extends Controller
                 }
             } else {
                 return $this->render('application', [
-                    'model' => $model, 'location_list' => $p_list,
-                    'questions_list' => $questions_list,
-                    'primaryfields' => $primaryfields,
-                    'inter_loc' => $l_list,
-                    'industries' => $industries,
-                    'process_list' => $interview_process,
-                    'benefit' => $benefits,
+                    'model' => $model, 'loc_list' => $loc_list,
+                    'que' => $que,
+                    'primary_cat' => $primary_cat,
+                    'int_list' => $int_list,
+                    'industry' => $industry,
+                    'process' => $process,
+                    'benefits' => $benefits,
                 ]);
             }
         } else {
@@ -210,7 +211,7 @@ class JobsController extends Controller
             }
         } else {
             $application = $model->getCloneData($aidk);
-            return $this->render('application_clone', ['data' => $application,
+            return $this->render('clone', ['data' => $application,
                 'model' => $model, 'location_list' => $p_list,
                 'questions_list' => $questions_list,
                 'primaryfields' => $primaryfields,
@@ -989,6 +990,7 @@ class JobsController extends Controller
 
     public function actionJobCard($cidk)
     {
+
         $category = AssignedCategories::find()
             ->alias('a')
             ->select(['b.name',
@@ -1001,32 +1003,32 @@ class JobsController extends Controller
             ->one();
 
         if ($category) {
-            if (Yii::$app->request->post('image')) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $image = Yii::$app->request->post('image');
-                $image_parts = explode(";base64,", $image);
-                $image_base64 = base64_decode($image_parts[1]);
-                $utilitiesModel = new Utilities();
-                $image_location = Yii::$app->getSecurity()->generateRandomString();
-                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $image = $utilitiesModel->encrypt() . '.png';
-                if (!is_dir($base_path)) {
-                    if (!mkdir($base_path, 0755, true)) {
-                        return [
-                            'status' => 201,
-                        ];
-                    }
-                }
-
-                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
-                    return [
-                        'status' => 200,
-                        'image_location' => $image_location,
-                        'image' => $image,
-                    ];
-                }
-            }
+//            if (Yii::$app->request->post('image')) {
+//                Yii::$app->response->format = Response::FORMAT_JSON;
+//                $image = Yii::$app->request->post('image');
+//                $image_parts = explode(";base64,", $image);
+//                $image_base64 = base64_decode($image_parts[1]);
+//                $utilitiesModel = new Utilities();
+//                $image_location = Yii::$app->getSecurity()->generateRandomString();
+//                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $image = $utilitiesModel->encrypt() . '.png';
+//                if (!is_dir($base_path)) {
+//                    if (!mkdir($base_path, 0755, true)) {
+//                        return [
+//                            'status' => 201,
+//                        ];
+//                    }
+//                }
+//
+//                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
+//                    return [
+//                        'status' => 200,
+//                        'image_location' => $image_location,
+//                        'image' => $image,
+//                    ];
+//                }
+//            }
             return $this->renderPartial('og-image', [
                 'category' => $category,
             ]);
@@ -1035,35 +1037,6 @@ class JobsController extends Controller
                 'status' => 201,
             ];
         }
-    }
-
-    public function actionRicky(){
-        $test = ReviewedApplications::find()
-            ->alias('a')
-            ->select(['j.name type','a.application_enc_id','k.shortlisted_enc_id','k.shortlisted','a.review', 'a.review_enc_id', 'd.name as title', 'b.slug', 'f.icon', 'e.name as org_name', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(ShortlistedApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->limit(8)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        echo '<pre>';
-        print_r($test);
-        echo '</pre>';
-
-        return [
-            'test' => $test,
-        ];
     }
 
 }

@@ -1,12 +1,18 @@
 <?php
 $this->title = Yii::t('frontend', 'Internship Preview');
 use yii\helpers\Url;
-$tot = 0;
-foreach (json_decode($object->placement_loc) as $pl_loc) {
-    $str .= $pl_loc->name . ',';
-    $tot = $tot + $pl_loc->value;
+if ($object->jobtype == 'Work From Home'){
+    $tot = null;
+    $str = null;
 }
-$pl_loc = rtrim($str, ',');
+else
+{
+    $tot = 0;
+    foreach (json_decode($object->placement_loc) as $pl_loc) {
+        $str .= $pl_loc->name . ',';
+        $tot = $tot + $pl_loc->value;
+    }
+}
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 
@@ -66,10 +72,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                 ?>
                                 <ul>
                                     <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $primary_cat['name']; ?></span></li>
-                                    <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type</h3><span><?= $type; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= (($object->maxstip) ? $object->maxstip : 'Nil') ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($object->minstip) ? $object->minstip : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type <?= '('.$object->stipendur.')' ?></h3><span><?= $type ?></span></li>
+                                    <li><i class="fa fa-gift"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
+                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= (($object->maxstip) ? '&#8377 '.$object->maxstip : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($object->minstip) ? '&#8377 '.$object->minstip : 'Nil') ?></span></li>
                                     <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span>
                                         <?php
                                         if ($object->gender == 0) {
@@ -83,10 +89,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                         }
                                         ?>
                                     </span></li>
-                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= (($object->stipendpaid) ? $object->stipendpaid : 'Nil') ?></span></li>
-                                    <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= $tot ?> </span></li>
+                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= (($object->stipendpaid) ? '&#8377 '.$object->stipendpaid : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= (($tot) ? $tot : 'Not Applicable'); ?></span></li>
                                     <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span>
-                                        <?= $pl_loc; ?>
+                                     <?= (($str) ? rtrim($str,',') : 'Work From Home'); ?>
                                     </span> </li>
                                 </ul>
                             </div><!-- Job Overview -->
@@ -122,15 +128,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                     <li><?= $qualifications; ?></li>
                                 <?php } ?>
                             </ul>
-                            <h3>Employer Benefits</h3>
                             <?php if(!empty($benefits)){ ?>
+                            <h3>Employer Benefits</h3>
                                 <ul><?php foreach ($benefits as $v) { ?>
                                         <li><?= $v['benefit']; ?></li>
                                     <?php } ?>
-
                                 </ul>
-                            <?php } else { ?>
-                                <ul><li>No Employee Benefits</li></ul>
                             <?php } ?>
                         </div>
                         <div class="job-overview">
@@ -184,7 +187,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                         <div class="job-head-info">
                             <h4><?= ucwords(Yii::$app->user->identity->organization->name); ?></h4>
                         </div>
-                        <a href="" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
+                        <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
 
                         <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                         <div class="share-bar no-border">
@@ -519,10 +522,12 @@ $this->registerCss("
         width: 100%;
         font-family: Open Sans;
         font-size: 15px;
-        color: #202020;
+        color: #1e1e1e;
+        font-weight: 600;
         margin-bottom: 15px;
         margin-top: 10px;
     }
+    
     .job-details p,
     .job-details li {
         float: left;
@@ -603,6 +608,8 @@ $this->registerCss("
         font-size: 13px;
         font-family: Open Sans;
         margin: 0;
+        color: #1e1e1e;
+        font-weight: 600;
     }
     .job-overview ul > li span {
         float: left;

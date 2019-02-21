@@ -1,22 +1,11 @@
 <?php
-
 use kartik\widgets\DatePicker;
 use kartik\widgets\TimePicker;
 use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
-$primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
-$industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
-$process = ArrayHelper::map($process_list, 'interview_process_enc_id', 'process_name');
-$benefits = ArrayHelper::index($benefit, 'benefit_enc_id');
-$loc_list = ArrayHelper::index($location_list, 'location_enc_id');
-$int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
-$que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
 ?>
-
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -105,8 +94,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                             <div class="progress-bar progress-bar-success"></div>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tab1">
-
+                            <div class="tab-pane" id="tab1">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="select">
@@ -121,7 +109,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 <span></span>
                                             </div>
                                             <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
-
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -181,10 +168,10 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="col-md-3">
                                         <?=
                                         $form->field($model, 'ctctype')->dropDownList([
-                                            'monthly' => 'Monthly',
+                                            'Monthly' => 'Monthly',
                                             'weekly' => 'Weekly',
-                                            'hourly' => 'Hourly',
-                                            'annually' => 'Annually'])->label(false);
+                                            'Hourly' => 'Hourly',
+                                            'Annually' => 'Annually'])->label(false);
                                         ?>
                                     </div>
                                     <div class="col-md-3">
@@ -328,6 +315,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <div class="divider">
                                     <span></span>
                                 </div>
+                                <div class="placement_location_hide">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="module2-heading">Select Placement Locations</div>
@@ -340,7 +328,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
 
                                     <div class="col-md-4">
                                         <div class="button_location">
-                                            <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
+                                            <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3','id'=>'btn_placement_locations', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -389,7 +377,8 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div class="empty-section-text">No Placement Location has been found</div>
                                 <?php }
                                 Pjax::end(); ?>
-                                <input type="text" name="placement_calc" id="placement_calc" readonly>
+                                    <input type="text" name="placement_calc" id="placement_calc" readonly>
+                                </div>
                             </div>
 
                             <div class="tab-pane" id="tab2">
@@ -574,7 +563,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div id="b_error"></div>
                                     <?php
                                     if (!empty($benefits)) {
-                                        $model->emp_benefit = ArrayHelper::getColumn($benefit, 'benefit_enc_id');
                                         ?>
                                         <div class="cat-sec">
                                             <div class="row no-gape">
@@ -826,9 +814,36 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                     </div>
-
+                                </div>
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <h3 class="module2-heading">Any Online Interview Mode? </h3>
+                                        </div>
+                                        <div class="col-md-6 pull-right">
+                                            <div class="md-radio-inline text-right clearfix">
+                                                <?=
+                                                $form->field($model, 'is_online_interview')->inline()->radioList([
+                                                    1 => 'Yes',
+                                                    0 => 'No',
+                                                ], [
+                                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                                        $return = '<div class="md-radio">';
+                                                        $return .= '<input type="radio" id="online' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                        $return .= '<label for="online' . $index . '">';
+                                                        $return .= '<span></span>';
+                                                        $return .= '<span class="check"></span>';
+                                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                        $return .= '</div>';
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?>
+                                            </div>
+                                            <div id="error-checkbox-msg4"></div>
+                                        </div>
+                                    </div>
+                                <div class="interview_panel_hide">
+                                    <div class="row">
                                             <div class="col-md-4 m-padd">
                                                 <h3 class="module2-heading">Select Interview Locations</h3>
                                             </div>
@@ -840,7 +855,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                     <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '1', 'class' => 'btn modal-load-class btn-primary custom-buttons2']); ?>
                                                 </div>
                                             </div>
-                                        </div>
                                     </div>
                                     <div class="row">
                                         <?php
@@ -884,7 +898,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                         <input type="text" name="interview_calc" id="interview_calc" readonly>
                                     </div>
                                 </div>
-                            </div>
+                                </div>
                             <div class="tab-pane" id="tab5">
                                 <div class="portlet box primary_colr">
                                     <div class="portlet-title">
@@ -921,7 +935,15 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                        data-display="ctctype"></p></td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Salary:</strong></td>
+                                                <td><strong>Min:</strong></td>
+                                                <td><p class="final_confrm" data-display="min_salary"></p>
+                                                </td>
+                                                <td><strong>Max:</strong></td>
+                                                <td><p class="final_confrm"
+                                                       data-display="max_salary"></p></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Salary(Fixed):</strong></td>
                                                 <td><p class="final_confrm"
                                                        data-display="salaryinhand"></p></td>
                                                 <td><strong>Joining Date:</strong></td>
@@ -1800,7 +1822,7 @@ q:before, q:after, blockquote:before, blockquote:after {
   top: 0;
   left: 4px;
 }
-  
+
 .checkbox-label {
     display: inline-block;
     vertical-align: top;
@@ -2391,9 +2413,20 @@ if(window.location.hash)
     {
         window.location = window.location.pathname;
     }
-    
+ $('#jobtype').on('change',function()
+ {
+     var job_type_str = $(this).val();
+   if(job_type_str == "Work From Home")  
+       {
+        $('.placement_location_hide').hide();
+       }
+   else
+       {
+       $('.placement_location_hide').show();
+       }
+ });  
  $('input[name= "salary_type"]').on('change',function(){
-        var sl_type = $(this).attr("data-title");
+   var sl_type = $(this).attr("data-title");
    if(sl_type=='1')
         {
         $('#fixed_stip').show();
@@ -2533,24 +2566,33 @@ var ques_len = 0;
 var stage_len = 0;
 var process_len = 0;
 
-$(document).on("click",'input[name="placement_locations[]"]', function() {
-    checked = $(this);
-     
+$(document).on("click",'input[name="placement_locations[]"]' , function() {
     if (this.checked == true) {
         place_len =  $('[name="placement_locations[]"]:checked').length;
         place_checker(place_len);
-        checked.next('label').find('.spinner').css('display','inline-flex');
-        checked.next('label').find(".tooltips").fadeIn(1000);
-        checked.next('label').find(".tooltips").fadeOut(2000);
+        showPositionBox($(this));
     } 
         
     else {
         place_len =  $('[name="placement_locations[]"]:checked').length;
-        place_checker(place_len);   
-      checked.next('label').find('.spinner').css('display','none');
-      checked.next('label').find(".tooltips").css('display','none');  
-   }   
+        place_checker(place_len);
+        hidePositionBox($(this));
+   }    
 });
+
+
+function showPositionBox(thisObj)
+{
+    thisObj.next('label').find('.spinner').css('display','inline-flex');
+    thisObj.next('label').find(".tooltips").fadeIn(1000);
+    thisObj.next('label').find(".tooltips").fadeOut(2000);
+}
+
+function hidePositionBox(thisObj)
+{
+    thisObj.next('label').find('.spinner').css('display','none');
+    thisObj.next('label').find(".tooltips").css('display','none'); 
+}
 
 $(document).on("click",'input[name="interviewcity[]"]', function() {
     checked = $(this);
@@ -2753,10 +2795,9 @@ $('#jobtitle').typeahead(null, {
   }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
   {var data =  datum.id; 
       skils_update(data); 
-      educational_update(data); 
-      $('.drop-options').empty();
-      $('#shownlist').empty();
-      $('#heading_placeholder').css('display','block'); 
+      educational_update(data);
+      make_removable_jd();
+      make_removable_edu();
       $.ajax({
       url:"/account/categories-list/job-description",
       data:{data:data},
@@ -2780,7 +2821,38 @@ $('#jobtitle').typeahead(null, {
          }
      });  
     });
-    
+ 
+function make_removable_jd()
+{
+    var jd_list = [];
+    $.each($('.drop-options li'),function(index,value)
+    {
+    jd_list.push($.trim($(this).text()));
+    });
+    $('.drop-options').empty();
+    quesn_count = 0;
+    var i;
+    for(i=0; i<jd_list.length; i++)
+        {
+            drop_options(id="",jd_list[i]);
+        }
+}
+
+function make_removable_edu()
+{
+    var edu_list = [];
+    $.each($('.quali_drop_options li'),function(index,value)
+    {
+    edu_list.push($.trim($(this).text()));
+    });
+    $('.quali_drop_options').empty();
+    count_edu = 0;
+    var i;
+    for(i=0; i<edu_list.length; i++)
+        {
+            drop_edu(id="",edu_list[i]);
+        }
+}
 function skils_update(data)
         {
       $.ajax({
@@ -2984,6 +3056,7 @@ $(document).on('click', '.modal-load-benefit', function() {
                         scroll_checklist();
                         quesn_count++
                         quesn_upt();
+                        console.log(quesn_count);
                 }
            $('#question_field').blur(function(){
                          $(this).val('');
@@ -3239,16 +3312,16 @@ $('.close-ctc').on('click',function(){
         
         function placement_arr()
         {
-                        var place_arr =[];
-                        $.each($("input[name='placement_locations[]']:checked"),
-                        function(index,value){
-                        var obj_place = {};
-                        obj_place["id"] = $(this).attr('id');
-                        obj_place["value"] = $(this).next('label').find('.place_no').val();
-                        obj_place["name"] = $(this).attr('data-value');
-                        place_arr.push(obj_place); 
-                        }); 
-              $('#placement_array').val(JSON.stringify(place_arr));
+            var place_arr =[];
+            $.each($("input[name='placement_locations[]']:checked"),
+            function(index,value){
+            var obj_place = {};
+            obj_place["id"] = $(this).attr('id');
+            obj_place["value"] = $(this).next('label').find('.place_no').val();
+            obj_place["name"] = $(this).attr('data-value');
+            place_arr.push(obj_place); 
+            });
+            $('#placement_array').val(JSON.stringify(place_arr));
        }  
         function question_process_arr()  
         {
@@ -3341,6 +3414,10 @@ $('.close-ctc').on('click',function(){
                 rules: {
                     'jobtitle': {
                         required: true
+                    },
+                    'is_online_interview':
+                    {
+                        required:true
                     },
                     'salary_type': {
                         required: true
@@ -3508,16 +3585,21 @@ $('.close-ctc').on('click',function(){
                  {
                  required: '<div class = "rule-text2">Please Select From the options</div>'    
                 },
-                
+                'is_online_interview':
+                 {
+                 required: '<div class = "rule-text2">Please Select From the options</div>'    
+                },
                    'skill_counter':
                     {
                       required:'<div class = "rule-text4">Please Add Atleast One Skill</div>',
                     },
                 },
                 errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "salaryinhand") { 
+                    if (element.attr("name") == "salaryinhand") 
+                    { 
                         error.insertAfter("#salaryinhand");
-                    } else if (element.attr("name") == "desc_count") { 
+                    }
+              else if (element.attr("name") == "desc_count") { 
                         error.insertAfter("#error-checkbox-msg");
                     } 
               else if(element.attr("name") == "salary_type")
@@ -3541,6 +3623,9 @@ $('.close-ctc').on('click',function(){
                     } 
         else if (element.attr("name") == "interradio") { 
                         error.insertAfter("#error-checkbox-msg3");
+                    }
+        else if (element.attr("name") == "is_online_interview") { 
+                        error.insertAfter("#error-checkbox-msg4");
                     }
         else if (element.attr("name") == "process_calc") { 
                         error.insertAfter("#process_err");
@@ -3679,7 +3764,13 @@ $('.close-ctc').on('click',function(){
                         $('input[name = "placement_locations[]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
-                      $('#place_locations').html(placement_city.join(" "));
+                      if ($('#jobtype').val()=='Work From Home'){
+                           $('#place_locations').html('');
+                       }
+                       else
+                           {
+                               $('#place_locations').html(placement_city.join(" "));
+                           }
            
                        var skills_list = getTags();
                        $('#skillvalues').html(skills_list.toString());

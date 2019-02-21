@@ -6,19 +6,18 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-$location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
-
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-$total_vac=0;
-
-foreach($data['applicationPlacementLocations'] as $placements)
+if (!empty($data['applicationPlacementLocations']))
 {
-    $total_vac += $placements['positions'];
-}
-foreach ($data['applicationOptions'] as $value) {
-    $option[$value['option_name']] = $value['value'];
+    $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
+    $total_vac = 0;
+    $str = "";
+    foreach ($data['applicationPlacementLocations'] as $placements) {
+        $total_vac += $placements['positions'];
+        $str .= $placements['name'] . ',';
+    }
 }
 $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
 $application_object = json_encode($applied_data);
@@ -53,7 +52,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 </div>
                 <div class="modal-body">
                     <?php $form = ActiveForm::begin(['id' => 'resume_form']) ?>
-                    <?= $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location') ?>
+                    <?php if (!empty($location)){
+                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
+                    } ?>
                     <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
                     <?php
                     if ($que>0) {
@@ -140,24 +141,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             <div class="job-overview">
                                 <h3>Job Overview</h3>
                                 <?php
-                                $n1 = $option['stipend_type'];
-                                switch ($n1)
-                                {
-                                    case 1;
-                                        $type = 'Unpaid';
-                                        break;
-                                    case 2;
-                                        $type = 'Performance Based';
-                                        break;
-                                    case 3;
-                                        $type = 'Negotiable';
-                                        break;
-                                    case 4;
-                                        $type = 'Fixed';
-                                        break;
-                                }
-                                $n2 = $option['pre_placement_offer'];
-                                switch ($n2)
+                                switch ($data['has_placement_offer'])
                                 {
                                     case 1;
                                         $offer = 'Yes';
@@ -169,10 +153,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 ?>
                                 <ul>
                                     <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
-                                    <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type</h3><span><?= $type; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= (($option['max_stipend']) ? $option['max_stipend'] : 'Nil'); ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($option['min_stipend']) ? $option['min_stipend'] : 'Nil'); ?></span></li>
+                                    <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type <?= '('.$data['wage_duration'].')';?></h3><span><?= $data['wage_type']; ?></span></li>
+                                    <li><i class="fa fa-gift"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
+                                    <?php setlocale(LC_MONETARY, 'en_IN'); ?>
+                                    <li><i class="fa fa-money"></i><h3>Maximum Stipend</h3><span><?= (($data['max_wage']) ? '&#8377 '.utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'Nil'); ?></span></li>
+                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($data['min_wage']) ? '&#8377 '.utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'Nil'); ?></span></li>
                                     <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
@@ -191,15 +176,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= (($option['fixed_stipend']) ? $option['fixed_stipend'] : 'Nil') ?></span></li>
-                                    <li><i class="fa fa-line-chart "></i><h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
-                                    <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span> <?php
-                                            $str = "";
-                                            foreach ($data['applicationPlacementLocations'] as $job_placement) {
-                                                $str .= $job_placement['name'] . ',';
-                                            }
-                                            echo rtrim($str, ',');
-                                            ?></span> </li>
+                                    <li><i class="fa fa-money"></i><h3>Fixed Stipend</h3><span><?= (($data['fixed_wage']) ? '&#8377 '.utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-line-chart "></i>
+                                        <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
+                                    <li><i class="fa fa-map-marker "></i>
+                                        <h3>Locations</h3>
+                                        <span> <?= (($str) ? rtrim($str,',') : 'Work From Home'); ?></span></li>
                                 </ul>
                             </div><!-- Job Overview -->
                         </div><!-- Job Head -->
@@ -252,20 +234,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
+                                <?php if (!empty($data['interview_start_date']) && $data['interview_end_date']) { ?>
                                     <li><i class="fa fa-calendar-check-o"></i>
                                         <h3>Interview Dates</h3>
-                                        <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
+                                        <span><?= date('d-M-y', strtotime($data['interview_start_date'])); ?> To <?= date('d-M-y', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <?php
-                                        $fromtime = strtotime($option['interview_start_time']);
-                                        $interviewfrom = date("g:i A", $fromtime);
-                                        $totime = strtotime($option['interview_end_time']);
-                                        $interviewto = date("g:i A", $totime);
-                                        ?>
-                                        <span><?php echo $interviewfrom ?> To <?php echo $interviewto ?></span>
+                                        <span><?=date('H:i A', strtotime($data['interview_start_date'])); ?> To <?= date('H:i A', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
@@ -1266,7 +1242,7 @@ $(document).on('click','.shortlist_job',function(e)
                  }
                     
                     });        
-    })        
+    });        
    
         $(document).on('click','.apply-btn',function(e)
             {
@@ -1276,13 +1252,13 @@ $(document).on('click','.shortlist_job',function(e)
                return false;
             }
          $('#modal').modal('show'); 
-         })
+         });
    
    $('input[name="JobApplied[check]"]').on('change',function()
        {
         if($(this).val() == 1)
         {
-          $('#use_existing').css('display','none')
+          $('#use_existing').css('display','none');
           $('#new_resume').css('display','block');
         }
         else if($(this).val() == 0)
@@ -1292,7 +1268,7 @@ $(document).on('click','.shortlist_job',function(e)
             $('#use_existing').css('display','block');
             
         }
-        })
+        });
         
          var que_id = $('#question_id').val();
          var fill_que = $('#fill_question').val();
@@ -1386,7 +1362,7 @@ $(document).on('click','.shortlist_job',function(e)
          $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
          return false;
             }
-            })
+            });
         
         function ajax_call(formData)
         {

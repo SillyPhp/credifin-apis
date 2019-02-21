@@ -16,7 +16,7 @@ class UserProfileSocialEdit extends Model {
 
     public $facebook;
     public $twitter;
-    public $google;
+    public $skype;
     public $linkedin;
 
     public function formName()
@@ -26,7 +26,7 @@ class UserProfileSocialEdit extends Model {
 
     public function rules() {
         return [
-            [['facebook','twitter','google','linkedin'],'safe']
+            [['facebook','twitter','skype','linkedin'],'safe']
         ];
     }
 
@@ -40,7 +40,7 @@ class UserProfileSocialEdit extends Model {
         $user->facebook = $this->facebook;
         $user->twitter = $this->twitter;
         $user->linkedin = $this->linkedin;
-        $user->google = $this->google;
+        $user->skype = $this->skype;
         if ($user->update())
         {
             return true;
