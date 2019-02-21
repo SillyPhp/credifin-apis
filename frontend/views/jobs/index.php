@@ -6,7 +6,7 @@ use yii\helpers\Url;
 
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.svg');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),

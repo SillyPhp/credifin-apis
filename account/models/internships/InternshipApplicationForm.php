@@ -34,6 +34,7 @@ class InternshipApplicationForm extends Model
     public $jobtype;
     public $ctc;
     public $salaryinhand;
+    public $is_online_interview;
     public $ctctype;
     public $jobdescription;
     public $othrdetail;
@@ -99,6 +100,7 @@ class InternshipApplicationForm extends Model
         return [
             [['questions',
                 'primaryfield',
+                'is_online_interview',
                 'questionnaire_selection',
                 'benefit_selection',
                 'pre_sal',
@@ -194,24 +196,21 @@ class InternshipApplicationForm extends Model
 
     public function saveValues()
     {
-        if ($this->stipendtype == 2 || $this->stipendtype == 3) {
-            $min = $this->minstip;
-            $max = $this->maxstip;
-            $duration = $this->stipendur;
-            $stipendpaid = null;
-        } else if ($this->stipendtype == 4) {
-            $stipendpaid = $this->stipendpaid;
-        } else {
-            $max = null;
-            $min = null;
-            $duration = null;
-            $stipendpaid = null;
-        }
-
-        if ($this->pre_place == 1) {
-            $sal = $this->pre_sal;
-        } else {
-            $sal = null;
+        switch ($this->stipendtype) {
+            case 1:
+                $type = 'Unpaid';
+                break;
+            case 2:
+                $type = 'Performance Based';
+                break;
+            case 3:
+                $type = 'Negotiable';
+                break;
+            case 4:
+                $type = 'Fixed';
+                break;
+            default:
+                $type = 'not found';
         }
         $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
         $employerApplicationsModel = new EmployerApplications();
@@ -221,8 +220,6 @@ class InternshipApplicationForm extends Model
         $employerApplicationsModel->application_number = date('ymd') . time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
-        $employerApplicationsModel->has_questionnaire = $this->questionnaire_selection;
-        $employerApplicationsModel->has_benefits = $this->benefit_selection;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
         $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->image = '1';
@@ -236,7 +233,6 @@ class InternshipApplicationForm extends Model
             ->where(['name' => $this->jobtitle])
             ->andWhere(['b.assigned_to'=>'Internships']);
         $chk_cat = $category_execute->asArray()->one();
-
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
             $utilitiesModel = new Utilities();
@@ -298,7 +294,7 @@ class InternshipApplicationForm extends Model
                         $processModel->created_on = date('Y-m-d H:i:s');
                         $processModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$processModel->save()) {
-                            print_r($processModel->getErrors());
+                            return false;
                         }
                     }
                 }
@@ -315,7 +311,7 @@ class InternshipApplicationForm extends Model
                         $benefitModel->created_on = date('Y-m-d H:i:s');
                         $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$benefitModel->save()) {
-                            print_r($benefitModel->getErrors());
+                            return false;
                         }
                     }
                 }
@@ -331,42 +327,45 @@ class InternshipApplicationForm extends Model
             }
 
             if ($this->interradio == 1) {
-                $strt = $this->startdate;
-                $enddate = $this->enddate;
-                $strttime = $this->interviewstarttime;
-                $endtime = $this->interviewendtime;
+                $interview_strt_date =  date('Y-m-d H:i:s', strtotime($this->startdate . ' ' . $this->interviewstarttime));
+                $interview_end_date = date('Y-m-d H:i:s', strtotime($this->enddate . ' ' . $this->interviewendtime));
             } else {
-                $strt = null;
-                $enddate = null;
-                $strttime = null;
-                $endtime = null;
+                $interview_strt_date = null;
+                $interview_end_date = null;
             }
 
-            $options = ['working_days' => json_encode($this->weekdays), 'sat_frequency' => $weekoptionsat,
-                'sund_frequency' => $weekoptionsund, 'salary_duration' => $this->ctctype,
-                'interview_start_date' => (($strt) ? date('Y-m-d', strtotime($strt)) : null),
-                'interview_end_date' => (($enddate) ? date('Y-m-d', strtotime($enddate)) : null), 'interview_start_time' => (($strttime) ? date('Y-m-d', strtotime($strttime)) : null),
-                'interview_end_time' => (($endtime) ? date('Y-m-d', strtotime($endtime)) : null), 'salary' => $sal, 'stipend_type' => $this->stipendtype,
-                'min_stipend' => $min, 'max_stipend' => $max,
-                'stipend_duration' => $duration,
-                'pre_placement_offer' => $this->pre_place,
-                'fixed_stipend' => $stipendpaid];
-
-            foreach ($options as $key => $value) {
-                $applicationoptionsModel = new ApplicationOptions();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $applicationoptionsModel->option_enc_id = $utilitiesModel->encrypt();
-                $applicationoptionsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                $applicationoptionsModel->option_name = $key;
-                $applicationoptionsModel->value = $value;
-                $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
-                $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if (!$applicationoptionsModel->save()) {
-
-                    print_r($applicationoptionsModel->getErrors());
-                }
+            $applicationoptionsModel = new ApplicationOptions();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $applicationoptionsModel->option_enc_id = $utilitiesModel->encrypt();
+            $applicationoptionsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+            $applicationoptionsModel->wage_type = $type;
+            $applicationoptionsModel->fixed_wage = (($this->stipendpaid) ? str_replace(',', '', $this->stipendpaid) : null);
+            $applicationoptionsModel->min_wage = (($this->minstip) ? str_replace(',', '', $this->minstip) : null);
+            $applicationoptionsModel->max_wage = (($this->maxstip) ? str_replace(',', '', $this->maxstip) : null);
+            $applicationoptionsModel->wage_duration = $this->stipendur;
+            $applicationoptionsModel->has_placement_offer = null;
+            $applicationoptionsModel->has_online_interview = $this->is_online_interview;
+            $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
+            $applicationoptionsModel->has_benefits = $this->benefit_selection;
+            $applicationoptionsModel->pre_placement_offer = (($this->pre_sal) ? str_replace(',', '', $this->pre_sal) : null);
+            $applicationoptionsModel->has_placement_offer = $this->pre_place;
+            $applicationoptionsModel->working_days = json_encode($this->weekdays);
+            $applicationoptionsModel->saturday_frequency = $weekoptionsat;
+            $applicationoptionsModel->sunday_frequency = $weekoptionsund;
+            $applicationoptionsModel->interview_start_date = $interview_strt_date;
+            $applicationoptionsModel->interview_end_date = $interview_end_date;
+            $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
+            $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!$applicationoptionsModel->save())
+            {
+                return false;
             }
-            $locations = json_decode($this->placement_loc);
+            if ($this->jobtype == "Work From Home"){
+                $locations = [];
+            }
+            else{
+                $locations = json_decode($this->placement_loc);
+            }
             if (!empty($locations)) {
                 foreach ($locations as $array) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
@@ -380,7 +379,7 @@ class InternshipApplicationForm extends Model
                     $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationPlacementLocationsModel->save()) {
 
-                        print_r($applicationPlacementLocationsModel->getErrors());
+                        return false;
                     }
                 }
             }
@@ -397,7 +396,7 @@ class InternshipApplicationForm extends Model
                     $applicationInterviewLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationInterviewLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationInterviewLocationsModel->save()) {
-                        print_r($applicationInterviewLocationsModel->getErrors());
+                        return false;
                     }
                 }
             }
@@ -421,7 +420,7 @@ class InternshipApplicationForm extends Model
                     $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                     $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationSkillsModel->save()) {
-                        print_r($applicationSkillsModel->getErrors());
+                        return false;
                     }
                     //new skill//
                     $this->assignedSkill($skills_set['skill_enc_id'], $cat_id);
@@ -445,7 +444,7 @@ class InternshipApplicationForm extends Model
                         $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                         $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationSkillsModel->save()) {
-                            print_r($applicationSkillsModel->getErrors());
+                            return false;
                         }
                         //new skill//
                         $this->assignedSkill($skillsModel->skill_enc_id, $cat_id);
@@ -470,7 +469,7 @@ class InternshipApplicationForm extends Model
                     $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationJobDescriptionModel->save()) {
-                        print_r($applicationJobDescriptionModel->getErrors());
+                        return false;
                     }
 
                     //new code added//
@@ -495,7 +494,7 @@ class InternshipApplicationForm extends Model
                         $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                         $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationJobDescriptionModel->save()) {
-                            print_r($applicationJobDescriptionModel->getErrors());
+                            return false;
                         }
                         //new code added//
                         $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id);
@@ -524,7 +523,7 @@ class InternshipApplicationForm extends Model
                     $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationEducationalModel->save()) {
 
-                        print_r($applicationEducationalModel->getErrors());
+                        return false;
                     }
                     //new code//
                     $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id);
@@ -549,7 +548,7 @@ class InternshipApplicationForm extends Model
                         $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationEducationalModel->save()) {
 
-                            print_r($applicationEducationalModel->getErrors());
+                            return false;
                         }
                         //new code//
                         $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id);
@@ -576,7 +575,7 @@ class InternshipApplicationForm extends Model
         $asignedJobModel->created_on = date('Y-m-d H:i:s');
         $asignedJobModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedJobModel->save()) {
-            print_r($asignedJobModel->getErrors());
+            return false;
         }
     }
 
@@ -592,7 +591,7 @@ class InternshipApplicationForm extends Model
         $asignedEduModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedEduModel->save()) {
 
-            print_r($asignedEduModel->getErrors());
+            return false;
         }
     }
 
@@ -608,7 +607,7 @@ class InternshipApplicationForm extends Model
         $asignedSkillModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedSkillModel->save()) {
 
-            print_r($asignedSkillModel->getErrors());
+            return false;
         }
     }
     private function addNewAssignedCategory($category_id,$employerApplicationsModel)

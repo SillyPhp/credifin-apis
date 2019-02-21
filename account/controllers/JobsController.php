@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\Cities;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -65,12 +66,12 @@ class JobsController extends Controller
     {
         if (Yii::$app->user->identity->organization) {
             $model = new JobApplicationForm();
-            $questions_list = $model->getQuestionnnaireList();
-            $p_list = $model->getOrganizationLocationOffice();
-            $l_list = $model->getOrganizationLocationInterview();
-            $primaryfields = $model->getPrimaryFields();
-            $industries = $model->getndustry();
-            $interview_process = $model->getInterviewProcess();
+            $que = $model->getQuestionnnaireList();
+            $loc_list = $model->getOrganizationLocationOffice();
+            $int_list = $model->getOrganizationLocationInterview();
+            $primary_cat = $model->getPrimaryFields();
+            $industry = $model->getndustry();
+            $process = $model->getInterviewProcess();
             $benefits = $model->getBenefits();
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
@@ -85,13 +86,13 @@ class JobsController extends Controller
                 }
             } else {
                 return $this->render('application', [
-                    'model' => $model, 'location_list' => $p_list,
-                    'questions_list' => $questions_list,
-                    'primaryfields' => $primaryfields,
-                    'inter_loc' => $l_list,
-                    'industries' => $industries,
-                    'process_list' => $interview_process,
-                    'benefit' => $benefits,
+                    'model' => $model, 'loc_list' => $loc_list,
+                    'que' => $que,
+                    'primary_cat' => $primary_cat,
+                    'int_list' => $int_list,
+                    'industry' => $industry,
+                    'process' => $process,
+                    'benefits' => $benefits,
                 ]);
             }
         } else {
@@ -210,7 +211,7 @@ class JobsController extends Controller
             }
         } else {
             $application = $model->getCloneData($aidk);
-            return $this->render('application_clone', ['data' => $application,
+            return $this->render('clone', ['data' => $application,
                 'model' => $model, 'location_list' => $p_list,
                 'questions_list' => $questions_list,
                 'primaryfields' => $primaryfields,

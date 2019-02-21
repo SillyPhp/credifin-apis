@@ -1,14 +1,18 @@
 <?php
 $this->title = Yii::t('frontend', 'Job Detail');
-
 use yii\helpers\Url;
-$tot = 0;
-foreach (json_decode($object->placement_loc) as $pl_loc) {
-    $str .= $pl_loc->name . ',';
-    $tot = $tot + $pl_loc->value;
+if ($object->jobtype == 'Work From Home'){
+    $tot = null;
+    $str = null;
 }
-
-$pl_loc = rtrim($str, ',');
+else
+{
+    $tot = 0;
+    foreach (json_decode($object->placement_loc) as $pl_loc) {
+        $str .= $pl_loc->name . ',';
+        $tot = $tot + $pl_loc->value;
+    }
+}
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 if (empty(Yii::$app->user->identity->organization->cover_image)) {
@@ -44,7 +48,25 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                 <li><i class="fa fa-puzzle-piece"></i><h3>Industry</h3><span><?= $indst['industry']; ?></span></li>
                                 <li><i class="fa fa-thumb-tack"></i><h3>Designation</h3><span><?= $object->designations; ?></span></li>
                                 <li><i class="fa fa-thumb-tack"></i><h3>Job Type</h3><span><?= $object->jobtype; ?></span></li>
-                                <li><i class="fa fa-money"></i><h3>Offered Salary</h3><span><?= $object->salaryinhand; ?></span></li>
+                                <li><i class="fa fa-money"></i>
+                                    <h3>Offered Salary <?php if($object['salary_type']==1){echo '(Fixed)';
+                                            $amount = $object['salaryinhand'];
+                                            $amount = '&#8377 ' .$amount;
+                                        } else if($object['salary_type']==2){
+                                            if(!empty($object['min_salary']) || !empty($object['max_salary'])){echo '(Negotiable)';}
+                                            $amount1 = $object['min_salary'];
+                                            $amount2 = $object['max_salary'];
+                                            if (!empty($object['min_salary']) && !empty($object['max_salary'])) {
+                                                $amount = '&#8377 ' .$amount1 . '&nbspTo&nbsp' . $amount2;
+                                            } elseif(!empty($object['min_salary'])){
+                                                $amount = '&#8377 From '.$amount1;
+                                            } elseif (!empty($object['max_salary'])){
+                                                $amount = '&#8377 Upto '.$amount2;
+                                            } elseif(empty($object['min_salary']) && empty($object['max_salary'])){
+                                                $amount = 'Negotiable';
+                                            }
+                                        } ?></h3>
+                                    <span><?= $amount; ?></span></li>
                                 <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span>
                                         <?php
                                         if ($object->gender == 0) {
@@ -59,9 +81,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                         ?>
                                     </span></li>
                                 <li><i class="fa fa-shield"></i><h3>Experience</h3><span><?= $object->min_exp ?> Years</span></li>
-                                <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= $tot ?> </span></li>
+                                <li><i class="fa fa-line-chart "></i><h3>Total Vacancy</h3><span><?= (($tot) ? $tot : 'Not Applicable'); ?> </span></li>
                                 <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span>
-                                        <?= $pl_loc; ?>
+                                        <?= (($str) ? rtrim($str,',') : 'Work From Home'); ?>
                                     </span> </li>
                             </ul>
                         </div><!-- Job Overview -->
@@ -97,15 +119,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                 <li><?= $qualifications; ?></li>
                             <?php } ?>
                         </ul>
-                        <h3>Employer Benefits</h3>
                         <?php if(!empty($benefits)){ ?>
+                        <h3>Employer Benefits</h3>
                             <ul><?php foreach ($benefits as $v) { ?>
                                     <li><?= $v['benefit']; ?></li>
                                 <?php } ?>
-
                             </ul>
-                       <?php } else { ?>
-                            <ul><li>No Employee Benefits</li></ul>
                  <?php } ?>
                     </div>
                     <div class="job-overview">
@@ -159,7 +178,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                     <div class="job-head-info">
                         <h4><?= ucwords(Yii::$app->user->identity->organization->name); ?></h4>
                     </div>
-                    <a href="" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
+                    <a href="#" class="apply-job-btn apply-btn" ><i class="fa fa-paper-plane"></i>Apply for Job</a>
 
                     <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                     <div class="share-bar no-border">
@@ -247,6 +266,7 @@ $this->registerCss("
 .inputGroup input:checked ~ label {
   color: #fff;
 }
+
 .inputGroup input:checked ~ label:before {
   transform: translate(-50%, -50%) scale3d(56, 56, 1);
   opacity: 1;
@@ -494,9 +514,10 @@ $this->registerCss("
         width: 100%;
         font-family: Open Sans;
         font-size: 15px;
-        color: #202020;
         margin-bottom: 15px;
         margin-top: 10px;
+        color: #1e1e1e;
+    font-weight: 600;
     }
     .job-details p,
     .job-details li {
@@ -578,6 +599,8 @@ $this->registerCss("
         font-size: 13px;
         font-family: Open Sans;
         margin: 0;
+        color: #1e1e1e;
+    font-weight: 600;
     }
     .job-overview ul > li span {
         float: left;

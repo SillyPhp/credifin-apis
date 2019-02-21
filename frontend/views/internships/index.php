@@ -5,7 +5,7 @@ use yii\helpers\Url;
 $this->title = Yii::t('frontend', 'Internships');
 $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
 $description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.svg');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
