@@ -71,20 +71,34 @@ $this->registerCss('
             </div>
         </div>
     </section>
+
+
 <?php
+
 echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
 ]);
+
+
 $script = <<<JS
+
+
 $('#loadMore').on('click', function(e){
     e.preventDefault();
     getCards();
 });
+
+
 loader = true;
 draggable = true;
+
+
 getCards();
+
+
 var sidebarpage = 1;
 getReviewList(sidebarpage);
+
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

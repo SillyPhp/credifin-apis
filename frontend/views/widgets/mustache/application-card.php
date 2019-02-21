@@ -3,7 +3,18 @@
     <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main">
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations=""><i class="fa fa-map-marker"></i>&nbsp;{{city}}</span>
+            {{#city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;{{city}}
+                </span>
+            {{/city}}
+            {{^city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;All India
+                </span>
+            {{/city}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
                     <a href="{{organization_link}}">
@@ -20,6 +31,9 @@
                     <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
                     <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    {{/salary}}
+                    {{^salary}}
+                    <h5>Unpaid</h5>
                     {{/salary}}
                     {{#type}}
                     <h5>{{type}}</h5>
