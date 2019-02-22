@@ -609,7 +609,8 @@ use yii\helpers\Html;
                                 </div>
                             </div>
                         </div>
-                        <div class="clearfix"></div>
+                    </div>
+                     <div class="row">
                         <div class="re-box ">
                             <div class="col-md-2 col-sm-2">
                                 <div class="uicon">
@@ -711,6 +712,10 @@ use yii\helpers\Html;
                                 </div>
                             </div>
                         </div>
+                     </div>
+                        <div class="viewbtn">
+                            <a href="">View All Review</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -721,9 +726,41 @@ use yii\helpers\Html;
 <?php
 $this->registerCss('
 /*----review----*/
+.viewbtn a{
+    border: 1px solid #ebefef;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none;
+    -o-box-shadow: none;
+    box-shadow: none;
+    padding: 15px 44px;
+    font-size: 15px;
+    color: #111111;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px
+}
+.viewbtn a:hover{
+    background-color: #00a0e3;
+    color: #fff;
+    border-color: transparent;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+}
 .re-box{
-//    padding:60px;
-    margin-bottom:20px;
+    margin: 60px 0 0 0;
+}
+.refirst{
+   margin:0 0 0 0 !important; 
+}
+.viewbtn{
+    text-align:center;
+    margin:60px 0 0 0 ;
 }
 .uicon{
     text-align:center;
@@ -1103,7 +1140,8 @@ $this->registerCss('
 /*----about us ends----*/
 /*----grid box----*/
 .a-boxs{
-        box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+//        box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+        box-shadow: 2px 5px 24px rgba(221, 216, 216, 0.5);
 }
 .about-box{
     height:100px;
