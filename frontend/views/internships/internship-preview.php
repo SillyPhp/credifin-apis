@@ -185,7 +185,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                         <div class="job-head-info">
                             <h4><?= ucwords(Yii::$app->user->identity->organization->name); ?></h4>
                         </div>
-                        <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
+                        <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Internship</a>
 
                         <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                         <div class="share-bar no-border">
