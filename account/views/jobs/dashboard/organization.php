@@ -124,17 +124,15 @@ echo $this->render('/widgets/header/secondary-header', [
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?= $this->render('/widgets/drop-resume/resume_bank', [
+                'data' => $primary_fields,
+            ]); ?>
+        </div>
+    </div>
 <?php
 $this->registerCss('
-.loader
-{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
 .mt-action-author a{
     color: #000;
 }

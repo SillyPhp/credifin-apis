@@ -359,6 +359,7 @@ if ($organization['cover_image']) {
     </section>
 <?php
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/drop_resume');
 $this->registerCss('
 /* Feature, categories css starts */
 .cat-sec {
