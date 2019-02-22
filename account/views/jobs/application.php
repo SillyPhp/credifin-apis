@@ -94,7 +94,7 @@ use yii\widgets\Pjax;
                             <div class="progress-bar progress-bar-success"></div>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane" id="tab1">
+                            <div class="tab-pane active" id="tab1">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="select">
@@ -408,7 +408,6 @@ use yii\widgets\Pjax;
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-
                                         <div id="checkboxlistarea">
                                             <h3 id="heading_placeholder"> Please type Atleast 3 Job Description above or
                                                 select from predefined list <i class="fa fa-share"
@@ -608,7 +607,7 @@ use yii\widgets\Pjax;
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'othrdetail')->textarea(['rows' => 6, 'cols' => 50])->label(false); ?>
+                                        <?= $form->field($model, 'othrdetail')->textArea(['rows' => 6, 'cols' => 50,'id'=>'othrdetail'])->label(false); ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>
@@ -1006,12 +1005,6 @@ use yii\widgets\Pjax;
                                                                    data-display="interviewcity[]"
                                                                    id="interviewcitycityvalues"></p>
                                                     <span class="final_confrm" data-display="randomfunc"> </span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Brief Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm"
-                                                                   data-display="othrdetail"></p>
-                                                </td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Preferred Gender:</strong></td>
@@ -3114,7 +3107,6 @@ $(document).on('click', '.modal-load-benefit', function() {
                 count_edu--;
                 edu_counter_set();
 	});
-        
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();
@@ -3719,6 +3711,11 @@ $('.close-ctc').on('click',function(){
                     }
                   else if($(this).attr("data-display") == 'randomfunc')
                   {
+                  appEditor.updateSourceElement();
+                  if($('#othrdetail').val()=='<p>&nbsp;</p>')
+                      {
+                          $('#othrdetail').val('');
+                      }
                   var gendr =  $('.gender_radio:checked').next('label').text();
                   $('#gendr_text').html(gendr);
                         skills_arr();
@@ -3879,11 +3876,16 @@ var ps = new PerfectScrollbar('#md-checkbox');
 var ps = new PerfectScrollbar('#quali_list');        
 var ps = new PerfectScrollbar('#suggestionbox');        
 var ps = new PerfectScrollbar('.placeble-area');
+let appEditor;
  ClassicEditor
-    .create( document.querySelector( '#othrdetail' ), {
+    .create(document.querySelector('#othrdetail'), {
         removePlugins: [ 'Heading', 'Link' ],
         toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
     }  )
+    .then( editor => {
+        // Store it in more "global" context.
+        appEditor = editor;
+    } )
     .catch( error => {
         console.error( error );
     } );
