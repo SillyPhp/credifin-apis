@@ -96,7 +96,7 @@ $this->params['seo_tags'] = [
                         <a href="/employers">
                             <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
                                                    alt="Employers"></div>
-                            <div class="h-heading">Employers</div>
+                            <div class="h-heading">Employers 1</div>
                             <div class="h-text">I want to recruit talent</div>
                         </a>
                     </div>
