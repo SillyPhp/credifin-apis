@@ -16,7 +16,8 @@ use yii\helpers\Html;
                             </div>
                            <div class="com-details">
                                 <div class="com-name">Company Name</div>
-                                <div class="com-establish">Established in 2010</div>
+                               <div class="com-establish"><span>Industry:</span> Information Technology</div>
+                               <div class="com-establish"><span>Business Activity:</span> Business</div>
                            </div>
                         </div>
                     </div>
@@ -33,6 +34,7 @@ use yii\helpers\Html;
                     <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                     <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
                     <li><a data-toggle="tab" href="#menu3">Location</a></li>
+                    <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
                 </ul>
             </div>
             <div class="col-md-4 col-sm-12 col-xs-12">
@@ -43,6 +45,7 @@ use yii\helpers\Html;
                     <a href="" class="facebook"><i class="fa fa-facebook"></i> </a>
                     <a href="" class="twitter"><i class="fa fa-twitter"></i> </a>
                     <a href="" class="linkedin"><i class="fa fa-linkedin"></i> </a>
+                    <a href="" class="web"><i class="fa fa-link"></i> </a>
                 </div>
             </div>
         </div>
@@ -97,8 +100,8 @@ use yii\helpers\Html;
                             <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                 <div class="">
                                     <div class="about-det">
-                                        <div class="det">Information Technology</div>
-                                        <div class="det-heading">Category</div>
+                                        <div class="det">50</div>
+                                        <div class="det-heading">Reviews</div>
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +109,7 @@ use yii\helpers\Html;
                                 <div class="">
                                     <div class="about-det">
                                         <div class="det">50</div>
-                                        <div class="det-heading">Jobs Posted</div>
+                                        <div class="det-heading">Oppertunities</Opper></div>
                                     </div>
                                 </div>
                             </div>
@@ -139,13 +142,121 @@ use yii\helpers\Html;
                 </div>
             </div>
              <div class="row">
-                 <div class="heading-style">
-                     Mission & Vission
+                 <div class="mv-box">
+                 <div class="heading-style">Mission & Vission</div>
+                 <div class="divider"></div>
+                 <div class="col-md-12">
+                     <div class="mv-heading">Mission</div>
+                     <div class="mv-text">
+                         Far much that one rank beheld bluebird after outside ignobly allegedly more when oh
+                         arrogantly
+                         vehement irresistibly fussy penguin insect additionally wow absolutely crud meretriciously
+                         hastily
+                     </div>
+                     <div class="vission-box">
+                     <div class="mv-heading">Vission</div>
+                     <div class="mv-text">
+                         Far much that one rank beheld bluebird after outside ignobly allegedly more when oh
+                         arrogantly
+                         vehement irresistibly fussy penguin insect additionally wow absolutely crud meretriciously
+                         hastily
+                     </div>
+                     </div>
+                 </div>
                  </div>
              </div>
             <div class="row">
+                <div class="company-benefits">
+                    <div class="heading-style">Employee Benefits</div>
+                    <div class="divider"></div>
+                    <div class="com-benefits no-padd">
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/flexible_hour.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    Flexible Hour
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/performance_bonus.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    Performance Bonus
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/work_from_home.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    Work From Home
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/health_care_insurance.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    Health Care Insurance
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/bereavement_leave.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    bereavement Leave
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/employee_assistant_program.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    employee assistant program
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/retirement_plan.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    retirement plan
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="benefit-box">
+                                <div class="bb-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/vacation_paid.svg')?>">
+                                </div>
+                                <div class="bb-text">
+                                    vacation paid
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="office-view">
-                    <div class="heading-style">View the Office</div>
+                    <div class="heading-style">Inside Empower Youth</div>
                     <div class="divider"></div>
                     <div class="office-pics">
                         <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
@@ -209,7 +320,7 @@ use yii\helpers\Html;
             </div>
             <div class="row">
                 <div class="company-team">
-                    <div class="heading-style">Our Team</div>
+                    <div class="heading-style">Meet The Team</div>
                     <div class="divider"></div>
                     <div class="team-box">
                         <div class="col-md-3 col-sm-6">
@@ -302,7 +413,7 @@ use yii\helpers\Html;
         </div>
         <div id="menu1" class="tab-pane fade">
             <div class="row">
-                <div class="heading-style">Jobs Posted</div>
+                <div class="heading-style">Available Jobs</div>
                 <div class="divider"></div>
                 <div class="row">
                     <div class="col-md-12">
@@ -345,7 +456,7 @@ use yii\helpers\Html;
             </div>
 
             <div class="row">
-                <div class="heading-style">Internships Posted</div>
+                <div class="heading-style">Available Internships</div>
                 <div class="divider"></div>
                 <div class="internship">
                     No Internships available.
@@ -391,11 +502,461 @@ use yii\helpers\Html;
                 </div>
             </div>
         </div>
+        <div id="menu4" class="tab-pane fade">
+            <div class="row">
+                <div class="address-division">
+                    <div class="heading-style">Empower Youth Reviews</div>
+                    <div class="divider"></div>
+                    <div class="row">
+                        <div class="re-box refirst">
+                            <div class="col-md-2 col-sm-2">
+                                <div class="uicon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
+                                </div>
+                                <div class="uname">Employee Name</div>
+                                <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
+                            </div>
+                            <div class="col-md-10 col-sm-10 user-review-main">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="com-rating">
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star"></i>
+                                        <div class="num-rate">4.50/5.00</div>
+                                        <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="re-bttn">
+                                        <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
+                                        <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
+                                                                    <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
+                                    </div>
+                                    <div class="publish-date">Published 54 minutes ago</div>
+                                    <div class="emp-duration">Current Employee</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="utitle">
+                                        Job Title
+                                    </div>
+                                </div>
+                                <div class=" col-md-12 user-saying">
+                                    <div class="uheading">Likes</div>
+                                    <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                        sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                        ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                        suscipiantur his et.
+                                    </div>
+                                    <div class="uheading padd-10">Dislikes</div>
+                                    <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                        sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                        ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                        suscipiantur his et.
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 user-rating">
+                                        <div class="ur-bg padd-lr-5">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Job Security</div>
+                                        </div>
+                                        <div class="ur-bg light-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Career Growth</div>
+                                        </div>
+                                        <div class="ur-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Company Culture</div>
+                                        </div>
+                                        <div class="ur-bg light-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Salary & Benefits</div>
+                                        </div>
+                                        <div class="ur-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Work Satisfaction</div>
+                                        </div>
+                                        <div class="ur-bg light-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Work-Life Balance </div>
+                                        </div>
+                                        <div class="ur-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Skill Development</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="ushare">
+                                        <div class="ushare-heading">Share</div>
+                                        <i class="fa fa-facebook-square"></i>
+                                        <i class="fa fa-twitter-square"></i>
+                                        <i class="fa fa-linkedin-square"></i>
+                                        <i class="fa fa-google-plus-square"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="usefull-bttn pull-right">
+                                        <div class="use-bttn">
+                                            <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
+                                        </div>
+                                        <div class="notuse-bttn">
+                                            <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="re-box ">
+                            <div class="col-md-2 col-sm-2">
+                                <div class="uicon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
+                                </div>
+                                <div class="uname">Employee Name</div>
+                                <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
+                            </div>
+                            <div class="col-md-10 col-sm-10 user-review-main">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="com-rating">
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star active"></i>
+                                        <i class="fa fa-star"></i>
+                                        <div class="num-rate">4.50/5.00</div>
+                                        <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="re-bttn">
+                                        <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
+                                        <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
+                                                                    <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
+                                    </div>
+                                    <div class="publish-date">Published 54 minutes ago</div>
+                                    <div class="emp-duration">Current Employee</div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="utitle">
+                                        Job Title
+                                    </div>
+                                </div>
+                                <div class=" col-md-12 user-saying">
+                                    <div class="uheading">Likes</div>
+                                    <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                        sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                        ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                        suscipiantur his et.
+                                    </div>
+                                    <div class="uheading padd-10">Dislikes</div>
+                                    <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                        sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                        ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
+                                        suscipiantur his et.
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 user-rating">
+                                        <div class="ur-bg padd-lr-5">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Job Security</div>
+                                        </div>
+                                        <div class="ur-bg light-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Career Growth</div>
+                                        </div>
+                                        <div class="ur-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Company Culture</div>
+                                        </div>
+                                        <div class="ur-bg light-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Salary & Benefits</div>
+                                        </div>
+                                        <div class="ur-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Work Satisfaction</div>
+                                        </div>
+                                        <div class="ur-bg light-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Work-Life Balance </div>
+                                        </div>
+                                        <div class="ur-bg">
+                                            <div class="urating">4/5</div>
+                                            <div class="uratingtitle">Skill Development</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="ushare">
+                                        <div class="ushare-heading">Share</div>
+                                        <i class="fa fa-facebook-square"></i>
+                                        <i class="fa fa-twitter-square"></i>
+                                        <i class="fa fa-linkedin-square"></i>
+                                        <i class="fa fa-google-plus-square"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-sm-6">
+                                    <div class="usefull-bttn pull-right">
+                                        <div class="use-bttn">
+                                            <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
+                                        </div>
+                                        <div class="notuse-bttn">
+                                            <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
       </div>
     </section>
 <?php
 $this->registerCss('
+/*----review----*/
+.re-box{
+//    padding:60px;
+    margin-bottom:20px;
+}
+.uicon{
+    text-align:center;
+}
+.uicon img{
+    max-height:80px;
+    max-width:80px;
+}
+.uname{
+    text-align:center;
+    text-transform:uppercase;
+    font-weight:bold;
+    padding-top:10px;
+    line-height:15px;
+    color:#00a0e3;
+}
+.user-saying{
+    padding-top:20px;
+}
+.user-rating{
+    display:flex;
+    justify-content:center; 
+    text-align:center;
+    padding-top:20px;
+}
+.uheading{
+    font-weight:bold;
+    
+}
+.utext{
+    text-align:justify;
+}
+.publish-date{
+    text-align:right;
+//    font-style:italic;
+    font-size: 14px;
+}
+.view-detail-btn button{
+    background:transparent;
+    border:none;
+    font-size:14px;
+    padding:0px
+}
+.view-detail-btn button:hover, .re-btns button:hover{
+    color:#00a0e3;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    transition:.3s all;
+}
+.num-rate{
+    
+}
+.re-btns{
+    text-align:right;
+    padding-top: 5px;
+}
+.re-btns button{
+    background:none;
+    border:none;
+    font-size:19px;
+    color:#ccc;
+}
+.re-btns button:hover{
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+}
+.re-btns button:hover i.fa-flag{
+    color:#d72a2a;
+}
+.re-btns button i.fa-thumbs-down{
+    margin-left:-8px;
+}
+.utitle{
+    font-size:20px;
+    font-weight:bold;
+    padding-top:8px;
+    color:#00a0e3;
+}
+.user-review-main{
+    border-left:2px solid #ccc;
+}
+.ur-bg{
+   background:#edecec;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 5px;
+    border-right: 1px solid #fff;
+    height: 95px;
+}
+.uratingtitle{
+    font-size:12px;
+    line-height:15px;
+}
+.urating{
+    font-size:25px;
+}
+.emp-duration{
+    text-align:right;
+//    line-height:18px;
+//    padding-top:20px;
+}
+.ushare i{
+   font-size:20px;
+    color:#ccc; 
+}
+.ushare i.fa-facebook-square:hover{
+    color:#4267B2; 
+    cursor: pointer;
+}
+.ushare i.fa-twitter-square:hover{
+    color:#38A1F3; 
+    cursor: pointer;
+}
+.ushare i.fa-linkedin-square:hover{
+    color:#0077B5;
+    cursor: pointer; 
+}
+.ushare i.fa-google-plus-square:hover{
+    color:#CC3333;
+    cursor: pointer;
+}
+.ushare-heading{
+    font-size:14px;
+    padding-top:20px;
+    line-height:23px;
+    font-weight:bold;
+}
+.usefull-bttn{
+    padding-top:33px;
+    display:flex;
+}
+.re-bttn{
+    text-align:right
+}
+.use-bttn button, .notuse-bttn button, .re-bttn button{
+    background: transparent !important;
+    border:1px solid #ccc;
+    color:#ccc;
+    padding:5px 15px;
+    margin-left:10px;
+    border-radius:10px;
+    font-size:14px;
+    transition:.2s all;
+    -webkit-transition:.2s all;
+    -moz-transition:.2s all;
+    -o-transition:.2s all;
+}
+.re-bttn{
+    padding-bottom:5px;
+}
+.use-bttn button:hover{
+    color:#00a0e3;
+    border-color:#00a0e3;
+    transition:.2s all;
+    -webkit-transition:.2s all;
+    -moz-transition:.2s all;
+    -o-transition:.2s all;
+}
+.re-bttn button:hover, .notuse-bttn button:hover{
+    color:#d72a2a;
+    border-color:#d72a2a;
+     transition:.2s all;
+    -webkit-transition:.2s all;
+    -moz-transition:.2s all;
+    -o-transition:.2s all;
+}
+.review-summary{
+    text-align:left;
+    padding-left:50px
+}
+.oa-review{
+    font-size:30px;
+    font-family:lobster;
+    padding-bottom:22px;
+}
+.rs1{
+    padding-top:20px;
+}
+.re-heading{
+    font-size: 17px;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+.com-rating i{
+    font-size:16px;
+    background:#ccc;
+    color:#fff;
+    padding:7px 5px;
+    border-radius:5px;
+}
+.com-rating i.active{
+    background:#ff7803;
+    color:#fff;
+}
+/*----review ends----*/
+/*----company benefits----*/
+.company-benefits{
+    padding:30px 0 0 0;
+}
+.benefit-box{
+    text-align:center;
+    border:1px solid rgba(221, 216, 216, 0.1);
+    padding:25px 10px;
+    margin:0 0 15px 0;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+}
+.bb-icon img{
+    width:75px;
+    height:75px;
+}
+.bb-text{
+    padding-top:10px;
+    text-transform:uppercase;
+    font-size:15px;
+    font-weight:bold;
+}
+/*----company benefits ends----*/
+/*----mission & vission----*/
+.mv-heading{
+    font-size:20px;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+.vission-box{
+    padding-top:20px;
+}
+.mv-box{
+    padding-top:20px;
+}
+/*----mission & vission end----*/
 /*----team----*/
 .company-team{
     padding-top:20px;
@@ -579,7 +1140,7 @@ $this->registerCss('
 .social-btns a{
     margin:0 5px;
     padding:8px 0;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.5);
 }
 a.twitter{
     padding:8px 6px 8px 10px;
@@ -598,29 +1159,37 @@ a.facebook{
     color:#fff;
 }
 a.linkedin{
-    padding:8px 11px 8px 11px;
+    padding:8px 9px 8px 11px;
      color:#0077B5;
 }
 .linkedin:hover{
     background:#0077b5;
     color:#fff;
 }
+a.web{
+    padding:8px 11px 8px 11px;
+    color:#ff7803; 
+}
+.web:hover{
+    background:#ff7803;
+    color:#fff;
+}
 .follow{
-    padding:10px 36px;
+    padding:10px 60px;
      background: transparent;
 //    border: 1px solid #00a0e3;
     border:none;
     font-size: 16px;
     text-transform: capitalize;
     color: #00a0e3;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.5);
 }
 .follow:hover{
     background:#00a0e3;
     color:#fff;
 }
 .follow, .follow:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover{
+a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/
@@ -682,6 +1251,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover{
     color:#fff;
     padding: 0 0 0 30px; 
     font-size:15px;
+}
+.com-establish span{
+    font-weight:bold;
+    color:#fafafa;
 }
 .nav-padd-20{
     padding-left:50px;
