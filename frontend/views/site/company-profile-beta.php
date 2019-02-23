@@ -456,10 +456,12 @@ use yii\helpers\Html;
             </div>
 
             <div class="row">
+                <div class="internships-block">
                 <div class="heading-style">Available Internships</div>
                 <div class="divider"></div>
                 <div class="internship">
                     No Internships available.
+                </div>
                 </div>
             </div>
         </div>
@@ -725,6 +727,11 @@ use yii\helpers\Html;
     </section>
 <?php
 $this->registerCss('
+/*----jobs and internships----*/
+.internships-block{
+    padding-top:30px;
+}
+/*----jobs and internships ends----*/
 /*----review----*/
 .viewbtn a{
     border: 1px solid #ebefef;
@@ -1079,8 +1086,6 @@ $this->registerCss('
 .t-post{
 //    padding-top:10px;
 }
-
-
 /*----team ends----*/
 /*----office view-----*/
 .img1 img{
@@ -1097,9 +1102,6 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.address-division{
-    padding-top:20px;
-}
 .office-heading{
     font-weight:bold;
     font-size:18px;
@@ -1178,7 +1180,7 @@ $this->registerCss('
 .social-btns a{
     margin:0 5px;
     padding:8px 0;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.5);
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
 }
 a.twitter{
     padding:8px 6px 8px 10px;
@@ -1220,7 +1222,7 @@ a.web{
     font-size: 16px;
     text-transform: capitalize;
     color: #00a0e3;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.5);
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
 }
 .follow:hover{
     background:#00a0e3;
@@ -1235,12 +1237,13 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 .nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
     color: #fff;
     background-color: #00a0e3 !important;
-    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
      transition:.2s all;
      
 }
 .nav-tabs > li > a:hover{
-   box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+   box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+   color:#00a0e3;
 }
 .nav-tabs>li>a{
     border:none;
