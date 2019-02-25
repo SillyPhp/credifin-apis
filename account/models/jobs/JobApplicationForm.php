@@ -765,7 +765,7 @@ class JobApplicationForm extends Model
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
+                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
