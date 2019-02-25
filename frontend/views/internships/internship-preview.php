@@ -13,6 +13,13 @@ else
         $tot = $tot + $pl_loc->value;
     }
 }
+if (!empty($object->getinterviewcity))
+{
+    foreach (json_decode($object->getinterviewcity) as $int)
+    {
+        $interview .= $int . ',';
+    }
+}
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 
@@ -878,7 +885,7 @@ $this->registerCss("
         color: #ef7706;
         width: 200px;
         height: auto;
-        padding: 15px 30px;
+        padding: 15px 10px;
         text-align: center;
         margin:auto;
     }
