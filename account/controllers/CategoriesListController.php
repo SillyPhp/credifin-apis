@@ -4,6 +4,7 @@ namespace account\controllers;
 
 use common\models\AssignedSkills;
 use common\models\EmployerApplications;
+use common\models\Organizations;
 use common\models\SpokenLanguages;
 use common\models\Utilities;
 use Yii;
@@ -17,6 +18,8 @@ use common\models\Categories;
 use common\models\EducationalRequirements;
 use common\models\InterviewProcessFields;
 use common\models\Designations;
+use common\models\EmployeeBenefits;
+use common\models\OrganizationEmployeeBenefits;
 
 class CategoriesListController extends Controller
 {
@@ -47,7 +50,7 @@ class CategoriesListController extends Controller
             ->where('a.name LIKE "%' . $q . '%"')
             ->andWhere([
                 'b.status' => 'Approved',
-                'a.assigned_to' => $type,
+                'b.assigned_to' => $type,
                 'b.parent_enc_id' => $id
             ])
             ->asArray()
@@ -186,7 +189,7 @@ class CategoriesListController extends Controller
             ->where('designation LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
