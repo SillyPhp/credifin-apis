@@ -682,8 +682,11 @@ class JobApplicationForm extends Model
             ->orderBy(['a.id' => SORT_DESC]);
 
         $l_list = $loc_list->asArray()->all();
+        $random_id = 'online001';
+        $online_random_val = ['location_enc_id'=>$random_id,'organization_enc_id'=>'online001','location_name'=>'Online Interview','address'=>'online','city_name'=>'skype','state_name'=>'phone'];
+        array_unshift($l_list, $online_random_val);
         $total = $loc_list->count();
-        $l_list[($total - 1)]['total'] = $total;
+        $l_list[($total)]['total'] = $total+1;
         $int_list = ArrayHelper::index($l_list, 'location_enc_id');
         return $int_list;
     }

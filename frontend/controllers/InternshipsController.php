@@ -77,20 +77,6 @@ class InternshipsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $int_loc = '';
-            if (!empty($object->interviewcity)) {
-                foreach ($object->interviewcity as $id) {
-                    $int_arr = OrganizationLocations::find()
-                        ->alias('a')
-                        ->select(['b.name AS city_name'])
-                        ->where(['a.location_enc_id' => $id])
-                        ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
-                        ->asArray()
-                        ->one();
-
-                    $int_loc .= $int_arr['city_name'] . ',';
-                }
-            }
             $indstry = Industries::find()
                 ->where(['industry_enc_id' => $object->pref_inds])
                 ->select(['industry'])
@@ -116,7 +102,6 @@ class InternshipsController extends Controller
 
             return $this->render('internship-preview', [
                 'object' => $object,
-                'interview' => $int_loc,
                 'indst' => $indstry,
                 'primary_cat' => $primary_cat,
                 'benefits' => $benefits

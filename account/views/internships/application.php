@@ -1675,7 +1675,7 @@ margin-bottom:8px;
 
 .radio_questions {
 //      padding: 0 16px;
-  max-width: 80%;
+  max-width: 100%; 
   font-size: 18px;
   font-weight: 600;
   line-height: 36px;

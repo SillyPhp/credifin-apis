@@ -13,6 +13,13 @@ else
         $tot = $tot + $pl_loc->value;
     }
 }
+if (!empty($object->getinterviewcity))
+{
+    foreach (json_decode($object->getinterviewcity) as $int)
+    {
+        $interview .= $int . ',';
+    }
+}
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 if (empty(Yii::$app->user->identity->organization->cover_image)) {
@@ -134,7 +141,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                 <li><i class="fa fa-calendar-check-o"></i><h3>Interview Dates</h3><span><?= $object->startdate; ?> To <?= $object->enddate; ?></span></li>
                                 <li><i class="fa fa-clock-o"></i><h3>Interview Time</h3><span><?= $object->interviewstarttime; ?> To <?= $object->interviewendtime; ?></span></li>
                             <?php } ?>
-                            <li><i class="fa fa-map-marker"></i><h3>Interview Locations</h3><span> 
+                            <li><i class="fa fa-map-marker"></i><h3>Interview Locations</h3><span>
                                     <?= rtrim($interview, ','); ?></span></li>
                         </ul>
                     </div>
