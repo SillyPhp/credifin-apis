@@ -807,35 +807,6 @@ use yii\widgets\Pjax;
                                             ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                        <div class="col-md-6">
-                                            <h3 class="module2-heading">Any Online Interview Mode? </h3>
-                                        </div>
-                                        <div class="col-md-6 pull-right">
-                                            <div class="md-radio-inline text-right clearfix">
-                                                <?=
-                                                $form->field($model, 'is_online_interview')->inline()->radioList([
-                                                    1 => 'Yes',
-                                                    0 => 'No',
-                                                ], [
-                                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                                        $return = '<div class="md-radio">';
-                                                        $return .= '<input type="radio" id="online' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
-                                                        $return .= '<label for="online' . $index . '">';
-                                                        $return .= '<span></span>';
-                                                        $return .= '<span class="check"></span>';
-                                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                                        $return .= '</div>';
-                                                        return $return;
-                                                    }
-                                                ])->label(false);
-                                                ?>
-                                            </div>
-                                            <div id="error-checkbox-msg4"></div>
-                                        </div>
-                                    </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="col-md-4 m-padd">
