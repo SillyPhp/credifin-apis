@@ -160,6 +160,14 @@ class JobApplicationForm extends Model
 
     public function saveValues()
     {
+        if (in_array('online001',$this->interviewcity))
+        {
+            $has_online_int = 1;
+            array_shift($this->interviewcity);
+        }
+        else{
+            $has_online_int = 0;
+        }
         if ($this->salary_type==1)
         {
             $sal = str_replace(',', '', $this->salaryinhand);
@@ -348,7 +356,7 @@ class JobApplicationForm extends Model
             $applicationoptionsModel->ctc = (($ctc_val) ? $ctc_val : null);
             $applicationoptionsModel->wage_duration = $this->ctctype;
             $applicationoptionsModel->has_placement_offer = null;
-            $applicationoptionsModel->has_online_interview = $this->is_online_interview;
+            $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
             $applicationoptionsModel->working_days = json_encode($this->weekdays);
@@ -680,7 +688,6 @@ class JobApplicationForm extends Model
                 $b->joinWith(['stateEnc c'], false);
             }], false)
             ->orderBy(['a.id' => SORT_DESC]);
-
         $l_list = $loc_list->asArray()->all();
         $random_id = 'online001';
         $online_random_val = ['location_enc_id'=>$random_id,'organization_enc_id'=>'online001','location_name'=>'Online Interview','address'=>'online','city_name'=>'skype','state_name'=>'phone'];
@@ -768,7 +775,7 @@ class JobApplicationForm extends Model
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
+                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
@@ -795,7 +802,7 @@ class JobApplicationForm extends Model
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($b) {
-                $b->andWhere(['p.is_deleted' => 0]);
+                $b->onCondition(['p.is_deleted' => 0]);
                 $b->joinWith(['locationEnc u' => function ($b) {
                     $b->joinWith(['cityEnc v'], false);
                 }], false);
