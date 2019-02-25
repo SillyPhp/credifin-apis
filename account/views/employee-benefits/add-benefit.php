@@ -42,14 +42,16 @@ $form = ActiveForm::begin([
             <?=
             $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
                 'item' => function ($index, $label, $name, $checked, $value) {
-                    if(empty($label['icon'])){$label['icon'] = 'plus-icon.svg';}
+                    if(empty($label['icon'])){
+                        $label['icon'] = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
+                    }
                     $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                     $return .= '<div class="p-category search_benefits">';
                     $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
                     $return .= '<div class="checkbox-text">';
                     $return .= '<span class="checkbox-text--title">';
-                    $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
+                    $return .= '<img src="' . Url::to(Yii::$app->params->upload_directories->benefits->icon_location . $label["icon_location"] . '/' . $label["icon"]) . '">';
                     $return .= '</span><br/>';
                     $return .= '<span class="checkbox-text--description2">';
                     $return .= $label['benefit'];
