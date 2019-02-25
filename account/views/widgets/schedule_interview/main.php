@@ -11,23 +11,53 @@
                 <form id="interview_form">
                     <div class="col-md-12">
                         <div class="tab">
+<!--                            <div class="form-group">-->
+<!--                                <div class="with-icon">-->
+<!--                                    <select id="candidates" class="mt-multiselect btn btn-default" multiple="multiple" data-label="left" data-width="100%" data-filter="true" data-height="300">-->
+<!--                                            <option value="User 1" style="background-image:url(/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg);">User 1</option>-->
+<!--                                            <option value="User 2"><canvas class="user-icon" name="ajay" color="#000" width="20" height="20" font="10px"></canvas>User 2</option>-->
+<!--                                            <option value="User 3" selected="selected"><img src="/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg" class="interviewer_avatar"/>User 3</option>-->
+<!--                                            <option value="User 4"><canvas class="user-icon" name="aditya" color="#6f0b0b" width="20" height="20" font="10px"></canvas>User 4</option>-->
+<!--                                            <option value="User 5"><img src="/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg" class="interviewer_avatar"/>User 5</option>-->
+<!--                                    </select>-->
+<!--                                    <i class="utouch-icon utouch-icon-user fa fa-user"></i>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="form-group">
                                 <div class="with-icon">
-                                    <select id="candidates" class="mt-multiselect btn btn-default" multiple="multiple" data-label="left" data-width="100%" data-filter="true" data-height="300">
-                                            <option value="User 1" style="background-image:url(/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg);">User 1</option>
-                                            <option value="User 2"><canvas class="user-icon" name="ajay" color="#000" width="20" height="20" font="10px"></canvas>User 2</option>
-                                            <option value="User 3" selected="selected"><img src="/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg" class="interviewer_avatar"/>User 3</option>
-                                            <option value="User 4"><canvas class="user-icon" name="aditya" color="#6f0b0b" width="20" height="20" font="10px"></canvas>User 4</option>
-                                            <option value="User 5"><img src="/assets/themes/dashboard/layouts/layout2/img/avatar3_small.jpg" class="interviewer_avatar"/>User 5</option>
+                                    <select name="color" class="form-control" id="location">
+                                        <option value="">Select Interview Rounds</option>
+                                        <option>Round 1</option>
+                                        <option>Round 2</option>
+                                        <option>Round 3</option>
+                                        <option>Round 4</option>
+                                        <option>Round 5</option>
                                     </select>
-                                    <i class="utouch-icon utouch-icon-user fa fa-user"></i>
+                                    <i class="utouch-icon utouch-icon-user fa fa-check"></i>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="with-icon">
-                                    <input type="text" class="form-control input-large"
-                                           placeholder="Interviewer Email Ids" data-role="tagsinput" id="email">
-                                    <i class="utouch-icon utouch-icon-user fa fa-envelope-o"></i>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="with-icon">
+                                            <input type="text" class="form-control" placeholder="Interviewer Name">
+                                            <i class="utouch-icon utouch-icon-user fa fa-envelope-o"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="with-icon">
+                                            <input type="text" class="form-control" placeholder="Interviewer Email">
+                                            <i class="utouch-icon utouch-icon-user fa fa-envelope-o"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="interviewer_details" class="col-md-12"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <a href="#" id="add-more-detail" style="margin-bottom: 15px;display: block;"><i class="fa fa-plus-circle"></i> Add more</a>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -47,20 +77,6 @@
                             </div>
                             <div class="form-group">
                                 <div class="with-icon">
-                                    <select name="color" class="form-control" id="location">
-                                        <option value="">Select Interview Medium</option>
-                                        <option>In Place</option>
-                                        <option>Conference Call</option>
-                                        <option>Phone</option>
-                                        <option>Skype</option>
-                                        <option>Online</option>
-                                        <option>Google Hangouts</option>
-                                    </select>
-                                    <i class="utouch-icon utouch-icon-user fa fa-check"></i>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="with-icon">
                                     <textarea class="form-control" value="" placeholder="Interview Notes" id="notes"></textarea>
                                     <i class="utouch-icon utouch-icon-user fa fa-pencil"></i>
                                 </div>
@@ -68,7 +84,7 @@
                         </div>
                         <div class="tab">
                             <div class="row">
-                                <div id="selected-dates"></div>
+                                <div id="selected-dates" class="col-md-12"></div>
                             </div>
                         </div>
                         <div class="row" style="float:right;">
@@ -143,30 +159,6 @@ $this->registerCss('
 /* Top Radio filter css ends */
 .datepicker>div {
     display: block;
-}
-.multiselect-container li a label input[type="checkbox"] {
-    display: none;
-}
-.dropdown-menu>li.active:hover>a, .dropdown-menu>li.active>a, .dropdown-menu>li:hover>a{
-    background-color: #337ab7;
-    color: #fff;
-}
-.multiselect.dropdown-toggle.btn.btn-default{
-    border: 0px;
-    padding-top: 4px;
-    width: 100%;
-    text-align: left;
-    background-color:#fff !important;
-}
-.multiselect.dropdown-toggle.btn.btn-default:hover, .multiselect.dropdown-toggle.btn.btn-default:focus, .multiselect.dropdown-toggle.btn.btn-default:active{
-    background-color:#fff;
-}
-.multiselect.dropdown-toggle.btn.btn-default b.caret{
-    float: right;
-    margin-top: 6px;
-}
-.btn-group.open .multiselect-container.dropdown-menu{
-    left:51px;
 }
 /* Modal light box css starts */
 .tab{
@@ -348,7 +340,7 @@ textarea {
 /*Modal css ends */
 ');
 $script = <<<JS
-    $('#candidates').multiselect();
+    // $('#candidates').multiselect();
 
     $(document).on('click', '#schedule-interview', function () {
         $('.window-popup').addClass('open');
@@ -416,9 +408,17 @@ $script = <<<JS
     $(document).on('click', '#add-more', function(){
        $(this).closest('div').prev('#times-container').append(Mustache.render($('#add-more-d').html()));
     });
+    
+    $(document).on('click', '#add-more-detail', function(){
+       $('#interviewer_details').append(Mustache.render($('#add_interviewer_details').html()));
+    });
         
     $(document).on('click', '.remove-add', function(){
         $(this).closest('#added-date').remove()
+    });
+
+    $(document).on('click', '.remove-add-detials', function(){
+        $(this).parent('div').closest('.row').remove();
     });
         
     $(document).on('focus', '.timepicker-24', function(){
@@ -483,18 +483,43 @@ $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css');
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css');
+//$this->registerCssFile('@backendAssets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@backendAssets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('@backendAssets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/css/components.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerCssFile('http://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerCssFile('http://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+<script id="add_interviewer_details" type="text/template">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="with-icon">
+                    <input type="text" class="form-control" placeholder="Interviewer Name">
+                    <i class="utouch-icon utouch-icon-user fa fa-envelope-o"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="with-icon">
+                    <input type="text" class="form-control" placeholder="Interviewer Email">
+                    <i class="utouch-icon utouch-icon-user fa fa-envelope-o"></i>
+                </div>
+            </div>
+        </div>
+        <div class='col-md-12 text-right'>
+            <a class='remove-add-detials' style="display: block;margin: -10px 10px 15px 0px;">
+                <i class='fa fa-times'></i> Remove
+            </a>
+        </div>
+    </div>
+</script>
 <script id="dates" type="text/template">
     {{#.}}
     <div class="form-group">
