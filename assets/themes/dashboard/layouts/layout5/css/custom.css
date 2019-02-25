@@ -171,19 +171,24 @@ a:hover{
     height:100px;  
 }
 .hr-com-name{
-    color:#00a0e3; 
+    color:#00a0e3;
     padding-top:10px;
-    text-decoration:none; 
+    text-decoration:none;
     font-size:16px;
-} 
+}
 .hr-com-name:hover{
     text-decoration:none;
-}                                   
+}
 .hr-com-field{
-    padding-top:2px; 
+    padding-top:2px;
     font-weight:bold;
-    font-size:14px; 
+    font-size:14px;
     color:#080808;
+}
+.hr-com-name, .hr-com-field{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .hr-com-jobs{
     font-size:13px; 

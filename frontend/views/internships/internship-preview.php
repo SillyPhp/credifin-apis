@@ -17,7 +17,7 @@ $cover_image = Yii::$app->params->upload_directories->organizations->cover_image
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . Yii::$app->user->identity->organization->cover_image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->cover_image;
 
 if (empty(Yii::$app->user->identity->organization->cover_image)) {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    $cover_image = "@eyAssets/images/backgrounds/default_cover.png";
 }
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
 ?>
@@ -113,12 +113,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                 <?php }
                                 ?>
                             </ul>
-                            <h3>Other Details</h3>
                             <?php if (!empty($object->othrdetail)){ ?>
+                            <h3>Other Details</h3>
                                 <p><?= $object->othrdetail ?></p>
-                          <?php  } else{ ?>
-                                <p> Nil</p>
-                        <?php } ?>
+                          <?php  } ?>
                             <h3>Education + Experience</h3>
                             <ul>
                                 <?php
@@ -187,7 +185,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                         <div class="job-head-info">
                             <h4><?= ucwords(Yii::$app->user->identity->organization->name); ?></h4>
                         </div>
-                        <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Job</a>
+                        <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for Internship</a>
 
                         <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all Jobs</a>
                         <div class="share-bar no-border">

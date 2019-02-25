@@ -980,11 +980,6 @@ use yii\widgets\Pjax;
                                                     <span class="final_confrm" data-display="randomfunc"> </span></td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Brief Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm" data-display="othrdetail"></p>
-                                                </td>
-                                            </tr>
-                                            <tr>
                                                 <td><strong>Preferred Gender:</strong></td>
                                                 <td colspan="3"><p class="final_confrm" data-display="gender"
                                                                    id="gendr_text"></p></td>
@@ -3724,6 +3719,11 @@ function init() {
                     }
                   else if($(this).attr("data-display") == 'randomfunc')
                   {
+                  appEditor.updateSourceElement();
+                  if($('#othrdetail').val()=='<p>&nbsp;</p>')
+                      {
+                          $('#othrdetail').val('');
+                      }    
                   var gendr =  $('.gender_radio:checked').next('label').text();
                   $('#gendr_text').html(gendr);
                         skills_arr();
@@ -3883,11 +3883,16 @@ var ps = new PerfectScrollbar('#quali_list');
 var ps = new PerfectScrollbar('#suggestionbox');        
 var ps = new PerfectScrollbar('.placeble-area');
 
-ClassicEditor
-    .create( document.querySelector( '#othrdetail' ), {
+let appEditor;
+ ClassicEditor
+    .create(document.querySelector('#othrdetail'), {
         removePlugins: [ 'Heading', 'Link' ],
         toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
     }  )
+    .then( editor => {
+        // Store it in more "global" context.
+        appEditor = editor;
+    } )
     .catch( error => {
         console.error( error );
     } );
