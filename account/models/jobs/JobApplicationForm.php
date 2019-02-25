@@ -694,6 +694,7 @@ class JobApplicationForm extends Model
             ->alias('a')
             ->select(['a.name', 'a.category_enc_id'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
             ->asArray()
             ->all();
@@ -703,10 +704,11 @@ class JobApplicationForm extends Model
 
     public function getndustry()
     {
-        $industries = Industries::find()
-            ->select(['industry_enc_id', 'industry'])
-            ->asArray()
-            ->all();
+      $industries = Industries::find()
+                ->select(['industry_enc_id', 'industry'])
+                ->orderBy([new \yii\db\Expression('FIELD (industry, "Same Industry", "No Preference") DESC, FIELD (industry, "Others") ASC, industry ASC')])
+                ->asArray()
+                ->all();
         $industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
         return $industry;
     }
