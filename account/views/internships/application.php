@@ -3695,8 +3695,26 @@ function init() {
                       {
                           $('#othrdetail').val('');
                       }    
-                  var gendr =  $('.gender_radio:checked').next('label').text();
-                  $('#gendr_text').html(gendr);
+                  var gendr =  $('.gender_radio:checked').val();
+                  var gend;
+                  switch(gendr) {
+             case '0':
+               gend = "No preference";
+                break;
+            case '1':
+                 gend = "Male";
+                 break;
+             case '2':
+             gend = "Female";
+             break;
+             case '3':
+             gend = "Transgender";
+             break;
+             default:
+             gend = "No preference";
+             break; 
+            } 
+            $('#gendr_text').html(gend);
                         skills_arr();
                         placement_arr();
                         question_process_arr();
