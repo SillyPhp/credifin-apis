@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
@@ -133,7 +134,7 @@ use yii\widgets\Pjax;
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
                                                     $return .= '<label for="sti' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -288,7 +289,7 @@ use yii\widgets\Pjax;
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
                                                     $return .= '<label for="pre' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -309,68 +310,68 @@ use yii\widgets\Pjax;
                                     <span></span>
                                 </div>
                                 <div class="placement_location_hide">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="module2-heading">Select Placement Locations</div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="module2-heading">Select Placement Locations</div>
 
-                                    </div>
-                                    <div class="col-md-4">
-                                        <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
-                                        <span id="place_error"></span>
-                                    </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
+                                            <span id="place_error"></span>
+                                        </div>
 
-                                    <div class="col-md-4">
-                                        <div class="button_location">
-                                            <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
+                                        <div class="col-md-4">
+                                            <div class="button_location">
+                                                <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <?php
-                                Pjax::begin(['id' => 'pjax_locations1']);
-                                if (!empty($loc_list)) {
-                                    ?>
-                                    <?=
-                                    $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
-                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_locations1']);
+                                    if (!empty($loc_list)) {
+                                        ?>
+                                        <?=
+                                        $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
+                                            'item' => function ($index, $label, $name, $checked, $value) {
 
-                                            if ($index % 3 == 0) {
-                                                $return .= '<div class="row">';
-                                            }
-                                            $return .= '<div class="col-md-4">';
-                                            $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
-                                            $return .= '<label for="' . $value . '" class="checkbox-label">';
-                                            $return .= '<div class="checkbox-text">';
-                                            $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
-                                            $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
-                                            $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
-                                            $return .= '<div class="form-group">';
-                                            $return .= '<div class="input-group spinner">';
-                                            $return .= '<input type="text" class="form-control place_no" value="1">';
-                                            $return .= '<div class="input-group-btn-vertical">';
-                                            $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
-                                            $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '<div class="tooltips">';
-                                            $return .= 'Enter No. of Positions.';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '</label>';
-                                            $return .= '</div>';
-                                            if ($index % 3 == 2 || isset($label['total'])) {
+                                                if ($index % 3 == 0) {
+                                                    $return .= '<div class="row">';
+                                                }
+                                                $return .= '<div class="col-md-4">';
+                                                $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="' . $value . '" class="checkbox-label">';
+                                                $return .= '<div class="checkbox-text">';
+                                                $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
+                                                $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
+                                                $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
+                                                $return .= '<div class="form-group">';
+                                                $return .= '<div class="input-group spinner">';
+                                                $return .= '<input type="text" class="form-control place_no" value="1">';
+                                                $return .= '<div class="input-group-btn-vertical">';
+                                                $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
+                                                $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
                                                 $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '<div class="tooltips">';
+                                                $return .= 'Enter No. of Positions.';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '</label>';
+                                                $return .= '</div>';
+                                                if ($index % 3 == 2 || isset($label['total'])) {
+                                                    $return .= '</div>';
+                                                }
+                                                return $return;
                                             }
-                                            return $return;
-                                        }
-                                    ])->label(false);
-                                    ?>
+                                        ])->label(false);
+                                        ?>
 
-                                <?php } else { ?>
-                                    <div class="empty-section-text">No Placement Location has been found</div>
-                                <?php }
-                                Pjax::end(); ?>
-                                <input type="text" name="placement_calc" id="placement_calc" readonly>
+                                    <?php } else { ?>
+                                        <div class="empty-section-text">No Placement Location has been found</div>
+                                    <?php }
+                                    Pjax::end(); ?>
+                                    <input type="text" name="placement_calc" id="placement_calc" readonly>
                                 </div>
                             </div>
 
@@ -561,16 +562,13 @@ use yii\widgets\Pjax;
                                                 <?=
                                                 $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                                                     'item' => function ($index, $label, $name, $checked, $value) {
-                                                        if (empty($label['icon'])) {
-                                                            $label['icon'] = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                        }
                                                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                                                         $return .= '<div class="p-category">';
                                                         $return .= '<input type="checkbox" id="benefit' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                                                         $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<img src="' . Url::to(Yii::$app->params->upload_directories->benefits->icon_location . $label["icon_location"] . '/' . $label["icon"]) . '">';
+                                                        $return .= '<img src="' . $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
                                                         $return .= $label['benefit'];
@@ -809,32 +807,32 @@ use yii\widgets\Pjax;
                                     </div>
                                     <div class="col-md-12">
                                         <div class="row">
-                                        <div class="col-md-6">
-                                            <h3 class="module2-heading">Any Online Interview Mode? </h3>
-                                        </div>
-                                        <div class="col-md-6 pull-right">
-                                            <div class="md-radio-inline text-right clearfix">
-                                                <?=
-                                                $form->field($model, 'is_online_interview')->inline()->radioList([
-                                                    1 => 'Yes',
-                                                    0 => 'No',
-                                                ], [
-                                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                                        $return = '<div class="md-radio">';
-                                                        $return .= '<input type="radio" id="online' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
-                                                        $return .= '<label for="online' . $index . '">';
-                                                        $return .= '<span></span>';
-                                                        $return .= '<span class="check"></span>';
-                                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
-                                                        $return .= '</div>';
-                                                        return $return;
-                                                    }
-                                                ])->label(false);
-                                                ?>
+                                            <div class="col-md-6">
+                                                <h3 class="module2-heading">Any Online Interview Mode? </h3>
                                             </div>
-                                            <div id="error-checkbox-msg4"></div>
+                                            <div class="col-md-6 pull-right">
+                                                <div class="md-radio-inline text-right clearfix">
+                                                    <?=
+                                                    $form->field($model, 'is_online_interview')->inline()->radioList([
+                                                        1 => 'Yes',
+                                                        0 => 'No',
+                                                    ], [
+                                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                                            $return = '<div class="md-radio">';
+                                                            $return .= '<input type="radio" id="online' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                            $return .= '<label for="online' . $index . '">';
+                                                            $return .= '<span></span>';
+                                                            $return .= '<span class="check"></span>';
+                                                            $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                            $return .= '</div>';
+                                                            return $return;
+                                                        }
+                                                    ])->label(false);
+                                                    ?>
+                                                </div>
+                                                <div id="error-checkbox-msg4"></div>
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">

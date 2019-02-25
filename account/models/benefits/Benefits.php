@@ -4,6 +4,7 @@ namespace account\models\benefits;
 
 use Yii;
 use yii\base\Model;
+use yii\helpers\Url;
 use common\models\EmployeeBenefits;
 use common\models\Utilities;
 use common\models\OrganizationEmployeeBenefits;
@@ -48,11 +49,11 @@ class Benefits extends Model
                     return $this->assignToOrg($beneiftModal->benefit_enc_id);
                 }
             } else {
-               return $this->checkBenefit($chek['benefit_enc_id']);
+                return $this->checkBenefit($chek['benefit_enc_id']);
             }
         } else if (!empty($this->predefind_benefit)) {
             foreach ($this->predefind_benefit as $id) {
-               $this->checkBenefitInArray($id);
+                $this->checkBenefitInArray($id);
             }
             return true;
         } else {
@@ -69,9 +70,7 @@ class Benefits extends Model
             ->one();
         if (empty($chek_benefit)) {
             return $this->assignToOrg($id);
-        }
-        else
-        {
+        } else {
             return false;
         }
 
@@ -92,8 +91,7 @@ class Benefits extends Model
             $orgBenefitsModal->benefit_enc_id = $id;
             $orgBenefitsModal->created_on = date('Y-m-d H:i:s');
             $orgBenefitsModal->created_by = Yii::$app->user->identity->user_enc_id;
-            if (!$orgBenefitsModal->save())
-            {
+            if (!$orgBenefitsModal->save()) {
                 return false;
             }
         }
@@ -103,9 +101,10 @@ class Benefits extends Model
     public function getAllBenefits()
     {
         $benefits = EmployeeBenefits::find()
-            ->select(['benefit_enc_id', 'benefit', 'icon', 'icon_location'])
+            ->select(['benefit_enc_id', 'benefit', 'CASE WHEN icon IS NULL OR icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon) . '",icon_location, "/", icon) END icon'])
+            ->where(['is_deleted' => 0])
             ->andWhere(['or',
-                ['organization_enc_id'=>null],
+                ['status' => 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->orderBy(['id' => SORT_DESC])
@@ -126,9 +125,7 @@ class Benefits extends Model
         $orgBenefitsModal->created_by = Yii::$app->user->identity->user_enc_id;
         if ($orgBenefitsModal->save()) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
