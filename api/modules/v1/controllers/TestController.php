@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use yii\web\Response;
 use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Clients;
 use api\modules\v1\models\JobApply;
@@ -31,14 +32,15 @@ use frontend\models\JobApplied;
 class TestController extends ApiBaseController {
 
     public function behaviors(){
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::className()
-        ];
+//        $behaviors = parent::behaviors();
+//        $behaviors['authenticator'] = [
+//            'class' => HttpBearerAuth::className()
+//        ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'index' => ['POST'],
+                'job-card' => ['GET'],
             ]
         ];
         return $behaviors;

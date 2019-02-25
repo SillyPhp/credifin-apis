@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\models;
 
+use common\models\UserAccessTokens;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -14,7 +15,6 @@ use common\models\AppliedApplicationProcess;
 
 class JobApply extends Model
 {
-    public $resume_file;
     public $id;
     public $check;
     public $resume_list;
@@ -27,86 +27,18 @@ class JobApply extends Model
     {
         return [
             [['id', 'resume_file', 'status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf'],
         ];
-    }
-
-    public function upload()
-    {
-        $user = Clients::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $userResumeModel = new UserResume();
-        $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
-        $userResumeModel->user_enc_id = $user->user_enc_id;
-        $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->resume->file_path . $userResumeModel->resume_location;
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume_file->extension;
-        $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
-        $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
-        $userResumeModel->created_on = date('Y-m-d h:i:s');
-        $userResumeModel->created_by = $user->user_enc_id;
-        if (!is_dir($base_path)) {
-            if (mkdir($base_path, 0755, true)) {
-                if ($this->resume_file->saveAs($base_path . DIRECTORY_SEPARATOR . $userResumeModel->resume)) {
-                    if ($userResumeModel->validate() && $userResumeModel->save()) {
-                        $appliedModel = new AppliedApplications();
-                        $utilitiesModel = new Utilities();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $appliedModel->applied_application_enc_id = $utilitiesModel->encrypt();
-                        $appliedModel->application_number = date('ymd') . time();
-                        $appliedModel->application_enc_id = $this->id;
-                        $appliedModel->status = $this->status;
-                        $appliedModel->resume_enc_id = $userResumeModel->resume_enc_id;
-                        $appliedModel->created_on = date('Y-m-d h:i:s');
-                        $appliedModel->created_by = $user->user_enc_id;
-                        if ($appliedModel->save()) {
-                            foreach ($this->location_pref as $location) {
-                                $locModel = new AppliedApplicationLocations;
-                                $utilitiesModel = new Utilities();
-                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                                $locModel->application_location_enc_id = $utilitiesModel->encrypt();
-                                $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
-                                $locModel->city_enc_id = $location;
-                                $locModel->created_on = date('Y-m-d h:i:s');
-                                $locModel->created_by = $user->user_enc_id;
-                                $app_id = $appliedModel->applied_application_enc_id;
-                                $id = $this->id;
-                                if (!$locModel->save()) {
-                                    print_r($locModel->getErrors());
-                                }
-                            }
-                            $status = [
-                                'applied_application_enc_id' => $appliedModel->applied_application_enc_id,
-                            ];
-                            $this->save_process($id, $app_id);
-                            return $status;
-
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-
     }
 
     public function saveValues()
     {
-
-        $user = Clients::findOne([
+        $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
         $appliedModel = new AppliedApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -126,7 +58,7 @@ class JobApply extends Model
                 $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
                 $locModel->city_enc_id = $location;
                 $locModel->created_on = date('Y-m-d h:i:s');
-                $locModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $locModel->created_by = $user->user_enc_id;
                 $app_id = $appliedModel->applied_application_enc_id;
                 $id = $this->id;
                 if (!$locModel->save()) {

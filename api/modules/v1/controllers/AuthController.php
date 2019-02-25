@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use common\models\UserTypes;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
 use api\modules\v1\models\LoginForm;
@@ -75,7 +76,7 @@ class AuthController extends ApiBaseController{
         $user->phone = $model->phone;
         $user->email = $model->email;
         $user->user_enc_id = time() . mt_rand(10, 99);
-        $user->user_type_enc_id = 'VkRqU1NjSGZNOWQzZnV2NDB0ckY5Zz09';
+        $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
         $user->initials_color = RandomColors::one();
         $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
         $user->status = "Active";
