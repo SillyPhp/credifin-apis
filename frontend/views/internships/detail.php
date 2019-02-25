@@ -2,12 +2,10 @@
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
@@ -299,13 +297,20 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
                                     <h3>Interview Locations</h3><span> <?php
-                                        $str2 = "";
-                                        $interview_locations = [];
-                                        foreach ($data['applicationInterviewLocations'] as $loc) {
-                                            array_push($interview_locations, $loc['name']);
+                                        if (!empty($data['applicationInterviewLocations']))
+                                        {
+                                            $str2 = "";
+                                            $interview_locations = [];
+                                            foreach ($data['applicationInterviewLocations'] as $loc) {
+                                                array_push($interview_locations, $loc['name']);
+                                            }
+                                            $str2 = implode(", ", $interview_locations);
+                                            echo rtrim($str2, ',');
                                         }
-                                        $str2 = implode(", ", $interview_locations);
-                                        echo rtrim($str2, ',');
+                                        else
+                                        {
+                                            echo 'Online/Skype/Telephonic';
+                                        }
                                         ?></span></li>
                             </ul>
                         </div>
