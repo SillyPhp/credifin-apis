@@ -35,7 +35,6 @@ echo $this->render('/widgets/header/secondary-header', [
                 </div>
                 <div class="portlet-body">
                     <?php
-                    Pjax::begin(['id' => 'pjax_active_internships']);
                     if ($applications['total'] > 0) {
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['data'],
@@ -46,7 +45,6 @@ echo $this->render('/widgets/header/secondary-header', [
                         ?>
                         <h3>No Active Internships</h3>
                     <?php }
-                    Pjax::end();
                     ?>
                 </div>
             </div>
@@ -71,7 +69,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="row">
                         <div class="col-lg-12">
                             <?php
-                            Pjax::begin(['id' => 'pjax_active_questionnaire']);
                             if ($questionnaire['total'] > 0) {
                                 echo $this->render('/widgets/questionnaire/card', [
                                     'questionnaire' => $questionnaire['data'],
@@ -82,7 +79,6 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ?>
                                 <h3>No Questionnaire To Display</h3>
                             <?php }
-                            Pjax::end();
                             ?>
                         </div>
                     </div>
@@ -105,7 +101,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="row">
                         <div class="col-lg-12">
                             <?php
-                            Pjax::begin(['id' => 'pjax_active_process']);
                             if ($interview_processes['total'] > 0) {
                                 echo $this->render('/widgets/processes/card', [
                                     'processes' => $interview_processes['data'],
@@ -116,7 +111,6 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ?>
                                 <h3>No Processes To Display</h3>
                             <?php }
-                            Pjax::end();
                             ?>
                         </div>
                     </div>

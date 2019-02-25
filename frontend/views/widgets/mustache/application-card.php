@@ -1,15 +1,21 @@
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-12 pt-5">
+    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main">
-            {{#salary}}
-            <span class="application-card-type"><i class="fa fa-inr"></i>{{salary}}</span>
-            {{/salary}}
-            {{#type}}
-            <span class="application-card-type">{{type}}</span>
-            {{/type}}
-            <div class="col-md-12 application-card-border-bottom">
+            {{#city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;{{city}}
+                </span>
+            {{/city}}
+            {{^city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;All India
+                </span>
+            {{/city}}
+            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
                     <a href="{{organization_link}}">
                         {{#logo}}
@@ -23,8 +29,15 @@
                 </div>
                 <div class="application-card-description">
                     <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
-                    <h5 class="location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations=""><i
-                                class="fa fa-map-marker"></i>&nbsp;{{city}}</h5>
+                    {{#salary}}
+                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    {{/salary}}
+                    {{^salary}}
+                    <h5>Unpaid</h5>
+                    {{/salary}}
+                    {{#type}}
+                    <h5>{{type}}</h5>
+                    {{/type}}
                     {{#experience}}
                     <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
@@ -41,7 +54,7 @@
             </h4>
             {{/last_date}}
             {{^last_date}}
-            <div class="col-md-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
                 <h4 class="org_name text-right">{{organization_name}}</h4>
             </div>
             {{/last_date}}

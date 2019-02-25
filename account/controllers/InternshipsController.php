@@ -52,12 +52,12 @@ class InternshipsController extends Controller
         if (Yii::$app->user->identity->organization) {
             $object = new JobApplicationForm();
             $model = new InternshipApplicationForm();
-            $questions_list = $object->getQuestionnnaireList(2);
-            $p_list = $object->getOrganizationLocationOffice();
-            $l_list = $object->getOrganizationLocationInterview();
-            $primaryfields = $object->getPrimaryFields('Internships');
-            $industries = $object->getndustry();
-            $interview_process = $object->getInterviewProcess();
+            $que = $object->getQuestionnnaireList(2);
+            $loc_list = $object->getOrganizationLocationOffice();
+            $int_list = $object->getOrganizationLocationInterview();
+            $primary_cat = $object->getPrimaryFields('Internships');
+            $industry = $object->getndustry();
+            $process = $object->getInterviewProcess();
             $benefits = $object->getBenefits();
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
@@ -72,13 +72,13 @@ class InternshipsController extends Controller
                 }
             } else {
                 return $this->render('application', [
-                    'model' => $model, 'location_list' => $p_list,
-                    'questions_list' => $questions_list,
-                    'primaryfields' => $primaryfields,
-                    'inter_loc' => $l_list,
-                    'industries' => $industries,
-                    'process_list' => $interview_process,
-                    'benefit' => $benefits,
+                    'model' => $model, 'loc_list' => $loc_list,
+                    'que' => $que,
+                    'primary_cat' => $primary_cat,
+                    'int_list' => $int_list,
+                    'industry' => $industry,
+                    'process' => $process,
+                    'benefits' => $benefits,
 
                 ]);
             }

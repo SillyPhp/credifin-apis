@@ -2,23 +2,25 @@
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-$location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
 
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-$total_vac=0;
-
-foreach($data['applicationPlacementLocations'] as $placements)
-{
-    $total_vac += $placements['positions'];
-}
-foreach ($data['applicationOptions'] as $value) {
-    $option[$value['option_name']] = $value['value'];
+if (!empty($data['applicationPlacementLocations'])) {
+    $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
+    $total_vac = 0;
+    $str = "";
+    $locations = [];
+    foreach ($data['applicationPlacementLocations'] as $placements) {
+        $total_vac += $placements['positions'];
+        array_push($locations, $placements['name']);
+    }
+    $str = implode(", ", $locations);
 }
 $applied_data = ['app_number' => $data['application_number'], 'app_enc_id' => $data['application_enc_id']];
 $application_object = json_encode($applied_data);
@@ -26,12 +28,12 @@ $application_object = json_encode($applied_data);
 $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org['cover_image_location'] . DIRECTORY_SEPARATOR . $org['cover_image'];
 $cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
 if (empty($org['cover_image'])) {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    $cover_image = "@eyAssets/images/backgrounds/default_cover.png";
 }
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location']. DIRECTORY_SEPARATOR . $org['logo'];
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'];
 ?>
 
-    <div class="modal fade bs-modal-lg in" id="modal_que"  aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="modal_que" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -39,13 +41,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <h4 class="modal-title"><?= Yii::t('frontend', 'Fill Out The Questionnaire'); ?></h4>
                 </div>
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade bs-modal-lg in" id="modal"  aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -53,10 +56,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 </div>
                 <div class="modal-body">
                     <?php $form = ActiveForm::begin(['id' => 'resume_form']) ?>
-                    <?= $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location') ?>
+                    <?php if (!empty($location)) {
+                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
+                    } ?>
                     <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
                     <?php
-                    if ($que>0) {
+                    if ($que > 0) {
 
                         $ques = 1;
                     } else {
@@ -65,35 +70,43 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     }
                     ?>
                     <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
-                    <?= $form->field($model, 'check')->inline()->radioList([0 => 'Use Existing One', 1 => 'Upload New'])->label('Upload Resume') ?>
+                    <?php
+                    if ($resume) {
+                        $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
+                    } else {
+                        $checkList = [1 => 'Upload New'];
+                    }
+                    ?>
+                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
 
                     <div id="new_resume">
                         <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
                     </div>
-                    <div id="use_existing">
-                        <div class="row">
-                            <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
-                            <?php if ($resume) { ?>
+                    <?php if ($resume) { ?>
+                        <div id="use_existing">
+                            <div class="row">
+                                <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
                                 <?php foreach ($resume as $res) {
                                     ?>
                                     <div class="col-md-offset-1 col-md-10">
                                         <div class="radio_questions">
                                             <div class="inputGroup">
-                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]" type="radio" value="<?= $res['resume_enc_id']; ?>"/>
+                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
+                                                       type="radio" value="<?= $res['resume_enc_id']; ?>"/>
                                                 <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
                                             </div>
                                         </div>
                                     </div>
                                 <?php }
                                 ?>
-                            <?php } ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
 
                 </div>
                 <div class="modal-footer">
-                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary btn-shape btn-col sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn default btn-shape btn-colour', 'data-dismiss' => 'modal']); ?>
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
                 </div>
             </div>
         </div>
@@ -101,7 +114,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
 <?php ActiveForm::end(); ?>
     <section class="overlape">
         <!--<div class="block no-padding">-->
-        <div data-velocity="-.1" style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
+        <div data-velocity="-.1"
+             style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
+             class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
         <!--<div class="container fluid">-->
         <div class="row m-0">
             <div class="col-lg-12 p-0">
@@ -133,32 +148,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
     <section>
         <!--<div class="block">-->
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-8">
+            <div class="row m-0">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="job-single-sec">
                         <div class="job-single-head2">
                             <div class="job-overview">
-                                <h3>Job Overview</h3>
+                                <h3>Internship Overview</h3>
                                 <?php
-                                $n1 = $option['stipend_type'];
-                                switch ($n1)
-                                {
-                                    case 1;
-                                        $type = 'Unpaid';
-                                        break;
-                                    case 2;
-                                        $type = 'Performance Based';
-                                        break;
-                                    case 3;
-                                        $type = 'Negotiable';
-                                        break;
-                                    case 4;
-                                        $type = 'Fixed';
-                                        break;
-                                }
-                                $n2 = $option['pre_placement_offer'];
-                                switch ($n2)
-                                {
+                                switch ($data['has_placement_offer']) {
                                     case 1;
                                         $offer = 'Yes';
                                         break;
@@ -168,12 +165,24 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 }
                                 ?>
                                 <ul>
-                                    <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
-                                    <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type</h3><span><?= $type; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= (($option['max_stipend']) ? $option['max_stipend'] : 'Nil'); ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($option['min_stipend']) ? $option['min_stipend'] : 'Nil'); ?></span></li>
-                                    <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
+                                    <li><i class="fa fa-puzzle-piece"></i>
+                                        <h3>Profile</h3><span><?= $data['name']; ?></span></li>
+                                    <li><i class="fa fa-puzzle-piece"></i>
+                                        <h3>Stipend Type <?= '(' . $data['wage_duration'] . ')'; ?></h3>
+                                        <span><?= $data['wage_type']; ?></span></li>
+                                    <li><i class="fa fa-gift"></i>
+                                        <h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
+                                    <?php setlocale(LC_MONETARY, 'en_IN'); ?>
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Maximum Stipend</h3>
+                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A'); ?></span>
+                                    </li>
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Minimum stipend</h3>
+                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A'); ?></span>
+                                    </li>
+                                    <li><i class="fa fa-mars-double"></i>
+                                        <h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
                                                     echo 'No Preference';
@@ -191,15 +200,16 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= (($option['fixed_stipend']) ? $option['fixed_stipend'] : 'Nil') ?></span></li>
-                                    <li><i class="fa fa-line-chart "></i><h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
-                                    <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span> <?php
-                                            $str = "";
-                                            foreach ($data['applicationPlacementLocations'] as $job_placement) {
-                                                $str .= $job_placement['name'] . ',';
-                                            }
-                                            echo rtrim($str, ',');
-                                            ?></span> </li>
+                                    <li><i class="fa fa-money"></i>
+                                        <h3>Fixed Stipend</h3>
+                                        <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'N/A') ?></span>
+                                    </li>
+                                    <li><i class="fa fa-line-chart "></i>
+                                        <h3>Total Vacancies</h3>
+                                        <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
+                                    <li><i class="fa fa-map-marker "></i>
+                                        <h3>Locations</h3>
+                                        <span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span></li>
                                 </ul>
                             </div><!-- Job Overview -->
                         </div><!-- Job Head -->
@@ -237,47 +247,83 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php } ?>
                             </ul>
                             <?php
-                                if (!empty($data['applicationEmployeeBenefits'])){
-                            ?>
-                            <h3>Employer Benefits</h3>
-                            <ul>
-                                <?php
+                            if (!empty($data['applicationEmployeeBenefits'])) {
+                                ?>
+                                <h3>Employer Benefits</h3>
+                                <ul>
+                                    <?php
                                     foreach ($data['applicationEmployeeBenefits'] as $benefit) {
                                         ?>
                                         <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                    <?php }?>
-                            </ul>
-                                <?php } ?>
+                                    <?php } ?>
+                                </ul>
+                            <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
+                                <?php if (!empty($data['interview_start_date']) && $data['interview_end_date']) { ?>
                                     <li><i class="fa fa-calendar-check-o"></i>
                                         <h3>Interview Dates</h3>
-                                        <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
+                                        <span><?= date('d-M-y', strtotime($data['interview_start_date'])); ?> To <?= date('d-M-y', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                     <li><i class="fa fa-clock-o"></i>
                                         <h3>Interview Time</h3>
-                                        <?php
-                                        $fromtime = strtotime($option['interview_start_time']);
-                                        $interviewfrom = date("g:i A", $fromtime);
-                                        $totime = strtotime($option['interview_end_time']);
-                                        $interviewto = date("g:i A", $totime);
-                                        ?>
-                                        <span><?php echo $interviewfrom ?> To <?php echo $interviewto ?></span>
+                                        <span><?= date('H:i A', strtotime($data['interview_start_date'])); ?> To <?= date('H:i A', strtotime($data['interview_end_date'])); ?></span>
                                     </li>
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
                                     <h3>Interview Locations</h3><span> <?php
                                         $str2 = "";
+                                        $interview_locations = [];
                                         foreach ($data['applicationInterviewLocations'] as $loc) {
-                                            $str2 .= $loc['name'] . ',';
+                                            array_push($interview_locations, $loc['name']);
                                         }
+                                        $str2 = implode(", ", $interview_locations);
                                         echo rtrim($str2, ',');
                                         ?></span></li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="job-single-head style2">
+                        <div class="job-thumb">
+                            <a href="/company/<?= $org['slug']; ?>">
+                                <?php
+                                if (!empty($org['logo'])) {
+                                    ?>
+                                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
+                                            color="" font="55px"></canvas>
+                                    <?php
+                                }
+                                ?>
+                            </a>
+                        </div>
+                        <div class="job-head-info">
+                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
+                            <?php if ($org['website']): ?>
+                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (Yii::$app->user->isGuest): ?>
+                            <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
+                                to apply</a>
+                        <?php else: ?>
+                            <?php if ($applied): ?>
+                                <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i
+                                            class="fa fa-check"></i>Applied</a>
+                            <?php elseif (!Yii::$app->user->identity->organization): ?>
+                                <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for
+                                    Internship</a>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all
+                            Internships</a>
                         <div class="share-bar no-border">
                             <?php $link = Url::to('internship/' . $application_details["slug"], true); ?>
                             <h3>Share</h3>
@@ -307,61 +353,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <i class="fa fa-envelope"></i>
                             </a>
                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <div class="job-single-head style2">
-                        <div class="job-thumb">
-                            <a href="/company/<?= $org['slug']; ?>">
-                            <?php
-                            if (!empty($org['logo'])) {
-                                ?>
-                                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="" />
-                                <?php
-                            } else {
-                                ?>
-                                <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125" color="" font="55px"></canvas>
-                                <?php
-                            }
-                            ?>
-                            </a>
-                        </div>
-                        <div class="job-head-info">
-                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
-                            <?php if ($org['website']): ?>
-                                <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
-                            <?php endif; ?>
-                        </div>
-                        <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
-                                to apply</a>
-                        <?php else: ?>
-                            <?php if ($applied): ?>
-                                <a href="#" title="" class="apply-job-btn apply-btn" disabled="disabled"><i
-                                            class="fa fa-check"></i>Applied</a>
-                            <?php elseif (!Yii::$app->user->identity->organization): ?>
-                                <a href="#" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>Apply for
-                                    Internship</a>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                        <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all Internships</a>
-                        <div class="share-bar no-border">
-                            <h3>Share</h3>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
-                                <i class="fa fa-linkedin"></i>
-                            </a>
-                            <a href="#" onclick="window.open('<?= Url::to('https://wa.me/?text=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
-                                <i class="fa fa-whatsapp"></i>
-                            </a>
-                            <a href="#" onclick="window.open('<?= Url::to('mailto:?&body=http%3A//www.eygb.me/job/' . $job_tit["slug"]); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
-                                <i class="fa fa-envelope"></i>
-                            </a>
+                        <div class="col-lg-12">
+                            <h4>or</h4>
+                            <div class="pf-field">
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
+                                       class="form-control" value="<?= $link ?>" readonly>
+                                <i class="fa fa-clipboard"></i>
+                            </div>
                         </div>
                     </div><!-- Job Head -->
                 </div>
@@ -374,183 +372,173 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
         <div id="msg">
             <img src="https://i.ibb.co/TmV51CY/done.png">
             <h1 class="heading_submit">Submitted!</h1>
-            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check your Dashboard Regularly for further confirmation from the Requiter side.</p>
-            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some Questionnaire Pending From Your Side you can fill  them now By clicking <a href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later. <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
+            <p class="sub_description_1">Your Application Has been successfully registerd with the requiter. keep check
+                your Dashboard Regularly for further confirmation from the Requiter side.</p>
+            <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
+                Questionnaire Pending From Your Side you can fill them now By clicking <a
+                        href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
+                <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
 
         </div>
     </div>
     <div class="fader"></div>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("share_manually");
+            copyText.select();
+            document.execCommand("copy");
+            toastr.success("", "Copied");
+            // alert("Copied the text: " + copyText.value);
+        }
+    </script>
 <?php
 $this->registerCss("
- .sub_description_1,sub_description_2
- {
-    display:none;
- }   
- .heading_submit
- {
-    color:#fff;
- } 
- .sub_description
- {
-    font-size:15px;
- }  
- #msg
- {
-    color:#fff;
-    padding: 5px 5px;
-    text-align:center;
- }   
-#close_btn {
-    float: right;
-    display: inline-block;
-    padding: 0px 6px;
-    color: #fff;
-    font-size: 28px;
-    cursor: pointer;
-}
-
-#message_img
-{
-  display:none;
-}
-
-#message_img.show
-{
-display : block;
-position : fixed;
-z-index: 100;
-background-color:#33cdbb;
-opacity : 1;
-background-repeat : no-repeat;
-background-position : center;
-width:60%;
-height:60%;
-left : 20%;
-bottom : 0;
-right : 0;
-top : 20%;
-}
+     .sub_description_1,sub_description_2{
+        display:none;
+     }   
+     .heading_submit{
+        color:#fff;
+     } 
+     .sub_description{
+        font-size:15px;
+     }  
+     #msg{
+        color:#fff;
+        padding: 5px 5px;
+        text-align:center;
+     }   
+     #close_btn {
+        float: right;
+        display: inline-block;
+        padding: 0px 6px;
+        color: #fff;
+        font-size: 28px;
+        cursor: pointer;
+    }
+    #message_img{
+      display:none;
+    }
     
-.fader{
-  width:100%;
-  height:100%;
-  position:fixed;
-  top:0;
-  left:0;
-  display:none;
-  z-index:99;
-  background-color:#fff;
-  opacity:0.7;
-}
-#warn{
-    color:#e9465d;
-    display:none;
-}
-.inputGroup {
-  background-color: #fff;
-  display: block;
-  margin: 10px 0;
-  position: relative;
-}
-.inputGroup label {
-   padding: 6px 75px 10px 25px;
-    width: 96%;
-    display: block;
-    margin:auto;
-    text-align: left;
-    color: #3C454C;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    transition: color 1ms ease-out;
-    overflow: hidden;
-    border-radius: 8px;
-    border:1px solid #eee;
-}
-.inputGroup label:before {
-  width: 100%;
-  height: 10px;
-  border-radius: 50%;
-  content: '';
-  background-color: #00a0e3;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale3d(1, 1, 1);
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  z-index: -1;
-}
-.inputGroup label:after {
-  width: 32px;
-  height: 32px;
-  content: '';
-  border: 2px solid #D1D7DC;
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: 2px 3px;
-  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
-  border-radius: 50%;
-  z-index: 2;
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  transition: all 200ms ease-in;
-}
-.inputGroup input:checked ~ label {
-  color: #fff;
-}
-.inputGroup input:checked ~ label:before {
-  transform: translate(-50%, -50%) scale3d(56, 56, 1);
-  opacity: 1;
-}
-.inputGroup input:checked ~ label:after {
-  background-color: #54E0C7;
-  border-color: #54E0C7;
-}
-.inputGroup input {
-  width: 32px;
-  height: 32px;
-  order: 1;
-  z-index: 2;
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  visibility: hidden;
-}
+    #message_img.show{
+        display : block;
+        position : fixed;
+        z-index: 100;
+        background-color:#33cdbb;
+        opacity : 1;
+        background-repeat : no-repeat;
+        background-position : center;
+        width:60%;
+        height:60%;
+        left : 20%;
+        bottom : 0;
+        right : 0;
+        top : 20%;
+    }
+    .fader{
+      width:100%;
+      height:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      display:none;
+      z-index:99;
+      background-color:#fff;
+      opacity:0.7;
+    }
+    #warn{
+        color:#e9465d;
+        display:none;
+    }
+    .inputGroup {
+      background-color: #fff;
+      display: block;
+      margin: 10px 0;
+      position: relative;
+    }
+    .inputGroup label {
+       padding: 6px 75px 10px 25px;
+        width: 96%;
+        display: block;
+        margin:auto;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        transition: color 1ms ease-out;
+        overflow: hidden;
+        border-radius: 8px;
+        border:1px solid #eee;
+    }
+    .inputGroup label:before {
+      width: 100%;
+      height: 10px;
+      border-radius: 50%;
+      content: '';
+      background-color: #00a0e3;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale3d(1, 1, 1);
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      z-index: -1;
+    }
+    .inputGroup label:after {
+      width: 32px;
+      height: 32px;
+      content: '';
+      border: 2px solid #D1D7DC;
+      background-color: #fff;
+      background-repeat: no-repeat;
+      background-position: 2px 3px;
+      background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      transition: all 200ms ease-in;
+    }
+    .inputGroup input:checked ~ label {
+      color: #fff;
+    }
+    .inputGroup input:checked ~ label:before {
+      transform: translate(-50%, -50%) scale3d(56, 56, 1);
+      opacity: 1;
+    }
+    .inputGroup input:checked ~ label:after {
+      background-color: #54E0C7;
+      border-color: #54E0C7;
+    }
+    .inputGroup input {
+      width: 32px;
+      height: 32px;
+      order: 1;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      visibility: hidden;
+    }
 
-.block {
+    .block {
         float: left;
         padding: 60px 0;
         position: relative;
         width: 100%;
         z-index: 1;
     }
-#new_resume,#use_existing
-{display:none;}
-.btn-colour
-{
-    background: #fff;
-    border: 1px solid white;
-    box-shadow: 1px 1px 8px 1px;
-}
-.btn-col
-{background:#4aa1e3}
-.btn-shape
-{
-    line-height: 15px;
-    height: 38px;
-    border-radius: 19px;
-    border: 1px;
-}
-    #logo_img
-    {
-    width: 124px;
-    height: 124px; 
+    #new_resume,#use_existing{
+        display:none;
+    }
+    #logo_img{
+        width: 124px;
+        height: 124px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -786,7 +774,7 @@ top : 20%;
     .job-details > ul li::before {
         position: absolute;
         left: 0;
-        top: 13px;
+        top: 10px;
         width: 10px;
         height: 1px;
         background: #888888;
@@ -894,7 +882,6 @@ top : 20%;
         float: left;
         width: 100%;
         padding-top: 20px;
-        padding-bottom: 20px;
         border-top: 1px solid #e8ecec;
         border-bottom: 1px solid #e8ecec;
     }
@@ -1155,14 +1142,13 @@ top : 20%;
         margin-right: 0px;
         margin-right: 20px;
     }
-.radio_questions {
-  padding: 0 16px;
-  max-width: 100%;
-
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
-}
+    .radio_questions {
+      padding: 0 16px;
+      max-width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
     .parallax{
         height:100%;
         width:100%;
@@ -1205,24 +1191,65 @@ top : 20%;
         margin-bottom:5px;
         position: relative;
     }
-    .shortlist_job,.shortlist_job:hover
-    {
-     color:#fff;
+    .shortlist_job,.shortlist_job:hover{
+        color:#fff;
     }
     .shortlist_job:focus{
         color:#fff;
     }
-    .col_pink
-    {
-    background: #ef7706 !important;
-    border-color: #ef7706 !important;
-    color: #ffffff;
+    .col_pink{
+        background: #ef7706 !important;
+        border-color: #ef7706 !important;
+        color: #ffffff;
     }
     .hover-change:hover {
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
-    }");
+    }
+    .pf-field {
+        float: left;
+        width: 100%;
+        position: relative;
+    }
+    .pf-field > input {
+        height: 56px;
+        float: left;
+        width: 100%;
+        border: 2px solid #e8ecec;
+        margin-bottom: 20px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        padding: 14px 45px 14px 15px;
+        background: #ffffff !important;
+        font-family: Open Sans;
+        font-size: 13px;
+        font-weight: 400;
+        color: #101010;
+        line-height: 24px;
+        cursor: pointer;
+    }
+    .pf-field > i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        font-size: 20px;
+        color: #848484;
+        line-height: 56px;
+        cursor: pointer;
+    }
+    @media only screen and (max-width: 575px) {
+        .job-overview ul li{
+             width: 50% !important;
+        }
+    }
+    .has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
+        color:inherit;
+    }
+    ");
 
 $script = <<< JS
 $(document).on('click','.shortlist_job',function(e)
@@ -1251,7 +1278,7 @@ $(document).on('click','.shortlist_job',function(e)
                  }
                     
                     });        
-    })        
+    });        
    
         $(document).on('click','.apply-btn',function(e)
             {
@@ -1261,13 +1288,13 @@ $(document).on('click','.shortlist_job',function(e)
                return false;
             }
          $('#modal').modal('show'); 
-         })
+         });
    
    $('input[name="JobApplied[check]"]').on('change',function()
        {
         if($(this).val() == 1)
         {
-          $('#use_existing').css('display','none')
+          $('#use_existing').css('display','none');
           $('#new_resume').css('display','block');
         }
         else if($(this).val() == 0)
@@ -1277,7 +1304,7 @@ $(document).on('click','.shortlist_job',function(e)
             $('#use_existing').css('display','block');
             
         }
-        })
+        });
         
          var que_id = $('#question_id').val();
          var fill_que = $('#fill_question').val();
@@ -1371,7 +1398,7 @@ $(document).on('click','.shortlist_job',function(e)
          $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
          return false;
             }
-            })
+            });
         
         function ajax_call(formData)
         {
@@ -1429,3 +1456,5 @@ $(document).on('click','.shortlist_job',function(e)
 })          
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

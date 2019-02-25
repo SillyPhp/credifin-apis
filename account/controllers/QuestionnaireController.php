@@ -122,18 +122,19 @@ class QuestionnaireController extends Controller
         }
     }
 
-    public function actionFillQuestionnaire()
+    public function actionFillQuestionnaire($qidk, $aaidk)
     {
-        if (Yii::$app->user->identity->organization)
-        {
-            return 'You Have No acccess to this page';
+        if (Yii::$app->user->identity->organization) {
+            return 'You have no access to this page';
         }
         $this->layout = 'main-secondary';
 
-        $applied_id = Yii::$app->getRequest()->getQueryParam('aaid');
-        $qidk = Yii::$app->getRequest()->getQueryParam('qidk');
         $chk = AnsweredQuestionnaire::find()
-            ->where(['applied_application_enc_id'=>$applied_id,'questionnaire_enc_id'=>$qidk,'created_by'=>Yii::$app->user->identity->user_enc_id])
+            ->where([
+                'applied_application_enc_id' => $aaidk,
+                'questionnaire_enc_id' => $qidk,
+                'created_by' => Yii::$app->user->identity->user_enc_id,
+                ])
             ->asArray()
             ->one();
         $result = OrganizationQuestionnaire::find()
@@ -163,13 +164,9 @@ class QuestionnaireController extends Controller
             $model = new QuestionnaireViewForm();
             if (Yii::$app->request->isPost) {
                 $data = Yii::$app->request->post('data');
-                $applied_id = Yii::$app->getRequest()->getQueryParam('aaid');
-                if ($model->saveAnswer($applied_id,$data,$qidk))
-                {
+                if ($model->saveAnswer($aaidk, $data, $qidk)) {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
 
@@ -184,26 +181,24 @@ class QuestionnaireController extends Controller
 
     }
 
-    public function actionAnswersDisplay() {
+    public function actionDisplayAnswers($qidk, $aaidk)
+    {
         $this->layout = 'main-secondary';
-        $a = Yii::$app->getRequest()->getQueryParam('a');
-        $q = Yii::$app->getRequest()->getQueryParam('q');
         $answers = AnsweredQuestionnaire::find()
             ->alias('a')
             ->distinct()
-            ->where(['a.applied_application_enc_id' => $a, 'a.questionnaire_enc_id' => $q])
-            ->select(['a.answered_questionnaire_enc_id','a.rating','a.created_by'])
+            ->where(['a.applied_application_enc_id' => $aaidk, 'a.questionnaire_enc_id' => $qidk])
+            ->select(['a.answered_questionnaire_enc_id', 'a.rating', 'a.created_by'])
             ->joinWith([
-                'answeredQuestionnaireFields b' => function($b) {
-                    $b->joinWith(['fieldEnc c'],false);
-                    $b->joinWith(['fieldOptionEnc e'],false);
-                    $b->select(['b.answered_questionnaire_enc_id', 'b.answer','c.field_enc_id', 'c.field_type', 'c.field_label','e.field_option']);
+                'answeredQuestionnaireFields b' => function ($b) {
+                    $b->joinWith(['fieldEnc c'], false);
+                    $b->joinWith(['fieldOptionEnc e'], false);
+                    $b->select(['b.answered_questionnaire_enc_id', 'b.answer', 'c.field_enc_id', 'c.field_type', 'c.field_label', 'e.field_option']);
                 }
-            ],true)
-            ->joinWith(['createdBy d'=>function($d)
-            {
-                $d->select(['d.user_enc_id','d.username','d.first_name']);
-            }],true)
+            ], true)
+            ->joinWith(['createdBy d' => function ($d) {
+                $d->select(['d.user_enc_id', 'd.username', 'd.first_name']);
+            }], true)
             ->asArray()
             ->one();
         return $this->render('view-answer', ['answers' => $answers]);
@@ -215,16 +210,13 @@ class QuestionnaireController extends Controller
         $que = Yii::$app->request->post('que');
         $aid = Yii::$app->request->post('aid');
         $ratingModel = AnsweredQuestionnaire::find()
-                    ->where(['applied_application_enc_id'=>$aid])
-                    ->andWhere(['questionnaire_enc_id'=>$que])
-                    ->one();
+            ->where(['applied_application_enc_id' => $aid])
+            ->andWhere(['questionnaire_enc_id' => $que])
+            ->one();
         $ratingModel->rating = $rating;
-        if($ratingModel->update())
-        {
+        if ($ratingModel->update()) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
 

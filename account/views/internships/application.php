@@ -7,14 +7,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
-$primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
-$industry = ArrayHelper::map($industries, 'industry_enc_id', 'industry');
-$process = ArrayHelper::map($process_list, 'interview_process_enc_id', 'process_name');
-$benefits = ArrayHelper::index($benefit, 'benefit_enc_id');
-$loc_list = ArrayHelper::index($location_list, 'location_enc_id');
-$int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
-$que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
 ?>
 
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
@@ -171,8 +163,8 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 <div class="col-md-4">
                                                     <?=
                                                     $form->field($model, 'stipendur')->dropDownList([
-                                                        'monthly' => 'Monthly',
-                                                        'weekly' => 'Weekly',
+                                                        'Monthly' => 'Monthly',
+                                                        'Weekly' => 'Weekly',
                                                     ])->label(false);
                                                     ?>
                                                 </div>
@@ -316,6 +308,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <div class="divider">
                                     <span></span>
                                 </div>
+                                <div class="placement_location_hide">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="module2-heading">Select Placement Locations</div>
@@ -378,6 +371,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                 <?php }
                                 Pjax::end(); ?>
                                 <input type="text" name="placement_calc" id="placement_calc" readonly>
+                                </div>
                             </div>
 
                             <div class="tab-pane" id="tab2">
@@ -561,7 +555,6 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                     <div id="b_error"></div>
                                     <?php
                                     if (!empty($benefits)) {
-                                        $model->emp_benefit = ArrayHelper::getColumn($benefit, 'benefit_enc_id');
                                         ?>
                                         <div class="cat-sec">
                                             <div class="row no-gape">
@@ -569,7 +562,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                 $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                                                     'item' => function ($index, $label, $name, $checked, $value) {
                                                         if (empty($label['icon'])) {
-                                                            $label['icon'] = 'plus-icon.svg';
+                                                            $label['icon'] = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                         }
                                                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                                                         $return .= '<div class="p-category">';
@@ -577,7 +570,7 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                         $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<img src="' . Url::to('/assets/icons/') . $label["icon_location"] . '/' . $label["icon"] . '">';
+                                                        $return .= '<img src="' . Url::to(Yii::$app->params->upload_directories->benefits->icon_location . $label["icon_location"] . '/' . $label["icon"]) . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
                                                         $return .= $label['benefit'];
@@ -814,7 +807,35 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                             ?>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                        <div class="col-md-6">
+                                            <h3 class="module2-heading">Any Online Interview Mode? </h3>
+                                        </div>
+                                        <div class="col-md-6 pull-right">
+                                            <div class="md-radio-inline text-right clearfix">
+                                                <?=
+                                                $form->field($model, 'is_online_interview')->inline()->radioList([
+                                                    1 => 'Yes',
+                                                    0 => 'No',
+                                                ], [
+                                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                                        $return = '<div class="md-radio">';
+                                                        $return .= '<input type="radio" id="online' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                        $return .= '<label for="online' . $index . '">';
+                                                        $return .= '<span></span>';
+                                                        $return .= '<span class="check"></span>';
+                                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                        $return .= '</div>';
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?>
+                                            </div>
+                                            <div id="error-checkbox-msg4"></div>
+                                        </div>
+                                    </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="col-md-4 m-padd">
@@ -959,19 +980,9 @@ $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_
                                                     <span class="final_confrm" data-display="randomfunc"> </span></td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Brief Description:</strong></td>
-                                                <td colspan="3"><p class="final_confrm" data-display="othrdetail"></p>
-                                                </td>
-                                            </tr>
-                                            <tr>
                                                 <td><strong>Preferred Gender:</strong></td>
                                                 <td colspan="3"><p class="final_confrm" data-display="gender"
                                                                    id="gendr_text"></p></td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Preferred Industry:</strong></td>
-                                                <td colspan="3"><p class="final_confrm" data-display="pref_inds"></p>
-                                                </td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Last Date:</strong></td>
@@ -2365,6 +2376,18 @@ if(window.location.hash)
     {
         window.location = window.location.pathname;
     }
+ $('#jobtype').on('change',function()
+ {
+     var job_type_str = $(this).val();
+   if(job_type_str == "Work From Home")  
+       {
+        $('.placement_location_hide').hide();
+       }
+   else
+       {
+       $('.placement_location_hide').show();
+       }
+ });     
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
         if(option==1)
@@ -2683,9 +2706,7 @@ $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#jobtitle').val('');
-      $('.tt-dataset').empty(); 
-      fetchJd();
-      fetchEr();
+      $('.tt-dataset').empty();
    })
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -2751,9 +2772,8 @@ $('#jobtitle').typeahead(null, {
   {var data =  datum.id; 
       skils_update(data); 
       educational_update(data); 
-      $('.drop-options').empty();
-      $('#shownlist').empty();
-      $('#heading_placeholder').css('display','block'); 
+      make_removable_jd();
+      make_removable_edu();
       $.ajax({
       url:"/account/categories-list/job-description",
       data:{data:data},
@@ -2777,7 +2797,39 @@ $('#jobtitle').typeahead(null, {
          }
      });  
     });
-    
+ function make_removable_jd()
+{
+    var jd_list = [];
+    $.each($('.drop-options li'),function(index,value)
+    {
+    jd_list.push($.trim($(this).text()));
+    });
+    $('.drop-options').empty();
+    quesn_count = 0;
+    var i;
+    var rmv_len_jd = jd_list.length;
+    for(i=0; i<rmv_len_jd; i++)
+        {
+            drop_options(id="",jd_list[i]);
+        }
+}
+
+function make_removable_edu()
+{
+    var edu_list = [];
+    $.each($('.quali_drop_options li'),function(index,value)
+    {
+    edu_list.push($.trim($(this).text()));
+    });
+    $('.quali_drop_options').empty();
+    count_edu = 0;
+    var i;
+    var rmv_len_ed = edu_list.length;
+    for(i=0; i<rmv_len_ed; i++)
+        {
+            drop_edu(id="",edu_list[i]);
+        }
+}   
 function skils_update(data)
         {
       $.ajax({
@@ -2820,32 +2872,26 @@ function skils_update(data)
          });                                
         $("#quali_list").html(html); 
          }
-     });  
-        }
-   
+     });
+  }
   
  function ChildFunction()
      {
-       
        $.pjax.reload({container: '#pjax_questionnaire', async: false});
        $.pjax.reload({container: '#pjax_process', async: false});
      }
 window.ChildFunction = ChildFunction;
-
-function fetchEr()
-{
-    var Education = new Bloodhound({
+var Education = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('educational_requirement'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: '/account/categories-list/fetch-er',
-  // remote: {
-  //   url: '/account/categories-list/educations?q=%QUERY', 
-  //   wildcard: '%QUERY',
-  //   cache: false,     
-  //       filter: function(list) {
-  //           return list;
-  //       }
-  // }
+  remote: {
+    url: '/account/categories-list/educations?q=%QUERY', 
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
 });   
         
 var edu_type = $('#quali_field').typeahead(null, {
@@ -2864,24 +2910,19 @@ var edu_type = $('#quali_field').typeahead(null, {
       var qualification = datum.educational_requirement;  
       drop_edu(id,qualification);
       edu_type.typeahead('val','');  
-   }); 
-}
+   });         
         
-        
-function fetchJd()
-{
-  var Descriptions = new Bloodhound({
+var Descriptions = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('job_description'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: '/account/categories-list/fetch-jd',
-  // remote: {
-  //   url: '/account/categories-list/description?q=%QUERY',
-  //   wildcard: '%QUERY',
-  //   cache: false,     
-  //       filter: function(list) {
-  //           return list;
-  //       }
-  // }
+  remote: {
+    url: '/account/categories-list/description?q=%QUERY',
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
 });   
         
 var que_type = $('#question_field').typeahead(null, {
@@ -2898,11 +2939,8 @@ var que_type = $('#question_field').typeahead(null, {
   { 
       var id = datum.job_description_enc_id;
       var questions = datum.job_description;  
-      drop_options(id,questions); 
-      
-   }); 
-}
-        
+      drop_options(id,questions);
+   });            
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -3354,6 +3392,10 @@ function init() {
                     {
                         required:true
                     },
+                    'is_online_interview':
+                    {
+                        required:true
+                    },
                     'benefit_selection':
                     {
                         required:true
@@ -3482,7 +3524,11 @@ function init() {
                       {
                        required:'<div class = "color_red">Please Select From the options</div>',
                        },
-                     'benefit_selection':
+                  'is_online_interview':
+                 {
+                 required: '<div class = "rule-text2">Please Select From the options</div>'    
+                  },
+                  'benefit_selection':
                     {
                         required:'<div class = "color_red">Please Select From the options</div>'
                     },
@@ -3554,6 +3600,9 @@ function init() {
               else if (element.attr("name") == "qualific_count") { 
                         error.insertAfter("#error-edu-msg");
                     } 
+              else if (element.attr("name") == "is_online_interview") { 
+                        error.insertAfter("#error-checkbox-msg4");
+                    }
               else if (element.attr("name") == "placement_calc") { 
                         error.insertAfter("#place_error");
                     } 
@@ -3670,6 +3719,11 @@ function init() {
                     }
                   else if($(this).attr("data-display") == 'randomfunc')
                   {
+                  appEditor.updateSourceElement();
+                  if($('#othrdetail').val()=='<p>&nbsp;</p>')
+                      {
+                          $('#othrdetail').val('');
+                      }    
                   var gendr =  $('.gender_radio:checked').next('label').text();
                   $('#gendr_text').html(gendr);
                         skills_arr();
@@ -3715,8 +3769,13 @@ function init() {
                         $('input[name = "placement_locations[]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
-                      $('#place_locations').html(placement_city.join(" "));
-           
+                       if ($('#jobtype').val()=='Work From Home'){
+                           $('#place_locations').html('');
+                       }
+                       else
+                           {
+                               $('#place_locations').html(placement_city.join(" "));
+                           }
                        var skills_list = getTags();
                        $('#skillvalues').html(skills_list.toString());
                       var skill_data =  getTags();
@@ -3824,11 +3883,16 @@ var ps = new PerfectScrollbar('#quali_list');
 var ps = new PerfectScrollbar('#suggestionbox');        
 var ps = new PerfectScrollbar('.placeble-area');
 
-ClassicEditor
-    .create( document.querySelector( '#othrdetail' ), {
+let appEditor;
+ ClassicEditor
+    .create(document.querySelector('#othrdetail'), {
         removePlugins: [ 'Heading', 'Link' ],
         toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
     }  )
+    .then( editor => {
+        // Store it in more "global" context.
+        appEditor = editor;
+    } )
     .catch( error => {
         console.error( error );
     } );

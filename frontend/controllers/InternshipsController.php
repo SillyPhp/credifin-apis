@@ -145,6 +145,10 @@ class InternshipsController extends Controller
                 $options['location'] = $parameters['location'];
             }
 
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
+            }
+
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {
                 $options['keyword'] = $parameters['keyword'];
             }
@@ -217,7 +221,7 @@ class InternshipsController extends Controller
 
         if (!empty($application_details)) {
             $model = new JobApplied();
-            return $this->render('internship-details', [
+            return $this->render('detail', [
                 'application_details' => $application_details,
                 'data' => $object->getCloneData($application_details->application_enc_id),
                 'org' => $org_details,

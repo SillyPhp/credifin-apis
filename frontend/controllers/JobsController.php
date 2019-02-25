@@ -82,6 +82,7 @@ class JobsController extends Controller
             $parameters = Yii::$app->request->post();
 
             $options = [];
+
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -92,6 +93,10 @@ class JobsController extends Controller
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
+            }
+
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
             }
 
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {

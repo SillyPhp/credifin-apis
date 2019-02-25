@@ -39,6 +39,7 @@ class TasksController extends Controller
 
             $tasksModel = new \account\models\tasks\Tasks();
             $tasks = $tasksModel->getTasks($options);
+
             if ($tasks['total'] > 0) {
                 return [
                     'status' => 200,
@@ -114,9 +115,92 @@ class TasksController extends Controller
         }
     }
 
-    public function actionUpdate()
-    {
-        return '';
+
+    public function actionTaskComplete() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+
+        $task = UserTasks::findOne([
+            'task_enc_id' => $id,
+            'is_completed' => 0,
+            'is_deleted' => 0,
+        ]);
+
+        $task->is_completed = 1;
+        if ($task->update()) {
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Task has been Completed.',
+                $task = [
+                    'name' => $task->name,
+                    'id' => $task->id,
+                ]
+            ];
+        } else {
+            return $response = [
+                'status' => 201,
+                'title' => 'Error',
+                'message' => 'An error has occurred. Please try again.',
+            ];
+        }
+    }
+
+    public function actionTaskIncomplete() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+
+        $task = UserTasks::findOne([
+            'task_enc_id' => $id,
+            'is_completed' => 1,
+            'is_deleted' => 0,
+        ]);
+
+        $task->is_completed = 0;
+        if ($task->update()) {
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Task has been Updated or add to incomplete.',
+                $task = [
+                    'name' => $task->name,
+                    'id' => $task->id,
+                ]
+            ];
+        } else {
+            return $response = [
+                'status' => 201,
+                'title' => 'Error',
+                'message' => 'An error has occurred. Please try again.',
+            ];
+        }
+    }
+
+    public function actionUpdate(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $name = Yii::$app->request->post('name');
+            $task_id = Yii::$app->request->post('task_id');
+
+            $update = Yii::$app->db->createCommand()
+                ->update(UserTasks::tableName(), ['name' => $name, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['task_enc_id' => $task_id])
+                ->execute();
+            if ($update) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Task title has been changed.',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occurred. Please try again.',
+                ];
+            }
+
+        }
     }
 
 }
