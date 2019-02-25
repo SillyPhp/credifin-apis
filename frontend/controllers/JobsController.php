@@ -92,6 +92,10 @@ class JobsController extends Controller
                 $options['location'] = $parameters['location'];
             }
 
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
+            }
+
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {
                 $options['keyword'] = $parameters['keyword'];
             }

@@ -89,6 +89,18 @@ class ApplicationCards
             ]);
         }
 
+        if (isset($options['category'])) {
+            $cards->andWhere([
+                'or',
+                ['like', 'd.name', $options['category']],
+                ['like', 'l.designation', $options['category']],
+                ['like', 'a.type', $options['category']],
+                ['like', 'c.name', $options['category']],
+                ['like', 'h.industry', $options['category']],
+                ['like', 'i.name', $options['category']],
+            ]);
+        }
+
         if (isset($options['keyword'])) {
             $cards->andWhere([
                 'or',
@@ -204,6 +216,17 @@ class ApplicationCards
                 ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
+
+        if (isset($options['category'])) {
+            $cards->andWhere([
+                'or',
+                ['like', 'd.name', $options['category']],
+                ['like', 'a.type', $options['category']],
+                ['like', 'c.name', $options['category']],
+                ['like', 'i.name', $options['category']],
+            ]);
+        }
+
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',
