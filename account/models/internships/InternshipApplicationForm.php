@@ -196,6 +196,14 @@ class InternshipApplicationForm extends Model
 
     public function saveValues()
     {
+        if (in_array('online001',$this->interviewcity))
+        {
+            $has_online_int = 1;
+            array_shift($this->interviewcity);
+        }
+        else{
+            $has_online_int = 0;
+        }
         switch ($this->stipendtype) {
             case 1:
                 $type = 'Unpaid';
@@ -347,7 +355,7 @@ class InternshipApplicationForm extends Model
             $applicationoptionsModel->max_wage = (($this->maxstip) ? str_replace(',', '', $this->maxstip) : null);
             $applicationoptionsModel->wage_duration = $this->stipendur;
             $applicationoptionsModel->has_placement_offer = null;
-            $applicationoptionsModel->has_online_interview = $this->is_online_interview;
+            $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
             $applicationoptionsModel->pre_placement_offer = (($this->pre_sal) ? str_replace(',', '', $this->pre_sal) : null);

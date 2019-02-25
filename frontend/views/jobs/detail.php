@@ -212,13 +212,20 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
                                     <h3>Interview Locations</h3><span> <?php
-                                        $str2 = "";
-                                        $interview_locations= [];
-                                        foreach ($data['applicationInterviewLocations'] as $loc) {
-                                            array_push($interview_locations, $loc['name']);
+                                        if (!empty($data['applicationInterviewLocations']))
+                                        {
+                                            $str2 = "";
+                                            $interview_locations = [];
+                                            foreach ($data['applicationInterviewLocations'] as $loc) {
+                                                array_push($interview_locations, $loc['name']);
+                                            }
+                                            $str2 = implode(", ", $interview_locations);
+                                            echo rtrim($str2, ',');
                                         }
-                                        $str2 = implode(", ", $interview_locations);
-                                        echo rtrim($str2, ',');
+                                        else
+                                        {
+                                            echo 'Online/Skype/Telephonic';
+                                        }
                                         ?></span></li>
                             </ul>
                         </div>
