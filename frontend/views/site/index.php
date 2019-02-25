@@ -61,7 +61,7 @@ $this->params['seo_tags'] = [
                                         <div class="row no-gape">
                                             <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
                                                 <div class="job-field">
-                                                    <input type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input type="text" name="category" placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
