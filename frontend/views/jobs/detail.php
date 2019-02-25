@@ -66,12 +66,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                 ?>
                                 <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                        class="fa fa-heart-o"></i> Shortlisted</a></span>
+                                                class="fa fa-heart-o"></i> Shortlisted</a></span>
                                 <?php
                             } else {
                                 ?>
                                 <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                        class="fa fa-heart-o"></i> Shortlist</a></span>
+                                                class="fa fa-heart-o"></i> Shortlist</a></span>
                                 <?php
                             }
                         }
@@ -103,11 +103,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                         <h3>Job Type</h3><span><?= ucwords($data['type']); ?></span></li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Offered Salary <?php if($data['wage_type']=='Fixed'){echo '(Fixed)';
-                                        $amount = $data['fixed_wage'];
-                                        setlocale(LC_MONETARY, 'en_IN');
-                                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
-                                        } else if($data['wage_type']=='Negotiable'){
-                                            if(!empty($data['min_wage']) || !empty($data['max_wage'])){echo '(Negotiable)';}
+                                                $amount = $data['fixed_wage'];
+                                                setlocale(LC_MONETARY, 'en_IN');
+                                                $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
+                                            } else if($data['wage_type']=='Negotiable'){
+                                                if(!empty($data['min_wage']) || !empty($data['max_wage'])){echo '(Negotiable)';}
                                                 $amount1 = $data['min_wage'];
                                                 $amount2 = $data['max_wage'];
                                                 setlocale(LC_MONETARY, 'en_IN');
@@ -120,7 +120,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                 } elseif(empty($data['min_wage']) && empty($data['max_wage'])){
                                                     $amount = 'Negotiable';
                                                 }
-                                        } ?></h3>
+                                            } ?></h3>
                                         <span><?= $amount; ?></span></li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
@@ -153,7 +153,44 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div><!-- Job Head -->
 
                         <div class="job-details">
-                            <h3>Required Knowledge, Skills, and Abilities</h3>
+                            <h3>Employer Benefits</h3>
+                            <?php
+                            $rows = ceil(count($data['applicationEmployeeBenefits']) / 3);
+                            $next = 0;
+                            for ($i = 0; $i < $rows; $i++) {
+                                ?>
+                                <div class="cat-sec">
+                                    <div class="row no-gape">
+                                        <?php
+                                        for ($j = 0; $j < 3; $j++) {
+                                            if(!empty($data['applicationEmployeeBenefits'][$next]['benefit'])){
+                                                ?>
+                                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                                    <div class="p-category">
+                                                        <div class="p-category-view">
+                                                            <?php
+                                                            if(!empty($data['applicationEmployeeBenefits'][$next]['icon'])){
+                                                                $benefit_icon = '/assets/icons/' . $data['applicationEmployeeBenefits'][$next]['icon_location'] . DIRECTORY_SEPARATOR . $data['applicationEmployeeBenefits'][$next]['icon'];
+                                                            } else{
+                                                                $benefit_icon = '/assets/common/employee_benefits/plus-icon.svg';
+                                                            }
+                                                            ?>
+                                                            <img src="<?= Url::to($benefit_icon); ?>" />
+                                                            <span><?= $data['applicationEmployeeBenefits'][$next]['benefit'] ?></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                            }
+                                            $next++;
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                            <h3 class="mt-30">Required Knowledge, Skills, and Abilities</h3>
                             <div class="tags-bar">
                                 <?php foreach ($data['applicationSkills'] as $job_skill) { ?>
                                     <span><?= strtoupper($job_skill['skill']); ?> </span>
@@ -184,18 +221,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
                                 <?php } ?>
                             </ul>
-                            <?php
-                                if (!empty($data['applicationEmployeeBenefits'])){
-                            ?>
-                            <h3>Employer Benefits</h3>
-                            <ul>
-                                <?php
-                                foreach ($data['applicationEmployeeBenefits'] as $benefit) {
-                                    ?>
-                                    <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                <?php }?>
-                            </ul>
-                                <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
@@ -235,18 +260,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     <div class="job-single-head style2">
                         <div class="job-thumb">
                             <a href="/company/<?= $org['slug']; ?>">
-                            <?php
-                            if (!empty($org['logo'])) {
-                                ?>
-                                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="<?= $org['org_name']; ?>"/>
                                 <?php
-                            } else {
+                                if (!empty($org['logo'])) {
+                                    ?>
+                                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt="<?= $org['org_name']; ?>"/>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
+                                            color="<?= $org['color']; ?>" font="55px"></canvas>
+                                    <?php
+                                }
                                 ?>
-                                <canvas class="user-icon" name="<?= $org['org_name']; ?>" width="125" height="125"
-                                        color="<?= $org['color']; ?>" font="55px"></canvas>
-                                <?php
-                            }
-                            ?>
                             </a>
                         </div>
                         <div class="job-head-info">
@@ -348,11 +373,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                     ?>
                     <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
                     <?php
-                        if($resume) {
-                            $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
-                        } else{
-                            $checkList = [1 => 'Upload New'];
-                        }
+                    if($resume) {
+                        $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
+                    } else{
+                        $checkList = [1 => 'Upload New'];
+                    }
                     ?>
                     <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
 
@@ -664,8 +689,8 @@ section.overlape {
     .job-single-head2 {
         float: left;
         width: 100%;
-        padding-bottom: 30px;
-        border-bottom: 1px solid #e8ecec;
+//        padding-bottom: 30px;
+//        border-bottom: 1px solid #e8ecec;
     }
     .job-single-head2 > span {
         float: left;
@@ -737,7 +762,7 @@ section.overlape {
     .job-details {
         float: left;
         width: 100%;
-        padding-top: 20px;
+//        padding-top: 20px;
     }
     .job-details h3 {
         float: left;
@@ -1251,6 +1276,85 @@ section.overlape {
              width: 50% !important;
         }
     }
+    /* Feature, categories css starts */
+    .cat-sec {
+        float: left;
+        width: 100%;
+    }
+    .p-category {
+        float: left;
+        width: 100%;
+        z-index: 1;
+        position: relative;
+    }
+    .p-category, .p-category *{
+        -webkit-transition: all 0.4s ease 0s;
+        -moz-transition: all 0.4s ease 0s;
+        -ms-transition: all 0.4s ease 0s;
+        -o-transition: all 0.4s ease 0s;
+        transition: all 0.4s ease 0s;
+    }
+    .p-category > .p-category-view {
+        float: left;
+        width: 100%;
+        text-align: center;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e8ecec;
+        border-right: 1px solid #e8ecec;
+    }
+    .p-category > .p-category-view img {
+        font-size: 70px;
+        margin-top: 30px;
+        line-height: initial !important;
+    }
+    .p-category > .p-category-view span {
+        float: left;
+        width: 100%;
+        font-family: Open Sans;
+        font-size: 15px;
+        color: #202020;
+        margin-top: 18px;
+    }
+    .p-category:hover {
+        background: #ffffff;
+        -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        width: 104%;
+        margin-left: -2%;
+        height: 102%;
+        z-index: 10;
+    }
+    .p-category:hover .p-category-view {
+        border-color: #ffffff;
+    }
+    .p-category:hover i{
+        color: #f07d1d;
+    }
+    .row.no-gape > div {
+        padding: 0;
+    }
+    .cat-sec .row > div:last-child .p-category-view {
+        border-right-color: #ffffff;
+    }
+    .p-category img{
+        width: 80px;
+        height: 50px;
+    }
+    .p-category .p-category-view img, .p-category .checkbox-text span i {
+        color: #4aa1e3;
+        font-size: 70px;
+        margin-top: 30px;
+        line-height: initial !important;
+    }
+    /* Feature, categories css ends */
     ");
 
 $script = <<< JS
