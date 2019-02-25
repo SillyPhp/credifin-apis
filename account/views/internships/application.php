@@ -808,6 +808,33 @@ use yii\widgets\Pjax;
                                         </div>
                                     </div>
                                     <div class="col-md-12">
+                                        <div class="row">
+                                        <div class="col-md-6">
+                                            <h3 class="module2-heading">Any Online Interview Mode? </h3>
+                                        </div>
+                                        <div class="col-md-6 pull-right">
+                                            <div class="md-radio-inline text-right clearfix">
+                                                <?=
+                                                $form->field($model, 'is_online_interview')->inline()->radioList([
+                                                    1 => 'Yes',
+                                                    0 => 'No',
+                                                ], [
+                                                    'item' => function ($index, $label, $name, $checked, $value) {
+                                                        $return = '<div class="md-radio">';
+                                                        $return .= '<input type="radio" id="online' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                                                        $return .= '<label for="online' . $index . '">';
+                                                        $return .= '<span></span>';
+                                                        $return .= '<span class="check"></span>';
+                                                        $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                        $return .= '</div>';
+                                                        return $return;
+                                                    }
+                                                ])->label(false);
+                                                ?>
+                                            </div>
+                                            <div id="error-checkbox-msg4"></div>
+                                        </div>
+                                    </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -3697,26 +3724,8 @@ function init() {
                       {
                           $('#othrdetail').val('');
                       }    
-                  var gendr =  $('.gender_radio:checked').val();
-                  var gend;
-                  switch(gendr) {
-             case '0':
-               gend = "No preference";
-                break;
-            case '1':
-                 gend = "Male";
-                 break;
-             case '2':
-             gend = "Female";
-             break;
-             case '3':
-             gend = "Transgender";
-             break;
-             default:
-             gend = "No preference";
-             break; 
-            } 
-            $('#gendr_text').html(gend);
+                  var gendr =  $('.gender_radio:checked').next('label').text();
+                  $('#gendr_text').html(gendr);
                         skills_arr();
                         placement_arr();
                         question_process_arr();

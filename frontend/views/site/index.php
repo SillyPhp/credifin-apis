@@ -61,7 +61,7 @@ $this->params['seo_tags'] = [
                                         <div class="row no-gape">
                                             <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
                                                 <div class="job-field">
-                                                    <input type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input type="text" name="category" placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
@@ -96,7 +96,7 @@ $this->params['seo_tags'] = [
                         <a href="/employers">
                             <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
                                                    alt="Employers"></div>
-                            <div class="h-heading">Employers 1</div>
+                            <div class="h-heading"><Employers></Employers></div>
                             <div class="h-text">I want to recruit talent</div>
                         </a>
                     </div>
@@ -735,7 +735,7 @@ $this->registerCss('
     margin:0 8px;
 }
 .login-bttn{
-    padding: 6px 15px;
+    padding: 12px 40px;
     border:2px solid #00a0e3;
     border-radius:5px;
     color:#00a0e3;
@@ -754,7 +754,7 @@ $this->registerCss('
     background:#00a0e3; 
 }
 .sign-up{
-     padding: 6px 17px;
+    padding: 12px 40px;
     border:2px solid #ff7803;
     border-radius:5px;
     color:#ff7803;
