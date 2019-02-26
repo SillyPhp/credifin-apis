@@ -135,7 +135,7 @@ $this->params['seo_tags'] = [
                             <div class="h-text">I want to find the best match for talent</div>
                         </div>
                         <div class="overlay">
-                            <div class="text">Coming Soon</div>
+                            <div class="text">Coming</div>
                         </div>
                     </div>
                 </div>
