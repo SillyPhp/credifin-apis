@@ -5,6 +5,7 @@ namespace account\models\jobs;
 use common\models\ApplicationOption;
 use Yii;
 use yii\base\Model;
+use yii\helpers\Url;
 use common\models\ApplicationTypes;
 use common\models\EmployerApplications;
 use common\models\ApplicationPlacementLocations;
@@ -28,7 +29,6 @@ use common\models\AssignedSkills;
 use common\models\Industries;
 use common\models\OrganizationLocations;
 use common\models\OrganizationQuestionnaire;
-use common\models\EmployeeBenefits;
 use common\models\OrganizationInterviewProcess;
 use common\models\OrganizationEmployeeBenefits;
 use common\models\Cities;
@@ -738,11 +738,14 @@ class JobApplicationForm extends Model
 
     public function getBenefits()
     {
-        $benefit =  OrganizationEmployeeBenefits::find()
+        $benefit = OrganizationEmployeeBenefits::find()
             ->alias('a')
-            ->select(['a.benefit_enc_id','b.benefit','b.icon','b.icon_location'])
-            ->joinWith(['benefitEnc b'],false)
-            ->where(['a.organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->select(['a.benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = ""  THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Yii::$app->params->upload_directories->benefits->icon . '",b.icon_location, "/", b.icon) END icon'])
+            ->joinWith(['benefitEnc b'], false)
+            ->where([
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.is_deleted' => 0,
+            ])
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
@@ -775,7 +778,7 @@ class JobApplicationForm extends Model
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit']);
+                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
                 $b->joinWith(['educationalRequirementEnc f'], false);
