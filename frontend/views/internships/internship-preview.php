@@ -124,7 +124,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                             <h3>Other Details</h3>
                                 <p><?= $object->othrdetail ?></p>
                           <?php  } ?>
-                            <h3>Education + Experience</h3>
+                            <h3>Education</h3>
                             <ul>
                                 <?php
                                 foreach (json_decode($object->qualifications_arr) as $qualifications) {
