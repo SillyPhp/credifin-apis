@@ -62,6 +62,25 @@
                             </div>
                             <div class="form-group">
                                 <div class="with-icon">
+                                    <input class="form-control" placeholder="Minimum Interviews Required" type="number" value=""/>
+                                    <i class="utouch-icon utouch-icon-user fa fa-calendar-o"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="control-group">
+                                    <h1>Radio buttons</h1>
+                                    <label class="control control--radio">First radio
+                                        <input type="radio" name="radio" checked="checked"/>
+                                        <div class="control__indicator"></div>
+                                    </label>
+                                    <label class="control control--radio">Second radio
+                                        <input type="radio" name="radio"/>
+                                        <div class="control__indicator"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="with-icon">
                                     <input class="form-control form-control-inline input-medium date-picker"
                                            placeholder="Select Dates For Interview" size="16" type="text"
                                            id="datepicker" value=""/>
@@ -338,6 +357,62 @@ textarea {
 .sc_remove::-webkit-scrollbar { width: 0 !important }
 .sc_remove { -ms-overflow-style: none; overflow: hidden; overflow: -moz-scrollbars-none; }
 /*Modal css ends */
+/*Radios css start */
+.control {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-size: 18px;
+}
+.control input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+.control__indicator {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background: #e6e6e6;
+}
+.control--radio .control__indicator {
+  border-radius: 50%;
+}
+.control:hover input ~ .control__indicator,
+.control input:focus ~ .control__indicator {
+  background: #ccc;
+}
+.control input:checked ~ .control__indicator {
+  background: #2aa1c0;
+}
+.control:hover input:not([disabled]):checked ~ .control__indicator,
+.control input:checked:focus ~ .control__indicator {
+  background: #0e647d;
+}
+.control__indicator:after {
+  content: \'\';
+  position: absolute;
+  display: none;
+}
+.control input:checked ~ .control__indicator:after {
+  display: block;
+}
+.control--radio .control__indicator:after {
+  left: 7px;
+  top: 7px;
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+.control--radio input:disabled ~ .control__indicator:after {
+  background: #7b7b7b;
+}
+/*Radios css ends */
 ');
 $script = <<<JS
     // $('#candidates').multiselect();
