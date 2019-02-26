@@ -140,6 +140,77 @@ class CompaniesController extends Controller {
         }
     }
 
+    public function actionProfile() {
+        $organization = Organizations::find()
+            ->where(['slug' => 'ajayjuneja', 'status' => 'Active', 'is_deleted' => 0])
+            ->asArray()
+            ->one();
+        if ($organization) {
+            $organizationLocations = OrganizationLocations::find()
+                ->alias('a')
+                ->select(['a.*', 'b.name as city', 'c.name as state', 'd.name as country'])
+                ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+                ->innerJoin(States::tableName() . 'as c', 'c.state_enc_id = b.state_enc_id')
+                ->innerJoin(Countries::tableName() . 'as d', 'd.country_enc_id = c.country_enc_id')
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $organizationVideos = OrganizationVideos::find()
+                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $benefit = OrganizationEmployeeBenefits::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'b.icon'])
+                ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+            if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $type = Yii::$app->request->post('type');
+                $options = [];
+                $options['limit'] = 3;
+                $options['page'] = 1;
+                $options['company'] = $organization['name'];
+                if($type == 'Jobs') {
+                    $cards = ApplicationCards::jobs($options);
+                } else {
+                    $cards = ApplicationCards::internships($options);
+                }
+                if ($cards) {
+                    $response = [
+                        'status' => 200,
+                        'message' => 'Success',
+                        'cards' => $cards,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            }
+
+                $chkuser = ShortlistedOrganizations::find()
+                    ->select('shortlisted')
+                    ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $organization['organization_enc_id']])
+                    ->asArray()
+                    ->one();
+                return $this->render('profile', [
+                    'organization' => $organization,
+                    'locations' => $organizationLocations,
+                    'videos' => $organizationVideos,
+//                            'jobcards' => $jobcards,
+                    'shortlist' => $chkuser,
+                    'benefit' => $benefit,
+                ]);
+        } else {
+
+        }
+    }
+
     public function actionUpdateLogo() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $companyLogoFormModel = new CompanyLogoForm();
