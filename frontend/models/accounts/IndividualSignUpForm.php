@@ -11,7 +11,8 @@ use common\models\Users;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
-class IndividualSignUpForm extends Model {
+class IndividualSignUpForm extends Model
+{
 
     public $username;
     public $email;
@@ -24,7 +25,8 @@ class IndividualSignUpForm extends Model {
     public $user_type;
     public $_flag;
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             [
                 'class' => PhoneInputBehavior::className(),
@@ -33,14 +35,17 @@ class IndividualSignUpForm extends Model {
         ];
     }
 
-    public function formName() {
+    public function formName()
+    {
         return '';
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'required'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['username', 'email'], 'string', 'max' => 50],
             [['new_password', 'confirm_password'], 'string', 'max' => 20],
             [['first_name', 'last_name'], 'string', 'max' => 30],
@@ -56,7 +61,8 @@ class IndividualSignUpForm extends Model {
         ];
     }
 
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'username' => Yii::t('frontend', 'Username'),
             'email' => Yii::t('frontend', 'Email'),
@@ -68,13 +74,14 @@ class IndividualSignUpForm extends Model {
         ];
     }
 
-    public function add() {
+    public function add()
+    {
         if (!$this->validate()) {
             return false;
         }
 
         $user_type = UserTypes::findOne([
-                    'user_type' => $this->user_type,
+            'user_type' => $this->user_type,
         ]);
 
         if (!$user_type) {
