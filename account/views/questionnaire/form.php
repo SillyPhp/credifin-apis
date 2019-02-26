@@ -387,6 +387,7 @@ $script = <<<JS
             var droppedElem = ui['item'][0];
             droppedElem.querySelector('.form_output').querySelector('.form-group').querySelector('input[type=text]').focus();
             count_elem++;
+            console.log(count_elem);
             elem_chk();
             getPreview();
             checkDiv();
@@ -608,6 +609,7 @@ $script = <<<JS
     $(document).on('click', '.remove_bal_field', function (e) {
         e.preventDefault();
          count_elem--;
+         console.log(count_elem);
             elem_chk();
         var field = $(this).attr('data-field');
         $(this).closest('.li_' + field).hide('400', function () {
@@ -1001,7 +1003,7 @@ $script = <<<JS
             }
             else
            {
-             window.location.replace('/account/jobs/dashboard');
+             window.location.replace('/account/questionnaire');
             }
           }
         else{
