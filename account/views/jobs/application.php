@@ -1,10 +1,12 @@
 <?php
+
 use kartik\widgets\DatePicker;
 use kartik\widgets\TimePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 ?>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -136,7 +138,7 @@ use yii\widgets\Pjax;
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';
-                                                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "'.$label.'"  class="md-radiobtn">';
+                                                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
                                                     $return .= '<label for="sltype' . $index . $name . '">';
                                                     $return .= '<span></span>';
                                                     $return .= '<span class="check"></span>';
@@ -316,67 +318,67 @@ use yii\widgets\Pjax;
                                     <span></span>
                                 </div>
                                 <div class="placement_location_hide">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="module2-heading">Select Placement Locations</div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="module2-heading">Select Placement Locations</div>
 
-                                    </div>
-                                    <div class="col-md-4">
-                                        <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
-                                        <span id="place_error"></span>
-                                    </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <?= $form->field($model, 'placement_loc', ['template' => '{input}'])->hiddenInput(['id' => 'placement_array'])->label(false); ?>
+                                            <span id="place_error"></span>
+                                        </div>
 
-                                    <div class="col-md-4">
-                                        <div class="button_location">
-                                            <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3','id'=>'btn_placement_locations', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
+                                        <div class="col-md-4">
+                                            <div class="button_location">
+                                                <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '3', 'id' => 'btn_placement_locations', 'class' => 'btn modal-load-class custom-buttons2 btn-primary custom_color-set2']); ?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <?php
-                                Pjax::begin(['id' => 'pjax_locations1']);
-                                if (!empty($loc_list)) {
-                                    ?>
-                                    <?=
-                                    $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
-                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                    <?php
+                                    Pjax::begin(['id' => 'pjax_locations1']);
+                                    if (!empty($loc_list)) {
+                                        ?>
+                                        <?=
+                                        $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
+                                            'item' => function ($index, $label, $name, $checked, $value) {
 
-                                            if ($index % 3 == 0) {
-                                                $return .= '<div class="row">';
-                                            }
-                                            $return .= '<div class="col-md-4">';
-                                            $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
-                                            $return .= '<label for="' . $value . '" class="checkbox-label">';
-                                            $return .= '<div class="checkbox-text">';
-                                            $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
-                                            $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
-                                            $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
-                                            $return .= '<div class="form-group">';
-                                            $return .= '<div class="input-group spinner">';
-                                            $return .= '<input type="text" class="form-control place_no" value="1" >';
-                                            $return .= '<div class="input-group-btn-vertical">';
-                                            $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
-                                            $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '<div class="tooltips">';
-                                            $return .= 'Enter No. of Positions.';
-                                            $return .= '</div>';
-                                            $return .= '</div>';
-                                            $return .= '</label>';
-                                            $return .= '</div>';
-                                            if ($index % 3 == 2 || isset($label['total'])) {
+                                                if ($index % 3 == 0) {
+                                                    $return .= '<div class="row">';
+                                                }
+                                                $return .= '<div class="col-md-4">';
+                                                $return .= '<input type="checkbox" name="' . $name . '" id="' . $value . '" data-value="' . $label['city_name'] . '" class="checkbox-input" data-count = "" ' . (($checked) ? 'checked' : '') . '>';
+                                                $return .= '<label for="' . $value . '" class="checkbox-label">';
+                                                $return .= '<div class="checkbox-text">';
+                                                $return .= '<p class="loc_name_tag">' . $label['location_name'] . '</p>';
+                                                $return .= '<span class="address_tag">' . $label['address'] . '</span> <br>';
+                                                $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
+                                                $return .= '<div class="form-group">';
+                                                $return .= '<div class="input-group spinner">';
+                                                $return .= '<input type="text" class="form-control place_no" value="1" >';
+                                                $return .= '<div class="input-group-btn-vertical">';
+                                                $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
+                                                $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
                                                 $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '<div class="tooltips">';
+                                                $return .= 'Enter No. of Positions.';
+                                                $return .= '</div>';
+                                                $return .= '</div>';
+                                                $return .= '</label>';
+                                                $return .= '</div>';
+                                                if ($index % 3 == 2 || isset($label['total'])) {
+                                                    $return .= '</div>';
+                                                }
+                                                return $return;
                                             }
-                                            return $return;
-                                        }
-                                    ])->label(false);
-                                    ?>
+                                        ])->label(false);
+                                        ?>
 
-                                <?php } else { ?>
-                                    <div class="empty-section-text">No Placement Location has been found</div>
-                                <?php }
-                                Pjax::end(); ?>
+                                    <?php } else { ?>
+                                        <div class="empty-section-text">No Placement Location has been found</div>
+                                    <?php }
+                                    Pjax::end(); ?>
                                     <input type="text" name="placement_calc" id="placement_calc" readonly>
                                 </div>
                             </div>
@@ -568,16 +570,13 @@ use yii\widgets\Pjax;
                                                 <?=
                                                 $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                                                     'item' => function ($index, $label, $name, $checked, $value) {
-                                                        if (empty($label['icon'])) {
-                                                            $label['icon'] = 'plus-icon.svg';
-                                                        }
                                                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                                                         $return .= '<div class="p-category">';
                                                         $return .= '<input type="checkbox" id="benefit' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                                                         $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                                                         $return .= '<div class="checkbox-text">';
                                                         $return .= '<span class="checkbox-text--title">';
-                                                        $return .= '<img src="' . Url::to('/assets/icons/') . $label["icon_location"] . '/' . $label["icon"] . '">';
+                                                        $return .= '<img src="' . $label["icon"] . '">';
                                                         $return .= '</span><br/>';
                                                         $return .= '<span class="checkbox-text--description2">';
                                                         $return .= $label['benefit'];
@@ -607,7 +606,7 @@ use yii\widgets\Pjax;
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <?= $form->field($model, 'othrdetail')->textArea(['rows' => 6, 'cols' => 50,'id'=>'othrdetail'])->label(false); ?>
+                                        <?= $form->field($model, 'othrdetail')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'othrdetail'])->label(false); ?>
                                         <input type="text" name="skill_counter" id="skill_counter" readonly>
                                         <input type="text" name="qualific_count" id="qualific_count" readonly>
                                         <input type="text" name="desc_count" id="desc_count" readonly>
@@ -816,17 +815,17 @@ use yii\widgets\Pjax;
                                 </div>
                                 <div class="interview_panel_hide">
                                     <div class="row">
-                                            <div class="col-md-4 m-padd">
-                                                <h3 class="module2-heading">Select Interview Locations</h3>
+                                        <div class="col-md-4 m-padd">
+                                            <h3 class="module2-heading">Select Interview Locations</h3>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span id="interview_error"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="btn-padd-top pull-right">
+                                                <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '1', 'class' => 'btn modal-load-class btn-primary custom-buttons2']); ?>
                                             </div>
-                                            <div class="col-md-4">
-                                                <span id="interview_error"></span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="btn-padd-top pull-right">
-                                                    <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '1', 'class' => 'btn modal-load-class btn-primary custom-buttons2']); ?>
-                                                </div>
-                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <?php
@@ -870,7 +869,7 @@ use yii\widgets\Pjax;
                                         <input type="text" name="interview_calc" id="interview_calc" readonly>
                                     </div>
                                 </div>
-                                </div>
+                            </div>
                             <div class="tab-pane" id="tab5">
                                 <div class="portlet box primary_colr">
                                     <div class="portlet-title">
