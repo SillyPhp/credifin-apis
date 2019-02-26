@@ -62,17 +62,17 @@ echo $this->render('/widgets/breadcrumbs', [
             <div class="row">
                 <div class="col-md-5">
                     <!-- Google Map HTML Codes -->
-<!--                    <div -->
-<!--                        data-address="--><?//= Yii::t('frontend', Yii::$app->params->contact_address); ?><!--"-->
-<!--                        data-popupstring-id="#popupstring1"-->
-<!--                        class="map-canvas autoload-map"-->
-<!--                        data-mapstyle="style8"-->
-<!--                        data-height="420"-->
-<!--                        data-latlng="30.899420,75.824230"-->
-<!--                        data-title="--><?//= Yii::$app->params->site_name; ?><!--"-->
-<!--                        data-zoom="12"-->
-<!--                        data-marker="/assets/images/map-marker.png">-->
-<!--                    </div>-->
+                    <div
+                        data-address="<?= Yii::t('frontend', Yii::$app->params->contact_address); ?>"
+                        data-popupstring-id="#popupstring1"
+                        class="map-canvas autoload-map"
+                        data-mapstyle="style8"
+                        data-height="420"
+                        data-latlng="30.899420,75.824230"
+                        data-title="<?= Yii::$app->params->site_name; ?>"
+                        data-zoom="12"
+                        data-marker="/assets/images/map-marker.png">
+                    </div>
                     <div class="map-popupstring hidden" id="popupstring1">
                         <div class="text-center">
                             <h3><?= Yii::$app->params->site_name; ?></h3>
