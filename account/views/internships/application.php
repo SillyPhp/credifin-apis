@@ -3806,7 +3806,7 @@ function init() {
                 'nextSelector': '.button-next',
                 'previousSelector': '.button-previous',
                 onTabClick: function (tab, navigation, index, clickedIndex) {
-                    return false;
+                    //return false; 
                     success.hide();
                     error.hide();
                     if (form.valid() == false) {
