@@ -4,8 +4,8 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Internships');
 $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
-$description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.png');
+$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -27,6 +27,7 @@ $this->params['seo_tags'] = [
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
+        'fb:app_id' => '973766889447403'
     ],
 ];
 ?>

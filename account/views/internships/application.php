@@ -111,7 +111,7 @@ use yii\widgets\Pjax;
                                                 <span></span>
                                                 <span></span>
                                             </div>
-                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'lowercase form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
+                                            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
 
                                         </div>
                                     </div>
@@ -3806,7 +3806,7 @@ function init() {
                 'nextSelector': '.button-next',
                 'previousSelector': '.button-previous',
                 onTabClick: function (tab, navigation, index, clickedIndex) {
-                    return false;
+                    return false; 
                     success.hide();
                     error.hide();
                     if (form.valid() == false) {

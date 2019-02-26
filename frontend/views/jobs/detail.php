@@ -153,41 +153,45 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div><!-- Job Head -->
 
                         <div class="job-details">
-                            <h3>Employer Benefits</h3>
                             <?php
-                            $rows = ceil(count($data['applicationEmployeeBenefits']) / 3);
-                            $next = 0;
-                            for ($i = 0; $i < $rows; $i++) {
+                            if(!empty($data['applicationEmployeeBenefits'])) {
                                 ?>
-                                <div class="cat-sec">
-                                    <div class="row no-gape">
-                                        <?php
-                                        for ($j = 0; $j < 3; $j++) {
-                                            if(!empty($data['applicationEmployeeBenefits'][$next]['benefit'])){
-                                                ?>
-                                                <div class="col-lg-4 col-md-4 col-sm-4">
-                                                    <div class="p-category">
-                                                        <div class="p-category-view">
-                                                            <?php
-                                                            if(!empty($data['applicationEmployeeBenefits'][$next]['icon'])){
-                                                                $benefit_icon = '/assets/icons/' . $data['applicationEmployeeBenefits'][$next]['icon_location'] . DIRECTORY_SEPARATOR . $data['applicationEmployeeBenefits'][$next]['icon'];
-                                                            } else{
-                                                                $benefit_icon = '/assets/common/employee_benefits/plus-icon.svg';
-                                                            }
-                                                            ?>
-                                                            <img src="<?= Url::to($benefit_icon); ?>" />
-                                                            <span><?= $data['applicationEmployeeBenefits'][$next]['benefit'] ?></span>
+                                <h3>Employer Benefits</h3>
+                                <?php
+                                $rows = ceil(count($data['applicationEmployeeBenefits']) / 3);
+                                $next = 0;
+                                for ($i = 0; $i < $rows; $i++) {
+                                    ?>
+                                    <div class="cat-sec">
+                                        <div class="row no-gape">
+                                            <?php
+                                            for ($j = 0; $j < 3; $j++) {
+                                                if (!empty($data['applicationEmployeeBenefits'][$next]['benefit'])) {
+                                                    ?>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                        <div class="p-category">
+                                                            <div class="p-category-view">
+                                                                <?php
+                                                                if (!empty($data['applicationEmployeeBenefits'][$next]['icon'])) {
+                                                                    $benefit_icon = '/assets/icons/' . $data['applicationEmployeeBenefits'][$next]['icon_location'] . DIRECTORY_SEPARATOR . $data['applicationEmployeeBenefits'][$next]['icon'];
+                                                                } else {
+                                                                    $benefit_icon = '/assets/common/employee_benefits/plus-icon.svg';
+                                                                }
+                                                                ?>
+                                                                <img src="<?= Url::to($benefit_icon); ?>"/>
+                                                                <span><?= $data['applicationEmployeeBenefits'][$next]['benefit'] ?></span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <?php
+                                                    <?php
+                                                }
+                                                $next++;
                                             }
-                                            $next++;
-                                        }
-                                        ?>
+                                            ?>
+                                        </div>
                                     </div>
-                                </div>
-                                <?php
+                                    <?php
+                                }
                             }
                             ?>
                             <h3 class="mt-30">Required Knowledge, Skills, and Abilities</h3>

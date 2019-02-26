@@ -68,28 +68,28 @@ $this->params['header_dark'] = false;
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['facebook']) ?>" target="_blank">
+                                <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>" target="_blank">
                                     <i class="fa fa-facebook"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['twitter']) ?>" target="_blank">
+                                <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
                                     <i class="fa fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['linkedin']) ?>" target="_blank">
+                                <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>" target="_blank">
                                     <i class="fa fa-linkedin"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['skype'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['skype']) ?>" target="_blank">
+                                <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fa fa-skype"></i>
                                 </a>
                             </li>
