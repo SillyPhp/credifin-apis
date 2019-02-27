@@ -64,9 +64,14 @@ class CategoriesListController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $categories = AssignedCategories::find()
             ->alias('a')
+            ->distinct()
             ->select(['a.category_enc_id cat_id', 'b.name value'])
             ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
-            ->where(['a.status' => 'Publish'])
+//            ->where([
+//                'or',
+//                ['=', 'a.status', 'a.Publish'],
+//                ['a.user_enc_id' => Yii::$app->user->identity->user_enc_id]
+//            ])
             ->andWhere('b.name LIKE "%' . $q . '%"')
             ->andWhere(['not', ['a.parent_enc_id' => null]])
             ->asArray()
@@ -154,7 +159,7 @@ class CategoriesListController extends Controller
             ->where('skill LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -172,7 +177,7 @@ class CategoriesListController extends Controller
             ->where('educational_requirement LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -206,7 +211,7 @@ class CategoriesListController extends Controller
             ->where('job_description LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -222,7 +227,7 @@ class CategoriesListController extends Controller
             ->select(['id', 'job_description_enc_id', 'job_description'])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -237,7 +242,7 @@ class CategoriesListController extends Controller
             ->select(['id', 'educational_requirement_enc_id', 'educational_requirement'])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
