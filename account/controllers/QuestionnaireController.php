@@ -21,7 +21,7 @@ class QuestionnaireController extends Controller
                 'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
             ],
             'orderBy' => [
-                'id' => SORT_DESC,
+                'created_on' => SORT_DESC,
             ],
         ];
 
@@ -71,7 +71,6 @@ class QuestionnaireController extends Controller
 
     public function actionView($qidk)
     {
-
         $this->layout = 'main-secondary';
         $model = new QuestionnaireViewForm();
         $result = OrganizationQuestionnaire::find()
@@ -79,16 +78,16 @@ class QuestionnaireController extends Controller
             ->where(['questionnaire_enc_id' => $qidk])
             ->asArray()
             ->one();
-        if (empty($result)) {
-            return 'not found';
-        }
+
         $fields = QuestionnaireFields::find()
             ->alias('a')
             ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
             ->where(['a.questionnaire_enc_id' => $result['questionnaire_enc_id']])
             ->asArray()
             ->all();
-
+        if (empty($result) || empty($fields)) {
+            return 'not found';
+        }
         foreach ($fields as $field) {
             $field_option = QuestionnaireFieldOptions::find()
                 ->select(['field_option_enc_id', 'field_option'])

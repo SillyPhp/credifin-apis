@@ -51,7 +51,7 @@ use yii\bootstrap\ActiveForm;
             <div class="box">
                 <li class="fixed"><i class="fa fa-sitemap" aria-hidden="true"></i> Get Applications</li>
                 <ul class="connected-sortable draggable-right">
-                    <h1 class="drag_placeholder"><i class="fa fa-cloud-download" aria-hidden="true"></i> Drop Area</h1> 
+                    <h1 class="drag_placeholder"><i class="fa fa-cloud-download" aria-hidden="true"></i> Drag And Drop Processes Here</h1>
                 </ul>
                 <li class="fixed"><i class="fa fa-paper-plane" aria-hidden="true"></i> Hire Applicants</li>
             </div>
@@ -408,13 +408,13 @@ $script = <<< JS
 
     function process8() {
         var field = generateField();
-        var html = '<li class="h form_output" data-type="interview_process"><i class="fa fa-arrows" aria-hidden="true"></i> Written Examination<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="h form_output" data-type="interview_process"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Written Examination<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process10() {
         var field = generateField();
-        var html = '<li class="j form_output" data-type="interview_process"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Offer Letter<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="j form_output" data-type="interview_process"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 

@@ -936,7 +936,7 @@ class JobsController extends Controller
                 'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
             ],
             'orderBy' => [
-                'id' => SORT_DESC,
+                'created_on' => SORT_DESC,
             ],
             'limit' => $limit,
         ];
@@ -953,7 +953,7 @@ class JobsController extends Controller
                 'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
             ],
             'orderBy' => [
-                'id' => SORT_DESC,
+                'created_on' => SORT_DESC,
             ],
             'limit' => $limit,
         ];
