@@ -19,10 +19,12 @@ use Yii;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use common\models\Utilities;
+use common\models\AssignedCategories;
 
 class UserProfileBasicEdit extends Model {
     public $first_name;
     public $last_name;
+    public $category;
     public $job_profile;
     public $job_profile_id;
     public $exp_month;
@@ -42,8 +44,8 @@ class UserProfileBasicEdit extends Model {
 
     public function rules() {
         return [
-            [['job_profile','exp_month','exp_year','dob','languages','skills','availability','description','state','city','job_profile_id'],'required'],
-            ['exp_month','integer','max'=>12],
+            [['job_profile','category','exp_month','exp_year','dob','languages','skills','availability','description','state','city','job_profile_id'],'required'],
+            ['exp_month','integer','max'=>11],
             ['exp_year','integer','max'=>99],
         ];
     }
@@ -60,7 +62,44 @@ class UserProfileBasicEdit extends Model {
         $user->is_available = $this->availability;
         $user->experience = json_encode([''.$this->exp_year.'',''.$this->exp_month.'']);
         $user->description = $this->description;
-        $user->job_function = $this->job_profile_id;
+        $category_execute = Categories::find()
+            ->alias('a')
+            ->where(['name' => $this->job_profile]);
+        $chk_cat = $category_execute->asArray()->one();
+        if (empty($chk_cat)) {
+            $categoriesModel = new Categories;
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+            $categoriesModel->name = $this->job_profile;
+            $utilitiesModel->variables['name'] = $this->job_profile;
+            $utilitiesModel->variables['table_name'] = Categories::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $categoriesModel->slug = $utilitiesModel->create_slug();
+            $categoriesModel->parent_enc_id = NULL;
+            $categoriesModel->created_on = date('Y-m-d H:i:s');
+            $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if ($categoriesModel->save()) {
+               $this->addNewAssignedCategory($categoriesModel->category_enc_id,$user);
+            } else {
+                return false;
+            }
+        } else {
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                ->andWhere(['not',['b.parent_enc_id'=>null]])
+                ->andWhere(['b.assigned_to'=>'Profiles','b.parent_enc_id'=>$this->category])
+                ->asArray()
+                ->one();
+            if (empty($chk_assigned))
+            {
+              $this->addNewAssignedCategory($chk_cat['category_enc_id'],$user);
+            }
+            else{
+                $user->job_function = $chk_assigned['category_enc_id'];
+            }
+        }
         if ($user->update())
         {
             $flag++;
@@ -227,7 +266,25 @@ class UserProfileBasicEdit extends Model {
                 return true;
             }
     }
-
+    private function addNewAssignedCategory($category_id,$user)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $this->category;
+        $assignedCategoryModel->assigned_to = 'Profiles';
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $user->job_function = $assignedCategoryModel->category_enc_id;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public function getJobFunction()
     {
         if (!empty(Yii::$app->user->identity->job_function))
@@ -265,6 +322,26 @@ class UserProfileBasicEdit extends Model {
         {
             $getCurrentCity = '';
             return $getCurrentCity;
+        }
+    }
+
+    public function getCurrentCategory()
+    {
+        if (!empty(Yii::$app->user->identity->job_function))
+        {
+            $getCategory = Categories::find()
+                ->alias('a')
+                ->select(['a.name','a.category_enc_id','b.parent_enc_id'])
+                ->joinWith(['assignedCategories b'],false)
+                ->where(['a.category_enc_id'=>Yii::$app->user->identity->job_function])
+                ->asArray()
+                ->one();
+            return $getCategory;
+        }
+        else
+        {
+            $getCategory = '';
+            return $getCategory;
         }
     }
 

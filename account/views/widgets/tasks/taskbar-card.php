@@ -24,7 +24,7 @@ use yii\helpers\Url;
                             }
                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                             $color = Yii::$app->user->identity->initials_color;
-                            $link = Url::to('/user/' . Yii::$app->user->identity->username);
+                            $link = Url::to('/user-profile/edit');
                         }
 
                         if (empty($image)) :
