@@ -68,4 +68,5 @@ class UserCoachingTutorials extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
+    
 }
