@@ -8,6 +8,7 @@ use common\models\States;
 use common\models\Users;
 
 use common\models\UserSkills;
+use frontend\models\JobApplicationForm;
 use frontend\models\profile\UserProfilePictureEdit;
 use Yii;
 use yii\web\Controller;
@@ -73,9 +74,12 @@ class UserProfileController extends Controller
             $userProfilePicture = new UserProfilePictureEdit();
             $basicDetails = new UserProfileBasicEdit();
             $socialDetails = new UserProfileSocialEdit();
+            $object = new \account\models\jobs\JobApplicationForm();
+            $industry = $object->getPrimaryFields();
             $statesModel = new States();
             $getName = $basicDetails->getJobFunction();
             $getCurrentCity = $basicDetails->getCurrentCity();
+            $getCategory = $basicDetails->getCurrentCategory();
             $getExperience = $basicDetails->getExperience();
             $getSkills = $basicDetails->getUserSkills();
             $getlanguages = $basicDetails->getUserlanguages();
@@ -86,9 +90,11 @@ class UserProfileController extends Controller
                 'getExperience' => $getExperience,
                 'getCurrentCity' => $getCurrentCity,
                 'getName' => $getName,
+                'getCategory' => $getCategory,
                 'basicDetails' => $basicDetails,
                 'socialDetails' => $socialDetails,
                 'statesModel' => $statesModel,
+                'industry' => $industry,
             ]);
         } else {
             return 'You are not Login as candidate login';

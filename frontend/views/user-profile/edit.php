@@ -41,8 +41,14 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/user-profile/update-basic-detail']) ?>
             <div class="profile-form-edit">
                     <div class="row">
-                     <?= $form->field($basicDetails, 'first_name',['template'=>'<div class="col-lg-4"><span class="pf-title">First Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>((Yii::$app->user->identity->first_name) ? Yii::$app->user->identity->first_name : '')])->label(false) ?>
-                     <?= $form->field($basicDetails, 'last_name',['template'=>'<div class="col-lg-4"><span class="pf-title">Last Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'Last Name','value'=>((Yii::$app->user->identity->last_name) ? Yii::$app->user->identity->last_name : '')])->label(false) ?>
+                     <?= $form->field($basicDetails, 'first_name',['template'=>'<div class="col-lg-2"><span class="pf-title">First Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>((Yii::$app->user->identity->first_name) ? Yii::$app->user->identity->first_name : '')])->label(false) ?>
+                     <?= $form->field($basicDetails, 'last_name',['template'=>'<div class="col-lg-2"><span class="pf-title">Last Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'Last Name','value'=>((Yii::$app->user->identity->last_name) ? Yii::$app->user->identity->last_name : '')])->label(false) ?>
+                     <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : '');  ?>
+                     <?= $form->field($basicDetails, 'category',['template'=>'<div class="col-lg-4"><span class="pf-title">Choose Job Category</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
+                         $industry,[
+                         'prompt' => 'Select Category',
+                         'id' => 'category_drp',
+                         'class'=>'chosen'])->label(false); ?>
                      <?= $form->field($basicDetails, 'job_profile',['template'=>'<div class="col-lg-4"><span class="pf-title">Select Job Profile</span><div class="pf-field"><div class="cat_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : '')])->label(false) ?>
                     </div>
@@ -556,8 +562,11 @@ function runAjax(thisObj,data,btn) {
   if(btn.attr("disabled") == "disabled")
             {
                return false;
-            }  
-  $.ajax({
+            } 
+  var chk = thisObj.find('.has-error').length;
+  if(!chk)
+  {
+   $.ajax({
      url:thisObj.attr('action'),
      data:data,
      method:'post',
@@ -580,6 +589,7 @@ function runAjax(thisObj,data,btn) {
             }
      }
   })
+ }
 }
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -671,9 +681,9 @@ $('#job_profile').typeahead(null, {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.cat_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
-  {
+   {
       $('#job_title_id').val(datum.cat_id);
-   }).blur(validateSelection);
+   })
 }
 
 
