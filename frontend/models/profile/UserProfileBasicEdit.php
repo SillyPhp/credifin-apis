@@ -26,7 +26,6 @@ class UserProfileBasicEdit extends Model {
     public $last_name;
     public $category;
     public $job_profile;
-    public $job_profile_id;
     public $exp_month;
     public $exp_year;
     public $dob;
