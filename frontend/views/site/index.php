@@ -593,10 +593,10 @@ $this->params['seo_tags'] = [
                     <div class="com8 animatable fadeIn">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
-                                 alt="Amrit Malwa Capital Bank">
+                                 alt="Amrit Malwa Capital Limited">
                         </div>
                         <div class="com-name">
-                            Amrit Malwa Capital Bank
+                            Amrit Malwa Capital Limited
                         </div>
                     </div>
                     <div class="com9 animatable fadeIn">
@@ -2073,4 +2073,3 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-?>
