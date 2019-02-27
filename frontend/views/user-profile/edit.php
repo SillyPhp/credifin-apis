@@ -20,11 +20,13 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
                       <span><img src="<?=$image ?>" class="preview_img" alt="" width="200" height="150"></span>
                    <?php } else {
-                      $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                      $color = Yii::$app->user->identity->initials_color;
+                      $first = Yii::$app->user->identity->first_name;
+                      $last = Yii::$app->user->identity->last_name;
+                      $name = strtoupper($first[0].''.$last[0]);
+                      $color = ltrim(Yii::$app->user->identity->initials_color,'#');
+                      $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
                       ?>
-                      <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="160" height="160"
-                                    font="60px"></canvas></span>
+                      <span><img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150"></span>
                  <?php } ?>
                     <div class="upload-info">
                         <div class="row">
