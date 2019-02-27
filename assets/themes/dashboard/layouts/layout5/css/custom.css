@@ -435,8 +435,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
     width: 100%;
     font-size: 13px;
     margin: 0;
-    margin-top: 0px;
-    margin-top: 3px;
+    margin-top: 3px !important;
 }
 .p-category:hover a {
     border-color:transparent;
