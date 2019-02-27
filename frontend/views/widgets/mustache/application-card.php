@@ -118,7 +118,7 @@ function getCards(type = 'Jobs') {
             } else {
                 if(loader === true) {
                     if(page === 1) {
-                        $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Jobs not found.</h2>');
+                        $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                     }
                     $('#loadMore').hide();
                 }
@@ -181,7 +181,7 @@ JS;
 $this->registerJs($script);
 $this->registerCss('
 .not-found{
-    width: 300px;
+    max-width: 400px;
     margin: auto;
     display: block;
 }
