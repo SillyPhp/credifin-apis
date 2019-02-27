@@ -23,7 +23,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                       $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                       $color = Yii::$app->user->identity->initials_color;
                       ?>
-                      <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="140" height="140"
+                      <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="160" height="160"
                                     font="60px"></canvas></span>
                  <?php } ?>
                     <div class="upload-info">
