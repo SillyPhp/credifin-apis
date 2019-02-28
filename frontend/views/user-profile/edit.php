@@ -15,6 +15,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/user-profile/update-profile-picture']) ?>
             <div class="profile-title" id="mp">
                 <h3>My Profile</h3>
+                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/user/<?= Yii::$app->user->identity->username ?>" target="_blank">View Profile</a>
                 <div class="upload-img-bar">
                   <?php  if (!empty(Yii::$app->user->identity->image)) {
                     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
@@ -166,7 +167,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         </div>
                     </div>
                     <div class="row">
-                        <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">Description</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_basic','id'=>'basic_detail_submit']); ?>
                         </div>
@@ -418,7 +419,14 @@ display: block !important;
    height: 45px;
     border: 2px solid #ff7803;
 }
-
+.view_profile_btn
+{
+    padding: 4px 12px;
+    margin-top: 3px;
+    background: #ffffff !important;
+    border: 1px solid #ff7803 !important;
+    color: #ff7803 !important;
+}
 .tg-btn:hover{
 color: #fff !important;
     background:#ff7803;
@@ -587,6 +595,8 @@ function runAjax(thisObj,data,btn) {
        btn.removeAttr("disabled");
         if (response.status == 'success') {
                     toastr.success(response.message, response.title);
+                    $.pjax.reload({container: '#pjax_profile_icon', async: false});
+                    $.pjax.reload({container: '#pjax_profile_icon_sidebar', async: false});
                     }
         else 
             {
