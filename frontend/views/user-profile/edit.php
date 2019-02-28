@@ -19,8 +19,14 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                   <?php  if (!empty(Yii::$app->user->identity->image)) {
                     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
                       <span><img src="<?=$image ?>" class="preview_img" alt="" width="200" height="150"></span>
-                   <?php } else { ?>
-                      <span><img src="<?= Url::to('@eyAssets/images/logos/user_icon_profile2.png'); ?>" class="preview_img" alt="" width="200" height="150"></span>
+                   <?php } else {
+                      $first = Yii::$app->user->identity->first_name;
+                      $last = Yii::$app->user->identity->last_name;
+                      $name = strtoupper($first[0].''.$last[0]);
+                      $color = ltrim(Yii::$app->user->identity->initials_color,'#');
+                      $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
+                      ?>
+                      <span><img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150"></span>
                  <?php } ?>
                     <div class="upload-info">
                         <div class="row">
@@ -161,7 +167,6 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     </div>
                     <div class="row">
                         <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">Description</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
-                        <?= $form->field($basicDetails, 'job_profile_id',['template'=>'{input}','options'=>[]])->hiddenInput(['id'=>'job_title_id','value'=>(($getName) ? $getName['category_enc_id'] : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_basic','id'=>'basic_detail_submit']); ?>
                         </div>
@@ -174,7 +179,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <div class="row">
                         <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Facebook Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Twitter Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'skype',['template'=>'<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Skype Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->google : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'skype',['template'=>'<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Skype Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'linkedin',['template'=>'<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Linkedin Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_contact','id'=>'contact_submit']); ?>
@@ -682,7 +687,6 @@ $('#job_profile').typeahead(null, {
     $('.cat_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
    {
-      $('#job_title_id').val(datum.cat_id);
    })
 }
 
