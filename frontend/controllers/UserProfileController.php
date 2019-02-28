@@ -75,7 +75,7 @@ class UserProfileController extends Controller
             $basicDetails = new UserProfileBasicEdit();
             $socialDetails = new UserProfileSocialEdit();
             $object = new \account\models\jobs\JobApplicationForm();
-            $industry = $object->getPrimaryFields();
+            $industry = $object->getPrimaryFields('Profiles');
             $statesModel = new States();
             $getName = $basicDetails->getJobFunction();
             $getCurrentCity = $basicDetails->getCurrentCity();
