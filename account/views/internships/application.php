@@ -170,6 +170,7 @@ use yii\widgets\Pjax;
                                                     ?>
                                                 </div>
                                             </div>
+                                            <div class="salary_errors"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -784,8 +785,8 @@ use yii\widgets\Pjax;
                                                 'attribute' => 'startdate',
                                                 'id' => 'interview_range',
                                                 'attribute2' => 'enddate',
-                                                'options' => ['placeholder' => 'Start From'],
-                                                'options2' => ['placeholder' => 'End Date'],
+                                                'options' => ['placeholder' => 'Start From', 'readonly' => 'readonly'],
+                                                'options2' => ['placeholder' => 'End Date', 'readonly' => 'readonly'],
                                                 'type' => DatePicker::TYPE_RANGE,
                                                 'form' => $form,
                                                 'pluginOptions' => [
@@ -1156,6 +1157,10 @@ $this->registerCss("
     border-right-color: #ffffff;
 }
 /* Feature, categories css ends */
+.s_error{
+   color: #e73d49;
+   font-size: 14px;
+}
 .no-padd{
     padding-left:0px; 
     padding-right:0px;
@@ -2345,6 +2350,26 @@ if(window.location.hash)
     {
         window.location = window.location.pathname;
     }
+    
+function convertToInt(t){
+    t=t.replace(/\,/g,'');
+    t=parseInt(t,10);
+    return t;
+}
+
+function salarycomparison(){
+    var max_s = convertToInt($('#maxstip').val());
+    var min_s = convertToInt($('#minstip').val());
+    if(max_s < min_s){
+        $('.salary_errors').html('<div class = "s_error">Maximum Stipend cannot less than Minimum salary.</div>');
+        $('html, body').animate({ scrollTop: 200 }, 1000);
+       return false;
+    } else{
+        $('.salary_errors').html(' ');
+        return true;
+    }
+}
+    
  $('#jobtype').on('change',function()
  {
      var job_type_str = $(this).val();
@@ -3816,7 +3841,9 @@ function init() {
                 onNext: function (tab, navigation, index) {
                     success.hide();
                     error.hide();
-
+                    if (salarycomparison() === false) {
+                        return false;
+                    }
                     if (form.valid() == false) {
                         return false;
                     }

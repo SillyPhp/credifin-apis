@@ -33,7 +33,7 @@
                     <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
-                    <h5>Unpaid</h5>
+                    <h5>Negotiable</h5>
                     {{/salary}}
                     {{#type}}
                     <h5>{{type}}</h5>

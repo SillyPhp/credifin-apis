@@ -36,7 +36,12 @@ $this->params['header_dark'] = false;
                             </ul>
                             <?php
                         }
-                        ?>
+                        if($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
+                            ?>
+                            <a href="/user-profile/edit" class="edit-profile-btn" target="_blank">Edit Profile</a>
+                            <?php
+                        }
+                            ?>
                     </div>
                 </div>
             </div>
@@ -226,6 +231,21 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.edit-profile-btn{
+    text-align: center;
+    background-color: #00a0e3;
+    color: #fff;
+    padding: 5px 25px;
+    box-shadow: 0px 1px 12px 1px #a5a5a5;
+    border-radius: 4px;
+    margin-top: 2px;
+    font-size: 13px;
+    display: inline-block;
+}
+.edit-profile-btn:hover, .edit-profile-btn:focus{
+    background-color:#0392ce;
+    color:#fff;
+}
 .freelance-image img{
     width:100%;
     height:88%;
