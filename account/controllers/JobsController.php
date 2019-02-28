@@ -28,6 +28,8 @@ use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
 use common\models\InterviewProcessFields;
 use common\models\OrganizationEmployeeBenefits;
+use common\models\UserCoachingTutorials;
+use common\models\WidgetTutorials;
 
 
 class JobsController extends Controller
@@ -883,11 +885,28 @@ class JobsController extends Controller
 
     private function __organizationDashboard()
     {
+        $coaching_category = new WidgetTutorials();
+        $tutorial_cat = $coaching_category->find()
+            ->where(['name' => "organization_jobs_stats"])
+            ->asArray()
+            ->one();
+        $user_viewed = new UserCoachingTutorials();
+        $user_v = $user_viewed->find()
+            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id,'is_viewed'=>1,'tutorial_enc_id'=>$tutorial_cat["tutorial_enc_id"]])
+            ->asArray()
+            ->one();
+        if(empty($user_v)) {
+            $viewed = 0;
+        }else{
+            $viewed = 1;
+        }
+
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
+            'viewed'=>$viewed,
         ]);
     }
 

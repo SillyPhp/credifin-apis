@@ -4,11 +4,9 @@ use yii\helpers\Url;
 use yii\helpers\Json;
 use yii\widgets\Pjax;
 $total_questionnaire = count($questionnaire);
-//$rows = ceil($total_questionnaire / $per_row);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_questionnaire']);
 if (!empty($total_questionnaire)) {
-//    for ($i = 1; $i <= $rows; $i++) {
         ?>
         <div class="cat-sec">
             <div class="row no-gape">
@@ -18,12 +16,6 @@ if (!empty($total_questionnaire)) {
                         ?>
                         <div class="box-main-col <?= $col_width; ?>">
                             <div class="p-category">
-                                <div class="rt-bttns">
-                                    <button class="clone-bttn set-right-align two" type="button"
-                                            onclick="window.open('<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>', '_blank');">
-                                        <i class="fa fa-clone"></i>
-                                    </button>
-                                </div>
                                 <div class="lt-bttn">
                                     <button type="button" class="e-bttn delete_questionnaire set-right-align one"
                                             value="<?= $questionnaire[$next]['id']; ?>">
@@ -53,15 +45,10 @@ if (!empty($total_questionnaire)) {
             </div>
         </div>
         <?php
-//    }
-} else
-{ ?>
+} else { ?>
     <h3>No Questionnaire To Display</h3>
 <?php }
 Pjax::end();
-$this->registerCss("
-
-");
 $script = <<<JS
 $(document).on('click','.delete_questionnaire',function(e){
     e.preventDefault();
@@ -74,14 +61,10 @@ $(document).on('click','.delete_questionnaire',function(e){
             url:url,
             data:{data:data},
             method:'POST',
-            beforeSend:function(){
-                // $(".loader").css("display", "block");
-              },
             success:function(data){
                 $.pjax.reload({container: "#pjax_active_questionnaire", async: false});
                 if(data==true) {
                     toastr.success('Questionnaire Successfully Deleted', 'Success');
-                      // $(".loader").css("display", "none");
                 } else {
                     toastr.error('Something went wrong. Please try again.', 'Opps!!');
                 }

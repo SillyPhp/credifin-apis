@@ -131,9 +131,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . Yii::
                                                             <div class="p-category-view">
                                                                 <?php
                                                                 if (!empty($benefits[$next]['icon'])) {
-                                                                    $benefit_icon = '/assets/icons/' . $benefits[$next]['icon_location'] . DIRECTORY_SEPARATOR . $benefits[$next]['icon'];
+                                                                    $benefit_icon = Url::to(Yii::$app->params->upload_directories->benefits->icon . $benefits[$next]['icon_location'] . DIRECTORY_SEPARATOR . $benefits[$next]['icon']);
                                                                 } else {
-                                                                    $benefit_icon = '/assets/common/employee_benefits/plus-icon.svg';
+                                                                    $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                                 }
                                                                 ?>
                                                                 <img src="<?= Url::to($benefit_icon); ?>"/>

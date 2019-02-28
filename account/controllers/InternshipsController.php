@@ -24,6 +24,8 @@ use common\models\AppliedApplicationProcess;
 use common\models\Utilities;
 use account\models\internships\InternshipApplicationForm;
 use account\models\jobs\JobApplicationForm;
+use common\models\UserCoachingTutorials;
+use common\models\WidgetTutorials;
 
 
 class InternshipsController extends Controller
@@ -799,11 +801,29 @@ class InternshipsController extends Controller
 
     private function __organizationDashboard()
     {
+
+        $coaching_category = new WidgetTutorials();
+        $tutorial_cat = $coaching_category->find()
+            ->where(['name' => "organization_internships_stats "])
+            ->asArray()
+            ->one();
+        $user_viewed = new UserCoachingTutorials();
+        $user_v = $user_viewed->find()
+            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id,'is_viewed'=>1,'tutorial_enc_id'=>$tutorial_cat["tutorial_enc_id"]])
+            ->asArray()
+            ->one();
+        if(empty($user_v)) {
+            $viewed = 0;
+        }else{
+            $viewed = 1;
+        }
+
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
+            'viewed'=>$viewed,
         ]);
     }
 
