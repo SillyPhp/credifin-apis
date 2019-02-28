@@ -4,6 +4,7 @@ use kartik\widgets\DatePicker;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
+use yii\widgets\Pjax;
 $this->title = Yii::t('frontend', 'My Profile');
 $this->params['header_dark'] = true;
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
@@ -12,6 +13,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <div class="padding-left set-overlay">
+            <?php Pjax::begin(['id'=>'profile_icon_pjax']) ?>
             <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/user-profile/update-profile-picture']) ?>
             <div class="profile-title" id="mp">
                 <h3>My Profile</h3>
@@ -45,6 +47,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 </div>
             </div>
             <?php ActiveForm::end(); ?>
+            <?php Pjax::end(); ?>
             <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/user-profile/update-basic-detail']) ?>
             <div class="profile-form-edit">
                     <div class="row">
@@ -595,6 +598,7 @@ function runAjax(thisObj,data,btn) {
        btn.removeAttr("disabled");
         if (response.status == 'success') {
                     toastr.success(response.message, response.title);
+                    $.pjax.reload({container: '#profile_icon_pjax', async: false});
                     $.pjax.reload({container: '#pjax_profile_icon', async: false});
                     $.pjax.reload({container: '#pjax_profile_icon_sidebar', async: false});
                     }
