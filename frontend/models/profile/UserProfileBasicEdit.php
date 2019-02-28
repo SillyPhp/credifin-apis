@@ -43,9 +43,18 @@ class UserProfileBasicEdit extends Model {
 
     public function rules() {
         return [
-            [['job_profile','category','exp_month','exp_year','dob','languages','skills','availability','description','state','city','job_profile_id'],'required'],
+            [['exp_month','exp_year','dob','languages','skills','availability','description','state','city','job_profile_id'],'required'],
             ['exp_month','integer','max'=>11],
+            ['category','safe'],
             ['exp_year','integer','max'=>99],
+            [
+                ['job_profile'], 'required', 'when' => function ($model, $attribute) {
+                return $model->category != '';
+            }, 'whenClient' => "function (attribute, value) {
+                        return $('#category_drp').val() != '';
+                }"
+            ],
+
         ];
     }
 
@@ -61,43 +70,49 @@ class UserProfileBasicEdit extends Model {
         $user->is_available = $this->availability;
         $user->experience = json_encode([''.$this->exp_year.'',''.$this->exp_month.'']);
         $user->description = $this->description;
-        $category_execute = Categories::find()
-            ->alias('a')
-            ->where(['name' => $this->job_profile]);
-        $chk_cat = $category_execute->asArray()->one();
-        if (empty($chk_cat)) {
-            $categoriesModel = new Categories;
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
-            $categoriesModel->name = $this->job_profile;
-            $utilitiesModel->variables['name'] = $this->job_profile;
-            $utilitiesModel->variables['table_name'] = Categories::tableName();
-            $utilitiesModel->variables['field_name'] = 'slug';
-            $categoriesModel->slug = $utilitiesModel->create_slug();
-            $categoriesModel->parent_enc_id = NULL;
-            $categoriesModel->created_on = date('Y-m-d H:i:s');
-            $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if ($categoriesModel->save()) {
-               $this->addNewAssignedCategory($categoriesModel->category_enc_id,$user);
+        if (!empty($this->job_profile)){
+            $category_execute = Categories::find()
+                ->alias('a')
+                ->where(['name' => $this->job_profile]);
+            $chk_cat = $category_execute->asArray()->one();
+            if (empty($chk_cat)) {
+                $categoriesModel = new Categories;
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                $categoriesModel->name = $this->job_profile;
+                $utilitiesModel->variables['name'] = $this->job_profile;
+                $utilitiesModel->variables['table_name'] = Categories::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $categoriesModel->slug = $utilitiesModel->create_slug();
+                $categoriesModel->parent_enc_id = NULL;
+                $categoriesModel->created_on = date('Y-m-d H:i:s');
+                $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($categoriesModel->save()) {
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id,$user);
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                $chk_assigned = $category_execute
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                    ->andWhere(['not',['b.parent_enc_id'=>null]])
+                    ->andWhere(['b.assigned_to'=>'Profiles','b.parent_enc_id'=>$this->category])
+                    ->asArray()
+                    ->one();
+                if (empty($chk_assigned))
+                {
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'],$user);
+                }
+                else{
+                    $user->job_function = $chk_assigned['category_enc_id'];
+                }
             }
-        } else {
-            $chk_assigned = $category_execute
-                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
-                ->andWhere(['not',['b.parent_enc_id'=>null]])
-                ->andWhere(['b.assigned_to'=>'Profiles','b.parent_enc_id'=>$this->category])
-                ->asArray()
-                ->one();
-            if (empty($chk_assigned))
-            {
-              $this->addNewAssignedCategory($chk_cat['category_enc_id'],$user);
-            }
-            else{
-                $user->job_function = $chk_assigned['category_enc_id'];
-            }
+        }
+        else
+        {
+            $user->job_function = null;
         }
         if ($user->update())
         {

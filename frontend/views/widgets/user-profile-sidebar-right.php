@@ -2,11 +2,13 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\widgets\Pjax;
 
 ?>
     <div class="profiles-sidebar">
         <span class="close-profile"><i class="fa fa-close"></i></span>
         <div class="can-detail-s">
+            <?php Pjax::begin(['id' => 'pjax_profile_icon_sidebar']); ?>
             <div class="cst">
                 <?php
                 $name = $image = $color = NULL;
@@ -31,6 +33,7 @@ use yii\helpers\Html;
                                   font="60px"></canvas></span>
                 <?php endif; ?>
             </div>
+            <?php Pjax::end(); ?>
             <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
             <p><?= Yii::$app->user->identity->email ?></p>
         </div>
@@ -43,6 +46,11 @@ use yii\helpers\Html;
                     <li class="inner-child">
                         <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
+
+                    </li>
+                    <li class="inner-child">
+                        <a href="/user-profile/edit" title="" class="tree-toggler"><i
+                                    class="fa fa-pencil-square-o"></i>Edit Profile</a>
 
                     </li>
                     <li class="inner-child">
