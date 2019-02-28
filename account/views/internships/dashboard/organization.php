@@ -15,6 +15,7 @@ echo $this->render('/widgets/header/secondary-header', [
             'applications' => $applications,
             'interview_processes' => $interview_processes,
             'applied_applications' => $applied_applications,
+            'viewed'=>$viewed,
         ]);
         ?>
     </div>
