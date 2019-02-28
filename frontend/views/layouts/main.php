@@ -5,6 +5,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
+use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
 
 AppAssets::register($this);
@@ -101,6 +102,7 @@ AppAssets::register($this);
                                     $color = Yii::$app->user->identity->initials_color;
                                 }
                                 ?>
+                               <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
                                 <div class="my-profiles-sec">
                                     <?php if ($image): ?>
                                         <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>" /></span>
@@ -108,6 +110,7 @@ AppAssets::register($this);
                                         <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40" height="40" font="20px"></canvas></span>
                                     <?php endif; ?>
                                 </div>
+                                <?php Pjax::end(); ?>
                                 <?php
                             }
 
