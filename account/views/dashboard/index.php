@@ -17,9 +17,10 @@ if (!$is_email_verified):
     echo $this->render('/widgets/verification/resend-email');
 endif;
 ?>
+
     <div class="row">
         <div class="col-md-3">
-            <?= $this->render('/widgets/tasks/taskbar-card'); ?>
+            <?= $this->render('/widgets/tasks/taskbar-card',['viewed'=>$viewed]); ?>
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
