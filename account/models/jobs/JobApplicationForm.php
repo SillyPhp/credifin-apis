@@ -773,7 +773,18 @@ class JobApplicationForm extends Model
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
             ->joinWith(['preferredIndustry x'], false)
-            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'a.experience','b.*'])
+            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date',
+                '(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year"
+                WHEN a.experience = "2" THEN "1 Year"
+                WHEN a.experience = "3" THEN "2-3 Years"
+                WHEN a.experience = "3-5" THEN "3-5 Years"
+                WHEN a.experience = "5-10" THEN "5-10 Years"
+                WHEN a.experience = "10-20" THEN "10-20 Years"
+                WHEN a.experience = "20+" THEN "More Than 20 Years"
+                ELSE "No Experience"
+                END) as experience','b.*'])
             ->joinWith(['applicationOptions b'],false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);

@@ -286,7 +286,7 @@ use yii\widgets\Pjax;
                                         <div class="md-radio-inline">
                                             <?= $form->field($model, 'pre_place')->inline()->radioList([
                                                 1 => 'Yes',
-                                                2 => 'No',
+                                                0 => 'No',
                                             ], [
                                                 'item' => function ($index, $label, $name, $checked, $value) {
                                                     $return = '<div class="md-radio">';

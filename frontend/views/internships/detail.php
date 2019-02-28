@@ -154,10 +154,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <h3>Internship Overview</h3>
                                 <?php
                                 switch ($data['has_placement_offer']) {
-                                    case 1;
+                                    case 1:
                                         $offer = 'Yes';
                                         break;
-                                    case 2;
+                                    case 0:
+                                        $offer = 'No';
+                                        break;
+                                    default:
                                         $offer = 'No';
                                         break;
                                 }
@@ -233,9 +236,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                             <div class="p-category-view">
                                                                 <?php
                                                                 if (!empty($data['applicationEmployeeBenefits'][$next]['icon'])) {
-                                                                    $benefit_icon = '/assets/icons/' . $data['applicationEmployeeBenefits'][$next]['icon_location'] . DIRECTORY_SEPARATOR . $data['applicationEmployeeBenefits'][$next]['icon'];
+                                                                    $benefit_icon = Url::to(Yii::$app->params->upload_directories->benefits->icon . $data['applicationEmployeeBenefits'][$next]['icon_location'] . DIRECTORY_SEPARATOR . $data['applicationEmployeeBenefits'][$next]['icon']);
                                                                 } else {
-                                                                    $benefit_icon = '/assets/common/employee_benefits/plus-icon.svg';
+                                                                    $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                                 }
                                                                 ?>
                                                                 <img src="<?= Url::to($benefit_icon); ?>"/>

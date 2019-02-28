@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\UserCoachingTutorials;
+use common\models\WidgetTutorials;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -17,6 +19,7 @@ use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
 use frontend\models\accounts\UserEmails;
+use common\models\Utilities;
 
 class AccountsController extends Controller
 {
@@ -76,6 +79,7 @@ class AccountsController extends Controller
 
     public function actionSignup($type)
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -134,7 +138,10 @@ class AccountsController extends Controller
                     $data['password'] = $model->new_password;
                     $model = new OrganizationSignUpForm();
                     if ($this->login($data)) {
-                        return $this->redirect('/account/dashboard');
+
+
+                            return $this->redirect('/account/dashboard');
+
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');

@@ -30,10 +30,8 @@ use yii\helpers\Url;
                                   font="60px"></canvas></span>
                 <?php endif; ?>
             </div>
-            <h3><?= $name; ?></h3>
-            <p><i class="fa fa-envelope-o"></i><?= Yii::$app->user->identity->email ?></p>
-            <p><i class="fa fa-clock-o"></i>Member
-                Since, <?= date('Y', strtotime(Yii::$app->user->identity->created_on)); ?></p>
+            <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
+            <p><?= Yii::$app->user->identity->email ?></p>
         </div>
         <div class="tree_widget-sec">
             <ul>
@@ -44,6 +42,11 @@ use yii\helpers\Url;
                     <li class="inner-child">
                         <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
+
+                    </li>
+                    <li class="inner-child">
+                        <a href="/user-profile/edit" title="" class="tree-toggler"><i
+                                    class="fa fa-pencil-square-o"></i>Edit Profile</a>
 
                     </li>
                     <li class="inner-child">
