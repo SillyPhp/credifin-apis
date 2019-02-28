@@ -164,6 +164,7 @@ use yii\widgets\Pjax;
                                                     <?= $form->field($model, 'max_salary')->label('Max(Opt)') ?>
                                                 </div>
                                             </div>
+                                            <div class="salary_errors"></div>
                                         </div>
                                     </div>
 
@@ -791,8 +792,8 @@ use yii\widgets\Pjax;
                                                 'attribute' => 'startdate',
                                                 'id' => 'interview_range',
                                                 'attribute2' => 'enddate',
-                                                'options' => ['placeholder' => 'Start From'],
-                                                'options2' => ['placeholder' => 'End Date'],
+                                                'options' => ['placeholder' => 'Start From', 'readonly' => 'readonly'],
+                                                'options2' => ['placeholder' => 'End Date', 'readonly' => 'readonly'],
                                                 'type' => DatePicker::TYPE_RANGE,
                                                 'form' => $form,
                                                 'pluginOptions' => [
@@ -1744,10 +1745,13 @@ q:before, q:after, blockquote:before, blockquote:after {
     transform: translate(0%, -50%);
     transition: all 0.4s ease;
 }
-.color_red
-{
+.color_red{
  color: #e73d49;
  font-size:18px;
+}
+.s_error{
+   color: #e73d49;
+   font-size: 14px;
 }
 .spinner {
   width: 100px;
@@ -2378,6 +2382,25 @@ if(window.location.hash)
     {
         window.location = window.location.pathname;
     }
+function convertToInt(t){
+    t=t.replace(/\,/g,'');
+    t=parseInt(t,10);
+    return t;
+    // return parseInt(t.replace(',', ''));
+}
+
+function salarycomparison(){
+    var max_s = convertToInt($('#max_salary').val());
+    var min_s = convertToInt($('#min_salary').val());
+    if(max_s < min_s){
+        $('.salary_errors').html('<div class = "s_error">Maximum salary cannot less than Minimum salary.</div>');
+        $('html, body').animate({ scrollTop: 200 }, 1000);
+       return false;
+    } else{
+        $('.salary_errors').html(' ');
+        return true;
+    }
+}
  $('#jobtype').on('change',function()
  {
      var job_type_str = $(this).val();
@@ -3021,7 +3044,7 @@ $(document).on('click', '.modal-load-benefit', function() {
                         scroll_checklist();
                         quesn_count++
                         quesn_upt();
-                        console.log(quesn_count);
+                        // console.log(quesn_count);
                 }
            $('#question_field').blur(function(){
                          $(this).val('');
@@ -3376,6 +3399,11 @@ $('.close-ctc').on('click',function(){
                 focusInvalid: false, // do not focus the last invalid input
                 
                 rules: {
+                    'minrange': {
+                        required: function() {
+                            return (min_s.val() > max_s.val());
+                        }
+                      },
                     'jobtitle': {
                         required: true
                     },
@@ -3811,6 +3839,9 @@ $('.close-ctc').on('click',function(){
                 onNext: function (tab, navigation, index) {
                     success.hide();
                     error.hide();
+                    if (salarycomparison() === false) {
+                        return false;
+                    }
                     if (form.valid() == false) {
                         return false;
                     }
