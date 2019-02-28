@@ -154,10 +154,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <h3>Internship Overview</h3>
                                 <?php
                                 switch ($data['has_placement_offer']) {
-                                    case 1;
+                                    case 1:
                                         $offer = 'Yes';
                                         break;
-                                    case 2;
+                                    case 0:
+                                        $offer = 'No';
+                                        break;
+                                    default:
                                         $offer = 'No';
                                         break;
                                 }
