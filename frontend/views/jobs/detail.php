@@ -142,7 +142,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                             }
                                             ?></span></li>
                                     <li><i class="fa fa-clock-o"></i>
-                                        <h3>Experience</h3><span><?= $data['experience']; ?> Years</span></li>
+                                        <h3>Experience</h3><span><?= $data['experience']; ?></span></li>
                                     <li><i class="fa fa-line-chart "></i>
                                         <h3>Total Vacancies</h3><span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
                                     <li><i class="fa fa-map-marker "></i>

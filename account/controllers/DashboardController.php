@@ -7,6 +7,8 @@ use account\models\applications\AppliedProcess;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
 use common\models\OrganizationInterviewProcess;
+use common\models\UserCoachingTutorials;
+use common\models\WidgetTutorials;
 use Yii;
 use yii\web\Controller;
 use common\models\EmployerApplications;
@@ -20,9 +22,23 @@ class DashboardController extends Controller
 {
     private $_condition;
 
+    private function hasViewed(){
+        $user_viewed = new UserCoachingTutorials();
+        $user_v = $user_viewed->find()
+            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id,'is_viewed'=>1])
+            ->asArray()
+            ->one();
+        if(empty($user_v)) {
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
     public function actionIndex()
     {
         $model = new \account\models\services\ServiceSelectionForm();
+
 
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
             return $this->redirect('/account/dashboard');
@@ -43,13 +59,17 @@ class DashboardController extends Controller
         }
 
         if (Yii::$app->user->identity->organization) {
+
+            $viewed = $this->hasViewed();
+
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
-            $applications = [
+                $applications = [
                 'jobs' => $this->_applications(3),
                 'internships' => $this->_applications(3, 'Internships'),
             ];
 
         } else {
+            $viewed = $this->hasViewed();
             $this->_condition = ['b.created_by' => Yii::$app->user->identity->user_enc_id];
         }
 
@@ -87,6 +107,7 @@ class DashboardController extends Controller
                 }
             }
         }
+
         $services = \common\models\Services::find()
             ->alias('a')
             ->select(['a.service_enc_id', 'a.name', 'b.selected_service_enc_id', 'b.is_selected'])
@@ -104,6 +125,7 @@ class DashboardController extends Controller
             'model' => $model,
             'applications' => $applications,
             'question_list' => $question,
+            'viewed'=>$viewed,
         ]);
     }
 
@@ -125,5 +147,24 @@ class DashboardController extends Controller
         return $applications->getApplications($options);
     }
 
+    public function actionCoaching()
+    {
+        if (Yii::$app->request->isAjax) {
+
+            $data = Yii::$app->request->post('dat');
+            $coaching_category = new WidgetTutorials();
+            $tutorial_cat = $coaching_category->find()
+                ->where(['name' => $data])
+                ->asArray()
+                ->one();
+            $coaching = new UserCoachingTutorials();
+            $coaching->user_coaching_tutorial_enc_id = Yii::$app->security->generateRandomString(12);
+            $coaching->tutorial_enc_id = $tutorial_cat["tutorial_enc_id"];
+            $coaching->created_by = Yii::$app->user->identity->user_enc_id;
+            $coaching->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            $coaching->is_viewed = 1;
+            $coaching->save();
+        }
+    }
 
 }
