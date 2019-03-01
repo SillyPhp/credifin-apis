@@ -51,20 +51,28 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/user-profile/update-basic-detail']) ?>
             <div class="profile-form-edit">
                     <div class="row">
-                     <?= $form->field($basicDetails, 'first_name',['template'=>'<div class="col-lg-2"><span class="pf-title">First Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>((Yii::$app->user->identity->first_name) ? Yii::$app->user->identity->first_name : '')])->label(false) ?>
-                     <?= $form->field($basicDetails, 'last_name',['template'=>'<div class="col-lg-2"><span class="pf-title">Last Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'Last Name','value'=>((Yii::$app->user->identity->last_name) ? Yii::$app->user->identity->last_name : '')])->label(false) ?>
+                      <?php
+                      $uname = Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name;
+                      ?>
+                     <?= $form->field($basicDetails, 'full_name',['template'=>'<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>(($uname) ? ucwords($uname) : '')])->label(false) ?>
+                      <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : '');  ?>
+                      <?= $form->field($basicDetails, 'gender',['template'=>'<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
+                          [1=>'Male',2=>'Female',3=>'Transgender',4=>'Rather not to say'],[
+                          'prompt' => 'Select Gender',
+                          'id' => 'gender_drp',
+                          'class'=>'chosen'])->label(false); ?>
                      <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : '');  ?>
-                     <?= $form->field($basicDetails, 'category',['template'=>'<div class="col-lg-4"><span class="pf-title">Choose Job Category</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
-                         $industry,[
+                     <?= $form->field($basicDetails, 'category',['template'=>'<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
+                          $industry,[
                          'prompt' => 'Select Category',
                          'id' => 'category_drp',
-                         'class'=>'chosen'])->label(false); ?>
-                     <?= $form->field($basicDetails, 'job_profile',['template'=>'<div class="col-lg-4"><span class="pf-title">Select Job Profile</span><div class="pf-field"><div class="cat_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : '')])->label(false) ?>
+                         'class'=>'chosen'])->label(false); ?> 
+                     <?= $form->field($basicDetails, 'job_title',['template'=>'<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
+                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : ''),'class'=>'valid_input form-control'])->label(false) ?>
                     </div>
                     <div class="row">
-                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
-                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','class'=>'valid_input form-control','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','class'=>'valid_input form-control','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
                         <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : '');  ?>
                         <?= $form->field($basicDetails, 'state',['template'=>'<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
                             $states, [
@@ -98,7 +106,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 <div class="row">
                     <?=
                     $form->field($basicDetails, 'dob',['template'=>'<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
+                        'options' => ['class' => 'valid_input form-control','placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
                         'readonly' => true,
                         'type' => DatePicker::TYPE_INPUT,
                         'name' => 'dob',
@@ -307,7 +315,7 @@ background-repeat: no-repeat;
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-#job_profile
+#job_title
 {
     height: 56px;
     background: #fff;
@@ -435,7 +443,7 @@ color: #fff !important;
     background:#ff7803;
 }
 .has-error .form-control {
-    border-color: #e8ecec !important;
+    border: 2px solid #e73d4a !important;
     }
 #picture_submit{
 margin-top:0px;
@@ -461,6 +469,18 @@ background-color: #fff;
 }
 ");
 $script = <<< JS
+$(document).on('change','#category_drp',function() {
+  if($(this).val()=='')
+      {
+          $('#job_title').closest('.field-job_title').removeClass('has-error');
+          $('#job_title').closest('.field-job_title').find('.help-block').remove();
+          $('#job_title').closest('.field-job_title').addClass('has-success');
+      }
+  else {
+      $('#job_title').closest('.field-job_title').removeClass('has-success');
+      $('#job_title').closest('.field-job_title').addClass('has-error');
+  }
+})
 $(document).on('keypress','input',function(e)
 {
     if(e.which==13)
@@ -579,6 +599,9 @@ function runAjax(thisObj,data,btn) {
             {
                return false;
             } 
+  $.each(thisObj.find('.has-error'),function() {
+          $(this).find('.valid_input').focus();
+           })
   var chk = thisObj.find('.has-error').length;
   if(!chk)
   {
@@ -674,7 +697,7 @@ fetchJobProfile();
 
 function fetchJobProfile()
 {
-  var job_profiles = new Bloodhound({
+  var job_titles = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
@@ -688,13 +711,13 @@ function fetchJobProfile()
   }
 });   
         
-$('#job_profile').typeahead(null, {
-  name: 'job_profile',
+$('#job_title').typeahead(null, {
+  name: 'job_title',
   display: 'value',
    limit: 6,     
    hint:false, 
    minLength: 3,
-  source: job_profiles
+  source: job_titles
 }).on('typeahead:asyncrequest', function() {
     $('.cat_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
