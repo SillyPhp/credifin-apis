@@ -472,6 +472,7 @@ $script = <<< JS
 $(document).on('change','#category_drp',function() {
   if($(this).val()=='')
       {
+          $('#job_title').val('');
           $('#job_title').closest('.field-job_title').removeClass('has-error');
           $('#job_title').closest('.field-job_title').find('.help-block').remove();
           $('#job_title').closest('.field-job_title').addClass('has-success');
