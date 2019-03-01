@@ -510,7 +510,7 @@ $this->params['seo_tags'] = [
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
                     </div>
                     <div class="how-text-box">
-                        <div class="how-heading">Recive Custom Job Notifications</div>
+                        <div class="how-heading">Receive Custom Job Notifications</div>
                     </div>
                 </div>
             </div>
@@ -764,9 +764,9 @@ $this->registerCss('
     background:#ff7803;  
 }
 .job-field input:focus{
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
 }
 .no-padd{
    padding-left:0px !important; 
