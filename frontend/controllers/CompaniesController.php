@@ -162,28 +162,28 @@ class CompaniesController extends Controller {
                 ->all();
             $benefit = OrganizationEmployeeBenefits::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'b.icon'])
+                ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'b.icon', 'b.icon_location'])
                 ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                $type = Yii::$app->request->post('type');
-                $options = [];
-                $options['limit'] = 3;
-                $options['page'] = 1;
-                $options['company'] = $organization['name'];
-                if($type == 'Jobs') {
-                    $cards = ApplicationCards::jobs($options);
-                } else {
-                    $cards = ApplicationCards::internships($options);
-                }
-                if ($cards) {
+                $organizationLocations = OrganizationLocations::find()
+                    ->alias('a')
+                    ->select(['a.location_name', 'a.address', 'a.postal_code', 'a.latitude', 'a.longitude', 'b.name as city', 'c.name as state', 'd.name as country'])
+                    ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+                    ->innerJoin(States::tableName() . 'as c', 'c.state_enc_id = b.state_enc_id')
+                    ->innerJoin(Countries::tableName() . 'as d', 'd.country_enc_id = c.country_enc_id')
+                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.status' => 'Active', 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                if ($organizationLocations) {
                     $response = [
                         'status' => 200,
                         'message' => 'Success',
-                        'cards' => $cards,
+                        'locations' => $organizationLocations,
                     ];
                 } else {
                     $response = [
@@ -191,6 +191,28 @@ class CompaniesController extends Controller {
                     ];
                 }
                 return $response;
+//                $type = Yii::$app->request->post('type');
+//                $options = [];
+//                $options['limit'] = 3;
+//                $options['page'] = 1;
+//                $options['company'] = $organization['name'];
+//                if($type == 'Jobs') {
+//                    $cards = ApplicationCards::jobs($options);
+//                } else {
+//                    $cards = ApplicationCards::internships($options);
+//                }
+//                if ($cards) {
+//                    $response = [
+//                        'status' => 200,
+//                        'message' => 'Success',
+//                        'cards' => $cards,
+//                    ];
+//                } else {
+//                    $response = [
+//                        'status' => 201,
+//                    ];
+//                }
+//                return $response;
             }
 
                 $chkuser = ShortlistedOrganizations::find()
@@ -200,7 +222,7 @@ class CompaniesController extends Controller {
                     ->one();
                 return $this->render('profile', [
                     'organization' => $organization,
-                    'locations' => $organizationLocations,
+//                    'locations' => $organizationLocations,
                     'videos' => $organizationVideos,
 //                            'jobcards' => $jobcards,
                     'shortlist' => $chkuser,

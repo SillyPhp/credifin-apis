@@ -178,95 +178,116 @@ if ($organization['cover_image']) {
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="company-benefits">
-                            <div class="heading-style">Employee Benefits</div>
-                            <div class="divider"></div>
-                            <div class="com-benefits no-padd">
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/flexible_hour.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            Flexible Hour
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/performance_bonus.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            Performance Bonus
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/work_from_home.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            Work From Home
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/health_care_insurance.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            Health Care Insurance
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/bereavement_leave.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            bereavement Leave
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/employee_assistant_program.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            employee assistant program
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/retirement_plan.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            retirement plan
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-4 col-xs-12">
-                                    <div class="benefit-box">
-                                        <div class="bb-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/employee-benefits/vacation_paid.svg')?>">
-                                        </div>
-                                        <div class="bb-text">
-                                            vacation paid
-                                        </div>
+                    <?php
+                        if($benefit) {
+                            ?>
+                            <div class="row">
+                                <div class="company-benefits">
+                                    <div class="heading-style">Employee Benefits</div>
+                                    <div class="divider"></div>
+                                    <div class="com-benefits no-padd">
+                                    <?php
+//                                    print_r($benefit);
+                                        foreach ($benefit as $benefits) {
+                                            ?>
+                                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                                <div class="benefit-box">
+                                                    <div class="bb-icon">
+                                                        <?php
+                                                        if (!empty($benefits['icon'])) {
+                                                            $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
+                                                        } else {
+                                                            $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
+                                                        }
+                                                        ?>
+                                                        <img src="<?= Url::to($benefit_icon) ?>">
+                                                    </div>
+                                                    <div class="bb-text">
+                                                        <?= $benefits['benefit'] ?>
+                                                        <!--                                                    Flexible Hour-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                            ?>
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/performance_bonus.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    Performance Bonus-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/work_from_home.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    Work From Home-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/health_care_insurance.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    Health Care Insurance-->
+<!--                                                </div>-->
+<!---->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/bereavement_leave.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    bereavement Leave-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/employee_assistant_program.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    employee assistant program-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/retirement_plan.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    retirement plan-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
+<!--                                            <div class="benefit-box">-->
+<!--                                                <div class="bb-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/employee-benefits/vacation_paid.svg') ?><!--">-->
+<!--                                                </div>-->
+<!--                                                <div class="bb-text">-->
+<!--                                                    vacation paid-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                            <?php
+                        }
+                            ?>
                     <div class="row">
                         <div class="office-view">
                             <div class="heading-style">Inside Empower Youth</div>
@@ -486,28 +507,33 @@ if ($organization['cover_image']) {
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="head-office">
-                                        <div class="office-heading">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/head-office.png') ?>">
-                                            Head Office
-                                        </div>
-                                        <div class="office-loc">
-                                            <div class="off-add">BXX-3360, Lower Ground Floor, Capital Small Finance Bank,
-                                                Near
-                                                Aarti Chowk, Ferozepur Road
-                                            </div>
-                                            <div class="off-city">Ludhiana, Punjab</div>
-                                        </div>
-                                        <div class="office-heading o-h2">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/branch-office.png') ?>">
-                                            Branch Office
-                                        </div>
-                                        <div class="office-loc">
-                                            <div class="off-add">BXX-3360, Lower Ground Floor, Capital Small Finance Bank,
-                                                Near
-                                                Aarti Chowk, Ferozepur Road
-                                            </div>
-                                            <div class="off-city">Ludhiana, Punjab</div>
-                                        </div>
+<!--                                        --><?php
+//                                            foreach ($locations as $info) {
+//                                                ?>
+<!--                                                <div class="office-heading">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/company-and-candidate/head-office.png') ?><!--">-->
+<!--                                                    --><?//= $info['location_name']; ?>
+<!--                                                </div>-->
+<!--                                                <div class="office-loc">-->
+<!--                                                    <div class="off-add">-->
+<!--                                                        --><?//= $info['address'] ?>
+<!--                                                    </div>-->
+<!--                                                    <div class="off-city">--><?//= $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ', ' . $info['postal_code']; ?><!--</div>-->
+<!--                                                </div>-->
+<!--                                                --><?php
+//                                            }
+//                                                ?>
+<!--                                        <div class="office-heading o-h2">-->
+<!--                                            <img src="--><?//= Url::to('@eyAssets/images/pages/company-and-candidate/branch-office.png') ?><!--">-->
+<!--                                            Branch Office-->
+<!--                                        </div>-->
+<!--                                        <div class="office-loc">-->
+<!--                                            <div class="off-add">BXX-3360, Lower Ground Floor, Capital Small Finance Bank,-->
+<!--                                                Near-->
+<!--                                                Aarti Chowk, Ferozepur Road-->
+<!--                                            </div>-->
+<!--                                            <div class="off-city">Ludhiana, Punjab</div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="col-md-5">
@@ -739,6 +765,7 @@ if ($organization['cover_image']) {
         </div>
     </section>
 <?php
+echo $this->render('/widgets/mustache/organization_locations');
 $this->registerCss('
 /*----jobs and internships----*/
 .internships-block{
@@ -989,6 +1016,8 @@ $this->registerCss('
     padding:25px 10px;
     margin:0 0 15px 0;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
+    padding-bottom: 0px;
+    min-height: 165px;
 }
 .bb-icon img{
     width:75px;
@@ -1379,6 +1408,8 @@ $script = <<<JS
         });
       }
       initMap();
+      
+getLocations();
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
