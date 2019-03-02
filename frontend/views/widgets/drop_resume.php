@@ -1,35 +1,35 @@
 <?php
 use yii\helpers\Url;
 ?>
-<div id="fab-message-open" class="fab-message" style="">
-    <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
-    <div class="fab-hover-message" style="">
-        <div class="fab-hover-image">
-            <img src="<?= Url::to('@eyAssets/images/pages/company-profile/cv.png') ?>">
-        </div>
-    </div>
-</div>
-
-<div class="empty-field">
-    <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-</div>
-
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-body">
-                <p>Please Login to your empower youth profile or Sign Up </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <div id="fab-message-open" class="fab-message" style="">
+        <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
+        <div class="fab-hover-message" style="">
+            <div class="fab-hover-image">
+                <img src="<?= Url::to('@eyAssets/images/pages/company-profile/cv.png') ?>">
             </div>
         </div>
     </div>
-</div>
+
+    <div class="empty-field">
+        <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+    </div>
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please Login to your empower youth profile or Sign Up </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $this->registerCss('
 .fab-message{
@@ -78,7 +78,6 @@ $this->registerCss('
      border-radius: 3px;
      z-index:9; 
 }
-
 .fab-hover-image img{
     width:85px;
     height:85px;
@@ -90,7 +89,6 @@ $this->registerCss('
     color:#fff;
 }
 ');
-
 $script = <<<JS
  var popup = new ideaboxPopup({
         background: '#234b8f',
@@ -191,7 +189,6 @@ $script = <<<JS
                 description: '',
                 nextLabel : 'Finish',
             },
-
         ]
     });
     

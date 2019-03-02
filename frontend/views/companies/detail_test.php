@@ -1,14 +1,18 @@
 <?php
 $this->title = Yii::t('frontend', $organization['name']);
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
+
 function random_color_part() {
     return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
 }
+
 function random_color() {
     return random_color_part() . random_color_part() . random_color_part();
 }
+
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -18,6 +22,7 @@ if ($organization['logo']) {
 } else {
     $image = $organization['name'];
 }
+
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -354,7 +359,9 @@ if ($organization['cover_image']) {
     </section>
 <?php
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/drop_resume');
+echo $this->render('/widgets/drop_resume_test',['jobProfile'=>$jobProfile,
+    'jobTitle'=>$jobTitle,
+    'location'=>$location,]);
 $this->registerCss('
 /* Feature, categories css starts */
 .cat-sec {
@@ -436,6 +443,7 @@ $this->registerCss('
 }
 /* Feature, categories css ends */
 ');
+
 $script = <<<JS
        
 document.body.scrollTop = 0;
@@ -474,6 +482,7 @@ loader = false;
 getCards();
 getCards("Internships");
 JS;
+
 if (count($locations) > 0) {
     $i = 1;
     foreach ($locations as $info) {
@@ -482,18 +491,23 @@ if (count($locations) > 0) {
     }
     $this->registerJs("
     var locations = [" . $locations_loc . "];
+
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 4,
       center: new google.maps.LatLng(30.900965, 75.857277),
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
+
 //    var infowindow = new google.maps.InfoWindow();
+
     var marker, i;
+
     for (i = 0; i < locations.length; i++) { 
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(locations[i][1], locations[i][2]),
         map: map
       });
+
 //      google.maps.event.addListener(marker, 'click', (function(marker, i) {
 //        return function() {
 //          infowindow.setContent(locations[i]);
