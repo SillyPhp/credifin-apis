@@ -21,19 +21,19 @@
                     <div class="col-md-12">
                         <div class="mt-actions" style="" >
                             <div class="row padd10">
-                                <?php foreach ($data as $p) { ?>
+                               <!-- <?php /*foreach ($data as $p) { */?>
                                     <div class="col-md-4 col-sm-6 padd-5">
                                         <a href="/account/uploaded-resume/candidate-resumes">
                                             <div class="work-profile-box">
                                                 <div class="work-profile">
-                                                    <?php echo $p['name'] ?> <span class="badge-num">1005</span>
+                                                    <?php /*echo $p['name'] */?> <span class="badge-num">1005</span>
                                                 </div>
                                             </div>
                                         </a>
                                     </div>
-                                    <?php
-                                }
-                                ?>
+                                    --><?php
+/*                                }
+                                */?>
                             </div>
                             <div class="divider"></div>
 
@@ -110,20 +110,20 @@
                     </div>
                 </div>
                 <div class="row padd10">
-                    <?php foreach ($data as $p) { ?>
+                   <!-- <?php /*foreach ($data as $p) { */?>
                         <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search">
-                            <input type="checkbox" id="<?= $p['category_enc_id']?>" class="category-input"/>
-                            <label for="<?= $p['category_enc_id']?>" class="work-profile-box">
-                                <!--<div class="work-profile-box">-->
+                            <input type="checkbox" id="<?/*= $p['category_enc_id']*/?>" class="category-input"/>
+                            <label for="<?/*= $p['category_enc_id']*/?>" class="work-profile-box">
+
                                 <div class="work-profile">
-                                    <?php echo $p['name'] ?> <span class="badge-num">1005</span>
+                                    <?php /*echo $p['name'] */?> <span class="badge-num">1005</span>
                                 </div>
-                                <!--</div>-->
+
                             </label>
                         </div>
-                        <?php
-                    }
-                    ?>
+                        --><?php
+/*                    }
+                    */?>
                 </div>
             </div>
             <div class="modal-footer">
