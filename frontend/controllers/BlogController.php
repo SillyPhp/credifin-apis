@@ -47,6 +47,26 @@ class BlogController extends Controller {
         ]);
     }
 
+    public function actionBlogDetail(){
+        $postsModel = new Posts();
+        $post = $postsModel->find()->alias('a')
+//            ->select(['a.*','b.*', 'c.*', 'd.first_name', 'd.last_name','e.*'])
+//            ->leftJoin(PostTypes::tableName() . ' as b', 'a.post_type_enc_id = b.post_type_enc_id')
+            ->joinWith('postCategories b')
+//            ->leftJoin(PostTags::tablename() . ' as c', 'c.post_enc_id = a.post_enc_id')
+//            ->leftJoin(Users::tablename() . ' as d', 'd.user_enc_id = a.author_enc_id')
+//            ->leftJoin(Tags::tablename() . ' as e', 'e.tag_enc_id = c.tag_enc_id')
+            ->where(['a.slug' => 'dsa-12', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+            ->asArray()
+            ->all();
+
+        print_r($post);
+        exit();
+        return $this->render('blog_detail',[
+            'post' => $post,
+        ]);
+    }
+
     public function actionIndex() {
         $postsModel = new Posts();
         $posts = $postsModel->find()
