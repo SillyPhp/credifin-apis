@@ -1,6 +1,16 @@
 <?php
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+
+if (!empty($data['min_wage'])) {
+    $amount = 'from ' . (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A');
+}
+if (!empty($data['max_wage'])) {
+    $amount = 'upto ' . (($data['max_wage']) ? '₹ ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A');
+}
+
+$this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' profile interns with a  stipend ' . $amount ;
+
+//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -9,7 +19,7 @@ use yii\helpers\ArrayHelper;
 
 $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
 $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb_image.png');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -17,7 +27,7 @@ $this->params['seo_tags'] = [
     'name' => [
         'keywords' => $keywords,
         'description' => $description,
-        'twitter:card' => 'summary',
+        'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'twitter:site' => '@EmpowerYouth2',
         'twitter:creator' => '@EmpowerYouth2',

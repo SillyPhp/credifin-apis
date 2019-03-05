@@ -140,9 +140,10 @@ AppAssets::register($this);
                                 <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                                 <ul class="styled-icons icon-bordered icon-sm mb-5">
                                     <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fa fa-facebook"></i></a></li>
-                                    <li><a href="https://twitter.com/EmpowerYouth2" target="_blank" class="overtw"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i class="fa fa-twitter"></i></a></li>
                                     <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
                                     <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
+                                    <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank" class="overlink"><i class="fa fa-linkedin"></i></a></li>
                                 </ul>
                                 <br/><br/>
                                 <a class="text-gray mt-10 send_mail" href="mailto:info@empoweryouth.com"><i class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
@@ -366,27 +367,18 @@ AppAssets::register($this);
                 background-color:#1c99e9 !important;
                 color:white;
             }
-            .overgp:hover{
-                background-color:#d34836 !important;
-                color:white;
-            }
             .overig:hover{
                 background: #d6249f;
                 background: radial-gradient(circle at 33% 100%, #FED373 4%, #F15245 30%, #D92E7F 62%, #9B36B7 85%, #515ECF);
                 color:white;
                 border-color:#b8319c !important;
             }
-            .overyt:hover{
-                background-color:#ff0000 !important;
-                color:white;
-            }
             .overpt:hover{
                 background-color:#C92228 !important;
                 color:white;
             }
-            .overig2:hover{
-                background: #d6249f;
-                background: radial-gradient(circle at 1% 100%, #fdf497 0%, #fdf497 5%, #fd5949 35%,#d6249f 60%,#285AEB 90%);
+            .overlink:hover{
+                background-color: #0077B5 !important;
                 color:white;
             }
             @media only screen and (min-width: 991px){
