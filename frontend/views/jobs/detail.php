@@ -1,6 +1,27 @@
 <?php
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+
+if ($data['wage_type'] == 'Fixed') {
+    $amount = $data['fixed_wage'];
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount));
+} else if ($data['wage_type'] == 'Negotiable') {
+    $amount1 = $data['min_wage'];
+    $amount2 = $data['max_wage'];
+    setlocale(LC_MONETARY, 'en_IN');
+    if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
+        $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2));
+    } elseif (!empty($data['min_wage'])) {
+        $amount = '₹ From ' . utf8_encode(money_format('%!.0n', $amount1));
+    } elseif (!empty($data['max_wage'])) {
+        $amount = '₹ Upto ' . utf8_encode(money_format('%!.0n', $amount2));
+    } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
+        $amount = 'Negotiable';
+    }
+}
+
+$this->title = $org['org_name'] . ' is hiring for ' . $data['cat_name'] . ' profile with a ' . $amount . ' package.';
+//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
@@ -10,7 +31,7 @@ use yii\helpers\ArrayHelper;
 
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb_image.png');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -18,7 +39,7 @@ $this->params['seo_tags'] = [
     'name' => [
         'keywords' => $keywords,
         'description' => $description,
-        'twitter:card' => 'summary',
+        'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'twitter:site' => '@EmpowerYouth2',
         'twitter:creator' => '@EmpowerYouth2',
