@@ -2,25 +2,47 @@
 $separator = Yii::$app->params->seo_settings->title_separator;
 
 if ($data['wage_type'] == 'Fixed') {
-    $amount = $data['fixed_wage'];
+    if($data['wage_duration'] == 'Monthly'){
+        $wage = $data['fixed_wage'] * 12;
+    } elseif ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['fixed_wage'] * 40 * 52;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['fixed_wage'] * 52;
+    } else{
+        $wage = $data['fixed_wage'];
+    }
+    $amount = $wage;
     setlocale(LC_MONETARY, 'en_IN');
-    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount));
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
 } else if ($data['wage_type'] == 'Negotiable') {
-    $amount1 = $data['min_wage'];
-    $amount2 = $data['max_wage'];
+    if($data['wage_duration'] == 'Monthly'){
+        $wage = $data['min_wage'] * 12;
+        $wage2 = $data['max_wage'] * 12;
+    } elseif ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['min_wage'] * 40 * 52;
+        $wage2 = $data['max_wage'] * 40 * 52;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['min_wage'] * 52;
+        $wage2 = $data['max_wage'] * 52;
+    } else{
+        $wage = $data['min_wage'];
+        $wage2 = $data['max_wage'];
+    }
+    $amount1 = $wage;
+    $amount2 = $wage2;
     setlocale(LC_MONETARY, 'en_IN');
     if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
-        $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2));
+        $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
     } elseif (!empty($data['min_wage'])) {
-        $amount = '₹ From ' . utf8_encode(money_format('%!.0n', $amount1));
+        $amount = '₹ From ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
     } elseif (!empty($data['max_wage'])) {
-        $amount = '₹ Upto ' . utf8_encode(money_format('%!.0n', $amount2));
+        $amount = '₹ Upto ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
     } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
         $amount = 'Negotiable';
     }
 }
 
-$this->title = $org['org_name'] . ' is hiring for ' . $data['cat_name'] . ' profile with a ' . $amount . ' package.';
+$this->title = $org['org_name'] . ' is hiring for ' . $data['cat_name'] . ' with a ' . $amount . ' package.';
 //$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
 
@@ -41,8 +63,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -154,22 +176,44 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-money"></i>
                                         <h3>Offered Salary <?php if ($data['wage_type'] == 'Fixed') {
                                                 echo '(Fixed)';
-                                                $amount = $data['fixed_wage'];
+                                                if($data['wage_duration'] == 'Monthly'){
+                                                    $wage = $data['fixed_wage'] * 12;
+                                                } elseif ($data['wage_duration'] == 'Hourly'){
+                                                    $wage = $data['fixed_wage'] * 40 * 52;
+                                                } elseif ($data['wage_duration'] == 'Weekly'){
+                                                    $wage = $data['fixed_wage'] * 52;
+                                                } else{
+                                                    $wage = $data['fixed_wage'];
+                                                }
+                                                $amount = $wage;
                                                 setlocale(LC_MONETARY, 'en_IN');
-                                                $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
+                                                $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
                                             } else if ($data['wage_type'] == 'Negotiable') {
                                                 if (!empty($data['min_wage']) || !empty($data['max_wage'])) {
                                                     echo '(Negotiable)';
                                                 }
-                                                $amount1 = $data['min_wage'];
-                                                $amount2 = $data['max_wage'];
+                                                if($data['wage_duration'] == 'Monthly'){
+                                                    $wage = $data['min_wage'] * 12;
+                                                    $wage2 = $data['max_wage'] * 12;
+                                                } elseif ($data['wage_duration'] == 'Hourly'){
+                                                    $wage = $data['min_wage'] * 40 * 52;
+                                                    $wage2 = $data['max_wage'] * 40 * 52;
+                                                } elseif ($data['wage_duration'] == 'Weekly'){
+                                                    $wage = $data['min_wage'] * 52;
+                                                    $wage2 = $data['max_wage'] * 52;
+                                                } else{
+                                                    $wage = $data['min_wage'];
+                                                    $wage2 = $data['max_wage'];
+                                                }
+                                                $amount1 = $wage;
+                                                $amount2 = $wage2;
                                                 setlocale(LC_MONETARY, 'en_IN');
                                                 if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
-                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
                                                 } elseif (!empty($data['min_wage'])) {
-                                                    $amount = '&#8377 From ' . utf8_encode(money_format('%!.0n', $amount1));
+                                                    $amount = '&#8377 From ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
                                                 } elseif (!empty($data['max_wage'])) {
-                                                    $amount = '&#8377 Upto ' . utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 Upto ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
                                                 } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
                                                     $amount = 'Negotiable';
                                                 }
