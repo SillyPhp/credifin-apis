@@ -134,7 +134,7 @@ class JobsController extends Controller
         if (!$application_details) {
             return 'Not Found';
         }
-
+        $type = 'Job';
         $object = new \account\models\jobs\JobApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
@@ -165,11 +165,12 @@ class JobsController extends Controller
                 ->one();
         }
         $model = new JobApplied();
-        return $this->render('detail', [
+        return $this->render('/employer-application/detail', [
             'application_details' => $application_details,
             'data' => $object->getCloneData($application_details->application_enc_id),
             'org' => $org_details,
             'applied' => $applied_jobs,
+            'type' => $type,
             'model' => $model,
             'resume' => $resumes,
             'que' => $app_que,
