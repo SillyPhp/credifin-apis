@@ -615,6 +615,7 @@ class JobApplicationForm extends Model
         $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
         $assignedCategoryModel->category_enc_id = $category_id;
         $assignedCategoryModel->parent_enc_id = $this->primaryfield;
+        $assignedCategoryModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $assignedCategoryModel->assigned_to = 'Jobs';
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
         $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
@@ -705,7 +706,7 @@ class JobApplicationForm extends Model
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
-            ->where(['b.status'=>'Approved'])
+            ->andWhere(['b.status'=>'Approved'])
             ->asArray()
             ->all();
         $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
