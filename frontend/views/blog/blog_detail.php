@@ -12,16 +12,14 @@ use yii\helpers\Url;
             <div class="col-md-9">
                 <div class="blog-division">
                     <div class="blog-cover-image">
-                        <img src="<?= Url::to('http://shshank.eygb.me/assets/themes/ey/images/pages/blog/blog1.jpg') ?>">
+                        <?php
+                        $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+                        ?>
+                        <img src="<?= $feature_image; ?>">
                     </div>
-                    <div class="blog-title">Positive thinking is the key to success</div>
+                    <div class="blog-title"><?= $post['title'] ?></div>
                     <div class="blog-text">
-                        Everyone desires to know what is the key to success but most of the time they fail. You may
-                        have
-                        heard many famous people saying that success comes to those who make continuous efforts and
-                        always
-                        think positive whatever the situation is.
-                        What is Positive thinking?
+                        <?= $post['description'] ?>
                     </div>
                 </div>
                 <div class="comments-block">
@@ -54,27 +52,53 @@ use yii\helpers\Url;
                     <div class="channel">
                         <a href="">
                             <div class="channel-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                <?php
+                                $name = $image = NULL;
+                                if (!empty($post['image'])) {
+                                    $image = Yii::$app->params->upload_directories->users->image . $post['image_location'] . DIRECTORY_SEPARATOR . $post['image'];
+                                }
+                                $name = $post['name'];
+                                if ($image):
+                                    ?>
+                                    <img src="<?= $image; ?>" alt="<?= $name; ?>"/>
+                                <?php else: ?>
+                                    <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
+                                            color="<?= $post['initials_color']; ?>" width="125" height="125"
+                                            font="60px"></canvas>
+                                <?php endif; ?>
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--">-->
                             </div>
                         </a>
                         <div class="channel-details">
-                            <div class="channel-name"><a href=""><?= $post['first_name'] .' ' . $post['last_name'] ?></a></div>
-                            <div class="channer-des">Lorem Ipsum is simply dummy text of the printing dummy text of the printing</div>
+                            <div class="channel-name"><a href=""><?= $post['name'] ?></a></div>
+                            <div class="channer-des"><?= $post['user_about'] ?></div>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="popular-heading about-heading"> About Blog</div>
-                        <div class="blog-cat"><span>Category:</span> Fitness</div>
-                        <div class="blog-pub"><span>Published:</span> 1st Jan 2019</div>
+                        <div class="blog-tags">
+                            <span>Category:</span>
+                            <ul>
+                                <?php
+                                foreach ($post['postCategories'] as $cat) {
+                                    echo '<li><a href="/' . $tags['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+                                }
+                                ?>
+                            </ul>
+                        </div>
+<!--                        <div class="blog-cat">-->
+<!--                            <span>Category:</span>-->
+
+<!--                        </div>-->
+                        <div class="blog-pub"><span>Published:</span> <?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
                         <div class="blog-tags">
                             <span>Tags:</span>
                             <ul>
-                                <li><a href=""> Blog</a></li>
-                                <li><a href=""> Blog</a></li>
-                                <li><a href=""> Blog</a></li>
-                                <li><a href=""> Blog</a></li>
-                                <li><a href=""> Blog</a></li>
-                                <li><a href=""> Blog</a></li>
+                                <?php
+                                foreach ($post['postTags'] as $tags) {
+                                    echo '<li><a href="/' . $tags['tagEnc']['slug'] . '">' . $tags['tagEnc']['name'] . '</a></li>';
+                                }
+                                ?>
                             </ul>
                         </div>
                     </div>
@@ -170,6 +194,7 @@ $this->registerCss('
     border:1px solid #eee;
     padding:5px 10px;
     border-radius: 8px;
+    margin-right: 5px;
 }
 .blog-tags ul{
     margin:10px 0 10px 0
@@ -271,7 +296,7 @@ textarea::placeholder{
     width:90px;
     height:90px;
 }
-.channel-icon img, .comment-icon img{
+.channel-icon img, .channel-icon canvas, .comment-icon img{
     width:100%;
     line-height:0px;
 }
@@ -518,12 +543,12 @@ $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    function addComment(){
-        repliedCommnet={};
-        repliedCommnet['img']= '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg';
-        repliedCommnet['name']= 'Shshank';
-        repliedCommnet['reply']= document.getElementById("commentArea").value;
-        if(repliedCommnet['reply'] == ""){
+    function addComment() {
+        repliedCommnet = {};
+        repliedCommnet['img'] = '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg';
+        repliedCommnet['name'] = 'Shshank';
+        repliedCommnet['reply'] = document.getElementById("commentArea").value;
+        if (repliedCommnet['reply'] == "") {
             document.getElementById("commentArea").classList.add("errorClass");
             return;
         }
@@ -537,13 +562,14 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
     document.getElementById("sendComment").addEventListener('click', addComment);
     var hasPushed = false;
-    function addReply(t){
+
+    function addReply(t) {
         var r = document.getElementsByClassName("cboxRemove");
-        for(var i = 0; i<r.length; i++){
+        for (var i = 0; i < r.length; i++) {
             r[i].remove();
         }
-        if(!hasPushed){
-            hasPushed=!hasPushed;
+        if (!hasPushed) {
+            hasPushed = !hasPushed;
             var temp2 = document.getElementById("commentbox").innerHTML;
             var output = Mustache.render(temp2);
             var art = t.closest("article");
@@ -551,19 +577,20 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             hasPushed = !hasPushed;
         }
     }
+
     function closeComm(t) {
         var r = document.getElementsByClassName("cboxRemove");
         r[0].remove();
     }
 
 
-    function addDynamicComment(t){
+    function addDynamicComment(t) {
 
-        repliedCommnet={};
-        repliedCommnet['img']= '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg';
-        repliedCommnet['name']= 'Shshank';
-        repliedCommnet['reply']= t.closest('div').parentNode.querySelector('textarea').value;
-        if (repliedCommnet['reply'] == ""){
+        repliedCommnet = {};
+        repliedCommnet['img'] = '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg';
+        repliedCommnet['name'] = 'Shshank';
+        repliedCommnet['reply'] = t.closest('div').parentNode.querySelector('textarea').value;
+        if (repliedCommnet['reply'] == "") {
             document.getElementById("commentReply").classList.add("errorClass");
             return;
         }
@@ -632,7 +659,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             <div class="reply-comment">
                 <div class="col-md-12">
                     <form>
-                        <textarea placeholder="Reply to this comment" id="commentReply" class="repComment" ></textarea>
+                        <textarea placeholder="Reply to this comment" id="commentReply" class="repComment"></textarea>
                         <div class="comment-sub1">
                             <button type="button" class="addComment" onclick="addDynamicComment(this)">Comment</button>
                             <button type="button" class="closeComment1" onclick="closeComm(this)">Cancel</button>

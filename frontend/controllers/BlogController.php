@@ -50,18 +50,26 @@ class BlogController extends Controller {
     public function actionBlogDetail(){
         $postsModel = new Posts();
         $post = $postsModel->find()->alias('a')
-//            ->select(['a.*','b.*', 'c.*', 'd.first_name', 'd.last_name','e.*'])
-//            ->leftJoin(PostTypes::tableName() . ' as b', 'a.post_type_enc_id = b.post_type_enc_id')
-            ->joinWith('postCategories b')
-//            ->leftJoin(PostTags::tablename() . ' as c', 'c.post_enc_id = a.post_enc_id')
-//            ->leftJoin(Users::tablename() . ' as d', 'd.user_enc_id = a.author_enc_id')
-//            ->leftJoin(Tags::tablename() . ' as e', 'e.tag_enc_id = c.tag_enc_id')
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about','f.image','f.image_location','f.initials_color'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->select(['b.post_enc_id', 'b.category_enc_id']);
+                $b->joinWith(['categoryEnc c' => function($y){
+                    $y->select(['c.category_enc_id','c.name','c.slug']);
+                }]);
+            }])
+            ->joinWith(['postTags d' => function ($b) {
+                $b->select(['d.post_enc_id', 'd.tag_enc_id']);
+                $b->joinWith(['tagEnc e' => function($z){
+                    $z->select(['e.tag_enc_id','e.name','e.slug']);
+                }]);
+            }])
+            ->leftJoin(Users::tablename() . ' as f', 'f.user_enc_id = a.author_enc_id')
             ->where(['a.slug' => 'dsa-12', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
             ->asArray()
-            ->all();
+            ->one();
 
-        print_r($post);
-        exit();
+//        print_r($post);
+//        exit();
         return $this->render('blog_detail',[
             'post' => $post,
         ]);
