@@ -1,10 +1,6 @@
 <?php
 
 namespace account\controllers;
-
-use common\models\AssignedSkills;
-use common\models\EmployerApplications;
-use common\models\Organizations;
 use common\models\SpokenLanguages;
 use common\models\Utilities;
 use Yii;
@@ -18,8 +14,6 @@ use common\models\Categories;
 use common\models\EducationalRequirements;
 use common\models\InterviewProcessFields;
 use common\models\Designations;
-use common\models\EmployeeBenefits;
-use common\models\OrganizationEmployeeBenefits;
 
 class CategoriesListController extends Controller
 {
@@ -46,12 +40,16 @@ class CategoriesListController extends Controller
         $categories = Categories::find()
             ->alias('a')
             ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->joinWith(['assignedCategories b'],false)
             ->where('a.name LIKE "%' . $q . '%"')
             ->andWhere([
-                'b.status' => 'Approved',
                 'b.assigned_to' => $type,
-                'b.parent_enc_id' => $id
+                'b.parent_enc_id' => $id,
+            ])
+            ->andWhere([
+                'or',
+                ['=', 'b.status', 'Approved'],
+                ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->asArray()
             ->all();
