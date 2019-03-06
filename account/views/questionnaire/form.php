@@ -67,29 +67,29 @@ $form->field($model, 'formbuilderdata', [
                         <nav class="questionnaire-feilds">
                             <ul class="nav">
                                 <li class="form_bal_textfield">
-                                    <a href="javascript:;"> <i class="fa fa-plus-circle"></i> Text Field</a>
+                                    <a href="javascript:;" class="clickable" value="1"> <i class="fa fa-plus-circle"></i> Text Field</a>
                                 </li>
                                 <li class="form_bal_textarea">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Text Area</a>
+                                    <a href="javascript:;" class="clickable" value="2"><i class="fa fa-plus-circle"></i> Text Area</a>
                                 </li>
                                 <li class="form_bal_select">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Select </a>
+                                    <a href="javascript:;" class="clickable" value="3"><i class="fa fa-plus-circle"></i> Select </a>
                                 </li>
                                 <li class="form_bal_radio">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Radio Button</a>
+                                    <a href="javascript:;" class="clickable" value="4"><i class="fa fa-plus-circle"></i> Radio Button</a>
                                 </li>
                                 <li class="form_bal_checkbox">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Checkbox</a>
+                                    <a href="javascript:;" class="clickable" value="5"><i class="fa fa-plus-circle"></i> Checkbox</a>
                                 </li>
                                 <li class="form_bal_number">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Number</a>
+                                    <a href="javascript:;" class="clickable" value="6"><i class="fa fa-plus-circle"></i> Number</a>
                                 </li>
                                 <li class="form_bal_date">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Date</a>
+                                    <a href="javascript:;" class="clickable" value="7"><i class="fa fa-plus-circle"></i> Date</a>
                                 </li>
 
                                 <li class="form_bal_time">
-                                    <a href="javascript:;"><i class="fa fa-plus-circle"></i> Time</a>
+                                    <a href="javascript:;" value="8"><i class="fa fa-plus-circle"></i> Time</a>
                                 </li>
                                 <li>
                                     <div class="q-btns">  <?= Html::submitButton('Submit', ['class' => 'btn blue btn-circle submit btn-block']); ?></div>
@@ -284,6 +284,41 @@ box-shadow: 0px 0px 5px 0px #e73d49 !important;
 ");
 
 $script = <<<JS
+$(document).on('click','.clickable',function(e)
+{
+    var get_class_value = $(this).attr('value');
+    switch (parseInt(get_class_value)) {
+        case 1:
+            $('.form_builder_area').append(getTextFieldHTML());
+            break;
+        case 2:
+            $('.form_builder_area').append(getTextAreaFieldHTML());
+            break;
+        case 3:
+            $('.form_builder_area').append(getSelectFieldHTML());
+            break;
+        case 4:
+            $('.form_builder_area').append(getRadioFieldHTML());
+            break;
+        case 5:
+            $('.form_builder_area').append(getCheckboxFieldHTML());
+            break;
+        case 6:
+            $('.form_builder_area').append(getNumberFieldHTML());
+            break;
+        case 7:
+            $('.form_builder_area').append(getDateFieldHTML());
+            break;
+        case 8:
+            $('.form_builder_area').append(getTimeFieldHTML());
+            break;    
+    }
+    count_elem++;
+    elem_chk();
+    getPreview();
+    checkDiv();
+})
+
    function checkDiv() {
         var dtext = document.querySelector(".form_builder_area");
         if (dtext.innerHTML.length == 0) {
@@ -309,17 +344,14 @@ $script = <<<JS
               $('#form-value').val('1');
             }
          }
-   
-   
     //Form Builder  JS Start Here//
-     
-    $(".form_bal_textfield").draggable({
+     $(".form_bal_textfield").draggable({
         helper: function () {
-            return getTextFieldHTML();
-            
+            return getTextFieldHTML(); 
         },
-        connectToSortable: ".form_builder_area"
+        connectToSortable: ".form_builder_area" 
     });
+        
     $(".form_bal_textarea").draggable({
         helper: function () {
             return getTextAreaFieldHTML();
@@ -387,7 +419,6 @@ $script = <<<JS
             var droppedElem = ui['item'][0];
             droppedElem.querySelector('.form_output').querySelector('.form-group').querySelector('input[type=text]').focus();
             count_elem++;
-            console.log(count_elem);
             elem_chk();
             getPreview();
             checkDiv();
@@ -956,14 +987,14 @@ $script = <<<JS
         messages: { 
                     'QuestionnaireForm[formbuilderdata]': { 
                         required:'<div id = "color_red">Please Select Form elements And Drag in Box</div>',
-                    },
+                    }, 
         },
         
         errorPlacement: function (error, element) { 
                     if (element.attr("name") == "QuestionnaireForm[formbuilderdata]") { 
                         error.insertAfter("#error_placement");
                     } 
-                    } 
+                    }  
    }) ;   
     
     $(document).on('submit', '#form-builder', function(event) {

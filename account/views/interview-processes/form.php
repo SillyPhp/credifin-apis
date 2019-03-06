@@ -32,16 +32,16 @@ use yii\bootstrap\ActiveForm;
         <div class="col-md-4">
             <div class="draggable-main">
                 <ul class="connected-sortable draggable-left">
-                    <li class="a"><i class="fa fa-phone" aria-hidden="true"></i> Phone Interview</li>
-                    <li class="b"><i class="fa fa-user" aria-hidden="true"></i> Personal Interview</li>
-                    <li class="c"><i class="fa fa-cogs" aria-hidden="true"></i> Technical Interview</li>
-                    <li class="d"><i class="fa fa-user-circle" aria-hidden="true"></i> HR Interview</li>
-                    <li class="e"><i class="fa fa-users" aria-hidden="true"></i> Group Discussion</li>
-                    <li class="f"><i class="fa fa-video-camera" aria-hidden="true"></i> Video Call</li> 
-                    <li class="g"><i class="fa fa-check" aria-hidden="true"></i> Employee Verification</li>
-                    <li class="h"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Written Examination</li>
-                    <li class="j"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter</li>
-                    <li class="custom_proccess"><i class="fa fa-question" aria-hidden="true"></i> Custom Process</li>
+                    <li class="a clickable" value="1"><i class="fa fa-phone" aria-hidden="true"></i> Phone Interview</li>
+                    <li class="b clickable" value="2"><i class="fa fa-user" aria-hidden="true"></i> Personal Interview</li>
+                    <li class="c clickable" value="3"><i class="fa fa-cogs" aria-hidden="true"></i> Technical Interview</li>
+                    <li class="d clickable" value="4"><i class="fa fa-user-circle" aria-hidden="true"></i> HR Interview</li>
+                    <li class="e clickable" value="5"><i class="fa fa-users" aria-hidden="true"></i> Group Discussion</li>
+                    <li class="f clickable" value="6"><i class="fa fa-video-camera" aria-hidden="true"></i> Video Call</li>
+                    <li class="g clickable" value="7"><i class="fa fa-check" aria-hidden="true"></i> Employee Verification</li>
+                    <li class="h clickable" value="8"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Written Examination</li>
+                    <li class="i clickable" value="9"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter</li>
+                    <li class="custom_proccess clickable"value="10"><i class="fa fa-question" aria-hidden="true"></i> Custom Process</li>
                 </ul>
 
             </div>
@@ -248,6 +248,54 @@ width:100px;
 	");
 
 $script = <<< JS
+$(document).on('click','.clickable',function(e)
+{
+    var get_class_value = $(this).attr('value');
+    switch (parseInt(get_class_value)) {
+        case 1:
+            $('.draggable-right').append(process1());
+            break;
+        case 2:
+            $('.draggable-right').append(process2());
+            break;
+        case 3:
+            $('.draggable-right').append(process3());
+            break;
+        case 4:
+            $('.draggable-right').append(process4());
+            break;
+        case 5:
+            $('.draggable-right').append(process5());
+            break;
+        case 6:
+            $('.draggable-right').append(process6());
+            break;
+        case 7:
+            $('.draggable-right').append(process7());
+            break;
+        case 8:
+            $('.draggable-right').append(process8());
+            break;
+        case 9:
+            $('.draggable-right').append(process9());
+            break;
+        case 10:
+            $('.draggable-right').append(process_custom());
+            break;    
+    }
+    count_elem++;
+    elem_chk();
+    checkDiv();
+    getData();
+})
+ function checkDiv() {
+        var dtext = document.querySelector(".draggable-right");
+        if (dtext.innerHTML.length == 0) {
+            document.querySelector('.drag_placeholder').style.display = 'block';
+        } else {
+            document.querySelector('.drag_placeholder').style.display = 'none';
+        }
+   }
     var count_elem = 0;
     function elem_chk() {
         if (count_elem === 0) {
@@ -319,13 +367,7 @@ $script = <<< JS
         },
         connectToSortable: ".draggable-right"
     });
-
-    $(".j").draggable({
-        helper: function () {
-            return process10();
-        },
-        connectToSortable: ".draggable-right"
-    });
+    
 
     $(".custom_proccess").draggable({
         helper: function () {
@@ -342,9 +384,9 @@ $script = <<< JS
         },
         stop: function (ev, ui) {
             getData();
-            $('.drag_placeholder').css('display', 'none');
             count_elem++;
             elem_chk();
+            checkDiv();
         }
     });
 
@@ -412,7 +454,7 @@ $script = <<< JS
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
-    function process10() {
+    function process9() {
         var field = generateField();
         var html = '<li class="j form_output" data-type="interview_process"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
