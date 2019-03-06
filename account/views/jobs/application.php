@@ -100,7 +100,7 @@ use yii\widgets\Pjax;
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="select">
-                                            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
+                                            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false); ?>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -2386,6 +2386,7 @@ function convertToInt(t){
     t=t.replace(/\,/g,'');
     t=parseInt(t,10);
     return t;
+    // return parseInt(t.replace(',', ''));
 }
 
 function salarycomparison(){
@@ -2481,6 +2482,7 @@ function genrate_session_token() {
     }
 }
 genrate_session_token();
+//$('#loading_img').addClass('show');
 $("#primaryfield").prop("disabled", false);          
 $("#jobtitle").prop("disabled", false);
 $('.selectBox').prop("disabled", true);    
@@ -3646,7 +3648,7 @@ $('.close-ctc').on('click',function(){
                     App.scrollTo(error, -200);
                 },
 
-                highlight: function (element) { 
+                highlight: function (element) { // hightlight error inputs
                     $(element)
                         .closest('.form-group').removeClass('has-success').addClass('has-error'); // set error class to the control group
                 },
@@ -3795,7 +3797,9 @@ $('.close-ctc').on('click',function(){
             var handleTitle = function(tab, navigation, index) {
                 var total = navigation.find('li').length;
                 var current = index + 1;
+                // set wizard title
                 $('.step-title', $('#form_wizard_1')).text('Step ' + (index + 1) + ' of ' + total);
+                // set done steps
                 jQuery('li', $('#form_wizard_1')).removeClass("done");
                 var li_list = navigation.find('li');
                 for (var i = 0; i < index; i++) {
@@ -3899,6 +3903,7 @@ let appEditor;
         toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
     }  )
     .then( editor => {
+        // Store it in more "global" context.
         appEditor = editor;
     } )
     .catch( error => {
@@ -3917,4 +3922,4 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
