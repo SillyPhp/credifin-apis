@@ -1,4 +1,4 @@
-<h3 class="heading-style"><?= Yii::t('frontend', 'Featured Employers'); ?></h3>
+<h1 class="heading-style"><?= Yii::t('frontend', 'Featured Employers'); ?></h1>
 <div class="companies"></div>
 
 <script id="company-card" type="text/template">
