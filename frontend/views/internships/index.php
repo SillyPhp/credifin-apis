@@ -93,7 +93,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12 col-sm-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
                 </div>
             </div>
             <div class="col-md-12">
@@ -105,7 +105,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h1>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">

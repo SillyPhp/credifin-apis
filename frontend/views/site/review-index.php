@@ -30,7 +30,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="heading-style">Top Categories</div>
+                <h1 class="heading-style">Top Categories</h1>
             </div>
         </div>
         <div class="row">
@@ -122,7 +122,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12 col-sm-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Top Rated Jobs'); ?></h2>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Top Rated Jobs'); ?></h1>
                 </div>
             </div>
             <?php
@@ -188,7 +188,7 @@ use yii\helpers\Url;
     </section>
     <section>
         <div class="container">
-            <div class="heading-style">Recent Reviews</div>
+            <h1 class="heading-style">Recent Reviews</h1>
             <div class="companies-reviews">
                 <div class="row">
                     <div class="col-md-3">

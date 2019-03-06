@@ -71,16 +71,19 @@ $this->beginPage();
             margin-bottom:-50px;
         }");
 
-        $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=UA-121432126-1', [
-            'depends' => [\yii\web\JqueryAsset::className()],
-            'sync' => 'async',
-        ]);
+        if (!empty(Yii::$app->params->google->analytics->id)) {
+            $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
+                'depends' => [\yii\web\JqueryAsset::className()],
+                'sync' => 'async',
+            ]);
 
-        $this->registerJs('
-        window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag("js", new Date());
-                    gtag("config", "UA-121432126-1");');
+            $this->registerJs('
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag("js", new Date());
+            gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
+        ');
+        }
         ?>
         <?php $this->endBody(); ?>
     </body>
