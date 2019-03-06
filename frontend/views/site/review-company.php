@@ -50,7 +50,7 @@ use yii\bootstrap\ActiveForm;
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <div class="heading-style">Company Name Reviews </div>
+                <h1 class="heading-style">Company Name Reviews </h1>
                 <div class="re-box refirst">
                     <div class="col-md-2 col-sm-2">
                         <div class="uicon">
@@ -363,7 +363,7 @@ use yii\bootstrap\ActiveForm;
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
-                    <div class="heading-style">Overall Reviews</div>
+                    <h1 class="heading-style">Overall Reviews</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
                             <div class="rs-main">

@@ -167,7 +167,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                         <div class="row">
                             <div class="personal-info col-md-12">
                                 <div class="personal-detail col-md-6">
-                                    <div class="heading-style ">About Me</div>
+                                    <h1 class="heading-style ">About Me</h1>
                                     <div class="per-discription">
                                         <span href="#" class="model" data-pk="description" data-name="description"
                                               data-type="textarea" data-value="<?= $user['description']; ?>"
@@ -177,7 +177,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                 </div>
                                 <div class="col-md-6 per">
                                     <div class="per-det col-md-12 row">
-                                        <div class="heading-style col-md-12">Personal Details</div>
+                                        <h1 class="heading-style col-md-12">Personal Details</h1>
                                         <div class="per-ped">
                                             <div class="can-name">Nationality:</div>
                                             <div class="can-name-fill">
@@ -286,7 +286,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                         ?>
                         <div class="bdy-content">
                             <div class="col-md-10">
-                                <div class="heading-style">Work Experience</div>
+                                <h1 class="heading-style">Work Experience</h1>
                             </div>
                             <div class="col-md-2">
                                 <?=
@@ -350,7 +350,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                         Pjax::begin(['id' => 'pjax_qualification']);
                         ?>
                         <div class="col-md-10">
-                            <div class="heading-style ">Qualification</div>
+                            <h1 class="heading-style ">Qualification</h1>
                         </div>
                         <div class="col-md-2">
                             <?=
@@ -397,7 +397,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                             ?>
                             <div class="row">
                                 <div class="col-md-10">
-                                    <div class="heading-style">Skills & Language</div>
+                                    <h1 class="heading-style">Skills & Language</h1>
                                 </div>
                                 <div class="col-md-2">
                                     <?=
