@@ -211,7 +211,6 @@ class JobApplicationForm extends Model
             $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $categoriesModel->slug = $utilitiesModel->create_slug();
-            $categoriesModel->parent_enc_id = NULL;
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
