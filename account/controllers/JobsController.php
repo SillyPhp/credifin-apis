@@ -102,6 +102,31 @@ class JobsController extends Controller
         }
     }
 
+    public function actionCreateJob()
+    {
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Jobs';
+            $model = new JobApplicationForm();
+            $primary_cat = $model->getPrimaryFields();
+            $industry = $model->getndustry();
+            $loc_list = $model->getOrganizationLocationOffice();
+            if ($model->load(Yii::$app->request->post())) {
+
+            }
+            else
+            {
+                return $this->render('/employer-applications/form',['model'=>$model,
+                    'primary_cat'=>$primary_cat,
+                    'industry'=>$industry,
+                    'loc_list'=>$loc_list,
+                    ]);
+            }
+        }
+        else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
     public function actionApproveCandidate()
     {
         if (Yii::$app->request->isPost) {
@@ -193,12 +218,12 @@ class JobsController extends Controller
     public function actionClone($aidk)
     {
         $model = new JobApplicationForm();
-        $questions_list = $model->getQuestionnnaireList();
-        $p_list = $model->getOrganizationLocationOffice();
-        $l_list = $model->getOrganizationLocationInterview();
-        $primaryfields = $model->getPrimaryFields();
-        $industries = $model->getndustry();
-        $interview_process = $model->getInterviewProcess();
+        $que = $model->getQuestionnnaireList();
+        $loc_list = $model->getOrganizationLocationOffice();
+        $int_list = $model->getOrganizationLocationInterview();
+        $primary_cat = $model->getPrimaryFields();
+        $industry = $model->getndustry();
+        $process = $model->getInterviewProcess();
         $benefits = $model->getBenefits();
         if ($model->load(Yii::$app->request->post())) {
             $session_token = Yii::$app->request->post('n');
@@ -214,13 +239,13 @@ class JobsController extends Controller
         } else {
             $application = $model->getCloneData($aidk);
             return $this->render('clone', ['data' => $application,
-                'model' => $model, 'location_list' => $p_list,
-                'questions_list' => $questions_list,
-                'primaryfields' => $primaryfields,
-                'inter_loc' => $l_list,
-                'industries' => $industries,
-                'process_list' => $interview_process,
-                'benefit' => $benefits,
+                'model' => $model, 'loc_list' => $loc_list,
+                'que' => $que,
+                'primary_cat' => $primary_cat,
+                'int_list' => $int_list,
+                'industry' => $industry,
+                'process' => $process,
+                'benefits' => $benefits,
             ]);
         }
     }

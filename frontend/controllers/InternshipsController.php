@@ -171,6 +171,7 @@ class InternshipsController extends Controller
                 $b->andWhere(['b.name' => 'internships']);
             }])
             ->one();
+        $type = 'Internship';
         if (empty($application_details)) {
             return 'Application Not found';
         }
@@ -206,10 +207,11 @@ class InternshipsController extends Controller
 
         if (!empty($application_details)) {
             $model = new JobApplied();
-            return $this->render('detail', [
+            return $this->render('/employer-application/detail', [
                 'application_details' => $application_details,
                 'data' => $object->getCloneData($application_details->application_enc_id),
                 'org' => $org_details,
+                'type' => $type,
                 'applied' => $applied_jobs,
                 'model' => $model,
                 'resume' => $resumes,
