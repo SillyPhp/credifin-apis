@@ -9,7 +9,6 @@ namespace frontend\models\profile;
 
 use common\models\Skills;
 use common\models\SpokenLanguages;
-use common\models\UserPreferredSkills;
 use common\models\Users;
 use common\models\Categories;
 use common\models\Cities;
@@ -20,6 +19,8 @@ use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use common\models\Utilities;
 use common\models\AssignedCategories;
+use common\models\UserResume;
+use yii\web\UploadedFile;
 
 class UserProfileBasicEdit extends Model {
     public $full_name;
@@ -35,6 +36,7 @@ class UserProfileBasicEdit extends Model {
     public $description;
     public $state;
     public $city;
+    public $resume;
 
     public function formName()
     {
@@ -54,6 +56,7 @@ class UserProfileBasicEdit extends Model {
                         return $('#category_drp').val() != '';
                 }"
             ],
+            [['resume'], 'file', 'skipOnEmpty' => true, 'extensions' => 'doc, docx,pdf','maxSize' => 1024 * 1024 * 2],
 
         ];
     }
@@ -237,7 +240,6 @@ class UserProfileBasicEdit extends Model {
             $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
             $new_language = array_diff($language_set, $languageArray);
             $delte_language = array_diff($languageArray, $language_set);
-
             if (!empty($new_language)) {
                 foreach ($new_language as $val) {
                     $languageModel = new UserSpokenLanguages();
@@ -271,6 +273,32 @@ class UserProfileBasicEdit extends Model {
                     }
                 }
             }
+        $this->resume = UploadedFile::getInstance($this, 'resume');
+        if (!empty($this->resume))
+        {
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userResumeModel = new UserResume();
+            $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
+            $userResumeModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
+            $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->resume->file_path . $userResumeModel->resume_location;
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume->extension;
+            $userResumeModel->title = $this->resume->baseName . '.' . $this->resume->extension;
+            $userResumeModel->alt = $this->resume->baseName . '.' . $this->resume->extension;
+            $userResumeModel->created_on = date('Y-m-d h:i:s');
+            $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!is_dir($base_path)) {
+                if (mkdir($base_path, 0755, true)) {
+                    if ($this->resume->saveAs($base_path . DIRECTORY_SEPARATOR . $userResumeModel->resume)) {
+                        if ($userResumeModel->validate() && $userResumeModel->save()) {
+                            $flag++;
+                        }
+                    }
+                }
+            }
+        }
 
             if ($flag==0)
             {
