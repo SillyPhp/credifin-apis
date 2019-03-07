@@ -61,10 +61,18 @@ class UserProfileController extends Controller
             ->asArray()
             ->all();
 
+        $userCv = \common\models\UserResume::find()
+                   ->select(['resume','resume_location'])
+                   ->where(['user_enc_id'=>$user['user_enc_id']])
+                   ->orderBy(['created_on'=>SORT_DESC])
+                   ->asArray()
+                   ->one();
+
         return $this->render('view', [
             'user' => $user,
             'skills' => $skills,
             'language' => $language,
+            'userCv' => $userCv,
         ]);
     }
 
