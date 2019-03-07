@@ -105,7 +105,6 @@ class IndividualSignUpForm extends Model
             $usersModel->user_enc_id = $utilitiesModel->encrypt();
             $usersModel->auth_key = Yii::$app->security->generateRandomString();
             $usersModel->status = 'Active';
-            $usersModel->created_on = date('Y-m-d H:i:s');
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $transaction->rollBack();
                 $this->_flag = false;

@@ -9,7 +9,7 @@ use borales\extensions\phoneInput\PhoneInput;
 $this->title = Yii::t('frontend', 'Organization Signup');
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
 //$this->params['grid_size'] = 'col-md-8 col-md-push-2';
-$organization_types = ArrayHelper::map($organization_types, 'organization_type_enc_id', 'organization_type');
+//$organization_types = ArrayHelper::map($organization_types, 'organization_type_enc_id', 'organization_type');
 $business_activities = ArrayHelper::map($business_activities, 'business_activity_enc_id', 'business_activity');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
@@ -54,47 +54,11 @@ $form = ActiveForm::begin([
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-4">
-            <?=
-            $form->field($model, 'organization_type')->dropDownList(
-                $organization_types, [
-                'prompt' => Yii::t('frontend', 'Type of Organization'),
-            ])->label(false);
-            ?>
-        </div>
-        <div class="col-md-4 col-sm-4">
+        <div class="col-md-12 col-sm-12">
             <?=
             $form->field($model, 'organization_business_activity')->dropDownList(
                 $business_activities, [
                 'prompt' => Yii::t('frontend', 'Business Activity'),
-                'id' => 'ba_drp',
-                'onchange' => '
-                                    $("#ind_drp").empty().append($("<option>", { 
-                                        value: "",
-                                        text : "Select Industry" 
-                                    }));
-                                    $.post(
-                                        "' . Url::toRoute("industries/get-industries-by-business-activity") . '", 
-                                        {id: $(this).val(),_csrf: $("input[name=_csrf]").val()}, 
-                                        function(res){
-                                            if(res.status === 200) {
-                                                drp_down("ind_drp", res.industries);
-                                                $("#ind_drp").show();
-                                            } else {
-                                                $("#ind_drp").hide();
-                                            }
-                                        }
-                                    );',
-            ])->label(false);
-            ?>
-        </div>
-        <div class="col-md-4 col-sm-4">
-            <?=
-            $form->field($model, 'organization_industry')->dropDownList(
-                [], [
-                'prompt' => Yii::t('frontend', 'Industry'),
-                'id' => 'ind_drp',
-                'style' => 'display: none',
             ])->label(false);
             ?>
         </div>
@@ -183,16 +147,3 @@ $this->registerCss('
     .intl-tel-input {
         width: 100%;
 }');
-
-$script = <<<JS
-    function drp_down(id, data) {
-        var selectbox = $('#' + id + '');
-        $.each(data, function () {
-            selectbox.append($('<option>', {
-                value: this.id,
-                text: this.name
-            }));
-        });
-    }
-JS;
-$this->registerJs($script, \yii\web\View::POS_HEAD);

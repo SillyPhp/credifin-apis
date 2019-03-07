@@ -1,10 +1,6 @@
 <?php
 
 namespace account\controllers;
-
-use common\models\AssignedSkills;
-use common\models\EmployerApplications;
-use common\models\Organizations;
 use common\models\SpokenLanguages;
 use common\models\Utilities;
 use Yii;
@@ -18,8 +14,6 @@ use common\models\Categories;
 use common\models\EducationalRequirements;
 use common\models\InterviewProcessFields;
 use common\models\Designations;
-use common\models\EmployeeBenefits;
-use common\models\OrganizationEmployeeBenefits;
 
 class CategoriesListController extends Controller
 {
@@ -46,16 +40,19 @@ class CategoriesListController extends Controller
         $categories = Categories::find()
             ->alias('a')
             ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->joinWith(['assignedCategories b'],false)
             ->where('a.name LIKE "%' . $q . '%"')
             ->andWhere([
-                'b.status' => 'Approved',
                 'b.assigned_to' => $type,
-                'b.parent_enc_id' => $id
+                'b.parent_enc_id' => $id,
+            ])
+            ->andWhere([
+                'or',
+                ['=', 'b.status', 'Approved'],
+                ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->asArray()
             ->all();
-
         return json_encode($categories);
     }
 
@@ -67,11 +64,6 @@ class CategoriesListController extends Controller
             ->distinct()
             ->select(['a.category_enc_id cat_id', 'b.name value'])
             ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
-//            ->where([
-//                'or',
-//                ['=', 'a.status', 'a.Publish'],
-//                ['a.user_enc_id' => Yii::$app->user->identity->user_enc_id]
-//            ])
             ->andWhere('b.name LIKE "%' . $q . '%"')
             ->andWhere(['not', ['a.parent_enc_id' => null]])
             ->asArray()
@@ -100,7 +92,7 @@ class CategoriesListController extends Controller
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -120,7 +112,7 @@ class CategoriesListController extends Controller
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -141,7 +133,7 @@ class CategoriesListController extends Controller
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])

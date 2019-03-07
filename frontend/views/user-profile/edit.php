@@ -179,6 +179,11 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     </div>
                     <div class="row">
                         <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
+                        <?php Pjax::begin(['id'=>'pjax_resume']) ?>
+                        <div class="col-md-12">
+                                <?= $form->field($basicDetails, 'resume',['template'=>'{input}{error}','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
+                        </div>
+                        <?php Pjax::end(); ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_basic','id'=>'basic_detail_submit']); ?>
                         </div>
@@ -625,6 +630,7 @@ function runAjax(thisObj,data,btn) {
                     $.pjax.reload({container: '#profile_icon_pjax', async: false});
                     $.pjax.reload({container: '#pjax_profile_icon', async: false});
                     $.pjax.reload({container: '#pjax_profile_icon_sidebar', async: false});
+                    $.pjax.reload({container: '#pjax_resume', async: false});
                     }
         else 
             {

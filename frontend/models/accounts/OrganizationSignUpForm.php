@@ -26,9 +26,7 @@ class OrganizationSignUpForm extends Model
     public $last_name;
     public $phone;
     public $countryCode;
-    public $organization_type;
     public $organization_business_activity;
-    public $organization_industry;
     public $organization_name;
     public $organization_email;
     public $organization_website;
@@ -54,9 +52,9 @@ class OrganizationSignUpForm extends Model
     public function rules()
     {
         return [
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_industry', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_industry', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
             [['username', 'email', 'organization_email'], 'string', 'max' => 50],
             [['new_password', 'confirm_password'], 'string', 'max' => 20],
@@ -72,17 +70,8 @@ class OrganizationSignUpForm extends Model
             ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['username', 'unique', 'targetClass' => Users::className(), 'message' => 'This username has already been taken.'],
-            [['organization_type'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationTypes::className(), 'targetAttribute' => ['organization_type' => 'organization_type_enc_id']],
             [['organization_business_activity'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_business_activity' => 'business_activity_enc_id']],
-            [['organization_industry'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['organization_industry' => 'industry_enc_id']],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
-            [
-                ['organization_industry'], 'required', 'when' => function ($model, $attribute) {
-                return $model->organization_business_activity == 'Others';
-            }, 'whenClient' => "function (attribute, value) {
-                        return $('#organization_business_activity').val() == 'Others';
-                }"
-            ],
         ];
     }
 
@@ -100,9 +89,7 @@ class OrganizationSignUpForm extends Model
             'organization_email' => Yii::t('frontend', 'Email'),
             'organization_website' => Yii::t('frontend', 'Website'),
             'organization_phone' => Yii::t('frontend', 'Phone'),
-            'organization_type' => Yii::t('frontend', 'Type of Organization'),
             'organization_business_activity' => Yii::t('frontend', 'Business Activity'),
-            'organization_industry' => Yii::t('frontend', 'Industry'),
         ];
     }
 
@@ -136,7 +123,6 @@ class OrganizationSignUpForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $usersModel->user_enc_id = $utilitiesModel->encrypt();
             $usersModel->auth_key = Yii::$app->security->generateRandomString();
-            $usersModel->created_on = $usersModel->last_updated_on = date('Y-m-d H:i:s');
             $usersModel->status = 'Active';
 
             if (!$usersModel->validate() || !$usersModel->save()) {
@@ -149,13 +135,7 @@ class OrganizationSignUpForm extends Model
                 $organizationsModel = new Organizations();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
-                $organizationsModel->organization_type_enc_id = $this->organization_type;
                 $organizationsModel->business_activity_enc_id = $this->organization_business_activity;
-                if ($this->organization_industry) {
-                    $organizationsModel->industry_enc_id = $this->organization_industry;
-                } else {
-                    $organizationsModel->industry_enc_id = NULL;
-                }
                 $organizationsModel->name = $this->organization_name;
                 $organizationsModel->email = $this->organization_email;
                 $organizationsModel->initials_color = RandomColors::one();
