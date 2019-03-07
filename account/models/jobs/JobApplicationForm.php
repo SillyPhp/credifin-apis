@@ -615,6 +615,7 @@ class JobApplicationForm extends Model
         $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
         $assignedCategoryModel->category_enc_id = $category_id;
         $assignedCategoryModel->parent_enc_id = $this->primaryfield;
+        $assignedCategoryModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $assignedCategoryModel->assigned_to = 'Jobs';
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
         $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
