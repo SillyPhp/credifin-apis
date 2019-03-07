@@ -326,7 +326,7 @@ if ($organization['cover_image']) {
     <section>
         <div class="container">
             <div class="empty-field">
-                <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+                <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->identity->organization->organization_enc_id) ? 'yes' : '' ?>">
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
@@ -339,7 +339,7 @@ if ($organization['cover_image']) {
                             <h4 class="modal-title"></h4>
                         </div>
                         <div class="modal-body">
-                            <p>Please Login to your empower youth profile or Sign Up </p>
+                            <p>Please Login as Candidate to drop your resume</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
