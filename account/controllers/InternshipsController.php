@@ -804,7 +804,20 @@ class InternshipsController extends Controller
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
+            'primary_fields' => $this->getCategories()
         ]);
+    }
+
+    private function getCategories()
+    {
+        $primaryfields = Categories::find()
+            ->alias('a')
+            ->select(['a.name', 'a.category_enc_id'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where(['b.assigned_to' => 'Internships', 'b.parent_enc_id' => NULL])
+            ->asArray()
+            ->all();
+        return $primaryfields;
     }
 
     private function __organizationJobs()

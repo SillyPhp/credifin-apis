@@ -29,353 +29,9 @@ use yii\helpers\Url;
                             <div class="row">
                                 <div class="col-md-12">
                                     <!-- BEGIN: Actions -->
-                                    <div class="row cd-box">
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can1" class="checkbox-input"/>
-                                                <label for="can1" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <!--                                                            <li>Html</li>-->
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can2" class="checkbox-input"/>
-                                                <label for="can2" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can3" class="checkbox-input"/>
-                                                <label for="can3" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can4" class="checkbox-input"/>
-                                                <label for="can4" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can5" class="checkbox-input"/>
-                                                <label for="can5" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can6" class="checkbox-input"/>
-                                                <label for="can6" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can7" class="checkbox-input"/>
-                                                <label for="can7" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
-                                        <article>
-                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-                                                <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can8" class="checkbox-input"/>
-                                                <label for="can8" class="checkbox-label">
-                                                    <div class="paid-candidate-container">
-                                                        <div class="paid-candidate-box">
-                                                            <div class="dropdown">
-                                                                <div class="btn-group fl-right">
-                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="fa fa-gear"></i>
-                                                                    </button>
-                                                                    <div class="dropdown-menu pull-right animated flipInX">
-                                                                        <a href="#">Shortlist</a>
-                                                                        <button class="reject">Reject</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-inner--box">
-                                                                <div class="paid-candidate-box-thumb">
-                                                                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                                                                </div>
-                                                                <div class="paid-candidate-box-detail">
-                                                                    <h4>Daniel Disroyer</h4>
-                                                                    <span class="desination">App Designer</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="paid-candidate-box-extra">
-                                                                <ul>
-                                                                    <li>Php</li>
-                                                                    <li>Android</li>
-                                                                    <li class="more-skill bg-primary">+3</li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="paid-candidate-box-exp">
-                                                                <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                                                                <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                                                            </div>
-                                                        </div>
-                                                        <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </article>
+                                    <div id="card-data" class="row cd-box">
 
+                                        <!-- There is data before. -->
                                     </div>
 
                                 </div>
@@ -629,9 +285,14 @@ $script = <<<JS
    //  $(document).on('click','#comloadmore', function(){
    //     $('.cd-box:first').clone().appendTo('.tab-pane');     
    // }); 
+   
+            var template = $("#card").html();
+            var rendered = Mustache.render(template);
+            $('#card-data').append(rendered);
         
 JS;
 $this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     var listOfSelected = [];
@@ -649,4 +310,51 @@ $this->registerJs($script);
             }
         }
     }
+</script>
+
+<script id="card" type="text/template">
+    <article>
+        <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
+            <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can1" class="checkbox-input"/>
+            <label for="can1" class="checkbox-label">
+                <div class="paid-candidate-container">
+                    <div class="paid-candidate-box">
+                        <div class="dropdown">
+                            <div class="btn-group fl-right">
+                                <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-gear"></i>
+                                </button>
+                                <div class="dropdown-menu pull-right animated flipInX">
+                                    <a href="#">Shortlist</a>
+                                    <button class="reject">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="paid-candidate-inner--box">
+                            <div class="paid-candidate-box-thumb">
+                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
+                            </div>
+                            <div class="paid-candidate-box-detail">
+                                <h4>Daniel Disroyer</h4>
+                                <span class="desination">App Designer</span>
+                            </div>
+                        </div>
+                        <div class="paid-candidate-box-extra">
+                            <ul>
+                                <li>Php</li>
+                                <li>Android</li>
+                                <!--                                                            <li>Html</li>-->
+                                <li class="more-skill bg-primary">+3</li>
+                            </ul>
+                        </div>
+                        <div class="paid-candidate-box-exp">
+                            <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
+                            <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
+                        </div>
+                    </div>
+                    <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
+                </div>
+            </label>
+        </div>
+    </article>
 </script>

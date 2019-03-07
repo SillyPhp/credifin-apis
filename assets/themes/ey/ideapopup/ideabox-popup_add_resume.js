@@ -15,6 +15,7 @@ function random_fn(t){
 	    this.nextButton = null;
 		this.overlayButton = null;
 		this.active = 0;
+		this.type = null;
                 this.validate = true;
 		this.values = {};
 
@@ -117,9 +118,6 @@ function random_fn(t){
 			{
 				clearErrorMessage.call(this);
 				showThisQuestion(this.active, this);
-                if(this.active == 4){
-                	call_result(this.values);
-				}
 			}
 		}
 		else
@@ -373,37 +371,6 @@ function random_fn(t){
 		//show navigate
 		showNavigate(qno,that);
 
-		//show continue button
-		// switch(qno){
-		// 	case 0:
-		// 		break;
-		// 	case 1:
-		// 		showNextButton(qno, that);
-		// 		break;
-		// 	default:
-		// 		break;
-		// }
-		// if(qno === 1){
-		// if(qno === 0 || qno === 3){
-		// 	that.nextButton.classList.add("i-next-hide");
-		// }else if(qno === 1|| qno === 2 || qno === 4 || qno ===5){
-		// 	that.nextButton.classList.remove("i-next-hide");
-		// 	showNextButton(qno, that);
-		// }
-
-		// }else if(qno === 2){
-		// 	showNextButton(qno, that);
-		// }else if(qno === 5){
-		// 	showNextButton(qno, that);
-		// }
-		// if(qno === 1 || qno === 4){	
-		// 	console.log(this.active);	
-		// 	showNextButton(qno, that);
-		// }else if(qno === 0 || qno === 2 || qno === 3){
-		// 	//console.log(this.active);
-		// 	showThisQuestion(this.active,this);
-		// }
-
 		//question create
 		var question = createQuestion(qno,that);
 
@@ -442,21 +409,12 @@ function random_fn(t){
 
 		return d;
 	}
-	//------------------------------------------------------------
-	// inputbox create method. Using with answerType:'inputbox'
-	var createInputBox = function (qno, that){
-		//if(qno == 4)
-		//	var i = '<div class="i-review-answer"><input type="text" onclick="auto_fn(this);" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		//else
-		var i = '<div class="i-review-answer"><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		
-		return i;
-	}
+
     var createUpdateBtn = function (qno, that){
         var i = '<div class="up-pro-btn"><a href="'+that.options.data[qno].choices[0].label+'" class="update-profile-btn">Update Profile</a></div>';
-
-        return i;
+		return i;
     }
+
 	var createRadioBox2 = function (qno, that){
 		var radios = '';
 		if (that.options.data[qno].hasOwnProperty('choices'))
@@ -477,6 +435,7 @@ function random_fn(t){
 		var r = '<div class="i-review-answer'+inlineClass+'"><div class="toggle">'+radios+'</div></div>';
 		return r;
 	}
+
 	var createCheckBox2 = function (qno, that){
 		var checks = '';
 		if (that.options.data[qno].hasOwnProperty('choices'))
@@ -486,7 +445,7 @@ function random_fn(t){
 				var randomId = createUniqueId();
 				checks += '<div class="i-review-input-group radio2" for="cb1"><input name="'+that.options.data[qno].formName+'" class="i-review-input-checkbox2" type="checkbox" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
                         
-                        }
+			}
 		}
 		else
 			console.log('"checkbox" form type must have -choices- parameters!');
@@ -497,13 +456,34 @@ function random_fn(t){
 		var c = '<div class="i-review-answer'+inlineClass+'"><div class="toggle">'+checks+'</div></div>';
 		return c;
 	}
+
+	var createRadioBox = function (qno, that){
+		var radios = '';
+		if (that.options.data[qno].hasOwnProperty('choices'))
+		{
+			for (var i = 0; i < that.options.data[qno].choices.length; i++ )
+			{
+				var randomId = createUniqueId();
+				radios += '<div class="i-review-input-group radio2" for="cb1"><input name="'+that.options.data[qno].formName+'" class="i-review-input-radio3" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
+			}
+		}
+		else
+			console.log('"radio" form type must have -choices- parameters!');
+
+		var inlineClass = '';
+		if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
+			inlineClass = ' i-inline-answer-list'
+
+		var r = '<div class="i-review-answer'+inlineClass+'"><div class="toggle">'+radios+'</div></div>';
+		return r;
+	}
 	//------------------------------------------------------------
 	var createAnswers = function(qno, that){
 		switch (that.options.data[qno].answerType){
-			case 'inputbox':
+			case 'radio':
 				that.nextButton.classList.remove("i-next-hide");
 				showNextButton(qno, that);
-				return createInputBox(qno, that);
+				return createRadioBox(qno, that);
 				break;
 			case 'checkbox2':
 				that.nextButton.classList.remove("i-next-hide");
@@ -767,8 +747,8 @@ function random_fn(t){
 	var checkValidations = function(qno,that){
 		if (that.options.data[qno].hasOwnProperty('answerType') && that.options.data[qno].answerType != null)
 		switch (that.options.data[qno].answerType){
-			case 'inputbox':
-				inputValidate(qno, that);
+			case 'radio':
+				radioValidate(qno, that);
 				break;
 			case 'checkbox2':
                 checkValidate2(qno, that);
@@ -776,65 +756,36 @@ function random_fn(t){
 			case 'radio2':
 				radioValidate2(qno, that);
 				break;
-			case 'updatebtn':
-				updateBtnValidate(qno, that);
-				break;
 			default:
 				console.log('Unexpected answer type for validate!');
 		}
 	}
-	//------------------------------------------------------------
-	// Inputbox validate checker
-	var inputValidate = function(qno,that){
-		var val = that.reviewModal.getElementsByClassName('i-review-input')[0].value;
-		that.values[that.options.data[qno].formName] = val;
 
-		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-		{
-			if (that.options.data[qno].hasOwnProperty('validate'))
-			{
-				if (that.options.data[qno].validate == 'email')
-					that.validate = emailValidate(val);
-				else if (that.options.data[qno].validate == 'number')
-					that.validate = numericValidate(val);
-			}
-			else
-			{
-				if (val == '')
-					that.validate = false;
+	var radioValidate = function(qno,that) {
+		var radioboxes = that.reviewModal.getElementsByClassName('i-review-input-radio3');
+		var checkeds = [];
+		that.values[that.options.data[qno].formName] = '';
+		for (var i = 0; i < radioboxes.length; i++) {
+			if (radioboxes[i].checked) {
+				checkeds.push(radioboxes[i].value);
+				that.values[that.options.data[qno].formName] = radioboxes[i].value;
 			}
 		}
+		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true) {
+			if (checkeds.length < 1)
+				that.validate = false;
+		}
 	}
-    var updateBtnValidate = function(qno,that){
-        var val = 1;
-        that.values[that.options.data[qno].formName] = val;
 
-        if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-        {
-            if (that.options.data[qno].hasOwnProperty('validate'))
-            {
-                if (that.options.data[qno].validate == 'email')
-                    that.validate = emailValidate(val);
-                else if (that.options.data[qno].validate == 'number')
-                    that.validate = numericValidate(val);
-            }
-            else
-            {
-                if (val == '')
-                    that.validate = false;
-            }
-        }
-    }
 	var checkValidate2 = function(qno,that){
 		var checkboxes = that.reviewModal.getElementsByClassName('i-review-input-checkbox2');
         var checkeds = [];
-        that.values[that.options.data[qno].formName] = '';
         for (var i=0; i<checkboxes.length; i++) {
             if (checkboxes[i].checked) {
                 checkeds.push(checkboxes[i].value);
-                that.values[that.options.data[qno].formName] = checkboxes[i].value;
             }
         }
+        that.values[that.options.data[qno].formName] = checkeds;
 
         if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
         {
@@ -843,6 +794,7 @@ function random_fn(t){
         }
 		
 	}
+
 	var radioValidate2 = function(qno,that){
 		var radioboxes = that.reviewModal.getElementsByClassName('i-review-input-radio2');
 		var checkeds = [];
@@ -859,7 +811,100 @@ function random_fn(t){
 			if (checkeds.length < 1)
 				that.validate = false;
 		}
-		
+
+		if (qno == 0) {
+			that.type = that.values[that.options.data[qno].formName];
+			$.ajax({
+				type: 'POST',
+				async: false,
+				url: '/account/resume/resume-type',
+				data: {
+					selected_answer: that.values[that.options.data[qno].formName],
+					company_name: window.location.pathname.split('/')[2]
+				},
+				success: function (response) {
+					response = JSON.parse(response);
+					var next_res = [];
+					for (var i = 0; i < response.length; i++) {
+						var obj_add = {};
+						obj_add['label'] = response[i]['name'];
+						obj_add['value'] = response[i]['category_enc_id'];
+						next_res.push(obj_add);
+					}
+					that.options.data.splice(1, 0, {
+						question: 'Select Job Profile',
+						answerType: 'radio2',
+						formName: 'job_profile',
+						choices: next_res,
+						description: 'Please select your job profile',
+						required: true,
+						errorMsg: '<b style="color:#900;">Select the choices.</b>'
+					});
+				}
+			});
+		}
+
+		if (qno == 1) {
+			$.ajax({
+				type: 'POST',
+				async: false,
+				url: '/account/resume/job-profile',
+				data: {
+					selected_answer: that.values[that.options.data[qno].formName],
+					type: that.type,
+					company_name: window.location.pathname.split('/')[2]
+
+				},
+				success: function (response) {
+					response = JSON.parse(response);
+					var next_res = [];
+					for (var i = 0; i < response.sub_categories.length; i++) {
+						var obj_add = {};
+						obj_add['label'] = response.sub_categories[i]['name'];
+						obj_add['value'] = response.sub_categories[i]['category_enc_id'];
+						next_res.push(obj_add);
+					}
+					that.options.data.splice(2, 0, {
+						question 	: 'Select Job Title',
+						answerType	: 'checkbox2',
+						formName	: 'job_title',
+						choices		: next_res,
+						description	: 'Please select job titles that you are interested in and press next button',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Select atleast one choice.</b>'
+					});
+					if(response.location.length > 0 ){
+						var location = [];
+						for (var i = 0; i < response.location.length; i++) {
+							var location_add = {};
+							location_add['label'] = response.location[i]['name'];
+							location_add['value'] = response.location[i]['city_enc_id'];
+							location.push(location_add);
+						}
+						that.options.data.splice(3, 0, {
+							question 	: 'Preffered Location',
+							answerType	: 'checkbox2',
+							formName	: 'locations',
+							choices		: location,
+							description	: 'Please select your preffered location and press next button',
+							required	: true,
+							errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
+						});
+					}
+					that.options.data.push({
+						question: '<h2 style="color: #fff; font-weight: 900;">You have applied with your empower youth profile </h2>',
+						answerType: 'updatebtn',
+						formName : 'is_applied',
+						choices		: [
+							{label: 'http://www.eygb.me/user/'+response.username}
+						],
+						description: '',
+						nextLabel : 'Finish',
+					});
+				}
+			});
+		}
+
 	}
 	//------------------------------------------------------------
 	// Creating unique id. Only using checkbox and radio
@@ -938,33 +983,3 @@ function starRateSetter(that){
 	}
 
 }
-//
-// function sbt_values(t){
-//         var y  = window.location.href;
-//         var z = y.split('/');
-//         t['slug'] = z[4];
-//         res = t;
-// }
-
-function call_result(t){
-	console.log(t);
-}
-
-// function fetch_cards(){
-// $.ajax({
-//         method: "GET",
-//         url : "/companies/detail",
-//         success: function(response) {
-//                 console.log(response);
-// //            if(response.status == 200) {
-// //                var card = $('#review-cards').html();
-// //                if(response['is_current_employee']=='0'){
-// //                    response['is_current_employee'] = 'former';
-// //                }else{
-// //                    response['is_current_employee'] = 'current';
-// //                }
-// //                $(".reviews-list").append(Mustache.render(card, response));
-// //            }
-//         }
-//     });
-//     }

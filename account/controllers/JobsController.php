@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use common\models\Cities;
+use common\models\OrganizationAssignedCategories;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -888,7 +889,7 @@ class JobsController extends Controller
             'applications' => $this->__jobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
-            'primary_fields' => $this->getCategories(),
+            'primary_fields' => $this->getCategories()
         ]);
     }
 
@@ -904,6 +905,7 @@ class JobsController extends Controller
             ->all();
         return $primaryfields;
     }
+
 
     private function __organizationJobs()
     {

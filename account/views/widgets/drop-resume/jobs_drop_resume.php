@@ -53,7 +53,7 @@
             </div>
 
             <div class="modal-footer">
-<!--                <button type="submit" class="btn btn-primary">save</button>-->
+                <!--                <button type="submit" class="btn btn-primary">save</button>-->
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -150,7 +150,8 @@ $(document).ready(function(){
 
 $(document).on('click', '.parent_category', function(){
         var data = {
-            parent_id:$(this).attr('id')
+            parent_id:$(this).attr('id'),
+            type: 'Jobs'
         };
         $.ajax({
             type:"POST",
@@ -173,12 +174,16 @@ $(document).on('click', '.parent_category', function(){
 });
 showSelectedCategories();
 function showSelectedCategories(){
+    var data = {
+            type: 'Jobs'
+        };
     var div = document.getElementById('resume-bank');
     while(div.firstChild){
         div.removeChild(div.firstChild);
     }
     $.ajax({
         type: "POST",
+        data: data,
         url: "/account/resume/final-data",
         success: function (response){
             var response = JSON.parse(response);
@@ -212,7 +217,8 @@ $(document).on('click', '#save', function(e){
             url:"/account/resume/save",
             data: {
                     checked:check,
-                    parent_enc_id:parent_id
+                    parent_enc_id:parent_id,
+                    type: 'Jobs'
                   },            
             success: function(response){
                 if(JSON.parse(response)["status"] == 200){
@@ -245,49 +251,49 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 <script>
 </script>
 <script id="modal-two" type="text/template">
-        <div class="modal-dialog" id="titles">
+    <div class="modal-dialog" id="titles">
         <!-- Modal content-->
         <div class="modal-content">
-        <div class="modal-header">
-        <button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title">Add Job Title</h4>
-    </div>
-    <div class="modal-body">
-        <div class="row">
-        <div class="col-md-9">
-        <div class="form-group">
-        <input type="text" id="text" placeholder="Search Here Or Add New Category" class="form-control">
-        </div>
-        </div>
-        <div class="col-md-3">
-        <div class="form-group">
-        <button type="button" id="add_new_btn" class="btn btn-default">Add To The List</button>
-    </div>
-    </div>
-    </div>
-    <div class="row padd10">
-        {{#.}}
-        <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search search">
-        <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
-        <label for="{{category_enc_id}}" class="work-profile-box unique2">
+            <div class="modal-header">
+                <button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Job Title</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search Here Or Add New Category" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <button type="button" id="add_new_btn" class="btn btn-default">Add To The List</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row padd10">
+                    {{#.}}
+                    <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search">
+                        <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
+                        <label for="{{category_enc_id}}" class="work-profile-box unique2">
 
-        <div class="work-profile">
-        {{name}}
+                            <div class="work-profile">
+                                {{name}}
+                            </div>
+
+                        </label>
+                    </div>
+                    {{/.}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="previous" class="btn btn-default">Back</button>
+                <button id="save" type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-default close-modal" data-dismiss="modal">Close</button>
+            </div>
         </div>
 
-        </label>
-        </div>
-        {{/.}}
-        </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" id="previous" class="btn btn-default">Back</button>
-        <button id="save" type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-default close-modal" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-
-        </div>
+    </div>
 </script>
 
 <script id="selected-categories" type="text/template">
@@ -295,29 +301,29 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
     <div class="tab-content">
         <div class="tab-pane active" id="tab_actions_pending">
-        <!-- BEGIN: Actions -->
-        <div class="row">
-        <div class="col-md-12">
-        <div class="mt-actions" style="" >
-        <div class="row padd10">
-        {{#.}}
-        <div class="col-md-4 col-sm-6 padd-5">
-        <a href="/account/uploaded-resume/candidate-resumes?id={{category_enc_id}}">
-        <div class="work-profile-box">
-        <div class="work-profile">
-        {{name}}
-        </div>
-        </div>
-        </a>
-        </div>
-        {{/.}}
-        </div>
-        <div class="divider"></div>
+            <!-- BEGIN: Actions -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mt-actions" style="" >
+                        <div class="row padd10">
+                            {{#.}}
+                            <div class="col-md-4 col-sm-6 padd-5">
+                                <a href="/account/uploaded-resume/candidate-resumes?id={{category_enc_id}}">
+                                    <div class="work-profile-box">
+                                        <div class="work-profile">
+                                            {{name}}
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            {{/.}}
+                        </div>
+                        <div class="divider"></div>
 
+                    </div>
+                </div>
+            </div>
         </div>
-        </div>
-        </div>
-        </div>
-        </div>
+    </div>
 
 </script>
