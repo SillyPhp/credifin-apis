@@ -90,3 +90,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         </div>
     </div>
 </div>
+<?php
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

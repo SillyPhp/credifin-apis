@@ -13,7 +13,7 @@ if ($type=='Job') {
         } elseif ($data['wage_duration'] == 'Weekly') {
             $data['fixed_wage'] = $data['fixed_wage'] * 52;
         }
-//        setlocale(LC_MONETARY, 'en_IN');
+        setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.a.';
     } else if ($data['wage_type'] == 'Negotiable') {
         if ($data['wage_duration'] == 'Monthly') {
@@ -26,7 +26,7 @@ if ($type=='Job') {
             $data['min_wage'] = $data['min_wage'] * 52;
             $data['max_wage'] = $data['max_wage'] * 52;
         }
-//        setlocale(LC_MONETARY, 'en_IN');
+        setlocale(LC_MONETARY, 'en_IN');
         if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
             $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
         } elseif (!empty($data['min_wage'])) {
@@ -48,7 +48,7 @@ if ($type=='Internship') {
         } elseif ($data['wage_duration'] == 'Weekly') {
             $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
         }
-//        setlocale(LC_MONETARY, 'en_IN');
+        setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.';
     } elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based') {
         if ($data['wage_duration'] == 'Hourly') {
@@ -58,7 +58,7 @@ if ($type=='Internship') {
             $data['min_wage'] = $data['min_wage'] / 7 * 30;
             $data['max_wage'] = $data['max_wage'] / 7 * 30;
         }
-//        setlocale(LC_MONETARY, 'en_IN');
+        setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
     }
     $this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a stipend ' . $amount;
@@ -91,18 +91,20 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+
 $this->params['header_dark'] = false;
 
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
+//print_r($data);
 ?>
 <?=
 $this->render('/widgets/employer_applications/top-banner', [
     'org_image_location'=>$org['cover_image_location'],
     'org_image'=>$org['cover_image'],
     'job_title'=>$data['cat_name'],
+    'icon_png'=>$data['icon_png'],
     'shortlist'=>$shortlist,
 ]);
 ?>
@@ -370,18 +372,18 @@ $this->registerCss("
     section.overlape {
         z-index: 2;
     }
-    .inner-header::before {
+    .dark-color::before {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
         content: '';
-        z-index: -1;
+//        z-index: -1;
         background: #00000078;
         opacity: 0.8;
     }
-    .inner-header::after {
+    .dark-color::after {
         position: absolute;
         left: 0;
         top: 0;
@@ -395,7 +397,8 @@ $this->registerCss("
         float: left;
         width: 100%;
         position: relative;
-        padding-top: 240px; padding-bottom: 15px;
+        padding-top: 185px;
+        padding-bottom: 15px;
         z-index: 0;
     }
     .inner-header.wform .job-search-sec {
@@ -410,15 +413,14 @@ $this->registerCss("
         transform: translateX(-50%);
     }
     .inner-header > h3 {
-        float: left;
-        width: 100%;
+        max-width: 500px;
         position: relative;
         z-index: 1;
         color: #ffffff;
         font-weight: bold;
         font-size: 30px;
         text-align: center;
-        margin: 0;
+        margin: auto;
         margin-bottom: 50px;
     }
     .inner-header .container {
@@ -1147,5 +1149,72 @@ $this->registerCss("
         line-height: initial !important;
     }
     /* Feature, categories css ends */
+    /* Profile icons css start */
+    .profile_icons{
+        position: absolute;
+        width: 250px;
+        left: 50px;
+        bottom: -3px;
+    }
+    .background-container{
+        max-width:1200px;
+        padding-left: 15px;
+        padding-right: 15px;
+        margin:auto;
+    }
+    @media screen and (max-width: 1150px) and (min-width: 1025px) {
+          .profile_icons{
+               width: 225px;
+          }
+          .inner-header > h3{
+               width: 400px;
+          }
+          .inner-header {
+               padding-top: 160px;
+          }
+    }
+    @media screen and (max-width: 1024px) and (min-width: 890px) {
+          .profile_icons{
+               width: 175px;
+          }
+          .inner-header {
+               padding-top: 150px;
+          }
+    }
+    @media screen and (max-width: 889px) and (min-width: 650px) {
+          .profile_icons{
+               width: 170px;
+               left:20px;
+          }
+          .inner-header > h3 {
+               width: 240px;
+               font-size: 22px;
+               margin-bottom: 20px;
+          }
+          .inner-header {
+               padding-top: 100px;
+          }
+    }
+    @media screen and (max-width: 649px) and (min-width: 0px) {
+          .profile_icons{
+               width: 150px;
+               position: relative;
+               margin: auto;
+               left: 0;
+               bottom: 0px;
+               margin-bottom: 30px;
+          }
+          .inner-header {
+               padding-top: 80px;
+          }
+          .inner-header > h3 {
+               font-size: 20px;
+               margin-bottom: 20px;
+          }
+          .job-statistic{
+               display:none;
+          }
+    }
+    /* Profile icons css ends */
     ");
 ?>
