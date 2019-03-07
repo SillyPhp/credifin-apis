@@ -102,7 +102,7 @@ use yii\widgets\Pjax;
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="select">
-                                            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Category', 'disabled' => true])->label(false); ?>
+                                            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false); ?>
                                         </div>
                                     </div>
                                     <div class="col-md-4">

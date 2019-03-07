@@ -4,8 +4,96 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+if ($type=='Job') {
+    if ($data['wage_type'] == 'Fixed') {
+        if ($data['wage_duration'] == 'Monthly') {
+            $data['fixed_wage'] = $data['fixed_wage'] * 12;
+        } elseif ($data['wage_duration'] == 'Hourly') {
+            $data['fixed_wage'] = $data['fixed_wage'] * 40 * 52;
+        } elseif ($data['wage_duration'] == 'Weekly') {
+            $data['fixed_wage'] = $data['fixed_wage'] * 52;
+        }
+//        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.a.';
+    } else if ($data['wage_type'] == 'Negotiable') {
+        if ($data['wage_duration'] == 'Monthly') {
+            $data['min_wage'] = $data['min_wage'] * 12;
+            $data['max_wage'] = $data['max_wage'] * 12;
+        } elseif ($data['wage_duration'] == 'Hourly') {
+            $data['min_wage'] = $data['min_wage'] * 40 * 52;
+            $data['max_wage'] = $data['max_wage'] * 40 * 52;
+        } elseif ($data['wage_duration'] == 'Weekly') {
+            $data['min_wage'] = $data['min_wage'] * 52;
+            $data['max_wage'] = $data['max_wage'] * 52;
+        }
+//        setlocale(LC_MONETARY, 'en_IN');
+        if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
+            $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
+        } elseif (!empty($data['min_wage'])) {
+            $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . 'p.a.';
+        } elseif (!empty($data['max_wage'])) {
+            $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
+        } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
+            $amount = 'Negotiable';
+        }
+    }
+    $this->title = $org['org_name'] . ' is hiring for ' . $data['cat_name'] . ' with a ' . $amount . ' package.';
+    $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+    $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+}
+if ($type=='Internship') {
+    if ($data['wage_type'] == 'Fixed') {
+        if ($data['wage_duration'] == 'Hourly') {
+            $data['fixed_wage'] = $data['fixed_wage'] * 24 * 30;
+        } elseif ($data['wage_duration'] == 'Weekly') {
+            $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
+        }
+//        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.';
+    } elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based') {
+        if ($data['wage_duration'] == 'Hourly') {
+            $data['min_wage'] = $data['min_wage'] * 24 * 30;
+            $data['max_wage'] = $data['max_wage'] * 24 * 30;
+        } elseif ($data['wage_duration'] == 'Weekly') {
+            $data['min_wage'] = $data['min_wage'] / 7 * 30;
+            $data['max_wage'] = $data['max_wage'] / 7 * 30;
+        }
+//        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
+    }
+    $this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a stipend ' . $amount;
+    $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
+    $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+}
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
+
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
