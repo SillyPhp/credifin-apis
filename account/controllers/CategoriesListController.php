@@ -53,7 +53,6 @@ class CategoriesListController extends Controller
             ])
             ->asArray()
             ->all();
-
         return json_encode($categories);
     }
 
@@ -65,11 +64,6 @@ class CategoriesListController extends Controller
             ->distinct()
             ->select(['a.category_enc_id cat_id', 'b.name value'])
             ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
-//            ->where([
-//                'or',
-//                ['=', 'a.status', 'a.Publish'],
-//                ['a.user_enc_id' => Yii::$app->user->identity->user_enc_id]
-//            ])
             ->andWhere('b.name LIKE "%' . $q . '%"')
             ->andWhere(['not', ['a.parent_enc_id' => null]])
             ->asArray()
@@ -98,7 +92,7 @@ class CategoriesListController extends Controller
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -118,7 +112,7 @@ class CategoriesListController extends Controller
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -139,7 +133,7 @@ class CategoriesListController extends Controller
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['=', 'a.status', 'a.Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
