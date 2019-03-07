@@ -38,11 +38,11 @@ if (!empty($placement_locations)) {
         <?php setlocale(LC_MONETARY, 'en_IN'); ?>
         <li><i class="fa fa-money"></i>
             <h3>Maximum Stipend</h3>
-            <span><?= (($max_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $max_wage)) : 'N/A'); ?></span>
+            <span><?= (($max_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $max_wage)) . 'p.m.' : 'N/A'); ?></span>
         </li>
         <li><i class="fa fa-money"></i>
             <h3>Minimum stipend</h3>
-            <span><?= (($min_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $min_wage)) : 'N/A'); ?></span>
+            <span><?= (($min_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $min_wage)) . 'p.m.' : 'N/A'); ?></span>
         </li>
         <li><i class="fa fa-mars-double"></i>
             <h3>Gender</h3><span><?php
@@ -65,7 +65,7 @@ if (!empty($placement_locations)) {
                 ?></span></li>
         <li><i class="fa fa-money"></i>
             <h3>Fixed Stipend</h3>
-            <span><?= (($fixed_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $fixed_wage)) : 'N/A') ?></span>
+            <span><?= (($fixed_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $fixed_wage)) . 'p.m.' : 'N/A') ?></span>
         </li>
         <li><i class="fa fa-line-chart "></i>
             <h3>Total Vacancies</h3>

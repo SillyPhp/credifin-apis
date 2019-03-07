@@ -1,14 +1,35 @@
 <?php
 $separator = Yii::$app->params->seo_settings->title_separator;
 
-if (!empty($data['min_wage'])) {
-    $amount = 'from ' . (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A');
-}
-if (!empty($data['max_wage'])) {
-    $amount = 'upto ' . (($data['max_wage']) ? '₹ ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A');
+if ($data['wage_type'] == 'Fixed') {
+    if ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['fixed_wage'] * 24 * 30;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['fixed_wage'] / 7 * 30;
+    } else{
+        $wage = $data['fixed_wage'];
+    }
+    $amount = $wage;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.m.';
+} elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based'){
+    if ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['min_wage'] * 24 * 30;
+        $wage2 = $data['max_wage'] * 24 * 30;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['min_wage'] / 7 * 30;
+        $wage2 = $data['max_wage'] / 7 * 30;
+    } else{
+        $wage = $data['min_wage'];
+        $wage2 = $data['max_wage'];
+    }
+    $amount1 = $wage;
+    $amount2 = $wage2;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.m.';
 }
 
-$this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' profile interns with a  stipend ' . $amount ;
+$this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a  stipend ' . $amount ;
 
 //$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
@@ -29,8 +50,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -215,11 +236,33 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <?php setlocale(LC_MONETARY, 'en_IN'); ?>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Maximum Stipend</h3>
-                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A'); ?></span>
+                                        <?php
+                                        if (!empty($data['max_wage'])){
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage2 = $data['max_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage2 = $data['max_wage'] / 7 * 30;
+                                            } else{
+                                                $wage2 = $data['max_wage'];
+                                            }
+                                        }
+                                        ?>
+                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $wage2)) . 'p.m.' : 'N/A'); ?></span>
                                     </li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Minimum stipend</h3>
-                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A'); ?></span>
+                                        <?php
+                                        if (!empty($data['min_wage'])){
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage = $data['min_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage = $data['min_wage'] / 7 * 30;
+                                            } else{
+                                                $wage = $data['min_wage'];
+                                            }
+                                        }
+                                        ?>
+                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $wage)) . 'p.m.' : 'N/A'); ?></span>
                                     </li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
@@ -242,7 +285,23 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                             ?></span></li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Fixed Stipend</h3>
-                                        <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'N/A') ?></span>
+                                        <?php
+                                        if ($data['wage_type'] == 'Fixed') {
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage = $data['fixed_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage = $data['fixed_wage'] / 7 * 30;
+                                            } else{
+                                                $wage = $data['fixed_wage'];
+                                            }
+                                            $amount = $wage;
+                                            setlocale(LC_MONETARY, 'en_IN');
+                                            $fixed_amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.m.';
+                                        } else{
+                                            $fixed_amount = 'N/A';
+                                        }
+                                        ?>
+                                        <span><?= $fixed_amount ?></span>
                                     </li>
                                     <li><i class="fa fa-line-chart "></i>
                                         <h3>Total Vacancies</h3>

@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%assigned_categories}}".
@@ -55,10 +54,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
             [['parent_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['parent_enc_id' => 'category_enc_id']],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
 
     /**
      * @return \yii\db\ActiveQuery
