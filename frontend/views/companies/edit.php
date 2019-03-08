@@ -1,17 +1,15 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
+        $image = $organization['name'];
     }
 } else {
-    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
+    $image = $organization['name'];
 }
 
 if ($organization['cover_image']) {
@@ -23,7 +21,6 @@ if ($organization['cover_image']) {
 } else {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
-$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 ?>
     <section>
         <div class="header-bg">
@@ -34,66 +31,18 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-<!--                                        <input type="hidden" value="--><?php //?><!--">-->
-                                            <img id="logo-img" src="<?= Url::to($image); ?>">
-<!--                                            <canvas class="user-icon img-circle img-thumbnail " name="--><?//= $image; ?><!--"-->
-<!--                                                    color="--><?//= $organization['initials_color'] ?><!--" width="200"-->
-<!--                                                    height="200" font="85px"></canvas>-->
                                         <?php
-                                        if (Yii::$app->user->identity->organization->slug === $organization['slug']) {
-                                            $form = ActiveForm::begin([
-                                                'id' => 'upload-logo',
-                                                'options' => ['enctype' => 'multipart/form-data'],
-                                            ])
+                                        if (!empty($image_path)):
                                             ?>
-                                            <div id="open-pop" class="avatar-edit">
-                                                <i class="fa fa-pencil dropdown-toggle full_width"
-                                                   data-toggle="dropdown"></i>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a href="#">
-                                                            <?=
-                                                            $form->field($companyLogoFormModel, 'logo', [
-                                                                'template' => '{input}',
-                                                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'logoUpload', 'accept' => '.png, .jpg, .jpeg']);
-                                                            ?>
-                                                            <label for="logoUpload">Change Profile Picture</label>
-                                                        </a>
-                                                    </li>
-                                                    <li><a href="#" class="remove-logo">Remove</a></li>
-                                                    <li><a href="#">Cancel</a></li>
-                                                </ul>
-                                            </div>
-                                            <div id="pop-content" class="hiden">
-                                                <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn-primary btn-sm editable-submit']) ?>
-                                                <button id="cancel_image" type="button"
-                                                        class="btn-default btn-sm editable-cancel">
-                                                    <i class="glyphicon glyphicon-remove"></i>
-                                                </button>
-                                            </div>
-                                            <div id="pop-content1_2" class="hiden">
-                                                <h5>Are you sure want to remove Logo?</h5>
-                                                <button id="confirm_remove_logo" type="button" value="logo"
-                                                        class="btn-primary btn-sm editable-submit">
-                                                    <i class="glyphicon glyphicon-ok"></i>
-                                                </button>
-                                                <button id="cancel_remove" type="button"
-                                                        class="btn-default btn-sm editable-cancel">
-                                                    <i class="glyphicon glyphicon-remove"></i>
-                                                </button>
-                                            </div>
-                                            <?php
-                                            ActiveForm::end();
-                                            }?>
-                                        <!--                                        <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/review/dummy-logo.png') ?><!--">-->
+                                            <img src="<?= Url::to($image); ?>">
+                                        <?php else: ?>
+                                            <canvas class="user-icon img-circle img-thumbnail " name="<?= $image; ?>" color="<?= $organization['initials_color'] ?>" width="200" height="200" font="65px"></canvas>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
-                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span class="model" id="tag_line" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span><?php }?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" id="industry" data-value="Information Technology"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="industry" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
-                                    <!--                                    <div class="com-establish"><span>Business Activity:</span> Business</div>-->
+                                    <div class="com-establish"><span>Industry:</span> Information Technology</div>
                                 </div>
                             </div>
                         </div>
@@ -114,36 +63,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                    <?php
-                    if (Yii::$app->user->identity->organization->slug === $organization['slug']) {
-                        ?>
-                        <div class="follow-btn">
-                            <button id="enable" class="follow">Edit Profile</button>
-                        </div>
-                        <?php
-                    } elseif (Yii::$app->user->identity->user_enc_id){
-                    ?>
-                    <div class="follow-btn">
-                        <button class="follow">Follow</button>
-                    </div>
-                    <?php
-                    }
-                    ?>
+<!--                    <div class="follow-btn">-->
+<!--                        <button class="follow">Follow</button>-->
+<!--                    </div>-->
                     <div class="social-btns">
-                        <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
-                           data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i
-                                    class="fa fa-facebook"></i> </a>
-                        <!--                        <a href="-->
-                        <? //= Html::encode($organization['facebook']) ?><!--" class="facebook"><i class="fa fa-facebook"></i> </a>-->
-                        <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
-                           data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i
-                                    class="fa fa-twitter"></i> </a>
-                        <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
-                           data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i
-                                    class="fa fa-linkedin"></i> </a>
-                        <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
-                           data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
-                                    class="fa fa-link"></i> </a>
+                        <a href="#" data-pk="facebook" data-name="facebook" data-type="url" data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i class="fa fa-facebook"></i> </a>
+                        <a href="<?= Html::encode($organization['twitter']) ?>" class="twitter"><i class="fa fa-twitter"></i> </a>
+                        <a href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin"><i class="fa fa-linkedin"></i> </a>
+                        <a href="<?= Html::encode($organization['website']) ?>" class="web"><i class="fa fa-link"></i> </a>
                     </div>
                 </div>
             </div>
@@ -155,30 +82,28 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                 <div id="home" class="tab-pane fade in active">
                     <div class="row">
                         <div class="heading-style">
-                            About Empower Youth <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="description" class="edit-box"><i class="fa fa-pencil"></i></span><?php }?>
+                            About Empower Youth
                         </div>
                         <div class="divider"></div>
 
                         <div class="col-md-7 col-xs-12">
                             <div class="com-description">
-                                <span href="#" class="model" id="description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($organization['description']) ?>"></span>
-
-<!--                                <ul class="com-des-list">-->
-<!--                                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>-->
-<!--                                    <li>Pellentesque augue dignissim venenatis, turpis vestibulum lacinia dignissim-->
-<!--                                        venenatis.-->
-<!--                                    </li>-->
-<!--                                    <li>Mus arcu euismod ad hac dui, vivamus platea netus.Neque per nisl posuere-->
-<!--                                        sagittis,-->
-<!--                                        id platea-->
-<!--                                        dui.-->
-<!--                                    </li>-->
-<!--                                    <li>A enim magnis dapibus, nullam odio porta, nisl class.</li>-->
-<!--                                    <li>Turpis leo pellentesque per nam, nostra fringilla id.</li>-->
-<!--                                </ul>-->
+                                <?= Html::encode($organization['description']) ?>
+                                <ul class="com-des-list">
+                                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                                    <li>Pellentesque augue dignissim venenatis, turpis vestibulum lacinia dignissim
+                                        venenatis.
+                                    </li>
+                                    <li>Mus arcu euismod ad hac dui, vivamus platea netus.Neque per nisl posuere sagittis,
+                                        id platea
+                                        dui.
+                                    </li>
+                                    <li>A enim magnis dapibus, nullam odio porta, nisl class.</li>
+                                    <li>Turpis leo pellentesque per nam, nostra fringilla id.</li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-md-5 col-xs-12">
+                        <div class="col-md-5 col-xs-12" >
                             <div class="a-boxs">
                                 <div class="row margin-0">
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
@@ -238,136 +163,57 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="heading-style">Mission & Vission</div>
                             <div class="divider"></div>
                             <div class="col-md-12">
-                                <div class="mv-heading">Mission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="mission" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                <div class="mv-heading">Mission</div>
                                 <div class="mv-text">
-                                    <span href="#" class="model" id="mission" data-pk="mission" data-name="mission" data-type="textarea" data-value="<?= Html::encode($organization['mission']) ?>"></span>
+                                    <?= Html::encode($organization['mission']) ?>
                                 </div>
                                 <div class="vission-box">
-                                    <div class="mv-heading">Vission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="vision" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="mv-heading">Vission</div>
                                     <div class="mv-text">
-                                        <span href="#" class="model" id="vision" data-pk="vision" data-name="vision" data-type="textarea" data-value="<?= Html::encode($organization['vision']) ?>"></span>
+                                        <?= Html::encode($organization['vision']) ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <?php
-                    if ($benefit) {
-                        ?>
-                        <div class="row">
-                            <div class="company-benefits">
-                                <div class="heading-style">Employee Benefits</div>
-                                <div class="divider"></div>
-                                <div class="com-benefits no-padd">
+                        if($benefit) {
+                            ?>
+                            <div class="row">
+                                <div class="company-benefits">
+                                    <div class="heading-style">Employee Benefits</div>
+                                    <div class="divider"></div>
+                                    <div class="com-benefits no-padd">
                                     <?php
-                                    //                                    print_r($benefit);
-                                    foreach ($benefit as $benefits) {
-                                        ?>
-                                        <div class="col-md-3 col-sm-4 col-xs-12">
-                                            <div class="benefit-box">
-                                                <div class="bb-icon">
-                                                    <?php
-                                                    if (!empty($benefits['icon'])) {
-                                                        $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
-                                                    } else {
-                                                        $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                    }
-                                                    ?>
-                                                    <img src="<?= Url::to($benefit_icon) ?>">
-                                                </div>
-                                                <div class="bb-text">
-                                                    <?= $benefits['benefit'] ?>
-                                                    <!--                                                    Flexible Hour-->
+                                        foreach ($benefit as $benefits) {
+                                            ?>
+                                            <div class="col-md-3 col-sm-4 col-xs-12">
+                                                <div class="benefit-box">
+                                                    <div class="bb-icon">
+                                                        <?php
+                                                        if (!empty($benefits['icon'])) {
+                                                            $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
+                                                        } else {
+                                                            $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
+                                                        }
+                                                        ?>
+                                                        <img src="<?= Url::to($benefit_icon) ?>">
+                                                    </div>
+                                                    <div class="bb-text">
+                                                        <?= $benefits['benefit'] ?>
+                                                        <!--                                                    Flexible Hour-->
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <?php
-                                    }
-                                    ?>
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/performance_bonus.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    Performance Bonus-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/work_from_home.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    Work From Home-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/health_care_insurance.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    Health Care Insurance-->
-                                    <!--                                                </div>-->
-                                    <!---->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/bereavement_leave.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    bereavement Leave-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/employee_assistant_program.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    employee assistant program-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/retirement_plan.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    retirement plan-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/vacation_paid.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    vacation paid-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
+                                            <?php
+                                        }
+                                            ?>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <?php
-                    }
-                    ?>
+                            <?php
+                        }
+                            ?>
                     <div class="row">
                         <div class="office-view">
                             <div class="heading-style">Inside Empower Youth</div>
@@ -375,73 +221,57 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="office-pics">
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-1.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-1.jpg') ?>"
-                                                 alt="company image 1">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-1.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-1.jpg') ?>" alt="company image 1">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-2.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-2.jpg') ?>"
-                                                 alt="company image 2">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-2.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-2.jpg') ?>" alt="company image 2">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-3.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-3.jpg') ?>"
-                                                 alt="company image 3">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-3.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-3.jpg') ?>" alt="company image 3">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>"
-                                                 alt="company image 4">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>" alt="company image 4">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-5.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-5.jpg') ?>"
-                                                 alt="company image 5">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-5.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-5.jpg') ?>" alt="company image 5">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-6.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-6.jpg') ?>"
-                                                 alt="company image 6">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-6.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-6.jpg') ?>" alt="company image 6">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-7.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-7.jpg') ?>"
-                                                 alt="company image 7">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-7.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-7.jpg') ?>" alt="company image 7">
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
                                     <div class="img1">
-                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-8.jpg') ?>"
-                                           data-fancybox="image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-8.jpg') ?>"
-                                                 alt="company image 8">
+                                        <a href="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-8.jpg') ?>" data-fancybox="image">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-8.jpg') ?>" alt="company image 8">
                                         </a>
                                     </div>
                                 </div>
@@ -562,7 +392,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                             <div class="application-card-description">
                                                 <a href=""><h4 class="application-title"></h4></a>
                                                 <h5 class="location" data-lat="" data-long="" data-locations=""><i
-                                                            class="fa fa-map-marker"></i>&nbsp;</h5>
+                                                        class="fa fa-map-marker"></i>&nbsp;</h5>
                                                 <h5><i class="fa fa-clock-o"></i>&nbsp;</h5>
                                             </div>
                                         </div>
@@ -603,36 +433,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="head-office">
-                                        <!--                                        --><?php
-                                        //                                            foreach ($locations as $info) {
-                                        //                                                ?>
-                                        <!--                                                <div class="office-heading">-->
-                                        <!--                                                    <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/company-and-candidate/head-office.png') ?><!--">-->
-                                        <!--                                                    --><? //= $info['location_name']; ?>
-                                        <!--                                                </div>-->
-                                        <!--                                                <div class="office-loc">-->
-                                        <!--                                                    <div class="off-add">-->
-                                        <!--                                                        --><? //= $info['address'] ?>
-                                        <!--                                                    </div>-->
-                                        <!--                                                    <div class="off-city">-->
-                                        <? //= $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ', ' . $info['postal_code']; ?><!--</div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                                --><?php
-                                        //                                            }
-                                        //                                                ?>
-                                        <!--                                        <div class="office-heading o-h2">-->
-                                        <!--                                            <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/company-and-candidate/branch-office.png') ?><!--">-->
-                                        <!--                                            Branch Office-->
-                                        <!--                                        </div>-->
-                                        <!--                                        <div class="office-loc">-->
-                                        <!--                                            <div class="off-add">BXX-3360, Lower Ground Floor, Capital Small Finance Bank,-->
-                                        <!--                                                Near-->
-                                        <!--                                                Aarti Chowk, Ferozepur Road-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div class="off-city">Ludhiana, Punjab</div>-->
-                                        <!--                                        </div>-->
+
                                     </div>
                                 </div>
                                 <div class="col-md-5">
@@ -654,7 +455,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                             <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
                                         </div>
                                         <div class="uname">Employee Name</div>
-                                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
                                     </div>
                                     <div class="col-md-10 col-sm-10 user-review-main">
                                         <div class="col-md-6 col-sm-6">
@@ -665,18 +465,12 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                                 <i class="fa fa-star active"></i>
                                                 <i class="fa fa-star"></i>
                                                 <div class="num-rate">4.50/5.00</div>
-                                                <div class="view-detail-btn">
-                                                    <button type="button">View Detailed Review</button>
-                                                </div>
+                                                <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6">
                                             <div class="re-bttn">
-                                                <button type="button" data-toggle="modal" data-target="#report"><i
-                                                            class="fa fa-flag"></i> Report
-                                                </button>
-                                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
+                                                <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
                                             </div>
                                             <div class="publish-date">Published 54 minutes ago</div>
                                             <div class="emp-duration">Current Employee</div>
@@ -688,21 +482,15 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                         </div>
                                         <div class=" col-md-12 user-saying">
                                             <div class="uheading">Likes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
+                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
                                                 suscipiantur his et.
                                             </div>
                                             <div class="uheading padd-10">Dislikes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
+                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
                                                 suscipiantur his et.
                                             </div>
                                         </div>
@@ -730,7 +518,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                                 </div>
                                                 <div class="ur-bg light-bg">
                                                     <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Work-Life Balance</div>
+                                                    <div class="uratingtitle">Work-Life Balance </div>
                                                 </div>
                                                 <div class="ur-bg">
                                                     <div class="urating">4/5</div>
@@ -750,12 +538,10 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                         <div class="col-md-6 col-sm-6">
                                             <div class="usefull-bttn pull-right">
                                                 <div class="use-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull
-                                                    </button>
+                                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
                                                 </div>
                                                 <div class="notuse-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull
-                                                    </button>
+                                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -769,7 +555,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                             <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
                                         </div>
                                         <div class="uname">Employee Name</div>
-                                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
                                     </div>
                                     <div class="col-md-10 col-sm-10 user-review-main">
                                         <div class="col-md-6 col-sm-6">
@@ -780,18 +565,12 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                                 <i class="fa fa-star active"></i>
                                                 <i class="fa fa-star"></i>
                                                 <div class="num-rate">4.50/5.00</div>
-                                                <div class="view-detail-btn">
-                                                    <button type="button">View Detailed Review</button>
-                                                </div>
+                                                <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-sm-6">
                                             <div class="re-bttn">
-                                                <button type="button" data-toggle="modal" data-target="#report"><i
-                                                            class="fa fa-flag"></i> Report
-                                                </button>
-                                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
+                                                <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
                                             </div>
                                             <div class="publish-date">Published 54 minutes ago</div>
                                             <div class="emp-duration">Current Employee</div>
@@ -803,21 +582,15 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                         </div>
                                         <div class=" col-md-12 user-saying">
                                             <div class="uheading">Likes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
+                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
                                                 suscipiantur his et.
                                             </div>
                                             <div class="uheading padd-10">Dislikes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
+                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
+                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
+                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
                                                 suscipiantur his et.
                                             </div>
                                         </div>
@@ -845,7 +618,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                                 </div>
                                                 <div class="ur-bg light-bg">
                                                     <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Work-Life Balance</div>
+                                                    <div class="uratingtitle">Work-Life Balance </div>
                                                 </div>
                                                 <div class="ur-bg">
                                                     <div class="urating">4/5</div>
@@ -865,12 +638,10 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                         <div class="col-md-8 col-sm-6">
                                             <div class="usefull-bttn pull-right">
                                                 <div class="use-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull
-                                                    </button>
+                                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
                                                 </div>
                                                 <div class="notuse-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull
-                                                    </button>
+                                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1431,29 +1202,21 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     position:absolute;
     bottom:-60px;
     display:inherit;
-    width:100%;
 }
-.com-details{width:100%;}
 .logo-box{
     height:200px;
-    width:200px;
-    padding:0px;
+    width:220px;
+    padding:0 10px;
     background:#fff;
     display:table; 
     text-align:center;
-    border-radius:4px;
+    border-radius:2px;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
     position:relative;
-}
+} 
 .logo{
     display:table-cell;
     vertical-align: middle;     
-}
-.logo img{
-    border-radius:4px;
-}
-#upload-logo{
-    margin-bottom:0px;
 }
 .com-name{
     font-size:40px;
@@ -1466,7 +1229,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     padding: 0 0 0 30px; 
     font-size:15px;
 }
-.com-establish .detail-title{
+.com-establish span{
     font-weight:bold;
     color:#fafafa;
 }
@@ -1529,237 +1292,24 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     
 }
-.editableform .control-group {
-    width: auto;
-    height: auto;
-    padding: 0;
-    margin: 2px;
-}
-.editable-input .form-control {
-    height: auto;
-    width: 50vh;
-}
-.editable-buttons .btn-sm {
-    padding: 5px 10px;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px;
-}
-.avatar-edit {
-    position: absolute;
-    right: 1px;
-    z-index: 1;
-    top: 1px;
-    display: inline-block;
-    width: 34px;
-    height: 34px;
-    text-align: center;
-    line-height: 31px;
-    margin-bottom: 0;
-    border-radius: 100%;
-    background: #FFFFFF;
-    border: 1px solid transparent;
-    box-shadow: 0px 1px 10px 3px rgba(0, 0, 0, 0.13);
-    cursor: pointer;
-    font-weight: normal;
-    transition: all 0.2s ease-in-out;
-}
-.avatar-edit input, .cover-edit input {
-  display: none;
-}
-.avatar-edit:hover {
-  background: #f1f1f1;
-  border-color: #d6d6d6;
-}
-.hiden button.btn-sm{
-    border:1px solid #ddd;
-}
-.hiden, .hiden2{
-    display:none;
-    position: absolute;
-    width: 100%;
-    background-color: #f9f9f9;
-    padding: 10px 5px;
-    box-shadow: 0px 0px 12px 2px #cecece;
-    border-radius: 6px;
-    text-align: center;
-    top: 42px;
-    left: 159px;
-    z-index: 999;
-}
-.hiden:before, .hiden2:before{
-    content: \'\';
-    left: -15px;
-    top: 15px;
-    position: absolute;
-    border-top: 10px solid transparent;
-    border-right: 15px solid #f9f9f9;
-    border-bottom: 10px solid transparent;
-}
-.hiden2{
-    top: 12px;
-    left: 0px;
-}
-.hiden2:before{
-    right: 36px;
-    top: -13px;
-}
-.full_width{
-    width:100%;
-    height:100%;
-}
-.dropdown-menu{
-    padding:0px;
-}
-.dropdown-menu li a{
-    line-height: 28px;
-    border-bottom: 1px solid #eee;
-}
-.dropdown-menu li a:hover{
-    background-color: #4aa1e3;
-    color: #fff;
-    border-color:transparent;
-}
-.dropdown-menu li a label{
-    font-weight:normal;
-    font-size:14px;
-    margin:0px;
-}
-.edit-box{
-    cursor: pointer;
-    color:#222;
-    font-size: 18px;
-    position: absolute;
-    margin-left: 15px;
-}
-.com-establish .edit-box {
-    font-size: 16px;
-    margin-left: 10px;
-    margin-top: -3px;
-}
 ');
 $script = <<<JS
-
-
-
+$('.model').editable({
+    placement: 'top',
+    url: '/companies/update-profile',
+    toggle: 'manual',
+});
 $('.model-link').editable({
-    placement: 'bottom',
+    placement: 'top',
     url: '/companies/update-profile',
     toggle: 'manual',
     display: function(value) {
         $(this).attr('href',value);
     }
 });
-$('.model').editable({
-    placement: 'top',
-    url: '/companies/update-profile',
-    toggle: 'manual',
-});
 $('.model-link').click(function(e){
-    e.preventDefault();
     e.stopPropagation();
-    $(this).editable('toggle');
-});
-$('.edit-box').click(function(e){
-    e.stopPropagation();
-    var edit_main = $(this).attr('data-for');
-    $('#' + edit_main).editable('toggle');
-});
-$('#enable').click(function() {
-   $('.editable').editable('toggleDisabled');
-}); 
-var image_path = $('#logo-img').attr('src');
-var logo_name_path = "$no_image";
-        
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $('#logo-img').attr('src', e.target.result);
-            $('#logo-img').hide();
-            $('#logo-img').fadeIn(650);
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-$("#logoUpload").change(function() {
-    readURL(this);
-});
-$('#logo-img').on('load', function () {
-    if($("#logo-img").attr('src') != image_path && $("#logo-img").attr('src') != logo_name_path){
-        $('#pop-content').fadeIn(1000);
-   }
-});
-$(document).on('click', '#cancel_image', function() {
-    $('#pop-content').fadeOut(1000);
-    $('#logo-img').attr('src', image_path);
-});
-$(document).on('click', '#cancel_remove', function() {
-    $('#pop-content1_2').fadeOut(1000);
-});
-$(document).on('click', '.remove-logo', function(a) {
-    a.preventDefault();
-    $('#pop-content1_2').fadeIn(1000);
-});
-$(document).on('submit', '#upload-logo', function(event) {
-    event.preventDefault();
-    $('#pop-content').fadeOut(1000);
-    $.ajax({
-        url: "/companies/update-logo",
-        method: "POST",
-        data: new FormData(this),
-        contentType: false,
-        cache:false,
-        processData: false,
-        beforeSend:function(){     
-            $('#page-loading').fadeIn(1000);  
-        },
-        success: function (response) {
-        $('#page-loading').fadeOut(1000);
-            if (response.title == 'Success') {
-                toastr.success(response.message, response.title);
-                // $.pjax.reload({container: '#pjax_jobs_cards', async: false});
-                hide_remove_logo();
-            } else {
-                toastr.error(response.message, response.title);
-            }
-            
-        }
-    });
-});
-function hide_remove_logo(){
-    var img_path = $('#logo-img').attr('src');
-    if(img_path == logo_name_path){
-        $('.remove-logo').parent('li').css('display', 'none');
-    } else{
-        $('.remove-logo').parent('li').css('display', 'block');
-    }
-}
-hide_remove_logo();
-$(document).on('click', '#confirm_remove_logo', function(event) {
-    event.preventDefault();
-    $('#pop-content1_2').fadeOut(1000);
-    var type = $(this).val();
-    $.ajax({
-        url: "/companies/remove-image",
-        method: "POST",
-        data: {type:type},
-        beforeSend:function(){
-            $('#page-loading').fadeIn(1000);  
-        },
-        success: function (response) {
-        $('#page-loading').fadeOut(1000);
-            if (response.title == 'Success') {
-                toastr.success(response.message, response.title);
-                // $.pjax.reload({container: '#pjax_jobs_cards', async: false});
-                utilities.initials();
-                $('#logo-img').attr('src',logo_name_path);
-                hide_remove_logo();
-            } else {
-                toastr.error(response.message, response.title);
-            }
-        }
-    });
+    $(this).prev().editable('toggle');
 });
  var map;
       function initMap() {
@@ -1775,8 +1325,6 @@ JS;
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js');
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
