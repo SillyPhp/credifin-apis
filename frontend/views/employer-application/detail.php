@@ -1152,8 +1152,8 @@ $this->registerCss("
     /* Profile icons css start */
     .profile_icons{
         position: absolute;
-        width: 250px;
-        left: 50px;
+        width: 320px;
+        left: 0px;
         bottom: -3px;
     }
     .background-container{
@@ -1164,7 +1164,7 @@ $this->registerCss("
     }
     @media screen and (max-width: 1150px) and (min-width: 1025px) {
           .profile_icons{
-               width: 225px;
+               width: 290px;
           }
           .inner-header > h3{
                width: 400px;
@@ -1175,19 +1175,21 @@ $this->registerCss("
     }
     @media screen and (max-width: 1024px) and (min-width: 890px) {
           .profile_icons{
-               width: 175px;
+               width: 260px;
           }
           .inner-header {
                padding-top: 150px;
           }
+          .inner-header > h3{
+               width: 370px;
+          }
     }
     @media screen and (max-width: 889px) and (min-width: 650px) {
           .profile_icons{
-               width: 170px;
-               left:20px;
+               width: 210px;
           }
           .inner-header > h3 {
-               width: 240px;
+               width: 290px;
                font-size: 22px;
                margin-bottom: 20px;
           }
