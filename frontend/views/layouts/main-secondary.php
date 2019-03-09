@@ -51,7 +51,7 @@ $this->beginPage();
                                     <div class="<?= (isset($this->params['grid_size']) ? $this->params['grid_size'] : 'col-md-6 col-md-push-3'); ?>">
                                         <div class="text-center col-md-12 mb-60">
                                             <a href="/">
-                                                <img width="50%" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                                <img width="275px" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
                                             </a>
                                         </div>
                                         <?= $content; ?>
@@ -71,16 +71,19 @@ $this->beginPage();
             margin-bottom:-50px;
         }");
 
-        $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=UA-121432126-1', [
-            'depends' => [\yii\web\JqueryAsset::className()],
-            'sync' => 'async',
-        ]);
+        if (!empty(Yii::$app->params->google->analytics->id)) {
+            $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
+                'depends' => [\yii\web\JqueryAsset::className()],
+                'sync' => 'async',
+            ]);
 
-        $this->registerJs('
-        window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag("js", new Date());
-                    gtag("config", "UA-121432126-1");');
+            $this->registerJs('
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag("js", new Date());
+            gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
+        ');
+        }
         ?>
         <?php $this->endBody(); ?>
     </body>

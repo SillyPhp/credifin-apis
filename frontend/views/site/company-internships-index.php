@@ -30,7 +30,7 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-lg-12">
                     <div class="how-heading animatable fadeIn">
-                        <div class="heading-style">How It Works</div>
+                        <h1 class="heading-style">How It Works</h1>
                         <div class="how-sub-text">
                             <span class="how-icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>"></span>
                             <h3>Create an Empower Youth account </h3>
@@ -66,7 +66,7 @@ $this->params['header_dark'] = false;
         <div class="row sol-bg-heading ">
             <div class="container">
                 <div class="col-md-12">
-                    <div class="heading-style">Solutions</div>
+                    <h1 class="heading-style">Solutions</h1>
                 </div>
             </div>
         </div>
@@ -85,6 +85,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="row sol">
+                <div class="container">
                 <div class="col-md-6 col-md-offset-1" data-aos="fade-right">
                     <h4>Easy Job Posting</h4>
                     <p class="text-justify">A stage that gives simple employment posting steps and assortment of choices for simple contracting. No restrictions to a specific occupation stream, open about any employment progressive system and gauges of working.</p>
@@ -92,8 +93,10 @@ $this->params['header_dark'] = false;
                 <div class="col-md-4 how-img"data-aos="flip-left">
                     <img src="<?= Url::to('@eyAssets/images/pages/index2/easy-job-posting.png')?>" class="rounded-circle img-fluid" alt=""/>
                 </div>
+                </div>
             </div>
             <div class="row sol-bg">
+                <div class="container">
                 <div class="col-md-4 col-md-offset-1 how-img" data-aos="flip-left">
                     <img src="<?= Url::to('@eyAssets/images/pages/index2/keep-tracking.png')?>" class="rounded-circle img-fluid" alt=""/>
                 </div>
@@ -103,8 +106,10 @@ $this->params['header_dark'] = false;
                         Youth . It essentially keeps you refreshed of each activity the candidate is upto likewise
                         uncovering his/her interest level and interview stage .</p>
                 </div>
+                </div>
             </div>
             <div class="row sol">
+                <div class="container">
                 <div class="col-md-6 col-md-offset-1" data-aos="fade-right">
                     <h4>Quick Hiring</h4>
                     <p class="text-justify">This stage empowers you procure the intrigued candidates and give you finish information about their capabilities
@@ -112,6 +117,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="col-md-4 how-img" data-aos="flip-left">
                     <img src="<?= Url::to('@eyAssets/images/pages/index2/quick-hiring.png')?>" class="rounded-circle img-fluid" alt=""/>
+                </div>
                 </div>
             </div>
         </div>

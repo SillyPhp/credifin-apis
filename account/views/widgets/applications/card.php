@@ -1,25 +1,21 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 $total_applications = count($applications);
-$rows = ceil($total_applications / $per_row);
 $next = 0;
-for ($i = 1; $i <= $rows; $i++) {
+Pjax::begin(['id' => 'pjax_active_jobs']);
+if (!empty($total_applications)) {
     ?>
     <div class="row">
         <?php
-        for ($j = 0; $j < $per_row; $j++) {
+        for ($j = 0; $j < $total_applications; $j++) {
             if ($next < $total_applications) {
                 ?>
-                <div class="<?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
+                <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
-                            <a href=""
-                               onclick="window.open('<?= Url::toRoute(Yii::$app->controller->id . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'clone'); ?>', '_blank');"
-                               class="j-clone share_btn">
-                                <i class="fa fa-clone"></i>
-                            </a>
                             <button type="button" class="j-delete"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -82,4 +78,36 @@ for ($i = 1; $i <= $rows; $i++) {
         ?>
     </div>
     <?php
-}
+} else { ?>
+    <h3>No Active Jobs</h3>
+<?php }
+Pjax::end();
+$this->registerCss("
+
+");
+$script = <<<JS
+$(document).on('click','.j-delete',function(e){
+     e.preventDefault();
+     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+     if (window.confirm("Do you really want to Delete the current Application?")) { 
+        main_card.remove();
+        var data = $(this).attr('value');
+        var url = "/account/jobs/delete-application";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            success:function(data){
+                $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                  if(data==true) {
+                      toastr.success('Deleted Successfully', 'Success');
+                    }
+                   else {
+                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                   }
+                 }
+          });
+    }
+});
+JS;
+$this->registerJs($script);

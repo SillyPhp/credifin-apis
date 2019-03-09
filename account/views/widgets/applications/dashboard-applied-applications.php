@@ -1,11 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
-
 ?>
-
-
     <div class="portlet applied_app light portlet-fit">
         <div class="portlet-title">
             <div class="caption">
@@ -25,7 +21,7 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="m-widget4__info">
                                             <span class="m-widget4__title">
-                                                <?= $apply['title']; ?>
+                                                <?= $apply['title'].' ( '.$apply['type'].' ) '; ?>
                                             </span><br>
                                         <span class="m-widget4__sub">
                                                 <?= $apply['org_name']; ?>
@@ -43,14 +39,29 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                     <div class="m-widget4__ext">
-                                        <?php if ($apply['status'] == 'Cancelled') { ?>
-                                            <a data="<?= $apply['applied_id']; ?>"
-                                               class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app"
-                                               disabled>Cancel</a>
-                                        <?php } else { ?>
-                                            <a data="<?= $apply['applied_id']; ?>"
-                                               class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>
-                                        <?php } ?>
+                                        <?php switch ($apply['status']) {
+                                            case 'Cancelled':
+                                                echo '<a 
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm reject_btn">Cancelled</a>';
+                                                break;
+                                            case 'Pending':
+                                                echo '<a data="'.$apply['applied_id'].'"
+                                               class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>';
+                                                break;
+                                            case 'Incomplete':
+                                                echo '<a data="'.$apply['applied_id'].'"
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm btn-secondary cancel-app">Cancel</a>';
+                                                break;
+                                            case 'Hired':
+                                                echo '<a
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm hired_btn">Hired</a>';
+                                                break;
+                                            case 'Rejected':
+                                                echo '<a 
+                                                class="m-btn m-btn--hover-brand m-btn--pill btn btn-sm reject_btn">Rejected</a>';
+                                                break;
+                                        }
+                                            ?>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -59,6 +70,40 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="portlet light view_applications">
+    <div class="portlet-title tabbable-line">
+        <div class="caption">
+            <i class=" icon-social-twitter font-dark hide"></i>
+            <span class="caption-subject font-dark bold uppercase">Pending Questionnaire</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-12">
+                <?php if(!empty($question_list)){
+                    foreach ($question_list  as $list){  ?>
+                        <table class="table table-bordered">
+                            <thead>
+                            <th>Questionnaire</th>
+                            <th>For</th>
+                            <th>Round</th>
+                            </thead>
+                            <?php foreach($list['question'] as $q){ ?>
+                                <tr>
+                                    <td><a href="/account/questionnaire/fill-questionnaire/<?= $q['questionnaire_enc_id']; ?>/<?= $list['applied_application_enc_id'] ?>" class="btn btn-primary btn-sm" target="_blank"><?= $q['questionnaire_name'] ?></a></td>
+                                    <td><?= $list['title']; ?></td>
+                                    <td><?= $q['sequence']; ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    <?php }  } else { ?>
+                    <h1>No Questionnaires Pending..!</h1>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
     </div>
     <div class="portlet light portlet-fit">
         <div class="portlet-title" style="border-bottom:none;">
@@ -118,43 +163,53 @@ use yii\helpers\Url;
         </div>
     </div>
 <?php
+$this->registerCss("
+.hired_btn
+{
+ color: #fdfbfb;
+ background: #26c281 !important;
+}
+.reject_btn
+{
+ color: #fdfbfb;
+ background: #e43a45 !important;
+}
+");
 $script = <<< JS
-
-// function dashboard_individual_guide(){
-//         var intro = introJs();
-//
-//         intro.setOptions({
-//             steps: [
-//                 {
-//                     element: document.querySelector('.applied_app'),
-//                     intro: "application applied enables you to view the recruitment you’ve applied for.",
-//                     disableInteraction: true
-//                 },
-//             ]
-//         });
-//
-//         intro.start();
-//     }
+$(document).on('click','.cancel-app',function(e)
+       {
+          e.preventDefault();
+             if($(this).attr("disabled") == "disabled")
+            {
+               return false;
+            }
+         if (window.confirm("Do you really want to Cancel the current Application?")) { 
+            
+            var data = $(this).attr('data');
+            $.ajax({
+                url:'/account/jobs/cancel-application',
+                data:{data:data},
+                method:'post',
+                beforeSend:function()
+                {
+                    $('.cancel-app').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                },
+                success:function(data)
+                    {
+                      if(data==true)
+                        {
+                          $('.cancel-app').addClass('reject_btn');
+                          $('.cancel-app').prop('disabled',true);  
+                          $('.cancel-app').html('Cancelled'); 
+                          $('.cancel-app').removeClass('cancel-app');
+                        }
+                      else {
+                          alert('something went wrong');
+                      }
+                     }
+              })
+        }
+       });
 
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-$this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-
-$options = [
-//    'where' => ['and',
-//        ['a.name' => 'individual_dashboard_applied_applications'],
-//        ['b.is_viewed' => 0],
-//    ],
-    ['a.name' => 'individual_dashboard_applied_applications'],
-];
-
-$tutorials = Yii::$app->tutorials->getTutorialsByUser();
-//print_r();
-print_r($tutorials);
-if (!Yii::$app->session->has("tutorial_individual_dashboard")) {
-    echo '<script>dashboard_individual_guide()</script>';
-    Yii::$app->session->set("tutorial_individual_dashboard", "Yes");
-}
-?>

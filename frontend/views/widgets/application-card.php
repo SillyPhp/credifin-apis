@@ -56,7 +56,7 @@ if ($type == 'card') {
                                 } else {
                                     ?>
                                     <canvas class="user-icon" name="<?= Yii::t('frontend', $cards[$i]['org_name']); ?>"
-                                            width="80" height="80" color="" font="35px"></canvas>
+                                            width="80" height="80" color="<?= $cards[$i]['color'] ?>" font="35px"></canvas>
                                     <?php
                                 }
                                 ?>
@@ -71,8 +71,8 @@ if ($type == 'card') {
                             </h5>
                         </div>
                     </div>
-                    <div class="col-md-offset-3 col-md-9 text-right">
-                        <h4><?= Yii::t('frontend', $cards[$i]['org_name']); ?></h4>
+                    <div class="col-md-12">
+                        <h4 class="org_name text-right"><?= Yii::t('frontend', $cards[$i]['org_name']); ?></h4>
                     </div>
                     <div class="application-card-wrapper">
                         <a href="/job/<?= Yii::t('frontend', $cards[$i]['slug']); ?>" class="application-card-open">View
@@ -101,7 +101,7 @@ if ($type == 'card') {
                 {{/salary}}
                 <div class="col-md-12 application-card-border-bottom">
                     <div class="application-card-img">
-                        <a href="/company/{{organization_link}}">
+                        <a href="{{organization_link}}">
                             {{#logo}}
                             <img src="{{logo}}">
                             {{/logo}}
@@ -112,20 +112,20 @@ if ($type == 'card') {
                         </a>
                     </div>
                     <div class="application-card-description">
-                        <a href="/job/{{link}}"><h4 class="application-title">{{title}}</h4></a>
+                        <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                         <h5 class="location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations=""><i
                                     class="fa fa-map-marker"></i>&nbsp;{{city}}</h5>
                         <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
                     </div>
                 </div>
                 {{#last_date}}
-                <h6 class="pull-left pl-20 custom_set2" align="center">
+                <h6 class="col-md-5 pl-20 custom_set2" align="center">
                     <strong>Last Date to Apply</strong>
                     <br>
                     {{last_date}}
                 </h6>
-                <h4 class="pull-right pr-10 pt-20 custom_set" align="center">
-                    <strong>{{org_name}}</strong>
+                <h4 class="col-md-7 org_name text-right pr-10" align="center">
+                    <strong>{{organization_name}}</strong>
                 </h4>
                 {{/last_date}}
                 {{^last_date}}
@@ -134,7 +134,7 @@ if ($type == 'card') {
                 </div>
                 {{/last_date}}
                 <div class="application-card-wrapper">
-                    <a href="/job/{{link}}" class="application-card-open">View Detail</a>
+                    <a href="{{link}}" class="application-card-open">View Detail</a>
                     <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
                 </div>
             </div>

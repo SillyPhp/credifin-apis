@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 ?>
 <div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
 <div class="row">
@@ -11,7 +10,7 @@ use yii\widgets\Pjax;
     ?>
     <div class="widget-row">
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/jobs/reviewed') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/internships/reviewed') ?>">
                 <div class="visual">
                     <i class="fa fa-comments"></i>
                 </div>
@@ -24,7 +23,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/jobs/shortlisted') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/internships/shortlisted') ?>">
                 <div class="visual">
                     <i class="fa fa-bar-chart-o"></i>
                 </div>
@@ -37,7 +36,7 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/jobs/applied') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/internships/applied') ?>">
                 <div class="visual">
                     <i class="fa fa-shopping-cart"></i>
                 </div>
@@ -50,19 +49,19 @@ use yii\widgets\Pjax;
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/jobs/accepted') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/internships/accepted') ?>">
                 <div class="visual">
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
                     <div class="number"> 
-                        <span data-counter="counterup" data-value="89">0</span> </div>
+                        <span data-counter="counterup" data-value="89"><?= $total_accepted; ?></span> </div>
                     <div class="desc"> Applications Accepted</div>
                 </div>
             </a>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/jobs/pending') ?>">
+            <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/internships/pending') ?>">
                 <div class="visual">
                     <i class="fa fa-globe"></i>
                 </div>
@@ -120,18 +119,18 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line text-center">
                 <div class="caption col-lg-11">
                     <ul class="tabs" id="head-tabs">
-                        <li data-tab="tab-1" data-url="/account/jobs/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
+                        <li data-tab="tab-1" data-url="/account/internships/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li> 
+                        <li data-tab="tab-2" data-url="/account/internships/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li>
                         |
-                        <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
+                        <li data-tab="tab-3" data-url="/account/internships/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
-                        <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
+                        <li data-tab="tab-4" data-url="/account/internships/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
 
                     </ul>
                 </div>
                 <div class="actions col-lg-1">
-                    <a href="/account/jobs/reviewed" class="viewall-jobs" id="view-all">View All</a>
+                    <a href="/account/internships/reviewed" class="viewall-jobs" id="view-all">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -153,9 +152,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $review['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $review['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -163,15 +159,19 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob1">Apply</a></div>
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob2" id="shortlist" value="<?= $review['app_id']; ?>">Shortlist</a></div>
+                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-7">
+                                                                    <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
+                                                                        <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class="j-cross">
-                                                                        <button value="<?= $review['review_enc_id']; ?>" class="rmv_review">
+                                                                        <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div>
@@ -217,22 +217,19 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $shortlist['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $shortlist['name']; ?>
                                                         </div>
                                                         <div class="opening-txt">
                                                             <?= $shortlist["positions"]; ?> Openings
                                                         </div>
                                                         <div class="overlay2">
-                                                            <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                            <div class="text-o"><a class="over-bttn ob2 shortlist hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-cross">
-                                                                        <button class="rmv_list" value="<?= $shortlist['shortlisted_enc_id']; ?>">
+                                                                        <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div> 
@@ -277,9 +274,6 @@ use yii\widgets\Pjax;
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $apply['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $apply['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -317,14 +311,14 @@ use yii\widgets\Pjax;
                                 </div>
                                 <div id="tab-4" class="tab-con" > 
                                     <?php
-                                    if ($accepted) {
-                                        foreach ($accepted as $accept) {
+                                    if ($accepted_jobs) {
+                                        foreach ($accepted_jobs as $accept) {
                                             ?>  
                                             <div class="col-md-3">
                                                 <div class="topic-con"> 
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('/assets/common/logos/logo-vertical.svg'); ?>" class="img-responsive ">
+                                                            <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
                                                             <?= $accept['org_name']; ?>
@@ -333,7 +327,7 @@ use yii\widgets\Pjax;
                                                             <?= $accept['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
-                                                            <?= $accept['positions']; ?> Openings Openings
+                                                            <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
                                                             <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
@@ -357,7 +351,7 @@ use yii\widgets\Pjax;
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Applied any jobs.</div>
+                                                    <div class="">You haven't any accepted jobs.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -592,7 +586,7 @@ $("ul[id*=head-tabs] li").click(function(){
 $(document).on('click','#shortlist',function(){
    var app_id = $(this).attr('value');
     $.ajax({
-        url:'/account/jobs/shortlist-job',
+        url:'/account/internships/shortlist-job',
         data: {app_id:app_id},
         method: 'post',
         success:function(data){
@@ -624,11 +618,47 @@ function Ajax_call(rmv_id,url,pjax_refresh_id)
                        }
               })
     }
+    
+    function Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent)
+    {
+        $.ajax({
+                url : url,
+                data : {rmv_id:rmv_id},
+                method : 'POST',
+                beforeSend: function()
+                {   
+                    parent.hide();
+                    // $(".loader").css("display", "block");
+                },
+                success:function(data){
+                        if(data.status == 'true')
+                          {
+                            // $(".loader").css("display", "none");
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            $.pjax.reload({container: pjax_refresh_idd, async: false});
+                            toastr.success(data.message, data.title);
+                           } 
+                        else if(data.status == 'false') {
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            toastr.error(data.message, data.title);
+                           }
+                       }
+              })
+    }
         
-        
+$(document).on('click','.shortlist',function()
+    {
+      var  url = '/account/internships/review-shortlist';
+      var rmv_id = $(this).attr('data-key');
+      var  pjax_refresh_id = '#pjax_review';
+      var  pjax_refresh_idd = '#pjax_shortlist';
+      var parent = $(this).parents().eq(5);
+      Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
+   }) 
+   
 $(document).on('click','.rmv_list',function()
     {
-      var  url = '/account/jobs/shortlist-delete';
+      var  url = '/account/internships/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
       Ajax_call(rmv_id,url,pjax_refresh_id);
@@ -636,15 +666,16 @@ $(document).on('click','.rmv_list',function()
         
 $(document).on('click','.rmv_review',function()
     {
-      var  url = '/account/jobs/review-delete';
+      var  url = '/account/internships/review-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_review';
       Ajax_call(rmv_id,url,pjax_refresh_id);
    }) 
+   
         
 $(document).on('click','.rmv_org',function()
     {
-      var  url = '/account/jobs/org-delete';
+      var  url = '/account/internships/org-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_org';
       Ajax_call(rmv_id,url,pjax_refresh_id);

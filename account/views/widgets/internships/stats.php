@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Url;
-
+use yii\helpers\Html;
+echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
 ?>
 
     <div class="col-md-3">
@@ -55,17 +56,30 @@ use yii\helpers\Url;
                     <div class="widget-thumb-body">
                         <span class="widget-thumb-subtitle"></span>
                         <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="<?= $applied_applications['total']; ?>"><?= $applications['total']; ?></span>
+                              data-value="<?= $applied_applications['total']; ?>"><?= $applied_applications['total']; ?></span>
                     </div>
                 </div>
             </div>
         </a>
     </div>
 <?php
+$script = <<< JS
+    var value = document.getElementById('hidden_input').value;
+    if(value == 0){
+        dashboard_organization_internships_count();
+            $.ajax({
+            type:"POST",
+            url:"/account/dashboard/coaching",
+            data:{dat:"organization_internships_stats"},
+            });
+    }
+JS;
+$this->registerJs($script);
+
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 
-if (!Yii::$app->session->has("tutorial_organization_internships_count")) {
-    echo '<script>dashboard_organization_internships_count()</script>';
-    Yii::$app->session->set("tutorial_organization_internships_count", "Yes");
-}
+//if (!Yii::$app->session->has("tutorial_organization_internships_count")) {
+//    echo '<script>dashboard_organization_internships_count()</script>';
+//    Yii::$app->session->set("tutorial_organization_internships_count", "Yes");
+//}

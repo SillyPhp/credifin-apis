@@ -128,6 +128,13 @@ $form->field($locationFormModel, 'longitude', [
 </div>
 <?php ActiveForm::end(); ?>
 <?php
+$this->registerCss('
+.has-error .form-group .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);
+}
+');
 $script = <<<JS
 
     function drp_down(id, data) {
@@ -146,11 +153,10 @@ $script = <<<JS
         $('#longitude').val('');
     });
 
-    $(document).on('keydown keyup', '#location-button', function (e) {
-        if (e.which == 9)
-            $(this).trigger("click");
-    });
-    "use strict";
+    // $(document).on('keydown keyup', '#location-button', function (e) {
+    //     if (e.which == 9)
+    //         $(this).trigger("click");
+    // });
     var geocoder;
     var map;
    
@@ -191,7 +197,7 @@ $script = <<<JS
         });
     };
 
-    $(document).on('click', '.location_btn', function () {
+    $('.location_btn').click(function () {
         var address = $("#address").val();
         var city = $("#cities_drp option:selected").text();
         var state = $("#states_drp option:selected").text();
@@ -211,23 +217,24 @@ $script = <<<JS
     tab_count = $('.tab-pane.active').attr('id');
 
     $(document).on('submit', '#location-form', function (event) {
-        event.stopImmediatePropagation();
         event.preventDefault();
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+        // var url = $(this).attr('action');
+        // var data = $(this).serialize();
         $.ajax({
-            url: url,
+            url: '/account/locations/create',
             type: 'post',
-            data: data,
+            async: false,
+            cache: false,
+            data: $(this).serialize(),
             beforeSend: function () {
-                $("#wait").css("display", "block");
-                $('.sav_loc').prop('disabled', 'disabled');
+                $("#page-loading").css("display", "block");
+                // $('.sav_loc').prop('disabled', 'disabled');
             },
             success: function (response) {
                 if (response.status == 'success') {
                     toastr.success(response.message, response.title);
-                    $("#location-form")[0].reset();
-                    $("#wait").css("display", "none");
+                    // $("#location-form")[0].reset();
+                    $("#page-loading").css("display", "none");
                     if (tab_count == 'tab1') {
                         $.pjax.reload({container: '#pjax_locations1', async: false});
                         $.pjax.reload({container: '#pjax_locations2', async: false});
@@ -238,13 +245,16 @@ $script = <<<JS
                         $.pjax.reload({container: '#pjax_locations1', async: false});
                         $.pjax.reload({container: '#location_map', async: false});
                     }
-                    $('#modal').modal('toggle');
+                    $('#modal').modal('hide');
                 } else {
-                    $("#wait").css("display", "none");
+                    $("#page-loading").css("display", "none");
                     toastr.error(response.message, response.title);
                 }
             }
         });
+        event.stopImmediatePropagation();
+        return false;
+        
     });
 JS;
 $this->registerJs($script);
