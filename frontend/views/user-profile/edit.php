@@ -181,7 +181,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
                         <?php Pjax::begin(['id'=>'pjax_resume']) ?>
                         <div class="col-md-12">
-                                <?= $form->field($basicDetails, 'resume',['template'=>'{input}{error}','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
+                                <?= $form->field($basicDetails, 'resume',['template'=>'<div class="file-upload-wrapper" data-text="Select your file!">{input}{error}</div>','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
                         </div>
                         <?php Pjax::end(); ?>
                         <div class="col-lg-12">
@@ -472,6 +472,72 @@ background-color: #fff;
     z-index: 9;
     display:none;
 }
+/* file-chosen css ends */
+.file-upload-wrapper {
+    position: relative;
+    width: 330px;
+    height: 50px;
+}
+.file-upload-wrapper:after {
+content: attr(data-text);
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px 15px;
+    display: block;
+    width: calc(100% - 40px);
+    pointer-events: none;
+    z-index: 20;
+    height: 48px;
+    line-height: 27px;
+    border: 2px solid #e8ecec;
+    color: #999;
+    border-radius: 10px 0px 0px 10px;
+}
+.file-upload-wrapper:before {
+    content: 'Upload Resume';
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    height: 48px;
+    background: #fff;
+    color: #555;
+    z-index: 25;
+    font-size: 13px;
+    border: 2px solid #e8ecec;
+    line-height: 45px;
+    padding: 0 15px;
+    pointer-events: none;
+    border-radius: 0 10px 10px 0;
+}
+.file-upload-wrapper:hover:before {
+  background: #ff7803;
+  color:#fff;
+  border-color: #ff7803;
+}
+.file-upload-wrapper input {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  height: 60px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  width: 100%;
+}
+.file-upload-wrapper p.help-block.help-block-error{
+    position: absolute;
+    margin-top: 55px;
+}
+/* file-chosen css ends */
 ");
 $script = <<< JS
 $(document).on('change','#category_drp',function() {
@@ -762,6 +828,14 @@ function readURL(input) {
 
 $(".tg-fileinput").change(function() {
   readURL(this);
+});
+$(document).on("change", ".file-upload-wrapper input", function(){
+    var file_val = document.getElementById("resume_upload").files[0].name;
+    $(this).parent(".file-upload-wrapper").attr("data-text", file_val );
+    var file_name = $('.file-upload-wrapper').attr('data-text');
+    if(file_name == ""){
+        $('.file-upload-wrapper').attr('data-text', 'No file chosed');
+    }
 });
 var ps = new PerfectScrollbar('.perfect_scroll');
 JS;
