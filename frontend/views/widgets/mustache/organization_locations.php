@@ -38,7 +38,7 @@ function getLocations() {
         success: function(response) {
             if(response.status === 200) {
                 var location_data = $('#organization-locations').html();
-                $(".head-office").append(Mustache.render(location_data, response.locations));
+                $(".head-office").html(Mustache.render(location_data, response.locations));
                 // renderLocations(response.locations);
             }
         }

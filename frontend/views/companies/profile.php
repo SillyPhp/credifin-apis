@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\widgets\Pjax;
 
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -24,6 +25,8 @@ if ($organization['cover_image']) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
+//print_r($organization);
+//exit();
 ?>
     <section>
         <div class="header-bg">
@@ -34,11 +37,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-<!--                                        <input type="hidden" value="--><?php //?><!--">-->
-                                            <img id="logo-img" src="<?= Url::to($image); ?>">
-<!--                                            <canvas class="user-icon img-circle img-thumbnail " name="--><?//= $image; ?><!--"-->
-<!--                                                    color="--><?//= $organization['initials_color'] ?><!--" width="200"-->
-<!--                                                    height="200" font="85px"></canvas>-->
+                                        <!--                                        <input type="hidden" value="-->
+                                        <?php //?><!--">-->
+                                        <img id="logo-img" src="<?= Url::to($image); ?>">
+                                        <!--                                            <canvas class="user-icon img-circle img-thumbnail " name="-->
+                                        <?//= $image; ?><!--"-->
+                                        <!--                                                    color="-->
+                                        <?//= $organization['initials_color'] ?><!--" width="200"-->
+                                        <!--                                                    height="200" font="85px"></canvas>-->
                                         <?php
                                         if (Yii::$app->user->identity->organization->slug === $organization['slug']) {
                                             $form = ActiveForm::begin([
@@ -84,15 +90,24 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                             </div>
                                             <?php
                                             ActiveForm::end();
-                                            }?>
+                                        } ?>
                                         <!--                                        <img src="-->
                                         <? //= Url::to('@eyAssets/images/pages/review/dummy-logo.png') ?><!--">-->
                                     </div>
                                 </div>
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
-                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span class="model" id="tag_line" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span><?php }?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" id="industry" data-value="Information Technology"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="industry" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span
+                                                class="model" id="tag_line" data-type="text" data-pk="tag_line"
+                                                data-name="tag_line"
+                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                            <span data-for="tag_line" class="edit-box"><i
+                                                        class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span
+                                                class="model" id="industry"
+                                                data-value="Information Technology"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                            <span data-for="industry" class="edit-box"><i
+                                                        class="fa fa-pencil"></i></span><?php } ?></div>
                                     <!--                                    <div class="com-establish"><span>Business Activity:</span> Business</div>-->
                                 </div>
                             </div>
@@ -109,8 +124,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     <ul class="nav nav-tabs nav-padd-20">
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#menu3">Location</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
+                        <li><a data-toggle="tab" href="#tab4">Location</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -121,12 +135,12 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <button id="enable" class="follow">Edit Profile</button>
                         </div>
                         <?php
-                    } elseif (Yii::$app->user->identity->user_enc_id){
-                    ?>
-                    <div class="follow-btn">
-                        <button class="follow">Follow</button>
-                    </div>
-                    <?php
+                    } elseif (Yii::$app->user->identity->user_enc_id) {
+                        ?>
+                        <div class="follow-btn">
+                            <button class="follow">Follow</button>
+                        </div>
+                        <?php
                     }
                     ?>
                     <div class="social-btns">
@@ -155,76 +169,92 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                 <div id="home" class="tab-pane fade in active">
                     <div class="row">
                         <div class="heading-style">
-                            About Empower Youth <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="description" class="edit-box"><i class="fa fa-pencil"></i></span><?php }?>
+                            About Empower
+                            Youth <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                <span data-for="description" class="edit-box"><i
+                                            class="fa fa-pencil"></i></span><?php } ?>
                         </div>
                         <div class="divider"></div>
 
                         <div class="col-md-7 col-xs-12">
                             <div class="com-description">
-                                <span href="#" class="model" id="description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($organization['description']) ?>"></span>
+                                <span href="#" class="model" id="description" data-pk="description"
+                                      data-name="description" data-type="textarea"
+                                      data-value="<?= Html::encode($organization['description']) ?>"></span>
 
-<!--                                <ul class="com-des-list">-->
-<!--                                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>-->
-<!--                                    <li>Pellentesque augue dignissim venenatis, turpis vestibulum lacinia dignissim-->
-<!--                                        venenatis.-->
-<!--                                    </li>-->
-<!--                                    <li>Mus arcu euismod ad hac dui, vivamus platea netus.Neque per nisl posuere-->
-<!--                                        sagittis,-->
-<!--                                        id platea-->
-<!--                                        dui.-->
-<!--                                    </li>-->
-<!--                                    <li>A enim magnis dapibus, nullam odio porta, nisl class.</li>-->
-<!--                                    <li>Turpis leo pellentesque per nam, nostra fringilla id.</li>-->
-<!--                                </ul>-->
+                                <!--                                <ul class="com-des-list">-->
+                                <!--                                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>-->
+                                <!--                                    <li>Pellentesque augue dignissim venenatis, turpis vestibulum lacinia dignissim-->
+                                <!--                                        venenatis.-->
+                                <!--                                    </li>-->
+                                <!--                                    <li>Mus arcu euismod ad hac dui, vivamus platea netus.Neque per nisl posuere-->
+                                <!--                                        sagittis,-->
+                                <!--                                        id platea-->
+                                <!--                                        dui.-->
+                                <!--                                    </li>-->
+                                <!--                                    <li>A enim magnis dapibus, nullam odio porta, nisl class.</li>-->
+                                <!--                                    <li>Turpis leo pellentesque per nam, nostra fringilla id.</li>-->
+                                <!--                                </ul>-->
                             </div>
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
                                 <div class="row margin-0">
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
+                                        <span data-for="employees" class="edit-box"><i class="fa fa-pencil"></i></span>
                                         <div class="">
                                             <div class="about-det">
-                                                <div class="det">50</div>
+                                                <div class="det">
+                                                    <span class="model" id="employees" data-pk="number_of_employees"
+                                                          data-name="number_of_employees" data-type="number"
+                                                          data-value="<?= Html::encode($organization['number_of_employees']) ?>"></span>
+                                                    <!--                                                    --><?//= $organization['number_of_employees']; ?>
+                                                </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!--                                    <div class="col-md-4 col-sm-4 col-xs-12 about-box">-->
+                                    <!--                                        <div class="">-->
+                                    <!--                                            <div class="about-det">-->
+                                    <!--                                                <div class="det">50</div>-->
+                                    <!--                                                <div class="det-heading">Reviews</div>-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">50</div>
-                                                <div class="det-heading">Reviews</div>
+                                                <div class="det-heading">Opportunities</Opper></div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!--                                    <div class="col-md-4 col-sm-4 col-xs-12 about-box">-->
+                                    <!--                                        <div class="">-->
+                                    <!--                                            <div class="about-det">-->
+                                    <!--                                                <div class="det">20</div>-->
+                                    <!--                                                <div class="det-heading">Views</div>-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="col-md-4 col-sm-4 col-xs-12 about-box">-->
+                                    <!--                                        <div class="">-->
+                                    <!--                                            <div class="about-det">-->
+                                    <!--                                                <div class="det">4.5</div>-->
+                                    <!--                                                <div class="det-heading">Rating</div>-->
+                                    <!--                                            </div>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
+                                        <span data-for="establishment_year" class="edit-box"><i
+                                                    class="fa fa-pencil"></i></span>
                                         <div class="">
                                             <div class="about-det">
-                                                <div class="det">50</div>
-                                                <div class="det-heading">Oppertunities</Opper></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 col-xs-12 about-box">
-                                        <div class="">
-                                            <div class="about-det">
-                                                <div class="det">20</div>
-                                                <div class="det-heading">Views</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 col-xs-12 about-box">
-                                        <div class="">
-                                            <div class="about-det">
-                                                <div class="det">4.5</div>
-                                                <div class="det-heading">Rating</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 col-xs-12 about-box">
-                                        <div class="">
-                                            <div class="about-det">
-                                                <div class="det"><?= Html::encode($organization['establishment_year']) ?></div>
+                                                <div class="det">
+                                                    <span href="#" id="establishment_year" data-type="combodate" data-format="YYYY" data-pk="establishment_year" data-template="YYYY" data-viewformat="YYYY" data-name="establishment_year"><?= $organization['establishment_year']; ?></span>
+                                                    <!--                                                    --><?//= $organization['establishment_year']; ?>
+                                                </div>
                                                 <div class="det-heading">Established</div>
                                             </div>
                                         </div>
@@ -235,138 +265,94 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     </div>
                     <div class="row">
                         <div class="mv-box">
-                            <div class="heading-style">Mission & Vission</div>
+                            <div class="heading-style">Mission & Vision</div>
                             <div class="divider"></div>
                             <div class="col-md-12">
-                                <div class="mv-heading">Mission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="mission" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                <div class="mv-heading">
+                                    Mission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                        <span data-for="mission" class="edit-box"><i
+                                                    class="fa fa-pencil"></i></span><?php } ?></div>
                                 <div class="mv-text">
-                                    <span href="#" class="model" id="mission" data-pk="mission" data-name="mission" data-type="textarea" data-value="<?= Html::encode($organization['mission']) ?>"></span>
+                                    <span href="#" class="model" id="mission" data-pk="mission" data-name="mission"
+                                          data-type="textarea"
+                                          data-value="<?= Html::encode($organization['mission']) ?>"></span>
+                                    <?= Html::encode($organization['mission']) ?>
                                 </div>
                                 <div class="vission-box">
-                                    <div class="mv-heading">Vission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) {?><span data-for="vision" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="mv-heading">
+                                        Vision <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                            <span data-for="vision" class="edit-box"><i
+                                                        class="fa fa-pencil"></i></span><?php } ?></div>
                                     <div class="mv-text">
-                                        <span href="#" class="model" id="vision" data-pk="vision" data-name="vision" data-type="textarea" data-value="<?= Html::encode($organization['vision']) ?>"></span>
+                                        <span href="#" class="model" id="vision" data-pk="vision" data-name="vision"
+                                              data-type="textarea"
+                                              data-value="<?= Html::encode($organization['vision']) ?>"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <?php
-                    if ($benefit) {
-                        ?>
-                        <div class="row">
-                            <div class="company-benefits">
-                                <div class="heading-style">Employee Benefits</div>
-                                <div class="divider"></div>
-                                <div class="com-benefits no-padd">
-                                    <?php
-                                    //                                    print_r($benefit);
-                                    foreach ($benefit as $benefits) {
-                                        ?>
-                                        <div class="col-md-3 col-sm-4 col-xs-12">
-                                            <div class="benefit-box">
-                                                <div class="bb-icon">
-                                                    <?php
-                                                    if (!empty($benefits['icon'])) {
-                                                        $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
-                                                    } else {
-                                                        $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                    }
-                                                    ?>
-                                                    <img src="<?= Url::to($benefit_icon) ?>">
-                                                </div>
-                                                <div class="bb-text">
-                                                    <?= $benefits['benefit'] ?>
-                                                    <!--                                                    Flexible Hour-->
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <?php
-                                    }
-                                    ?>
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/performance_bonus.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    Performance Bonus-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/work_from_home.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    Work From Home-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/health_care_insurance.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    Health Care Insurance-->
-                                    <!--                                                </div>-->
-                                    <!---->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/bereavement_leave.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    bereavement Leave-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/employee_assistant_program.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    employee assistant program-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/retirement_plan.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    retirement plan-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
-                                    <!--                                        <div class="col-md-3 col-sm-4 col-xs-12">-->
-                                    <!--                                            <div class="benefit-box">-->
-                                    <!--                                                <div class="bb-icon">-->
-                                    <!--                                                    <img src="-->
-                                    <?//= Url::to('@eyAssets/images/pages/employee-benefits/vacation_paid.svg') ?><!--">-->
-                                    <!--                                                </div>-->
-                                    <!--                                                <div class="bb-text">-->
-                                    <!--                                                    vacation paid-->
-                                    <!--                                                </div>-->
-                                    <!--                                            </div>-->
-                                    <!--                                        </div>-->
+                    Pjax::begin(['id' => 'pjax_benefits']);
+                    //                    if ($benefit) {
+                    ?>
+                    <div class="row">
+                        <div class="company-benefits">
+                            <div class="heading-style">Employee Benefits
+                                <div class="button_location pull-right">
+                                    <button type="submit" class="i-review-nx modal-load-class"
+                                            value="/account/employee-benefits/create-benefit">
+                                            <span class="i-review-button-tx">
+                                                Add New <span class="fa fa-long-arrow-right"></span>
+                                            </span>
+                                    </button>
                                 </div>
                             </div>
+                            <div class="divider"></div>
+                            <div class="com-benefits no-padd">
+                                <?php
+                                foreach ($benefit as $benefits) {
+                                    ?>
+                                    <div class="col-md-3 col-sm-4 col-xs-12">
+                                        <div class="benefit-box">
+                                            <div id="confirmation_benefit" class="confirm_hiden">
+                                                <button id="confirm_remove_benefit" type="button"
+                                                        value="<?= $benefits['organization_benefit_enc_id'] ?>"
+                                                        class="btn btn-danger btn-sm editable-submit">
+                                                    Delete
+                                                </button>
+                                                <button id="cancel_remove_benefit" type="button"
+                                                        class="btn btn-default btn-sm editable-cancel">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                            <a class="remove-benefit-item"><i class="fa fa-times"></i></a>
+                                            <div class="bb-icon">
+                                                <?php
+                                                if (!empty($benefits['icon'])) {
+                                                    $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
+                                                } else {
+                                                    $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
+                                                }
+                                                ?>
+                                                <img src="<?= Url::to($benefit_icon) ?>">
+                                            </div>
+                                            <div class="bb-text">
+                                                <?= $benefits['benefit'] ?>
+                                                <!--                                                    Flexible Hour-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+
+                            </div>
                         </div>
-                        <?php
-                    }
+                    </div>
+                    <?php
+                    //                    }
+                    Pjax::end()
                     ?>
                     <div class="row">
                         <div class="office-view">
@@ -595,10 +581,20 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                         </div>
                     </div>
                 </div>
-                <div id="menu3" class="tab-pane fade">
+                <div id="tab4" class="tab-pane fade">
                     <div class="row">
                         <div class="address-division">
-                            <div class="heading-style">Address</div>
+                            <div class="heading-style">
+                                Address
+                                <div class="button_location pull-right">
+                                    <button type="button" class="i-review-nx modal-load-class"
+                                            value="/account/locations/create">
+                                            <span class="i-review-button-tx">
+                                                Add New <span class="fa fa-long-arrow-right"></span>
+                                            </span>
+                                    </button>
+                                </div>
+                            </div>
                             <div class="divider"></div>
                             <div class="row">
                                 <div class="col-md-7">
@@ -642,251 +638,21 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                         </div>
                     </div>
                 </div>
-                <div id="menu4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">Empower Youth Reviews</div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="re-box refirst">
-                                    <div class="col-md-2 col-sm-2">
-                                        <div class="uicon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
-                                        </div>
-                                        <div class="uname">Employee Name</div>
-                                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
-                                    </div>
-                                    <div class="col-md-10 col-sm-10 user-review-main">
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="com-rating">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <div class="num-rate">4.50/5.00</div>
-                                                <div class="view-detail-btn">
-                                                    <button type="button">View Detailed Review</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="re-bttn">
-                                                <button type="button" data-toggle="modal" data-target="#report"><i
-                                                            class="fa fa-flag"></i> Report
-                                                </button>
-                                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
-                                            </div>
-                                            <div class="publish-date">Published 54 minutes ago</div>
-                                            <div class="emp-duration">Current Employee</div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="utitle">
-                                                Job Title
-                                            </div>
-                                        </div>
-                                        <div class=" col-md-12 user-saying">
-                                            <div class="uheading">Likes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
-                                                suscipiantur his et.
-                                            </div>
-                                            <div class="uheading padd-10">Dislikes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
-                                                suscipiantur his et.
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12 user-rating">
-                                                <div class="ur-bg padd-lr-5">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Job Security</div>
-                                                </div>
-                                                <div class="ur-bg light-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Career Growth</div>
-                                                </div>
-                                                <div class="ur-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Company Culture</div>
-                                                </div>
-                                                <div class="ur-bg light-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Salary & Benefits</div>
-                                                </div>
-                                                <div class="ur-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Work Satisfaction</div>
-                                                </div>
-                                                <div class="ur-bg light-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Work-Life Balance</div>
-                                                </div>
-                                                <div class="ur-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Skill Development</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="ushare">
-                                                <div class="ushare-heading">Share</div>
-                                                <i class="fa fa-facebook-square"></i>
-                                                <i class="fa fa-twitter-square"></i>
-                                                <i class="fa fa-linkedin-square"></i>
-                                                <i class="fa fa-google-plus-square"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="usefull-bttn pull-right">
-                                                <div class="use-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull
-                                                    </button>
-                                                </div>
-                                                <div class="notuse-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="re-box ">
-                                    <div class="col-md-2 col-sm-2">
-                                        <div class="uicon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
-                                        </div>
-                                        <div class="uname">Employee Name</div>
-                                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
-                                    </div>
-                                    <div class="col-md-10 col-sm-10 user-review-main">
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="com-rating">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <div class="num-rate">4.50/5.00</div>
-                                                <div class="view-detail-btn">
-                                                    <button type="button">View Detailed Review</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-6">
-                                            <div class="re-bttn">
-                                                <button type="button" data-toggle="modal" data-target="#report"><i
-                                                            class="fa fa-flag"></i> Report
-                                                </button>
-                                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
-                                            </div>
-                                            <div class="publish-date">Published 54 minutes ago</div>
-                                            <div class="emp-duration">Current Employee</div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="utitle">
-                                                Job Title
-                                            </div>
-                                        </div>
-                                        <div class=" col-md-12 user-saying">
-                                            <div class="uheading">Likes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
-                                                suscipiantur his et.
-                                            </div>
-                                            <div class="uheading padd-10">Dislikes</div>
-                                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros
-                                                eirmod scaevola
-                                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                                legere fabulas has
-                                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu
-                                                his. Tollit molestie
-                                                suscipiantur his et.
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12 user-rating">
-                                                <div class="ur-bg padd-lr-5">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Job Security</div>
-                                                </div>
-                                                <div class="ur-bg light-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Career Growth</div>
-                                                </div>
-                                                <div class="ur-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Company Culture</div>
-                                                </div>
-                                                <div class="ur-bg light-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Salary & Benefits</div>
-                                                </div>
-                                                <div class="ur-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Work Satisfaction</div>
-                                                </div>
-                                                <div class="ur-bg light-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Work-Life Balance</div>
-                                                </div>
-                                                <div class="ur-bg">
-                                                    <div class="urating">4/5</div>
-                                                    <div class="uratingtitle">Skill Development</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-sm-6">
-                                            <div class="ushare">
-                                                <div class="ushare-heading">Share</div>
-                                                <i class="fa fa-facebook-square"></i>
-                                                <i class="fa fa-twitter-square"></i>
-                                                <i class="fa fa-linkedin-square"></i>
-                                                <i class="fa fa-google-plus-square"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8 col-sm-6">
-                                            <div class="usefull-bttn pull-right">
-                                                <div class="use-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull
-                                                    </button>
-                                                </div>
-                                                <div class="notuse-bttn">
-                                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="viewbtn">
-                                <a href="">View All Review</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         </div>
     </section>
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 echo $this->render('/widgets/mustache/organization_locations');
 $this->registerCss('
@@ -1141,6 +907,7 @@ $this->registerCss('
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
     padding-bottom: 0px;
     min-height: 165px;
+    position:relative;
 }
 .bb-icon img{
     width:75px;
@@ -1637,6 +1404,191 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     margin-left: 10px;
     margin-top: -3px;
 }
+.button_location{
+    padding: 14px 0px;
+    float:right;
+    font-family: "Open Sans", sans-serif;
+}
+/* Feature, categories css starts */
+.checkbox-input {
+  display: none;
+}
+.checkbox-label-v2 {
+/*   display: inline-block; */
+/*   vertical-align: top; */
+/*   position: relative; */
+  width: 100%;
+  cursor: pointer;
+  font-weight: 400;
+  margin-bottom:0px;
+}
+.p-category img, .checkbox-text--title img{
+    width: 80px;
+    height: 50px;
+}
+.checkbox-label-v2:before {
+  content: \'\';
+  position: absolute;
+  top: 80px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  opacity: 0;
+  background-color: #00A0E3;
+  background-image: url("data:image/svg+xml,%3Csvg width=\'32\' height=\'32\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
+  background-position: 80% 80%;
+  background-repeat: no-repeat;
+  background-size: 30px;
+  border-radius: 50%;
+  -webkit-transform: translate(0%, -50%);
+  transform: translate(0%, -50%);
+  transition: all 0.4s ease;
+}
+.checkbox-input:checked + .checkbox-label-v2:before {
+  top: 0;
+  opacity: 1;
+}
+.checkbox-input:checked + .checkbox-label-v2 .checkbox-text span {
+  -webkit-transform: translate(0, -8px);
+  transform: translate(0, -8px);
+}
+#fixed_stip,#min_max
+{
+ display:none;
+}
+.cat-sec {
+    float: left;
+    width: 100%;
+}
+.p-category {
+    float: left;
+    width: 100%;
+    z-index: 1;
+    position: relative;
+    display:flex;
+}
+.p-category, .p-category *{
+    -webkit-transition: all 0.4s ease 0s;
+    -moz-transition: all 0.4s ease 0s;
+    -ms-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+}
+.p-category .checkbox-text {
+    float: left;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e8ecec;
+    border-right: 1px solid #e8ecec;
+}
+.p-category .checkbox-text span i {
+    float: left;
+    width: 100%;
+    color: #00A0E3;
+    font-size: 70px;
+    margin-top: 15px;
+    line-height: initial !important;
+}
+.p-category .checkbox-text span {
+    float: left;
+    width: 100%;
+    font-family: Open Sans;
+    font-size: 15px;
+    color: #202020;
+    margin-top: 10px;
+}
+.p-category:hover {
+    background: #ffffff;
+    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    width: 104%;
+    margin-left: -2%;
+    height: 102%;
+    z-index: 10;
+}
+.p-category:hover .checkbox-text {
+    border-color: #ffffff;
+}
+.p-category:hover .checkbox-label-v2 i{
+    color: #f07d1d;
+}
+.row.no-gape .p-category-main {
+    padding: 0;
+}
+.cat-sec .row .p-category-main:last-child .checkbox-text {
+    border-right-color: #ffffff;
+}
+/* Feature, categories css ends */
+/* Benefit remove css starts */
+.benefit-box:before{
+    content: \'\';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style: solid;
+    border-width: 0 0px 0px 0;
+    border-color: transparent #ff0000;
+    transition: all ease .3s;
+}
+.benefit-box:hover:before {
+    border-width: 0 50px 50px 0;
+    border-color: transparent #ff0000;
+}
+.remove-benefit-item{
+    display:none;
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: 40px;
+    line-height: 28px;
+    height: 40px;
+    text-align: right;
+    padding-right: 8px;
+    font-size: 17px;
+    opacity:0;
+    transition: opacity 500ms;
+    cursor:pointer;
+}
+.remove-benefit-item i{
+    color:#fff !important;
+}
+.benefit-box:hover .remove-benefit-item{
+    display:block;
+    opacity:1;
+}
+.confirm_hiden{
+    position: absolute;
+    display:none;
+    width: 92.5%;
+    height: 100%;
+    background-color: #0000009e;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    padding-top: 100px;
+    top: 0;
+    left: 0;
+}
+.benefit-box .confirm_hiden{
+    padding-top: 65px;
+    width: 100%;
+    background-color: #dedede5c;
+    z-index:999;
+}
+/* Benefit remove css ends */
+.about-box .edit-box{
+    right:8px;
+}
+.det .popover .editable-input input{width: 80px !important;}
 ');
 $script = <<<JS
 
@@ -1655,6 +1607,7 @@ $('.model').editable({
     url: '/companies/update-profile',
     toggle: 'manual',
 });
+
 $('.model-link').click(function(e){
     e.preventDefault();
     e.stopPropagation();
@@ -1664,6 +1617,20 @@ $('.edit-box').click(function(e){
     e.stopPropagation();
     var edit_main = $(this).attr('data-for');
     $('#' + edit_main).editable('toggle');
+});
+$('#establishment_year').editable({
+    placement: 'top',
+    url: '/companies/update-profile',
+    toggle: 'manual',
+    // display: true,
+    // format: 'YYYY',    
+    // viewformat: 'YYYY',    
+    // template: 'YYYY',    
+    combodate: {
+        minYear: 1900,
+        maxYear: 2019,
+        // minuteStep: 1
+   }
 });
 $('#enable').click(function() {
    $('.editable').editable('toggleDisabled');
@@ -1761,6 +1728,38 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
         }
     });
 });
+$(document).on('click', '.remove-benefit-item', function(e){
+    e.preventDefault();
+    $(this).prev("#confirmation_benefit").fadeIn(500);
+});
+$(document).on('click', '#cancel_remove_benefit', function(){
+    $(this).parent("#confirmation_benefit").fadeOut(500);
+});
+$(document).on('click', '#confirm_remove_benefit', function(event) {
+    event.preventDefault();
+    $(this).parent("#confirmation_benefit").fadeOut(500);
+    var type = $(this).val();
+    $.ajax({
+        url: "/companies/remove-benefit",
+        method: "POST",
+        data: {type:type},
+        beforeSend:function(){
+            $('#page-loading').fadeIn(1000);  
+        },
+        success: function (response) {
+        $('#page-loading').fadeOut(1000);
+            if (response.status == 200) {
+                toastr.success(response.message, response.title);
+                $.pjax.reload({container: '#pjax_benefits', async: false});
+            } else {
+                toastr.error(response.message, response.title);
+            }
+        }
+    });
+});
+$(document).on('click', '.modal-load-class', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
  var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -1769,14 +1768,22 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
         });
       }
       initMap();
-      
-getLocations();
+
 JS;
+Pjax::begin(['id' => 'pjax_locations2']);
+$this->registerJs("
+getLocations();
+");
+Pjax::end();
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
+$this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js');
+$this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-$this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('http://vitalets.github.io/combodate/combodate.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+//$this->registerJsFile('http://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
