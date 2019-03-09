@@ -135,6 +135,8 @@ class Cards
                     } else {
                         $result[$i]['salary'] = "₹" . (string)($val['max_salary']);
                     }
+                } else{
+                    $result[$i]['salary'] = "Negotiable";
                 }
             }
             unset($result[$i]['max_salary']);

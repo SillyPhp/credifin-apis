@@ -2,9 +2,15 @@
 
 namespace api\modules\v1\controllers;
 
+use api\modules\v1\controllers\ApiBaseController;
 use api\modules\v1\models\Candidates;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\States;
 use common\models\UserAccessTokens;
 use yii\filters\auth\HttpBearerAuth;
+use common\models\Users;
+use common\models\UserSkills;
 use api\modules\v1\models\CandidateProfile;
 use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
@@ -19,6 +25,7 @@ class ProfileController extends ApiBaseController{
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
+                'detail' => ['POST'],
                 'edit' => ['POST'],
                 'update-profile' => ['POST'],
                 'update-social' => ['POST'],
@@ -39,9 +46,17 @@ class ProfileController extends ApiBaseController{
         $result = [];
         $result['first_name'] = $candidate->first_name;
         $result['last_name'] = $candidate->last_name;
-        $result['job_profile'] = $basicDetails->getJobFunction()["name"];
+        if(!($basicDetails->getJobFunction() == "")){
+            $result['job_profile'] = $basicDetails->getJobFunction()["name"];
+        }else{
+            $result['job_profile'] = NULL;
+        }
         $result['profile_picture'] = $basicDetails->getProfilePicture();
-        $result['current_location'] = $basicDetails->getCurrentCity()["city_name"] . ", " . $basicDetails->getCurrentCity()["state_name"];
+        if(!($basicDetails->getCurrentCity() == "")){
+            $result['current_location'] = $basicDetails->getCurrentCity()["city_name"] . ", " . $basicDetails->getCurrentCity()["state_name"];
+        }else{
+            $result['current_location'] = NULL;
+        }
         $result['dob'] = $candidate->dob;
         $result['description'] = $candidate->description;
         $result['facebook'] = $candidate->facebook;

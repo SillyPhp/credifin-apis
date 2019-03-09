@@ -6,6 +6,7 @@ use api\modules\v1\models\Clients;
 use api\modules\v1\models\Cards;
 use api\modules\v1\models\JobApply;
 use common\models\ShortlistedApplications;
+use common\models\ApplicationTypes;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -56,8 +57,12 @@ class InternshipsController extends ApiBaseController {
 
     public function actionDetail(){
         $parameters = \Yii::$app->request->post();
-        if(!empty($parameters['id'])) {
-
+        if(!empty($parameters['id']) && !empty($parameters['auth_key'])) {
+            $application_type = ApplicationTypes::find()
+                                ->select(['application_type_enc_id'])
+                                ->where(['name' => 'Internships'])
+                                ->asArray()
+                                ->one();
             $result = [];
 
             $id = $parameters['id'];
@@ -65,11 +70,9 @@ class InternshipsController extends ApiBaseController {
             $application_details = EmployerApplications::find()
                 ->where([
                     'application_enc_id' => $id,
-                    'is_deleted' => 0
+                    'is_deleted' => 0,
+                    'application_type_enc_id' => $application_type["application_type_enc_id"]
                 ])
-                ->joinWith(['applicationTypeEnc b' => function($b){
-                    $b->andWhere(['b.name' => 'internships']);
-                }])
                 ->one();
 
             if (!$application_details) {
