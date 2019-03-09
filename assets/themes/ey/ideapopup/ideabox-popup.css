@@ -1,0 +1,801 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Plugin      : Ideabox Popup
+Description : Survey popup review, popup poll, popup ads, popup step forms, popup slider
+Version     : 1.0
+Last change : 03/13/2018
+Assigned to : Tevrat Gündoğdu
+Primary use : Web & Mobile 
+-------------------------------------------------------------------*/
+
+
+/*-------------------------------------------------------------------
+[Table of contents]
+
+1. Plugin main container styles.
+2. Plugin main content styles
+3. Popup Question and title styles.
+4. Popup answer, description and input forms styles.
+5. Popup navigation and next styles.
+6. Popup close and close animation styles.
+7. Popup open animation and opened styles.
+8. Custom checkbox and radio styles.
+9. Custom star rating styles.
+10. Start and finish page styles.
+11. Default arrival animation.
+12. Other helper classes.
+13. Responsive media query styles. for mobile and tablets.
+-------------------------------------------------------------------*/
+
+
+/*-------------------------------------------------------------------
+[1. Slider main container styles.]
+*------------------------------------------------------------------*/
+.i-next-hide{
+  display: none;
+}
+
+.i-review-box{
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: transparent;
+  box-sizing: border-box;
+  display: none;
+  z-index: 10000;
+  opacity: 0;
+  line-height: 1.5;
+  color: #212529;
+}
+.i-review-box *{
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+.i-review-overlay{
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  z-index: 1;
+  cursor: pointer;
+}
+.i-review-container{
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  bottom:40px;
+  right: 40px;
+  z-index: 2;
+}
+.i-review-container.i-review-boxed{
+  left: 25%;
+  right: 25%;
+}
+.i-review-content-box{
+  background-color: #EA5455;
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  border-radius: 1px;
+  text-align: center;
+  overflow: hidden;
+  width: 0;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+.i-review-content-box:after{
+  position: absolute;
+  content: '';
+  top: 0;
+  bottom: 0;
+  background-color: #000000;
+  z-index: 99;
+  right: 0;
+  left: 0;
+}
+
+/*-------------------------------------------------------------------
+[2. Plugin main content styles.]
+*------------------------------------------------------------------*/
+.i-review-content{
+  min-height: 40px;
+  max-width: 960px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 40px;
+  -webkit-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  top: 50%;
+}
+
+/*-------------------------------------------------------------------
+[3. Popup Question and title styles.]
+*------------------------------------------------------------------*/
+.i-review-question{
+  text-align: center;
+}
+.i-review-question-title{
+  font-size: 48px;
+  line-height: 1;
+  padding: 10px;
+  margin: 0;
+  text-align: center;
+  display: inline-block;
+  position: relative;
+}
+
+/*-------------------------------------------------------------------
+[4. Popup answer, description and input forms styles.]
+*------------------------------------------------------------------*/
+.i-review-answer{
+  margin-top: 50px;
+}
+.i-review-answer-center{
+  text-align: center;
+}
+.i-inline-answer-list{
+  text-align: center;
+}
+.i-review-input-group{
+  display: block;
+  width: 100%;
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 3px;
+  margin-bottom:10px;
+  padding: 10px 20px;
+  text-align: left;
+  cursor: pointer;
+}
+.i-inline-answer-list .i-review-input-group{
+  display: inline-block;
+  width: auto;
+  margin:5px;
+}
+.i-review-description{
+  margin-top: 50px;
+  text-align: center;
+  padding: 0 20px;
+  opacity: 0.5;
+  font-size: 14px;
+}
+.i-review-input{
+  display: block;
+  width: 100%;
+  height: 60px;
+  border:none;
+  outline: none;
+  line-height: 60px;
+  padding: 0 20px;
+  font-size: 30px;
+  background-color: rgba(0,0,0,0.1);
+  border: solid 3px rgba(0,0,0,.6);
+  font-family: inherit;
+}
+.i-review-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset;
+}
+.i-review-textarea{
+  display: block;
+  width: 100%;
+  height: 120px;
+  border:none;
+  outline: none;
+  padding: 10px 20px;
+  font-size: 30px;
+  background-color: rgba(0,0,0,0.1);
+  border: solid 3px rgba(0,0,0,.6);
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.i-review-selectbox{
+  height: 60px;
+  padding: 0 60px 0 20px;
+  font-size: 20px;
+  border:solid 3px rgba(0,0,0,.6);
+  background-color: rgba(0,0,0,0.1);
+  font-family: inherit;
+  outline: none;
+  position: relative;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+.i-review-selectbox::-ms-expand {
+  display: none;
+}
+.i-review-select-label{
+  display: inline-block;
+  position: relative;
+}
+.i-review-select-label:before{
+  position: absolute;
+  content: ' ';
+  width: 36px;
+  right: 3px;
+  top: 3px;
+  bottom: 3px;
+  background-color: rgba(0,0,0,.2);
+}
+.i-review-select-label:after{
+  top: 25px;
+  right: 15px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  margin-left: -10px;
+  border-style: solid;
+  border-width: 10px 4px 0 4px;
+  border-color: #000000 transparent transparent transparent;
+}
+
+/*-------------------------------------------------------------------
+[5. Popup navigation and next styles.]
+*------------------------------------------------------------------*/
+.i-review-navigation{
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+}
+.i-review-navigation-count{
+  font-size: 12px;
+  line-height: 12px;
+  display: block;
+}
+.i-review-navigation-count b{
+  font-size: 36px;
+}
+
+/*next action*/
+.i-review-action{
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+}
+.i-review-error{
+  color:#F00;
+  padding-right: 20px;
+}
+.i-review-next{
+  border:solid 2px #212529;
+  background-color: transparent;
+  padding: 15px 30px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  outline: none;
+  font-family: inherit;
+  position: relative;
+  -webkit-transition: color 500ms linear;
+   -moz-transition: color 500ms linear;
+     -o-transition: color 500ms linear;
+        transition: color 500ms linear;
+}
+.i-review-next::after{
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  z-index: 0;
+  background-color: #212529;
+  -webkit-transition: width .3s cubic-bezier(1, 0, 0, 1); 
+   -moz-transition: width .3s cubic-bezier(1, 0, 0, 1); 
+     -o-transition: width .3s cubic-bezier(1, 0, 0, 1); 
+        transition: width .3s cubic-bezier(1, 0, 0, 1); 
+}
+.i-review-next:focus{
+  outline: none;
+}
+.i-review-next:hover{
+  color: #FFF;
+}
+.i-review-next:hover::after{
+  width: 100%;  
+}
+.i-review-next:hover .i-review-next-icon::after{
+  border-color: transparent transparent transparent #FFF;
+}
+.i-review-next:hover .i-review-next-icon::before{
+  background-color: #FFF;
+}
+.i-review-next-icon{
+  z-index: 2;
+  position: relative;
+  width: 40px;
+  height: 15px;
+  display: inline-block;
+  top: 3px;
+}
+.i-review-next-icon::after{
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 7.5px 0 7.5px 10px;
+  border-color: transparent transparent transparent #212529;
+  top: 0;
+  right: 0;
+  -webkit-transition: border-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000); 
+   -moz-transition: border-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000); 
+     -o-transition: border-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000); 
+        transition: border-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000);
+}
+.i-review-next-icon::before{
+  position: absolute;
+  content: '';
+  width: 30px;
+  height: 1px;
+  top: 50%;
+  margin-top: -1px;
+  right: 10px;
+  background-color: #212529;
+  -webkit-transition: background-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000); 
+   -moz-transition: background-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000); 
+     -o-transition: background-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000); 
+        transition: background-color 500ms cubic-bezier(0.860, 0.000, 0.070, 1.000);
+}
+.i-review-button-text{
+  position: relative;
+  z-index: 3;
+  margin-right: 10px;
+}
+
+/*-------------------------------------------------------------------
+[6. Popup close and close animation styles.]
+*------------------------------------------------------------------*/
+.i-review-close {
+  background-color: transparent;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+}
+.i-review-close:after {
+  content: '';
+  height: 60px;
+  border-left: 2px solid #212529;
+  position: absolute;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  left: 28px;
+}
+
+.i-review-close:before {
+  content: '';
+  height: 60px;
+  border-left: 2px solid #212529;
+  position: absolute;
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  left: 28px;
+}
+/*close action styles****/
+.i-review-box.i-close-animation{
+  opacity: 0;  
+  -webkit-transition: opacity .3s .6s linear;
+  -moz-transition: opacity .3s .6s linear;
+  -o-transition: opacity .3s .6s linear;
+  transition: opacity .3s .6s linear;
+}
+.i-review-box.i-close-animation .i-review-content-box{
+  left: auto;
+  right: 0;
+  width: 0;
+  -webkit-transition: width .3s .3s cubic-bezier(1, 0, 0, 1);
+  -moz-transition: width .3s .3s cubic-bezier(1, 0, 0, 1);
+  -o-transition: width .3s .3s cubic-bezier(1, 0, 0, 1);
+  transition: width .3s .3s cubic-bezier(1, 0, 0, 1);
+}
+.i-review-box.i-close-animation .i-review-content-box:after{
+  right: 0;
+  -webkit-transition: right .4s cubic-bezier(1, 0, 0, 1);
+  -moz-transition: right .4s cubic-bezier(1, 0, 0, 1);
+  -o-transition: right .4s cubic-bezier(1, 0, 0, 1);
+  transition: right .4s cubic-bezier(1, 0, 0, 1);
+}
+
+/*-------------------------------------------------------------------
+[7. Popup open animation and opened styles.]
+*------------------------------------------------------------------*/
+.i-review-box.i-open-animation{
+  opacity: 1;
+  -webkit-transition: opacity .3s linear;
+  -moz-transition: opacity .3s linear;
+  -o-transition: opacity .3s linear;
+  transition: opacity .3s linear;
+}
+.i-review-box.i-open-animation .i-review-content-box{
+  width: 100%;
+  -webkit-transition: width .4s .3s cubic-bezier(1, 0, 0, 1);
+  -moz-transition: width .4s .3s cubic-bezier(1, 0, 0, 1);
+  -o-transition: width .4s .3s cubic-bezier(1, 0, 0, 1);
+  transition: width .4s .3s cubic-bezier(1, 0, 0, 1);
+}
+.i-review-box.i-open-animation .i-review-content-box:after{
+  left: 100%;
+  -webkit-transition: left .6s .6s cubic-bezier(1, 0, 0, 1);
+  -moz-transition: left .6s .6s cubic-bezier(1, 0, 0, 1);
+  -o-transition: left .6s .6s cubic-bezier(1, 0, 0, 1);
+  transition: left .6s .6s cubic-bezier(1, 0, 0, 1);
+}
+/*opened styles*/
+.i-review-box.i-opened{
+  opacity: 1;
+  display: block;
+}
+.i-review-box.i-opened .i-review-content-box{
+  width: 100%;
+}
+.i-review-box.i-opened .i-review-content-box:after{
+  left: 0;
+  right: 100%;
+}
+
+/*-------------------------------------------------------------------
+[8. Custom checkbox and radio styles.]
+*------------------------------------------------------------------*/
+.i-review-input-checkbox, .i-review-input-radio {
+  position: absolute;
+  opacity: 0;
+}
+.i-review-input-checkbox + label, .i-review-input-radio + label {
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+  margin-bottom: 0;
+}
+.i-review-input-checkbox + label:before, .i-review-input-radio + label:before {
+  content: '';
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: text-top;
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border:solid 1px #212529;
+  border-radius:3px;
+  box-sizing: border-box;
+}
+.i-review-input-radio + label:before{
+  border-radius:50%;
+}
+.i-review-input-checkbox:hover + label:before, .i-review-input-radio:hover + label:before {
+  background: #212529;
+}
+.i-review-input-checkbox:focus + label:before, .i-review-input-radio:focus + label:before {
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.7);
+}
+.i-review-input-checkbox:checked + label:before, .i-review-input-radio:checked + label:before {
+  background: #212529;
+}
+.i-review-input-checkbox:disabled + label, .i-review-input-radio:disabled + label {
+  color: #b8b8b8;
+  cursor: auto;
+}
+.i-review-input-checkbox:disabled + label:before, .i-review-input-radio:disabled + label:before {
+  box-shadow: none;
+  background: #ddd;
+  border-color:#CCC;
+}
+.i-review-input-checkbox:checked + label:after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 9px;
+  background: white;
+  width: 2px;
+  height: 2px;
+  box-shadow: border-box;
+  box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+
+.i-review-input-radio:checked + label:after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  border:solid 2px #FFF;
+  width: 8px;
+  height: 8px;
+  border-radius:50%;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/*-------------------------------------------------------------------
+[9. Custom star rating styles.]
+*------------------------------------------------------------------*/
+.i-review-rate-stars{
+  display: inline-block;
+  margin: 0 auto;
+  width: auto;
+}
+.i-review-star input{
+  display: none;
+}
+.i-review-star{
+  position: relative;
+  display: block;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  float: right;
+  margin: 0 5px;
+  background-image: url('/assets/themes/ey/ideapopup/star-empty.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  -webkit-transition: background-image .2s linear;
+  -moz-transition: background-image .2s linear;
+  -o-transition: background-image .2s linear;
+  transition: background-image .2s linear;
+}
+
+.i-review-star:hover, .i-review-star:hover ~ label{
+  background-image: url('/assets/themes/ey/ideapopup/star-full.png') !important;
+}
+
+.i-review-star.i-full{
+  background-image: url('/assets/themes/ey/ideapopup/star-full.png');
+}
+
+/*-------------------------------------------------------------------
+[10. Start and finish page styles.]
+*------------------------------------------------------------------*/
+.i-review-start-end-container .i-review-next{
+  margin: 0 20px;
+}
+.i-review-start-end-title{
+  font-size: 48px;
+  line-height: 1;
+  padding: 10px;
+  margin: 0;
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  margin-bottom: 20px;
+}
+.i-review-start-end-desc{
+  margin-bottom: 50px;
+}
+
+/*-------------------------------------------------------------------
+[11. Default arrival animation.]
+*------------------------------------------------------------------*/
+@-webkit-keyframes defaultAnimation {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100px, 0);
+    transform: translate3d(0, 100px, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes defaultAnimation {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100px, 0);
+    transform: translate3d(0, 100px, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.i-review-default-animation {
+  -webkit-animation-name: defaultAnimation;
+  animation-name: defaultAnimation;
+  -webkit-animation-duration: .4s;
+  animation-duration: .4s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+/*-------------------------------------------------------------------
+[12. Other helper classes.]
+*------------------------------------------------------------------*/
+.i-review-hide{
+  display: none !important;
+}
+
+.i-review-nolink{
+  cursor: default !important;
+}
+
+/*-------------------------------------------------------------------
+[13. Responsive media query styles. for mobile and tablets]
+*------------------------------------------------------------------*/
+@media screen and (max-width: 699px) {
+    .i-review-star{
+      width: 18px;
+      height: 18px;
+      margin: 0 3px;
+    }
+    .i-review-navigation{
+      opacity: 0;
+    }
+    .i-review-container{
+      left: 15px;
+      right: 15px;
+      top: 15px;
+      bottom: 15px;
+    }
+    .i-review-question-title, .i-review-start-end-title{
+      font-size: 24px;
+    }
+    .i-review-start-end-desc, .i-review-description{
+      font-size: 12px;
+    }
+    .i-review-answer, .i-review-description{
+      margin-top: 20px;
+    }
+    .i-review-action{
+      left: 40px;
+    }
+    .i-review-next{
+      width: 100%;
+    }
+    .i-review-start-end-container .i-review-next{
+      margin: 0;
+    }
+    .i-review-close{
+      width: 30px;
+      height: 30px;
+    }
+
+    .i-review-close:after {
+      height: 30px;
+      left: 14px;
+    }
+
+    .i-review-close:before {
+      height: 30px;
+      left: 14px;
+    }
+    .i-review-content{
+      -webkit-transform: none;
+      -ms-transform: none;
+      transform: none;
+      top: 40px;
+    }
+    .i-review-container.i-review-boxed{
+      left: 15px;
+      right: 15px;
+    }
+    .i-inline-answer-list{
+      text-align: left;
+    }
+    .i-inline-answer-list .i-review-input-group{
+      display: block;
+      width: 100%;
+      margin:5px 0px;
+    }
+    .i-review-next::after{
+      width: 100% !important;
+    }
+    .i-review-next{
+      color: #FFF;
+    }
+    .i-review-next .i-review-next-icon::after{
+      border-color: transparent transparent transparent #FFF;
+    }
+    .i-review-next .i-review-next-icon::before{
+      background-color: #FFF;
+    }
+}
+
+@media screen and (max-width: 1100px) and (min-width: 700px) {
+  .i-review-container.i-review-boxed{
+      left: 100px;
+      right: 100px;
+    }
+}
+/*en of the main styles*/
+/* drop resume slider css starts */
+.toggle input {
+    width: 0;
+    height: 0;
+    display:none;
+}
+.toggle input + label {
+    margin: 0;
+    padding: .75rem 2rem;
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    border: solid 2px #000;
+    background-color: transparent;
+    line-height: 140%;
+    border-radius: 10px;
+    text-align: center;
+    cursor:pointer;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    transition: border-color .15s ease-out,  color .25s ease-out,  background-color .15s ease-out, box-shadow .15s ease-out;
+}
+.toggle input + label:hover{
+    background-color: #ff7803;
+    border-color: #ff7803;
+    cursor:pointer;
+}
+.toggle input:checked + label {
+    background-color: #ff7803;
+    border-color: #ff7803;
+    z-index: 1;
+}
+@media (max-width: 800px) {
+    .toggle input + label {
+        padding: .75rem .25rem;
+        flex: 0 0 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+.radio2{
+    width:auto;
+    display:inline-block !important;
+    background-color:transparent !important;
+    margin-bottom: 0px !important;
+    padding: 10px !important;
+}
+/* drop resume slider css ends */
+/*update profile btn css*/
+.update-profile-btn{
+    border:solid 2px #212529;
+    background-color: transparent;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    color:#212529;
+    outline: none;
+    font-family: inherit;
+    position: relative;
+    -webkit-transition: color 500ms linear;
+    -moz-transition: color 500ms linear;
+    -o-transition: color 500ms linear;
+    transition: color 500ms linear;
+}
+.up-pro-btn{
+    margin-top:35px;
+}
+.update-profile-btn:hover{
+    color:#fff;
+    background: #212539;
+}
+
