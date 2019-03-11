@@ -52,6 +52,7 @@ class QuestionnaireController extends Controller
     {
         $model = new QuestionnaireForm();
         $fields = $model->getCloneData($qidk);
+        $type = 'clone';
         if (empty($fields)) {
             return 'Questionnaire not found!!';
         }
@@ -62,9 +63,10 @@ class QuestionnaireController extends Controller
                 return false;
             }
         } else {
-            return $this->render('questionnaire-clone', [
+            return $this->render('form', [
                 'model' => $model,
                 'fields' => $fields,
+                'type' => $type,
             ]);
         }
     }
