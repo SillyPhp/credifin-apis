@@ -1,9 +1,7 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Json;
 use yii\widgets\Pjax;
-
 $total_questionnaire = count($questionnaire);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_questionnaire']);
@@ -18,9 +16,9 @@ if (!empty($total_questionnaire)) {
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
-                                <button class="clone-bttn set-right-align two" type="button" onclick="window.open('<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>', '_blank');">
+                                <a class="clone-bttn set-right-align two" href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
                                     <i class="fa fa-clone"></i>
-                                </button>
+                                </a>
                             </div>
                             <div class="lt-bttn">
                                 <button type="button" class="e-bttn delete_questionnaire set-right-align one"
