@@ -1,9 +1,7 @@
 <?php
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-if ($type=='clone'):
 Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_count = "'.count($fields['questionnaireFields']).'";',  \yii\web\View::POS_HEAD);
-endif;
 $form = ActiveForm::begin([
     'id' => 'form-builder',
     'fieldConfig' => [
@@ -1041,7 +1039,7 @@ if (doc_type=='clone')
             $("#wait").css("display", "none");
             if(data == true)
            {
-            if(window.opener)
+            if(window.opener === true)
             {
              window.opener.ChildFunction();
              window.open('','_self').close();
@@ -1054,14 +1052,10 @@ if (doc_type=='clone')
         else{
              alert('Something went wrong..!!!');
             }
-
          }
          });
         }
     });
-        
-    
-       
 JS;
 
 $this->registerJs($script);
