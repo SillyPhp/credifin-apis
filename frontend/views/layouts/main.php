@@ -303,6 +303,14 @@ $this->registerCss('
                 -o-border-radius: 50%;
                 border-radius: 50% !important;
             }
+            @media screen and (max-width: 900px) and (min-width: 0px) {
+                .my-profiles-sec span{
+                    margin-top:9.5px !important;
+                }
+                .menuzord .showhide em{
+                    background-color:#fff;
+                }
+            }
             /*footer css*/
             .useful-links ul li{
                 display:inline;
