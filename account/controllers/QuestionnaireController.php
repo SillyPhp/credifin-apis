@@ -35,6 +35,7 @@ class QuestionnaireController extends Controller
     public function actionCreate()
     {
         $model = new QuestionnaireForm();
+        $type = 'create';
         if ($model->load(Yii::$app->request->post())) {
             if ($model->add()) {
                 return true;
@@ -45,6 +46,7 @@ class QuestionnaireController extends Controller
 
         return $this->render('form', [
             'model' => $model,
+            'type' => $type,
         ]);
     }
 
