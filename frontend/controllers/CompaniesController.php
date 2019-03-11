@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\OrganizationEmployeeBenefits;
+use frontend\models\CompanyImagesForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -157,11 +158,17 @@ class CompaniesController extends Controller {
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+            $gallery = \common\models\OrganizationImages::find()
+                ->select(['image','image_location','image_enc_id'])
+                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $organizationLocations = OrganizationLocations::find()
                     ->alias('a')
-                    ->select(['a.location_name', 'a.address', 'a.postal_code', 'a.latitude', 'a.longitude', 'b.name as city', 'c.name as state', 'd.name as country'])
+                    ->select(['location_enc_id','a.location_name', 'a.address', 'a.postal_code', 'a.latitude', 'a.longitude', 'b.name as city', 'c.name as state', 'd.name as country'])
                     ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
                     ->innerJoin(States::tableName() . 'as c', 'c.state_enc_id = b.state_enc_id')
                     ->innerJoin(Countries::tableName() . 'as d', 'd.country_enc_id = c.country_enc_id')
@@ -174,6 +181,7 @@ class CompaniesController extends Controller {
                         'status' => 200,
                         'message' => 'Success',
                         'locations' => $organizationLocations,
+                        'org' => $organization,
                     ];
                 } else {
                     $response = [
@@ -189,9 +197,8 @@ class CompaniesController extends Controller {
                     ->all();
 
                 $companyLogoFormModel = new CompanyLogoForm();
-                $companyCoverImageForm = new CompanyCoverImageForm();
                 $addEmployeeBenefitForm = new AddEmployeeBenefitForm();
-                return $this->render('profile', [
+                return $this->render('edit', [
                     'organization' => $organization,
                     'companyLogoFormModel' => $companyLogoFormModel,
 //                    'companyCoverImageForm' => $companyCoverImageForm,
@@ -199,6 +206,7 @@ class CompaniesController extends Controller {
 //                            'jobcards' => $jobcards,
                     'industries' => $industries,
                     'benefit' => $benefit,
+                    'gallery' => $gallery,
                 ]);
             } else {
 
@@ -214,6 +222,7 @@ class CompaniesController extends Controller {
 //                            'jobcards' => $jobcards,
                     'shortlist' => $chkuser,
                     'benefit' => $benefit,
+                    'gallery' => $gallery,
                 ]);
             }
         } else {
@@ -570,6 +579,55 @@ class CompaniesController extends Controller {
                     'message' => 'An error has occurred. Please try again.',
                 ];
             }
+        }
+    }
+
+    public function actionAddGalleryImages() {
+        if (Yii::$app->request->isAjax) {
+            $companyImagesForm = new CompanyImagesForm();
+            if (Yii::$app->request->post()) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $companyImagesForm->image = UploadedFile::getInstance($companyImagesForm, 'image');
+//                return $companyImagesForm->save();
+                if ($companyImagesForm->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Image has been Uploaded.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('image_gallery', [
+            'companyImagesForm' => $companyImagesForm,
+            ]);
+        }
+    }
+
+    public function actionDeleteImages() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        $update = Yii::$app->db->createCommand()
+            ->update(\common\models\OrganizationImages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['image_enc_id' => $id])
+            ->execute();
+        if ($update) {
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Image has been Deleted.',
+            ];
+        } else {
+            return $response = [
+                'status' => 201,
+                'title' => 'Error',
+                'message' => 'An error has occurred. Please try again.',
+            ];
         }
     }
 
