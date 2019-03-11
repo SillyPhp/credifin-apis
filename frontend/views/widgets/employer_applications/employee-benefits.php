@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 if(!empty($benefits)) {
     ?>
-    <h3>Employer Benefits</h3>
+    <h3>Employee Benefits</h3>
     <?php
     $rows = ceil(count($benefits) / 3);
     $next = 0;
