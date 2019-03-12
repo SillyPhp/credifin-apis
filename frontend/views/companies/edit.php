@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
+use yii\helpers\Json;
 
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -25,7 +26,8 @@ if ($organization['cover_image']) {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
-//print_r($organization);
+$industries = Json::encode($industries);
+//print_r($industries);
 //exit();
 ?>
     <section>
@@ -94,7 +96,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
                                     <div class="com-establish"><span class="detail-title">Tagline:</span> <span class="model" id="tag_line" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?><span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" id="industry" data-value="Information Technology"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?><span data-for="industry" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" data-type="select" id="industry_enc_id"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?><span data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
                                 </div>
                             </div>
                         </div>
@@ -131,8 +133,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     ?>
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url" data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i class="fa fa-facebook"></i> </a>
-                        <!--                        <a href="-->
-                        <? //= Html::encode($organization['facebook']) ?><!--" class="facebook"><i class="fa fa-facebook"></i> </a>-->
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url" data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i class="fa fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url" data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i class="fa fa-linkedin"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url" data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i class="fa fa-link"></i> </a>
@@ -227,7 +227,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     </div>
                     <?php
                     Pjax::begin(['id' => 'pjax_benefits']);
-                    //                    if ($benefit) {
                     ?>
                     <div class="row">
                         <div class="company-benefits">
@@ -283,7 +282,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                         </div>
                     </div>
                     <?php
-                    //                    }
                     Pjax::end()
                     ?>
                     <div class="row">
@@ -294,7 +292,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/companies/add-gallery-images">
                                             <span class="i-review-button-tx">
-                                                Add New Images<span class="fa fa-long-arrow-right"></span>
+                                                Add New Images <span class="fa fa-long-arrow-right"></span>
                                             </span>
                                     </button>
                                 </div>
@@ -342,94 +340,69 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     </div>
                     <div class="row">
                         <div class="company-team">
-                            <div class="heading-style">Meet The Team</div>
-                            <div class="divider"></div>
-                            <div class="team-box">
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-03.jpg') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Mr. Tarry</div>
-                                                <div class="t-post">CTO</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-02.jpg') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Incognito Man</div>
-                                                <div class="t-post">Database Manager</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/solution-tile-stream.png') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Tarandeep Singh Rakhra</div>
-                                                <div class="t-post">Director, CTO</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-01.jpg') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Tarry Bro</div>
-                                                <div class="t-post">Sr. Web Developer</div>
-                                            </div>
-                                        </a>
-                                    </div>
+                            <div class="heading-style">
+                                Meet The Team
+                                <div class="button_location pull-right">
+                                    <button type="button" class="i-review-nx modal-load-class" value="/companies/add-employee">
+                                        <span class="i-review-button-tx">
+                                            Add New Employee <span class="fa fa-long-arrow-right"></span>
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
+                            <div class="divider"></div>
+                            <?php
+                            Pjax::begin(['id' => 'our_team']);
+                            ?>
+                            <div class="team-box">
+                                <?php
+                                foreach ($our_team as $team) {
+                                    ?>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="team-container">
+                                            <div id="remove_t_user_confirm" class="confirm_hiden">
+                                                Are you Sure want to remove?<br/>
+                                                <button id="confirm_t_user" type="button"
+                                                        value="<?= $team['employee_enc_id'] ?>"
+                                                        class="btn btn-primary btn-sm editable-submit">
+                                                    <i class="glyphicon glyphicon-ok"></i>
+                                                </button>
+                                                <button id="cancel_t_user" type="button"
+                                                        class="btn btn-default btn-sm editable-cancel">
+                                                    <i class="glyphicon glyphicon-remove"></i>
+                                                </button>
+                                            </div>
+                                            <a href="#" class="remove_t_user">
+                                                <i class="fa fa-times-circle"></i>
+                                            </a>
+                                            <a href="#">
+                                                <div class="team-icon">
+                                                    <img src="<?= Url::to('/' . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
+                                                    <?php if(!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])){ ?>
+                                                    <div class="team-overlay">
+                                                        <div class="team-text">
+                                                            <div class="know-bet">Know me better</div>
+                                                            <?php if(!empty($team['facebook'])){?><a href="<?= $team['facebook']; ?>" target="_blank"><i class="fa fa-facebook t-fb"></i> </a><?php }?>
+                                                            <?php if(!empty($team['linkedin'])){?><a href="<?= $team['linkedin']; ?>" target="_blank"><i class="fa fa-linkedin t-ln"></i> </a><?php }?>
+                                                            <?php if(!empty($team['twitter'])){?><a href="<?= $team['twitter']; ?>" target="_blank"><i class="fa fa-twitter t-tw"></i> </a><?php }?>
+                                                        </div>
+                                                    </div>
+                                                    <?php } ?>
+                                                </div>
+                                                <div class="t-member">
+                                                    <div class="t-name"><?= $team['first_name'] . $team['last_name']; ?></div>
+                                                    <div class="t-post"><?= $team['designation'] ?></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                    ?>
+                            </div>
+                            <?php
+                            Pjax::end()
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -1304,6 +1277,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     cursor: pointer;
     color:#222;
     font-size: 18px;
+    display:inline-block;
     position: absolute;
     margin-left: 15px;
 }
@@ -1451,6 +1425,9 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     border-width: 0 50px 50px 0;
     border-color: transparent #ff0000;
 }
+.benefit-box-border-removed:hover:before{
+    border-width: 0px !important;
+}
 .remove-benefit-item{
     display:none;
     right: 0;
@@ -1485,6 +1462,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     padding-top: 70px;
     top: 0;
     left: 0;
+    z-index: 99;
 }
 .benefit-box .confirm_hiden{
     padding-top: 65px;
@@ -1496,7 +1474,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     right:8px;
 }
 .det .popover .editable-input input{width: 80px !important;}
-.remove_g_image{
+.remove_g_image, .remove_t_user{
     position: absolute;
     display:none;
     color: red;
@@ -1509,16 +1487,18 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     line-height: 20px;
     text-align: center;
     font-size: 26px;
+    z-index:9;
 }
 .img1:hover .remove_g_image, .remove_g_image:hover{
     display:block;
 }
+.team-container:hover .remove_t_user, .remove_t_user:hover{
+    display:block;
+} 
+.hide-remove-buttons{display:none !important;}
 .org-location{position:relative;}
 ');
 $script = <<<JS
-
-
-
 $('.model-link').editable({
     placement: 'bottom',
     url: '/companies/update-profile',
@@ -1559,6 +1539,21 @@ $('#establishment_year').editable({
 });
 $('#enable').click(function() {
    $('.editable').editable('toggleDisabled');
+   var edit_toggle = $('.edit-box').css('display');
+   if(edit_toggle == 'block' || edit_toggle == 'inline-block'){
+       $('.edit-box').css('display', 'none');
+       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user').hide();
+       $('.benefit-box').addClass('benefit-box-border-removed');
+       $('.remove_g_image, .remove_location').addClass('hide-remove-buttons');
+       $(this).text('As Editable');
+   } else{
+       $('.edit-box').css('display', 'inline-block');
+       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user').show();
+       $('.benefit-box').removeClass('benefit-box-border-removed');
+       $('.remove_g_image, .remove_location').removeClass('hide-remove-buttons');
+       $(this).text('As View');
+   }
+   console.log(edit_toggle);
 }); 
 var image_path = $('#logo-img').attr('src');
 var logo_name_path = "$no_image";
@@ -1712,6 +1707,36 @@ $(document).on('click', '#confirm_g_image', function(event) {
         }
     });
 });
+$(document).on('click', '.remove_t_user', function(e){
+    e.preventDefault();
+    $(this).prev("#remove_t_user_confirm").fadeIn(500);
+});
+$(document).on('click', '#cancel_t_user', function() {
+    $(this).parent().fadeOut();
+});
+$(document).on('click', '#confirm_t_user', function(event) {
+    event.preventDefault();
+    $('#remove_t_user_confirm').fadeOut(1000);
+    var id = $(this).val();
+    $.ajax({
+        url: "/companies/delete-employee",
+        method: "POST",
+        data: {id:id},
+        beforeSend:function(){     
+            $('#page-loading').fadeIn(1000);  
+        },
+        success: function (response) {
+        $('#page-loading').fadeOut(1000);
+            if (response.title == 'Success') {
+                toastr.success(response.message, response.title);
+                $.pjax.reload({container: '#our_team', async: false});
+            } else {
+                toastr.error(response.message, response.title);
+            }
+            
+        }
+    });
+});
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
@@ -1725,6 +1750,16 @@ $(document).on('click', '.modal-load-class', function() {
       initMap();
 
 JS;
+$this->registerJs("
+$('#industry_enc_id').editable({
+    placement: 'bottom',
+    url: '/companies/update-profile',
+    pk: 'industry_enc_id',
+    toggle: 'manual',
+    value: '" . $organization['industry_enc_id'] . "',
+    source: " . $industries . "
+});
+");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');

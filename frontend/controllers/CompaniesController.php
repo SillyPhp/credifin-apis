@@ -2,8 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\FollowedOrganizations;
 use common\models\OrganizationEmployeeBenefits;
 use frontend\models\CompanyImagesForm;
+use frontend\models\OrganizationEmployeesForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -147,10 +149,6 @@ class CompaniesController extends Controller {
             ->asArray()
             ->one();
         if ($organization) {
-            $organizationVideos = OrganizationVideos::find()
-                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
-                ->asArray()
-                ->all();
             $benefit = OrganizationEmployeeBenefits::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'b.icon', 'b.icon_location'])
@@ -160,6 +158,11 @@ class CompaniesController extends Controller {
                 ->all();
             $gallery = \common\models\OrganizationImages::find()
                 ->select(['image','image_location','image_enc_id'])
+                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $our_team = \common\models\OrganizationEmployees::find()
+                ->select(['first_name','last_name','image','image_location', 'designation','facebook','twitter','linkedin','employee_enc_id'])
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -197,32 +200,34 @@ class CompaniesController extends Controller {
                     ->all();
 
                 $companyLogoFormModel = new CompanyLogoForm();
-                $addEmployeeBenefitForm = new AddEmployeeBenefitForm();
                 return $this->render('edit', [
                     'organization' => $organization,
                     'companyLogoFormModel' => $companyLogoFormModel,
-//                    'companyCoverImageForm' => $companyCoverImageForm,
-//                    'addEmployeeBenefitForm' => $addEmployeeBenefitForm,
-//                            'jobcards' => $jobcards,
                     'industries' => $industries,
                     'benefit' => $benefit,
                     'gallery' => $gallery,
+                    'our_team' => $our_team,
                 ]);
             } else {
 
-                $chkuser = ShortlistedOrganizations::find()
-                    ->select('shortlisted')
+                $follow = FollowedOrganizations::find()
+                    ->select('followed')
                     ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $organization['organization_enc_id']])
                     ->asArray()
                     ->one();
+                $industry = \common\models\Industries::find()
+                    ->select(['industry'])
+                    ->where(['industry_enc_id' => $organization['industry_enc_id']])
+                    ->asArray()
+                    ->one();
+
                 return $this->render('profile', [
                     'organization' => $organization,
-//                    'locations' => $organizationLocations,
-//                    'videos' => $organizationVideos,
-//                            'jobcards' => $jobcards,
-                    'shortlist' => $chkuser,
+                    'follow' => $follow,
                     'benefit' => $benefit,
                     'gallery' => $gallery,
+                    'our_team' => $our_team,
+                    'industry' => $industry,
                 ]);
             }
         } else {
@@ -614,7 +619,7 @@ class CompaniesController extends Controller {
 
         $id = Yii::$app->request->post('id');
         $update = Yii::$app->db->createCommand()
-            ->update(\common\models\OrganizationImages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['image_enc_id' => $id])
+            ->update(\common\models\OrganizationImages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['image_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
             ->execute();
         if ($update) {
             return $response = [
@@ -631,6 +636,100 @@ class CompaniesController extends Controller {
         }
     }
 
+    public function actionAddEmployee() {
+        if (Yii::$app->request->isAjax) {
+            $organizationEmployeesForm = new OrganizationEmployeesForm();
+            if ($organizationEmployeesForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $organizationEmployeesForm->image = UploadedFile::getInstance($organizationEmployeesForm, 'image');
+                if ($organizationEmployeesForm->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Image has been Uploaded.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('our_team_form', [
+                'organizationEmployeesForm' => $organizationEmployeesForm,
+            ]);
+        }
+    }
+
+    public function actionDeleteEmployee() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        $update = Yii::$app->db->createCommand()
+            ->update(\common\models\OrganizationEmployees::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['employee_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->execute();
+        if ($update) {
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Image has been Deleted.',
+            ];
+        } else {
+            return $response = [
+                'status' => 201,
+                'title' => 'Error',
+                'message' => 'An error has occurred. Please try again.',
+            ];
+        }
+    }
+
+    public function actionFollow()
+    {
+        if (Yii::$app->request->isPost) {
+            $org_id = Yii::$app->request->post("org_id");
+            $chkuser = FollowedOrganizations::find()
+                ->select('followed')
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                ->asArray()
+                ->one();
+
+            $status = $chkuser['followed'];
+
+            if (empty($chkuser)) {
+                $followed = new FollowedOrganizations();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $followed->followed_enc_id = $utilitiesModel->encrypt();
+                $followed->organization_enc_id = $org_id;
+                $followed->user_enc_id = Yii::$app->user->identity->user_enc_id;
+                $followed->followed = 1;
+                $followed->created_on = date('Y-m-d H:i:s');
+                $followed->created_by = Yii::$app->user->identity->user_enc_id;
+                $followed->last_updated_on = date('Y-m-d H:i:s');
+                $followed->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                if ($followed->save()) {
+                    return 'following';
+                } else {
+                    return false;
+                }
+            } else if ($status == 1) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                    ->execute();
+                if ($update == 1) {
+                    return 'unfollow';
+                }
+            } else if ($status == 0) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                    ->execute();
+                if ($update == 1) {
+                    return 'following';
+                }
+            }
+        }
+    }
 
     private function getYouTubeID($URL) {
         $YouTubeCheck = preg_match('![?&]{1}v=([^&]+)!', $URL . '&', $Data);

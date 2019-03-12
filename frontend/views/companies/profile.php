@@ -2,8 +2,6 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\widgets\Pjax;
 
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -15,9 +13,6 @@ if ($organization['logo']) {
     $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
 
-$no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
-//print_r($organization);
-//exit();
 ?>
     <section>
         <div class="header-bg">
@@ -40,7 +35,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
                                     <div class="com-establish"><span class="detail-title">Tagline:</span> <?= Html::encode($organization['tag_line']); ?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> Information Technology</div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <?= Html::encode($industry['industry']); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -60,15 +55,22 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
-
                         <div class="follow-btn">
-                            <button class="follow">Follow</button>
+                            <?php if (!empty($follow) && $follow['followed'] == 1) {
+                                ?>
+                                <button class="follow">Following</button>
+
+                                <?php
+                            } elseif(!Yii::$app->user->isGuest) {
+                                ?>
+                                <button class="follow">Follow</button>
+                            <?php } ?>
                         </div>
                     <div class="social-btns">
-                        <a href="<?= Html::encode($organization['facebook']) ?>" class="facebook"><i class="fa fa-facebook"></i> </a>
-                        <a href="<?= Html::encode($organization['twitter']) ?>" class="twitter"><i class="fa fa-twitter"></i> </a>
-                        <a href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin"><i class="fa fa-linkedin"></i> </a>
-                        <a href="<?= Html::encode($organization['website']) ?>" class="web"><i class="fa fa-link"></i> </a>
+                        <?php if(!empty($organization['facebook'])){?><a href="<?= Html::encode($organization['facebook']) ?>" class="facebook" target="_blank"><i class="fa fa-facebook"></i> </a><?php }?>
+                        <?php if(!empty($organization['twitter'])){?><a href="<?= Html::encode($organization['twitter']) ?>" class="twitter" target="_blank"><i class="fa fa-twitter"></i> </a><?php }?>
+                        <?php if(!empty($organization['linkedin'])){?><a href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i class="fa fa-linkedin"></i> </a><?php }?>
+                        <?php if(!empty($organization['website'])){?><a href="<?= Html::encode($organization['website']) ?>" class="web" target="_blank"><i class="fa fa-link"></i> </a><?php }?>
                     </div>
                 </div>
             </div>
@@ -167,7 +169,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                                                 <img src="<?= Url::to($benefit_icon) ?>">
                                             </div>
                                             <div class="bb-text">
-                                                <?= $benefits['benefit'] ?>
+                                                <?= Html::encode($benefits['benefit']); ?>
                                             </div>
                                         </div>
                                     </div>
@@ -208,90 +210,35 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="heading-style">Meet The Team</div>
                             <div class="divider"></div>
                             <div class="team-box">
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-03.jpg') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
+                                <?php
+                                foreach ($our_team as $team) {
+                                    ?>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="team-container">
+                                            <a href="#">
+                                                <div class="team-icon">
+                                                    <img src="<?= Url::to('/' . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
+                                                    <?php if(!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])){ ?>
+                                                        <div class="team-overlay">
+                                                            <div class="team-text">
+                                                                <div class="know-bet">Know me better</div>
+                                                                <?php if(!empty($team['facebook'])){?><a href="<?= Html::encode($team['facebook']); ?>" target="_blank"><i class="fa fa-facebook t-fb"></i> </a><?php }?>
+                                                                <?php if(!empty($team['linkedin'])){?><a href="<?= Html::encode($team['linkedin']); ?>" target="_blank"><i class="fa fa-linkedin t-ln"></i> </a><?php }?>
+                                                                <?php if(!empty($team['twitter'])){?><a href="<?= Html::encode($team['twitter']); ?>" target="_blank"><i class="fa fa-twitter t-tw"></i> </a><?php }?>
+                                                            </div>
+                                                        </div>
+                                                    <?php } ?>
                                                 </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Mr. Tarry</div>
-                                                <div class="t-post">CTO</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-02.jpg') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
+                                                <div class="t-member">
+                                                    <div class="t-name"><?= Html::encode($team['first_name'] . $team['last_name']); ?></div>
+                                                    <div class="t-post"><?= Html::encode($team['designation']) ?></div>
                                                 </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Incognito Man</div>
-                                                <div class="t-post">Database Manager</div>
-                                            </div>
-                                        </a>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/solution-tile-stream.png') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Tarandeep Singh Rakhra</div>
-                                                <div class="t-post">Director, CTO</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="team-container">
-                                        <a href="">
-                                            <div class="team-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-01.jpg') ?>">
-                                                <div class="team-overlay">
-                                                    <div class="team-text">
-                                                        <div class="know-bet">Know me better</div>
-                                                        <a href=""><i class="fa fa-facebook t-fb"></i> </a>
-                                                        <a href=""><i class="fa fa-linkedin t-ln"></i> </a>
-                                                        <a href=""><i class="fa fa-twitter t-tw"></i> </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="t-member">
-                                                <div class="t-name">Tarry Bro</div>
-                                                <div class="t-post">Sr. Web Developer</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -368,36 +315,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="head-office">
-                                        <!--                                        --><?php
-                                        //                                            foreach ($locations as $info) {
-                                        //                                                ?>
-                                        <!--                                                <div class="office-heading">-->
-                                        <!--                                                    <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/company-and-candidate/head-office.png') ?><!--">-->
-                                        <!--                                                    --><? //= $info['location_name']; ?>
-                                        <!--                                                </div>-->
-                                        <!--                                                <div class="office-loc">-->
-                                        <!--                                                    <div class="off-add">-->
-                                        <!--                                                        --><? //= $info['address'] ?>
-                                        <!--                                                    </div>-->
-                                        <!--                                                    <div class="off-city">-->
-                                        <? //= $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ', ' . $info['postal_code']; ?><!--</div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                                --><?php
-                                        //                                            }
-                                        //                                                ?>
-                                        <!--                                        <div class="office-heading o-h2">-->
-                                        <!--                                            <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/company-and-candidate/branch-office.png') ?><!--">-->
-                                        <!--                                            Branch Office-->
-                                        <!--                                        </div>-->
-                                        <!--                                        <div class="office-loc">-->
-                                        <!--                                            <div class="off-add">BXX-3360, Lower Ground Floor, Capital Small Finance Bank,-->
-                                        <!--                                                Near-->
-                                        <!--                                                Aarti Chowk, Ferozepur Road-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div class="off-city">Ludhiana, Punjab</div>-->
-                                        <!--                                        </div>-->
+
                                     </div>
                                 </div>
                                 <div class="col-md-5">
@@ -422,6 +340,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size
             </div>
         </div>
     </div>
+    <input type="hidden" id="organisation_id" value="<?= Html::encode($organization['organization_enc_id']) ?>"/>
 <?php
 echo $this->render('/widgets/mustache/organization_locations');
 $this->registerCss('
@@ -1065,9 +984,35 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     
 }
-
+.followed {
+    background: #00a0e3;
+    color: #fff;
+}
 ');
 $script = <<<JS
+$(document).on('click','.follow',function(e){
+    e.preventDefault();
+    var org_id = $('#organisation_id').val();
+    $.ajax({
+        url:'/companies/follow',
+        data: {org_id:org_id},                         
+        method: 'post',
+        beforeSend:function(){
+         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        },
+        success:function(data){  
+            if(data == 'following'){
+                $('.follow').html('Following');
+                $('.follow').addClass('followed');
+            }
+            else if(data=='unfollow'){
+                $('.follow').html('Follow');
+                $('.follow').removeClass('followed');
+            }
+        }
+    });        
+});
+
  var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -1081,12 +1026,4 @@ JS;
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
-//$this->registerCssFile('@backendAssets/global/css/components-md.min.css');
-//$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
-//$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('http://vitalets.github.io/combodate/combodate.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('http://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
