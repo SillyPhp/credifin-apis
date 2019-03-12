@@ -1,15 +1,21 @@
 <?php
 
 namespace account\controllers;
+use common\models\DropResumeApplicationLocations;
+use common\models\DropResumeApplications;
+use common\models\DropResumeApplicationTitiles;
+use common\models\DropResumeApplicationTitles;
 use common\models\OrganizationAssignedCategories;
 use common\models\OrganizationLocations;
+use frontend\controllers\DropResumeController;
+use http\Env\Response;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use common\models\Categories;
 use common\models\AssignedCategories;
 
-class ResumeController extends Controller{
+class ResumeController extends Controller {
 
 
     public function actionFirst(){
@@ -26,7 +32,7 @@ class ResumeController extends Controller{
                 ->asArray()
                 ->all();
 
-            $already_selected_categories = $this->savedData($category_enc_id);
+            $already_selected_categories = $this->savedData($category_enc_id,$type);
 
             $response = [];
             $response["parent_enc_id"] = $category_enc_id;
@@ -43,6 +49,7 @@ class ResumeController extends Controller{
             ->where(['category_enc_id'=>$parent_id])
             ->andWhere(['parent_enc_id'=> NULL])
             ->andWhere(['assigned_to'=>$type])
+            ->andWhere(['organization_enc_id'=>Yii::$app->user->identity->organization_enc_id])
             ->andWhere(['is_deleted'=>0])
             ->exists();
 
@@ -59,7 +66,7 @@ class ResumeController extends Controller{
 
             $selected_values = [];
 
-            $already_selected = $this->savedData($parent_enc_id);
+            $already_selected = $this->savedData($parent_enc_id,$type);
             foreach($already_selected as $a){
                 array_push($selected_values, $a["category_enc_id"]);
             }
@@ -107,11 +114,12 @@ class ResumeController extends Controller{
 
     }
 
-    private function savedData($category_enc_id){
+    private function savedData($category_enc_id,$type){
         $already_selected = OrganizationAssignedCategories::find()
             ->select(['category_enc_id'])
             ->where(['created_by'=> Yii::$app->user->identity->user_enc_id, 'organization_enc_id'=> Yii::$app->user->identity->organization_enc_id])
             ->andWhere(['parent_enc_id'=> $category_enc_id])
+            ->andWhere(['assigned_to'=>$type])
             ->andWhere(['is_deleted'=>0])
             ->asArray()
             ->all();
@@ -145,14 +153,37 @@ class ResumeController extends Controller{
         $type = Yii::$app->request->post('type');
         $selectedfields = OrganizationAssignedCategories::find()
             ->alias('a')
-            ->select(['b.name', 'a.category_enc_id'])
-            ->joinWith(['categoryEnc b'], false)
+            ->select(['a.assigned_category_enc_id'])
+//            ->joinWith(['categoryEnc b'], false)
             ->where(['a.assigned_to' => $type])
             ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id,'a.created_by'=>Yii::$app->user->identity->user_enc_id])
             ->andWhere(['not', ['a.parent_enc_id' => NULL]])
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->all();
+        $i = 0;
+        foreach ($selectedfields as $s){
+            $unique_id = OrganizationAssignedCategories::findOne([
+                    'assigned_category_enc_id' => $s['assigned_category_enc_id'],
+                ]);
+
+            if(!empty($unique_id->parent_enc_id)) {
+                $parent_name = Categories::find()
+                    ->select('name')
+                    ->where(['category_enc_id' => $unique_id->parent_enc_id])
+                    ->asArray()
+                    ->one();
+            }
+            $child_name = Categories::find()
+                ->select('name')
+                ->where(['category_enc_id' => $unique_id->category_enc_id])
+                ->asArray()
+                ->one();
+
+            $selectedfields[$i]['parent_name'] = $parent_name["name"];
+            $selectedfields[$i]['child_name'] = $child_name["name"];
+            $i++;
+        }
         return json_encode($selectedfields);
     }
 
@@ -184,7 +215,7 @@ class ResumeController extends Controller{
             $company_name = Yii::$app->request->post('company_name');
             $assigned_categories = OrganizationAssignedCategories::find()
                 ->alias('a')
-                ->select(['a.category_enc_id','c.name'])
+                ->select(['a.assigned_category_enc_id','c.name'])
                 ->joinWith(['organizationEnc b'],false)
                 ->where(['b.slug'=>$company_name])
                 ->joinWith(['categoryEnc c'],false)
@@ -212,8 +243,135 @@ class ResumeController extends Controller{
         }
     }
 
+    public function actionCandidateApplication(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post();
+            $experience = $data['experience'];
+            $job_title = $data['job_title'];
+            $location = $data['locations'];
+
+            switch ($experience){
+
+                case 'no':
+                   $exp = 0;
+                   break;
+
+                case 'less than one':
+                    $exp = 1;
+                    break;
+
+                case 'one':
+                    $exp = 2;
+                    break;
+
+                case 'two to three':
+                    $exp = 3;
+                    break;
+
+                case 'three to five':
+                    $exp = 4;
+                    break;
+
+                case 'five to ten':
+                    $exp = 5;
+                    break;
+
+                case 'ten to twenty':
+                    $exp = 6;
+                    break;
+
+                case 'twenty above':
+                    $exp = 7;
+                    break;
+            };
 
 
 
+            if($app_enc_id = $this->dropResumeApplications($exp)){
 
+                $failure = [
+                    'message' => 201
+                ];
+
+                $success = [
+                    'message' => 200
+                ];
+
+                if(count($location) > 0) {
+                    foreach ($location as $loc) {
+                        if (!$this->dropResumeApplicationLocation($loc, $app_enc_id)) {
+                            return json_encode($failure);
+                        }
+                    }
+                }
+                foreach ($job_title as $jt) {
+                    if(!$this->dropResumeApplicationTitle($jt, $app_enc_id)){
+                        return json_encode($failure);
+                    }
+                }
+
+                return json_encode($success);
+            }
+
+        }
+    }
+
+    private function dropResumeApplications($exp){
+        $d_r_applications = new DropResumeApplications();
+        $d_r_applications->applied_application_enc_id = Yii::$app->security->generateRandomString(12);
+        $d_r_applications->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_applications->experience = $exp;
+        $d_r_applications->created_by = Yii::$app->user->identity->user_enc_id;
+        $d_r_applications->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        if($d_r_applications->save()){
+            return $d_r_applications->applied_application_enc_id;
+        }
+    }
+
+    private function dropResumeApplicationLocation($location,$applied_app_enc_id){
+        $d_r_a_locations = new DropResumeApplicationLocations();
+        $d_r_a_locations->applied_location_enc_id = Yii::$app->security->generateRandomString(12);
+        $d_r_a_locations->applied_application_enc_id = $applied_app_enc_id;
+        $d_r_a_locations->city_enc_id = $location;
+        $d_r_a_locations->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_locations->created_by = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_locations->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        if($d_r_a_locations->save()){
+            return true;
+        }
+    }
+
+    private function dropResumeApplicationTitle($job_title,$applied_app_enc_id){
+        $d_r_a_title = new DropResumeApplicationTitles();
+        $d_r_a_title->applied_title_enc_id = Yii::$app->security->generateRandomString(12);
+        $d_r_a_title->applied_application_enc_id = $applied_app_enc_id;
+        $d_r_a_title->title = $job_title;
+        $d_r_a_title->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_title->created_by = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_title->last_updated_by = Yii::$app->user->identity->user_enc_id;
+
+        if($d_r_a_title->save()){
+            return true;
+        }
+    }
+
+    public function actionCheckResume(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $company_name = Yii::$app->request->post('company_name');
+
+            $cv_exists = OrganizationAssignedCategories::find()
+                        ->alias('a')
+                        ->select(['a.assigned_category_enc_id'])
+                        ->joinWith(['organizationEnc b'], false)
+                        ->where(['b.slug' => $company_name])
+                        ->exists();
+
+            if($cv_exists){
+                return 'yes';
+            }else{
+                return 'no';
+            }
+
+        }
+    }
 }

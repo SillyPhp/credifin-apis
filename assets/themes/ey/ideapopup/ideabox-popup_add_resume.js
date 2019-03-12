@@ -824,22 +824,30 @@ function random_fn(t){
 				},
 				success: function (response) {
 					response = JSON.parse(response);
-					var next_res = [];
-					for (var i = 0; i < response.length; i++) {
-						var obj_add = {};
-						obj_add['label'] = response[i]['name'];
-						obj_add['value'] = response[i]['category_enc_id'];
-						next_res.push(obj_add);
-					}
-					that.options.data.splice(1, 0, {
-						question: 'Select Job Profile',
-						answerType: 'radio2',
-						formName: 'job_profile',
-						choices: next_res,
-						description: 'Please select your job profile',
-						required: true,
-						errorMsg: '<b style="color:#900;">Select the choices.</b>'
-					});
+					if(response.length == 0){
+                        that.options.data.splice(1, 0, {
+                            question: 'Company has not yet created data for this profile',
+                            answerType: 'radio2',
+                            description: 'Wait for company to accept resume for this type',
+                        });
+                    }else {
+                        var next_res = [];
+                        for (var i = 0; i < response.length; i++) {
+                            var obj_add = {};
+                            obj_add['label'] = response[i]['name'];
+                            obj_add['value'] = response[i]['category_enc_id'];
+                            next_res.push(obj_add);
+                        }
+                        that.options.data.splice(1, 0, {
+                            question: 'Select Job Profile',
+                            answerType: 'radio2',
+                            formName: 'job_profile',
+                            choices: next_res,
+                            description: 'Please select your job profile',
+                            required: true,
+                            errorMsg: '<b style="color:#900;">Select the choices.</b>'
+                        });
+                    }
 				}
 			});
 		}
@@ -861,7 +869,7 @@ function random_fn(t){
 					for (var i = 0; i < response.sub_categories.length; i++) {
 						var obj_add = {};
 						obj_add['label'] = response.sub_categories[i]['name'];
-						obj_add['value'] = response.sub_categories[i]['category_enc_id'];
+						obj_add['value'] = response.sub_categories[i]['assigned_category_enc_id'];
 						next_res.push(obj_add);
 					}
 					that.options.data.splice(2, 0, {
@@ -891,16 +899,6 @@ function random_fn(t){
 							errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
 						});
 					}
-					that.options.data.push({
-						question: '<h2 style="color: #fff; font-weight: 900;">You have applied with your empower youth profile </h2>',
-						answerType: 'updatebtn',
-						formName : 'is_applied',
-						choices		: [
-							{label: 'http://www.eygb.me/user/'+response.username}
-						],
-						description: '',
-						nextLabel : 'Finish',
-					});
 				}
 			});
 		}

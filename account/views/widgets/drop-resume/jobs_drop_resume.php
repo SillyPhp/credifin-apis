@@ -9,9 +9,9 @@
             <div class="btn-group dashboard-button">
                 <button title="" data-toggle="modal" data-target="#resumeBank" class="viewall-jobs">Add New</button>
             </div>
-            <div class="btn-group dashboard-button">
-                <a href="/account/uploaded-resume/all-resume-profiles" title="" class="viewall-jobs">View All</a>
-            </div>
+<!--            <div class="btn-group dashboard-button">-->
+<!--                <a href="/account/uploaded-resume/all-resume-profiles" title="" class="viewall-jobs">View All</a>-->
+<!--            </div>-->
         </div>
     </div>
 
@@ -308,10 +308,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <div class="row padd10">
                             {{#.}}
                             <div class="col-md-4 col-sm-6 padd-5">
-                                <a href="/account/uploaded-resume/candidate-resumes?id={{category_enc_id}}">
+                                <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}">
                                     <div class="work-profile-box">
                                         <div class="work-profile">
-                                            {{name}}
+                                            {{child_name}} - {{parent_name}}
                                         </div>
                                     </div>
                                 </a>

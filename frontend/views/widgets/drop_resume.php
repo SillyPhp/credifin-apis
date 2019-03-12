@@ -9,6 +9,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+
 <?php
 $this->registerCss('
 .fab-message{
@@ -68,17 +69,52 @@ $this->registerCss('
 .i-review-box{
     color:#fff;
 }
+.up-btn{
+    color:#000000b3;
+   border: solid 2px #212529;
+   background-color: transparent;
+   padding: 15px 30px;
+   cursor: pointer;
+   font-weight: bold;
+   font-size: 16px;
+   outline: none;
+   font-family: inherit;
+   position: relative;
+   -webkit-transition: color 500ms linear;
+   -moz-transition: color 500ms linear;
+   -o-transition: color 500ms linear;
+   transition: color 500ms linear;
+}
+
+.up-btn::after {
+   content: \'\';
+   position: absolute;
+   left: 0;
+   top: 0;
+   bottom: 0;
+   width: 0;
+   z-index: 0;
+   background-color: #212529;
+   -webkit-transition: width .3s cubic-bezier(1, 0, 0, 1);
+   -moz-transition: width .3s cubic-bezier(1, 0, 0, 1);
+   -o-transition: width .3s cubic-bezier(1, 0, 0, 1);
+   transition: width .3s cubic-bezier(1, 0, 0, 1);
+}
+.up-btn:hover{
+    color:#fff;
+}
+.up-btn:hover:focus{
+    width:100%;
+}
 ');
 
 
+$r = [
+        'username' => $username
+];
+$result = json_encode($r);
 
-//$resultantjs['job_profile'] = json_encode($jobProfile);
-//$resultantjs['job_title'] = json_encode($jobTitle);
-//$resultantjs['location']=json_encode($location);
-//
-//$result = json_encode($resultantjs);
-//
-//Yii::$app->view->registerJs('var result = '. $result ,  \yii\web\View::POS_HEAD);
+\Yii::$app->view->registerJs('var result = '. $result ,  \yii\web\View::POS_HEAD);
 
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');

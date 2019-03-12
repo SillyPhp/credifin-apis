@@ -1,5 +1,3 @@
-
-// console.log(result);
 //
 //  var jobProfile = JSON.parse(result['job_profile']);
 //  var jobprofileresult = [];
@@ -18,19 +16,37 @@
 // Object.entries(joblocation).forEach(([key, value]) => {
 //     joblocationresult.push({'label': key, 'value':value})
 // });
-
+var hostname = window.location.hostname;
+var user_profile = 'https://' + hostname + "/user/" + result["username"];
 var popup = new ideaboxPopup({
     background: '#234b8f',
     popupView: 'full',
     endPage: {
-        msgTitle : 'Thanks for submitting your profile',
-        msgDescription : 'Your Profile has been updated',
+        msgTitle : 'You can Update Your Profile.',
+        msgDescription : '<a href='+user_profile+' class="up-btn">Update Profile',
         showCloseBtn: true,
         closeBtnText : 'Close All',
         inAnimation: 'zoomIn'
     },
     onFinish : function(){
-      console.log(this.values);
+        if(this.values["experience"]) {
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '/account/resume/candidate-application',
+                data: this.values,
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if (response.message == 200) {
+                        toastr.success('Your Application has been forwarded to company', 'You have successfully applied');
+                    } else {
+                        toastr.error('System Error', 'Failed in Applying');
+
+                    }
+                    window.location.reload();
+                }
+            });
+        }
     },
     data: [
         {
@@ -38,82 +54,26 @@ var popup = new ideaboxPopup({
           answerType: 'radio2',
           formName : 'application_type',
           choices: [
-              {label: 'Internships', value: 'Internships'},
               {label: 'Jobs', value: 'Jobs'},
+              {label: 'Internships', value: 'Internships'},
           ],
           description: 'Please select what you want to apply for',
           required: true,
           errorMsg : '<b style="color:#900;">Select the choices</b>'
         },
-        // {
-        //     question 	: 'Select Job Profile',
-        //     answerType	: 'radio2',
-        //     formName	: 'job_profile',
-        //     choices		: [
-        //         { label : 'Information Technology', value : 'Information Technology' },
-        //         { label : 'Marketing', value : 'Marketing' },
-        //         { label : 'Green', value : 'GREEN' },
-        //         { label : 'Yellow', value : 'YELLOW' }
-        //     ],
-        //     description	: 'Please select your job profile',
-        //     required	: true,
-        //     errorMsg	: '<b style="color:#900;">Select the choices.</b>'
-        // },
-        // {
-        //     question 	: 'Select Job Title',
-        //     answerType	: 'checkbox2',
-        //     formName	: 'job_title',
-        //     choices		: [
-        //         { label : 'Frontend Developer', value : 'Frontend Developer' },
-        //         { label : 'Backend Developer', value : 'Backend Developer' },
-        //         { label : 'Graphic Designer', value : 'Graphic Designer' },
-        //         { label : 'SEO', value : 'SEO' }
-        //     ],
-        //     description	: 'Please select job titles that you are interested in and press next button',
-        //     required	: true,
-        //     errorMsg	: '<b style="color:#900;">Select between 1-2 choices.</b>'
-        // },
-        // {
-        //     question 	: 'Preffered Location',
-        //     answerType	: 'checkbox2',
-        //     formName	: 'locations',
-        //     choices		: [
-        //         { label : 'Ludhiana', value : 'Ludhiana' },
-        //         { label : 'Jalandhar', value : 'Jalandhar' },
-        //         { label : 'Chandigarh', value : 'Chandigarh' },
-        //         { label : 'Amritsar', value : 'Amritsar' },
-        //         { label : 'United States', value : 'USA' },
-        //         { label : 'England', value : 'EN' },
-        //         { label : 'Spain', value : 'ESP' },
-        //         { label : 'Turkey', value : 'TUR' },
-        //         { label : 'Argentina', value : 'ARG' },
-        //         { label : 'India', value : 'END' },
-        //         { label : 'Brazi', value : 'BRA' },
-        //         { label : 'French', value : 'FRA' },
-        //         { label : 'Germany', value : 'DEU' },
-        //         { label : 'Greece', value : 'GRC' },
-        //         { label : 'Hong Kong', value : 'HKG' },
-        //         { label : 'Italy', value : 'ITA' },
-        //         { label : 'South Korea', value : 'KOR' },
-        //         { label : 'United Kingdom', value : 'GBR' },
-        //         { label : 'Russia', value : 'RUS' }
-        //     ],
-        //     description	: 'Please select your preffered location and press next button',
-        //     required	: true,
-        //     errorMsg	: '<b style="color:#900;">Select the location to proceed.</b>'
-        // },
         {
-            question 	: 'Experience',
+            question 	: 'Relevant Experience',
             answerType	: 'radio',
             formName	: 'experience',
             choices		: [
                 { label : 'No Experince', value : 'no' },
-                { label : '<1 Year', value : '0' },
-                { label : '1 Year', value : '1' },
-                { label : '2-3 Years', value : '2-3' },
-                { label : '3-5 Years', value : '3-5' },
-                { label : '5-10 Years', value : '5-10' },
-                { label : '10+ Years', value : '10+' },
+                { label : '<1 Year', value : 'less than one' },
+                { label : '1 Year', value : 'one' },
+                { label : '2-3 Years', value : 'two to three' },
+                { label : '3-5 Years', value : 'three to five' },
+                { label : '5-10 Years', value : 'five to ten' },
+                { label : '10-20 Years', value : 'ten to twenty' },
+                { label : '20+ Years', value : 'twenty above' },
             ],
             description	: 'How much experience do you have?',
             nextLabel : 'Apply Now',
@@ -121,22 +81,14 @@ var popup = new ideaboxPopup({
             errorMsg	: '<b style="color:#900;">Select your experience.</b>'
 
         },
-        // {
-        //     question: '<h2 style="color: #fff; font-weight: 900;">You have applied with your empower youth profile </h2>',
-        //     answerType: 'updatebtn',
-        //     formName : 'is_applied',
-        //     choices		: [
-        //         {label: 'http://www.eygb.me/user/ajay'}
-        //     ],
-        //     description: '',
-        //     nextLabel : 'Finish',
-        // },
 
     ]
 });
 
 document.getElementById("fab-message-open").addEventListener("click", function (e) {
-    if($('#loggedIn').val())
+    if($('#dropcv').val() == 'no'){
+        $('#existsModal').modal('toggle');
+    }else if($('#loggedIn').val())
         popup.open();
     else
         $('#myModal').modal('toggle');

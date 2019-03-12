@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+
+
 ?>
 <div class="">
     <div class="row">
@@ -17,8 +19,8 @@ use yii\helpers\Url;
                                                     <button id="selectMultiple" class="viewall-jobs">Select Multiple</button>
                                                 </div>-->
                         <div id="btn-group2" class="btn-group dashboard-button btns2 ">
-                            <button class="viewall-jobs">Shortlist</button>
-                            <button class="viewall-jobs">Reject</button>
+                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>
+                            <button class="viewall-jobs" onclick="rejection()">Reject</button>
                             <button id="cancelBtn" class="viewall-jobs">Cancel</button>
                         </div>
                     </div>
@@ -30,16 +32,146 @@ use yii\helpers\Url;
                                 <div class="col-md-12">
                                     <!-- BEGIN: Actions -->
                                     <div id="card-data" class="row cd-box">
+                                    <?php foreach ($user_data as $u) { ?>
+                                        <article>
+                                            <div class="col-lg-3 col-md-3 col-sm-6 p-category-main" onclick="makeChecked(this);">
+                                                <?php if($u["status"] == 0) {?>
+                                                    <input type="checkbox" name="<?=$u['applied_title_enc_id']?>" id="<?=$u['userEnc']['user_enc_id']?>" class="checkbox-input" />
+                                                <?php } ?>
+                                                <label for="can1" class="checkbox-label">
+                                                    <div class="paid-candidate-container">
+                                                        <div class="paid-candidate-box">
+                                                            <div class="dropdown">
+                                                                <div class="btn-group fl-right">
+<!--                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                                                                        <i class="fa fa-gear"></i>-->
+<!--                                                                    </button>-->
+                                                                    <div class="dropdown-menu pull-right animated flipInX">
+                                                                        <a href="#" data-toggle="modal" data-target="#shortList">Shortlist</a>
+                                                                        <button class="reject">Reject</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="paid-candidate-inner--box">
+                                                                <div class="paid-candidate-box-thumb">
+                                                                    <?php
+//                                                                    print_r($u);
+                                                                    $name = $image = NULL;
+                                                                    if (!empty($u['userEnc']['image'])) {
+                                                                        $image = Yii::$app->params->upload_directories->users->image . $u['userEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['userEnc']['image'];
+                                                                    }
+                                                                    $name = $u['userEnc']['first_name'] . ' ' . $u['userEnc']['last_name'];
+                                                                    if ($image):
+                                                                        ?>
+                                                                        <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-responsive img-circle"/>
+                                                                    <?php else: ?>
+                                                                        <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
+                                                                                color="<?= $u['userEnc']['initials_color']; ?>" width="140" height="140"
+                                                                                font="70px"></canvas>
+                                                                    <?php endif; ?>
+<!--                                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--" class="img-responsive img-circle" alt="" />-->
+                                                                </div>
+                                                                <div class="paid-candidate-box-detail">
+                                                                    <h4><?=ucfirst($u['userEnc']['first_name'])?>
+                                                                        <?=$u['userEnc']['last_name']?>
+                                                                    </h4>
+                                                                    <span class="desination"><?=$u['userEnc']['name']?></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="paid-candidate-box-extra">
+                                                                <ul>
+                                                                    <?php
+                                                                    $i = 0;
+//                                                                    print_r($u['userEnc']['userSkills']);
+//                                                                    foreach ($u['userEnc']['userSkills'] as $sk){
+//                                                                        echo $sk['skill'];
+//                                                                    }
+                                                                    foreach ($u['userEnc']['userSkills'] as $sk){
+//                                                                        ?>
+                                                                        <li>
+                                                                            <?php
+                                                                            echo $sk['skill'];
+                                                                            $i++;
+                                                                            if ($i == 3) break;
+                                                                            ?>
+                                                                        </li>
+                                                                    <?php }
+                                                                    if (count($u['userEnc']['userSkills']) >= 4) {
+                                                                        ?>
+                                                                        <li class="more-skill bg-primary">+<?= count($u['userEnc']['userSkills']) - 3 ?></li>
+                                                                    <?php } ?>
+<!--                                                                    <li>Php</li>-->
+<!--                                                                    <li>Android</li>-->
+                                                                    <!--                                                            <li>Html</li>-->
+<!--                                                                    <li class="more-skill bg-primary">+3</li>-->
+                                                                </ul>
+                                                            </div>
+                                                            <div class="paid-candidate-box-exp">
+                                                                <?php if(!empty($u['userEnc']['city_name'])) {?>
+                                                                <div class="desination"><i class="fa fa-map-marker"></i><?=$u['userEnc']['city_name']?></div>
+                                                                <?php } ?>
+                                                                <?php
 
-                                        <!-- There is data before. -->
+                                                                $exp = $u['appliedApplicationEnc']['experience'];
+
+                                                                switch ($exp){
+
+                                                                    case 0:
+                                                                        $exp = '0 Years';
+                                                                        break;
+
+                                                                    case 1:
+                                                                        $exp = '0.6 Months';
+                                                                        break;
+
+                                                                    case 2:
+                                                                        $exp = '1 Year';
+                                                                        break;
+
+                                                                    case 3:
+                                                                        $exp = '2-3 Years';
+                                                                        break;
+
+                                                                    case 4:
+                                                                        $exp = '3-5 Years';
+                                                                        break;
+
+                                                                    case 5:
+                                                                        $exp = '5-10 Years';
+                                                                        break;
+
+                                                                    case 6:
+                                                                        $exp = '10-20 Years';
+                                                                        break;
+
+                                                                    case 7:
+                                                                        $exp = '20+ Years';
+                                                                        break;
+                                                                };
+                                                                ?>
+                                                                <div class="desination"><i class="fa fa-briefcase"></i> <?=$exp?> </div>
+                                                            </div>
+                                                        </div>
+                                                        <a href="/user/<?=$u['userEnc']['username']?>" class="btn btn-paid-candidate bt-1">View Detail</a>
+
+                                                        <?php if($u["status"] == 1) {?>
+                                                            <div class="shortlist-strip">
+                                                                <div class="s-strip"> Shortlisted </div>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </article>
+                                    <?php } ?>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-                        <div class="com-load-more-btn">
-                            <button type="button" id="comloadmore" class="btn custom-buttons">Load More</button>
-                        </div>
+<!--                        <div class="com-load-more-btn">-->
+<!--                            <button type="button" id="comloadmore" class="btn custom-buttons">Load More</button>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -47,8 +179,68 @@ use yii\helpers\Url;
     </div>
 </div>
 
+<!--Modal-->
+<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" id="profiles">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="submit" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Choose Applications to Shortlist for</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                if(count($available_applications) > 0) {
+                    foreach ($available_applications as $a) {
+                        ?>
+                        <div class="row padd10">
+                            <div class="col-md-12 text-center">
+                                <div class="radio_questions">
+                                    <div class="inputGroup process_radio">
+                                        <input type="radio" name="applications" id="<?= $a['application_enc_id'] ?>"
+                                               value="<?= $a['application_enc_id'] ?>">
+                                        <label for="<?= $a['application_enc_id'] ?>">
+                                            <?= $a['name'] ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
+
+            </div>
+
+            <div class="modal-footer">
+                <?php if(count($available_applications) > 0) { ?>
+                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                <?php }else{ ?>
+                    <a class="btn btn-primary" href="/account/jobs/create">Create New Job</a>
+                <?php } ?>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 <?php
 $this->registerCss('
+.shortlist-strip{
+    position:absolute;
+    top:0;
+    left:0;
+}
+.s-strip{
+    padding:5px 10px;
+    border:1px solid #00a0e3;
+    border-radius:0 0 10px 0;
+    background:#00a0e3;
+    color:#fff;
+}
  button.viewall-jobs{
     border:none;
 }   
@@ -75,6 +267,9 @@ $this->registerCss('
     transform: translateY(-5px);
     -webkit-transform: translateY(-5px);
 	cursor:pointer;
+}
+.paid-candidate-box-thumb img{
+    height:100%;
 }
 .com-load-more-btn{
     max-width:150px;
@@ -255,106 +450,168 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
   -webkit-transform: translate(0, -8px);
   transform: translate(0, -8px);
 }
+.radio_questions {
+    max-width: 100%;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 36px;
+    position: relative;
+}
+.inputGroup {
+    background-color: #fff;
+    display: block;
+    margin: 10px 0;
+    position: relative;
+}
+.inputGroup input {
+    width: 32px;
+    height: 32px;
+    order: 1;
+    z-index: 2;
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    visibility: hidden;
+}
+.inputGroup input:checked ~ label {
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,.3) !important;
+}
+.inputGroup label {
+    padding: 6px 75px 10px 25px;
+    width: 96%;
+    display: block;
+    margin: auto;
+    text-align: left;
+    color: #3C454C !important;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 1ms ease-out;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+.inputGroup input:checked ~ label:before {
+    transform: translate(-50%, -50%) scale3d(56, 56, 1);
+    opacity: 1;
+}
+.inputGroup label:before {
+    width: 100%;
+    height: 10px;
+    border-radius: 50%;
+    content: \'\';
+    background-color: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale3d(1, 1, 1);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: -1;
+    box-shadow: 0 0 10px rgba(0,0,0,.5) !important;
+}
+.inputGroup input:checked ~ label:after {
+    background-color: #00a0e3;
+    border-color: #00a0e3;
+}
+.process_radio label:after {
+    width: 32px;
+    height: 32px;
+    content: \'\';
+    border: 2px solid #D1D7DC;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: 2px 3px;
+    background-image: url("data:image/svg+xml,%3Csvg width=\'32\' height=\'32\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
+    border-radius: 50%;
+    z-index: 2;
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: all 200ms ease-in;
+}
 ');
 $script = <<<JS
-     // var multi = document.getElementById("selectMultiple");
-        // multi.addEventListener("click", showBttn);
-    
-   // function showBttn(){
-   //       document.getElementById("btn-group1").style.display = "none";
-   //       document.getElementById("btn-group2").style.display = "block";
-   // } 
-   
-  // var canBtn = document.getElementById("cancelBtn");
-  //       canBtn.addEventListener("click", revert);
-  //  
-  //  function revert(){
-  //       document.getElementById("btn-group1").style.display = "block";
-  //       document.getElementById("btn-group2").style.display = "none";
-  //  }
-        
-  // var reject = document.getElementsByClassName("reject");
-  //     for(i=0; i<reject.length; i++){
-  //         reject[i].addEventListener("click", removeCandidate);
-  //       }
-  //     function removeCandidate(){
-  //           var del = this.closest("article"); 
-  //           del.remove();
-  //       }
-   //   
-   //  $(document).on('click','#comloadmore', function(){
-   //     $('.cd-box:first').clone().appendTo('.tab-pane');     
-   // }); 
-   
-            var template = $("#card").html();
-            var rendered = Mustache.render(template);
-            $('#card-data').append(rendered);
-        
+
 JS;
+
 $this->registerJs($script);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
+
 ?>
 <script>
     var listOfSelected = [];
-    function showBtns(t){
-        if(t.checked){
-            listOfSelected.push(t.getAttribute('id'));
+    var applied_enc_id = [];
+
+    function makeChecked(t){
+        if(!t.querySelector('input').checked)
+            t.querySelector('input').checked = true;
+        else
+            t.querySelector('input').checked = false;
+
+        if(t.querySelector('input').checked){
+            listOfSelected.push(t.querySelector('input').getAttribute('id'));
+            applied_enc_id.push(t.querySelector('input').getAttribute('name'));
             document.getElementById("btn-group2").style.display = "block";
         }else{
-            var index = listOfSelected.indexOf(t.getAttribute('id'));
-            if(index!=-1){
+            var index = listOfSelected.indexOf(t.querySelector('input').getAttribute('id'));
+            var index2 = applied_enc_id.indexOf(t.querySelector('input').getAttribute('name'));
+            if(index!=-1 || index2!=-1){
                 listOfSelected.splice(index, 1);
+                applied_enc_id.splice(index2, 1);
             }
-            if(listOfSelected.length == 0){
+            if(listOfSelected.length == 0 || applied_enc_id.length == 0){
                 document.getElementById("btn-group2").style.display = "none";
             }
         }
     }
-</script>
 
-<script id="card" type="text/template">
-    <article>
-        <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
-            <input type="checkbox" onchange="showBtns(this);" name="pasta" id="can1" class="checkbox-input"/>
-            <label for="can1" class="checkbox-label">
-                <div class="paid-candidate-container">
-                    <div class="paid-candidate-box">
-                        <div class="dropdown">
-                            <div class="btn-group fl-right">
-                                <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-gear"></i>
-                                </button>
-                                <div class="dropdown-menu pull-right animated flipInX">
-                                    <a href="#">Shortlist</a>
-                                    <button class="reject">Reject</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="paid-candidate-inner--box">
-                            <div class="paid-candidate-box-thumb">
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="img-responsive img-circle" alt="" />
-                            </div>
-                            <div class="paid-candidate-box-detail">
-                                <h4>Daniel Disroyer</h4>
-                                <span class="desination">App Designer</span>
-                            </div>
-                        </div>
-                        <div class="paid-candidate-box-extra">
-                            <ul>
-                                <li>Php</li>
-                                <li>Android</li>
-                                <!--                                                            <li>Html</li>-->
-                                <li class="more-skill bg-primary">+3</li>
-                            </ul>
-                        </div>
-                        <div class="paid-candidate-box-exp">
-                            <div class="desination"><i class="fa fa-map-marker"></i> Ludhian </div>
-                            <div class="desination"><i class="fa fa-briefcase"></i> 5 years </div>
-                        </div>
-                    </div>
-                    <a href="/user/shshank" class="btn btn-paid-candidate bt-1">View Detail</a>
-                </div>
-            </label>
-        </div>
-    </article>
+    function rejection() {
+        $.ajax({
+            type:"POST",
+            url:"/account/uploaded-resume/reject",
+            data: {'selectedList':applied_enc_id},
+            success:function (response) {
+                if(JSON.parse(response)["status"] == 200){
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+    document.getElementById('submitData').addEventListener('click', function(){
+        var submitted_data = {};
+        if(applied_enc_id.length > 0){
+            submitted_data["selected_candidates"] = applied_enc_id;
+        }
+        var applications = document.getElementsByName('applications');
+        var selected_value;
+        for(var i = 0; i < applications.length; i++){
+            if(applications[i].checked){
+                selected_value = applications[i].value;
+            }
+        }
+        submitted_data["application_selected"] = selected_value;
+        $.ajax({
+            type:"POST",
+            url:"/account/uploaded-resume/short-list",
+            data: submitted_data,
+            success:function (response) {
+                if(JSON.parse(response)["status"] == 200){
+                    window.location.reload();
+                }
+
+            }
+        });
+    })
+
+
+
+
 </script>
