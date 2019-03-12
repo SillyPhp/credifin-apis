@@ -96,7 +96,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/interview-processes/create'); ?>"
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
                             <a href="<?= Url::toRoute('/interview-processes'); ?>"

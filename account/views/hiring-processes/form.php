@@ -1,63 +1,68 @@
 <?php
-
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_count = "'.count($process['interviewProcessFields']).'";',  \yii\web\View::POS_HEAD);
 ?>
-<div class="row">
-    <div class="col-md-4">
-        <h1 class="process_head">Interview Process</h1>
-    </div>
-    <div class="col-md-8">
-        <?php
-        $form = ActiveForm::begin([
-                    'id' => 'process_form',
-                    'options' => [
-                    ],
-                    'fieldConfig' => [
-                        'template' => "{input}{label}",
-                    ],
-        ]);
-        ?>
-        <?= Html::submitButton('Save', ['class' => 'btn blue custom-buttons2 submit pull-right']); ?>
-        <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Title'])->label(false); ?>
-        <?= $form->field($model, 'process_data', ['template' => '{input}'])->hiddenInput(['id' => 'process_data'])->label(false); ?>
-        <?= $form->field($model, 'process_validate', ['template' => '{input}'])->hiddenInput(['id' => 'process_validate'])->label(false); ?>
-
-        <?php ActiveForm::end(); ?>
-    </div>
-</div>
-<div class="row">
-    <div id="wait"><img src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif' width="100" height="100" /></div>
     <div class="row">
         <div class="col-md-4">
-            <div class="draggable-main">
-                <ul class="connected-sortable draggable-left">
-                    <li class="a"><i class="fa fa-phone" aria-hidden="true"></i> Phone Interview</li>
-                    <li class="b"><i class="fa fa-user" aria-hidden="true"></i> Personal Interview</li>
-                    <li class="c"><i class="fa fa-cogs" aria-hidden="true"></i> Technical Interview</li>
-                    <li class="d"><i class="fa fa-user-circle" aria-hidden="true"></i> HR Interview</li>
-                    <li class="e"><i class="fa fa-users" aria-hidden="true"></i> Group Discussion</li>
-                    <li class="f"><i class="fa fa-video-camera" aria-hidden="true"></i> Video Call</li> 
-                    <li class="g"><i class="fa fa-check" aria-hidden="true"></i> Employee Verification</li>
-                    <li class="h"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Written Examination</li>
-                    <li class="j"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter</li>
-                    <li class="custom_proccess"><i class="fa fa-question" aria-hidden="true"></i> Custom Process</li>
-                </ul>
-
-            </div>
+            <h1 class="process_head">Interview Process</h1>
         </div>
-        <div id="error_placement"></div>
         <div class="col-md-8">
-            <div class="box">
-                <li class="fixed"><i class="fa fa-sitemap" aria-hidden="true"></i> Get Applications</li>
-                <ul class="connected-sortable draggable-right">
-                    <h1 class="drag_placeholder"><i class="fa fa-cloud-download" aria-hidden="true"></i> Drag And Drop Processes Here</h1>
-                </ul>
-                <li class="fixed"><i class="fa fa-paper-plane" aria-hidden="true"></i> Hire Applicants</li>
-            </div>
+            <?php
+            $form = ActiveForm::begin([
+                'id' => 'process_form',
+                'options' => [
+                ],
+                'fieldConfig' => [
+                    'template' => "{input}{label}",
+                ],
+            ]);
+            ?>
+            <?= Html::submitButton('Save', ['class' => 'btn blue custom-buttons2 submit pull-right']); ?>
+            <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Title'])->label(false); ?>
+            <?= $form->field($model, 'process_data', ['template' => '{input}'])->hiddenInput(['id' => 'process_data'])->label(false); ?>
+            <?= $form->field($model, 'process_validate', ['template' => '{input}'])->hiddenInput(['id' => 'process_validate'])->label(false); ?>
+
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div id="wait"><img src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif' width="100" height="100" /></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="draggable-main">
+                    <ul class="connected-sortable draggable-left">
+                        <li class="a clickable" value="1"><i class="fa fa-phone" aria-hidden="true"></i> Phone Interview</li>
+                        <li class="b clickable" value="2"><i class="fa fa-user" aria-hidden="true"></i> Personal Interview</li>
+                        <li class="c clickable" value="3"><i class="fa fa-cogs" aria-hidden="true"></i> Technical Interview</li>
+                        <li class="d clickable" value="4"><i class="fa fa-user-circle" aria-hidden="true"></i> HR Interview</li>
+                        <li class="e clickable" value="5"><i class="fa fa-users" aria-hidden="true"></i> Group Discussion</li>
+                        <li class="f clickable" value="6"><i class="fa fa-video-camera" aria-hidden="true"></i> Video Call</li>
+                        <li class="g clickable" value="7"><i class="fa fa-check" aria-hidden="true"></i> Employee Verification</li>
+                        <li class="h clickable" value="8"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Written Examination</li>
+                        <li class="i clickable" value="9"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter</li>
+                        <li class="custom_proccess clickable"value="10"><i class="fa fa-question" aria-hidden="true"></i> Custom Process</li>
+                    </ul>
+
+                </div>
+            </div>
+            <div id="error_placement"></div>
+            <?php
+            if ($type=='clone'):
+                echo $this->render('/widgets/processes/process_view_bar', [
+                    'form' => $form,
+                    'model' => $model,
+                    'process' => $process,
+                ]);
+            else:
+                echo $this->render('/widgets/processes/process_view_bar', [
+                    'form' => $form,
+                    'model' => $model,
+                ]);
+            endif;
+            ?>
+        </div>
+    </div>
 
 <?php
 $this->registerCss("
@@ -248,7 +253,62 @@ width:100px;
 	");
 
 $script = <<< JS
-    var count_elem = 0;
+var count_elem = 0;
+$(document).on('click','.clickable',function(e)
+{
+    var get_class_value = $(this).attr('value');
+    switch (parseInt(get_class_value)) {
+        case 1:
+            $('.draggable-right').append(process1());
+            break;
+        case 2:
+            $('.draggable-right').append(process2());
+            break;
+        case 3:
+            $('.draggable-right').append(process3());
+            break;
+        case 4:
+            $('.draggable-right').append(process4());
+            break;
+        case 5:
+            $('.draggable-right').append(process5());
+            break;
+        case 6:
+            $('.draggable-right').append(process6());
+            break;
+        case 7:
+            $('.draggable-right').append(process7());
+            break;
+        case 8:
+            $('.draggable-right').append(process8());
+            break;
+        case 9:
+            $('.draggable-right').append(process9());
+            break;
+        case 10:
+            $('.draggable-right').append(process_custom());
+            break;    
+    }
+    count_elem++;
+    elem_chk();
+    checkDiv();
+    getData();
+})
+ function checkDiv() {
+        var dtext = document.querySelector(".draggable-right");
+        if (dtext.innerHTML.length == 0) {
+            document.querySelector('.drag_placeholder').style.display = 'block';
+        } else {
+            document.querySelector('.drag_placeholder').style.display = 'none';
+        }
+   }
+if (doc_type=='clone')
+    {
+        count_elem = elements_total_count;
+        elem_chk();
+        getData();
+        checkDiv();
+    }
     function elem_chk() {
         if (count_elem === 0) {
             $('.drag_placeholder').css('display', 'block');
@@ -319,14 +379,6 @@ $script = <<< JS
         },
         connectToSortable: ".draggable-right"
     });
-
-    $(".j").draggable({
-        helper: function () {
-            return process10();
-        },
-        connectToSortable: ".draggable-right"
-    });
-
     $(".custom_proccess").draggable({
         helper: function () {
             return process_custom();
@@ -342,9 +394,9 @@ $script = <<< JS
         },
         stop: function (ev, ui) {
             getData();
-            $('.drag_placeholder').css('display', 'none');
             count_elem++;
             elem_chk();
+            checkDiv();
         }
     });
 
@@ -412,7 +464,7 @@ $script = <<< JS
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
-    function process10() {
+    function process9() {
         var field = generateField();
         var html = '<li class="j form_output" data-type="interview_process"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
@@ -478,7 +530,7 @@ $script = <<< JS
                         window.opener.ChildFunction();
                         window.open('', '_self').close();
                     } else {
-                        window.location.replace('/account/interview-processes');
+                        window.location.replace('/account/hiring-processes');
                     }
                 } else {
                     alert('Something Went wrong.');
