@@ -99,7 +99,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/interview-processes'); ?>"
+                            <a href="<?= Url::toRoute('/hiring-processes'); ?>"
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
