@@ -1039,7 +1039,7 @@ if (doc_type=='clone')
             $("#wait").css("display", "none");
             if(data == true)
            {
-            if(window.opener === true)
+            if(window.opener) 
             {
              window.opener.ChildFunction();
              window.open('','_self').close();
