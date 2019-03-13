@@ -342,7 +342,7 @@ if (doc_type=='clone')
   
    
   
-        function elem_chk()
+  function elem_chk()
         {
             if(count_elem == 0)
             {  
@@ -1039,7 +1039,7 @@ if (doc_type=='clone')
             $("#wait").css("display", "none");
             if(data == true)
            {
-            if(window.opener === true)
+            if(window.opener) 
             {
              window.opener.ChildFunction();
              window.open('','_self').close();

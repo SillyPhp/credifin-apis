@@ -20,7 +20,7 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
         </a>
     </div>
     <div class="col-md-3">
-        <a href="<?= Url::toRoute('/interview-processes'); ?>">
+        <a href="<?= Url::toRoute('/hiring-processes'); ?>">
             <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Interview Processes'); ?></h4>
                 <div class="widget-thumb-wrap">
