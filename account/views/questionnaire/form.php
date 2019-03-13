@@ -342,7 +342,7 @@ if (doc_type=='clone')
   
    
   
-        function elem_chk()
+  function elem_chk()
         {
             if(count_elem == 0)
             {  
