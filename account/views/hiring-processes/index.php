@@ -1,7 +1,7 @@
 <?php
 use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Questionnaire',
+    'for' => 'Hirinng Process',
 ]);
 ?>
 <div class="row">

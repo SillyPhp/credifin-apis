@@ -47,16 +47,16 @@ class HiringProcessesController extends Controller
         ]);
     }
 
-    public function actionView($ipidk)
+    public function actionView($hpidk)
     {
         $process_name = OrganizationInterviewProcess::find()
             ->select(['process_name'])
-            ->where(['interview_process_enc_id' => $ipidk])
+            ->where(['interview_process_enc_id' => $hpidk])
             ->asArray()
             ->one();
         $process_fields = InterviewProcessFields::find()
             ->select(['field_name', 'icon'])
-            ->where(['interview_process_enc_id' => $ipidk])
+            ->where(['interview_process_enc_id' => $hpidk])
             ->asArray()
             ->all();
         if (empty($process_name)|| empty($process_fields)) {
@@ -69,11 +69,11 @@ class HiringProcessesController extends Controller
         ]);
     }
 
-    public function actionClone($ipidk)
+    public function actionClone($hpidk)
     {
         $process = OrganizationInterviewProcess::find()
             ->alias('a')
-            ->where(['a.interview_process_enc_id' => $ipidk])
+            ->where(['a.interview_process_enc_id' => $hpidk])
             ->joinWith(['interviewProcessFields b'], true)
             ->asArray()
             ->one();
