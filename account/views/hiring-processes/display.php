@@ -3,10 +3,9 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Questionnaire',
+    'for' => 'Hiring Process',
 ]);
 ?>
-
     <div class="row">
         <div class="col-lg-12 col-xs-12 col-sm-12">
             <div class="portlet light ">
