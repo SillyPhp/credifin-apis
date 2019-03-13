@@ -57,7 +57,7 @@ $eform = ActiveForm::begin([
         </div>
     </div>
     <div class="modal-footer">
-        <?= Html::submitbutton('Add', ['class' => 'btn btn-primary custom-buttons2']); ?>
+        <?= Html::submitbutton('Add', ['class' => 'btn btn-primary custom-buttons2 our-team']); ?>
         <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
     </div>
 <?php
@@ -142,8 +142,13 @@ $("#employeeImageUpload").change(function() {
 });
 
 $(document).on('submit', '#add_employee', function(event) {
+    var btn = $('.our-team');
     event.preventDefault();
     event.stopImmediatePropagation();
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    btn.data('requestRunning', true);
     $.ajax({
         url: "/companies/add-employee",
         method: "POST",
@@ -151,7 +156,8 @@ $(document).on('submit', '#add_employee', function(event) {
         contentType: false,
         cache:false,
         processData: false,
-        beforeSend:function(){     
+        beforeSend:function(){
+            $('.sav_benft').prop('disabled', 'disabled');
             $('#page-loading').fadeIn(1000);  
         },
         success: function (response) {
@@ -163,6 +169,9 @@ $(document).on('submit', '#add_employee', function(event) {
                 toastr.error(response.message, response.title);
             }
             $('#modal').modal('hide');
+        },
+        complete: function() {
+            btn.data('requestRunning', false);
         }
     });
 });

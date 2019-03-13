@@ -69,6 +69,7 @@ $(document).on('click', '#cancel_loc', function() {
 });
 $(document).on('click', '#confirm_loc', function(event) {
     event.preventDefault();
+    event.stopImmediatePropagation();
     $('#remove_video_confirm').fadeOut(1000);
     var id = $(this).val();
     $.ajax({

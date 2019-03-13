@@ -114,7 +114,15 @@ $("#gImageUpload").change(function() {
 });
 
 $(document).on('submit', '#upload-gallary-image', function(event) {
+    var btn = $('.sav_benft');
     event.preventDefault();
+    event.stopImmediatePropagation();
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    
+    btn.data('requestRunning', true);
+    
     $.ajax({
         url: "/companies/add-gallery-images",
         method: "POST",
@@ -122,8 +130,9 @@ $(document).on('submit', '#upload-gallary-image', function(event) {
         contentType: false,
         cache:false,
         processData: false,
-        beforeSend:function(){     
-            $('#page-loading').fadeIn(1000);  
+        beforeSend:function(){
+            $('.sav_benft').prop('disabled', true);
+            $('#page-loading').fadeIn(1000);
         },
         success: function (response) {
             $('#page-loading').fadeOut(1000);
@@ -134,8 +143,14 @@ $(document).on('submit', '#upload-gallary-image', function(event) {
                 toastr.error(response.message, response.title);
             }
             $('#modal').modal('hide');
+        },
+        complete: function() {
+            btn.data('requestRunning', false);
         }
     });
 });
+// $(document).on('click', '.sav_benft', function(){
+//     $('.sav_benft').prop('disabled', 'disabled');
+// });
 JS;
 $this->registerJs($script);

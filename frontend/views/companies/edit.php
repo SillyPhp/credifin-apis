@@ -57,13 +57,15 @@ $industries = Json::encode($industries);
                                                    data-toggle="dropdown"></i>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a href="#">
-                                                            <?=
-                                                            $form->field($companyLogoFormModel, 'logo', [
-                                                                'template' => '{input}',
-                                                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'logoUpload', 'accept' => '.png, .jpg, .jpeg']);
-                                                            ?>
-                                                            <label for="logoUpload">Change Profile Picture</label>
+                                                        <a href="#" data-toggle="modal" data-target="#change-profile-image">
+<!--                                                            --><?//=
+//                                                            $form->field($companyLogoFormModel, 'logo', [
+//                                                                'template' => '{input}',
+//                                                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'logoUpload', 'accept' => '.png, .jpg, .jpeg']);
+//                                                            ?>
+<!--                                                            <label for="logoUpload">-->
+                                                                Change Profile Picture
+<!--                                                            </label>-->
                                                         </a>
                                                     </li>
                                                     <li><a href="#" class="remove-logo">Remove</a></li>
@@ -116,21 +118,9 @@ $industries = Json::encode($industries);
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                    <?php
-                    if (Yii::$app->user->identity->organization->slug === $organization['slug']) {
-                        ?>
                         <div class="follow-btn">
-                            <button id="enable" class="follow">Edit Profile</button>
+                            <button id="enable" class="follow">View Profile</button>
                         </div>
-                        <?php
-                    } elseif (Yii::$app->user->identity->user_enc_id) {
-                        ?>
-                        <div class="follow-btn">
-                            <button class="follow">Follow</button>
-                        </div>
-                        <?php
-                    }
-                    ?>
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url" data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i class="fa fa-facebook"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url" data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i class="fa fa-twitter"></i> </a>
@@ -528,6 +518,20 @@ $industries = Json::encode($industries);
                     <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
                          alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-modal-lg in" id="change-profile-image" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="demo"></div>
+                    <div class="actions">
+                        <button class="vanilla-result">Result</button>
+<!--                        <button class="vanilla-rotate" data-deg="-90">Rotate Left</button>-->
+<!--                        <button class="vanilla-rotate" data-deg="90">Rotate Right</button>-->
+                    </div>
                 </div>
             </div>
         </div>
@@ -1028,7 +1032,8 @@ a.web{
     color:#fff;
 }
 .follow{
-    padding:10px 60px;
+    padding:10px 0px;
+    width:167px;
      background: transparent;
 //    border: 1px solid #00a0e3;
     border:none;
@@ -1099,6 +1104,8 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .logo img{
     border-radius:4px;
+    max-height: 200px;
+    width: 100%;
 }
 #upload-logo{
     margin-bottom:0px;
@@ -1545,15 +1552,14 @@ $('#enable').click(function() {
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
        $('.remove_g_image, .remove_location').addClass('hide-remove-buttons');
-       $(this).text('As Editable');
+       $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
        $('.remove_g_image, .remove_location').removeClass('hide-remove-buttons');
-       $(this).text('As View');
+       $(this).text('View Profile');
    }
-   console.log(edit_toggle);
 }); 
 var image_path = $('#logo-img').attr('src');
 var logo_name_path = "$no_image";
@@ -1740,6 +1746,61 @@ $(document).on('click', '#confirm_t_user', function(event) {
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
+
+var el = document.getElementById('demo');
+var vanilla = new Croppie(el, {
+    viewport: { width: 200, height: 200 },
+    boundary: { width: 300, height: 300 },
+    showZoomer: true,
+    enableZoom: true,
+    mouseWheelZoom: true,
+    maxZoomedCropWidth: 10,
+    // enableOrientation: true
+});
+vanilla.bind({
+    url: '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg',
+    zoom: 10,
+    points: [300, 300, 600, 600],
+    // orientation: 4
+});
+//on button click
+document.querySelector('.vanilla-result').addEventListener('click', function (ev) {
+    vanilla.result({
+        type: 'blob'
+    }).then(function (blob) {
+        popupResult({
+            src: window.URL.createObjectURL(blob)
+        });
+    });
+    // vanilla.result('blob').then(function(blob) {
+    //     console.log(blob);
+    //     // do something with cropped blob
+    // });
+});
+function popupResult(result) {
+		var html;
+		if (result.html) {
+			html = result.html;
+		}
+		if (result.src) {
+			html = '<img src="' + result.src + '" />';
+		}
+		console.log(html);
+		// swal({
+		// 	title: '',
+		// 	html: true,
+		// 	text: html,
+		// 	allowOutsideClick: true
+		// });
+		// setTimeout(function(){
+		// 	$('.sweet-alert').css('margin', function() {
+		// 		var top = -1 * ($(this).height() / 2),
+		// 			left = -1 * ($(this).width() / 2);
+        //
+		// 		return top + 'px 0 0 ' + left + 'px';
+		// 	});
+		// }, 1);
+	}
  var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -1765,10 +1826,12 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
 $this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 //$this->registerJsFile('http://vitalets.github.io/combodate/combodate.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 //$this->registerJsFile('http://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

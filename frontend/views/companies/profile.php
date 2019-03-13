@@ -835,7 +835,8 @@ a.web{
     color:#fff;
 }
 .follow{
-    padding:10px 60px;
+    padding:10px 0px;
+    width:167px;
      background: transparent;
 //    border: 1px solid #00a0e3;
     border:none;
@@ -902,10 +903,12 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .logo{
     display:table-cell;
-    vertical-align: middle;     
+    vertical-align: middle;
 }
 .logo img{
     border-radius:4px;
+    max-height: 200px;
+    width: 100%;
 }
 #upload-logo{
     margin-bottom:0px;
