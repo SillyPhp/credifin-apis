@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use common\models\Cities;
+use common\models\OrganizationAssignedCategories;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -218,12 +219,12 @@ class JobsController extends Controller
     public function actionClone($aidk)
     {
         $model = new JobApplicationForm();
-        $que = $model->getQuestionnnaireList();
-        $loc_list = $model->getOrganizationLocationOffice();
-        $int_list = $model->getOrganizationLocationInterview();
-        $primary_cat = $model->getPrimaryFields();
-        $industry = $model->getndustry();
-        $process = $model->getInterviewProcess();
+        $questions_list = $model->getQuestionnnaireList();
+        $p_list = $model->getOrganizationLocationOffice();
+        $l_list = $model->getOrganizationLocationInterview();
+        $primaryfields = $model->getPrimaryFields();
+        $industries = $model->getndustry();
+        $interview_process = $model->getInterviewProcess();
         $benefits = $model->getBenefits();
         if ($model->load(Yii::$app->request->post())) {
             $session_token = Yii::$app->request->post('n');
@@ -239,13 +240,13 @@ class JobsController extends Controller
         } else {
             $application = $model->getCloneData($aidk);
             return $this->render('clone', ['data' => $application,
-                'model' => $model, 'loc_list' => $loc_list,
-                'que' => $que,
-                'primary_cat' => $primary_cat,
-                'int_list' => $int_list,
-                'industry' => $industry,
-                'process' => $process,
-                'benefits' => $benefits,
+                'model' => $model, 'location_list' => $p_list,
+                'questions_list' => $questions_list,
+                'primaryfields' => $primaryfields,
+                'inter_loc' => $l_list,
+                'industries' => $industries,
+                'process_list' => $interview_process,
+                'benefit' => $benefits,
             ]);
         }
     }
@@ -932,8 +933,23 @@ class JobsController extends Controller
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
             'viewed'=>$viewed,
+            'primary_fields' => $this->getCategories()
         ]);
     }
+
+
+    private function getCategories()
+    {
+        $primaryfields = Categories::find()
+            ->alias('a')
+            ->select(['a.name', 'a.category_enc_id'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+            ->asArray()
+            ->all();
+        return $primaryfields;
+    }
+
 
     private function __organizationJobs()
     {

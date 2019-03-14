@@ -121,6 +121,7 @@ class CompaniesController extends Controller {
                             'benefit' => $benefit,
                 ]);
             } else {
+                $username = Yii::$app->user->identity->username;
                 $chkuser = ShortlistedOrganizations::find()
                         ->select('shortlisted')
                         ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $organization['organization_enc_id']])
@@ -133,6 +134,7 @@ class CompaniesController extends Controller {
 //                            'jobcards' => $jobcards,
                             'shortlist' => $chkuser,
                             'benefit' => $benefit,
+                            'username' => $username
                 ]);
             }
         } else {
