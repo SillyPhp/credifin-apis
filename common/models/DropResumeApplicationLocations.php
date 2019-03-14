@@ -20,6 +20,8 @@ use Yii;
  * @property DropResumeApplications $appliedApplicationEnc
  * @property Cities $cityEnc
  * @property Users $userEnc
+ * @property Users $createdBy
+ * @property Users $lastUpdatedBy
  */
 class DropResumeApplicationLocations extends \yii\db\ActiveRecord
 {
@@ -45,9 +47,10 @@ class DropResumeApplicationLocations extends \yii\db\ActiveRecord
             [['applied_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => DropResumeApplications::className(), 'targetAttribute' => ['applied_application_enc_id' => 'applied_application_enc_id']],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
-
 
 
     /**
@@ -72,5 +75,21 @@ class DropResumeApplicationLocations extends \yii\db\ActiveRecord
     public function getUserEnc()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 }

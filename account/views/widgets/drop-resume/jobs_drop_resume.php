@@ -9,9 +9,6 @@
             <div class="btn-group dashboard-button">
                 <button title="" data-toggle="modal" data-target="#resumeBank" class="viewall-jobs">Add New</button>
             </div>
-<!--            <div class="btn-group dashboard-button">-->
-<!--                <a href="/account/uploaded-resume/all-resume-profiles" title="" class="viewall-jobs">View All</a>-->
-<!--            </div>-->
         </div>
     </div>
 
@@ -31,7 +28,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <input type="text" id="text" placeholder="Search Here Or Add New Category" class="form-control">
+                            <input type="text" id="text" placeholder="Search Here" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -53,15 +50,13 @@
             </div>
 
             <div class="modal-footer">
-                <!--                <button type="submit" class="btn btn-primary">save</button>-->
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
 
     </div>
 </div>
-<!--<div id="titleModal" class="modal fade" role="dialog">-->
-<!--</div>-->
+
 <?php
 $this->registerCss('
 .work-profile-box{
@@ -157,7 +152,11 @@ $(document).on('click', '.parent_category', function(){
             type:"POST",
             url:"/account/resume/first",
             data: data,
+            beforeSend:function(){
+              $('#page-loading').fadeIn(1000);  
+            },
             success:function (response) {
+                $('#page-loading').fadeOut(1000);  
                 var response = JSON.parse(response);
                 $('#parent_enc_id').val(response.parent_enc_id);
                 var template = $('#modal-two').html();
@@ -244,11 +243,52 @@ $(document).on('click', '#previous, .close-modal', function(){
     $('#profiles').show();
 });
 
+$(document).on('click','#add_new_btn', function() {
+  var new_to_add = document.getElementById('add_new').value;
+  var parent_id = $('#parent_enc_id').val();
+  $.ajax({
+            type:"POST",
+            url:"/account/resume/add",
+            data: {
+                    new_value:new_to_add,
+                    parent_enc_id:parent_id,
+                    type: 'Jobs'
+                  },            
+            success: function(response){
+                response = JSON.parse(response);
+                if(response.status == 201){
+                 toastr.error("It can't be added",'Error');   
+                }
+                else{
+                    document.getElementById('add_new').value = "";
+                $('#add_new').focus();
+                var template = $('#new-data').html();
+                var rendered = Mustache.render(template,response);
+                $('.cards-cont').append(rendered);
+                }
+                
+            }
+  });
+  
+});
+
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
+</script>
+<script id="new-data" type="text/template">
+    <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search">
+        <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
+        <label for="{{category_enc_id}}" class="work-profile-box unique2">
+
+        <div class="work-profile">
+        {{name}}
+    </div>
+
+    </label>
+    </div>
 </script>
 <script id="modal-two" type="text/template">
     <div class="modal-dialog" id="titles">
@@ -262,7 +302,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 <div class="row">
                     <div class="col-md-9">
                         <div class="form-group">
-                            <input type="text" placeholder="Search Here Or Add New Category" class="form-control">
+                            <input type="text" id="add_new" placeholder="Add New Category" class="form-control">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -271,7 +311,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         </div>
                     </div>
                 </div>
-                <div class="row padd10">
+                <div class="row padd10 cards-cont">
                     {{#.}}
                     <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search">
                         <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
@@ -308,10 +348,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <div class="row padd10">
                             {{#.}}
                             <div class="col-md-4 col-sm-6 padd-5">
-                                <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}">
+                                <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}&type=Jobs">
                                     <div class="work-profile-box">
                                         <div class="work-profile">
-                                            {{child_name}} - {{parent_name}}
+                                            {{name}}
                                         </div>
                                     </div>
                                 </a>

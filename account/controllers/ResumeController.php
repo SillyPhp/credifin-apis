@@ -7,6 +7,7 @@ use common\models\DropResumeApplicationTitiles;
 use common\models\DropResumeApplicationTitles;
 use common\models\OrganizationAssignedCategories;
 use common\models\OrganizationLocations;
+use common\models\Utilities;
 use frontend\controllers\DropResumeController;
 use http\Env\Response;
 use Yii;
@@ -42,6 +43,67 @@ class ResumeController extends Controller {
 
             return json_encode($response);
         }
+    }
+
+    public function actionAdd(){
+            $failure = ['status'=>201];
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $new_value = Yii::$app->request->post('new_value');
+            $parent_enc_id = Yii::$app->request->post('parent_enc_id');
+            $type = Yii::$app->request->post('type');
+
+
+
+            if($c_e_id = $this->addCategory($new_value)){
+                $assigned_category = new AssignedCategories();
+                $assigned_category->assigned_category_enc_id = Yii::$app->security->generateRandomString(12);
+                $assigned_category->category_enc_id = $c_e_id->category_enc_id;
+                $assigned_category->parent_enc_id = $parent_enc_id;
+                $assigned_category->assigned_to = $type;
+                $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;;
+                $assigned_category->created_by = Yii::$app->user->identity->user_enc_id;
+                $assigned_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                if($assigned_category->save()){
+                    $data=[];
+                    $data['category_enc_id'] = $c_e_id->category_enc_id;
+                    $data['name'] = $c_e_id->name;
+                    return json_encode($data);
+                }
+            }else{
+                    return json_encode($failure);
+            }
+
+        }else{
+
+                    return json_encode($failure);
+        }
+    }
+
+    private function addCategory($new_value){
+
+        $already_exists = Categories::find()
+            ->select(['name','category_enc_id'])
+            ->where(['name'=>$new_value])
+            ->one();
+
+        if($already_exists){
+            return $already_exists;
+        }else {
+            $new_category = new Categories();
+            $utilitiesModel = new Utilities();
+            $new_category->category_enc_id = Yii::$app->security->generateRandomString(12);
+            $new_category->name = $new_value;
+            $utilitiesModel->variables['name'] = $new_value;
+            $utilitiesModel->variables['table_name'] = Categories::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $new_category->slug = $utilitiesModel->create_slug();
+            $new_category->created_by = Yii::$app->user->identity->user_enc_id;
+            $new_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            if ($new_category->save()) {
+                return $new_category;
+            }
+        }
+
     }
 
     private function checkParent($parent_id,$type){
@@ -153,37 +215,15 @@ class ResumeController extends Controller {
         $type = Yii::$app->request->post('type');
         $selectedfields = OrganizationAssignedCategories::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id'])
-//            ->joinWith(['categoryEnc b'], false)
+            ->select(['a.assigned_category_enc_id','b.name'])
+            ->joinWith(['categoryEnc b'], false)
             ->where(['a.assigned_to' => $type])
             ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id,'a.created_by'=>Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['not', ['a.parent_enc_id' => NULL]])
+            ->andWhere(['a.parent_enc_id'=>NULL])
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->all();
-        $i = 0;
-        foreach ($selectedfields as $s){
-            $unique_id = OrganizationAssignedCategories::findOne([
-                    'assigned_category_enc_id' => $s['assigned_category_enc_id'],
-                ]);
 
-            if(!empty($unique_id->parent_enc_id)) {
-                $parent_name = Categories::find()
-                    ->select('name')
-                    ->where(['category_enc_id' => $unique_id->parent_enc_id])
-                    ->asArray()
-                    ->one();
-            }
-            $child_name = Categories::find()
-                ->select('name')
-                ->where(['category_enc_id' => $unique_id->category_enc_id])
-                ->asArray()
-                ->one();
-
-            $selectedfields[$i]['parent_name'] = $parent_name["name"];
-            $selectedfields[$i]['child_name'] = $child_name["name"];
-            $i++;
-        }
         return json_encode($selectedfields);
     }
 

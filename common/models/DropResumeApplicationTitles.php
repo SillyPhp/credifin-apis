@@ -23,6 +23,8 @@ use Yii;
  * @property OrganizationAssignedCategories $title0
  * @property Users $userEnc
  * @property EmployerApplications $applicationEnc
+ * @property Users $createdBy
+ * @property Users $lastUpdatedBy
  */
 class DropResumeApplicationTitles extends \yii\db\ActiveRecord
 {
@@ -50,6 +52,8 @@ class DropResumeApplicationTitles extends \yii\db\ActiveRecord
             [['title'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationAssignedCategories::className(), 'targetAttribute' => ['title' => 'assigned_category_enc_id']],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
             [['application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EmployerApplications::className(), 'targetAttribute' => ['application_enc_id' => 'application_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
@@ -84,5 +88,21 @@ class DropResumeApplicationTitles extends \yii\db\ActiveRecord
     public function getApplicationEnc()
     {
         return $this->hasOne(EmployerApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 }
