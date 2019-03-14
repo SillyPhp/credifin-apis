@@ -1589,7 +1589,7 @@ function readURL(input) {
             var rawImg = e.target.result;
             setTimeout(function() {
                 renderCrop(rawImg);
-            }, 1000);
+            }, 500);
             
         }
         reader.readAsDataURL(input.files[0]);
