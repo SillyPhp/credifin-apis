@@ -243,34 +243,44 @@ $(document).on('click', '#previous, .close-modal', function(){
     $('#profiles').show();
 });
 
+function addNew(){
+      var new_to_add = document.getElementById('add_new').value;
+      var parent_id = $('#parent_enc_id').val();
+      $.ajax({
+                type:"POST",
+                url:"/account/resume/add",
+                data: {
+                        new_value:new_to_add,
+                        parent_enc_id:parent_id,
+                        type: 'Jobs'
+                      },            
+                success: function(response){
+                    response = JSON.parse(response);
+                    if(response.status == 201){
+                     toastr.error("It can't be added",'Error');   
+                    }
+                    else{
+                        document.getElementById('add_new').value = "";
+                    $('#add_new').focus();
+                    var template = $('#new-data').html();
+                    var rendered = Mustache.render(template,response);
+                    $('.cards-cont').append(rendered);
+                    }
+                    
+                }
+      });
+}
+
 $(document).on('click','#add_new_btn', function() {
-  var new_to_add = document.getElementById('add_new').value;
-  var parent_id = $('#parent_enc_id').val();
-  $.ajax({
-            type:"POST",
-            url:"/account/resume/add",
-            data: {
-                    new_value:new_to_add,
-                    parent_enc_id:parent_id,
-                    type: 'Jobs'
-                  },            
-            success: function(response){
-                response = JSON.parse(response);
-                if(response.status == 201){
-                 toastr.error("It can't be added",'Error');   
-                }
-                else{
-                    document.getElementById('add_new').value = "";
-                $('#add_new').focus();
-                var template = $('#new-data').html();
-                var rendered = Mustache.render(template,response);
-                $('.cards-cont').append(rendered);
-                }
-                
-            }
-  });
-  
+    addNew();
 });
+
+$(document).on("keypress", "#add_new",function(event){
+    if(event.which == '13'){
+        addNew();
+    }
+});
+
 
 JS;
 $this->registerJs($script);
@@ -301,7 +311,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-9">
-                        <div class="form-group">
+                        <div class="form-group add_new_field">
                             <input type="text" id="add_new" placeholder="Add New Category" class="form-control">
                         </div>
                     </div>
