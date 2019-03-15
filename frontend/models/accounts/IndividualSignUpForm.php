@@ -8,6 +8,7 @@ use common\models\RandomColors;
 use common\models\Utilities;
 use common\models\UserTypes;
 use common\models\Users;
+use common\models\Usernames;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
@@ -55,7 +56,7 @@ class IndividualSignUpForm extends Model
             [['phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
             ['email', 'unique', 'targetClass' => Users::className(), 'message' => 'This email address has already been used.'],
-            ['username', 'unique', 'targetClass' => Users::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
         ];

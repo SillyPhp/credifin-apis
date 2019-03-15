@@ -8,10 +8,9 @@ use common\models\RandomColors;
 use common\models\Utilities;
 use common\models\UserTypes;
 use common\models\Users;
+use common\models\Usernames;
 use common\models\Organizations;
-use common\models\OrganizationTypes;
 use common\models\BusinessActivities;
-use common\models\Industries;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
@@ -69,7 +68,7 @@ class OrganizationSignUpForm extends Model
             ['organization_email', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_email' => 'email'], 'message' => 'This email address has already been used.'],
             ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
-            ['username', 'unique', 'targetClass' => Users::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
             [['organization_business_activity'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_business_activity' => 'business_activity_enc_id']],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
         ];
