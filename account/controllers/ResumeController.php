@@ -30,6 +30,7 @@ class ResumeController extends Controller {
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
                 ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id])
+                ->andWhere(['a.organization_enc_id'=>Yii::$app->user->identity->organization_enc_id])
                 ->asArray()
                 ->all();
 
@@ -68,7 +69,7 @@ class ResumeController extends Controller {
                 $assigned_category->category_enc_id = $c_e_id->category_enc_id;
                 $assigned_category->parent_enc_id = $parent_enc_id;
                 $assigned_category->assigned_to = $type;
-                $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;;
+                $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
                 $assigned_category->created_by = Yii::$app->user->identity->user_enc_id;
                 $assigned_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
                 if($assigned_category->save()){
