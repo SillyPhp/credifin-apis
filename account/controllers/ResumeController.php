@@ -30,6 +30,7 @@ class ResumeController extends Controller {
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
                 ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id])
+                ->andWhere(['a.organization_enc_id'=>Yii::$app->user->identity->organization_enc_id])
                 ->asArray()
                 ->all();
 
@@ -52,7 +53,15 @@ class ResumeController extends Controller {
             $parent_enc_id = Yii::$app->request->post('parent_enc_id');
             $type = Yii::$app->request->post('type');
 
+            $data = $this->addCategory($new_value);
+            if($data['category_enc_id'] == $parent_enc_id)
+            {
+                return json_encode($failure);
+            }
 
+            if($this->alreadyHave($data['category_enc_id'],$parent_enc_id)){
+                return json_encode($failure);
+            }
 
             if($c_e_id = $this->addCategory($new_value)){
                 $assigned_category = new AssignedCategories();
@@ -60,7 +69,7 @@ class ResumeController extends Controller {
                 $assigned_category->category_enc_id = $c_e_id->category_enc_id;
                 $assigned_category->parent_enc_id = $parent_enc_id;
                 $assigned_category->assigned_to = $type;
-                $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;;
+                $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
                 $assigned_category->created_by = Yii::$app->user->identity->user_enc_id;
                 $assigned_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
                 if($assigned_category->save()){
@@ -77,6 +86,15 @@ class ResumeController extends Controller {
 
                     return json_encode($failure);
         }
+    }
+
+    private function alreadyHave($category_enc_id,$parent_enc_id){
+        $alreadyhave = AssignedCategories::find()
+            ->where(['category_enc_id'=>$category_enc_id])
+            ->andWhere(['parent_enc_id'=>$parent_enc_id])
+            ->exists();
+
+        return $alreadyhave;
     }
 
     private function addCategory($new_value){
@@ -290,6 +308,7 @@ class ResumeController extends Controller {
             $job_title = $data['job_title'];
             $location = $data['locations'];
 
+
             switch ($experience){
 
                 case 'no':
@@ -325,35 +344,121 @@ class ResumeController extends Controller {
                     break;
             };
 
+            $failure = [
+                'message' => 201
+            ];
+
+            $success = [
+                'message' => 200
+            ];
+
+            if($applied_app_enc_id = $this->alreadyApplied()) {
+
+                $alreadySelectedLocation = $this->getAlreadyAppliedLocation($applied_app_enc_id['applied_application_enc_id']);
+                $selectedLocation = [];
+                for($i=0;$i<count($alreadySelectedLocation);$i++){
+                    foreach($alreadySelectedLocation[$i] as $c){
+                        array_push($selectedLocation,$c);
+                    }
+                }
+                $to_be_added_location = array_diff($location,$selectedLocation);
 
 
-            if($app_enc_id = $this->dropResumeApplications($exp)){
+                $alreadySelectedTitle = $this->getAlreadyAppliedTitle($applied_app_enc_id['applied_application_enc_id']);
+                $selectedTitle = [];
+                for($i=0;$i<count($alreadySelectedTitle);$i++){
+                    foreach($alreadySelectedTitle[$i] as $c){
+                        array_push($selectedTitle,$c);
+                    }
+                }
+                $to_be_added_title = array_diff($job_title, $selectedTitle);
 
-                $failure = [
-                    'message' => 201
-                ];
+               $updateExp =  DropResumeApplications::find()
+                    ->where(['applied_application_enc_id'=>$applied_app_enc_id['applied_application_enc_id']])
+                    ->one();
+               $updateExp->experience = $exp;
+               $updateExp->save();
 
-                $success = [
-                    'message' => 200
-                ];
 
-                if(count($location) > 0) {
-                    foreach ($location as $loc) {
-                        if (!$this->dropResumeApplicationLocation($loc, $app_enc_id)) {
+                if (count($to_be_added_location) > 0) {
+                    foreach ($to_be_added_location as $loc) {
+                        if(!$this->dropResumeApplicationLocation($loc, $applied_app_enc_id['applied_application_enc_id'])){
                             return json_encode($failure);
                         }
                     }
                 }
-                foreach ($job_title as $jt) {
-                    if(!$this->dropResumeApplicationTitle($jt, $app_enc_id)){
-                        return json_encode($failure);
+                if (count($to_be_added_title) > 0) {
+                    foreach ($to_be_added_title as $jt) {
+                        if (!$this->dropResumeApplicationTitle($jt, $applied_app_enc_id['applied_application_enc_id'])) {
+                            return json_encode($failure);
+                        }
                     }
                 }
 
                 return json_encode($success);
+
+            }else{
+
+                if ($app_enc_id = $this->dropResumeApplications($exp)) {
+
+                    if (count($location) > 0) {
+                        foreach ($location as $loc) {
+                            if (!$this->dropResumeApplicationLocation($loc, $app_enc_id)) {
+                                return json_encode($failure);
+                            }
+                        }
+                    }
+                    foreach ($job_title as $jt) {
+                        if (!$this->dropResumeApplicationTitle($jt, $app_enc_id)) {
+                            return json_encode($failure);
+                        }
+                    }
+
+                    return json_encode($success);
+                }
             }
 
         }
+    }
+
+    private function alreadyApplied(){
+        $user = Yii::$app->user->identity->user_enc_id;
+
+        $alreadyApplied = DropResumeApplications::find()
+            ->alias('a')
+            ->select(['a.applied_application_enc_id'])
+            ->where(['a.user_enc_id'=>$user])
+            ->andWhere([
+                'or',
+                ['a.status' => 0],
+                ['a.status' => 1]
+            ])
+            ->asArray()
+            ->one();
+
+        return $alreadyApplied;
+    }
+
+    private function getAlreadyAppliedTitle($applied_app_enc_id){
+        $titles = DropResumeApplicationTitles::find()
+            ->alias('a')
+            ->select(['a.title'])
+            ->where(['a.applied_application_enc_id'=>$applied_app_enc_id])
+            ->asArray()
+            ->all();
+
+        return $titles;
+    }
+
+    private function getAlreadyAppliedLocation($applied_app_enc_id){
+        $location = DropResumeApplicationLocations::find()
+            ->alias('a')
+            ->select(['a.city_enc_id'])
+            ->where(['a.applied_application_enc_id'=>$applied_app_enc_id])
+            ->asArray()
+            ->all();
+
+        return $location;
     }
 
     private function dropResumeApplications($exp){
