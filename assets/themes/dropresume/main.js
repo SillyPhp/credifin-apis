@@ -43,7 +43,6 @@ var popup = new ideaboxPopup({
                         toastr.error('System Error', 'Failed in Applying');
 
                     }
-                    window.location.reload();
                 }
             });
         }
