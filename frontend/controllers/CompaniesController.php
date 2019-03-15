@@ -204,9 +204,11 @@ class CompaniesController extends Controller
                     ->all();
 
                 $companyLogoFormModel = new CompanyLogoForm();
+                $companyCoverImageForm = new CompanyCoverImageForm();
                 return $this->render('edit', [
                     'organization' => $organization,
                     'companyLogoFormModel' => $companyLogoFormModel,
+                    'companyCoverImageForm' => $companyCoverImageForm,
                     'industries' => $industries,
                     'benefit' => $benefit,
                     'gallery' => $gallery,
@@ -296,32 +298,6 @@ class CompaniesController extends Controller
         if (Yii::$app->request->post()) {
             $image = Yii::$app->request->post('data');
 
-//            $image_parts = explode(";base64,", $image);
-//            $image_base64 = base64_decode($image_parts[1]);
-//            $utilitiesModel = new Utilities();
-//            $image_location = Yii::$app->getSecurity()->generateRandomString();
-//            $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $image = $utilitiesModel->encrypt() . '.png';
-//            if (!is_dir($base_path)) {
-//                if (!mkdir($base_path, 0755, true)) {
-//                    return [
-//                        'status' => 201,
-//                    ];
-//                }
-//            }
-//
-//            if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
-//                return [
-//                    'status' => 200,
-//                    'image_location' => $image_location,
-//                    'image' => $image,
-//                ];
-//            }
-
-//            $companyLogoFormModel->logo = UploadedFile::getInstance($companyLogoFormModel, 'logo');
-//            print_r($companyLogoFormModel->save($image));
-//            exit();
             if ($companyLogoFormModel->save($image)) {
 
                 return $response = [
@@ -344,8 +320,10 @@ class CompaniesController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $companyCoverImageForm = new CompanyCoverImageForm();
         if (Yii::$app->request->post()) {
-            $companyCoverImageForm->image = UploadedFile::getInstance($companyCoverImageForm, 'image');
-            if ($companyCoverImageForm->save()) {
+            $c_image = Yii::$app->request->post('data');
+//            $companyCoverImageForm->image = UploadedFile::getInstance($companyCoverImageForm, 'image');
+
+            if ($companyCoverImageForm->save($c_image)) {
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',

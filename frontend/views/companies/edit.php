@@ -25,13 +25,62 @@ if ($organization['cover_image']) {
 } else {
     $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
 }
+if ($organization['cover_image']) {
+    $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
+    $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
+    if (!file_exists($cover_image_path)) {
+        $cover_image = "/assets/themes/ey/images/backgrounds/default_cover.png";
+    }
+} else {
+    $cover_image = "/assets/themes/ey/images/backgrounds/default_cover.png";
+}
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
+$no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
 $industries = Json::encode($industries);
-//print_r($industries);
-//exit();
+
 ?>
     <section>
-        <div class="header-bg">
+        <div id="cover_img" class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
+            <?php
+            $formm = ActiveForm::begin([
+                'id' => 'change-cover-image',
+                'options' => ['enctype' => 'multipart/form-data'],
+            ])
+            ?>
+            <div class="cover-edit">
+                <a class="fa fa-pencil dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#">
+                            <?=
+                            $formm->field($companyCoverImageForm, 'image', [
+                                'template' => '{input}',
+                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'coverImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                            ?>
+                            <label for="coverImageUpload">Change Cover Picture</label>
+                        </a>
+                    </li>
+                    <li><a href="#" class="remove_cover_image">Remove</a></li>
+                    <li><a href="#">Cancel</a></li>
+                </ul>
+                <div id="pop-content2" class="hiden2">
+                    <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) ?>
+                    <button id="cancel_cover" type="button" class="btn btn-default btn-sm editable-cancel">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                </div>
+                <div id="pop-content2_2" class="hiden2">
+                    <h5>Are you sure want to remove Cover Image?</h5>
+                    <button id="confirm_remove_cover" type="button" value="cover"
+                            class="btn btn-primary btn-sm editable-submit">
+                        <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                    <button id="cancel_cover_remove" type="button" class="btn btn-default btn-sm editable-cancel">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                </div>
+            </div>
+            <?php ActiveForm::end() ?>
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -72,13 +121,6 @@ $industries = Json::encode($industries);
                                                     <li><a href="#">Cancel</a></li>
                                                 </ul>
                                             </div>
-                                            <div id="pop-content" class="hiden">
-                                                <?= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn-primary btn-sm editable-submit']) ?>
-                                                <button id="cancel_image" type="button"
-                                                        class="btn-default btn-sm editable-cancel">
-                                                    <i class="glyphicon glyphicon-remove"></i>
-                                                </button>
-                                            </div>
                                             <div id="pop-content1_2" class="hiden">
                                                 <h5>Are you sure want to remove Logo?</h5>
                                                 <button id="confirm_remove_logo" type="button" value="logo"
@@ -97,8 +139,17 @@ $industries = Json::encode($industries);
                                 </div>
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
-                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span class="model" id="tag_line" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?><span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" data-type="select" id="industry_enc_id"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?><span data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span
+                                                class="model" id="tag_line" data-type="text" data-pk="tag_line"
+                                                data-name="tag_line"
+                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                            <span data-for="tag_line" class="edit-box"><i
+                                                        class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span
+                                                class="model" data-type="select"
+                                                id="industry_enc_id"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                            <span data-for="industry_enc_id" class="edit-box"><i
+                                                        class="fa fa-pencil"></i></span><?php } ?></div>
                                 </div>
                             </div>
                         </div>
@@ -118,14 +169,22 @@ $industries = Json::encode($industries);
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                        <div class="follow-btn">
-                            <button id="enable" class="follow">View Profile</button>
-                        </div>
+                    <div class="follow-btn">
+                        <button id="enable" class="follow">View Profile</button>
+                    </div>
                     <div class="social-btns">
-                        <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url" data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i class="fa fa-facebook"></i> </a>
-                        <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url" data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i class="fa fa-twitter"></i> </a>
-                        <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url" data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i class="fa fa-linkedin"></i> </a>
-                        <a href="javascript:;" data-pk="website" data-name="website" data-type="url" data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i class="fa fa-link"></i> </a>
+                        <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
+                           data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i
+                                    class="fa fa-facebook"></i> </a>
+                        <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
+                           data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i
+                                    class="fa fa-twitter"></i> </a>
+                        <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
+                           data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i
+                                    class="fa fa-linkedin"></i> </a>
+                        <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
+                           data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
+                                    class="fa fa-link"></i> </a>
                     </div>
                 </div>
             </div>
@@ -146,7 +205,9 @@ $industries = Json::encode($industries);
 
                         <div class="col-md-7 col-xs-12">
                             <div class="com-description">
-                                <span href="#" class="model" id="description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($organization['description']) ?>"></span>
+                                <span href="#" class="model" id="description" data-pk="description"
+                                      data-name="description" data-type="textarea"
+                                      data-value="<?= Html::encode($organization['description']) ?>"></span>
                             </div>
                         </div>
                         <div class="col-md-5 col-xs-12">
@@ -179,7 +240,10 @@ $industries = Json::encode($industries);
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
-                                                    <span href="#" id="establishment_year" data-type="combodate" data-format="YYYY" data-pk="establishment_year" data-template="YYYY" data-viewformat="YYYY" data-name="establishment_year"><?= $organization['establishment_year']; ?></span>
+                                                    <span href="#" id="establishment_year" data-type="combodate"
+                                                          data-format="YYYY" data-pk="establishment_year"
+                                                          data-template="YYYY" data-viewformat="YYYY"
+                                                          data-name="establishment_year"><?= $organization['establishment_year']; ?></span>
                                                     <!--                                                    --><?//= $organization['establishment_year']; ?>
                                                 </div>
                                                 <div class="det-heading">Established</div>
@@ -196,10 +260,13 @@ $industries = Json::encode($industries);
                             <div class="divider"></div>
                             <div class="col-md-12">
                                 <div class="mv-heading">
-                                    Mission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?><span data-for="mission" class="edit-box"><i class="fa fa-pencil"></i></span><?php } ?></div>
+                                    Mission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
+                                        <span data-for="mission" class="edit-box"><i
+                                                    class="fa fa-pencil"></i></span><?php } ?></div>
                                 <div class="mv-text">
-                                    <span href="#" class="model" id="mission" data-pk="mission" data-name="mission" data-type="textarea" data-value="<?= Html::encode($organization['mission']) ?>"></span>
-                                    <?= Html::encode($organization['mission']) ?>
+                                    <span href="#" class="model" id="mission" data-pk="mission" data-name="mission"
+                                          data-type="textarea"
+                                          data-value="<?= Html::encode($organization['mission']) ?>"></span>
                                 </div>
                                 <div class="vission-box">
                                     <div class="mv-heading">
@@ -333,7 +400,8 @@ $industries = Json::encode($industries);
                             <div class="heading-style">
                                 Meet The Team
                                 <div class="button_location pull-right">
-                                    <button type="button" class="i-review-nx modal-load-class" value="/companies/add-employee">
+                                    <button type="button" class="i-review-nx modal-load-class"
+                                            value="/companies/add-employee">
                                         <span class="i-review-button-tx">
                                             Add New Employee <span class="fa fa-long-arrow-right"></span>
                                         </span>
@@ -368,15 +436,24 @@ $industries = Json::encode($industries);
                                             <a href="#">
                                                 <div class="team-icon">
                                                     <img src="<?= Url::to('/' . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
-                                                    <?php if(!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])){ ?>
-                                                    <div class="team-overlay">
-                                                        <div class="team-text">
-                                                            <div class="know-bet">Know me better</div>
-                                                            <?php if(!empty($team['facebook'])){?><a href="<?= $team['facebook']; ?>" target="_blank"><i class="fa fa-facebook t-fb"></i> </a><?php }?>
-                                                            <?php if(!empty($team['linkedin'])){?><a href="<?= $team['linkedin']; ?>" target="_blank"><i class="fa fa-linkedin t-ln"></i> </a><?php }?>
-                                                            <?php if(!empty($team['twitter'])){?><a href="<?= $team['twitter']; ?>" target="_blank"><i class="fa fa-twitter t-tw"></i> </a><?php }?>
+                                                    <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
+                                                        <div class="team-overlay">
+                                                            <div class="team-text">
+                                                                <div class="know-bet">Know me better</div>
+                                                                <?php if (!empty($team['facebook'])) { ?><a
+                                                                    href="<?= $team['facebook']; ?>" target="_blank"><i
+                                                                                class="fa fa-facebook t-fb"></i>
+                                                                    </a><?php } ?>
+                                                                <?php if (!empty($team['linkedin'])) { ?><a
+                                                                    href="<?= $team['linkedin']; ?>" target="_blank"><i
+                                                                                class="fa fa-linkedin t-ln"></i>
+                                                                    </a><?php } ?>
+                                                                <?php if (!empty($team['twitter'])) { ?><a
+                                                                    href="<?= $team['twitter']; ?>" target="_blank"><i
+                                                                                class="fa fa-twitter t-tw"></i>
+                                                                    </a><?php } ?>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                     <?php } ?>
                                                 </div>
                                                 <div class="t-member">
@@ -388,7 +465,7 @@ $industries = Json::encode($industries);
                                     </div>
                                     <?php
                                 }
-                                    ?>
+                                ?>
                             </div>
                             <?php
                             Pjax::end()
@@ -468,36 +545,7 @@ $industries = Json::encode($industries);
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="head-office">
-                                        <!--                                        --><?php
-                                        //                                            foreach ($locations as $info) {
-                                        //                                                ?>
-                                        <!--                                                <div class="office-heading">-->
-                                        <!--                                                    <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/company-and-candidate/head-office.png') ?><!--">-->
-                                        <!--                                                    --><? //= $info['location_name']; ?>
-                                        <!--                                                </div>-->
-                                        <!--                                                <div class="office-loc">-->
-                                        <!--                                                    <div class="off-add">-->
-                                        <!--                                                        --><? //= $info['address'] ?>
-                                        <!--                                                    </div>-->
-                                        <!--                                                    <div class="off-city">-->
-                                        <? //= $info['city'] . ', ' . $info['state'] . ', ' . $info['country'] . ', ' . $info['postal_code']; ?><!--</div>-->
-                                        <!--                                                </div>-->
-                                        <!--                                                --><?php
-                                        //                                            }
-                                        //                                                ?>
-                                        <!--                                        <div class="office-heading o-h2">-->
-                                        <!--                                            <img src="-->
-                                        <? //= Url::to('@eyAssets/images/pages/company-and-candidate/branch-office.png') ?><!--">-->
-                                        <!--                                            Branch Office-->
-                                        <!--                                        </div>-->
-                                        <!--                                        <div class="office-loc">-->
-                                        <!--                                            <div class="off-add">BXX-3360, Lower Ground Floor, Capital Small Finance Bank,-->
-                                        <!--                                                Near-->
-                                        <!--                                                Aarti Chowk, Ferozepur Road-->
-                                        <!--                                            </div>-->
-                                        <!--                                            <div class="off-city">Ludhiana, Punjab</div>-->
-                                        <!--                                        </div>-->
+
                                     </div>
                                 </div>
                                 <div class="col-md-5">
@@ -523,11 +571,13 @@ $industries = Json::encode($industries);
         </div>
     </div>
 
-    <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">
                 </div>
                 <div class="modal-body">
@@ -536,6 +586,25 @@ $industries = Json::encode($industries);
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary custom-buttons2 vanilla-result">Done</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="coverCropModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">
+                </div>
+                <div class="modal-body">
+                    <div id="cover_crop"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary custom-buttons2 confirm_cover_croping">Done</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -1077,13 +1146,13 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 /*----tabs end----*/
 .header-bg{
-    background:url(' . Url::to('@eyAssets/images/backgrounds/default_cover.png') . ');
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: no-repeat !important;
+    background-size: 100% 100% !important;
+    min-height:450px;
 }
 .h-inner{
     position:relative;
-    min-height:300px;
+    min-height:450px;
     display: -webkit-box;
 }
 .logo-absolute{
@@ -1092,7 +1161,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     display:inherit;
     width:100%;
 }
-.com-details{width:100%;}
+.com-details{width:auto;}
 .logo-box{
     height:200px;
     width:200px;
@@ -1298,6 +1367,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     font-size: 16px;
     margin-left: 10px;
     margin-top: -3px;
+    position:relative;
 }
 .button_location{
     padding: 14px 0px;
@@ -1510,6 +1580,20 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 } 
 .hide-remove-buttons{display:none !important;}
 .org-location{position:relative;}
+.cover-edit{
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+    width:190px;
+}
+.cover-edit .edits{
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+    background-color: #f1f1f1;
+    padding: 10px 15px;
+    border-radius: 8px 0px 0px;
+}
 ');
 $script = <<<JS
 $('.model-link').editable({
@@ -1569,18 +1653,9 @@ $('#enable').click(function() {
 }); 
 var image_path = $('#logo-img').attr('src');
 var logo_name_path = "$no_image";
-        
-// function readURL(input) {
-//     if (input.files && input.files[0]) {
-//         var reader = new FileReader();
-//         reader.onload = function(e) {
-//             $('#logo-img').attr('src', e.target.result);
-//             $('#logo-img').hide();
-//             $('#logo-img').fadeIn(650);
-//         }
-//         reader.readAsDataURL(input.files[0]);
-//     }
-// }
+var default_cover_path = '$no_cover';
+var cover_path = $('#cover_img').css('background-image');
+
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -1591,6 +1666,19 @@ function readURL(input) {
                 renderCrop(rawImg);
             }, 500);
             
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function readURL2(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#coverCropModal').modal('show');
+            var rawCover = e.target.result;
+            setTimeout(function() {
+                renderCover(rawCover);
+            }, 500);
         }
         reader.readAsDataURL(input.files[0]);
     }
@@ -1607,8 +1695,25 @@ var vanilla = new Croppie(el, {
     maxZoomedCropWidth: 10,
     // enableOrientation: true
 });
+var cr = document.getElementById('cover_crop');
+var cover_vanilla = new Croppie(cr, {
+    viewport: { width: 750, height: 250 },
+    boundary: { width: 850, height: 350 },
+    enforceBoundary: false,
+    showZoomer: true,
+    enableZoom: true,
+    mouseWheelZoom: true,
+    maxZoomedCropWidth: 10,
+});
 function renderCrop(img){
     vanilla.bind({
+        url: img,
+        points: [20,20,20,20]
+        // orientation: 4
+    });
+}
+function renderCover(img){
+    cover_vanilla.bind({
         url: img,
         points: [20,20,20,20]
         // orientation: 4
@@ -1617,15 +1722,9 @@ function renderCrop(img){
 $("#logoUpload").change(function() {
     readURL(this);
 });
-// $('#logo-img').on('load', function () {
-//     if($("#logo-img").attr('src') != image_path && $("#logo-img").attr('src') != logo_name_path){
-//         $('#pop-content').fadeIn(1000);
-//    }
-// });
-// $(document).on('click', '#cancel_image', function() {
-//     $('#pop-content').fadeOut(1000);
-//     $('#logo-img').attr('src', image_path);
-// });
+$("#coverImageUpload").change(function() {
+    readURL2(this);
+});
 $(document).on('click', '#cancel_remove', function() {
     $('#pop-content1_2').fadeOut(1000);
 });
@@ -1633,32 +1732,7 @@ $(document).on('click', '.remove-logo', function(a) {
     a.preventDefault();
     $('#pop-content1_2').fadeIn(1000);
 });
-// $(document).on('submit', '#upload-logo', function(event) {
-//     event.preventDefault();
-//     $('#pop-content').fadeOut(1000);
-//     $.ajax({
-//         url: "/companies/update-logo",
-//         method: "POST",
-//         data: new FormData(this),
-//         contentType: false,
-//         cache:false,
-//         processData: false,
-//         beforeSend:function(){     
-//             $('#page-loading').fadeIn(1000);  
-//         },
-//         success: function (response) {
-//         $('#page-loading').fadeOut(1000);
-//             if (response.title == 'Success') {
-//                 toastr.success(response.message, response.title);
-//                 // $.pjax.reload({container: '#pjax_jobs_cards', async: false});
-//                 hide_remove_logo();
-//             } else {
-//                 toastr.error(response.message, response.title);
-//             }
-//            
-//         }
-//     });
-// });
+
 function hide_remove_logo(){
     var img_path = $('#logo-img').attr('src');
     if(img_path == logo_name_path){
@@ -1668,6 +1742,17 @@ function hide_remove_logo(){
     }
 }
 hide_remove_logo();
+function hide_remove_cover(){
+    var cover_img_path = $('#cover_img').css('background-image');
+    cover_imgss = cover_img_path.replace('url(','').replace(')','').replace(/\"/gi, "");
+    console.log(cover_imgss,default_cover_path);
+    if(cover_img_path == default_cover_path){
+        $('.remove_cover_image').parent('li').css('display', 'none');
+    } else{
+        $('.remove_cover_image').parent('li').css('display', 'block');
+    }
+}
+hide_remove_cover();
 $(document).on('click', '#confirm_remove_logo', function(event) {
     event.preventDefault();
     $('#pop-content1_2').fadeOut(1000);
@@ -1782,6 +1867,40 @@ $(document).on('click', '#confirm_t_user', function(event) {
         }
     });
 });
+$(document).on('click', '.remove_cover_image', function(a) {
+    a.preventDefault();
+    $('#pop-content2_2').fadeIn(1000);
+});
+$(document).on('click', '#cancel_cover_remove', function() {
+    $('#pop-content2_2').fadeOut(1000);
+});
+$(document).on('click', '.remove_cover_image', function(a) {
+    a.preventDefault();
+    $('#pop-content2_2').fadeIn(1000);
+});
+$(document).on('click', '#confirm_remove_cover', function(event) {
+    event.preventDefault();
+    $('#pop-content2_2').fadeOut(1000);
+    var type = $(this).val();
+    $.ajax({
+        url: "/companies/remove-image",
+        method: "POST",
+        data: {type:type},
+        beforeSend:function(){
+            $('#page-loading').fadeIn(1000);  
+        },
+        success: function (response) {
+        $('#page-loading').fadeOut(1000);
+            if (response.title == 'Success') {
+                $('#cover_img').css('background-image',default_cover_path);
+                toastr.success(response.message, response.title);
+                hide_remove_cover();
+            } else {
+                toastr.error(response.message, response.title);
+            }
+        }
+    });
+});
 $(document).on('click', '.modal-load-class', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
 });
@@ -1805,6 +1924,38 @@ document.querySelector('.vanilla-result').addEventListener('click', function (ev
                 if (response.title == 'Success') {
                     toastr.success(response.message, response.title);
                     $('#logo-img').attr('src', data);
+                    // $.pjax.reload({container: '#pjax_jobs_cards', async: false});
+                    hide_remove_logo();
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+    });
+});
+
+document.querySelector('.confirm_cover_croping').addEventListener('click', function (ev) {
+    cover_vanilla.result({
+        type: 'base64',
+        size: {
+            width: 1500,
+            height: 500
+        }
+        // format:'jpeg',
+    }).then(function (data) {
+        $.ajax({
+            url: "/companies/update-cover-image",
+            method: "POST",
+            data: {data:data},
+            beforeSend:function(){
+                $('#page-loading').fadeIn(1000);
+            },
+            success: function (response) {
+                $('#page-loading').fadeOut(1000);
+                $('#coverCropModal').modal('hide');
+                if (response.title == 'Success') {
+                    toastr.success(response.message, response.title);
+                    $('#cover_img').css('background', 'url(' + data + ')');
                     // $.pjax.reload({container: '#pjax_jobs_cards', async: false});
                     hide_remove_logo();
                 } else {
