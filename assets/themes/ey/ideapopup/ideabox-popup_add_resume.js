@@ -52,6 +52,15 @@ function random_fn(t){
 	//////////////////////////////////////////////////////////////
 	// Global popup close method.
 	ideaboxPopup.prototype.close = function() {
+		if(this.options.data.length == 5){
+				this.options.data.splice(1,3);
+		}
+		if(this.options.data.length == 4){
+				this.options.data.splice(1,2);
+		}
+		if(this.options.data.length == 3){
+			this.options.data.splice(1,1);
+		}
 		var that = this;
   		that.reviewModal.classList.remove('i-opened');
   		that.reviewModal.classList.add('i-close-animation');
