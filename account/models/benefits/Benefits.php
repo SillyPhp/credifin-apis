@@ -80,6 +80,7 @@ class Benefits extends Model
     {
         $chek_benefit = OrganizationEmployeeBenefits::find()
             ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'benefit_enc_id' => $id])
+            ->andWhere(['!=','is_deleted',1])
             ->asArray()
             ->one();
         if (empty($chek_benefit)) {
