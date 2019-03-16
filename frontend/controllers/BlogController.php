@@ -47,6 +47,32 @@ class BlogController extends Controller {
         ]);
     }
 
+    public function actionDetail($slug){
+        $postsModel = new Posts();
+        $post = $postsModel->find()->alias('a')
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about','f.image','f.image_location','f.initials_color'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->select(['b.post_enc_id', 'b.category_enc_id']);
+                $b->joinWith(['categoryEnc c' => function($y){
+                    $y->select(['c.category_enc_id','c.name','c.slug']);
+                }]);
+            }])
+            ->joinWith(['postTags d' => function ($b) {
+                $b->select(['d.post_enc_id', 'd.tag_enc_id']);
+                $b->joinWith(['tagEnc e' => function($z){
+                    $z->select(['e.tag_enc_id','e.name','e.slug']);
+                }]);
+            }])
+            ->leftJoin(Users::tablename() . ' as f', 'f.user_enc_id = a.author_enc_id')
+            ->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        return $this->render('blog_detail',[
+            'post' => $post,
+        ]);
+    }
+
     public function actionIndex() {
         $postsModel = new Posts();
         $posts = $postsModel->find()
