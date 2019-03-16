@@ -69,6 +69,7 @@ class ResumeController extends Controller {
                 $assigned_category->category_enc_id = $c_e_id->category_enc_id;
                 $assigned_category->parent_enc_id = $parent_enc_id;
                 $assigned_category->assigned_to = $type;
+                $assigned_category->created_on = date('Y-m-d H:i:s');
                 $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
                 $assigned_category->created_by = Yii::$app->user->identity->user_enc_id;
                 $assigned_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
@@ -115,6 +116,7 @@ class ResumeController extends Controller {
             $utilitiesModel->variables['table_name'] = Categories::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $new_category->slug = $utilitiesModel->create_slug();
+            $new_category->created_on = date('Y-m-d H:i:s');
             $new_category->created_by = Yii::$app->user->identity->user_enc_id;
             $new_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
             if ($new_category->save()) {
@@ -212,6 +214,7 @@ class ResumeController extends Controller {
         $organization_a_c->category_enc_id = $category_enc_id;
         $organization_a_c->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
         $organization_a_c->assigned_to = $type;
+        $organization_a_c->created_on = date('Y-m-d H:i:s');
         $organization_a_c->created_by = Yii::$app->user->identity->user_enc_id;
         $organization_a_c->last_updated_by = Yii::$app->user->identity->user_enc_id;
         $organization_a_c->save();
@@ -224,6 +227,7 @@ class ResumeController extends Controller {
         $organization_a_c->parent_enc_id = $p_enc_id;
         $organization_a_c->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
         $organization_a_c->assigned_to = $type;
+        $organization_a_c->created_on = date('Y-m-d H:i:s');
         $organization_a_c->created_by = Yii::$app->user->identity->user_enc_id;
         $organization_a_c->last_updated_by = Yii::$app->user->identity->user_enc_id;
         $organization_a_c->save();
@@ -462,6 +466,7 @@ class ResumeController extends Controller {
         $d_r_applications->applied_application_enc_id = Yii::$app->security->generateRandomString(12);
         $d_r_applications->user_enc_id = Yii::$app->user->identity->user_enc_id;
         $d_r_applications->experience = $exp;
+        $d_r_applications->created_on = date('Y-m-d H:i:s');
         $d_r_applications->created_by = Yii::$app->user->identity->user_enc_id;
         $d_r_applications->last_updated_by = Yii::$app->user->identity->user_enc_id;
         if($d_r_applications->save()){
@@ -475,6 +480,7 @@ class ResumeController extends Controller {
         $d_r_a_locations->applied_application_enc_id = $applied_app_enc_id;
         $d_r_a_locations->city_enc_id = $location;
         $d_r_a_locations->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_locations->created_on = date('Y-m-d H:i:s');
         $d_r_a_locations->created_by = Yii::$app->user->identity->user_enc_id;
         $d_r_a_locations->last_updated_by = Yii::$app->user->identity->user_enc_id;
         if($d_r_a_locations->save()){
@@ -488,6 +494,7 @@ class ResumeController extends Controller {
         $d_r_a_title->applied_application_enc_id = $applied_app_enc_id;
         $d_r_a_title->title = $job_title;
         $d_r_a_title->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $d_r_a_title->created_on = date('Y-m-d H:i:s');
         $d_r_a_title->created_by = Yii::$app->user->identity->user_enc_id;
         $d_r_a_title->last_updated_by = Yii::$app->user->identity->user_enc_id;
 
