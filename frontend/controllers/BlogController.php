@@ -47,7 +47,7 @@ class BlogController extends Controller {
         ]);
     }
 
-    public function actionBlogDetail(){
+    public function actionDetail($slug){
         $postsModel = new Posts();
         $post = $postsModel->find()->alias('a')
             ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about','f.image','f.image_location','f.initials_color'])
@@ -64,12 +64,10 @@ class BlogController extends Controller {
                 }]);
             }])
             ->leftJoin(Users::tablename() . ' as f', 'f.user_enc_id = a.author_enc_id')
-            ->where(['a.slug' => 'dsa-12', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+            ->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->asArray()
             ->one();
 
-//        print_r($post);
-//        exit();
         return $this->render('blog_detail',[
             'post' => $post,
         ]);
