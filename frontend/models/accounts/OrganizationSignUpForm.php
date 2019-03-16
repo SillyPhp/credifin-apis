@@ -108,6 +108,16 @@ class OrganizationSignUpForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $usernamesModel = new Usernames();
+            $usernamesModel->username = $this->username;
+            $usernamesModel->assigned_to = 2;
+            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                $transaction->rollBack();
+                $this->_flag = false;
+            } else {
+                $this->_flag = true;
+            }
+
             $utilitiesModel = new Utilities();
             $usersModel = new Users();
             $usersModel->username = $this->username;
