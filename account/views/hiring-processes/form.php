@@ -483,6 +483,7 @@ if (doc_type=='clone'||doc_type=='edit')
         count_elem--;
         elem_chk();
         getData();
+        checkDiv();
     });
 
     $('#process_form').validate({
