@@ -428,11 +428,7 @@ class ResumeController extends Controller {
             ->alias('a')
             ->select(['a.applied_application_enc_id'])
             ->where(['a.user_enc_id'=>$user])
-            ->andWhere([
-                'or',
-                ['a.status' => 0],
-                ['a.status' => 1]
-            ])
+            ->andWhere(['a.status' => 0])
             ->asArray()
             ->one();
 
