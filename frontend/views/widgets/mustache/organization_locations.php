@@ -17,12 +17,22 @@ use yii\helpers\Url;
                 </div>
                 <div class="off-city">{{city}}, {{state}}, {{country}}, {{postal_code}}</div>
             </div>
-            <a href="#" class="remove_location"><i class="fa fa fa-times-circle"></i></a>
-            <div id="remove_location_confirm" class="confirm_remove_loc">
-                <button id="confirm_loc" type="button" value="{{location_enc_id}}" class="btn btn-primary btn-sm editable-submit"><i class="glyphicon glyphicon-ok"></i></button>
-                <button id="cancel_loc" type="button" class="btn btn-default btn-sm editable-cancel"><i class="glyphicon glyphicon-remove"></i></button>
-            </div>
+            <?php
+            if ($Edit) {
+                ?>
+                <a href="#" class="remove_location"><i class="fa fa fa-times-circle"></i></a>
+                <div id="remove_location_confirm" class="confirm_remove_loc">
+                    <button id="confirm_loc" type="button" value="{{location_enc_id}}"
+                            class="btn btn-primary btn-sm editable-submit"><i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                    <button id="cancel_loc" type="button" class="btn btn-default btn-sm editable-cancel"><i
+                                class="glyphicon glyphicon-remove"></i></button>
+                </div>
+                <?php
+            }
+            ?>
         </div>
+
         {{/.}}
     </script>
 <?php
@@ -55,43 +65,66 @@ function getLocations() {
             if(response.status === 200) {
                 var location_data = $('#organization-locations').html();
                 $(".head-office").html(Mustache.render(location_data, response.locations));
+                var location_main = [];
+                    var q = 1;
+                $.each(response.locations, function(){
+                    location_main.push([this.location_name, this.latitude, this.longitude, q]);
+                    q++;
+                });
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 4,
+                    center: new google.maps.LatLng(30.900965, 75.857277),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+                var marker, i;
+
+                for (i = 0; i < location_main.length; i++) { 
+                  marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(location_main[i][1], location_main[i][2]),
+                    map: map
+                  });
+                }
                 // renderLocations(response.locations);
             }
         }
     });
 }
-$(document).on('click', '.remove_location', function(e) {
-    e.preventDefault();
-    $(this).next().fadeIn();
-});
-$(document).on('click', '#cancel_loc', function() {
-    $(this).parent().fadeOut();
-});
-$(document).on('click', '#confirm_loc', function(event) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    $('#remove_video_confirm').fadeOut(1000);
-    var id = $(this).val();
-    $.ajax({
-        url: "/companies/location-delete",
-        method: "POST",
-        data: {id:id},
-        beforeSend:function(){     
-            $('#page-loading').fadeIn(1000);  
-        },
-        success: function (response) {
-        $('#page-loading').fadeOut(1000);
-            if (response.title == 'Success') {
-                toastr.success(response.message, response.title);
-                getLocations();
-            } else {
-                toastr.error(response.message, response.title);
-            }
-            
-        }
-    });
-});
+
 getLocations();
 JS;
+if ($Edit) {
+    $this->registerJs("
+        $(document).on('click', '.remove_location', function(e) {
+            e.preventDefault();
+            $(this).next().fadeIn();
+        });
+        $(document).on('click', '#cancel_loc', function() {
+            $(this).parent().fadeOut();
+        });
+        $(document).on('click', '#confirm_loc', function(event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            $('#remove_video_confirm').fadeOut(1000);
+            var id = $(this).val();
+            $.ajax({
+                url: '/companies/location-delete',
+                method: 'POST',
+                data: {id:id},
+                beforeSend:function(){     
+                    $('#page-loading').fadeIn(1000);  
+                },
+                success: function (response) {
+                $('#page-loading').fadeOut(1000);
+                    if (response.title == 'Success') {
+                        toastr.success(response.message, response.title);
+                        getLocations();
+                    } else {
+                        toastr.error(response.message, response.title);
+                    }
+                }
+            });
+        });
+    ");
+}
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

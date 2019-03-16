@@ -12,10 +12,19 @@ if ($organization['logo']) {
 } else {
     $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
-
+if ($organization['cover_image']) {
+    $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
+    $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
+    if (!file_exists($cover_image_path)) {
+        $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+    }
+} else {
+    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
+}
 ?>
     <section>
-        <div class="header-bg">
+        <div class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
+            <div class="cover-bg-color"></div>
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -34,8 +43,7 @@ if ($organization['logo']) {
                                 </div>
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
-                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <?= Html::encode($organization['tag_line']); ?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <?= Html::encode($industry['industry']); ?></div>
+                                    <?php if(!empty($organization['tag_line'])){?><div class="com-establish"><span class="detail-title">Tagline:</span> <?= Html::encode($organization['tag_line']); ?></div><?php }?>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +59,7 @@ if ($organization['logo']) {
                     <ul class="nav nav-tabs nav-padd-20">
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Location</a></li>
+                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -94,6 +102,7 @@ if ($organization['logo']) {
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
                                 <div class="row margin-0">
+                                    <?php if(!empty($organization['number_of_employees'])){?>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
@@ -104,14 +113,16 @@ if ($organization['logo']) {
                                             </div>
                                         </div>
                                     </div>
+                                    <?php }?>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
-                                                <div class="det">50</div>
+                                                <div class="det"><?= $count_opportunities ?></div>
                                                 <div class="det-heading">Opportunities</Opper></div>
                                             </div>
                                         </div>
                                     </div>
+                                    <?php if(!empty($organization['establishment_year'])){?>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
@@ -122,21 +133,27 @@ if ($organization['logo']) {
                                             </div>
                                         </div>
                                     </div>
+                                    <?php }?>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <?php if(!empty($organization['mission']) || !empty($organization['vision'])){?>
                     <div class="row">
                         <div class="mv-box">
                             <div class="heading-style">Mission & Vision</div>
                             <div class="divider"></div>
                             <div class="col-md-12">
+                                <?php if(!empty($organization['mission'])){?>
                                 <div class="mv-heading">
                                     Mission
                                 </div>
                                 <div class="mv-text">
                                     <?= Html::encode($organization['mission']) ?>
                                 </div>
+                                <?php }
+                                if(!empty($organization['vision'])){
+                                ?>
                                 <div class="vission-box">
                                     <div class="mv-heading">
                                         Vision
@@ -145,9 +162,12 @@ if ($organization['logo']) {
                                        <?= Html::encode($organization['vision']) ?>
                                     </div>
                                 </div>
+                                    <?php } ?>
                             </div>
                         </div>
                     </div>
+                    <?php }
+                    if(!empty($benefit)){?>
                     <div class="row">
                         <div class="company-benefits">
                             <div class="heading-style">Employee Benefits</div>
@@ -180,6 +200,9 @@ if ($organization['logo']) {
                             </div>
                         </div>
                     </div>
+                    <?php }
+                    if(!empty($gallery)){
+                    ?>
                     <div class="row">
                         <div class="office-view">
                             <div class="heading-style">
@@ -205,6 +228,9 @@ if ($organization['logo']) {
                             </div>
                         </div>
                     </div>
+                    <?php }
+                    if(!empty($our_team)){
+                    ?>
                     <div class="row">
                         <div class="company-team">
                             <div class="heading-style">Meet The Team</div>
@@ -242,6 +268,7 @@ if ($organization['logo']) {
                             </div>
                         </div>
                     </div>
+                    <?php } ?>
                 </div>
                 <div id="menu1" class="tab-pane fade">
                     <div class="row">
@@ -249,40 +276,7 @@ if ($organization['logo']) {
                         <div class="divider"></div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-4 col-sm-12 pt-5">
-                                    <div class="application-card-main">
-                                        <span class="application-card-type"><i class="fa fa-inr"></i></span>
-                                        <span class="application-card-type"></span>
-                                        <div class="col-md-12 application-card-border-bottom">
-                                            <div class="application-card-img">
-                                                <a href="">
-                                                    <img src="">
-                                                    <canvas class="user-icon" name="" width="80" height="80"
-                                                            color="" font="35px"></canvas>
-                                                </a>
-                                            </div>
-                                            <div class="application-card-description">
-                                                <a href=""><h4 class="application-title"></h4></a>
-                                                <h5 class="location" data-lat="" data-long="" data-locations=""><i
-                                                            class="fa fa-map-marker"></i>&nbsp;</h5>
-                                                <h5><i class="fa fa-clock-o"></i>&nbsp;</h5>
-                                            </div>
-                                        </div>
-                                        <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                                            Last Date to Apply
-                                            <br>
-                                        </h6>
-                                        <h4 class="col-md-7 org_name text-right pr-10">
-                                        </h4>
-                                        <div class="col-md-12">
-                                            <h4 class="org_name text-right"></h4>
-                                        </div>
-                                        <div class="application-card-wrapper">
-                                            <a href="" class="application-card-open">View Detail</a>
-                                            <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="blogbox"></div>
                             </div>
                         </div>
                     </div>
@@ -291,8 +285,10 @@ if ($organization['logo']) {
                         <div class="internships-block">
                             <div class="heading-style">Available Internships</div>
                             <div class="divider"></div>
-                            <div class="internship">
-                                No Internships available.
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="internships_main"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -302,14 +298,6 @@ if ($organization['logo']) {
                         <div class="address-division">
                             <div class="heading-style">
                                 Address
-                                <div class="button_location pull-right">
-                                    <button type="button" class="i-review-nx modal-load-class"
-                                            value="/account/locations/create">
-                                            <span class="i-review-button-tx">
-                                                Add New <span class="fa fa-long-arrow-right"></span>
-                                            </span>
-                                    </button>
-                                </div>
                             </div>
                             <div class="divider"></div>
                             <div class="row">
@@ -342,7 +330,10 @@ if ($organization['logo']) {
     </div>
     <input type="hidden" id="organisation_id" value="<?= Html::encode($organization['organization_enc_id']) ?>"/>
 <?php
-echo $this->render('/widgets/mustache/organization_locations');
+echo $this->render('/widgets/mustache/organization_locations',[
+    'Edit' => false
+]);
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 /*----jobs and internships----*/
 .internships-block{
@@ -874,13 +865,13 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 /*----tabs end----*/
 .header-bg{
-    background:url(' . Url::to('@eyAssets/images/backgrounds/default_cover.png') . ');
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: no-repeat !important;
+    background-size: 100% 100% !important;
+    min-height:400px;
 }
 .h-inner{
     position:relative;
-    min-height:300px;
+    min-height:400px;
     display: -webkit-box;
 }
 .logo-absolute{
@@ -991,6 +982,12 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     background: #00a0e3;
     color: #fff;
 }
+.cover-bg-color{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: #00000057;
+}
 ');
 $script = <<<JS
 $(document).on('click','.follow',function(e){
@@ -1015,17 +1012,11 @@ $(document).on('click','.follow',function(e){
         }
     });        
 });
-
- var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
-        });
-      }
-      initMap();
-
 JS;
+$this->registerJs("
+getCards('Jobs','.blogbox','/companies/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Internships','.internships_main','/companies/organization-opportunities/?org=" . $organization['name'] . "');
+");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');

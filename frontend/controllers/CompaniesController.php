@@ -169,6 +169,9 @@ class CompaniesController extends Controller
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
                 ->asArray()
                 ->all();
+            $count_opportunities = \common\models\EmployerApplications::find()
+                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
+                ->count();
 
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -213,6 +216,7 @@ class CompaniesController extends Controller
                     'benefit' => $benefit,
                     'gallery' => $gallery,
                     'our_team' => $our_team,
+                    'count_opportunities' => $count_opportunities,
                 ]);
             } else {
 
@@ -234,6 +238,7 @@ class CompaniesController extends Controller
                     'gallery' => $gallery,
                     'our_team' => $our_team,
                     'industry' => $industry,
+                    'count_opportunities' => $count_opportunities,
                 ]);
             }
         } else {
@@ -753,6 +758,34 @@ class CompaniesController extends Controller
                     return 'following';
                 }
             }
+        }
+    }
+
+    public function actionOrganizationOpportunities($org){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $options = [];
+            $options['limit'] = 3;
+            $options['page'] = 1;
+            $options['company'] = $org;
+            if ($type == 'Jobs') {
+                $cards = ApplicationCards::jobs($options);
+            } else {
+                $cards = ApplicationCards::internships($options);
+            }
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
         }
     }
 

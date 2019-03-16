@@ -36,11 +36,11 @@ if ($organization['cover_image']) {
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
-$industries = Json::encode($industries);
 
 ?>
     <section>
         <div id="cover_img" class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
+            <div class="cover-bg-color"></div>
             <?php
             $formm = ActiveForm::begin([
                 'id' => 'change-cover-image',
@@ -89,13 +89,7 @@ $industries = Json::encode($industries);
                                 <div class="logo-box">
                                     <div class="logo">
                                         <img id="logo-img" src="<?= Url::to($image); ?>">
-                                        <!--                                            <canvas class="user-icon img-circle img-thumbnail " name="-->
-                                        <?//= $image; ?><!--"-->
-                                        <!--                                                    color="-->
-                                        <?//= $organization['initials_color'] ?><!--" width="200"-->
-                                        <!--                                                    height="200" font="85px"></canvas>-->
                                         <?php
-                                        if (Yii::$app->user->identity->organization->slug === $organization['slug']) {
                                             $form = ActiveForm::begin([
                                                 'id' => 'upload-logo',
                                                 'options' => ['enctype' => 'multipart/form-data'],
@@ -133,23 +127,12 @@ $industries = Json::encode($industries);
                                                 </button>
                                             </div>
                                             <?php
-                                            ActiveForm::end();
-                                        } ?>
+                                            ActiveForm::end(); ?>
                                     </div>
                                 </div>
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
-                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span
-                                                class="model" id="tag_line" data-type="text" data-pk="tag_line"
-                                                data-name="tag_line"
-                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
-                                            <span data-for="tag_line" class="edit-box"><i
-                                                        class="fa fa-pencil"></i></span><?php } ?></div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span
-                                                class="model" data-type="select"
-                                                id="industry_enc_id"></span> <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
-                                            <span data-for="industry_enc_id" class="edit-box"><i
-                                                        class="fa fa-pencil"></i></span><?php } ?></div>
+                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span class="model" id="tag_line" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span></div>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +148,7 @@ $industries = Json::encode($industries);
                     <ul class="nav nav-tabs nav-padd-20">
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Location</a></li>
+                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -197,9 +180,8 @@ $industries = Json::encode($industries);
                     <div class="row">
                         <div class="heading-style">
                             About <?= Html::encode($organization['name']) ?>
-                            <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
                                 <span data-for="description" class="edit-box"><i
-                                            class="fa fa-pencil"></i></span><?php } ?>
+                                            class="fa fa-pencil"></i></span>
                         </div>
                         <div class="divider"></div>
 
@@ -229,7 +211,7 @@ $industries = Json::encode($industries);
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
-                                                <div class="det">50</div>
+                                                <div class="det"><?= $count_opportunities ?></div>
                                                 <div class="det-heading">Opportunities</Opper></div>
                                             </div>
                                         </div>
@@ -479,40 +461,7 @@ $industries = Json::encode($industries);
                         <div class="divider"></div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-4 col-sm-12 pt-5">
-                                    <div class="application-card-main">
-                                        <span class="application-card-type"><i class="fa fa-inr"></i></span>
-                                        <span class="application-card-type"></span>
-                                        <div class="col-md-12 application-card-border-bottom">
-                                            <div class="application-card-img">
-                                                <a href="">
-                                                    <img src="">
-                                                    <canvas class="user-icon" name="" width="80" height="80"
-                                                            color="" font="35px"></canvas>
-                                                </a>
-                                            </div>
-                                            <div class="application-card-description">
-                                                <a href=""><h4 class="application-title"></h4></a>
-                                                <h5 class="location" data-lat="" data-long="" data-locations=""><i
-                                                            class="fa fa-map-marker"></i>&nbsp;</h5>
-                                                <h5><i class="fa fa-clock-o"></i>&nbsp;</h5>
-                                            </div>
-                                        </div>
-                                        <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                                            Last Date to Apply
-                                            <br>
-                                        </h6>
-                                        <h4 class="col-md-7 org_name text-right pr-10">
-                                        </h4>
-                                        <div class="col-md-12">
-                                            <h4 class="org_name text-right"></h4>
-                                        </div>
-                                        <div class="application-card-wrapper">
-                                            <a href="" class="application-card-open">View Detail</a>
-                                            <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="blogbox"></div>
                             </div>
                         </div>
                     </div>
@@ -521,8 +470,10 @@ $industries = Json::encode($industries);
                         <div class="internships-block">
                             <div class="heading-style">Available Internships</div>
                             <div class="divider"></div>
-                            <div class="internship">
-                                No Internships available.
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="internships_main"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -613,8 +564,11 @@ $industries = Json::encode($industries);
 
 <?php
 Pjax::begin(['id' => 'pjax_locations2']);
-echo $this->render('/widgets/mustache/organization_locations');
+echo $this->render('/widgets/mustache/organization_locations',[
+        'Edit' => true
+]);
 Pjax::end();
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 /*----jobs and internships----*/
 .internships-block{
@@ -1148,11 +1102,11 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 .header-bg{
     background-repeat: no-repeat !important;
     background-size: 100% 100% !important;
-    min-height:450px;
+    min-height:400px;
 }
 .h-inner{
     position:relative;
-    min-height:450px;
+    min-height:400px;
     display: -webkit-box;
 }
 .logo-absolute{
@@ -1594,6 +1548,13 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     padding: 10px 15px;
     border-radius: 8px 0px 0px;
 }
+.cover-bg-color{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: #00000057;
+}
+#change-cover-image{margin:0px;}
 ');
 $script = <<<JS
 $('.model-link').editable({
@@ -1639,13 +1600,13 @@ $('#enable').click(function() {
    var edit_toggle = $('.edit-box').css('display');
    if(edit_toggle == 'block' || edit_toggle == 'inline-block'){
        $('.edit-box').css('display', 'none');
-       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user').hide();
+       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
        $('.remove_g_image, .remove_location').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
-       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user').show();
+       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
        $('.remove_g_image, .remove_location').removeClass('hide-remove-buttons');
        $(this).text('View Profile');
@@ -1745,7 +1706,7 @@ hide_remove_logo();
 function hide_remove_cover(){
     var cover_img_path = $('#cover_img').css('background-image');
     cover_imgss = cover_img_path.replace('url(','').replace(')','').replace(/\"/gi, "");
-    console.log(cover_imgss,default_cover_path);
+    // console.log(cover_imgss,default_cover_path);
     if(cover_img_path == default_cover_path){
         $('.remove_cover_image').parent('li').css('display', 'none');
     } else{
@@ -1938,8 +1899,8 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
     cover_vanilla.result({
         type: 'base64',
         size: {
-            width: 1500,
-            height: 500
+            width: 1300,
+            height: 433
         }
         // format:'jpeg',
     }).then(function (data) {
@@ -1956,7 +1917,6 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
                 if (response.title == 'Success') {
                     toastr.success(response.message, response.title);
                     $('#cover_img').css('background', 'url(' + data + ')');
-                    // $.pjax.reload({container: '#pjax_jobs_cards', async: false});
                     hide_remove_logo();
                 } else {
                     toastr.error(response.message, response.title);
@@ -1965,38 +1925,24 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
         });
     });
 });
- var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
-        });
-      }
-      initMap();
 
 JS;
 $this->registerJs("
-$('#industry_enc_id').editable({
-    placement: 'bottom',
-    url: '/companies/update-profile',
-    pk: 'industry_enc_id',
-    toggle: 'manual',
-    value: '" . $organization['industry_enc_id'] . "',
-    source: " . $industries . "
-});
+getCards('Jobs','.blogbox','/companies/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Internships','.internships_main','/companies/organization-opportunities/?org=" . $organization['name'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerCssFile('http://foliotek.github.io/Croppie/bower_components/sweetalert/dist/sweetalert.css');
+//$this->registerCssFile('http://foliotek.github.io/Croppie/bower_components/sweetalert/dist/sweetalert.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
 $this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('http://foliotek.github.io/Croppie/bower_components/sweetalert/dist/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('http://foliotek.github.io/Croppie/bower_components/sweetalert/dist/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 //$this->registerJsFile('https://foliotek.github.io/Croppie/bower_components/exif-js/exif.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 //$this->registerJsFile('http://vitalets.github.io/combodate/combodate.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
