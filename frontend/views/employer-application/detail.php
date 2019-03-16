@@ -455,7 +455,7 @@ $this->registerCss("
         width: 100%;
         height: 100%;
         content: '';
-        z-index: 0;
+        z-index: -1;
         opacity: 0.14;
     }
     .inner-header {
@@ -1285,33 +1285,6 @@ $this->registerCss("
     /* Profile icons css ends */
     ");
 $script = <<< JS
-$(document).on('click','.shortlist_job',function(e)
-    {
-         e.preventDefault();
-         var app_id = $('#application_id').val();
-         $.ajax({
-                    url:'/account/jobs/shortlist-job',
-                    data: {app_id:app_id},                         
-                    method: 'post',
-                 beforeSend:function()
-                 {
-                  $('.shortlist_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                 },     
-                 success:function(data)
-                 {  
-                    if(data=='short'){
-                    $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlisted');
-                    $('.hover-change').addClass('col_pink');
-                    }
-                      
-                    else if(data=='unshort'){
-                    $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlist');
-                    $('.hover-change').removeClass('col_pink');
-                    }
-                 }
-                    
-                    });        
-    })        
    
         $(document).on('click','.apply-btn',function(e)
             {

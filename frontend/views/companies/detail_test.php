@@ -1,14 +1,18 @@
 <?php
 $this->title = Yii::t('frontend', $organization['name']);
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
+
 function random_color_part() {
     return str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
 }
+
 function random_color() {
     return random_color_part() . random_color_part() . random_color_part();
 }
+
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -18,6 +22,7 @@ if ($organization['logo']) {
 } else {
     $image = $organization['name'];
 }
+
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -326,7 +331,7 @@ if ($organization['cover_image']) {
     <section>
         <div class="container">
             <div class="empty-field">
-                <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+                <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->isGuest) ? 'yes' : '' ?>">
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
@@ -339,36 +344,7 @@ if ($organization['cover_image']) {
                             <h4 class="modal-title"></h4>
                         </div>
                         <div class="modal-body">
-                            <p>Please Login as Candidate to drop your resume</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="dropcv">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="existsModal" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Wait for company to create the feature</p>
+                            <p>Please Login to your empower youth profile or Sign Up </p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -383,9 +359,9 @@ if ($organization['cover_image']) {
     </section>
 <?php
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/drop_resume',[
-        'username'=>$username
-]);
+echo $this->render('/widgets/drop_resume_test',['jobProfile'=>$jobProfile,
+    'jobTitle'=>$jobTitle,
+    'location'=>$location,]);
 $this->registerCss('
 /* Feature, categories css starts */
 .cat-sec {
@@ -467,21 +443,9 @@ $this->registerCss('
 }
 /* Feature, categories css ends */
 ');
-$script = <<<JS
 
-var data = {
-    company_name: window.location.pathname.split('/')[2]
-};
-$.ajax({
-    type: 'POST',
-    url: '/account/resume/check-resume',
-    data : data,
-    success: function(response){
-        // console.log(response);
-        $('#dropcv').val(response);
-    }
-});
-    
+$script = <<<JS
+       
 document.body.scrollTop = 0;
 document.documentElement.scrollTop = 0; 
         
@@ -518,6 +482,7 @@ loader = false;
 getCards();
 getCards("Internships");
 JS;
+
 if (count($locations) > 0) {
     $i = 1;
     foreach ($locations as $info) {
@@ -526,17 +491,29 @@ if (count($locations) > 0) {
     }
     $this->registerJs("
     var locations = [" . $locations_loc . "];
+
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 4,
       center: new google.maps.LatLng(30.900965, 75.857277),
       mapTypeId: google.maps.MapTypeId.ROADMAP
     });
+
+//    var infowindow = new google.maps.InfoWindow();
+
     var marker, i;
+
     for (i = 0; i < locations.length; i++) { 
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(locations[i][1], locations[i][2]),
         map: map
       });
+
+//      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+//        return function() {
+//          infowindow.setContent(locations[i]);
+//          infowindow.open(map, marker);
+//        }
+//      })(marker, i));
     }
 ");
     $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -545,9 +522,6 @@ $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/company-profile.css');
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
