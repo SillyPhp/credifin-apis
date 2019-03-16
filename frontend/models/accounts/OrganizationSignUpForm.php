@@ -56,7 +56,7 @@ class OrganizationSignUpForm extends Model
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
             [['username', 'email', 'organization_email'], 'string', 'max' => 50],
-            [['new_password', 'confirm_password'], 'string', 'max' => 20],
+            [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
             [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
