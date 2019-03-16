@@ -308,7 +308,7 @@ $(document).on('click','.clickable',function(e)
    }
 if (doc_type=='clone'||doc_type=='edit')
     {
-        count_elem = elements_total_count;
+        count_elem = elements_total_count-2; 
         elem_chk();
         getData();
         checkDiv();
