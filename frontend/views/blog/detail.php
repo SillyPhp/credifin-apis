@@ -19,31 +19,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="blog-title"><?= $post['title'] ?></div>
                     <div class="blog-text">
-                        <?= $post['description'] ?>
-                    </div>
-                </div>
-                <div class="comments-block">
-                    <div class="heading-style">Comments</div>
-                    <div class="comment-box">
-                        <div class="add-comment">
-                            <div class="row">
-                                <div class="col-md-10 col-md-offset-1">
-                                    <form id="postComm">
-                                        <div class="">
-                                            <textarea id="commentArea"></textarea>
-                                        </div>
-                                        <div class="comment-sub">
-                                            <button type="button" id="sendComment">Comment</button>
-                                        </div>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="activecomments"></div>
-                        <div class="load-more-btn">
-                            <button type="button">Load More Comments</button>
-                        </div>
+                        <?= $post['description']; ?>
                     </div>
                 </div>
             </div>
@@ -66,7 +42,6 @@ use yii\helpers\Url;
                                             color="<?= $post['initials_color']; ?>" width="125" height="125"
                                             font="60px"></canvas>
                                 <?php endif; ?>
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--">-->
                             </div>
                         </a>
                         <div class="channel-details">
@@ -86,10 +61,6 @@ use yii\helpers\Url;
                                 ?>
                             </ul>
                         </div>
-<!--                        <div class="blog-cat">-->
-<!--                            <span>Category:</span>-->
-
-<!--                        </div>-->
                         <div class="blog-pub"><span>Published:</span> <?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
                         <div class="blog-tags">
                             <span>Tags:</span>
@@ -240,7 +211,6 @@ textarea::placeholder{
     border-radius:10px;
 }
 .reply-comment{
-//    border-top:1px solid #eee;
     padding:20px 20px 10px;
     margin-top:20px;
 }
@@ -459,215 +429,3 @@ textarea::placeholder{
     }
 }
 ');
-$script = <<< JS
-
-    // document.addEventListener('click', test);
-    //
-    // function test(){
-    //     var z = document.getElementsByClassName(".replyButton");
-    //     z.forEach()
-    //     for(i=0; i<z.length; i++){
-    //         z[i].onClick = function(){
-    //             console.log(1);
-    //         };
-    //     }
-    // }
-    
-    // function replyBtn(){
-    //     console.log(1);
-    // }
-    // 
-    // console.log(z);
-   
-   
-// var commentbox =  '<div class="col-md-10 col-md-offset-2"><div class="reply-comment"><div class="col-md-12"><form><div class=""><textarea placeholder="Reply to this comment"></textarea></div><div class="comment-sub1"><button type="button" class="sendComment">Comment</button><button type="button" id="closeComment1" onclick=closeComment(this)>Cancel</button></div></form></div></div></div></div>';
- 
-  //  
-    
-  //   // forEach(z, replyBtn());
-  //   z[0].onclick = replyBtn();
-  //   var hasPushed = false;
-  //   function replyBtn() {
-  //       if(!hasPushed) {
-  //           hasPushed=!hasPushed;
-  //           var article = upTo(this, "article");
-  //           var scomment = document.createElement('div');
-  //           scomment.setAttribute("id", "replycom");
-  //           scomment.innerHTML = commentbox ;
-  //           // scomment.innerHTML = Mustache.render($('#commentbox').html());
-  //           article.appendChild(scomment);
-  //           }
-  //       var x = document.getElementsByClassName("sendComment");
-  //       for (i=0; i<x.length; i++){
-  //           x[i].addEventListener('click', replyComment);
-  //       }
-  //   }
-  //
-  //   function closeComment(remove) {
-  //       hasPushed=!hasPushed;
-  //       var showComment = remove.closest("#replycom");
-  //       console.log(showComment);
-  //       showComment.remove();
-  //   }
-  //
-  //   function upTo(el, tagName) {
-  //       tagName = tagName.toLowerCase();
-  //
-  //       while (el && el.parentNode) {
-  //           el = el.parentNode;
-  //           if (el.tagName && el.tagName.toLowerCase() == tagName) {
-  //               return el;
-  //           }
-  //       }
-  //
-  //       // Many DOM methods return null if they don't
-  //       // find the element they are searching for
-  //       // It would be OK to omit the following and just
-  //       // return undefined
-  //       return null;
-  //   }
-  //
-  //
-  //
-  //       function replyComment() {
-  //           var reComment = upTo(this, "article");
-  //           var rcomment = document.createElement('div');
-  //           rcomment.innerHTML =  Mustache.render($('#replyBox').html());
-  //           reComment.appendChild(rcomment);
-  //           var hideComment = this.closest("#replycom");
-  //           hideComment.remove();
-  //       }
-  
-JS;
-$this->registerJs($script);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>
-<script>
-    function addComment() {
-        repliedCommnet = {};
-        repliedCommnet['img'] = '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg';
-        repliedCommnet['name'] = 'Shshank';
-        repliedCommnet['reply'] = document.getElementById("commentArea").value;
-        if (repliedCommnet['reply'] == "") {
-            document.getElementById("commentArea").classList.add("errorClass");
-            return;
-        }
-        var temp1 = document.getElementById("replytemp").innerHTML;
-        var output = Mustache.render(temp1, repliedCommnet);
-        var a = document.getElementById("activecomments");
-        a.innerHTML += output;
-        document.getElementById("commentArea").classList.remove("errorClass");
-        document.getElementById("postComm").reset();
-    }
-
-    document.getElementById("sendComment").addEventListener('click', addComment);
-    var hasPushed = false;
-
-    function addReply(t) {
-        var r = document.getElementsByClassName("cboxRemove");
-        for (var i = 0; i < r.length; i++) {
-            r[i].remove();
-        }
-        if (!hasPushed) {
-            hasPushed = !hasPushed;
-            var temp2 = document.getElementById("commentbox").innerHTML;
-            var output = Mustache.render(temp2);
-            var art = t.closest("article");
-            art.innerHTML += output;
-            hasPushed = !hasPushed;
-        }
-    }
-
-    function closeComm(t) {
-        var r = document.getElementsByClassName("cboxRemove");
-        r[0].remove();
-    }
-
-
-    function addDynamicComment(t) {
-
-        repliedCommnet = {};
-        repliedCommnet['img'] = '/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg';
-        repliedCommnet['name'] = 'Shshank';
-        repliedCommnet['reply'] = t.closest('div').parentNode.querySelector('textarea').value;
-        if (repliedCommnet['reply'] == "") {
-            document.getElementById("commentReply").classList.add("errorClass");
-            return;
-        }
-        var temp1 = document.getElementById("comtemp").innerHTML;
-        var output = Mustache.render(temp1, repliedCommnet);
-        var art = t.closest("article");
-        art.innerHTML += output;
-        document.getElementsByClassName('cboxRemove')[0].remove();
-
-    }
-
-</script>
-<script id="replytemp" type="text/template">
-    <article class="blog-comm">
-        <div class="row">
-            <div class="col-md-12 col-xs-12">
-                <div class="col-md-2 col-xs-3">
-                    <div class="comment-icon">
-                        <img src="<?= Url::to('{{img}}') ?>">
-                    </div>
-                </div>
-                <div class="col-md-10 col-xs-9">
-                    <div class="comment">
-                        <div class="comment-name">{{name}}</div>
-                        <div class="comment-text">
-                            {{reply}}
-                        </div>
-                    </div>
-
-                    <div class="reply">
-                        <button class="replyButton" onclick="addReply(this)"><i class="fa fa-reply"></i> Reply</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
-</script>
-<script id="comtemp" type="text/template">
-    <article class="reply-comm">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-2">
-                <div class="col-md-2 col-xs-3">
-                    <div class="comment-icon">
-                        <img src="<?= Url::to('{{img}}') ?>">
-                    </div>
-                </div>
-                <div class="col-md-10 col-xs-9">
-                    <div class="comment">
-                        <div class="comment-name">{{name}}</div>
-                        <div class="comment-text">
-                            {{reply}}
-                        </div>
-                    </div>
-
-                    <div class="reply">
-                        <button class="replyButton" onclick="addReply(this)"><i class="fa fa-reply"></i> Reply</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
-</script>
-<script id="commentbox" type="text/template">
-    <div class="row cboxRemove">
-        <div class="col-md-10 col-md-offset-2">
-            <div class="reply-comment">
-                <div class="col-md-12">
-                    <form>
-                        <textarea placeholder="Reply to this comment" id="commentReply" class="repComment"></textarea>
-                        <div class="comment-sub1">
-                            <button type="button" class="addComment" onclick="addDynamicComment(this)">Comment</button>
-                            <button type="button" class="closeComment1" onclick="closeComm(this)">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-
