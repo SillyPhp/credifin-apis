@@ -90,49 +90,54 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                     <div class="logo">
                                         <img id="logo-img" src="<?= Url::to($image); ?>">
                                         <?php
-                                            $form = ActiveForm::begin([
-                                                'id' => 'upload-logo',
-                                                'options' => ['enctype' => 'multipart/form-data'],
-                                            ])
-                                            ?>
-                                            <div id="open-pop" class="avatar-edit">
-                                                <i class="fa fa-camera dropdown-toggle full_width"
-                                                   data-toggle="dropdown"></i>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a href="#">
-                                                            <?=
-                                                            $form->field($companyLogoFormModel, 'logo', [
-                                                                'template' => '{input}',
-                                                                'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'logoUpload', 'accept' => '.png, .jpg, .jpeg']);
-                                                            ?>
-                                                            <label for="logoUpload">
-                                                                Change Profile Picture
-                                                            </label>
-                                                        </a>
-                                                    </li>
-                                                    <li><a href="#" class="remove-logo">Remove</a></li>
-                                                    <li><a href="#">Cancel</a></li>
-                                                </ul>
-                                            </div>
-                                            <div id="pop-content1_2" class="hiden">
-                                                <h5>Are you sure want to remove Logo?</h5>
-                                                <button id="confirm_remove_logo" type="button" value="logo"
-                                                        class="btn-primary btn-sm editable-submit">
-                                                    <i class="glyphicon glyphicon-ok"></i>
-                                                </button>
-                                                <button id="cancel_remove" type="button"
-                                                        class="btn-default btn-sm editable-cancel">
-                                                    <i class="glyphicon glyphicon-remove"></i>
-                                                </button>
-                                            </div>
-                                            <?php
-                                            ActiveForm::end(); ?>
+                                        $form = ActiveForm::begin([
+                                            'id' => 'upload-logo',
+                                            'options' => ['enctype' => 'multipart/form-data'],
+                                        ])
+                                        ?>
+                                        <div id="open-pop" class="avatar-edit">
+                                            <i class="fa fa-camera dropdown-toggle full_width"
+                                               data-toggle="dropdown"></i>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#">
+                                                        <?=
+                                                        $form->field($companyLogoFormModel, 'logo', [
+                                                            'template' => '{input}',
+                                                            'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'logoUpload', 'accept' => '.png, .jpg, .jpeg']);
+                                                        ?>
+                                                        <label for="logoUpload">
+                                                            Change Profile Picture
+                                                        </label>
+                                                    </a>
+                                                </li>
+                                                <li><a href="#" class="remove-logo">Remove</a></li>
+                                                <li><a href="#">Cancel</a></li>
+                                            </ul>
+                                        </div>
+                                        <div id="pop-content1_2" class="hiden">
+                                            <h5>Are you sure want to remove Logo?</h5>
+                                            <button id="confirm_remove_logo" type="button" value="logo"
+                                                    class="btn-primary btn-sm editable-submit">
+                                                <i class="glyphicon glyphicon-ok"></i>
+                                            </button>
+                                            <button id="cancel_remove" type="button"
+                                                    class="btn-default btn-sm editable-cancel">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </button>
+                                        </div>
+                                        <?php
+                                        ActiveForm::end(); ?>
                                     </div>
                                 </div>
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
-                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span class="model" id="tag_line" data-type="text" data-pk="tag_line" data-name="tag_line" data-value="<?= Html::encode($organization['tag_line']); ?>"></span> <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span></div>
+                                    <div class="com-establish"><span class="detail-title">Tagline:</span> <span
+                                                class="model" id="tag_line" data-type="text" data-pk="tag_line"
+                                                data-name="tag_line"
+                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
+                                        <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -180,8 +185,8 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                     <div class="row">
                         <div class="heading-style">
                             About <?= Html::encode($organization['name']) ?>
-                                <span data-for="description" class="edit-box"><i
-                                            class="fa fa-pencil"></i></span>
+                            <span data-for="description" class="edit-box"><i
+                                        class="fa fa-pencil"></i></span>
                         </div>
                         <div class="divider"></div>
 
@@ -299,14 +304,7 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                             </div>
                                             <a class="remove-benefit-item"><i class="fa fa-times"></i></a>
                                             <div class="bb-icon">
-                                                <?php
-                                                if (!empty($benefits['icon'])) {
-                                                    $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
-                                                } else {
-                                                    $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                }
-                                                ?>
-                                                <img src="<?= Url::to($benefit_icon) ?>">
+                                                <img src="<?= Url::to($benefits['icon']) ?>">
                                             </div>
                                             <div class="bb-text">
                                                 <?= $benefits['benefit'] ?>
@@ -316,7 +314,6 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                     <?php
                                 }
                                 ?>
-
                             </div>
                         </div>
                     </div>
@@ -564,8 +561,8 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
 
 <?php
 Pjax::begin(['id' => 'pjax_locations2']);
-echo $this->render('/widgets/mustache/organization_locations',[
-        'Edit' => true
+echo $this->render('/widgets/mustache/organization_locations', [
+    'Edit' => true
 ]);
 Pjax::end();
 echo $this->render('/widgets/mustache/application-card');

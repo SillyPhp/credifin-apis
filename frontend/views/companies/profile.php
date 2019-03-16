@@ -186,7 +186,7 @@ if ($organization['cover_image']) {
                                                     $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                 }
                                                 ?>
-                                                <img src="<?= Url::to($benefit_icon) ?>">
+                                                <img src="<?= Url::to($benefits['icon']); ?>">
                                             </div>
                                             <div class="bb-text">
                                                 <?= Html::encode($benefits['benefit']); ?>
@@ -196,7 +196,6 @@ if ($organization['cover_image']) {
                                     <?php
                                 }
                                 ?>
-
                             </div>
                         </div>
                     </div>
