@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -89,6 +90,7 @@ class InternshipsController extends Controller
         }
     }
 
+
     public function actionApproveCandidate()
     {
         if (Yii::$app->user->identity->organization) {
@@ -104,6 +106,49 @@ class InternshipsController extends Controller
                     return false;
                 }
             }
+        }
+    }
+
+    public function actionCreateInternship()
+    {
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Internships';
+            $model = new ApplicationForm();
+            $primary_cat = $model->getPrimaryFields('Internships');
+            $questionnaire = $model->getQuestionnnaireList(2);
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else
+            {
+                return $this->render('/employer-applications/form',['model'=>$model,
+                    'primary_cat'=>$primary_cat,
+                    'industry'=>$industry,
+                    'placement_locations'=>$placement_locations,
+                    'interview_locations'=>$interview_locations,
+                    'benefits'=>$benefits,
+                    'process'=>$process,
+                    'questionnaire'=>$questionnaire,
+                    'type'=>$type,
+                ]);
+            }
+        }
+        else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
