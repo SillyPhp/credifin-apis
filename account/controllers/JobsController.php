@@ -1,7 +1,7 @@
 <?php
 
 namespace account\controllers;
-
+use account\models\applications\ApplicationForm;
 use common\models\Cities;
 use common\models\OrganizationAssignedCategories;
 use Yii;
@@ -66,7 +66,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCreate()
+    public function actionCreateXyz()
     {
         if (Yii::$app->user->identity->organization) {
             $model = new JobApplicationForm();
@@ -104,24 +104,45 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCreateJob()
+    public function actionCreate()
     {
         if (Yii::$app->user->identity->organization) {
             $type = 'Jobs';
-            $model = new JobApplicationForm();
+            $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
             $industry = $model->getndustry();
-            $loc_list = $model->getOrganizationLocationOffice();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
-
-            } else {
-                return $this->render('/employer-applications/form', ['model' => $model,
-                    'primary_cat' => $primary_cat,
-                    'industry' => $industry,
-                    'loc_list' => $loc_list,
-                ]);
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        } else {
+            else
+            {
+                return $this->render('/employer-applications/form',['model'=>$model,
+                    'primary_cat'=>$primary_cat,
+                    'industry'=>$industry,
+                    'placement_locations'=>$placement_locations,
+                    'interview_locations'=>$interview_locations,
+                    'benefits'=>$benefits,
+                    'process'=>$process,
+                    'questionnaire'=>$questionnaire,
+                    'type'=>$type,
+                    ]);
+            }
+        }
+        else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
@@ -141,7 +162,7 @@ class JobsController extends Controller
                 ->one();
             if ($update == 1) {
                 Yii::$app->db->createCommand()
-                    ->update(AppliedApplications::tableName(), ['current_round' => ($count['active'] + 1), 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                    ->update(AppliedApplications::tableName(), ['current_round' => ($count['active'] + 1), 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
                     ->execute();
                 $response = [
                     'status' => true,
@@ -149,7 +170,7 @@ class JobsController extends Controller
                 ];
                 if ($count['active'] == $count['total']) {
                     $update_status = Yii::$app->db->createCommand()
-                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
                         ->execute();
                 }
                 return json_encode($response);
@@ -218,12 +239,12 @@ class JobsController extends Controller
     public function actionClone($aidk)
     {
         $model = new JobApplicationForm();
-        $questions_list = $model->getQuestionnnaireList();
-        $p_list = $model->getOrganizationLocationOffice();
-        $l_list = $model->getOrganizationLocationInterview();
-        $primaryfields = $model->getPrimaryFields();
-        $industries = $model->getndustry();
-        $interview_process = $model->getInterviewProcess();
+        $que = $model->getQuestionnnaireList();
+        $loc_list = $model->getOrganizationLocationOffice();
+        $int_list = $model->getOrganizationLocationInterview();
+        $primary_cat = $model->getPrimaryFields();
+        $industry = $model->getndustry();
+        $process = $model->getInterviewProcess();
         $benefits = $model->getBenefits();
         if ($model->load(Yii::$app->request->post())) {
             $session_token = Yii::$app->request->post('n');
@@ -239,13 +260,13 @@ class JobsController extends Controller
         } else {
             $application = $model->getCloneData($aidk);
             return $this->render('clone', ['data' => $application,
-                'model' => $model, 'location_list' => $p_list,
-                'questions_list' => $questions_list,
-                'primaryfields' => $primaryfields,
-                'inter_loc' => $l_list,
-                'industries' => $industries,
-                'process_list' => $interview_process,
-                'benefit' => $benefits,
+                'model' => $model, 'loc_list' => $loc_list,
+                'que' => $que,
+                'primary_cat' => $primary_cat,
+                'int_list' => $int_list,
+                'industry' => $industry,
+                'process' => $process,
+                'benefits' => $benefits,
             ]);
         }
     }
