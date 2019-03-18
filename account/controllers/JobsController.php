@@ -1,7 +1,7 @@
 <?php
 
 namespace account\controllers;
-
+use account\models\applications\ApplicationForm;
 use common\models\Cities;
 use Yii;
 use yii\web\Controller;
@@ -106,19 +106,37 @@ class JobsController extends Controller
     {
         if (Yii::$app->user->identity->organization) {
             $type = 'Jobs';
-            $model = new JobApplicationForm();
+            $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
             $industry = $model->getndustry();
-            $loc_list = $model->getOrganizationLocationOffice();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
-
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
             }
             else
             {
                 return $this->render('/employer-applications/form',['model'=>$model,
                     'primary_cat'=>$primary_cat,
                     'industry'=>$industry,
-                    'loc_list'=>$loc_list,
+                    'placement_locations'=>$placement_locations,
+                    'interview_locations'=>$interview_locations,
+                    'benefits'=>$benefits,
+                    'process'=>$process,
+                    'questionnaire'=>$questionnaire,
+                    'type'=>$type,
                     ]);
             }
         }
