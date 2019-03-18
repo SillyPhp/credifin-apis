@@ -176,7 +176,7 @@ class JobApplicationForm extends Model {
         $employerApplicationsModel->questionnaire_enc_id = null;
         $employerApplicationsModel->fill_questionnaire_on = null;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
-        $employerApplicationsModel->published_on = date('Y-m-d h:i:s');
+        $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->image = '1';
         $employerApplicationsModel->image_location = '1';
         
@@ -200,7 +200,7 @@ class JobApplicationForm extends Model {
             $utilitiesModel->variables['field_name'] = 'slug';        
             $categoriesModel->slug = $utilitiesModel->create_slug();
             $categoriesModel->parent_enc_id = null;
-            $categoriesModel->created_on = date('Y-m-d h:i:s');
+            $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if($categoriesModel->save())
             {
@@ -211,7 +211,7 @@ class JobApplicationForm extends Model {
               $assignedCategoryModel->category_enc_id = $categoriesModel->category_enc_id;
               $assignedCategoryModel->parent_enc_id = $this->primaryfield;
               $assignedCategoryModel->assigned_to = 'Jobs';
-              $assignedCategoryModel->created_on = date('Y-m-d h:i:s');
+              $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
               $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
               if($assignedCategoryModel->save()){
                 $employerApplicationsModel->title = $assignedCategoryModel->assigned_category_enc_id;
@@ -262,7 +262,7 @@ class JobApplicationForm extends Model {
             $desigModel->slug = $utilitiesModel->create_slug();
             $desigModel->designation = $this->designations;
             $desigModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-            $desigModel->created_on = date('Y-m-d h:i:s');
+            $desigModel->created_on = date('Y-m-d H:i:s');
             $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
             if($desigModel->save())
             {
@@ -290,7 +290,7 @@ class JobApplicationForm extends Model {
         $employerApplicationsModel->preferred_industry = $this->pref_inds;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($this->earliestjoiningdate));
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($this->last_date));
-        $employerApplicationsModel->created_on = date('Y-m-d h:i:s');
+        $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($employerApplicationsModel->save()) {
             
@@ -304,7 +304,7 @@ class JobApplicationForm extends Model {
                 $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                 $processModel->field_enc_id = $process->process_id;
                 $processModel->questionnaire_enc_id = $process->id;
-                $processModel->created_on = date('Y-m-d h:i:s');
+                $processModel->created_on = date('Y-m-d H:i:s');
                 $processModel->created_by = Yii::$app->user->identity->user_enc_id;
                  if (!$processModel->save()) {
                     print_r($processModel->getErrors());
@@ -342,7 +342,7 @@ class JobApplicationForm extends Model {
                 $applicationoptionsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                 $applicationoptionsModel->option_name = $key;
                 $applicationoptionsModel->value = $value;
-                $applicationoptionsModel->created_on = date('Y-m-d h:i:s');
+                $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
                 $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if (!$applicationoptionsModel->save()) {
                    
@@ -357,7 +357,7 @@ class JobApplicationForm extends Model {
                 $applicationPlacementLocationsModel->positions = $array->value;
                 $applicationPlacementLocationsModel->location_enc_id = $array->id;
                 $applicationPlacementLocationsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                $applicationPlacementLocationsModel->created_on = date('Y-m-d h:i:s');
+                $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                 $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if (!$applicationPlacementLocationsModel->save()) {
                     
@@ -374,7 +374,7 @@ class JobApplicationForm extends Model {
                     $applicationInterviewLocationsModel->interview_location_enc_id = $utilitiesModel->encrypt();
                     $applicationInterviewLocationsModel->location_enc_id = $interviewcity;
                     $applicationInterviewLocationsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $applicationInterviewLocationsModel->created_on = date('Y-m-d h:i:s');
+                    $applicationInterviewLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationInterviewLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationInterviewLocationsModel->save()) {
                         
@@ -393,7 +393,7 @@ class JobApplicationForm extends Model {
                     $skillsModel->skill = $skill->value;
                     $skillsModel->category_enc_id = $employerApplicationsModel->title;
                     $skillsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-                    $skillsModel->created_on = date('Y-m-d h:i:s');
+                    $skillsModel->created_on = date('Y-m-d H:i:s');
                     $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($skillsModel->save()) {
                         $applicationSkillsModel = new ApplicationSkills();
@@ -402,7 +402,7 @@ class JobApplicationForm extends Model {
                         $applicationSkillsModel->application_skill_enc_id = $utilitiesModel->encrypt();
                         $applicationSkillsModel->skill_enc_id = $skillsModel->skill_enc_id;
                         $applicationSkillsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                        $applicationSkillsModel->created_on = date('Y-m-d h:i:s');
+                        $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                         $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationSkillsModel->save()) {
                             
@@ -416,7 +416,7 @@ class JobApplicationForm extends Model {
                     $applicationSkillsModel->application_skill_enc_id = $utilitiesModel->encrypt();
                     $applicationSkillsModel->skill_enc_id = $skill->id;
                     $applicationSkillsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $applicationSkillsModel->created_on = date('Y-m-d h:i:s');
+                    $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                     $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationSkillsModel->save()) {
                        
@@ -433,7 +433,7 @@ class JobApplicationForm extends Model {
                     $jobDescriptionModel->job_description = $job_description->value;
                     $jobDescriptionModel->category_enc_id = $employerApplicationsModel->title;
                     $jobDescriptionModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-                    $jobDescriptionModel->created_on = date('Y-m-d h:i:s');
+                    $jobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $jobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($jobDescriptionModel->save()) {
                         $applicationJobDescriptionModel = new ApplicationJobDescription();
@@ -442,7 +442,7 @@ class JobApplicationForm extends Model {
                         $applicationJobDescriptionModel->application_job_description_enc_id = $utilitiesModel->encrypt();
                         $applicationJobDescriptionModel->job_description_enc_id = $jobDescriptionModel->job_description_enc_id;
                         $applicationJobDescriptionModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                        $applicationJobDescriptionModel->created_on = date('Y-m-d h:i:s');
+                        $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                         $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationJobDescriptionModel->save()) {
                            
@@ -456,7 +456,7 @@ class JobApplicationForm extends Model {
                     $applicationJobDescriptionModel->application_job_description_enc_id = $utilitiesModel->encrypt();
                     $applicationJobDescriptionModel->job_description_enc_id = $job_description->id;
                     $applicationJobDescriptionModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                    $applicationJobDescriptionModel->created_on = date('Y-m-d h:i:s');
+                    $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationJobDescriptionModel->save()) {
                         print_r($applicationJobDescriptionModel->getErrors());
@@ -473,7 +473,7 @@ class JobApplicationForm extends Model {
                     $qualificationsModel->educational_requirement = $qualifications->value;
                     $qualificationsModel->category_enc_id = $employerApplicationsModel->title;
                     $qualificationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-                    $qualificationsModel->created_on = date('Y-m-d h:i:s');
+                    $qualificationsModel->created_on = date('Y-m-d H:i:s');
                     $qualificationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($qualificationsModel->save()) {
                         $applicationEducationalModel = new ApplicationEducationalRequirements();
@@ -482,7 +482,7 @@ class JobApplicationForm extends Model {
                         $applicationEducationalModel->application_educational_requirement_enc_id = $utilitiesModel->encrypt();
                         $applicationEducationalModel->educational_requirement_enc_id = $qualificationsModel->educational_requirement_enc_id;
                         $applicationEducationalModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                        $applicationEducationalModel->created_on = date('Y-m-d h:i:s');
+                        $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                         $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationEducationalModel->save()) {
                            
@@ -500,7 +500,7 @@ class JobApplicationForm extends Model {
                         $applicationEducationalModel->application_educational_requirement_enc_id = $utilitiesModel->encrypt();
                         $applicationEducationalModel->educational_requirement_enc_id = $qualifications->id;
                         $applicationEducationalModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                        $applicationEducationalModel->created_on = date('Y-m-d h:i:s');
+                        $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                         $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationEducationalModel->save()) {
                            

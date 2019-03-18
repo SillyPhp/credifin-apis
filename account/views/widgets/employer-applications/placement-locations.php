@@ -21,10 +21,10 @@ use yii\widgets\Pjax;
 </div>
 <?php
 Pjax::begin(['id' => 'pjax_locations1']);
-if (!empty($loc_list)) {
+if (!empty($placement_locations)) {
     ?>
     <?=
-    $form->field($model, 'placement_locations')->checkBoxList($loc_list, [
+    $form->field($model, 'placement_locations')->checkBoxList($placement_locations, [
         'item' => function ($index, $label, $name, $checked, $value) {
 
             if ($index % 3 == 0) {
@@ -65,3 +65,90 @@ if (!empty($loc_list)) {
 <?php }
 Pjax::end(); ?>
 <input type="text" name="placement_calc" id="placement_calc" readonly>
+<?php
+$script = <<< JS
+var place_len = 0;
+
+$(document).on('click', '.modal-load-class', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
+
+$(document).on("click",'input[name="placement_locations[]"]' , function() {
+    if (this.checked == true) {
+        place_len =  $('[name="placement_locations[]"]:checked').length;
+        place_checker(place_len);
+        showPositionBox($(this));
+    } 
+    else {
+        place_len =  $('[name="placement_locations[]"]:checked').length;
+        place_checker(place_len);
+        hidePositionBox($(this));
+   }    
+});
+function showPositionBox(thisObj)
+{
+    thisObj.next('label').find('.spinner').css('display','inline-flex');
+    thisObj.next('label').find(".tooltips").fadeIn(1000);
+    thisObj.next('label').find(".tooltips").fadeOut(2000);
+}
+
+function hidePositionBox(thisObj)
+{
+    thisObj.next('label').find('.spinner').css('display','none');
+    thisObj.next('label').find(".tooltips").css('display','none'); 
+}
+function place_checker(place_len)
+        {
+          if(place_len == 0)
+          {
+              $('#placement_calc').val('');
+           }
+          else 
+          {
+              $('#placement_calc').val('1');
+           }
+        } 
+function placement_arr()
+        {
+            var place_arr =[];
+            $.each($("input[name='placement_locations[]']:checked"),
+            function(index,value){
+            var obj_place = {};
+            obj_place["id"] = $(this).attr('id');
+            obj_place["value"] = $(this).next('label').find('.place_no').val();
+            obj_place["name"] = $(this).attr('data-value');
+            place_arr.push(obj_place); 
+            });
+            $('#placement_array').val(JSON.stringify(place_arr));
+       }    
+$(document).on("keypress",'.place_no', function (evt) {
+    if (evt.which < 48 || evt.which > 57)
+    {
+        evt.preventDefault();
+    }
+   }); 
+$(document).on('click','.down_bt',function(e)
+       {
+       e.preventDefault();
+       var down = $(this).parent().prev().val(); 
+       if(down>=2)  
+       $(this).parent().prev().val( parseInt(down,10)-1 );
+       else
+        {
+        return false;
+         }  
+   }); 
+$(document).on('click','.up_bt',function(e)
+       {
+       e.preventDefault();  
+       var up = $(this).parent().prev().val();
+       if(up>=0) 
+       $(this).parent().prev().val( parseInt(up,10)+1 );
+       else{
+        return false;
+           } 
+   });
+$('[data-toggle="tooltip"]').tooltip();
+JS;
+$this->registerJs($script);
+?>

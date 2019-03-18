@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationForm;
 use common\models\Cities;
 use common\models\OrganizationAssignedCategories;
 use Yii;
@@ -39,7 +40,7 @@ class JobsController extends Controller
     private function reviewZero()
     {
         $update = Yii::$app->db->createCommand()
-            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id])
+            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id])
             ->execute();
         if ($update) {
             return true;
@@ -66,7 +67,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCreate()
+    public function actionCreateXyz()
     {
         if (Yii::$app->user->identity->organization) {
             $model = new JobApplicationForm();
@@ -104,21 +105,39 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCreateJob()
+    public function actionCreate()
     {
         if (Yii::$app->user->identity->organization) {
             $type = 'Jobs';
-            $model = new JobApplicationForm();
+            $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
             $industry = $model->getndustry();
-            $loc_list = $model->getOrganizationLocationOffice();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
-
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return $this->render('/employer-applications/form', ['model' => $model,
                     'primary_cat' => $primary_cat,
                     'industry' => $industry,
-                    'loc_list' => $loc_list,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
                 ]);
             }
         } else {
@@ -132,7 +151,7 @@ class JobsController extends Controller
             $f_id = Yii::$app->request->post('field_id');
             $app_id = Yii::$app->request->post('app_id');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
+                ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                 ->execute();
             $count = AppliedApplicationProcess::find()
                 ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active', 'COUNT(is_completed) as total'])
@@ -141,7 +160,7 @@ class JobsController extends Controller
                 ->one();
             if ($update == 1) {
                 Yii::$app->db->createCommand()
-                    ->update(AppliedApplications::tableName(), ['current_round' => ($count['active'] + 1), 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                    ->update(AppliedApplications::tableName(), ['current_round' => ($count['active'] + 1), 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
                     ->execute();
                 $response = [
                     'status' => true,
@@ -149,7 +168,7 @@ class JobsController extends Controller
                 ];
                 if ($count['active'] == $count['total']) {
                     $update_status = Yii::$app->db->createCommand()
-                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
+                        ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
                         ->execute();
                 }
                 return json_encode($response);
@@ -164,7 +183,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
                 ->execute();
             if ($update) {
                 return true;
@@ -179,7 +198,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             $id = Yii::$app->request->post('app_id');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Rejected', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
+                ->update(AppliedApplications::tableName(), ['status' => 'Rejected', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
                 ->execute();
             if ($update == 1) {
                 return true;
@@ -218,12 +237,12 @@ class JobsController extends Controller
     public function actionClone($aidk)
     {
         $model = new JobApplicationForm();
-        $questions_list = $model->getQuestionnnaireList();
-        $p_list = $model->getOrganizationLocationOffice();
-        $l_list = $model->getOrganizationLocationInterview();
-        $primaryfields = $model->getPrimaryFields();
-        $industries = $model->getndustry();
-        $interview_process = $model->getInterviewProcess();
+        $que = $model->getQuestionnnaireList();
+        $loc_list = $model->getOrganizationLocationOffice();
+        $int_list = $model->getOrganizationLocationInterview();
+        $primary_cat = $model->getPrimaryFields();
+        $industry = $model->getndustry();
+        $process = $model->getInterviewProcess();
         $benefits = $model->getBenefits();
         if ($model->load(Yii::$app->request->post())) {
             $session_token = Yii::$app->request->post('n');
@@ -239,13 +258,13 @@ class JobsController extends Controller
         } else {
             $application = $model->getCloneData($aidk);
             return $this->render('clone', ['data' => $application,
-                'model' => $model, 'location_list' => $p_list,
-                'questions_list' => $questions_list,
-                'primaryfields' => $primaryfields,
-                'inter_loc' => $l_list,
-                'industries' => $industries,
-                'process_list' => $interview_process,
-                'benefit' => $benefits,
+                'model' => $model, 'loc_list' => $loc_list,
+                'que' => $que,
+                'primary_cat' => $primary_cat,
+                'int_list' => $int_list,
+                'industry' => $industry,
+                'process' => $process,
+                'benefits' => $benefits,
             ]);
         }
     }
@@ -299,7 +318,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
+                ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
                 ->execute();
             if ($update) {
                 return true;
@@ -454,7 +473,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
+                ->update(AppliedApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -507,7 +526,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -522,7 +541,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
+                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -552,13 +571,13 @@ class JobsController extends Controller
                     $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
                     $shortlist->application_enc_id = $app_id;
                     $shortlist->shortlisted = 1;
-                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_on = date('Y-m-d H:i:s');
                     $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
-                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
                         $update = Yii::$app->db->createCommand()
-                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
                         if ($update == 1) {
                             $response = [
@@ -585,11 +604,11 @@ class JobsController extends Controller
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         $update1 = Yii::$app->db->createCommand()
-                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
                         if ($update1 == 1) {
                             $response = [
@@ -616,7 +635,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                         ->execute();
                     if ($update == 1) {
                         $response = [
@@ -652,7 +671,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
+                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -681,9 +700,9 @@ class JobsController extends Controller
                     $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
                     $shortlist->application_enc_id = $app_id;
                     $shortlist->shortlisted = 1;
-                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_on = date('Y-m-d H:i:s');
                     $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
-                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
                         return 'short';
@@ -692,14 +711,14 @@ class JobsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         return 'unshort';
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         return 'short';

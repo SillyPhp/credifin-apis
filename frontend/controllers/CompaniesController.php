@@ -241,7 +241,7 @@ class CompaniesController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post('id');
         $update = Yii::$app->db->createCommand()
-            ->update(OrganizationLocations::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['location_enc_id' => $id])
+            ->update(OrganizationLocations::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['location_enc_id' => $id])
             ->execute();
         if ($update) {
             return $response = [
@@ -264,11 +264,11 @@ class CompaniesController extends Controller
         $type = Yii::$app->request->post('type');
         if ($type == 'logo') {
             $update = Yii::$app->db->createCommand()
-                ->update(Organizations::tableName(), ['logo' => null, 'logo_location' => null, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->update(Organizations::tableName(), ['logo' => null, 'logo_location' => null, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->execute();
         } elseif ($type == 'cover') {
             $update = Yii::$app->db->createCommand()
-                ->update(Organizations::tableName(), ['cover_image' => null, 'cover_image_location' => null, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->update(Organizations::tableName(), ['cover_image' => null, 'cover_image_location' => null, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->execute();
         }
         if ($update) {
@@ -292,7 +292,7 @@ class CompaniesController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('type');
             $update = Yii::$app->db->createCommand()
-                ->update(OrganizationEmployeeBenefits::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_benefit_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+                ->update(OrganizationEmployeeBenefits::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['organization_benefit_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
                 ->execute();
             if ($update) {
                 return $response = [
@@ -343,7 +343,7 @@ class CompaniesController extends Controller
 
         $id = Yii::$app->request->post('id');
         $update = Yii::$app->db->createCommand()
-            ->update(\common\models\OrganizationImages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['image_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->update(\common\models\OrganizationImages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['image_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
             ->execute();
         if ($update) {
             return $response = [
@@ -393,7 +393,7 @@ class CompaniesController extends Controller
 
         $id = Yii::$app->request->post('id');
         $update = Yii::$app->db->createCommand()
-            ->update(\common\models\OrganizationEmployees::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['employee_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->update(\common\models\OrganizationEmployees::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['employee_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
             ->execute();
         if ($update) {
             return $response = [
@@ -441,14 +441,14 @@ class CompaniesController extends Controller
                 }
             } else if ($status == 1) {
                 $update = Yii::$app->db->createCommand()
-                    ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                    ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
                     ->execute();
                 if ($update == 1) {
                     return 'unfollow';
                 }
             } else if ($status == 0) {
                 $update = Yii::$app->db->createCommand()
-                    ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                    ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
                     ->execute();
                 if ($update == 1) {
                     return 'following';

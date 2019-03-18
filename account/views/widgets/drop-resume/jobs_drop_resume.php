@@ -246,6 +246,7 @@ $(document).on('click', '#previous, .close-modal', function(){
 function addNew(){
       var new_to_add = document.getElementById('add_new').value;
       var parent_id = $('#parent_enc_id').val();
+      if(new_to_add){
       $.ajax({
                 type:"POST",
                 url:"/account/resume/add",
@@ -269,6 +270,9 @@ function addNew(){
                     
                 }
       });
+      }else{
+         toastr.error("please write something",'Error'); 
+      }
 }
 
 $(document).on('click','#add_new_btn', function() {

@@ -44,7 +44,7 @@ class JobApplied extends Model
         $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume_file->extension;
         $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
         $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
-        $userResumeModel->created_on = date('Y-m-d h:i:s');
+        $userResumeModel->created_on = date('Y-m-d H:i:s');
         $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!is_dir($base_path)) {
             if (mkdir($base_path, 0755, true)) {
@@ -58,7 +58,7 @@ class JobApplied extends Model
                         $appliedModel->application_enc_id = $this->id;
                         $appliedModel->status = $this->status;
                         $appliedModel->resume_enc_id = $userResumeModel->resume_enc_id;
-                        $appliedModel->created_on = date('Y-m-d h:i:s');
+                        $appliedModel->created_on = date('Y-m-d H:i:s');
                         $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if ($appliedModel->save()) {
                             if (!empty($this->location_pref)) {
@@ -69,7 +69,7 @@ class JobApplied extends Model
                                     $locModel->application_location_enc_id = $utilitiesModel->encrypt();
                                     $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
                                     $locModel->city_enc_id = $location;
-                                    $locModel->created_on = date('Y-m-d h:i:s');
+                                    $locModel->created_on = date('Y-m-d H:i:s');
                                     $locModel->created_by = Yii::$app->user->identity->user_enc_id;
                                     $app_id = $appliedModel->applied_application_enc_id;
                                     $id = $this->id;
@@ -111,7 +111,7 @@ class JobApplied extends Model
         $appliedModel->application_enc_id = $this->id;
         $appliedModel->resume_enc_id = $this->resume_list;
         $appliedModel->status = $this->status;
-        $appliedModel->created_on = date('Y-m-d h:i:s');
+        $appliedModel->created_on = date('Y-m-d H:i:s');
         $appliedModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($appliedModel->save()) {
             if (!empty($this->location_pref)) {
@@ -122,7 +122,7 @@ class JobApplied extends Model
                     $locModel->application_location_enc_id = $utilitiesModel->encrypt();
                     $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
                     $locModel->city_enc_id = $location;
-                    $locModel->created_on = date('Y-m-d h:i:s');
+                    $locModel->created_on = date('Y-m-d H:i:s');
                     $locModel->created_by = Yii::$app->user->identity->user_enc_id;
                     $app_id = $appliedModel->applied_application_enc_id;
                     $id = $this->id;
@@ -159,7 +159,7 @@ class JobApplied extends Model
             $processModel->process_enc_id = $utilitiesModel->encrypt();
             $processModel->applied_application_enc_id = $app_id;
             $processModel->field_enc_id = $process['field_enc_id'];
-            $processModel->created_on = date('Y-m-d h:i:s');
+            $processModel->created_on = date('Y-m-d H:i:s');
             $processModel->created_by = Yii::$app->user->identity->user_enc_id;
             if (!$processModel->save()) {
                 return false;
