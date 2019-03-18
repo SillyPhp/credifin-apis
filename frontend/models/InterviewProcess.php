@@ -27,7 +27,7 @@ class InterviewProcess extends Model {
         $interviewModel->interview_process_enc_id = $utilitiesModel->encrypt();
         $interviewModel->process_name = $this->title;
         $interviewModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-        $interviewModel->created_on = date('Y-m-d h:i:s'); 
+        $interviewModel->created_on = date('Y-m-d H:i:s'); 
         $interviewModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($interviewModel->save()) {
             $process_array = json_decode($this->process_data);
@@ -44,7 +44,7 @@ class InterviewProcess extends Model {
                 $interviewFieldsModel->icon = $array->icon;
                 $interviewFieldsModel->sequence = $i;
                 $interviewFieldsModel->interview_process_enc_id = $interviewModel->interview_process_enc_id;
-                $interviewFieldsModel->created_on = date('Y-m-d h:i:s');
+                $interviewFieldsModel->created_on = date('Y-m-d H:i:s');
                 $interviewFieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
                    
                 if (!$interviewFieldsModel->save()) {

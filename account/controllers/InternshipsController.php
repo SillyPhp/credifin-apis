@@ -98,7 +98,7 @@ class InternshipsController extends Controller
                 $f_id = Yii::$app->request->post('field_id');
                 $app_id = Yii::$app->request->post('app_id');
                 $update = Yii::$app->db->createCommand()
-                    ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
+                    ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                     ->execute();
                 if ($update == 1) {
                     return true;
@@ -132,22 +132,19 @@ class InternshipsController extends Controller
                 } else {
                     return false;
                 }
-            }
-            else
-            {
-                return $this->render('/employer-applications/form',['model'=>$model,
-                    'primary_cat'=>$primary_cat,
-                    'industry'=>$industry,
-                    'placement_locations'=>$placement_locations,
-                    'interview_locations'=>$interview_locations,
-                    'benefits'=>$benefits,
-                    'process'=>$process,
-                    'questionnaire'=>$questionnaire,
-                    'type'=>$type,
+            } else {
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
                 ]);
             }
-        }
-        else {
+        } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
@@ -240,7 +237,7 @@ class InternshipsController extends Controller
             if (Yii::$app->request->isPost) {
                 $id = Yii::$app->request->post('data');
                 $update = Yii::$app->db->createCommand()
-                    ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
+                    ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
                     ->execute();
                 if ($update) {
                     return true;
@@ -431,7 +428,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -446,7 +443,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -461,7 +458,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
+                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -491,13 +488,13 @@ class InternshipsController extends Controller
                     $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
                     $shortlist->application_enc_id = $app_id;
                     $shortlist->shortlisted = 1;
-                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_on = date('Y-m-d H:i:s');
                     $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
-                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
                         $update = Yii::$app->db->createCommand()
-                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
                         if ($update == 1) {
                             $response = [
@@ -524,11 +521,11 @@ class InternshipsController extends Controller
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         $update1 = Yii::$app->db->createCommand()
-                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
                         if ($update1 == 1) {
                             $response = [
@@ -555,7 +552,7 @@ class InternshipsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                         ->execute();
                     if ($update == 1) {
                         $response = [
@@ -590,7 +587,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
+                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -619,9 +616,9 @@ class InternshipsController extends Controller
                     $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
                     $shortlist->application_enc_id = $app_id;
                     $shortlist->shortlisted = 1;
-                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_on = date('Y-m-d H:i:s');
                     $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
-                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
                         return 'short';
@@ -630,14 +627,14 @@ class InternshipsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         return 'unshort';
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         return 'short';

@@ -114,7 +114,7 @@ class FreeForm extends Model {
         $userEducationModel->field = $this->field;
         $userEducationModel->created_by = $usersModel->user_enc_id;
         $userEducationModel->user_enc_id = $usersModel->user_enc_id;
-        $userEducationModel->created_on = date('Y-m-d h:i:s');
+        $userEducationModel->created_on = date('Y-m-d H:i:s');
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userEducationModel->education_enc_id = $utilitiesModel->encrypt();
         if (!$userEducationModel->validate() || !$userEducationModel->save()) {
@@ -129,7 +129,7 @@ class FreeForm extends Model {
         $userWorkExperienceModel->created_by = $usersModel->user_enc_id;
         $userWorkExperienceModel->user_enc_id = $usersModel->user_enc_id;
         $userWorkExperienceModel->city_enc_id = $this->experience_city_main;
-        $userWorkExperienceModel->created_on = date('Y-m-d h:i:s');
+        $userWorkExperienceModel->created_on = date('Y-m-d H:i:s');
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userWorkExperienceModel->experience_enc_id = $utilitiesModel->encrypt();
         if (!$userWorkExperienceModel->validate() || !$userWorkExperienceModel->save()) {
