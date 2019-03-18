@@ -85,8 +85,6 @@ class UploadedResumeController extends Controller {
                 ['a.status' => 0],
                 ['a.status' => 1]
             ])
-            ->orderBy(['a.id' => SORT_DESC])
-            ->groupBy(['a.applied_application_enc_id'])
             ->asArray()
             ->all();
 

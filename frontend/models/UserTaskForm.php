@@ -32,7 +32,7 @@ class UserTaskForm extends Model {
             $userTasksModel->user_task_enc_id = $utilitiesModel->encrypt();
             $userTasksModel->assigned_to = Yii::$app->user->identity->user_enc_id;
             $userTasksModel->created_by = Yii::$app->user->identity->user_enc_id;
-            $userTasksModel->created_on = date('Y-m-d h:i:s');
+            $userTasksModel->created_on = date('Y-m-d H:i:s');
             if ($userTasksModel->validate() && $userTasksModel->save()) {
                 return $userTasksModel;
             } else {

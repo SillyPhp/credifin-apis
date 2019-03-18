@@ -21,6 +21,11 @@ if (!empty($total_processes)) {
                                     <i class="fa fa-clone"></i>
                                 </a>
                             </div>
+<!--                            <div class="rt-bttns">-->
+<!--                                <a class="edit-bttn set-right-align two" href="--><?//= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'edit'); ?><!--" target="_blank">-->
+<!--                                    <i class="fa fa-edit"></i>-->
+<!--                                </a>-->
+<!--                            </div>-->
                             <div class="lt-bttn">
                                 <button type="button" class="e-bttn set-right-align one delete_interview_process"
                                         value="<?= $processes[$next]['id']; ?>">

@@ -2,13 +2,30 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
+Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_HEAD);
 ?>
+<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                     alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                <span><?= Yii::t('account', 'Loading'); ?>... </span>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="portlet light" id="form_wizard_1">
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Job Application
+                <span class="caption-subject font-red bold uppercase">
+                    <?php if ($type == 'Jobs'): ?>
+                        Job Application
+                    <?php elseif ($type == 'Internships'): ?>
+                        Internship Application
+                    <?php endif; ?>
                     <span class="step-title"> Step 1 of 4</span>
                 </span>
             </div>
@@ -38,7 +55,13 @@ use yii\helpers\Url;
                             <a href="#tab2" data-toggle="tab" class="step">
                                 <span class="number"> 2 </span><br/>
                                 <span class="desc">
-                                    <i class="fa fa-check"></i> Job Description </span>
+                                    <i class="fa fa-check"></i>
+                                    <?php if ($type == 'Jobs'): ?>
+                                        Job Description
+                                    <?php elseif ($type == 'Internships'): ?>
+                                        Internship Description
+                                    <?php endif; ?>
+                                </span>
                             </a>
                         </li>
                         <li>
@@ -68,14 +91,23 @@ use yii\helpers\Url;
                         <div class="progress-bar progress-bar-success"></div>
                     </div>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="tab2">
-                            <?=
-                            $this->render('/widgets/employer-applications/basic-details', [
+                        <div class="tab-pane active" id="tab1">
+                            <?php
+                            if ($type == 'Jobs'):
+                                echo $this->render('/widgets/employer-applications/basic-job-details', [
                                 'form'=>$form,
                                 'model'=>$model,
                                 'primary_cat'=>$primary_cat,
                                 'industry'=>$industry,
                             ]);
+                            elseif ($type == 'Internships'):
+                                echo $this->render('/widgets/employer-applications/basic-internships-details', [
+                                    'form' => $form,
+                                    'model' => $model,
+                                    'primary_cat' => $primary_cat,
+                                    'industry' => $industry,
+                                ]);
+                            endif;
                             ?>
                             <div class="divider">
                                 <span></span>
@@ -85,13 +117,90 @@ use yii\helpers\Url;
                                 $this->render('/widgets/employer-applications/placement-locations', [
                                     'form'=>$form,
                                     'model'=>$model,
-                                    'loc_list'=>$loc_list,
+                                    'placement_locations' => $placement_locations,
                                 ]);
                                 ?>
                             </div>
                         </div>
-                        <div class="tab-pane" id="tab1">
-
+                        <div class="tab-pane" id="tab2">
+                            <?=
+                            $this->render('/widgets/employer-applications/job-description', [
+                                'form' => $form,
+                                'model' => $model,
+                            ]);
+                            ?>
+                            <div class="divider"></div>
+                            <?=
+                            $this->render('/widgets/employer-applications/educational-requirements', [
+                                'form' => $form,
+                                'model' => $model,
+                            ]);
+                            ?>
+                            <div class="divider"></div>
+                            <?=
+                            $this->render('/widgets/employer-applications/skills', [
+                                'form' => $form,
+                                'model' => $model,
+                            ]);
+                            ?>
+                            <div class="divider"></div>
+                            <?=
+                            $this->render('/widgets/employer-applications/employee-benefits', [
+                                'form' => $form,
+                                'model' => $model,
+                                'benefits' => $benefits,
+                            ]);
+                            ?>
+                            <?=
+                            $this->render('/widgets/employer-applications/additional-information', [
+                                'form' => $form,
+                                'model' => $model,
+                            ]);
+                            ?>
+                            <div class="divider"></div>
+                        </div>
+                        <div class="tab-pane" id="tab3">
+                            <?=
+                            $this->render('/widgets/employer-applications/hiring-processes', [
+                                'form' => $form,
+                                'model' => $model,
+                                'process' => $process,
+                            ]);
+                            ?>
+                            <div class="divider"></div>
+                            <?=
+                            $this->render('/widgets/employer-applications/questionnaire', [
+                                'form' => $form,
+                                'model' => $model,
+                                'questionnaire' => $questionnaire,
+                                ]);
+                                ?>
+                        </div>
+                        <div class="tab-pane" id="tab4">
+                            <?=
+                            $this->render('/widgets/employer-applications/interview-details', [
+                                'form' => $form,
+                                'model' => $model,
+                            ]);
+                            ?>
+                            <div class="interview_panel_hide">
+                                <?=
+                                $this->render('/widgets/employer-applications/interview-locations', [
+                                    'form' => $form,
+                                    'model' => $model,
+                                    'interview_locations' => $interview_locations,
+                                ]);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab5">
+                            <?=
+                            $this->render('/widgets/employer-applications/preview', [
+                                'form' => $form,
+                                'model' => $model,
+                                'type' => $type,
+                            ]);
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -933,10 +1042,6 @@ q:before, q:after, blockquote:before, blockquote:after {
 
 .address_tag
 {font-size: 13px;}
-#existing_location
-{
- padding:6px 0px;
-}
 .materialize-tags ~ input ~ label {
   color: #999 !important;
   padding: 1rem !important;
@@ -1059,14 +1164,7 @@ span.chip .fa-times
 .button_location
 {padding: 14px 0px;
 float:right;}
-.close-drp_down
-{
-    position: absolute;
-    font-size: 16px;
-    right: -26px;
-    color: #a2a2a2;
-    bottom: 16px;
-}
+
 .checkbox-text{
     margin-bottom:8px;
     white-space: nowrap;
@@ -1200,11 +1298,6 @@ li.draggable-item.ui-sortable-placeholder {
     font-weight: 300;
     padding:100px 10px 0 10px;
     line-height: 23px;
-}
-
-#add_existing_location
-{
-  margin:-21px;
 }
 
 .rule-text{
@@ -1441,7 +1534,8 @@ height:17px !important;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
-
+#wage_type-error .color_red
+{font-size:13px}
 @keyframes bounce{
   0%, 75%, 100%{
     -webkit-transform: translateY(0);
@@ -1464,97 +1558,6 @@ if(window.location.hash)
     {
         window.location = window.location.pathname;
     }
-function convertToInt(t){
-    t=t.replace(/\,/g,'');
-    t=parseInt(t,10);
-    return t;
-}
-
-function salarycomparison(){
-    var max_s = convertToInt($('#max_salary').val());
-    var min_s = convertToInt($('#min_salary').val());
-    if(max_s < min_s){
-        $('.salary_errors').html('<div class = "s_error">Maximum salary cannot less than Minimum salary.</div>');
-        $('html, body').animate({ scrollTop: 200 }, 1000);
-       return false;
-    } else{
-        $('.salary_errors').html(' ');
-        return true;
-    }
-}
- $('#jobtype').on('change',function()
- {
-     var job_type_str = $(this).val();
-   if(job_type_str == "Work From Home")  
-       {
-        $('.placement_location_hide').hide();
-       }
-   else
-       {
-       $('.placement_location_hide').show();
-       }
- });  
- $('input[name= "salary_type"]').on('change',function(){
-   var sl_type = $(this).attr("data-title");
-   if(sl_type=='1')
-        {
-        $('#fixed_stip').show();
-        $('#min_max').hide();
-        $('#minstip').val('');
-        $('#maxstip').val('');
-        $('#salaryinhand').val('');
-        }
-     
-     else if(sl_type=='2')
-        {
-        $('#fixed_stip').hide();
-        $('#min_max').show();
-        $('#minstip').val('');
-        $('#maxstip').val('');
-        $('#salaryinhand').val('');
-        }
-     
-   })    
-$('input[name= "benefit_selection"]').on('change',function(){
-        var option = $(this).val();
-        if(option==1)
-            {
-             $('#benefits_hide').css('display','block');   
-             $('#benefitPopup').css('display','block');   
-            }
-        else {
-            $('#benefits_hide').css('display','none');   
-            $('#benefitPopup').css('display','none');   
-        }
-          
-        });
-
-$('input[name= "questionnaire_selection"]').on('change',function(){
-        var option = $(this).val();
-        if(option==1)
-            {
-             $('#questionnaire_hide').css('display','block');   
-             $('#add').css('display','block');   
-            }
-        else {
-            $('#questionnaire_hide').css('display','none');   
-            $('#add').css('display','none');   
-        }
-          
-        });
-
-$(document).on('click','.questionnaier_display',function(e) {
-    e.preventDefault();
-    var data = $(this).attr('data-id');
-    window.open('/account/questionnaire/'+data+'/view', "_blank");
-});
-
-$(document).on('click','.process_display',function(e) {
-    e.preventDefault();
-    var data = $(this).attr('data-id');
-    window.open('/account/interview-processes/'+data+'/view', "_blank");
-});
-
 var session_tok = "";
 function genrate_session_token() {
     var possible = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -1564,409 +1567,31 @@ function genrate_session_token() {
 }
 genrate_session_token();
 $("#primaryfield").prop("disabled", false);          
-$("#jobtitle").prop("disabled", false);
+$("#title").prop("disabled", false);
 $('.selectBox').prop("disabled", true);    
    
-$('#salaryinhand, #ctc').mask("#,#0,#00", {reverse: true});
-$('#max_salary, #min_salary').mask("#,#0,#00", {reverse: true});
-$('[data-toggle="tooltip"]').tooltip();
-    $(document).on("keypress",'.place_no', function (evt) {
-    if (evt.which < 48 || evt.which > 57)
-    {
-        evt.preventDefault();
-    }
-   });     
-   
-   $(document).on('click','.up_bt',function(e)
-       {
-       e.preventDefault();  
-       var up = $(this).parent().prev().val();
-       if(up>=0) 
-       $(this).parent().prev().val( parseInt(up,10)+1 );
-       else{
-        return false;
-           } 
-   });
- 
-  $(document).on('change','input[name="interview_process"]',function()
-      {
-        $('.selectBox').html('<option value="">Choose Stage</option>');
-         var id = $(this).val();
-        if(!id=="")
-        {
-           $.ajax({
-                 url:'/account/categories-list/process-list',
-                 data:{id:id},
-                 method:'post',
-                 success:function(res)
-                 {
-                       var obj = JSON.parse(res);
-                       var html = []; 
-                       $.each(obj,function(index,value)
-                             {
-                              html.push('<option value="'+value.field_enc_id+'">'+value.field_name+'</option>');
-                            });
-                        $('.selectBox').append(html);
-                  }
-               })
-         }
-   })      
-   
-   $(document).on('click','.down_bt',function(e)
-       {
-       e.preventDefault();
-       var down = $(this).parent().prev().val(); 
-       if(down>=2)  
-       $(this).parent().prev().val( parseInt(down,10)-1 );
-       else
-        {
-        return false;
-         }  
-   });     
-      
 var data_before = null;
 var checked = null;
 var array = [];
-var place_len = 0;        
-var interview_len = 0; 
-var benefit_len = 0;
-var ques_len = 0;
-var stage_len = 0;
-var process_len = 0;
-
-$(document).on("click",'input[name="placement_locations[]"]' , function() {
-    if (this.checked == true) {
-        place_len =  $('[name="placement_locations[]"]:checked').length;
-        place_checker(place_len);
-        showPositionBox($(this));
-    } 
-        
-    else {
-        place_len =  $('[name="placement_locations[]"]:checked').length;
-        place_checker(place_len);
-        hidePositionBox($(this));
-   }    
-});
-
-
-function showPositionBox(thisObj)
-{
-    thisObj.next('label').find('.spinner').css('display','inline-flex');
-    thisObj.next('label').find(".tooltips").fadeIn(1000);
-    thisObj.next('label').find(".tooltips").fadeOut(2000);
-}
-
-function hidePositionBox(thisObj)
-{
-    thisObj.next('label').find('.spinner').css('display','none');
-    thisObj.next('label').find(".tooltips").css('display','none'); 
-}
-
-$(document).on("click",'input[name="interviewcity[]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
-        interview_len =  $('[name="interviewcity[]"]:checked').length;
-        interview_checker(interview_len);
-    } 
-        
-    else {
-        interview_len =  $('[name="interviewcity[]"]:checked').length;
-        interview_checker(interview_len); 
-        
-   }   
-});
-
-$(document).on("click",'input[name="emp_benefit[]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
-        benefit_len =  $('[name="emp_benefit[]"]:checked').length;
-        benefit_checker(benefit_len);
-    } 
-        
-    else {
-        benefit_len =  $('[name="emp_benefit[]"]:checked').length;
-        benefit_checker(benefit_len); 
-        
-   }   
-});
-
-$(document).on("click",'input[name="interview_process"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
-        process_len =  $('[name="interview_process"]:checked').length;
-        process_checker(process_len);
-
-    } 
-        
-    else {
-        process_len =  $('[name="interview_process"]:checked').length;
-        process_checker(process_len); 
-        
-   }   
-}); 
-         
-var prime_id = null;
-
-        function place_checker(place_len)
-        {
-          if(place_len == 0)
-          {
-              $('#placement_calc').val('');
-           }
-          else 
-          {
-              $('#placement_calc').val('1');
-           }
-        }
-        function interview_checker(interview_len)
-        {
-          if(interview_len == 0)
-          {
-              $('#interview_calc').val('');
-           }
-          else 
-          {
-              $('#interview_calc').val('1');
-           }
-        }
-
-   function benefit_checker(benefit_len)
-        {
-          if(benefit_len == 0)
-          {
-              $('#benefit_calc').val('');
-           }
-          else 
-          {
-              $('#benefit_calc').val('1');
-           }
-        }
-   function process_checker(process_len)
-        {
-          if(process_len == 0)
-          {
-              $('#process_calc').val('');
-           }
-          else 
-          {
-              $('#process_calc').val('1');
-           }
-        } 
-        function ques_checker(ques_len,stage_len)
-        {  
-          if(ques_len>0&&stage_len>0&&ques_len==stage_len)
-          {
-              $('#ques_calc').val('1');
-           }
-           else
-           {
-            $('#ques_calc').val('');
-           }
-        } 
-
-$(document).on('click','#weekdays input',function()
-    {
-     if ($('#weekday-5').is(':checked'))
-        {
-         $('.field-weekoptsat').css('display','block');
-         $('.sat').css('display','block');
-        
-        }
-     else if ($('#weekday-5').is(':unchecked'))
-        {
-          $('.field-weekoptsat').css('display','none');
-          $('.sat').css('display','none');
-        }
-    if($('#weekday-6').is(':checked'))
-        {
-          $('.field-weekoptsund').css('display','block');
-          $('.sun').css('display','block');
-        }
-        
-     else if($('#weekday-6').is(':unchecked'))
-        { 
-          $('.field-weekoptsund').css('display','none');
-          $('.sun').css('display','none');
-        }
-   
-   }) 
-   
+$("#title").prop("disabled", false);
 $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
-      $('#jobtitle').val('');
+      $('#title').val('');
       $('.tt-dataset').empty();  
    })
-   
-        
-        
-var skills = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-   remote: {
-    url:'/account/categories-list/skills-data',
-    prepare: function (query, settings) {
-             settings.url += '?q=' +$('#inputfield').val();
-             return settings;
-        },  
-    'cache': true, 
-    filter: function(list) {
-             return list;
-        }
-  }
-});    
-            
-$('#inputfield').typeahead(null, {
-  name: 'skill',
-  display: 'value',
-  source: skills,
-   limit: 6,
-   hint:false,
-}).on('typeahead:asyncrequest', function() {
-    $('.skill_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.skill_wrapper .Typeahead-spinner').hide();
-  }).on('typeahead:selected',function(e, datum)
+ $('#type').on('change',function()
   {
-      var skillsdata = datum.value;
-      var value = datum.id;
-      addTags(skillsdata,value);
-   });
-        
-var categories = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url:'/account/categories-list/categories-data',
-    prepare: function (query, settings) {
-             settings.url += '?q=' + $('#jobtitle').val()+'&id='+prime_id;
-             return settings;
-        },  
-    'cache': false,  
-  }
-});
-        
-$('#jobtitle').typeahead(null, {
-  name: 'categories',
-  display: 'value',
-  source: categories,
-  minLength: 1,
-  highlight: true, 
-   limit: 20    ,
-}).on('typeahead:asyncrequest', function() {
-    $('.cat_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.cat_wrapper .Typeahead-spinner').hide();
-     
-  }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
-  {var data =  datum.id; 
-      skils_update(data); 
-      educational_update(data);
-      make_removable_jd();
-      make_removable_edu();
-      $.ajax({
-      url:"/account/categories-list/job-description",
-      data:{data:data},
-      method:"post",
-      success:function(data)
-     {
-     var obj = JSON.parse(data);
-     var html = [];
-     $.each(obj,function()
+   var job_type_str = $(this).val();
+   if(job_type_str == "Work From Home")  
+        {
+        $('.placement_location_hide').hide();
+        }
+   else
      { 
-      html.push ("<div class=\'md-checkbox\'>"+
-     "<input type=\'checkbox\' id=\'"+this.job_description_enc_id+"\' value = \'"+this.job_description_enc_id+"\' class=\'md-check\' name = \'checkbox[]\'>"+
-      "<label for=\'"+this.job_description_enc_id+"\'>"+
-      "<span></span>"+
-       "<span class=\'check\'></span>"+
-       "<span class=\'box\'></span>"+this.job_description+"</label>"+
-       "</div>");  
-         });
-                                                
-        $("#md-checkbox").html(html); 
+       $('.placement_location_hide').show();
          }
      });  
-    });
- 
-function make_removable_jd()
-{
-    var jd_list = [];
-    $.each($('.drop-options li'),function(index,value)
-    {
-    jd_list.push($.trim($(this).text()));
-    });
-    $('.drop-options').empty();
-    quesn_count = 0;
-    var i;
-    for(i=0; i<jd_list.length; i++)
-        {
-            drop_options(id="",jd_list[i]);
-        }
-}
-
-function make_removable_edu()
-{
-    var edu_list = [];
-    $.each($('.quali_drop_options li'),function(index,value)
-    {
-    edu_list.push($.trim($(this).text()));
-    });
-    $('.quali_drop_options').empty();
-    count_edu = 0;
-    var i;
-    for(i=0; i<edu_list.length; i++)
-        {
-            drop_edu(id="",edu_list[i]);
-        }
-}
-function skils_update(data)
-        {
-      $.ajax({
-      url:"/account/categories-list/job-skills",
-      data:{data:data},
-      method:"post",
-      success:function(response)
-        {
-           var obj = JSON.parse(response);
-           var html = [];
-     $.each(obj,function()
-     { 
-      html.push ("<span ><a href='#' class='clickable' data-value = '"+this.skill_enc_id+"'>"  +this.skill+ "</a> </span>");  
-         });
-                                                
-        $("#suggestionbox").html(html);
-        }
-      });    
-        }
-        
- function educational_update(data)
-        {
-        $.ajax({
-      url:"/account/categories-list/job-qualifications",
-      data:{data:data},
-      method:"post",
-      success:function(data)
-     {
-     var obj = JSON.parse(data);
-     var html = [];
-     $.each(obj,function()
-     { 
-      html.push ("<div class=\'md-checkbox\'>"+
-     "<input type=\'checkbox\' id=\'"+this.educational_requirement_enc_id+"\' value = \'"+this.educational_requirement+"\' class=\'md-check\' name = \'qualifications[]\'>"+
-      "<label for=\'"+this.educational_requirement_enc_id+"\'>"+
-      "<span></span>"+
-       "<span class=\'check\'></span>"+
-       "<span class=\'box\'></span>"+this.educational_requirement+"</label>"+
-       "</div>");  
-         });                                
-        $("#quali_list").html(html); 
-         }
-     });  
-        }
-   
-  
  function ChildFunction()
      {
        
@@ -1974,214 +1599,6 @@ function skils_update(data)
        $.pjax.reload({container: '#pjax_process', async: false});
      }
 window.ChildFunction = ChildFunction;
-var Education = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('educational_requirement'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/educations?q=%QUERY', 
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
-});   
-        
-var edu_type = $('#quali_field').typeahead(null, {
-  name: 'quali_field',
-  display: 'educational_requirement',
-   limit: 4,      
-  source: Education
-}).on('typeahead:asyncrequest', function() {
-    $('.edu_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.edu_wrapper .Typeahead-spinner').hide(); 
-  }).on('typeahead:selected',function(e, datum)
-  { 
-      var id = datum.educational_requirement_enc_id;
-      var qualification = datum.educational_requirement;  
-      drop_edu(id,qualification);
-      edu_type.typeahead('val','');  
-   });         
-        
-var Descriptions = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('job_description'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/description?q=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
-});   
-        
-var que_type = $('#question_field').typeahead(null, {
-  name: 'question_field',
-  display: 'job_description',
-   limit: 4,      
-  source: Descriptions
-}).on('typeahead:asyncrequest', function() {
-    $('.descrip_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.descrip_wrapper .Typeahead-spinner').hide(); 
-  }).on('typeahead:selected',function(e, datum)
-  { 
-      var id = datum.job_description_enc_id;
-      var questions = datum.job_description;  
-      drop_options(id,questions);
-   });    
-    
-        
- var designations = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/designations?q=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
-});
-
-$('#designations').typeahead(null, {
-  name: 'designations_test',
-  display: 'designation',
-   limit: 20,      
-  source: designations
-}).on('typeahead:asyncrequest', function() {
-    $('.desig_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    $('.desig_wrapper .Typeahead-spinner').hide();
-  });  
-$(document).on('click', '.modal-load-class', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
-});
-
-$(document).on('click', '.modal-load-benefit', function() {
-    $('#modal_benefit').modal('show').find('.modal-body').load($(this).attr('value'));
-});
-
-
- $('#add_existing_location').hide();        
- $('#existing_location').on('click',function()
-   {
-     $('#existing_location').hide();   
-     $('#add_existing_location').show();   
-   })    
- $('.close-drp_down').on('click',function()
-   {
-         $('#add_existing_location').hide();
-         $('#existing_location').show();
-   })
-
-        
-   $('input[name = "interradio"]').on('change',function()
-   {
-     var i  = $(this).val();
-        if (i==1) 
-        {
-          $('#interview_box').show();
-        }
-        else
-        {
-            $('#interview_box').hide();
-        }
-   })    
-        var quesn_count = 0;
-        $('#question_field').keypress(function(e){
-        if(e.which == 13){
-        
-        questions  = $('#question_field').val();
-        
-        if(questions == "")
-        {
-         return false;
-        }
-        else{
-             drop_options(id="",questions);
-              $('#question_field').val("");
-            }
-        } 
-    });
-      
-        function drop_options(id,questions)
-        {
-            var duplicate_jd = [];
-           $.each($('.drop-options li'),function(index,value)
-                        {
-                         duplicate_jd.push($.trim($(this).text()).toUpperCase());
-                        });
-           if(jQuery.inArray($.trim(questions).toUpperCase(), duplicate_jd) != -1) {
-                return false;
-                    } else {
-                     $('#heading_placeholder').hide();$(".drop-options").append('<li  value-id="'+id+'" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' +questions+ '<span> <a href = "#" class = "remove_this_item"><i class="fa fa-times"></i></a></span> </li>');
-                        scroll_checklist();
-                        quesn_count++
-                        quesn_upt();
-                        // console.log(quesn_count);
-                }
-           $('#question_field').blur(function(){
-                         $(this).val('');
-                            });
-        }
-        
-        function drop_edu(id,qualification)
-        {
-            duplicate_ed=[];
-            $.each($('.quali_drop_options li'),function(index,value)
-                        {
-                         duplicate_ed.push($.trim($(this).text()).toUpperCase());
-                        });
-           if(jQuery.inArray($.trim(qualification).toUpperCase(), duplicate_ed) != -1) {
-                return false;
-                    } else {
-                     $('#heading_quali').hide();$(".quali_drop_options").append('<li  value-id="'+id+'" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' +qualification+ '<span> <a href = "#" class = "remove_this_item"><i class="fa fa-times"></i></a></span> </li>');   
-               scroll_qualifications();
-              count_edu++;
-              edu_counter_set();
-                }
-           $('#quali_field').blur(function(){
-                         $(this).val('');
-                            });
-       
-       }
-        
-        
-        var count_edu = 0;
-        $('#quali_field').keypress(function(e){
-        if(e.which == 13){
-        qualification  = $('#quali_field').val();
-        if(qualification == "")
-        {
-         return false;
-        }
-        else{
-              drop_edu(id="",qualification);
-              $('#quali_field').val("");
-            }
-        } 
-    });
-        
-        $(document).on('click','.drop-options span a', function(event){
-		event.preventDefault();
-                var btn = $(this);
-                var tag = btn.closest("li").remove();
-                quesn_count--
-                quesn_upt();
-	});
-        $(document).on('click','.quali_drop_options span a', function(event){
-		event.preventDefault();
-                var btn = $(this);
-                var tag = btn.closest("li").remove();
-                count_edu--;
-                edu_counter_set();
-	});
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();
@@ -2216,251 +1633,13 @@ $(document).on('click', '.modal-load-benefit', function() {
                     });
                 });
  
-       var skillsdata = null;
-       $(document).on('click','.clickable', function(event){
-		event.preventDefault();
-                skillsdata = $(this).text();
-                var value = $(this).attr('data-value');
-                addTags(skillsdata,value);
-   });
-        
- function getTags(){ //Gets array of existing tags
-		var alltags = new Array();
-		var i = 0;
-		$("#shownlist span").each(function( index ) {
-  			alltags[i] = $(this).html().substr(0,$(this).html().length - 36);
-			i ++;
-		});	
-		return alltags;
-	};
-function setTags(){ //Gets string of existing tags separated by commas
-		var texttags = getTags();
-		var finaltext = "";
-		for(var i=0; i<texttags.length; i++){
-			if(finaltext == ""){
-				finaltext = texttags[i];	
-			}
-			else{
-				finaltext = finaltext + "," + texttags[i];
-			}
-		}
-		return finaltext;
-	}
-    var count = 0; 
-  function addTags(skillsdata,value){
-		var tags = skillsdata.trim();
-		var listnews = "";
-		var newtags = "";
-		var existenttags = getTags();
-		if(tags.substr(tags.length - 1) == ","){ 
-			tags = tags.substr(0, tags.length -1);	
-		}
-		if(tags.substr(0,1) == ","){
-			tags = tags.substr(1, tags.length);	
-		}
-		if(tags.indexOf(",") !== -1){
-			var artags = tags.split(',');	
-			for(var i=0; i<artags.length; i++){
-				if((artags[i].trim() !== "")&&($.inArray(artags[i].trim(), existenttags) == -1)){
-					listnews = listnews + '<span data-value = "'+value+'">'+artags[i].trim()+'<a href="#" class="fa fa-times"></a></span>';
-					existenttags.push(artags[i].trim());
-                                    count++;
-                                    skill_counter();
-                                    scroll_skills();
-				}
-			}
-		}
-		else{
-                    if($.inArray(tags, existenttags) == -1){
-	            listnews = '<span data-value = "'+value+'">'+tags+'<a href="#" class="fa fa-times"></a></span>';
-                    count++;
-                    skill_counter();
-                    scroll_skills();
-		}
-		}
-		$("#shownlist").append(listnews);
-		$('#inputfield').val('');
-		$('#inputfield').blur(function(){
-            $(this).val('');
-        });
-	};        
-        
-$("#inputfield").keypress(function(e){
-        if(e.which == 13){
-        skillsdata = $('#inputfield').val();
-        if(skillsdata == "")
-        {
-         return false;
-        }
-        else{
-             addTags(skillsdata,value = "");
-            }
-        } 
-    })
-$(document).on('click','#shownlist span a', function(event){
-		event.preventDefault();
-		var btn = $(this);
-		var tag = btn.parent().html().toString();
-		tag = tag.substr(0,tag.length-20);
-		btn.parent().remove();
-                count--;
-                skill_counter();
-	});   
- 
- function skill_counter()
-        {
-           if(count == 0)
-               {
-                 $('#skill_counter').val("");
-               }
-           else
-           {
-           $('#skill_counter').val("1");
-          }
-        }
-         $('#md-checkbox').on('click', ':checkbox', function () {
-            if ($(this).is(':checked')) {
-                $('#heading_placeholder').hide();
-                $(".drop-options").append('<li value-id="' + $(this).attr("id") + '" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' + $(this).closest("div").find("label").text() + '</li>');
-                scroll_checklist();
-                quesn_count++
-               quesn_upt();
-            } else if ($(this).is(':unchecked')) {
-              $('.drop-options [value-id = "'+$(this).attr("id")+'"]').remove();
-              quesn_count--
-              quesn_upt();
-            }
-        });
-        
-         $('#quali_list').on('click', ':checkbox', function () {
-            if ($(this).is(':checked')) {
-                $('#heading_quali').hide();
-                $(".quali_drop_options").append('<li value-id="' + $(this).attr("id") + '" class="draggable-item"> <i class="fa fa-arrows" aria-hidden="true"></i> ' + $(this).closest("div").find("label").text() + '</li>');
-                scroll_checklist();
-               count_edu++;
-              edu_counter_set();
-            } else if ($(this).is(':unchecked')) {
-              $('.quali_drop_options [value-id = "'+$(this).attr("id")+'"]').remove();
-              count_edu--;
-              edu_counter_set();
-            }
-        });
-        
        $( init );
-
 function init() {
   $( ".droppable-area" ).sortable({
       connectWith: ".connected-sortable",
       stack: '.connected-sortable ul'
     }).disableSelection();
 }       
-   
-$('#addctc').on('click',function(){
-    $('#addct').hide();
-    $('#ctc-main').show();     
-});
-        
-$('.close-ctc').on('click',function(){
-    $('#ctc-main').hide();
-    $('#addct').show();
-});
-       function skills_arr()
-       {
-        var array_val = [];
-
-        $.each($('.placeble-area span'),function(index,value)
-        {
-        var obj_val = {};
-        obj_val = $.trim($(this).text());
-        array_val.push(obj_val);
-         });
-         $('#skillsArray').val(JSON.stringify(array_val));
-        };
-        
-        function placement_arr()
-        {
-            var place_arr =[];
-            $.each($("input[name='placement_locations[]']:checked"),
-            function(index,value){
-            var obj_place = {};
-            obj_place["id"] = $(this).attr('id');
-            obj_place["value"] = $(this).next('label').find('.place_no').val();
-            obj_place["name"] = $(this).attr('data-value');
-            place_arr.push(obj_place); 
-            });
-            $('#placement_array').val(JSON.stringify(place_arr));
-       }  
-        function question_process_arr()  
-        {
-                        var process_question_arr =[];
-                        $.each($("input[name='questionnaire[]']:checked"),
-                        function(index,value){
-                        var obj = {};
-                        obj["id"] = $(this).attr('id');
-                        obj["process_id"] = $(this).closest('.col-md-9').next().find('.selectBox').val();
-                        process_question_arr.push(obj);
-                        }); 
-              $('#question_process').val(JSON.stringify(process_question_arr)); 
-                  
-       }
-   $(document).on('change','input[name="questionnaire[]"]',function(){
-        var box;
-    if ($(this).is(':checked')) {
-        box =  $(this).closest('.col-md-9').next().find('.selectBox');
-        box.prop("disabled", false);
-        ques_len = $('[name="questionnaire[]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-        }
-        else if ($(this).is(':unchecked'))
-        {
-        box =  $(this).closest('.col-md-9').next().find('.selectBox');
-        box.prop("disabled", true);
-        box.val("");
-        ques_len = $('[name="questionnaire[]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-        }
-   })
-   $(document).on('change','.selectBox',function()
-   {
-     if($(this).val()!=="")
-     {
-        ques_len = $('[name="questionnaire[]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-     }
-     else
-     {
-        ques_len = $('[name="questionnaire[]"]:checked').length;
-        stage_len = $('.selectBox option:selected:not([value=""])').length;
-        ques_checker(ques_len,stage_len);
-     }
-    }) 
-
-     function edu_counter_set()
-        {
-             if(count_edu == 0)
-               {
-                 $('#qualific_count').val("");
-               }
-           else
-           {
-           $('#qualific_count').val("1");
-          }
-         }
-     function quesn_upt()
-        {
-             if(quesn_count <= 2)
-               {
-                 $('#desc_count').val("");
-               }
-           else
-           {
-           $('#desc_count').val("1");
-          }
-         }
-        
     var FormWizard = function () {
     return {
         init: function () {
@@ -2470,9 +1649,8 @@ $('.close-ctc').on('click',function(){
             var form = $('#submit_form');
             var error = $('.alert-danger', form);
             var success = $('.alert-success', form);
-        
             $('#submit_form').validate({
-                ignore: ":hidden:not(#jobtitle,#designations)",
+                ignore: ":hidden:not(#title,#designations)",
                 doNotHideMessage: true, //this option enables to show the error/success messages on tab switch.
                 errorElement: 'span', //default input error message container
                 errorClass: 'help-block help-block-error', // default input error message class
@@ -2484,14 +1662,14 @@ $('.close-ctc').on('click',function(){
                             return (min_s.val() > max_s.val());
                         }
                       },
-                    'jobtitle': {
+                    'title': {
                         required: true
                     },
                     'is_online_interview':
                     {
                         required:true
                     },
-                    'salary_type': {
+                    'wage_type': {
                         required: true
                     },
                     'questionnaire_selection':
@@ -2501,6 +1679,12 @@ $('.close-ctc').on('click',function(){
                     'benefit_selection':
                     {
                         required:true
+                    },
+                    'pre_placement_offer': {
+                        required: true
+                    },
+                    'pre_placement_package': {
+                        required: true
                     },
                     'benefit_calc': {
                         required: true
@@ -2517,14 +1701,14 @@ $('.close-ctc').on('click',function(){
                     'interview_calc': {
                         required: true
                     },
-                    'jobtype': {
+                    'type': {
                         required: true
                     },
                     'primaryfield': {
                       
                        required:true
                     },
-                    'pref_inds': {
+                    'industry': {
                       
                        required:true
                     },
@@ -2539,6 +1723,16 @@ $('.close-ctc').on('click',function(){
                     {
                       required:true
                     },
+                    'min_wage': {
+                        required: function() {
+                              return (doc_type=='Internships');
+                           }
+                    },
+                    'max_wage': {
+                        required: function() {
+                              return (doc_type=='Internships');
+                           }
+                    },
                    'desc_count':
                     {
                       required:true
@@ -2546,7 +1740,7 @@ $('.close-ctc').on('click',function(){
                     'earliestjoiningdate': {
                         required: true
                     },
-                    'salaryinhand': {
+                    'fixed_wage': {
                         required: true,
                         
                     },
@@ -2597,12 +1791,15 @@ $('.close-ctc').on('click',function(){
                  {
                  required:true     
                 },
-        
                 },
                 messages: { 
-                    'salary_type': {
+                    'pre_placement_offer': {
                       
-                       required:'<div class = "color_red">Please Select One Option From The List</div>',
+                       required:'<div class = "color_red">Choose One</div>',
+                    },
+                    'wage_type': {
+                      
+                       required:'<div class = "color_red">Select One Option From The List</div>',
                     },
                     'benefit_selection':
                     {
@@ -2631,7 +1828,6 @@ $('.close-ctc').on('click',function(){
                      {
                        required:'<div class = "color_red">Field Is Required</div>',
                        },
-
                     'process_calc':
                       {
                        required:'<div class = "color_red">Please Choose one Interview process</div>',
@@ -2667,58 +1863,59 @@ $('.close-ctc').on('click',function(){
                     },
                 },
                 errorPlacement: function (error, element) { 
-                    if (element.attr("name") == "salaryinhand") 
+                    switch(element.attr("name"))
                     { 
-                        error.insertAfter("#salaryinhand");
-                    }
-              else if (element.attr("name") == "desc_count") { 
+                        case 'fixed_wage':
+                            error.insertAfter("#fixed_wage");
+                            break;
+                        case 'desc_count':
                         error.insertAfter("#error-checkbox-msg");
-                    } 
-              else if(element.attr("name") == "salary_type")
-               { 
+                            break;
+                        case 'wage_type':
                     error.insertAfter("#radio_rules");
-                }      
-              else if (element.attr("name") == "qualific_count") { 
+                            break;
+                        case 'qualific_count':
                         error.insertAfter("#error-edu-msg");
-                    } 
-              else if (element.attr("name") == "placement_calc") { 
+                            break;
+                        case 'placement_calc':
                         error.insertAfter("#place_error");
-                    } 
-              else if (element.attr("name") == "interview_calc") { 
+                            break;
+                        case 'interview_calc':
                         error.insertAfter("#interview_error");
-                    } 
-            else if (element.attr("name") == "quesradio") { 
+                            break;
+                        case 'quesradio':
                         error.insertAfter("#error-checkbox-msg2");
-                    } 
-            else if (element.attr("name") == "ques_calc") { 
+                            break;
+                        case 'ques_calc':
                         error.insertAfter("#que_error");
-                    } 
-        else if (element.attr("name") == "interradio") { 
+                            break;
+                        case 'interradio':
                         error.insertAfter("#error-checkbox-msg3");
-                    }
-        else if (element.attr("name") == "is_online_interview") { 
+                            break;
+                        case 'is_online_interview':
                         error.insertAfter("#error-checkbox-msg4");
-                    }
-        else if (element.attr("name") == "process_calc") { 
+                            break;
+                        case 'process_calc':
                         error.insertAfter("#process_err");
-                    } 
-             else if (element.attr("name") == "benefit_calc") { 
+                            break;
+                        case 'benefit_calc':
                         error.insertAfter("#b_error");
-              } 
-        else if(element.attr("name") == "skill_counter")
-               { 
+                            break;
+                        case 'skill_counter':
                     error.insertAfter("#suggestionbox");
-                }
-        else if(element.attr("name") == "benefit_selection")
-            {
+                            break;
+                        case 'benefit_selection':
                 error.insertAfter("#select_benefit_err");
-            } 
-        else if(element.attr("name") == "questionnaire_selection")
-            {
+                            break;
+                        case 'questionnaire_selection':
                 error.insertAfter("#select_ques_err");
-            }       
-            else {
-                        error.insertAfter(element); // for other inputs, just perform default behavior
+                            break;
+                        case 'pre_placement_offer':
+                            error.insertAfter("#pre_placement_err");
+                            break;
+                        default:
+                            error.insertAfter(element);
+                            break;
                 }
                 },
 
@@ -2762,7 +1959,7 @@ $('.close-ctc').on('click',function(){
                     } else if (input.is("select")) {
                         $(this).html(input.find('option:selected').text());
                     } else if (input.is(":radio") && input.is(":checked")) {
-                        $(this).html(input.attr("data-title"));
+                        $(this).html(input.attr("data-name"));
                     } 
                   else if ($(this).attr("data-display") == 'checkbox[]') {
                    var arr_val = [];
@@ -2819,31 +2016,14 @@ $('.close-ctc').on('click',function(){
                         skills_arr();
                         placement_arr();
                         question_process_arr();
+                        get_preview(session_tok);
                    if($('input[name="interradio"]:checked' ).val()== 0)
                    {
                       $('#interviewstarttime').val('');
                       $('#interviewendtime').val('');
                       $('#time1').html('');
                       $('#time2').html('');
-                     
-                   }
-                   var n = "";
-                   var possible = "abcdefghijklmnopqrstuvwxyz";
-                   for(var i = 0;i < 5; i++)
-                    {
-                         n += possible.charAt(Math.floor(Math.random()*possible.length));
                     }
-                
-                var data = $('#submit_form').serialize()+'&n='+session_tok;
-                
-                    $.ajax({
-                         url: '/account/jobs/preview', 
-                         data:data, 
-                         method:'post',
-                         success: function(data) {
-                            $('.button-preview').attr('href','/jobs/job-preview?data='+session_tok+'');  
-                         }
-                    });
                 }
                  else if($(this).attr("data-display") == 'placement_locations[]' || $(this).attr("data-display") == 'specialskillsrequired' || $(this).attr("data-display") == 'primaryfield' || $(this).attr("data-display") == 'interviewcity[]')
                     {
@@ -2859,7 +2039,7 @@ $('.close-ctc').on('click',function(){
                         $('input[name = "placement_locations[]"]:checked').each(function(){
                         placement_city.push('<span class = "chip">'+ $(this).attr('data-value')+":"+"("+$(this).next('label').find(".place_no").val()+")"+'</span>');
                   });
-                      if ($('#jobtype').val()=='Work From Home'){
+                      if ($('#type').val()=='Work From Home'){
                            $('#place_locations').html('');
                        }
                        else
@@ -2952,51 +2132,32 @@ $('.close-ctc').on('click',function(){
 jQuery(document).ready(function() {
     FormWizard.init();
 });
-        
-    function scroll_skills() {
-        $(".placeble-area").animate({ scrollTop: $('.placeble-area').prop("scrollHeight")}, 1000);
+function salarycomparison(){
+    var max_s = convertToInt($('#max_wage').val());
+    var min_s = convertToInt($('#min_wage').val());
+    if(max_s < min_s){
+        $('.salary_errors').html('<div class = "s_error">Maximum salary cannot less than Minimum salary.</div>');
+        $('html, body').animate({ scrollTop: 200 }, 1000);
+       return false;
+    } else{
+        $('.salary_errors').html(' ');
+        return true;
     }
-
-     function scroll_checklist() {
-        $("#checkboxlistarea").animate({ scrollTop: $('#checkboxlistarea').prop("scrollHeight")}, 1000);
     }
-     function scroll_qualifications() {
-        $("#quali_listarea").animate({ scrollTop: $('#quali_listarea').prop("scrollHeight")}, 1000);
+function convertToInt(t){
+    t=t.replace(/\,/g,'');
+    t=parseInt(t,10);
+    return t;
     }
-
 function warn_validation(string)
 {
     return false;
 }
-// var ps = new PerfectScrollbar('#checkboxlistarea');
-// var ps = new PerfectScrollbar('#quali_listarea');
-// var ps = new PerfectScrollbar('#md-checkbox');
-// var ps = new PerfectScrollbar('#quali_list');        
-// var ps = new PerfectScrollbar('#suggestionbox');        
-// var ps = new PerfectScrollbar('.placeble-area');
-let appEditor;
- ClassicEditor
-    .create(document.querySelector('#othrdetail'), {
-        removePlugins: [ 'Heading', 'Link' ],
-        toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
-    }  )
-    .then( editor => {
-        appEditor = editor;
-    } )
-    .catch( error => {
-        console.error( error );
-    } );
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/gmaps/gmaps.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

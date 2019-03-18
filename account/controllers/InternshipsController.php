@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -49,7 +50,7 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCreate()
+    public function actionCreateXyz()
     {
         if (Yii::$app->user->identity->organization) {
             $object = new JobApplicationForm();
@@ -89,6 +90,7 @@ class InternshipsController extends Controller
         }
     }
 
+
     public function actionApproveCandidate()
     {
         if (Yii::$app->user->identity->organization) {
@@ -96,7 +98,7 @@ class InternshipsController extends Controller
                 $f_id = Yii::$app->request->post('field_id');
                 $app_id = Yii::$app->request->post('app_id');
                 $update = Yii::$app->db->createCommand()
-                    ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
+                    ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                     ->execute();
                 if ($update == 1) {
                     return true;
@@ -104,6 +106,46 @@ class InternshipsController extends Controller
                     return false;
                 }
             }
+        }
+    }
+
+    public function actionCreate()
+    {
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Internships';
+            $model = new ApplicationForm();
+            $primary_cat = $model->getPrimaryFields('Internships');
+            $questionnaire = $model->getQuestionnnaireList(2);
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -195,7 +237,7 @@ class InternshipsController extends Controller
             if (Yii::$app->request->isPost) {
                 $id = Yii::$app->request->post('data');
                 $update = Yii::$app->db->createCommand()
-                    ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
+                    ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
                     ->execute();
                 if ($update) {
                     return true;
@@ -210,19 +252,19 @@ class InternshipsController extends Controller
     {
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','e.slug','f.name parent_category','f.icon','f.icon_png'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
-            ->joinWith(['applicationEnc b' => function($b){
+            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'e.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
+            ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
                 $b->joinWith(['applicationTypeEnc c']);
-                $b->joinWith(['title d' => function($c){
+                $b->joinWith(['title d' => function ($c) {
                     $c->joinWith(['categoryEnc e']);
                     $c->joinWith(['parentEnc f']);
                 }]);
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
-            }],false)
+            }], false)
             ->having(['type' => 'Internships'])
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
@@ -236,7 +278,7 @@ class InternshipsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','j.name type','a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -259,7 +301,7 @@ class InternshipsController extends Controller
     {
         $users = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -298,7 +340,7 @@ class InternshipsController extends Controller
     {
         $accepted_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active','SUM(k.positions) as positions'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -323,7 +365,7 @@ class InternshipsController extends Controller
     {
         $pending_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['b.application_enc_id','j.name type','a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions', 'a.is_deleted'])
+            ->select(['b.application_enc_id', 'j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions', 'a.is_deleted'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending', 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -386,7 +428,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -396,11 +438,12 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCancelApplication() {
+    public function actionCancelApplication()
+    {
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -415,7 +458,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
+                ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -445,13 +488,13 @@ class InternshipsController extends Controller
                     $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
                     $shortlist->application_enc_id = $app_id;
                     $shortlist->shortlisted = 1;
-                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_on = date('Y-m-d H:i:s');
                     $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
-                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
                         $update = Yii::$app->db->createCommand()
-                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
                         if ($update == 1) {
                             $response = [
@@ -478,13 +521,13 @@ class InternshipsController extends Controller
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         $update1 = Yii::$app->db->createCommand()
-                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                             ->execute();
-                        if($update1 == 1) {
+                        if ($update1 == 1) {
                             $response = [
                                 'status' => 'true',
                                 'title' => 'Success',
@@ -509,7 +552,7 @@ class InternshipsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id, 'review' => 1])
                         ->execute();
                     if ($update == 1) {
                         $response = [
@@ -544,7 +587,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
+                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -573,9 +616,9 @@ class InternshipsController extends Controller
                     $shortlist->shortlisted_enc_id = $utilitiesModel->encrypt();
                     $shortlist->application_enc_id = $app_id;
                     $shortlist->shortlisted = 1;
-                    $shortlist->created_on = date('Y-m-d h:i:s');
+                    $shortlist->created_on = date('Y-m-d H:i:s');
                     $shortlist->created_by = Yii::$app->user->identity->user_enc_id;
-                    $shortlist->last_updated_on = date('Y-m-d h:i:s');
+                    $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
                         return 'short';
@@ -584,14 +627,14 @@ class InternshipsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         return 'unshort';
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
+                        ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
                         return 'short';
@@ -605,7 +648,7 @@ class InternshipsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -622,7 +665,7 @@ class InternshipsController extends Controller
             ->all();
         $total_shortlist = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -636,7 +679,7 @@ class InternshipsController extends Controller
             ->count();
         $applied_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['or',
                 ['a.status' => 'Pending'],
@@ -659,7 +702,7 @@ class InternshipsController extends Controller
 
         $total_applied = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['or',
                 ['a.status' => 'Pending'],
@@ -679,7 +722,7 @@ class InternshipsController extends Controller
 
         $total_pending = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','a.id','a.status','a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions', 'a.is_deleted'])
+            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions', 'a.is_deleted'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending', 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
@@ -695,7 +738,7 @@ class InternshipsController extends Controller
 
         $shortlist_org = ShortlistedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year','a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->select(['b.establishment_year', 'a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
             ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
@@ -705,7 +748,7 @@ class InternshipsController extends Controller
             ->all();
         $total_shortlist_org = ShortlistedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year','a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->select(['b.establishment_year', 'a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
             ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
@@ -714,19 +757,19 @@ class InternshipsController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','b.slug','f.name parent_category','f.icon','f.icon_png'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
-            ->joinWith(['applicationEnc b' => function($b){
+            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
+            ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
                 $b->joinWith(['applicationTypeEnc c']);
-                $b->joinWith(['title d' => function($c){
+                $b->joinWith(['title d' => function ($c) {
                     $c->joinWith(['categoryEnc e']);
                     $c->joinWith(['parentEnc f']);
                 }]);
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
-            }],false)
+            }], false)
             ->having(['type' => 'Internships'])
             ->limit(8)
             ->orderBy(['a.id' => SORT_DESC])
@@ -734,24 +777,24 @@ class InternshipsController extends Controller
             ->all();
         $total_reviews = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id','a.review_enc_id','a.review','b.application_enc_id','c.name type','g.name as org_name','g.establishment_year','SUM(h.positions) as positions','d.parent_enc_id','d.category_enc_id','e.name title','e.slug','f.name parent_category','f.icon','f.icon_png'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1 ])
-            ->joinWith(['applicationEnc b' => function($b){
+            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'e.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
+            ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
                 $b->joinWith(['applicationTypeEnc c']);
-                $b->joinWith(['title d' => function($c){
+                $b->joinWith(['title d' => function ($c) {
                     $c->joinWith(['categoryEnc e']);
                     $c->joinWith(['parentEnc f']);
                 }]);
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
-            }],false)
+            }], false)
             ->having(['type' => 'Internships'])
             ->count();
         $accepted_jobs = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active','SUM(k.positions) as positions'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -769,7 +812,7 @@ class InternshipsController extends Controller
             ->all();
         $total_accepted = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type','g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active','SUM(k.positions) as positions'])
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
             ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -809,12 +852,12 @@ class InternshipsController extends Controller
             ->one();
         $user_viewed = new UserCoachingTutorials();
         $user_v = $user_viewed->find()
-            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id,'is_viewed'=>1,'tutorial_enc_id'=>$tutorial_cat["tutorial_enc_id"]])
+            ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_viewed' => 1, 'tutorial_enc_id' => $tutorial_cat["tutorial_enc_id"]])
             ->asArray()
             ->one();
-        if(empty($user_v)) {
+        if (empty($user_v)) {
             $viewed = 0;
-        }else{
+        } else {
             $viewed = 1;
         }
 
@@ -823,8 +866,8 @@ class InternshipsController extends Controller
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
-            'primary_fields' => $this->getCategories()
-            'viewed'=>$viewed,
+            'primary_fields' => $this->getCategories(),
+            'viewed' => $viewed,
         ]);
     }
 
@@ -921,10 +964,10 @@ class InternshipsController extends Controller
         $total_applications = AppliedApplications::find()
             ->alias('a')
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName().'as f','f.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = b.application_type_enc_id')
             ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['b.is_deleted'=>0])
-            ->andWhere(['f.name'=>'Internships'])
+            ->andWhere(['b.is_deleted' => 0])
+            ->andWhere(['f.name' => 'Internships'])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Users::tableName() . 'as e', 'e.user_enc_id = a.created_by')

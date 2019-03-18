@@ -15,13 +15,9 @@ use yii\helpers\Url;
                         <span class="caption-subject font-dark bold uppercase">Applied Profiles</span>
                     </div>
                     <div class="actions">
-                        <!--                        <div id="btn-group1" class="btn-group dashboard-button btns1">
-                                                    <button id="selectMultiple" class="viewall-jobs">Select Multiple</button>
-                                                </div>-->
                         <div id="btn-group2" class="btn-group dashboard-button btns2 ">
                             <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>
                             <button class="viewall-jobs" onclick="rejection()">Reject</button>
-                            <button id="cancelBtn" class="viewall-jobs">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -33,8 +29,7 @@ use yii\helpers\Url;
                                     <!-- BEGIN: Actions -->
                                     <div id="card-data" class="row cd-box">
                                     <?php
-//                                        foreach($user_data as $un) {
-                                            foreach ($user_data as $u) {
+                                    foreach ($user_data as $u) {
                                                 ?>
                                                 <article>
                                                     <div class="col-lg-3 col-md-3 col-sm-6 p-category-main"
@@ -50,9 +45,6 @@ use yii\helpers\Url;
                                                                 <div class="paid-candidate-box">
                                                                     <div class="dropdown">
                                                                         <div class="btn-group fl-right">
-                                                                            <!--                                                                    <button type="button" class="btn-trans" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-                                                                            <!--                                                                        <i class="fa fa-gear"></i>-->
-                                                                            <!--                                                                    </button>-->
                                                                             <div class="dropdown-menu pull-right animated flipInX">
                                                                                 <a href="#" data-toggle="modal"
                                                                                    data-target="#shortList">Shortlist</a>
@@ -63,7 +55,6 @@ use yii\helpers\Url;
                                                                     <div class="paid-candidate-inner--box">
                                                                         <div class="paid-candidate-box-thumb">
                                                                             <?php
-                                                                            //                                                                    print_r($u);
                                                                             $name = $image = NULL;
                                                                             if (!empty($u['userEnc']['image'])) {
                                                                                 $image = Yii::$app->params->upload_directories->users->image . $u['userEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['userEnc']['image'];
@@ -81,8 +72,6 @@ use yii\helpers\Url;
                                                                                         width="140" height="140"
                                                                                         font="70px"></canvas>
                                                                             <?php endif; ?>
-                                                                            <!--                                                                    <img src="-->
-                                                                            <?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--" class="img-responsive img-circle" alt="" />-->
                                                                         </div>
                                                                         <div class="paid-candidate-box-detail">
                                                                             <h4><?= ucfirst($u['userEnc']['first_name']) ?>
@@ -95,12 +84,8 @@ use yii\helpers\Url;
                                                                         <ul>
                                                                             <?php
                                                                             $i = 0;
-                                                                            //                                                                    print_r($u['userEnc']['userSkills']);
-                                                                            //                                                                    foreach ($u['userEnc']['userSkills'] as $sk){
-                                                                            //                                                                        echo $sk['skill'];
-                                                                            //                                                                    }
                                                                             foreach ($u['userEnc']['userSkills'] as $sk) {
-//
+
                                                                                 ?>
                                                                                 <li>
                                                                                     <?php
@@ -114,12 +99,7 @@ use yii\helpers\Url;
                                                                                 ?>
                                                                                 <li class="more-skill bg-primary">
                                                                                     +<?= count($u['userEnc']['userSkills']) - 3 ?></li>
-                                                                            <?php } ?>
-                                                                            <!--                                                                    <li>Php</li>-->
-                                                                            <!--                                                                    <li>Android</li>-->
-                                                                            <!--                                                            <li>Html</li>-->
-                                                                            <!--                                                                    <li class="more-skill bg-primary">+3</li>-->
-                                                                        </ul>
+                                                                            <?php } ?></ul>
                                                                     </div>
                                                                     <div class="paid-candidate-box-exp">
                                                                         <?php if (!empty($u['userEnc']['city_name'])) { ?>
@@ -184,7 +164,6 @@ use yii\helpers\Url;
                                                     </div>
                                                 </article>
                                                 <?php
-//                                            }
                                         }
                                     ?>
                                     </div>
@@ -192,9 +171,6 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                         </div>
-<!--                        <div class="com-load-more-btn">-->
-<!--                            <button type="button" id="comloadmore" class="btn custom-buttons">Load More</button>-->
-<!--                        </div>-->
                     </div>
                 </div>
             </div>
