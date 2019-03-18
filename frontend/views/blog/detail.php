@@ -6,121 +6,107 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-                <div class="blog-division">
-                    <div class="blog-cover-image">
-                        <?php
-                        $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                        ?>
-                        <img src="<?= $feature_image; ?>">
-                    </div>
-                    <div class="blog-title"><?= $post['title'] ?></div>
-                    <div class="blog-text">
-                        <?= $post['description']; ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog-division">
+                        <div class="blog-cover-image">
+                            <?php
+                            $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+                            ?>
+                            <img src="<?= $feature_image; ?>">
+                        </div>
+                        <div class="blog-title"><?= $post['title'] ?></div>
+                        <div class="blog-text">
+                            <?= $post['description']; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="about-blogger">
-                    <div class="channel">
-                        <a href="">
-                            <div class="channel-icon">
-                                <?php
-                                $name = $image = NULL;
-                                if (!empty($post['image'])) {
-                                    $image = Yii::$app->params->upload_directories->users->image . $post['image_location'] . DIRECTORY_SEPARATOR . $post['image'];
-                                }
-                                $name = $post['name'];
-                                if ($image):
-                                    ?>
-                                    <img src="<?= $image; ?>" alt="<?= $name; ?>"/>
-                                <?php else: ?>
-                                    <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
-                                            color="<?= $post['initials_color']; ?>" width="125" height="125"
-                                            font="60px"></canvas>
-                                <?php endif; ?>
+                <div class="col-md-3">
+                    <div class="about-blogger">
+                        <div class="channel">
+                            <a href="">
+                                <div class="channel-icon">
+                                    <?php
+                                    $name = $image = NULL;
+                                    if (!empty($post['image'])) {
+                                        $image = Yii::$app->params->upload_directories->users->image . $post['image_location'] . DIRECTORY_SEPARATOR . $post['image'];
+                                    }
+                                    $name = $post['name'];
+                                    if ($image):
+                                        ?>
+                                        <img src="<?= $image; ?>" alt="<?= $name; ?>"/>
+                                    <?php else: ?>
+                                        <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
+                                                color="<?= $post['initials_color']; ?>" width="125" height="125"
+                                                font="60px"></canvas>
+                                    <?php endif; ?>
+                                </div>
+                            </a>
+                            <div class="channel-details">
+                                <div class="channel-name"><a href=""><?= $post['name'] ?></a></div>
+                                <div class="channer-des"><?= $post['user_about'] ?></div>
                             </div>
-                        </a>
-                        <div class="channel-details">
-                            <div class="channel-name"><a href=""><?= $post['name'] ?></a></div>
-                            <div class="channer-des"><?= $post['user_about'] ?></div>
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="popular-heading about-heading"> About Blog</div>
-                        <div class="blog-tags">
-                            <span>Category:</span>
-                            <ul>
-                                <?php
-                                foreach ($post['postCategories'] as $cat) {
-                                    echo '<li><a href="/' . $tags['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
-                                }
-                                ?>
-                            </ul>
+                        <div class="col-md-12">
+                            <div class="popular-heading about-heading"> About Blog</div>
+                            <div class="blog-tags">
+                                <span>Category:</span>
+                                <ul>
+                                    <?php
+                                    foreach ($post['postCategories'] as $cat) {
+                                        echo '<li><a href="/' . $tags['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+                            <div class="blog-pub">
+                                <span>Published:</span> <?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
+                            <div class="blog-tags">
+                                <span>Tags:</span>
+                                <ul>
+                                    <?php
+                                    foreach ($post['postTags'] as $tags) {
+                                        echo '<li><a href="/' . $tags['tagEnc']['slug'] . '">' . $tags['tagEnc']['name'] . '</a></li>';
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="blog-pub"><span>Published:</span> <?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
-                        <div class="blog-tags">
-                            <span>Tags:</span>
-                            <ul>
-                                <?php
-                                foreach ($post['postTags'] as $tags) {
-                                    echo '<li><a href="/' . $tags['tagEnc']['slug'] . '">' . $tags['tagEnc']['name'] . '</a></li>';
-                                }
-                                ?>
-                            </ul>
+                        <div class="padd-top"></div>
+                        <div class="col-md-12">
+                            <div class="popular-heading">Related Blogs</div>
                         </div>
-                    </div>
-                    <div class="padd-top"></div>
-                    <div class="col-md-12">
-                        <div class="popular-heading">Related Blogs</div>
-                    </div>
-                    <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3 ">
-                        <div class="video-container">
-                            <a href="">
-                                <div class="video-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-03.jpg') ?>">
+                        <?php
+                        foreach ($similar_posts as $related) {
+                            $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
+                            $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
+                            if (!file_exists($image_path)) {
+                                $image = '//placehold.it/250x200';
+                            }
+                            ?>
+                            <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3 ">
+                                <div class="video-container">
+                                    <a href="/blog/<?= $related['slug'] ?>">
+                                        <div class="video-icon">
+                                            <img src="<?= $image ?>">
+                                        </div>
+                                        <div class="r-video">
+                                            <div class="r-v-name"><?= $related['title'] ?></div>
+                                            <div class="r-ch-name"><?= $related['excerpt'] ?></div>
+                                        </div>
+                                    </a>
                                 </div>
-                                <div class="r-video">
-                                    <div class="r-v-name">Lorem Ipsum is simply dummy text of the printing</div>
-                                    <div class="r-ch-name">DSB Edu Tech</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3">
-                        <div class="video-container">
-                            <a href="">
-                                <div class="video-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-02.jpg') ?>">
-                                </div>
-                                <div class="r-video">
-                                    <div class="r-v-name">Lorem Ipsum is simply dummy text of the printing</div>
-                                    <div class="r-ch-name">DSB Edu Tech</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3">
-                        <div class="video-container">
-                            <a href="">
-                                <div class="video-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/solution-tile-stream.png') ?>">
-                                </div>
-                                <div class="r-video">
-                                    <div class="r-v-name">Lorem Ipsum is simply dummy text of the printing</div>
-                                    <div class="r-ch-name">DSB Edu Tech</div>
-                                </div>
-                            </a>
-                        </div>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 <?php
 $this->registerCss('

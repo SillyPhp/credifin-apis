@@ -69,21 +69,21 @@ class BlogController extends Controller
             ->asArray()
             ->one();
 
-//        $similar_posts = $postsModel->find()->alias('a')
-//            ->select(['a.title', 'a.slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
-//            ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
-//            ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
-//            ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
-//            ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
-//            ->andWhere(['c.tag_enc_id' => $post_tags[0]['tag_enc_id']])
-//            ->limit(4)
-//            ->orderBy(['a.created_on' => SORT_DESC])
-//            ->asArray()
-//            ->all();
+        $similar_posts = $postsModel->find()->alias('a')
+            ->select(['a.title', 'a.slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
+            ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
+            ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
+            ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
+            ->andWhere(['c.tag_enc_id' => $post['postTags'][0]['tag_enc_id']])
+            ->limit(3)
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
 
         return $this->render('detail', [
             'post' => $post,
-//            'similar_posts' => $similar_posts,
+            'similar_posts' => $similar_posts,
         ]);
     }
 
