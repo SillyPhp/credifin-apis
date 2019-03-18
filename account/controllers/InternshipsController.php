@@ -50,7 +50,7 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCreate()
+    public function actionCreateXyz()
     {
         if (Yii::$app->user->identity->organization) {
             $object = new JobApplicationForm();
@@ -109,7 +109,7 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionCreateInternship()
+    public function actionCreate()
     {
         if (Yii::$app->user->identity->organization) {
             $type = 'Internships';

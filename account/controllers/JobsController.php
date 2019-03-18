@@ -64,7 +64,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCreate()
+    public function actionCreateXyz()
     {
         if (Yii::$app->user->identity->organization) {
             $model = new JobApplicationForm();
@@ -102,7 +102,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionCreateJob()
+    public function actionCreate()
     {
         if (Yii::$app->user->identity->organization) {
             $type = 'Jobs';
