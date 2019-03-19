@@ -175,7 +175,7 @@ class InternshipsController extends Controller
         if (empty($application_details)) {
             return 'Application Not found';
         }
-        $object = new \account\models\jobs\JobApplicationForm;
+        $object = new \account\models\applications\ApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'email', 'slug', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {

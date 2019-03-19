@@ -99,7 +99,6 @@ $this->params['header_dark'] = false;
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-//print_r($data);
 ?>
 <?=
 $this->render('/widgets/employer_applications/top-banner', [
