@@ -44,6 +44,7 @@ if ($organization['cover_image']) {
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
                                     <?php if(!empty($organization['tag_line'])){?><div class="com-establish"><span class="detail-title">Tagline:</span> <?= Html::encode($organization['tag_line']); ?></div><?php }?>
+                                    <?php if(!empty($industry['industry'])){?><div class="com-establish"><span class="detail-title">Industry:</span> <?= Html::encode($industry['industry']); ?></div><?php }?>
                                 </div>
                             </div>
                         </div>

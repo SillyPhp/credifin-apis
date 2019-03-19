@@ -90,6 +90,12 @@ class CompaniesController extends Controller
                 return $response;
             }
             if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization_enc_id == $organization['organization_enc_id']) {
+                $industries = \common\models\Industries::find()
+                    ->select(['industry_enc_id value', 'industry text'])
+                    ->orderBy(['industry' => SORT_ASC])
+                    ->asArray()
+                    ->all();
+
                 $companyLogoFormModel = new CompanyLogoForm();
                 $companyCoverImageForm = new CompanyCoverImageForm();
                 return $this->render('edit', [
@@ -99,6 +105,7 @@ class CompaniesController extends Controller
                     'benefit' => $benefit,
                     'gallery' => $gallery,
                     'our_team' => $our_team,
+                    'industries' => $industries,
                     'count_opportunities' => $count_opportunities,
                 ]);
             } else {

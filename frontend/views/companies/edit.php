@@ -36,7 +36,7 @@ if ($organization['cover_image']) {
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
-
+$industries = Json::encode($industries);
 ?>
     <section>
         <div id="cover_img" class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
@@ -138,6 +138,7 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                                 data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
                                         <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span>
                                     </div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" data-type="select" id="industry_enc_id"></span> <span data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span></div>
                                 </div>
                             </div>
                         </div>
@@ -1925,6 +1926,14 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
 
 JS;
 $this->registerJs("
+$('#industry_enc_id').editable({
+    placement: 'bottom',
+    url: '/companies/update-profile',
+    pk: 'industry_enc_id',
+    toggle: 'manual',
+    value: '" . $organization['industry_enc_id'] . "',
+    source: " . $industries . "
+});
 getCards('Jobs','.blogbox','/companies/organization-opportunities/?org=" . $organization['name'] . "');
 getCards('Internships','.internships_main','/companies/organization-opportunities/?org=" . $organization['name'] . "');
 ");
