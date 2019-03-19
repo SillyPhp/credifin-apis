@@ -95,6 +95,10 @@ class JobsController extends Controller
                 $options['location'] = $parameters['location'];
             }
 
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
+            }
+
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {
                 $options['keyword'] = $parameters['keyword'];
             }
@@ -133,8 +137,8 @@ class JobsController extends Controller
         if (!$application_details) {
             return 'Not Found';
         }
-
-        $object = new \account\models\jobs\JobApplicationForm();
+        $type = 'Job';
+        $object = new \account\models\applications\ApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
@@ -164,11 +168,12 @@ class JobsController extends Controller
                 ->one();
         }
         $model = new JobApplied();
-        return $this->render('detail', [
+        return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data' => $object->getCloneData($application_details->application_enc_id),
             'org' => $org_details,
             'applied' => $applied_jobs,
+            'type' => $type,
             'model' => $model,
             'resume' => $resumes,
             'que' => $app_que,
@@ -176,35 +181,21 @@ class JobsController extends Controller
         ]);
     }
 
-    public function actionJobPreview()
+    public function actionJobPreview($eipdk)
     {
-        if ($_GET['data']) {
-            $var = $_GET['data'];
+        if ($eipdk) {
+            $type = 'Job';
+            $var = $eipdk;
             $session = Yii::$app->session;
             $object = $session->get($var);
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $int_loc = '';
-            if (!empty($object->interviewcity)) {
-                foreach ($object->interviewcity as $id) {
-                    $int_arr = OrganizationLocations::find()
-                        ->alias('a')
-                        ->select(['b.name AS city_name'])
-                        ->where(['a.location_enc_id' => $id])
-                        ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
-                        ->asArray()
-                        ->one();
-
-                    $int_loc .= $int_arr['city_name'] . ',';
-                }
-            }
-            $indstry = Industries::find()
-                ->where(['industry_enc_id' => $object->pref_inds])
+            $industry = Industries::find()
+                ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
                 ->asArray()
                 ->one();
-
             $primary_cat = Categories::find()
                 ->select(['name'])
                 ->where(['category_enc_id' => $object->primaryfield])
@@ -213,7 +204,7 @@ class JobsController extends Controller
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
-                        ->select(['benefit'])
+                        ->select(['benefit','icon','icon_location'])
                         ->where(['benefit_enc_id' => $benefit])
                         ->asArray()
                         ->one();
@@ -221,13 +212,14 @@ class JobsController extends Controller
             } else {
                 $benefits = null;
             }
+            if (!empty($object->interviewcity))
 
-            return $this->render('job-preview', [
+            return $this->render('/employer-applications/preview', [
                 'object' => $object,
-                'interview' => $int_loc,
-                'indst' => $indstry,
+                'industry' => $industry,
                 'primary_cat' => $primary_cat,
-                'benefits' => $benefits
+                'benefits' => $benefits,
+                'type' => $type
             ]);
         } else {
             return false;
@@ -282,7 +274,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
 
                     if ($update) {
@@ -294,7 +286,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
 
                     if ($update) {

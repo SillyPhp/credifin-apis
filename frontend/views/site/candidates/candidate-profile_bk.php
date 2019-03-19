@@ -155,7 +155,7 @@ use yii\helpers\Html;
             <div class="clearfix"></div>
             <div class="personal-info">
                 <div class="personal-detail col-md-6">
-                    <h2 class="heading-style ">About Me</h2>
+                    <h1 class="heading-style ">About Me</h1>
                     <div class="per-discription" id="gg">
                         <!--<label class="text_label">-->
 <!--                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -182,7 +182,7 @@ use yii\helpers\Html;
                     <div class="button_location" style="">
                         <?= Html::button('Edit', ['value' => URL::to('/site/personal-profile'), 'class' => 'btn btn-primary modal-load-class']); ?>
                     </div>
-                    <h2 class="heading-style col-md-12">Personal Details</h2>
+                    <h1 class="heading-style col-md-12">Personal Details</h1>
                     <div class="col-md-6 col-sm-6">
                         <div class="can-name col-md-6 col-sm-4">Nationality:</div>
                         <div class="can-name-fill col-md-6 col-sm-8 gg">
@@ -243,7 +243,7 @@ use yii\helpers\Html;
 <section id="exp">
     <div class="exp col-md-12">
         <div class="bdy-content">
-            <h2 class="heading-style " style="">Work Experience</h2>
+            <h1 class="heading-style " style="">Work Experience</h1>
             <!--                <div class="col-md-4">-->
             <div class="button_location" style="">
                 <?= Html::button('Add Work Experience', ['value' => URL::to('/site/work-experience'), 'class' => 'btn btn-primary modal-load-class']); ?>
@@ -357,7 +357,7 @@ use yii\helpers\Html;
             <div class="button_location" style="">
                 <?= Html::button('Edit', ['value' => URL::to('/site/qualification'), 'class' => 'btn btn-primary modal-load-class']); ?>
             </div>
-            <h2 class="heading-style ">Qualification</h2>  
+            <h1 class="heading-style ">Qualification</h1>
             <div class="col-md-offset-1 col-md-5">
                 <div class="edubox1">
                     <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
@@ -391,7 +391,7 @@ use yii\helpers\Html;
                 <div class="button_location" style="">
                     <?= Html::button('Edit', ['value' => URL::to('/site/skill-and-language'), 'class' => 'btn btn-primary modal-load-class']); ?>
                 </div>
-                <h2 class="heading-style">Skills & Language</h2>
+                <h1 class="heading-style">Skills & Language</h1>
                 <div class="keyheading">Key Skills</div>
                 <div class="col-md-6">
                     <div class="progress">
@@ -476,7 +476,7 @@ use yii\helpers\Html;
             <div class="button_location" style="">
                 <?= Html::button('Edit', ['value' => URL::to('/site/portfolio'), 'class' => 'btn btn-primary modal-load-class']); ?>
             </div>
-            <h2 class="heading-style">Portfolio</h2>
+            <h1 class="heading-style">Portfolio</h1>
             <div class="gallary animate-grid">
                 <div class="row">
                     <div class="col-xs-12">
@@ -626,7 +626,7 @@ use yii\helpers\Html;
 <!--<div class="clearfix"></div>
 <section id="recommendation" class="recom">
     <div class="bdy-content">
-        <h2 class="heading-style">Recommendations</h2>
+        <h1 class="heading-style">Recommendations</h1>
     </div>
     <div id="carousel">
         <div class="row">
@@ -690,7 +690,7 @@ use yii\helpers\Html;
 <section id="blog" class="blog col-md-12">
     <div class="col-md-12 ">
         <div class="bdy-content">
-            <h2 class="heading-style">My Blog</h2>
+            <h1 class="heading-style">My Blog</h1>
             <div class="col-md-4">
                 <div class="blog-box-1">
                     <div class="blog-cover">

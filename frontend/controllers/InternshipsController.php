@@ -77,20 +77,6 @@ class InternshipsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $int_loc = '';
-            if (!empty($object->interviewcity)) {
-                foreach ($object->interviewcity as $id) {
-                    $int_arr = OrganizationLocations::find()
-                        ->alias('a')
-                        ->select(['b.name AS city_name'])
-                        ->where(['a.location_enc_id' => $id])
-                        ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
-                        ->asArray()
-                        ->one();
-
-                    $int_loc .= $int_arr['city_name'] . ',';
-                }
-            }
             $indstry = Industries::find()
                 ->where(['industry_enc_id' => $object->pref_inds])
                 ->select(['industry'])
@@ -105,7 +91,7 @@ class InternshipsController extends Controller
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
-                        ->select(['benefit'])
+                        ->select(['benefit','icon','icon_location'])
                         ->where(['benefit_enc_id' => $benefit])
                         ->asArray()
                         ->one();
@@ -116,7 +102,6 @@ class InternshipsController extends Controller
 
             return $this->render('internship-preview', [
                 'object' => $object,
-                'interview' => $int_loc,
                 'indst' => $indstry,
                 'primary_cat' => $primary_cat,
                 'benefits' => $benefits
@@ -143,6 +128,10 @@ class InternshipsController extends Controller
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
+            }
+
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
             }
 
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {
@@ -182,10 +171,11 @@ class InternshipsController extends Controller
                 $b->andWhere(['b.name' => 'internships']);
             }])
             ->one();
+        $type = 'Internship';
         if (empty($application_details)) {
             return 'Application Not found';
         }
-        $object = new \account\models\jobs\JobApplicationForm;
+        $object = new \account\models\applications\ApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'email', 'slug', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
@@ -217,10 +207,11 @@ class InternshipsController extends Controller
 
         if (!empty($application_details)) {
             $model = new JobApplied();
-            return $this->render('detail', [
+            return $this->render('/employer-application/detail', [
                 'application_details' => $application_details,
                 'data' => $object->getCloneData($application_details->application_enc_id),
                 'org' => $org_details,
+                'type' => $type,
                 'applied' => $applied_jobs,
                 'model' => $model,
                 'resume' => $resumes,

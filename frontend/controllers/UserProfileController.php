@@ -8,6 +8,7 @@ use common\models\States;
 use common\models\Users;
 
 use common\models\UserSkills;
+use frontend\models\JobApplicationForm;
 use frontend\models\profile\UserProfilePictureEdit;
 use Yii;
 use yii\web\Controller;
@@ -31,11 +32,15 @@ class UserProfileController extends Controller
                 WHEN a.is_available = "4" THEN "Exploring Possibilities"
                 ELSE "Undefined"
                 END) as availability', 'ROUND(DATEDIFF(CURDATE(), a.dob)/ 365.25) as age', 'b.name as city', 'c.name as job_profile'])
-            ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
+            ->leftJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+            ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
             ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
             ->asArray()
             ->one();
+
+        if (!count($user) > 0) {
+            return 'No User Found';
+        }
 
         $skills = \common\models\UserSkills::find()
             ->alias('a')
@@ -56,14 +61,18 @@ class UserProfileController extends Controller
             ->asArray()
             ->all();
 
-        if (!count($user) > 0) {
-            return 'No User Found';
-        }
+        $userCv = \common\models\UserResume::find()
+                   ->select(['resume','resume_location'])
+                   ->where(['user_enc_id'=>$user['user_enc_id']])
+                   ->orderBy(['created_on'=>SORT_DESC])
+                   ->asArray()
+                   ->one();
 
         return $this->render('view', [
             'user' => $user,
             'skills' => $skills,
             'language' => $language,
+            'userCv' => $userCv,
         ]);
     }
 
@@ -73,9 +82,12 @@ class UserProfileController extends Controller
             $userProfilePicture = new UserProfilePictureEdit();
             $basicDetails = new UserProfileBasicEdit();
             $socialDetails = new UserProfileSocialEdit();
+            $object = new \account\models\jobs\JobApplicationForm();
+            $industry = $object->getPrimaryFields('Profiles');
             $statesModel = new States();
             $getName = $basicDetails->getJobFunction();
             $getCurrentCity = $basicDetails->getCurrentCity();
+            $getCategory = $basicDetails->getCurrentCategory();
             $getExperience = $basicDetails->getExperience();
             $getSkills = $basicDetails->getUserSkills();
             $getlanguages = $basicDetails->getUserlanguages();
@@ -86,9 +98,11 @@ class UserProfileController extends Controller
                 'getExperience' => $getExperience,
                 'getCurrentCity' => $getCurrentCity,
                 'getName' => $getName,
+                'getCategory' => $getCategory,
                 'basicDetails' => $basicDetails,
                 'socialDetails' => $socialDetails,
                 'statesModel' => $statesModel,
+                'industry' => $industry,
             ]);
         } else {
             return 'You are not Login as candidate login';

@@ -26,12 +26,16 @@ list($width, $height, $type, $attr) = getimagesize($image);
 </head>
 <body>
 <div class="Container">
-    <input type="hidden" id="url" value=<?= $link_data["redirect_url"] ?>/>
+    <input type="hidden" id="url" value="<?= $link_data["redirect_url"]; ?>" />
     <script>
         var url = document.getElementById("url");
         setTimeout(function () {
-            window.location.href = url.value;
+            window.location.href = removeTrailingSlash(url.value);
         }, 1000);
+
+        function removeTrailingSlash(url) {
+            return url.replace(/\/$/, '')
+        }
     </script>
     <div class="message">
         <img width="100%" src="/assets/common/images/tagline.svg"/>

@@ -658,7 +658,7 @@ use yii\bootstrap\ActiveForm;
                         </div>
                     </div>
                     <div class="related-company">
-                        <div class="heading-style">Related Companies</div>
+                        <h1 class="heading-style">Related Companies</h1>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="com-review-box fivestar-box">

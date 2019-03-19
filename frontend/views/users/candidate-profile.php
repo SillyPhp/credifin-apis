@@ -151,7 +151,7 @@ use yii\widgets\Pjax;
                     <div class="row">
                         <div class="personal-info col-md-12">
                             <div class="personal-detail col-md-6">
-                                <div class="heading-style ">About Me</div>
+                                <h1 class="heading-style ">About Me</h1>
                                 <div class="per-discription">
                                     <span href="#" class="model" data-pk="description" data-name="description" data-type="textarea" data-value="<?= $user['description']; ?>" data-url="/users/update-profile"></span>
                                     <span id="controller" class="pen"><i class="fa fa-pencil"></i></span>
@@ -159,7 +159,7 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="col-md-6 per">
                                 <div class="per-det col-md-12 row">
-                                    <div class="heading-style col-md-12">Personal Details</div>
+                                    <h1 class="heading-style col-md-12">Personal Details</h1>
                                     <div class="per-ped">
                                         <div class="can-name">Nationality:</div>
                                         <div class="can-name-fill">
@@ -243,7 +243,7 @@ use yii\widgets\Pjax;
                     ?>
                     <div class="bdy-content">
                         <div class="col-md-10">
-                            <div class="heading-style">Work Experience</div>
+                            <h1 class="heading-style">Work Experience</h1>
                         </div>
                         <div class="col-md-2">
                             <?=
@@ -378,7 +378,7 @@ use yii\widgets\Pjax;
                         <?php
                         Pjax::begin(['id' => 'pjax_qualification']);
                         ?>
-                        <div class="heading-style ">Qualification</div>  
+                        <h1 class="heading-style ">Qualification</h1>
                         <div class="col-md-offset-1 col-md-5">
                             <div class="edubox1">
                                 <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
@@ -414,7 +414,7 @@ use yii\widgets\Pjax;
                     <div class="skills col-md-12">
                         <div class="bdy-content">
                             <div class="col-md-8">
-                                <div class="heading-style">Skills & Language</div>
+                                <h1 class="heading-style">Skills & Language</h1>
                                 <div class="keyheading">Key Skills</div>
                                 <div class="col-md-6">
                                     <div class="progress">
@@ -496,7 +496,7 @@ use yii\widgets\Pjax;
             <div class="large-container">
                 <div class="bdy-content ">
                     <div class="lr-padding">
-                        <div class="heading-style">Portfolio</div>
+                        <h1 class="heading-style">Portfolio</h1>
                         <div class="gallary animate-grid">
                             <div class="row">
                                 <div class="col-xs-12">

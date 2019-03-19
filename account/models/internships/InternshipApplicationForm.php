@@ -196,6 +196,12 @@ class InternshipApplicationForm extends Model
 
     public function saveValues()
     {
+        if (in_array('online001', $this->interviewcity)) {
+            $has_online_int = 1;
+            array_shift($this->interviewcity);
+        } else {
+            $has_online_int = 0;
+        }
         switch ($this->stipendtype) {
             case 1:
                 $type = 'Unpaid';
@@ -217,7 +223,7 @@ class InternshipApplicationForm extends Model
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $employerApplicationsModel->application_enc_id = $utilitiesModel->encrypt();
-        $employerApplicationsModel->application_number = date('ymd') . time();
+        $employerApplicationsModel->application_number = rand(1000, 10000) . time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
@@ -228,10 +234,7 @@ class InternshipApplicationForm extends Model
 
         $category_execute = Categories::find()
             ->alias('a')
-            ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['name' => $this->jobtitle])
-            ->andWhere(['b.assigned_to'=>'Internships']);
+            ->where(['name' => $this->jobtitle]);
         $chk_cat = $category_execute->asArray()->one();
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
@@ -244,22 +247,25 @@ class InternshipApplicationForm extends Model
             $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $categoriesModel->slug = $utilitiesModel->create_slug();
-            $categoriesModel->parent_enc_id = null;
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
-                $this->addNewAssignedCategory($categoriesModel->category_enc_id,$employerApplicationsModel);
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplicationsModel);
             } else {
                 return false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
-            $chk_assigned = $category_execute->andWhere(['not',['b.parent_enc_id'=>null]])->asArray()->one();
-            if (empty($chk_assigned))
-            {
-                $this->addNewAssignedCategory($chk_cat['category_enc_id'],$employerApplicationsModel);
-            }
-            else{
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                ->andWhere(['not', ['b.parent_enc_id' => null]])
+                ->andWhere(['b.assigned_to' => 'Internships', 'b.parent_enc_id' => $this->primaryfield])
+                ->asArray()
+                ->one();
+            if (empty($chk_assigned)) {
+                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplicationsModel);
+            } else {
                 $employerApplicationsModel->title = $chk_assigned['assigned_category_enc_id'];
                 $utilitiesModel->variables['name'] = $chk_assigned['name'] . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
                 $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
@@ -327,7 +333,7 @@ class InternshipApplicationForm extends Model
             }
 
             if ($this->interradio == 1) {
-                $interview_strt_date =  date('Y-m-d H:i:s', strtotime($this->startdate . ' ' . $this->interviewstarttime));
+                $interview_strt_date = date('Y-m-d H:i:s', strtotime($this->startdate . ' ' . $this->interviewstarttime));
                 $interview_end_date = date('Y-m-d H:i:s', strtotime($this->enddate . ' ' . $this->interviewendtime));
             } else {
                 $interview_strt_date = null;
@@ -344,7 +350,7 @@ class InternshipApplicationForm extends Model
             $applicationoptionsModel->max_wage = (($this->maxstip) ? str_replace(',', '', $this->maxstip) : null);
             $applicationoptionsModel->wage_duration = $this->stipendur;
             $applicationoptionsModel->has_placement_offer = null;
-            $applicationoptionsModel->has_online_interview = $this->is_online_interview;
+            $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
             $applicationoptionsModel->pre_placement_offer = (($this->pre_sal) ? str_replace(',', '', $this->pre_sal) : null);
@@ -356,14 +362,12 @@ class InternshipApplicationForm extends Model
             $applicationoptionsModel->interview_end_date = $interview_end_date;
             $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
             $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if (!$applicationoptionsModel->save())
-            {
+            if (!$applicationoptionsModel->save()) {
                 return false;
             }
-            if ($this->jobtype == "Work From Home"){
+            if ($this->jobtype == "Work From Home") {
                 $locations = [];
-            }
-            else{
+            } else {
                 $locations = json_decode($this->placement_loc);
             }
             if (!empty($locations)) {
@@ -610,7 +614,8 @@ class InternshipApplicationForm extends Model
             return false;
         }
     }
-    private function addNewAssignedCategory($category_id,$employerApplicationsModel)
+
+    private function addNewAssignedCategory($category_id, $employerApplicationsModel)
     {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
@@ -619,6 +624,7 @@ class InternshipApplicationForm extends Model
         $assignedCategoryModel->category_enc_id = $category_id;
         $assignedCategoryModel->parent_enc_id = $this->primaryfield;
         $assignedCategoryModel->assigned_to = 'Internships';
+        $assignedCategoryModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
         $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($assignedCategoryModel->save()) {
@@ -627,12 +633,11 @@ class InternshipApplicationForm extends Model
             $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $employerApplicationsModel->slug = $utilitiesModel->create_slug();
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
+
     private function _createSharingImage()
     {
 

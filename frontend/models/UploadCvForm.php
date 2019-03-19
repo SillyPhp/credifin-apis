@@ -35,7 +35,7 @@ class UploadCvForm extends Model {
             $base_path = Yii::$app->params->upload_directories->resumes->logo_path . $userResumeModel->resume_location;
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->file->extension;
-            $userResumeModel->created_on = date('Y-m-d h:i:s');
+            $userResumeModel->created_on = date('Y-m-d H:i:s');
             $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
              
             if (!is_dir($base_path)) {

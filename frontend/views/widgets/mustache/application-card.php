@@ -33,7 +33,7 @@
                     <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
-                    <h5>Unpaid</h5>
+                    <h5>Negotiable</h5>
                     {{/salary}}
                     {{#type}}
                     <h5>{{type}}</h5>
@@ -71,7 +71,7 @@ $script = <<<JS
 let loader = false;
 let draggable = false;
 let page = 0;
-function renderCards(cards){
+function renderCards(cards, container){
     var card = $('#application-card').html();
     var cardsLength = cards.length;
     if(cardsLength%3 !==0 && loader === true) {
@@ -80,12 +80,12 @@ function renderCards(cards){
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
     for(var i = 1; i <= noRows; i++){
-        $(".blogbox").append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
 }
 
-function getCards(type = 'Jobs') {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -101,7 +101,7 @@ function getCards(type = 'Jobs') {
     data['type'] = type;
     $.ajax({
         method: "POST",
-        url : window.location.pathname,
+        url : url,
         data: data,
         beforeSend: function(){
            $('.loader-main').show();
@@ -113,12 +113,12 @@ function getCards(type = 'Jobs') {
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
             if(response.status === 200) {
-                renderCards(response.cards);
+                renderCards(response.cards, container);
                 utilities.initials();
             } else {
                 if(loader === true) {
                     if(page === 1) {
-                        $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Jobs not found.</h2>');
+                        $(container).append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                     }
                     $('#loadMore').hide();
                 }
@@ -181,7 +181,7 @@ JS;
 $this->registerJs($script);
 $this->registerCss('
 .not-found{
-    width: 300px;
+    max-width: 400px;
     margin: auto;
     display: block;
 }

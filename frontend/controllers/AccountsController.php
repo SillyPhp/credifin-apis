@@ -17,9 +17,12 @@ use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
 use frontend\models\accounts\UserEmails;
+use common\models\Utilities;
 
 class AccountsController extends Controller
 {
+
+    public $layout = 'main-secondary';
 
     /**
      * @inheritdoc
@@ -46,8 +49,6 @@ class AccountsController extends Controller
             ],
         ];
     }
-
-    public $layout = 'main-secondary';
 
     public function actionLogin()
     {
@@ -76,6 +77,7 @@ class AccountsController extends Controller
 
     public function actionSignup($type)
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -110,13 +112,9 @@ class AccountsController extends Controller
             ]);
         } elseif ($type == 'organization') {
             $model = new OrganizationSignUpForm();
-            $organization_types = \common\models\extended\OrganizationTypes::find()
-                ->select(['organization_type_enc_id', 'organization_type'])
-                ->orderBy([new \yii\db\Expression('FIELD (organization_type, "Others") ASC, organization_type ASC')])
-                ->asArray()
-                ->all();
             $business_activities = \common\models\extended\BusinessActivities::find()
                 ->select(['business_activity_enc_id', 'business_activity'])
+                ->where(['!=', 'business_activity', 'Business'])
                 ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
                 ->asArray()
                 ->all();
@@ -134,7 +132,10 @@ class AccountsController extends Controller
                     $data['password'] = $model->new_password;
                     $model = new OrganizationSignUpForm();
                     if ($this->login($data)) {
+
+
                         return $this->redirect('/account/dashboard');
+
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
@@ -147,6 +148,19 @@ class AccountsController extends Controller
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    private function login($data = [])
+    {
+        $loginFormModel = new LoginForm();
+        $loginFormModel->username = $data['username'];
+        $loginFormModel->password = $data['password'];
+        $loginFormModel->rememberMe = true;
+        if ($loginFormModel->login()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -263,19 +277,6 @@ class AccountsController extends Controller
         return $this->render('reset-password', [
             'model' => $model,
         ]);
-    }
-
-    private function login($data = [])
-    {
-        $loginFormModel = new LoginForm();
-        $loginFormModel->username = $data['username'];
-        $loginFormModel->password = $data['password'];
-        $loginFormModel->rememberMe = true;
-        if ($loginFormModel->login()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

@@ -4,8 +4,8 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Internships');
 $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
-$description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.png');
+$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -13,10 +13,10 @@ $this->params['seo_tags'] = [
     'name' => [
         'keywords' => $keywords,
         'description' => $description,
-        'twitter:card' => 'summary',
+        'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -27,6 +27,7 @@ $this->params['seo_tags'] = [
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
+        'fb:app_id' => '973766889447403'
     ],
 ];
 ?>
@@ -92,7 +93,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12 col-sm-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
                 </div>
             </div>
             <div class="col-md-12">
@@ -104,7 +105,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h1>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
@@ -134,7 +135,7 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
 //echo $this->render('/widgets/blog-slider', [
 //    'posts' => $posts,
 //]);

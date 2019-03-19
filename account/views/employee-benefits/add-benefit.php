@@ -5,6 +5,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $benefit = ArrayHelper::index($benefits, 'benefit_enc_id');
 ?>
     <div class="modal-header modal_title">
@@ -32,8 +33,8 @@ $form = ActiveForm::begin([
             </div>
         </div>
     </div>
-  <?php
- if (!empty($benefit)){ ?>
+<?php
+if (!empty($benefit)) { ?>
     <div class="cat-sec fix_height">
         <div class="row no-gape">
             <?php
@@ -42,14 +43,13 @@ $form = ActiveForm::begin([
             <?=
             $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
                 'item' => function ($index, $label, $name, $checked, $value) {
-                    if(empty($label['icon'])){$label['icon'] = 'plus-icon.svg';}
                     $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                     $return .= '<div class="p-category search_benefits">';
                     $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
                     $return .= '<div class="checkbox-text">';
                     $return .= '<span class="checkbox-text--title">';
-                    $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
+                    $return .= '<img src="' . $label["icon"] . '">';
                     $return .= '</span><br/>';
                     $return .= '<span class="checkbox-text--description2">';
                     $return .= $label['benefit'];
@@ -64,10 +64,10 @@ $form = ActiveForm::begin([
             ?>
         </div>
     </div>
-  <?php } else { ?>
-     <h3>No Benefits To Display</h3>
- <?php }
- ?>
+<?php } else { ?>
+    <h3>No Benefits To Display</h3>
+<?php }
+?>
     <div class="modal-footer">
         <?= Html::submitbutton('Save', ['class' => 'btn btn-primary custom-buttons2 sav_benft']); ?>
         <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
@@ -104,6 +104,7 @@ $("#text").keyup(function () {
                     toastr.error(response.message, response.title);
                 }
                 $('#modal_benefit').modal('toggle');
+                $('#modal').modal('toggle');
             }
         });
     });
@@ -131,6 +132,7 @@ $("#text").keyup(function () {
                     toastr.error(response.message, response.title);
                 }
                 $('#modal_benefit').modal('toggle'); 
+                $('#modal').modal('toggle'); 
             }
             })
          }

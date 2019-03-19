@@ -15,6 +15,7 @@ echo $this->render('/widgets/header/secondary-header', [
             'applications' => $applications,
             'interview_processes' => $interview_processes,
             'applied_applications' => $applied_applications,
+            'viewed'=>$viewed,
         ]);
         ?>
     </div>
@@ -91,9 +92,9 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/interview-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/interview-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/hiring-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>

@@ -17,9 +17,10 @@ if (!$is_email_verified):
     echo $this->render('/widgets/verification/resend-email');
 endif;
 ?>
+
     <div class="row">
         <div class="col-md-3">
-            <?= $this->render('/widgets/tasks/taskbar-card'); ?>
+            <?= $this->render('/widgets/tasks/taskbar-card',['viewed'=>$viewed]); ?>
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
@@ -97,6 +98,81 @@ endif;
                         </div>
                     </div>
                 </div>
+            <div class="posRel">
+                <div class="overlay">
+                    <div class="o-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/coming-soon.png')?>" class="img-responsive">
+                    </div>
+                </div>
+            <div class="portlet light">
+                <div class="portlet-title">
+                   <div class="caption">
+                       <span class="caption-subject font-dark bold uppercase">Templates</span>
+                   </div>
+                </div>
+
+                <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="hr-company-box">
+                            <div class="hr-com-icon hr-com-icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/template.svg') ?>" class="img-responsive ">
+                            </div>
+                            <div class="hr-com-name">
+                                Internship
+                                <p>Templates</p>
+                            </div>
+                            <div class="hr-com-jobs2">
+                                <div class="minus-15-pad j-grid"><a href="/account/all-internship-templates" title="">VIEW TEMPLATES</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="hr-company-box">
+                            <div class="hr-com-icon hr-com-icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/template.svg') ?>" class="img-responsive ">
+                            </div>
+                            <div class="hr-com-name">
+                                Questionnaire
+                                <p>Templates</p>
+                            </div>
+                            <div class="hr-com-jobs2">
+                                <div class="minus-15-pad j-grid"><a href="/account/all-questionnaire-templates" title="">VIEW TEMPLATES</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="hr-company-box">
+                            <div class="hr-com-icon hr-com-icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/template.svg') ?>" class="img-responsive ">
+                            </div>
+                            <div class="hr-com-name">
+                                Jobs
+                                <p>Templates</p>
+                            </div>
+                            <div class="hr-com-jobs2">
+                                <div class="minus-15-pad j-grid"><a href="/account/all-questionnaire-templates" title="">VIEW TEMPLATES</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="hr-company-box">
+                            <div class="hr-com-icon hr-com-icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/template.svg') ?>" class="img-responsive ">
+                            </div>
+                            <div class="hr-com-name">
+                                Interview
+                                <p>Templates</p>
+                            </div>
+                            <div class="hr-com-jobs2">
+                                <div class="minus-15-pad j-grid"><a href="/account/all-questionnaire-templates" title="">VIEW TEMPLATES</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 </div>
+            </div>
+            </div>
                 <div class="portlet light">
                     <div class="portlet-title">
                         <div class="caption">
@@ -166,6 +242,24 @@ endif;
     </div>
 <?php
 $this->registerCss("
+.posRel{
+    position:relative;
+}
+.o-icon{
+    text-align:center
+}
+.o-icon img{
+    max-width:220px;
+    margin:0 auto;
+}
+.overlay{
+    background: rgba(255,255,255,.9);
+    width: 100%;
+    height:100%;
+//    min-height: 378px;
+    position: absolute;
+    z-index: 9;
+}
 /*how it works section css starts*/
 .how-icon img{
     height:84px;
@@ -205,6 +299,9 @@ p{
     font-weight:bold;
     text-transform:uppercase;
     padding-top:10px;
+}
+.hr-com-jobs2{
+    margin-top:20px;
 }
 /*how it works section css ends*/
 
@@ -337,6 +434,13 @@ p{
     box-shadow:none !important;
 }
 /* Application process css ends */
+
+@media screen and (max-width: 992px){
+    .o-icon img{
+        max-width:320px;
+        margin:0 auto;
+    }
+} 
 ");
 $script = <<<JS
 

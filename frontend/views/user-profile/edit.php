@@ -4,6 +4,7 @@ use kartik\widgets\DatePicker;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
+use yii\widgets\Pjax;
 $this->title = Yii::t('frontend', 'My Profile');
 $this->params['header_dark'] = true;
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
@@ -12,15 +13,23 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <div class="padding-left set-overlay">
+            <?php Pjax::begin(['id'=>'profile_icon_pjax']) ?>
             <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/user-profile/update-profile-picture']) ?>
             <div class="profile-title" id="mp">
                 <h3>My Profile</h3>
+                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/user/<?= Yii::$app->user->identity->username ?>" target="_blank">View Profile</a>
                 <div class="upload-img-bar">
                   <?php  if (!empty(Yii::$app->user->identity->image)) {
                     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
                       <span><img src="<?=$image ?>" class="preview_img" alt="" width="200" height="150"></span>
-                   <?php } else { ?>
-                      <span><img src="<?= Url::to('@eyAssets/images/logos/user_icon_profile2.png'); ?>" class="preview_img" alt="" width="200" height="150"></span>
+                   <?php } else {
+                      $first = Yii::$app->user->identity->first_name;
+                      $last = Yii::$app->user->identity->last_name;
+                      $name = strtoupper($first[0].''.$last[0]);
+                      $color = ltrim(Yii::$app->user->identity->initials_color,'#');
+                      $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
+                      ?>
+                      <span><img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150"></span>
                  <?php } ?>
                     <div class="upload-info">
                         <div class="row">
@@ -38,17 +47,32 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 </div>
             </div>
             <?php ActiveForm::end(); ?>
+            <?php Pjax::end(); ?>
             <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/user-profile/update-basic-detail']) ?>
             <div class="profile-form-edit">
                     <div class="row">
-                     <?= $form->field($basicDetails, 'first_name',['template'=>'<div class="col-lg-4"><span class="pf-title">First Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>((Yii::$app->user->identity->first_name) ? Yii::$app->user->identity->first_name : '')])->label(false) ?>
-                     <?= $form->field($basicDetails, 'last_name',['template'=>'<div class="col-lg-4"><span class="pf-title">Last Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'Last Name','value'=>((Yii::$app->user->identity->last_name) ? Yii::$app->user->identity->last_name : '')])->label(false) ?>
-                     <?= $form->field($basicDetails, 'job_profile',['template'=>'<div class="col-lg-4"><span class="pf-title">Select Job Profile</span><div class="pf-field"><div class="cat_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : '')])->label(false) ?>
+                      <?php
+                      $uname = Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name;
+                      ?>
+                     <?= $form->field($basicDetails, 'full_name',['template'=>'<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>(($uname) ? ucwords($uname) : '')])->label(false) ?>
+                      <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : '');  ?>
+                      <?= $form->field($basicDetails, 'gender',['template'=>'<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
+                          [1=>'Male',2=>'Female',3=>'Transgender',4=>'Rather not to say'],[
+                          'prompt' => 'Select Gender',
+                          'id' => 'gender_drp',
+                          'class'=>'chosen'])->label(false); ?>
+                     <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : '');  ?>
+                     <?= $form->field($basicDetails, 'category',['template'=>'<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
+                          $industry,[
+                         'prompt' => 'Select Category',
+                         'id' => 'category_drp',
+                         'class'=>'chosen'])->label(false); ?> 
+                     <?= $form->field($basicDetails, 'job_title',['template'=>'<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
+                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : ''),'class'=>'valid_input form-control'])->label(false) ?>
                     </div>
                     <div class="row">
-                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
-                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','class'=>'valid_input form-control','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','class'=>'valid_input form-control','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
                         <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : '');  ?>
                         <?= $form->field($basicDetails, 'state',['template'=>'<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
                             $states, [
@@ -82,7 +106,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 <div class="row">
                     <?=
                     $form->field($basicDetails, 'dob',['template'=>'<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-y", strtotime(Yii::$app->user->identity->dob)) : '')],
+                        'options' => ['class' => 'valid_input form-control','placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
                         'readonly' => true,
                         'type' => DatePicker::TYPE_INPUT,
                         'name' => 'dob',
@@ -154,8 +178,12 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         </div>
                     </div>
                     <div class="row">
-                        <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">Description</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
-                        <?= $form->field($basicDetails, 'job_profile_id',['template'=>'{input}','options'=>[]])->hiddenInput(['id'=>'job_title_id','value'=>(($getName) ? $getName['category_enc_id'] : '')])->label(false) ?>
+                        <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
+                        <?php Pjax::begin(['id'=>'pjax_resume']) ?>
+                        <div class="col-md-12">
+                                <?= $form->field($basicDetails, 'resume',['template'=>'<div class="file-upload-wrapper" data-text="Select your file!">{input}{error}</div>','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
+                        </div>
+                        <?php Pjax::end(); ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_basic','id'=>'basic_detail_submit']); ?>
                         </div>
@@ -168,7 +196,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <div class="row">
                         <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Facebook Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Twitter Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'skype',['template'=>'<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Skype Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->google : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'skype',['template'=>'<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Skype Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'linkedin',['template'=>'<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Linkedin Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_contact','id'=>'contact_submit']); ?>
@@ -292,7 +320,7 @@ background-repeat: no-repeat;
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-#job_profile
+#job_title
 {
     height: 56px;
     background: #fff;
@@ -407,13 +435,20 @@ display: block !important;
    height: 45px;
     border: 2px solid #ff7803;
 }
-
+.view_profile_btn
+{
+    padding: 4px 12px;
+    margin-top: 3px;
+    background: #ffffff !important;
+    border: 1px solid #ff7803 !important;
+    color: #ff7803 !important;
+}
 .tg-btn:hover{
 color: #fff !important;
     background:#ff7803;
 }
 .has-error .form-control {
-    border-color: #e8ecec !important;
+    border: 2px solid #e73d4a !important;
     }
 #picture_submit{
 margin-top:0px;
@@ -437,8 +472,87 @@ background-color: #fff;
     z-index: 9;
     display:none;
 }
+/* file-chosen css ends */
+.file-upload-wrapper {
+    position: relative;
+    width: 330px;
+    height: 50px;
+}
+.file-upload-wrapper:after {
+content: attr(data-text);
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px 15px;
+    display: block;
+    width: calc(100% - 40px);
+    pointer-events: none;
+    z-index: 20;
+    height: 48px;
+    line-height: 27px;
+    border: 2px solid #e8ecec;
+    color: #999;
+    border-radius: 10px 0px 0px 10px;
+}
+.file-upload-wrapper:before {
+    content: 'Upload Resume';
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    height: 48px;
+    background: #fff;
+    color: #555;
+    z-index: 25;
+    font-size: 13px;
+    border: 2px solid #e8ecec;
+    line-height: 45px;
+    padding: 0 15px;
+    pointer-events: none;
+    border-radius: 0 10px 10px 0;
+}
+.file-upload-wrapper:hover:before {
+  background: #ff7803;
+  color:#fff;
+  border-color: #ff7803;
+}
+.file-upload-wrapper input {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  height: 60px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  width: 100%;
+}
+.file-upload-wrapper p.help-block.help-block-error{
+    position: absolute;
+    margin-top: 55px;
+}
+/* file-chosen css ends */
 ");
 $script = <<< JS
+$(document).on('change','#category_drp',function() {
+  if($(this).val()=='')
+      {
+          $('#job_title').val('');
+          $('#job_title').closest('.field-job_title').removeClass('has-error');
+          $('#job_title').closest('.field-job_title').find('.help-block').remove();
+          $('#job_title').closest('.field-job_title').addClass('has-success');
+      }
+  else {
+      $('#job_title').closest('.field-job_title').removeClass('has-success');
+      $('#job_title').closest('.field-job_title').addClass('has-error');
+  }
+})
 $(document).on('keypress','input',function(e)
 {
     if(e.which==13)
@@ -556,8 +670,14 @@ function runAjax(thisObj,data,btn) {
   if(btn.attr("disabled") == "disabled")
             {
                return false;
-            }  
-  $.ajax({
+            } 
+  $.each(thisObj.find('.has-error'),function() {
+          $(this).find('.valid_input').focus();
+           })
+  var chk = thisObj.find('.has-error').length;
+  if(!chk)
+  {
+   $.ajax({
      url:thisObj.attr('action'),
      data:data,
      method:'post',
@@ -573,6 +693,10 @@ function runAjax(thisObj,data,btn) {
        btn.removeAttr("disabled");
         if (response.status == 'success') {
                     toastr.success(response.message, response.title);
+                    $.pjax.reload({container: '#profile_icon_pjax', async: false});
+                    $.pjax.reload({container: '#pjax_profile_icon', async: false});
+                    $.pjax.reload({container: '#pjax_profile_icon_sidebar', async: false});
+                    $.pjax.reload({container: '#pjax_resume', async: false});
                     }
         else 
             {
@@ -580,6 +704,7 @@ function runAjax(thisObj,data,btn) {
             }
      }
   })
+ }
 }
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -645,7 +770,7 @@ fetchJobProfile();
 
 function fetchJobProfile()
 {
-  var job_profiles = new Bloodhound({
+  var job_titles = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
@@ -659,21 +784,20 @@ function fetchJobProfile()
   }
 });   
         
-$('#job_profile').typeahead(null, {
-  name: 'job_profile',
+$('#job_title').typeahead(null, {
+  name: 'job_title',
   display: 'value',
    limit: 6,     
    hint:false, 
    minLength: 3,
-  source: job_profiles
+  source: job_titles
 }).on('typeahead:asyncrequest', function() {
     $('.cat_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     $('.cat_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
-  {
-      $('#job_title_id').val(datum.cat_id);
-   }).blur(validateSelection);
+   {
+   })
 }
 
 
@@ -704,6 +828,14 @@ function readURL(input) {
 
 $(".tg-fileinput").change(function() {
   readURL(this);
+});
+$(document).on("change", ".file-upload-wrapper input", function(){
+    var file_val = document.getElementById("resume_upload").files[0].name;
+    $(this).parent(".file-upload-wrapper").attr("data-text", file_val );
+    var file_name = $('.file-upload-wrapper').attr('data-text');
+    if(file_name == ""){
+        $('.file-upload-wrapper').attr('data-text', 'No file chosed');
+    }
 });
 var ps = new PerfectScrollbar('.perfect_scroll');
 JS;

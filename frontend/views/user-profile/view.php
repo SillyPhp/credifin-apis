@@ -28,9 +28,25 @@ $this->params['header_dark'] = false;
                     <div class="header-details">
                         <h4><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <p><?= $user['job_profile'] ?></p>
-                        <ul>
-                            <li><i class="fa fa-map-marker"></i> <?= $user['city'] ?></li>
-                        </ul>
+                        <?php
+                        if ($user['city']) {
+                            ?>
+                            <ul>
+                                <li><i class="fa fa-map-marker"></i> <?= $user['city'] ?></li>
+                            </ul>
+                            <?php
+                        }
+                        if($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
+                            ?>
+                            <a href="/user-profile/edit" class="edit-profile-btn" target="_blank">Edit Profile</a>
+                            <?php
+                            if (!empty($userCv)) {
+                                $cv = Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.$userCv['resume_location'].DIRECTORY_SEPARATOR.$userCv['resume'];
+                                ?>
+                                <a href="<?=$cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
+                           <?php }
+                        }
+                            ?>
                     </div>
                 </div>
             </div>
@@ -38,47 +54,52 @@ $this->params['header_dark'] = false;
                 <div class="right-side-detail">
                     <ul>
                         <li><span class="detail-info">Availability</span><?= $user['availability'] ?>
-                        <li><span class="detail-info">Location</span><?= $user['city'] ?></li>
+                        <li><span class="detail-info">Location</span><?php echo($user['city'] ? $user['city'] : '--') ?>
+                        </li>
                         <li>
-                            <span class="detail-info">Experience</span>
-                            <?php $strToArr = explode('"', $user["experience"]);
-                            if ($strToArr[1] != 0) {
-                                echo $strToArr[1] . ' Year(s) ';
-                            }
-                            if ($strToArr[3] != 0) {
-                                echo $strToArr[3] . ' Month(s)';
+                            <span class="detail-info">Experience</span><?php
+                            if ($user['experience']) {
+                                $strToArr = explode('"', $user["experience"]);
+                                if ($strToArr[1] != 0) {
+                                    echo $strToArr[1] . ' Year(s) ';
+                                }
+                                if ($strToArr[3] != 0) {
+                                    echo $strToArr[3] . ' Month(s)';
+                                }
+                            } else {
+                                echo '--';
                             }
                             ?>
                         </li>
                         <li>
-                            <span class="detail-info">Age</span><?= $user['age'] ?> Years
+                            <span class="detail-info">Age</span><?php echo($user['age'] ? $user['age'] . ' Years' : '--') ?>
                         </li>
                     </ul>
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['facebook']) ?>" target="_blank">
+                                <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>" target="_blank">
                                     <i class="fa fa-facebook"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['twitter']) ?>" target="_blank">
+                                <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
                                     <i class="fa fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['linkedin']) ?>" target="_blank">
+                                <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>" target="_blank">
                                     <i class="fa fa-linkedin"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['skype'])) { ?>
                             <li>
-                                <a href="<?= Html::encode($user['skype']) ?>" target="_blank">
+                                <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
                                     <i class="fa fa-skype"></i>
                                 </a>
                             </li>
@@ -94,9 +115,20 @@ $this->params['header_dark'] = false;
                 <div class="container-detail-box">
                     <div class="apply-job-header">
                         <h4><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
-                        <a href="company-detail.html" class="cl-success"><span><i
-                                        class="fa fa-building"></i><?= $user['job_profile'] ?></span></a>
-                        <span><i class="fa fa-map-marker"></i><?= $user['city'] ?></span>
+                        <?php
+                        if ($user['job_profile']) {
+                            ?>
+                            <a href="#" class="cl-success">
+                                <span><i class="fa fa-building"></i><?= $user['job_profile'] ?></span>
+                            </a>
+                            <?php
+                        }
+                        if ($user['city']) {
+                            ?>
+                            <span><i class="fa fa-map-marker"></i><?= $user['city'] ?></span>
+                            <?php
+                        }
+                        ?>
                     </div>
                     <div class="apply-job-detail">
                         <p><?= Html::encode($user['description']); ?></p>
@@ -104,17 +136,31 @@ $this->params['header_dark'] = false;
                     <div class="apply-job-detail">
                         <h5>Skills</h5>
                         <ul class="skills">
-                            <?php foreach ($skills as $sk) { ?>
-                                <li><?= $sk['skills']; ?></li>
-                            <?php } ?>
+                            <?php
+                            if ($skills) {
+                                foreach ($skills as $sk) { ?>
+                                    <li><?= $sk['skills']; ?></li>
+                                    <?php
+                                }
+                            } else {
+                                echo "<li>--</li>";
+                            }
+                            ?>
                         </ul>
                     </div>
                     <div class="apply-job-detail">
-                        <h5>Language</h5>
+                        <h5>Spoken Languages</h5>
                         <ul class="skills">
-                            <?php foreach ($language as $lg) { ?>
-                                <li><?= $lg['language']; ?></li>
-                            <?php } ?>
+                            <?php
+                            if ($language) {
+                                foreach ($language as $lg) { ?>
+                                    <li><?= $lg['language']; ?></li>
+                                    <?php
+                                }
+                            } else {
+                                echo "<li>--</li>";
+                            }
+                            ?>
                         </ul>
                     </div>
                 </div>
@@ -165,11 +211,15 @@ $this->params['header_dark'] = false;
                                 <li class="br-1">
                                     <strong>
                                         <?php
-                                        if ($strToArr[1] != 0) {
-                                            echo $strToArr[1] . ' Year(s) ';
-                                        }
-                                        if ($strToArr[3] != 0) {
-                                            echo $strToArr[3] . ' Month(s)';
+                                        if ($user['experience']) {
+                                            if ($strToArr[1] != 0) {
+                                                echo $strToArr[1] . ' Year(s) ';
+                                            }
+                                            if ($strToArr[3] != 0) {
+                                                echo $strToArr[3] . ' Month(s)';
+                                            }
+                                        } else{
+                                            echo '--';
                                         }
                                         ?>
                                     </strong>
@@ -186,6 +236,21 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
+.edit-profile-btn{
+    text-align: center;
+    background-color: #00a0e3;
+    color: #fff;
+    padding: 5px 25px;
+    box-shadow: 0px 1px 12px 1px #a5a5a5;
+    border-radius: 4px;
+    margin-top: 2px;
+    font-size: 13px;
+    display: inline-block;
+}
+.edit-profile-btn:hover, .edit-profile-btn:focus{
+    background-color:#0392ce;
+    color:#fff;
+}
 .freelance-image img{
     width:100%;
     height:88%;

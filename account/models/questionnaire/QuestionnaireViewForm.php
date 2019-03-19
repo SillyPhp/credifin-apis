@@ -24,7 +24,7 @@ class QuestionnaireViewForm extends Model
         $answeredModel->answered_questionnaire_enc_id = $utilitiesModel->encrypt();
         $answeredModel->applied_application_enc_id = $applied_id;
         $answeredModel->questionnaire_enc_id = $qidk;
-        $answeredModel->created_on = date('Y-m-d h:i:s');
+        $answeredModel->created_on = date('Y-m-d H:i:s');
         $answeredModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($answeredModel->save()) {
             foreach ($arr as $array) {
@@ -37,7 +37,7 @@ class QuestionnaireViewForm extends Model
                         $fieldsModel->answered_questionnaire_enc_id = $answeredModel->answered_questionnaire_enc_id;
                         $fieldsModel->field_enc_id = $array->id;
                         $fieldsModel->field_option_enc_id = $option;
-                        $fieldsModel->created_on = date('Y-m-d h:i:s');
+                        $fieldsModel->created_on = date('Y-m-d H:i:s');
                         $fieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$fieldsModel->save()) {
                             return false;
@@ -53,7 +53,7 @@ class QuestionnaireViewForm extends Model
                     $fieldsModel->answered_questionnaire_enc_id = $answeredModel->answered_questionnaire_enc_id;
                     $fieldsModel->field_enc_id = $array->id;
                     $fieldsModel->field_option_enc_id = $array->option;
-                    $fieldsModel->created_on = date('Y-m-d h:i:s');
+                    $fieldsModel->created_on = date('Y-m-d H:i:s');
                     $fieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$fieldsModel->save()) {
                         return false;
@@ -68,7 +68,7 @@ class QuestionnaireViewForm extends Model
                     $fieldsModel->answered_questionnaire_enc_id = $answeredModel->answered_questionnaire_enc_id;
                     $fieldsModel->field_enc_id = $array->id;
                     $fieldsModel->answer = $array->answer;
-                    $fieldsModel->created_on = date('Y-m-d h:i:s');
+                    $fieldsModel->created_on = date('Y-m-d H:i:s');
                     $fieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$fieldsModel->save()) {
                         return false;
@@ -79,7 +79,7 @@ class QuestionnaireViewForm extends Model
             return false;
         }
         $update = Yii::$app->db->createCommand()
-            ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $applied_id])
+            ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $applied_id])
             ->execute();
         if ($update) {
             return true;

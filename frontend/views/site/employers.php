@@ -2,8 +2,35 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-
+$this->title = Yii::t('frontend', 'Employers');
 $this->params['header_dark'] = false;
+$keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,latest it jobs for freshers,apply for internship in india,jobs near me,internships near me,top career sites,best career sites in india';
+$description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <section class="header">
         <div class="container">
@@ -62,7 +89,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">How it works</div>
+                    <h1 class="heading-style">How it works</h1>
                 </div>
                 <div class="col-md-4">
                     <div class="">
@@ -114,7 +141,7 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-md-12">
                     <div class="com-grid">
-                        <div class="heading-style">Companies With Us</div>
+                        <h1 class="heading-style">Companies With Us</h1>
                         <div class="">Companies recruiting top talent from our portal.</div>
                         <div class="com1 animatable fadeIn">
                             <div class="com-logo">
@@ -214,7 +241,7 @@ $this->params['header_dark'] = false;
 
     <section class="partner">
         <div class="container">
-            <div class="heading-style ">Join our Community</div>
+            <h1 class="heading-style ">Join our Community</h1>
             <div class="row partner-row">
                 <div class="col-md-12">
                     <div class="col-md-6 col-sm-6">

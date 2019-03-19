@@ -34,6 +34,7 @@ namespace common\models;
  * @property string $job_function Foreign Key to Categories Table
  * @property string $dob Date of Birth
  * @property string $experience Experience
+ * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
  * @property int $is_available Is Currently Available (0 as No, 1 as Yes)
  * @property string $user_of User Of
  * @property string $created_on On which date User information was added to database
@@ -63,6 +64,12 @@ namespace common\models;
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations0
  * @property ApplicationSkills[] $applicationSkills
  * @property ApplicationSkills[] $applicationSkills0
+ * @property ApplicationTemplateJobDescription[] $applicationTemplateJobDescriptions
+ * @property ApplicationTemplateJobDescription[] $applicationTemplateJobDescriptions0
+ * @property ApplicationTemplateOptions[] $applicationTemplateOptions
+ * @property ApplicationTemplateOptions[] $applicationTemplateOptions0
+ * @property ApplicationTemplates[] $applicationTemplates
+ * @property ApplicationTemplates[] $applicationTemplates0
  * @property AppliedApplicationLocations[] $appliedApplicationLocations
  * @property AppliedApplicationLocations[] $appliedApplicationLocations0
  * @property AppliedApplicationProcess[] $appliedApplicationProcesses
@@ -85,6 +92,7 @@ namespace common\models;
  * @property CategoriesList[] $categoriesLists0
  * @property Designations[] $designations
  * @property Designations[] $designations0
+ * @property DropResumeApplications[] $dropResumeApplications
  * @property EducationalRequirements[] $educationalRequirements
  * @property EducationalRequirements[] $educationalRequirements0
  * @property EmployeeBenefits[] $employeeBenefits
@@ -101,6 +109,8 @@ namespace common\models;
  * @property JobDescription[] $jobDescriptions0
  * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
  * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions0
+ * @property OrganizationAssignedCategories[] $organizationAssignedCategories
+ * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits0
  * @property OrganizationImages[] $organizationImages
@@ -158,13 +168,13 @@ namespace common\models;
  * @property SubmittedVideos[] $submittedVideos
  * @property SubmittedVideos[] $submittedVideos0
  * @property Tags[] $tags
- * @property Tags[] $tags0
  * @property TrainingApplications[] $trainingApplications
  * @property TrainingProgramBatches[] $trainingProgramBatches
  * @property TrainingProgramBatches[] $trainingProgramBatches0
  * @property TrainingProgramBatches[] $trainingProgramBatches1
  * @property TrainingPrograms[] $trainingPrograms
  * @property TrainingPrograms[] $trainingPrograms0
+ * @property UserAccessTokens[] $userAccessTokens
  * @property UserCoachingTutorials[] $userCoachingTutorials
  * @property UserCoachingTutorials[] $userCoachingTutorials0
  * @property UserEducation[] $userEducations
@@ -214,9 +224,9 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'phone', 'initials_color', 'created_on'], 'required'],
+            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'phone', 'initials_color'], 'required'],
             [['dob', 'created_on', 'last_updated_on'], 'safe'],
-            [['is_available', 'is_email_verified', 'is_phone_verified', 'is_deleted'], 'integer'],
+            [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_deleted'], 'integer'],
             [['user_of', 'status'], 'string'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function'], 'string', 'max' => 100],
             [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
@@ -399,6 +409,54 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getApplicationTemplateJobDescriptions()
+    {
+        return $this->hasMany(ApplicationTemplateJobDescription::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationTemplateJobDescriptions0()
+    {
+        return $this->hasMany(ApplicationTemplateJobDescription::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationTemplateOptions()
+    {
+        return $this->hasMany(ApplicationTemplateOptions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationTemplateOptions0()
+    {
+        return $this->hasMany(ApplicationTemplateOptions::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationTemplates()
+    {
+        return $this->hasMany(ApplicationTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationTemplates0()
+    {
+        return $this->hasMany(ApplicationTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAppliedApplicationLocations()
     {
         return $this->hasMany(AppliedApplicationLocations::className(), ['created_by' => 'user_enc_id']);
@@ -575,6 +633,14 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getDropResumeApplications()
+    {
+        return $this->hasMany(DropResumeApplications::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEducationalRequirements()
     {
         return $this->hasMany(EducationalRequirements::className(), ['created_by' => 'user_enc_id']);
@@ -698,6 +764,22 @@ class Users extends \yii\db\ActiveRecord
     public function getLearningCornerResourceDiscussions0()
     {
         return $this->hasMany(LearningCornerResourceDiscussion::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationAssignedCategories()
+    {
+        return $this->hasMany(OrganizationAssignedCategories::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationAssignedCategories0()
+    {
+        return $this->hasMany(OrganizationAssignedCategories::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1153,14 +1235,6 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tags::className(), ['created_by' => 'user_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTags0()
-    {
         return $this->hasMany(Tags::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
@@ -1210,6 +1284,14 @@ class Users extends \yii\db\ActiveRecord
     public function getTrainingPrograms0()
     {
         return $this->hasMany(TrainingPrograms::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserAccessTokens()
+    {
+        return $this->hasMany(UserAccessTokens::className(), ['user_enc_id' => 'user_enc_id']);
     }
 
     /**

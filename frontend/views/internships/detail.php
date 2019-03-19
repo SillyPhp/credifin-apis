@@ -1,12 +1,70 @@
 <?php
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
-$this->params['header_dark'] = false;
 
+if ($data['wage_type'] == 'Fixed') {
+    if ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['fixed_wage'] * 24 * 30;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['fixed_wage'] / 7 * 30;
+    } else{
+        $wage = $data['fixed_wage'];
+    }
+    $amount = $wage;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.m.';
+} elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based'){
+    if ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['min_wage'] * 24 * 30;
+        $wage2 = $data['max_wage'] * 24 * 30;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['min_wage'] / 7 * 30;
+        $wage2 = $data['max_wage'] / 7 * 30;
+    } else{
+        $wage = $data['min_wage'];
+        $wage2 = $data['max_wage'];
+    }
+    $amount1 = $wage;
+    $amount2 = $wage2;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.m.';
+}
+
+$this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a  stipend ' . $amount ;
+
+//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+$this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
+$keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
+$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
@@ -156,10 +214,13 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <h3>Internship Overview</h3>
                                 <?php
                                 switch ($data['has_placement_offer']) {
-                                    case 1;
+                                    case 1:
                                         $offer = 'Yes';
                                         break;
-                                    case 2;
+                                    case 0:
+                                        $offer = 'No';
+                                        break;
+                                    default:
                                         $offer = 'No';
                                         break;
                                 }
@@ -175,11 +236,33 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <?php setlocale(LC_MONETARY, 'en_IN'); ?>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Maximum Stipend</h3>
-                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A'); ?></span>
+                                        <?php
+                                        if (!empty($data['max_wage'])){
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage2 = $data['max_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage2 = $data['max_wage'] / 7 * 30;
+                                            } else{
+                                                $wage2 = $data['max_wage'];
+                                            }
+                                        }
+                                        ?>
+                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $wage2)) . 'p.m.' : 'N/A'); ?></span>
                                     </li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Minimum stipend</h3>
-                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A'); ?></span>
+                                        <?php
+                                        if (!empty($data['min_wage'])){
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage = $data['min_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage = $data['min_wage'] / 7 * 30;
+                                            } else{
+                                                $wage = $data['min_wage'];
+                                            }
+                                        }
+                                        ?>
+                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $wage)) . 'p.m.' : 'N/A'); ?></span>
                                     </li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
@@ -202,7 +285,23 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                             ?></span></li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Fixed Stipend</h3>
-                                        <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'N/A') ?></span>
+                                        <?php
+                                        if ($data['wage_type'] == 'Fixed') {
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage = $data['fixed_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage = $data['fixed_wage'] / 7 * 30;
+                                            } else{
+                                                $wage = $data['fixed_wage'];
+                                            }
+                                            $amount = $wage;
+                                            setlocale(LC_MONETARY, 'en_IN');
+                                            $fixed_amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.m.';
+                                        } else{
+                                            $fixed_amount = 'N/A';
+                                        }
+                                        ?>
+                                        <span><?= $fixed_amount ?></span>
                                     </li>
                                     <li><i class="fa fa-line-chart "></i>
                                         <h3>Total Vacancies</h3>
@@ -215,7 +314,48 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                         </div><!-- Job Head -->
 
                         <div class="job-details">
-                            <h3>Required Knowledge, Skills, and Abilities</h3>
+                            <?php
+                            if(!empty($data['applicationEmployeeBenefits'])) {
+                                ?>
+                                <h3>Employer Benefits</h3>
+                                <?php
+                                $rows = ceil(count($data['applicationEmployeeBenefits']) / 3);
+                                $next = 0;
+                                for ($i = 0; $i < $rows; $i++) {
+                                    ?>
+                                    <div class="cat-sec">
+                                        <div class="row no-gape">
+                                            <?php
+                                            for ($j = 0; $j < 3; $j++) {
+                                                if (!empty($data['applicationEmployeeBenefits'][$next]['benefit'])) {
+                                                    ?>
+                                                    <div class="col-lg-4 col-md-4 col-sm-4">
+                                                        <div class="p-category">
+                                                            <div class="p-category-view">
+                                                                <?php
+                                                                if (!empty($data['applicationEmployeeBenefits'][$next]['icon'])) {
+                                                                    $benefit_icon = Url::to(Yii::$app->params->upload_directories->benefits->icon . $data['applicationEmployeeBenefits'][$next]['icon_location'] . DIRECTORY_SEPARATOR . $data['applicationEmployeeBenefits'][$next]['icon']);
+                                                                } else {
+                                                                    $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
+                                                                }
+                                                                ?>
+                                                                <img src="<?= Url::to($benefit_icon); ?>"/>
+                                                                <span><?= $data['applicationEmployeeBenefits'][$next]['benefit'] ?></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                                $next++;
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                            <h3 class="mt-30">Required Knowledge, Skills, and Abilities</h3>
                             <div class="tags-bar">
                                 <?php foreach ($data['applicationSkills'] as $job_skill) { ?>
                                     <span><?= strtoupper($job_skill['skill']); ?> </span>
@@ -246,18 +386,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li> <?php echo ucwords($qualification['educational_requirement']); ?> </li>
                                 <?php } ?>
                             </ul>
-                            <?php
-                            if (!empty($data['applicationEmployeeBenefits'])) {
-                                ?>
-                                <h3>Employer Benefits</h3>
-                                <ul>
-                                    <?php
-                                    foreach ($data['applicationEmployeeBenefits'] as $benefit) {
-                                        ?>
-                                        <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                    <?php } ?>
-                                </ul>
-                            <?php } ?>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
@@ -274,13 +402,20 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                 <?php } ?>
                                 <li><i class="fa fa-map-marker"></i>
                                     <h3>Interview Locations</h3><span> <?php
-                                        $str2 = "";
-                                        $interview_locations = [];
-                                        foreach ($data['applicationInterviewLocations'] as $loc) {
-                                            array_push($interview_locations, $loc['name']);
+                                        if (!empty($data['applicationInterviewLocations']))
+                                        {
+                                            $str2 = "";
+                                            $interview_locations = [];
+                                            foreach ($data['applicationInterviewLocations'] as $loc) {
+                                                array_push($interview_locations, $loc['name']);
+                                            }
+                                            $str2 = implode(", ", $interview_locations);
+                                            echo rtrim($str2, ',');
                                         }
-                                        $str2 = implode(", ", $interview_locations);
-                                        echo rtrim($str2, ',');
+                                        else
+                                        {
+                                            echo 'Online/Skype/Telephonic';
+                                        }
                                         ?></span></li>
                             </ul>
                         </div>
@@ -659,8 +794,8 @@ $this->registerCss("
     .job-single-head2 {
         float: left;
         width: 100%;
-        padding-bottom: 30px;
-        border-bottom: 1px solid #e8ecec;
+//        padding-bottom: 30px;
+//        border-bottom: 1px solid #e8ecec;
     }
     .job-single-head2 > span {
         float: left;
@@ -732,7 +867,7 @@ $this->registerCss("
     .job-details {
         float: left;
         width: 100%;
-        padding-top: 20px;
+//        padding-top: 20px;
     }
     .job-details h3 {
         float: left;
@@ -1249,6 +1384,85 @@ $this->registerCss("
     .has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
         color:inherit;
     }
+    /* Feature, categories css starts */
+    .cat-sec {
+        float: left;
+        width: 100%;
+    }
+    .p-category {
+        float: left;
+        width: 100%;
+        z-index: 1;
+        position: relative;
+    }
+    .p-category, .p-category *{
+        -webkit-transition: all 0.4s ease 0s;
+        -moz-transition: all 0.4s ease 0s;
+        -ms-transition: all 0.4s ease 0s;
+        -o-transition: all 0.4s ease 0s;
+        transition: all 0.4s ease 0s;
+    }
+    .p-category > .p-category-view {
+        float: left;
+        width: 100%;
+        text-align: center;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e8ecec;
+        border-right: 1px solid #e8ecec;
+    }
+    .p-category > .p-category-view img {
+        font-size: 70px;
+        margin-top: 30px;
+        line-height: initial !important;
+    }
+    .p-category > .p-category-view span {
+        float: left;
+        width: 100%;
+        font-family: Open Sans;
+        font-size: 15px;
+        color: #202020;
+        margin-top: 18px;
+    }
+    .p-category:hover {
+        background: #ffffff;
+        -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        width: 104%;
+        margin-left: -2%;
+        height: 102%;
+        z-index: 10;
+    }
+    .p-category:hover .p-category-view {
+        border-color: #ffffff;
+    }
+    .p-category:hover i{
+        color: #f07d1d;
+    }
+    .row.no-gape > div {
+        padding: 0;
+    }
+    .cat-sec .row > div:last-child .p-category-view {
+        border-right-color: #ffffff;
+    }
+    .p-category img{
+        width: 80px;
+        height: 50px;
+    }
+    .p-category .p-category-view img, .p-category .checkbox-text span i {
+        color: #4aa1e3;
+        font-size: 70px;
+        margin-top: 30px;
+        line-height: initial !important;
+    }
+    /* Feature, categories css ends */
     ");
 
 $script = <<< JS

@@ -184,7 +184,7 @@ class TasksController extends Controller
             $task_id = Yii::$app->request->post('task_id');
 
             $update = Yii::$app->db->createCommand()
-                ->update(UserTasks::tableName(), ['name' => $name, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['task_enc_id' => $task_id])
+                ->update(UserTasks::tableName(), ['name' => $name, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['task_enc_id' => $task_id])
                 ->execute();
             if ($update) {
                 return $response = [

@@ -9,7 +9,6 @@ namespace frontend\models\profile;
 
 use common\models\Skills;
 use common\models\SpokenLanguages;
-use common\models\UserPreferredSkills;
 use common\models\Users;
 use common\models\Categories;
 use common\models\Cities;
@@ -19,12 +18,15 @@ use Yii;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use common\models\Utilities;
+use common\models\AssignedCategories;
+use common\models\UserResume;
+use yii\web\UploadedFile;
 
 class UserProfileBasicEdit extends Model {
-    public $first_name;
-    public $last_name;
-    public $job_profile;
-    public $job_profile_id;
+    public $full_name;
+    public $gender;
+    public $category;
+    public $job_title;
     public $exp_month;
     public $exp_year;
     public $dob;
@@ -34,6 +36,7 @@ class UserProfileBasicEdit extends Model {
     public $description;
     public $state;
     public $city;
+    public $resume;
 
     public function formName()
     {
@@ -42,9 +45,19 @@ class UserProfileBasicEdit extends Model {
 
     public function rules() {
         return [
-            [['job_profile','exp_month','exp_year','dob','languages','skills','availability','description','state','city','job_profile_id'],'required'],
-            ['exp_month','integer','max'=>12],
+            [['exp_month','gender','exp_year','dob','languages','skills','availability','description','state','city','job_title_id'],'required'],
+            ['exp_month','integer','max'=>11],
+            ['category','safe'],
             ['exp_year','integer','max'=>99],
+            [
+                ['job_title'], 'required', 'when' => function ($model, $attribute) {
+                return $model->category != '';
+            }, 'whenClient' => "function (attribute, value) {
+                        return $('#category_drp').val() != '';
+                }"
+            ],
+            [['resume'], 'file', 'skipOnEmpty' => true, 'extensions' => 'doc, docx,pdf','maxSize' => 1024 * 1024 * 2],
+
         ];
     }
 
@@ -60,7 +73,51 @@ class UserProfileBasicEdit extends Model {
         $user->is_available = $this->availability;
         $user->experience = json_encode([''.$this->exp_year.'',''.$this->exp_month.'']);
         $user->description = $this->description;
-        $user->job_function = $this->job_profile_id;
+        $user->gender = $this->gender;
+        if (!empty($this->job_title)){
+            $category_execute = Categories::find()
+                ->alias('a')
+                ->where(['name' => $this->job_title]);
+            $chk_cat = $category_execute->asArray()->one();
+            if (empty($chk_cat)) {
+                $categoriesModel = new Categories;
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                $categoriesModel->name = $this->job_title;
+                $utilitiesModel->variables['name'] = $this->job_title;
+                $utilitiesModel->variables['table_name'] = Categories::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $categoriesModel->slug = $utilitiesModel->create_slug();
+                $categoriesModel->parent_enc_id = NULL;
+                $categoriesModel->created_on = date('Y-m-d H:i:s');
+                $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($categoriesModel->save()) {
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id,$user);
+                } else {
+                    return false;
+                }
+            } else {
+                $chk_assigned = $category_execute
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                    ->andWhere(['not',['b.parent_enc_id'=>null]])
+                    ->andWhere(['b.assigned_to'=>'Profiles','b.parent_enc_id'=>$this->category])
+                    ->asArray()
+                    ->one();
+                if (empty($chk_assigned))
+                {
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'],$user);
+                }
+                else{
+                    $user->job_function = $chk_assigned['category_enc_id'];
+                }
+            }
+        }
+        else
+        {
+            $user->job_function = null;
+        }
         if ($user->update())
         {
             $flag++;
@@ -183,7 +240,6 @@ class UserProfileBasicEdit extends Model {
             $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
             $new_language = array_diff($language_set, $languageArray);
             $delte_language = array_diff($languageArray, $language_set);
-
             if (!empty($new_language)) {
                 foreach ($new_language as $val) {
                     $languageModel = new UserSpokenLanguages();
@@ -217,6 +273,32 @@ class UserProfileBasicEdit extends Model {
                     }
                 }
             }
+        $this->resume = UploadedFile::getInstance($this, 'resume');
+        if (!empty($this->resume))
+        {
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userResumeModel = new UserResume();
+            $userResumeModel->resume_enc_id = $utilitiesModel->encrypt();
+            $userResumeModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
+            $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->resume->file_path . $userResumeModel->resume_location;
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume->extension;
+            $userResumeModel->title = $this->resume->baseName . '.' . $this->resume->extension;
+            $userResumeModel->alt = $this->resume->baseName . '.' . $this->resume->extension;
+            $userResumeModel->created_on = date('Y-m-d H:i:s');
+            $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!is_dir($base_path)) {
+                if (mkdir($base_path, 0755, true)) {
+                    if ($this->resume->saveAs($base_path . DIRECTORY_SEPARATOR . $userResumeModel->resume)) {
+                        if ($userResumeModel->validate() && $userResumeModel->save()) {
+                            $flag++;
+                        }
+                    }
+                }
+            }
+        }
 
             if ($flag==0)
             {
@@ -227,7 +309,25 @@ class UserProfileBasicEdit extends Model {
                 return true;
             }
     }
-
+    private function addNewAssignedCategory($category_id,$user)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $this->category;
+        $assignedCategoryModel->assigned_to = 'Profiles';
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $user->job_function = $assignedCategoryModel->category_enc_id;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public function getJobFunction()
     {
         if (!empty(Yii::$app->user->identity->job_function))
@@ -268,6 +368,26 @@ class UserProfileBasicEdit extends Model {
         }
     }
 
+    public function getCurrentCategory()
+    {
+        if (!empty(Yii::$app->user->identity->job_function))
+        {
+            $getCategory = Categories::find()
+                ->alias('a')
+                ->select(['a.name','a.category_enc_id','b.parent_enc_id'])
+                ->joinWith(['assignedCategories b'],false)
+                ->where(['a.category_enc_id'=>Yii::$app->user->identity->job_function])
+                ->asArray()
+                ->one();
+            return $getCategory;
+        }
+        else
+        {
+            $getCategory = '';
+            return $getCategory;
+        }
+    }
+
     public function getUserSkills()
     {
         $getSkills = UserSkills::find()
@@ -293,6 +413,6 @@ class UserProfileBasicEdit extends Model {
             ->all();
         return $languages;
     }
-
+    
 
 }

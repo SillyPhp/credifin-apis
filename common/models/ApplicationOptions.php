@@ -66,10 +66,6 @@ class ApplicationOptions extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     */
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationEnc()
@@ -92,5 +88,4 @@ class ApplicationOptions extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
-
 }

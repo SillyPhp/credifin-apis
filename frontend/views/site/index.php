@@ -3,11 +3,10 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
 $this->params['header_dark'] = false;
 $keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,latest it jobs for freshers,apply for internship in india,jobs near me,internships near me,top career sites,best career sites in india';
-$description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/text-logo.png');
+$description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -15,10 +14,10 @@ $this->params['seo_tags'] = [
     'name' => [
         'keywords' => $keywords,
         'description' => $description,
-        'twitter:card' => 'summary',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -26,10 +25,10 @@ $this->params['seo_tags'] = [
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
         'og:url' => Url::canonical(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
-//        'fb:app_id' => '383925102019276'
+        'fb:app_id' => '973766889447403'
     ],
 ];
 ?>
@@ -61,7 +60,7 @@ $this->params['seo_tags'] = [
                                         <div class="row no-gape">
                                             <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
                                                 <div class="job-field">
-                                                    <input type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input type="text" name="category" placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
@@ -148,7 +147,7 @@ $this->params['seo_tags'] = [
 
 <section class="services-section">
     <div class="container">
-        <div class="heading-style ">Our Services</div>
+        <h1 class="heading-style ">Our Services</h1>
         <div class="services row">
             <div class="col-md-6 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
@@ -180,9 +179,9 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="fx-heading">
+                <h1 class="fx-heading">
                     Its Free To Get Hired On Empower Youth
-                </div>
+                </h1>
                 <div class="post-job-bttn">
                     <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
                         Get Hired
@@ -511,7 +510,7 @@ $this->params['seo_tags'] = [
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
                     </div>
                     <div class="how-text-box">
-                        <div class="how-heading">Recive Custom Job Notifications</div>
+                        <div class="how-heading">Receive Custom Job Notifications</div>
                     </div>
                 </div>
             </div>
@@ -538,7 +537,7 @@ $this->params['seo_tags'] = [
         <div class="row">
             <div class="col-md-12">
                 <div class="com-grid">
-                    <div class="heading-style">Companies With Us</div>
+                    <h1 class="heading-style">Companies With Us</h1>
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
@@ -593,10 +592,10 @@ $this->params['seo_tags'] = [
                     <div class="com8 animatable fadeIn">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
-                                 alt="Amrit Malwa Capital Bank">
+                                 alt="Amrit Malwa Capital Limited">
                         </div>
                         <div class="com-name">
-                            Amrit Malwa Capital Bank
+                            Amrit Malwa Capital Limited
                         </div>
                     </div>
                     <div class="com9 animatable fadeIn">
@@ -632,7 +631,7 @@ $this->params['seo_tags'] = [
 
 <section class="partner">
     <div class="container">
-        <div class="heading-style ">Join our Community</div>
+        <h1 class="heading-style ">Join our Community</h1>
         <div class="row partner-row">
             <div class="col-md-12">
                 <div class="col-md-6 col-sm-6">
@@ -713,7 +712,7 @@ $this->params['seo_tags'] = [
     </article>
 </div>
 <?php
-echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
 .hiw-heading{
     text-align: center;
@@ -735,7 +734,7 @@ $this->registerCss('
     margin:0 8px;
 }
 .login-bttn{
-    padding: 6px 15px;
+    padding: 12px 40px;
     border:2px solid #00a0e3;
     border-radius:5px;
     color:#00a0e3;
@@ -754,7 +753,7 @@ $this->registerCss('
     background:#00a0e3; 
 }
 .sign-up{
-     padding: 6px 17px;
+    padding: 12px 40px;
     border:2px solid #ff7803;
     border-radius:5px;
     color:#ff7803;
@@ -765,9 +764,9 @@ $this->registerCss('
     background:#ff7803;  
 }
 .job-field input:focus{
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
 }
 .no-padd{
    padding-left:0px !important; 
@@ -2073,4 +2072,3 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-?>
