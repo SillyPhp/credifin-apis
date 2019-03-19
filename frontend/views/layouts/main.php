@@ -54,17 +54,21 @@ AppAssets::register($this);
     <header id="header" class="header">
         <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
         <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-
-<!--            <div class="secondary-top-header">-->
-<!--                <div class="secondary-top-header-left">-->
-<!--                    <a href=""><i class="fa fa-envelope"></i> info@empoweryouth.com</a>-->
-<!--                </div>-->
-<!--                <div class="secondary-top-header-right">-->
-<!--                    <a href="/login">Login</a>-->
-<!--                    <a href="/signup/organization">Register as Company</a>-->
-<!--                    <a href="/signup/individual">Register as Individual</a>-->
-<!--                </div>-->
-<!--            </div>-->
+            <?php
+            if(Yii::$app->user->isGuest) {
+                ?>
+                <div class="secondary-top-header">
+                    <div class="secondary-top-header-left">
+                        <a href="/employers"><i class="fa fa-user-circle"></i> Employer Zone</a>
+                    </div>
+                    <div class="secondary-top-header-right">
+                        <a href="/signup/organization">Signup as Company</a>
+                        <a href="/signup/individual">Signup as Candidate</a>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
             <div class="container-fluid">
                 <nav id="menuzord-right"
                      class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
@@ -232,16 +236,21 @@ $this->registerCss('
                 line-height: 30px;
                 display: block;
                 transition: margin 500ms;
-                background-color: #202c45;
+//                background-color: #202c45;
+                background-color: rgba(0, 0, 0, 0.4);
             }
             .header-show .secondary-top-header{
                 margin-top:0px;
+            }
+            .animated-active .header-show .secondary-top-header{
+                background-color: rgba(0, 0, 0, 0.2);
             }
             .secondary-top-header-left, .secondary-top-header-right{
                 width:50%;
                 float:left;
             }
             .secondary-top-header-left{padding-left:50px;}
+            .secondary-top-header-left a i{font-size:16px;}
             .secondary-top-header-right{padding-right:50px;}
             .secondary-top-header a{
                 color:#fff;
@@ -510,7 +519,21 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
             gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
         ');
 }
-
+if (Yii::$app->user->isGuest) {
+    $this->registerJs('
+        window.addEventListener("scroll", header_main);
+        
+        function header_main() {
+            var check_h_type = document.getElementById("header-main");
+            if(window.pageYOffset <= 0) {
+                check_h_type.classList.add("header-show");
+            } else if(window.pageYOffset > 5){
+                check_h_type.classList.remove("header-show");
+            }
+        }
+        header_main();
+    ');
+}
 $this->registerJs('
             window.fbAsyncInit = function() {
                FB.init({
@@ -526,19 +549,6 @@ $this->registerJs('
              js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
              fjs.parentNode.insertBefore(js, fjs);
             }(document, "script", "facebook-jssdk"));
-            
-            window.addEventListener("scroll", header_main);
-            
-            function header_main() {
-                var check_h_type = document.getElementById("header-main");
-                var height = document.documentElement.scrollTop;
-                if(height <= 0) {
-                    check_h_type.classList.add("header-show");
-                } else if(height > 5){
-                    check_h_type.classList.remove("header-show");
-                }
-            }
-            header_main();
             
             $(".page-loading").fadeOut();
         ');

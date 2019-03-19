@@ -712,7 +712,7 @@ $this->params['seo_tags'] = [
     </article>
 </div>
 <?php
-echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
 .hiw-heading{
     text-align: center;
