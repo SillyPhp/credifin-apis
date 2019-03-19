@@ -103,6 +103,8 @@ AppAssets::register($this);
         ?>
     </div>
     <?php
+    echo $this->render('/widgets/chat/main');
+
     $this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #fff;}
             .page-loading {
