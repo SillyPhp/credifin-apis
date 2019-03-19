@@ -180,7 +180,7 @@ function get_preview(session_tok) {
                          data:data, 
                          method:'post',
                          success: function(data) {
-                            $('.button-preview').attr('href','/jobs/job-preview?data='+session_tok+'');  
+                            $('.button-preview').attr('href','/jobs/job-preview?eipdk='+session_tok+'');  
                          }
                     }); 
             }

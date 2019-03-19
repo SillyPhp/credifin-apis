@@ -148,6 +148,36 @@ function edu_counter_set()
      }
      });
    }
+var Education = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('educational_requirement'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/account/categories-list/educations?q=%QUERY', 
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
+});   
+        
+var edu_type = $('#quali_field').typeahead(null, {
+  name: 'quali_field',
+  display: 'educational_requirement',
+   limit: 4,      
+  source: Education
+}).on('typeahead:asyncrequest', function() {
+    $('.edu_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.edu_wrapper .Typeahead-spinner').hide(); 
+  }).on('typeahead:selected',function(e, datum)
+  { 
+      var id = datum.educational_requirement_enc_id;
+      var qualification = datum.educational_requirement;  
+      drop_edu(id,qualification);
+      edu_type.typeahead('val','');  
+   });     
 var ps = new PerfectScrollbar('#quali_listarea');
 var ps = new PerfectScrollbar('#quali_list');
 JS;

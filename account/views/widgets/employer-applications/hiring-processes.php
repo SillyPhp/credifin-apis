@@ -68,7 +68,7 @@ $script = <<< JS
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
-    window.open('/account/interview-processes/'+data+'/view', "_blank");
+    window.open('/account/hiring-processes/'+data+'/view', "_blank");
 });
 $(document).on('change','input[name="interview_process"]',function()
       {
