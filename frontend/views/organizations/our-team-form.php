@@ -12,7 +12,6 @@ use yii\bootstrap\ActiveForm;
 <?php
 $eform = ActiveForm::begin([
     'id' => 'add_employee',
-    'options' => ['enctype' => 'multipart/form-data'],
     'fieldConfig' => [
         'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}{hint}</div>",
     ]
@@ -150,7 +149,7 @@ $(document).on('submit', '#add_employee', function(event) {
     }
     btn.data('requestRunning', true);
     $.ajax({
-        url: "/companies/add-employee",
+        url: "/organizations/add-employee",
         method: "POST",
         data: new FormData(this),
         contentType: false,

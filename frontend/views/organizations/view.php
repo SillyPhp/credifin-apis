@@ -994,7 +994,7 @@ $(document).on('click','.follow',function(e){
     e.preventDefault();
     var org_id = $('#organisation_id').val();
     $.ajax({
-        url:'/companies/follow',
+        url:'/organizations/follow',
         data: {org_id:org_id},                         
         method: 'post',
         beforeSend:function(){
@@ -1014,8 +1014,8 @@ $(document).on('click','.follow',function(e){
 });
 JS;
 $this->registerJs("
-getCards('Jobs','.blogbox','/companies/organization-opportunities/?org=" . $organization['name'] . "');
-getCards('Internships','.internships_main','/companies/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);

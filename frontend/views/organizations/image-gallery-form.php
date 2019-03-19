@@ -20,14 +20,12 @@ use yii\bootstrap\ActiveForm;
                 <?php
                     $gform = ActiveForm::begin([
                         'id' => 'upload-gallary-image',
-                        'options' => ['enctype' => 'multipart/form-data'],
                     ]);
 
                     echo $gform->field($companyImagesForm, 'image', [
                         'template' => '{input}',
                         'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'gImageUpload', 'accept' => '.png, .jpg, .jpeg']);
                 ?>
-<!--                <input type='file' id="gImageUpload" accept=".png, .jpg, .jpeg" />-->
                 <label for="gImageUpload">Select Image</label>
                 <?= Html::submitbutton('Upload Image', ['class' => 'btn btn-primary custom-buttons2 sav_benft']); ?>
                 <?php
@@ -124,7 +122,7 @@ $(document).on('submit', '#upload-gallary-image', function(event) {
     btn.data('requestRunning', true);
     
     $.ajax({
-        url: "/companies/add-gallery-images",
+        url: "/organizations/add-gallery-images",
         method: "POST",
         data: new FormData(this),
         contentType: false,
@@ -149,8 +147,5 @@ $(document).on('submit', '#upload-gallary-image', function(event) {
         }
     });
 });
-// $(document).on('click', '.sav_benft', function(){
-//     $('.sav_benft').prop('disabled', 'disabled');
-// });
 JS;
 $this->registerJs($script);
