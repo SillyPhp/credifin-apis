@@ -804,7 +804,7 @@ class InternshipsController extends Controller
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
-            'primary_fields' => $this->getCategories()
+            'primary_fields' => $this->getCategories(),
         ]);
     }
 

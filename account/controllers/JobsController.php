@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use common\models\Cities;
+use common\models\DropResumeApplications;
 use common\models\OrganizationAssignedCategories;
 use Yii;
 use yii\web\Controller;
@@ -702,6 +703,7 @@ class JobsController extends Controller
             ->asArray()
             ->all();
 
+
         $total_shortlist = ShortlistedApplications::find()
             ->alias('a')
             ->select(['j.name type','a.id','a.created_on','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
@@ -867,6 +869,27 @@ class JobsController extends Controller
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->count();
+
+        $applicatoin_id = DropResumeApplications::find()
+            ->select(['application_enc_id'])
+            ->where(['user_enc_id'=>Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['status'=>1])
+            ->asArray()
+            ->one();
+
+
+        $shortlist1 = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id','a.organization_enc_id','a.title','b.name as org_name','a.slug' ,'c.category_enc_id', 'd.name','d.icon'])
+            ->joinWith(['title c' => function($x){
+                $x->joinWith(['categoryEnc d'], false);
+            }], false)
+            ->joinWith(['organizationEnc b'], false)
+            ->where(['a.application_enc_id' => $applicatoin_id['application_enc_id']])
+            ->asArray()
+            ->all();
+
+
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
@@ -879,6 +902,7 @@ class JobsController extends Controller
             'total_pending' => $total_pending,
             'accepted' => $accepted_jobs,
             'total_accepted' => $total_accepted,
+            'shortlist1'=>$shortlist1,
         ]);
     }
 
@@ -889,7 +913,7 @@ class JobsController extends Controller
             'applications' => $this->__jobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $this->__candidateApplications(10),
-            'primary_fields' => $this->getCategories()
+            'primary_fields' => $this->getCategories(),
         ]);
     }
 
