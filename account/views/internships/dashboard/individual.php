@@ -388,7 +388,7 @@ use yii\widgets\Pjax;
                             <div class="col-md-3 hr-j-box">
                                 <div class="topic-con"> 
                                     <div class="hr-company-box">
-                                        <a href="/company/<?= $shortlist['slug']; ?>"> 
+                                        <a href="/<?= $shortlist['slug']; ?>">
                                             <div class="hr-com-icon">
                                                 <?php
                                                 if (empty($shortlist['logo_location'])) {
@@ -419,7 +419,7 @@ use yii\widgets\Pjax;
                                             <div class="row">
                                                 <div class="col-md-1 j-cross"><button value="<?= $shortlist['shortlisted_enc_id']; ?>" class="rmv_org"><i class="fa fa-times"></i></button></div> 
                                                 <div class="col-md-offset-3 col-md-6 minus-15-pad j-grid"> 
-                                                    <a  href="/company/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
+                                                    <a  href="/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
                                                 </div>
                                             </div>
                                         </div>

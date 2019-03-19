@@ -38,7 +38,7 @@ $this->params['header_dark'] = false;
                         }
                         if($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                             ?>
-                            <a href="/user-profile/edit" class="edit-profile-btn" target="_blank">Edit Profile</a>
+                            <a href="/<?= Yii::$app->user->identity->username; ?>/edit" class="edit-profile-btn" target="_blank">Edit Profile</a>
                             <?php
                             if (!empty($userCv)) {
                                 $cv = Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.$userCv['resume_location'].DIRECTORY_SEPARATOR.$userCv['resume'];
