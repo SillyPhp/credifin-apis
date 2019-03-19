@@ -5,6 +5,83 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 $this->params['header_dark'] = false;
 $this->title = 'Job Preview';
+$object->fixed_wage = (($object->fixed_wage) ? str_replace(',', '', $object->fixed_wage) : '');
+$object->min_wage = (($object->min_wage) ? str_replace(',', '', $object->min_wage) : '');
+$object->max_wage = (($object->max_wage) ? str_replace(',', '', $object->max_wage) : '');
+switch ($object->wage_type) {
+    case 1:
+        $object->wage_type = 'Fixed';
+        break;
+    case 2:
+        $object->wage_type = 'Negotiable';
+        break;
+    case 3:
+        $object->wage_type = 'Performance Based';
+        break;
+    case 0:
+        $object->wage_type = 'Unpaid';
+        break;
+    default:
+        $object->wage_type = 'Unpaid';
+}
+if ($type=='Job') {
+    if ($object->wage_type == 'Fixed') {
+        if ($object->wage_duration == 'Monthly') {
+            $object->fixed_wage = $object->fixed_wage * 12;
+        } elseif ($object->wage_duration == 'Hourly') {
+            $object->fixed_wage = $object->fixed_wage * 40 * 52;
+        } elseif ($object->wage_duration == 'Weekly') {
+            $object->fixed_wage = $object->fixed_wage * 52;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $object->fixed_wage)) . 'p.a.';
+    } else if ($object->wage_type == 'Negotiable') {
+        if ($object->wage_duration == 'Monthly') {
+            $object->min_wage = $object->min_wage * 12;
+            $object->max_wage = $object->max_wage * 12;
+        } elseif ($object->wage_duration == 'Hourly') {
+            $object->min_wage = $object->min_wage * 40 * 52;
+            $object->max_wage = $object->max_wage * 40 * 52;
+        } elseif ($object->wage_duration == 'Weekly') {
+            $object->min_wage = $object->min_wage * 52;
+            $object->max_wage = $object->max_wage * 52;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        if (!empty($object->min_wage) && !empty($object->max_wage)) {
+            $amount = '₹' . utf8_encode(money_format('%!.0n', $object->min_wage)) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $object->max_wage)) . 'p.a.';
+        } elseif (!empty($object->min_wage)) {
+            $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $object->min_wage)) . 'p.a.';
+        } elseif (!empty($object->max_wage)) {
+            $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $object->max_wage)) . 'p.a.';
+        } elseif (empty($object->min_wage) && empty($object->max_wage)) {
+            $amount = 'Negotiable';
+        }
+    }
+}
+if ($type=='Internship') {
+    if ($data['wage_type'] == 'Fixed') {
+        if ($data['wage_duration'] == 'Hourly') {
+            $data['fixed_wage'] = $data['fixed_wage'] * 24 * 30;
+        } elseif ($data['wage_duration'] == 'Weekly') {
+            $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.';
+    } elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based') {
+        if ($data['wage_duration'] == 'Hourly') {
+            $data['min_wage'] = $data['min_wage'] * 24 * 30;
+            $data['max_wage'] = $data['max_wage'] * 24 * 30;
+        } elseif ($data['wage_duration'] == 'Weekly') {
+            $data['min_wage'] = $data['min_wage'] / 7 * 30;
+            $data['max_wage'] = $data['max_wage'] / 7 * 30;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
+    }
+    $this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a stipend ' . $amount;
+    $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
+    $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+}
 echo $this->render('/widgets/employer_applications/top-banner', [
     'org_image_location'=>Yii::$app->user->identity->organization->cover_image_location,
     'org_image'=>Yii::$app->user->identity->organization->cover_image,
@@ -36,7 +113,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                             {
                                 echo $this->render('/widgets/employer_applications/job-overview', [
                                     'profile_name'=>$primary_cat['name'],
-                                    'industry'=>$indst['industry'],
+                                    'industry'=>$industry['industry'],
                                     'designation'=>$object->designations,
                                     'job_type'=>$object->type,
                                     'wage_duration'=>$object->wage_duration,
@@ -45,7 +122,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                                     'min_wage'=>$object->min_wage,
                                     'gender'=>$object->gender,
                                     'fixed_wage'=>$object->fixed_wage,
-                                    'experience'=>$object->min_exp,
+                                    'experience'=>$experience,
                                     'placement_locations'=>$data['applicationPlacementLocations'],
                                 ]);
                             } ?>
@@ -99,8 +176,8 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                         'slug'=>Yii::$app->user->identity->organization->slug,
                         'website'=>Yii::$app->user->identity->organization->website,
                         'type'=>$type,
-                        'applied'=>$applied,
-                        'application_slug'=>$application_details["slug"],
+                        'applied'=>false,
+                        'application_slug'=>'Empoweryouth',
                     ]);
                     ?>
                 </div>
@@ -118,116 +195,152 @@ echo $this->render('/widgets/employer_applications/top-banner', [
     </script>
 <?php
 $this->registerCss("
-#warn{
-    color:#e9465d;
-    display:none;
-}
-.inputGroup {
-  background-color: #fff;
-  display: block;
-  margin: 10px 0;
-  position: relative;
-}
-.inputGroup label {
-   padding: 6px 75px 10px 25px;
-    width: 96%;
-    display: block;
-    margin:auto;
-    text-align: left;
-    color: #3C454C;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    transition: color 1ms ease-out;
-    overflow: hidden;
-    border-radius: 8px;
-    border:1px solid #eee;
-}
-.inputGroup label:before {
-  width: 100%;
-  height: 10px;
-  border-radius: 50%;
-  content: '';
-  background-color: #00a0e3;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale3d(1, 1, 1);
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  z-index: -1;
-}
-.inputGroup label:after {
-  width: 32px;
-  height: 32px;
-  content: '';
-  border: 2px solid #D1D7DC;
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: 2px 3px;
-  background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
-  border-radius: 50%;
-  z-index: 2;
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  transition: all 200ms ease-in;
-}
-.inputGroup input:checked ~ label {
-  color: #fff;
-}
+     .sub_description_1,sub_description_2{
+        display:none;
+     }   
+     .heading_submit{
+        color:#fff;
+     } 
+     .sub_description{
+        font-size:15px;
+     }  
+     #msg{
+        color:#fff;
+        padding: 5px 5px;
+        text-align:center;
+     }   
+     #close_btn {
+        float: right;
+        display: inline-block;
+        padding: 0px 6px;
+        color: #fff;
+        font-size: 28px;
+        cursor: pointer;
+    }
+    #message_img{
+      display:none;
+    }
+    
+    #message_img.show{
+        display : block;
+        position : fixed;
+        z-index: 100;
+        background-color:#33cdbb;
+        opacity : 1;
+        background-repeat : no-repeat;
+        background-position : center;
+        width:60%;
+        height:60%;
+        left : 20%;
+        bottom : 0;
+        right : 0;
+        top : 20%;
+    }
+    .fader{
+      width:100%;
+      height:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      display:none;
+      z-index:99;
+      background-color:#fff;
+      opacity:0.7;
+    }
+    #warn{
+        color:#e9465d;
+        display:none;
+    }
+    .inputGroup {
+      background-color: #fff;
+      display: block;
+      margin: 10px 0;
+      position: relative;
+    }
+    .inputGroup label {
+       padding: 6px 75px 10px 25px;
+        width: 96%;
+        display: block;
+        margin:auto;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        transition: color 1ms ease-out;
+        overflow: hidden;
+        border-radius: 8px;
+        border:1px solid #eee;
+    }
+    .inputGroup label:before {
+      width: 100%;
+      height: 10px;
+      border-radius: 50%;
+      content: '';
+      background-color: #00a0e3;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale3d(1, 1, 1);
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      z-index: -1;
+    }
+    .inputGroup label:after {
+      width: 32px;
+      height: 32px;
+      content: '';
+      border: 2px solid #D1D7DC;
+      background-color: #fff;
+      background-repeat: no-repeat;
+      background-position: 2px 3px;
+      background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      transition: all 200ms ease-in;
+    }
+    .inputGroup input:checked ~ label {
+      color: #fff;
+    }
+    .inputGroup input:checked ~ label:before {
+      transform: translate(-50%, -50%) scale3d(56, 56, 1);
+      opacity: 1;
+    }
+    .inputGroup input:checked ~ label:after {
+      background-color: #54E0C7;
+      border-color: #54E0C7;
+    }
+    .inputGroup input {
+      width: 32px;
+      height: 32px;
+      order: 1;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      visibility: hidden;
+    }
 
-.inputGroup input:checked ~ label:before {
-  transform: translate(-50%, -50%) scale3d(56, 56, 1);
-  opacity: 1;
-}
-.inputGroup input:checked ~ label:after {
-  background-color: #54E0C7;
-  border-color: #54E0C7;
-}
-.inputGroup input {
-  width: 32px;
-  height: 32px;
-  order: 1;
-  z-index: 2;
-  position: absolute;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  visibility: hidden;
-}
-
-.block {
+    .block {
         float: left;
         padding: 60px 0;
         position: relative;
         width: 100%;
         z-index: 1;
     }
-#new_resume,#use_existing
-{display:none;}
-.btn-colour
-{
-    background: #fff;
-    border: 1px solid white;
-    box-shadow: 1px 1px 8px 1px;
-}
-.btn-col
-{background:#4aa1e3}
-.btn-shape
-{
-    line-height: 15px;
-    height: 38px;
-    border-radius: 19px;
-    border: 1px;
-}
-    #logo_img
-    {
-    width: 124px;
-    height: 124px; 
+    #new_resume,#use_existing{
+        display:none;
+    }
+    #logo_img{
+        width: 124px;
+        height: 124px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -240,86 +353,18 @@ $this->registerCss("
     section.overlape {
         z-index: 2;
     }
-    /* Feature, categories css starts */
-    .cat-sec {
-        float: left;
+    .dark-color::before {
+        position: absolute;
+        left: 0;
+        top: 0;
         width: 100%;
+        height: 100%;
+        content: '';
+//        z-index: -1;
+        background: #00000078;
+        opacity: 0.8;
     }
-    .p-category {
-        float: left;
-        width: 100%;
-        z-index: 1;
-        position: relative;
-    }
-    .p-category, .p-category *{
-        -webkit-transition: all 0.4s ease 0s;
-        -moz-transition: all 0.4s ease 0s;
-        -ms-transition: all 0.4s ease 0s;
-        -o-transition: all 0.4s ease 0s;
-        transition: all 0.4s ease 0s;
-    }
-    .p-category > .p-category-view {
-        float: left;
-        width: 100%;
-        text-align: center;
-        padding-bottom: 30px;
-        border-bottom: 1px solid #e8ecec;
-        border-right: 1px solid #e8ecec;
-    }
-    .p-category > .p-category-view img {
-        font-size: 70px;
-        margin-top: 30px;
-        line-height: initial !important;
-    }
-    .p-category > .p-category-view span {
-        float: left;
-        width: 100%;
-        font-family: Open Sans;
-        font-size: 15px;
-        color: #202020;
-        margin-top: 18px;
-    }
-    .p-category:hover {
-        background: #ffffff;
-        -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-        -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-        -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-        -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-        box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        -ms-border-radius: 8px;
-        -o-border-radius: 8px;
-        border-radius: 8px;
-        width: 104%;
-        margin-left: -2%;
-        height: 102%;
-        z-index: 10;
-    }
-    .p-category:hover .p-category-view {
-        border-color: #ffffff;
-    }
-    .p-category:hover i{
-        color: #f07d1d;
-    }
-    .row.no-gape > div {
-        padding: 0;
-    }
-    .cat-sec .row > div:last-child .p-category-view {
-        border-right-color: #ffffff;
-    }
-    .p-category img{
-        width: 80px;
-        height: 50px;
-    }
-    .p-category .p-category-view img, .p-category .checkbox-text span i {
-        color: #4aa1e3;
-        font-size: 70px;
-        margin-top: 30px;
-        line-height: initial !important;
-    }
-    /* Feature, categories css ends */
-    .inner-header::before {
+    .dark-color::after {
         position: absolute;
         left: 0;
         top: 0;
@@ -327,24 +372,14 @@ $this->registerCss("
         height: 100%;
         content: '';
         z-index: -1;
-        background: #00000078;
-        opacity: 0.8;
-    }
-    .inner-header::after {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        content: '';
-        z-index: 0;
         opacity: 0.14;
     }
     .inner-header {
         float: left;
         width: 100%;
         position: relative;
-        padding-top: 240px; padding-bottom: 15px;
+        padding-top: 185px;
+        padding-bottom: 15px;
         z-index: 0;
     }
     .inner-header.wform .job-search-sec {
@@ -359,15 +394,14 @@ $this->registerCss("
         transform: translateX(-50%);
     }
     .inner-header > h3 {
-        float: left;
-        width: 100%;
+        max-width: 500px;
         position: relative;
         z-index: 1;
         color: #ffffff;
         font-weight: bold;
         font-size: 30px;
         text-align: center;
-        margin: 0;
+        margin: auto;
         margin-bottom: 50px;
     }
     .inner-header .container {
@@ -397,6 +431,8 @@ $this->registerCss("
         -ms-border-radius: 20px;
         -o-border-radius: 20px;
         border-radius: 20px;
+        background: #00a0e3;
+        border-color: #00a0e3;
     }
     .job-statistic p {
         float: none;
@@ -425,8 +461,8 @@ $this->registerCss("
     .job-single-head2 {
         float: left;
         width: 100%;
-        padding-bottom: 30px;
-        border-bottom: 1px solid #e8ecec;
+//        padding-bottom: 30px;
+//        border-bottom: 1px solid #e8ecec;
     }
     .job-single-head2 > span {
         float: left;
@@ -498,17 +534,17 @@ $this->registerCss("
     .job-details {
         float: left;
         width: 100%;
-        padding-top: 20px;
+//        padding-top: 20px;
     }
     .job-details h3 {
         float: left;
         width: 100%;
         font-family: Open Sans;
         font-size: 15px;
+        color: #202020;
         margin-bottom: 15px;
         margin-top: 10px;
-        color: #1e1e1e;
-    font-weight: 600;
+        font-weight: 600;
     }
     .job-details p,
     .job-details li {
@@ -540,7 +576,7 @@ $this->registerCss("
     .job-details > ul li::before {
         position: absolute;
         left: 0;
-        top: 13px;
+        top: 10px;
         width: 10px;
         height: 1px;
         background: #888888;
@@ -555,6 +591,8 @@ $this->registerCss("
         width: 100%;
         font-family: Open Sans;
         font-size: 15px;
+        color: #202020;
+        font-weight: 600;
     }
     .job-overview ul {
         float: left;
@@ -591,13 +629,13 @@ $this->registerCss("
         font-family: Open Sans;
         margin: 0;
         color: #1e1e1e;
-    font-weight: 600;
+        font-weight: 600;
     }
     .job-overview ul > li span {
         float: left;
         width: 100%;
         font-size: 13px;
-        color: #888888;
+        color: #545454;
         margin-top: 4px;
     }
     .job-single-sec .job-overview ul {
@@ -646,7 +684,6 @@ $this->registerCss("
         float: left;
         width: 100%;
         padding-top: 20px;
-        padding-bottom: 20px;
         border-top: 1px solid #e8ecec;
         border-bottom: 1px solid #e8ecec;
     }
@@ -816,7 +853,8 @@ $this->registerCss("
         float: left;
         width: 100%;
         font-family: Open Sans;
-        font-size: 15px;
+        font-size: 17px;
+        font-weight: 600;
         color: #202020;
         margin: 0;
         margin-bottom: 0px;
@@ -862,7 +900,7 @@ $this->registerCss("
         color: #ef7706;
         width: 200px;
         height: auto;
-        padding: 15px 30px;
+        padding: 15px 15px;
         text-align: center;
         margin:auto;
     }
@@ -906,14 +944,13 @@ $this->registerCss("
         margin-right: 0px;
         margin-right: 20px;
     }
-.radio_questions {
-  padding: 0 16px;
-  max-width: 100%;
-
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 36px;
-}
+    .radio_questions {
+      padding: 0 16px;
+      max-width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
     .parallax{
         height:100%;
         width:100%;
@@ -956,21 +993,210 @@ $this->registerCss("
         margin-bottom:5px;
         position: relative;
     }
-    .shortlist_job,.shortlist_job:hover
-    {
-     color:#fff;
+    .shortlist_job,.shortlist_job:hover{
+        color:#fff;
     }
     .shortlist_job:focus{
         color:#fff;
     }
-    .col_pink
-    {
-    background: #ef7706;
-    border-color: #ef7706;
-    color: #ffffff;
+    .col_pink{
+        background: #ef7706 !important;
+        border-color: #ef7706 !important;
+        color: #ffffff;
     }
     .hover-change:hover {
         background: #ef7706;
         border-color: #ef7706;
         color: #ffffff;
-    }");
+    }
+    .pf-field {
+        float: left;
+        width: 100%;
+        position: relative;
+    }
+    .pf-field > input {
+        height: 56px;
+        float: left;
+        width: 100%;
+        border: 2px solid #e8ecec;
+        margin-bottom: 20px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        padding: 14px 45px 14px 15px;
+        background: #ffffff !important;
+        font-family: Open Sans;
+        font-size: 13px;
+        font-weight: 400;
+        color: #101010;
+        line-height: 24px;
+        cursor: pointer;
+    }
+    .pf-field > i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        font-size: 20px;
+        color: #848484;
+        line-height: 56px;
+        cursor: pointer;
+    }
+    @media only screen and (max-width: 575px) {
+        .job-overview ul li{
+             width: 50% !important;
+        }
+    }
+    .has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
+        color:inherit;
+    }
+    /* Feature, categories css starts */
+    .cat-sec {
+        float: left;
+        width: 100%;
+    }
+    .p-category {
+        float: left;
+        width: 100%;
+        z-index: 1;
+        position: relative;
+    }
+    .p-category, .p-category *{
+        -webkit-transition: all 0.4s ease 0s;
+        -moz-transition: all 0.4s ease 0s;
+        -ms-transition: all 0.4s ease 0s;
+        -o-transition: all 0.4s ease 0s;
+        transition: all 0.4s ease 0s;
+    }
+    .p-category > .p-category-view {
+        float: left;
+        width: 100%;
+        text-align: center;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e8ecec;
+        border-right: 1px solid #e8ecec;
+    }
+    .p-category > .p-category-view img {
+        font-size: 70px;
+        margin-top: 30px;
+        line-height: initial !important;
+    }
+    .p-category > .p-category-view span {
+        float: left;
+        width: 100%;
+        font-family: Open Sans;
+        font-size: 15px;
+        color: #202020;
+        margin-top: 18px;
+    }
+    .p-category:hover {
+        background: #ffffff;
+        -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border-radius: 8px;
+        width: 104%;
+        margin-left: -2%;
+        height: 102%;
+        z-index: 10;
+    }
+    .p-category:hover .p-category-view {
+        border-color: #ffffff;
+    }
+    .p-category:hover i{
+        color: #f07d1d;
+    }
+    .row.no-gape > div {
+        padding: 0;
+    }
+    .cat-sec .row > div:last-child .p-category-view {
+        border-right-color: #ffffff;
+    }
+    .p-category img{
+        width: 80px;
+        height: 50px;
+    }
+    .p-category .p-category-view img, .p-category .checkbox-text span i {
+        color: #4aa1e3;
+        font-size: 70px;
+        margin-top: 30px;
+        line-height: initial !important;
+    }
+    /* Feature, categories css ends */
+    /* Profile icons css start */
+    .profile_icons{
+        position: absolute;
+        width: 320px;
+        left: 0px;
+        bottom: -3px;
+    }
+    .background-container{
+        max-width:1200px;
+        padding-left: 15px;
+        padding-right: 15px;
+        margin:auto;
+    }
+    @media screen and (max-width: 1150px) and (min-width: 1025px) {
+          .profile_icons{
+               width: 290px;
+          }
+          .inner-header > h3{
+               width: 400px;
+          }
+          .inner-header {
+               padding-top: 160px;
+          }
+    }
+    @media screen and (max-width: 1024px) and (min-width: 890px) {
+          .profile_icons{
+               width: 260px;
+          }
+          .inner-header {
+               padding-top: 150px;
+          }
+          .inner-header > h3{
+               width: 370px;
+          }
+    }
+    @media screen and (max-width: 889px) and (min-width: 650px) {
+          .profile_icons{
+               width: 210px;
+          }
+          .inner-header > h3 {
+               width: 290px;
+               font-size: 22px;
+               margin-bottom: 20px;
+          }
+          .inner-header {
+               padding-top: 100px;
+          }
+    }
+    @media screen and (max-width: 649px) and (min-width: 0px) {
+          .profile_icons{
+               width: 150px;
+               position: relative;
+               margin: auto;
+               left: 0;
+               bottom: 0px;
+               margin-bottom: 30px;
+          }
+          .inner-header {
+               padding-top: 80px;
+          }
+          .inner-header > h3 {
+               font-size: 20px;
+               margin-bottom: 20px;
+          }
+          .job-statistic{
+               display:none;
+          }
+    }
+    /* Profile icons css ends */
+    ");
