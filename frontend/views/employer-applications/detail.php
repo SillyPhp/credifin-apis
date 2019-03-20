@@ -1293,7 +1293,7 @@ $script = <<< JS
                return false;
             }
          $('#modal').modal('show'); 
-         })
+         });
    
    $('input[name="JobApplied[check]"]').on('change',function()
        {
