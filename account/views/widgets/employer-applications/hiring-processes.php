@@ -18,7 +18,7 @@ use yii\helpers\URL;
             </div>
             <div class="col-md-6  ">
                 <div class="pull-right c-btn-top">
-                    <a onclick="window.open('/account/interview-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
+                    <a onclick="window.open('/account/hiring-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
                         <?= Html::button('Create Application Process', ['class' => 'btn btn-md btn-primary custom-buttons2 custom_color-set2', 'id' => 'add2']); ?>
                     </a>
                 </div>
