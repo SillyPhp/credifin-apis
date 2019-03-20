@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 
-echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
+echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 ?>
 
 <section class="card card-transparent">
@@ -21,21 +21,22 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
                             }
                             $name = Yii::$app->user->identity->organization->name;
                             $color = Yii::$app->user->identity->organization->initials_color;
-                            $link = Url::to('/company/' . Yii::$app->user->identity->organization->slug);
+                            $link = Url::to('/' . Yii::$app->user->identity->organization->slug);
                         } else {
                             if (Yii::$app->user->identity->image) {
                                 $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                             }
                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                             $color = Yii::$app->user->identity->initials_color;
-                            $link = Url::to('/user-profile/edit');
+                            $link = Url::to('/' . Yii::$app->user->identity->username . '/edit');
                         }
 
                         if (empty($image)) :
                             ?>
-                            <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100" height="100" font="40px"></canvas>
+                            <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100"
+                                    height="100" font="40px"></canvas>
                         <?php else: ?>
-                            <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>" />
+                            <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/>
                         <?php endif; ?>
                     </div>
                     <div class="profile-info">
@@ -50,14 +51,16 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
                 <div class="card card-accordion card-accordion-first">
                     <div class="card-header border-bottom-0">
                         <h4 class="card-title">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse1One">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapse1One">
                                 <i class="fa fa-check mr-1"></i> Tasks
                             </a>
                         </h4>
                     </div>
                     <div id="collapse1One" class="accordion-body collapse show">
                         <div class="card-body padding-0" style="text-align:center">
-                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>" class="form-horizontal form-bordered">
+                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>"
+                                  class="form-horizontal form-bordered">
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="input-group mb-3">
@@ -385,7 +388,6 @@ $script = <<< JS
     
     $(document).on('click', '.todo-check', function () {
         var id = $(this).attr('id');
-        //        console.log(id);
        if ($(this).is(':checked')){
             $.ajax({
             url: "/account/tasks/task-complete",
@@ -539,9 +541,6 @@ $script = <<< JS
             data:{dat:'taskbar_card'},
             });
     }
-    
-    
-
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -550,21 +549,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\b
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-
-
-
 ?>
-
-
-
 
 <script type="text/template" id="todo-template">
     {{#.}}
     <li>
         <div class="checkbox-custom checkbox-default text-left">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}} checked {{/is_completed}} />
+            <input type="checkbox" name="task" id="{{task_id}}{{id}}"
+                   class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
+                   {{#is_completed}} checked {{/is_completed}} />
             <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
         </div>
         <div class="todo-actions">

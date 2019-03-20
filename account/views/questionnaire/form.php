@@ -1,8 +1,7 @@
 <?php
-
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-
+Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_count = "'.count($fields['questionnaireFields']).'";',  \yii\web\View::POS_HEAD);
 $form = ActiveForm::begin([
     'id' => 'form-builder',
     'fieldConfig' => [
@@ -10,7 +9,6 @@ $form = ActiveForm::begin([
     ]
 ]);
 ?>
-
 <?=
 $form->field($model, 'formbuilderdata', [
     'template' => '{input}',
@@ -28,19 +26,26 @@ $form->field($model, 'formbuilderdata', [
                 <div class="portlet-body questionnair-details">
                     <div class="row">
                         <div class="col-md-6 questionnaire-name">
-                            <?= $form->field($model, 'formname')->textInput(['class' => 'form-control'])->label('Enter name of your questionnaire') ?>
+                            <?php
+                            if ($type=='clone'):
+                            $model->formusedcategory = json_decode($fields['questionnaire_for']);
+                            echo $form->field($model, 'formname')->textInput(['class' => 'form-control', 'value' => $fields['questionnaire_name']])->label('Enter name of your questionnaire');
+                            else:
+                            echo $form->field($model, 'formname')->textInput(['class' => 'form-control'])->label('Enter name of your questionnaire');
+                            endif;
+                            ?>
                         </div>
                         <div class="col-md-6 use-questionnaire">
                             <div class="md-checkbox-inline">
                                 <label>Where would you like to use this questionnaire ?</label>
-                                <?=
-                                $form->field($model, 'formusedcategory')->checkBoxList([
+                                <?php
+                                echo $form->field($model, 'formusedcategory')->checkBoxList([
                                     '1' => 'Jobs',
                                     '2' => 'Internships',
                                 ], [
                                     'item' => function($index, $label, $name, $checked, $value) {
                                         $return = '<div class="md-checkbox">';
-                                        $return .= '<input type="checkbox" id="' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . $checked . ' >';
+                                        $return .= '<input type="checkbox" id="' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . (($checked) ? 'checked' : '') . '>';
                                         $return .= '<label for="' . $value . $index . '">';
                                         $return .= '<span></span>';
                                         $return .= '<span class="check"></span>';
@@ -61,7 +66,6 @@ $form->field($model, 'formbuilderdata', [
     <div class="form_builder">
         <div class="row form-drag-area">
             <div class="col-sm-3 col-md-3">
-
                 <div class="portlet light portlet-fit" id="sticky">
                     <div class="portlet-body field-selections">
                         <nav class="questionnaire-feilds">
@@ -89,40 +93,40 @@ $form->field($model, 'formbuilderdata', [
                                 </li>
 
                                 <li class="form_bal_time">
-                                    <a href="javascript:;" value="8"><i class="fa fa-plus-circle"></i> Time</a>
+                                    <a href="javascript:;" class="clickable" value="8"><i class="fa fa-plus-circle"></i> Time</a>
                                 </li>
                                 <li>
                                     <div class="q-btns">  <?= Html::submitButton('Submit', ['class' => 'btn blue btn-circle submit btn-block']); ?></div>
                                 </li>
                                 <li>
                                     <div class="q-btns"><button type="button" id="preview" class="btn blue btn-circle btn-block">Preview</button></div>
-
                                 </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
             </div>
-            <div class="col-md-9 col-sm-9 bal_builder">
-                <div class="portlet light portlet-fit">
-                    <div class="portlet-body zero-padding">
-                        <div id="error_placement"></div>
-                        <div class="box_input">
-                            <div id="wait"><img src='http://bestanimations.com/Science/Gears/loadinggears/loading-gear-3-3.gif' width="100" height="100" /></div>
-                            <div class="default-text" id="dragdrop">Drag and Drop the form fields here to create your questionnaire.</div>
-                            <div class="form_builder_area"></div>
-                        </div>
-                    </div>
 
-                </div>
-            </div>
+            <?php
+            if ($type=='clone'):
+            echo $this->render('/widgets/questionnaire/question_view_bar', [
+                'form' => $form,
+                'model' => $model,
+                'fields' => $fields,
+            ]);
+            else:
+                echo $this->render('/widgets/questionnaire/question_view_bar', [
+                    'form' => $form,
+                    'model' => $model,
+                ]);
+            endif;
+            ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12" id="sticky-end"></div>
     </div>
 <?php ActiveForm::end(); ?>
-
 <?php
 $this->registerCss("
 .questionnaire-name{
@@ -280,10 +284,11 @@ padding:0px 3px;
 border: 1px solid #e73d49;
 box-shadow: 0px 0px 5px 0px #e73d49 !important;
 }
-
+.form_builder_field.ui-sortable-handle{height:auto !important;}
 ");
 
 $script = <<<JS
+ var count_elem = 0;
 $(document).on('click','.clickable',function(e)
 {
     var get_class_value = $(this).attr('value');
@@ -318,7 +323,13 @@ $(document).on('click','.clickable',function(e)
     getPreview();
     checkDiv();
 })
-
+if (doc_type=='clone')
+    {
+        count_elem = elements_total_count;
+        elem_chk();
+        getPreview();
+        checkDiv();
+    }
    function checkDiv() {
         var dtext = document.querySelector(".form_builder_area");
         if (dtext.innerHTML.length == 0) {
@@ -330,9 +341,8 @@ $(document).on('click','.clickable',function(e)
    }
   
    
-   var count_elem = 0;
-
-        function elem_chk()
+  
+  function elem_chk()
         {
             if(count_elem == 0)
             {  
@@ -345,11 +355,11 @@ $(document).on('click','.clickable',function(e)
             }
          }
     //Form Builder  JS Start Here//
-     $(".form_bal_textfield").draggable({
+    $(".form_bal_textfield").draggable({
         helper: function () {
-            return getTextFieldHTML(); 
+            return getTextFieldHTML();
         },
-        connectToSortable: ".form_builder_area" 
+        connectToSortable: ".form_builder_area"
     });
         
     $(".form_bal_textarea").draggable({
@@ -641,9 +651,9 @@ $(document).on('click','.clickable',function(e)
     });
     $(document).on('click', '.remove_bal_field', function (e) {
         e.preventDefault();
-         count_elem--;
-         console.log(count_elem);
-            elem_chk();
+        count_elem--;
+        elem_chk();
+        console.log(count_elem);
         var field = $(this).attr('data-field');
         $(this).closest('.li_' + field).hide('400', function () {
             $(this).remove();
@@ -987,14 +997,14 @@ $(document).on('click','.clickable',function(e)
         messages: { 
                     'QuestionnaireForm[formbuilderdata]': { 
                         required:'<div id = "color_red">Please Select Form elements And Drag in Box</div>',
-                    }, 
+                    },
         },
         
         errorPlacement: function (error, element) { 
                     if (element.attr("name") == "QuestionnaireForm[formbuilderdata]") { 
                         error.insertAfter("#error_placement");
                     } 
-                    }  
+                    } 
    }) ;   
     
     $(document).on('submit', '#form-builder', function(event) {
@@ -1029,7 +1039,7 @@ $(document).on('click','.clickable',function(e)
             $("#wait").css("display", "none");
             if(data == true)
            {
-            if(window.opener)
+            if(window.opener) 
             {
              window.opener.ChildFunction();
              window.open('','_self').close();
@@ -1042,14 +1052,10 @@ $(document).on('click','.clickable',function(e)
         else{
              alert('Something went wrong..!!!');
             }
-
          }
          });
         }
     });
-        
-    
-       
 JS;
 
 $this->registerJs($script);

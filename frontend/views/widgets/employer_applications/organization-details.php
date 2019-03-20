@@ -4,7 +4,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
 ?>
 <div class="job-single-head style2">
     <div class="job-thumb">
-        <a href="/company/<?= $slug; ?>">
+        <a href="/<?= $slug; ?>">
             <?php
             if (!empty($org_logo)) {
                 ?>
@@ -20,7 +20,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         </a>
     </div>
     <div class="job-head-info">
-        <a href="/company/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
+        <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
         <?php if ($website): ?>
             <p><i class="fa fa-unlink"></i><?= $website; ?></p>
         <?php endif; ?>

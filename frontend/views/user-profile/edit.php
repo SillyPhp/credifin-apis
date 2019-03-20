@@ -14,10 +14,10 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
     <div class="col-md-8 col-md-offset-2">
         <div class="padding-left set-overlay">
             <?php Pjax::begin(['id'=>'profile_icon_pjax']) ?>
-            <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/user-profile/update-profile-picture']) ?>
+            <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/users/update-profile-picture']) ?>
             <div class="profile-title" id="mp">
                 <h3>My Profile</h3>
-                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/user/<?= Yii::$app->user->identity->username ?>" target="_blank">View Profile</a>
+                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/<?= Yii::$app->user->identity->username; ?>" target="_blank">View Profile</a>
                 <div class="upload-img-bar">
                   <?php  if (!empty(Yii::$app->user->identity->image)) {
                     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
@@ -48,7 +48,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             </div>
             <?php ActiveForm::end(); ?>
             <?php Pjax::end(); ?>
-            <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/user-profile/update-basic-detail']) ?>
+            <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/users/update-basic-detail']) ?>
             <div class="profile-form-edit">
                     <div class="row">
                       <?php
@@ -192,7 +192,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             <?php ActiveForm::end(); ?>
             <div class="social-edit" id="sn">
                 <h3>Social Edit</h3>
-                <?php ActiveForm::begin(['id'=>'socialDetailForm','action'=>'/user-profile/update-social-detail']) ?>
+                <?php ActiveForm::begin(['id'=>'socialDetailForm','action'=>'/users/update-social-detail']) ?>
                     <div class="row">
                         <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Facebook Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Twitter Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>

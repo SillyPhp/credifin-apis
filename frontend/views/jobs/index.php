@@ -112,7 +112,7 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
 //echo $this->render('/widgets/blog-slider', [
 //    'posts' => $posts,
 //]);

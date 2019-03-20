@@ -203,7 +203,7 @@ if ($type == 'card') {
                     </div>
                     <div class="card-flap flap2">
                         <div class="card-actions">
-                            <a href="/company/{{organization_link}}" class="toogle-btn">View Profile</a>
+                            <a href="/{{organization_link}}" class="toogle-btn">View Profile</a>
                         </div>
                     </div>
                 </div>

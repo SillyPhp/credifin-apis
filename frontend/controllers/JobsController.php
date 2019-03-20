@@ -138,7 +138,7 @@ class JobsController extends Controller
             return 'Not Found';
         }
         $type = 'Job';
-        $object = new \account\models\jobs\JobApplicationForm();
+        $object = new \account\models\applications\ApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
@@ -168,7 +168,7 @@ class JobsController extends Controller
                 ->one();
         }
         $model = new JobApplied();
-        return $this->render('/employer-application/detail', [
+        return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data' => $object->getCloneData($application_details->application_enc_id),
             'org' => $org_details,
@@ -181,21 +181,21 @@ class JobsController extends Controller
         ]);
     }
 
-    public function actionJobPreview()
+    public function actionJobPreview($eipdk)
     {
-        if ($_GET['data']) {
-            $var = $_GET['data'];
+        if ($eipdk) {
+            $type = 'Job';
+            $var = $eipdk;
             $session = Yii::$app->session;
             $object = $session->get($var);
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $indstry = Industries::find()
-                ->where(['industry_enc_id' => $object->pref_inds])
+            $industry = Industries::find()
+                ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
                 ->asArray()
                 ->one();
-
             $primary_cat = Categories::find()
                 ->select(['name'])
                 ->where(['category_enc_id' => $object->primaryfield])
@@ -212,12 +212,14 @@ class JobsController extends Controller
             } else {
                 $benefits = null;
             }
+            if (!empty($object->interviewcity))
 
-            return $this->render('job-preview', [
+            return $this->render('/employer-applications/preview', [
                 'object' => $object,
-                'indst' => $indstry,
+                'industry' => $industry,
                 'primary_cat' => $primary_cat,
-                'benefits' => $benefits
+                'benefits' => $benefits,
+                'type' => $type
             ]);
         } else {
             return false;
@@ -272,7 +274,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
 
                     if ($update) {
@@ -284,7 +286,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
 
                     if ($update) {

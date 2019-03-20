@@ -35,6 +35,7 @@ class QuestionnaireController extends Controller
     public function actionCreate()
     {
         $model = new QuestionnaireForm();
+        $type = 'create';
         if ($model->load(Yii::$app->request->post())) {
             if ($model->add()) {
                 return true;
@@ -45,6 +46,7 @@ class QuestionnaireController extends Controller
 
         return $this->render('form', [
             'model' => $model,
+            'type' => $type,
         ]);
     }
 
@@ -52,6 +54,7 @@ class QuestionnaireController extends Controller
     {
         $model = new QuestionnaireForm();
         $fields = $model->getCloneData($qidk);
+        $type = 'clone';
         if (empty($fields)) {
             return 'Questionnaire not found!!';
         }
@@ -62,9 +65,10 @@ class QuestionnaireController extends Controller
                 return false;
             }
         } else {
-            return $this->render('questionnaire-clone', [
+            return $this->render('form', [
                 'model' => $model,
                 'fields' => $fields,
+                'type' => $type,
             ]);
         }
     }
@@ -111,7 +115,7 @@ class QuestionnaireController extends Controller
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(OrganizationQuestionnaire::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['questionnaire_enc_id' => $id])
+                ->update(OrganizationQuestionnaire::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['questionnaire_enc_id' => $id])
                 ->execute();
             if ($update) {
                 return true;

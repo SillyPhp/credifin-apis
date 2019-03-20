@@ -16,13 +16,23 @@ if (!empty($total_processes)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
+                            <div class="rt-bttns">
+                                <a class="clone-bttn set-right-align two" href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
+                                    <i class="fa fa-clone"></i>
+                                </a>
+                            </div>
+<!--                            <div class="rt-bttns">-->
+<!--                                <a class="edit-bttn set-right-align two" href="--><?//= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'edit'); ?><!--" target="_blank">-->
+<!--                                    <i class="fa fa-edit"></i>-->
+<!--                                </a>-->
+<!--                            </div>-->
                             <div class="lt-bttn">
                                 <button type="button" class="e-bttn set-right-align one delete_interview_process"
                                         value="<?= $processes[$next]['id']; ?>">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <a href="<?= Url::toRoute('interview-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
+                            <a href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
                                 <span><?= $processes[$next]['process_name']; ?></span>
                             </a>
@@ -47,7 +57,7 @@ $(document).on('click','.delete_interview_process',function(e){
     if (window.confirm("Do you really want to Delete the current Process?")) {
         main_card.remove();
         var data = $(this).attr('value');
-        var url = "/account/interview-processes/delete";
+        var url = "/account/hiring-processes/delete";
         $.ajax({
             url:url,
             data:{data:data},

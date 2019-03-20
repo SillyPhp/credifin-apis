@@ -1,8 +1,5 @@
 <?php
-
 namespace common\models;
-
-
 /**
  * This is the model class for table "{{%assigned_categories}}".
  *
@@ -35,7 +32,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return '{{%assigned_categories}}';
     }
-
     /**
      * @inheritdoc
      */
@@ -54,7 +50,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
             [['parent_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['parent_enc_id' => 'category_enc_id']],
         ];
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -62,7 +57,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ApplicationTemplates::className(), ['title' => 'assigned_category_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -70,7 +64,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -78,7 +71,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -86,7 +78,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'category_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -94,7 +85,6 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'parent_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */

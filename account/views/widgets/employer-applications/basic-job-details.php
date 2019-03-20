@@ -5,7 +5,7 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Category', 'disabled' => true])->label(false); ?>
+            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false); ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -15,7 +15,7 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'jobtitle')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'jobtitle', 'disabled' => true])->label(false) ?>
+            <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title', 'disabled' => true])->label(false) ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -29,7 +29,7 @@ use kartik\widgets\DatePicker;
         </div>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'jobtype')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+        <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
     </div>
 </div>
 <div class="row">
@@ -37,7 +37,7 @@ use kartik\widgets\DatePicker;
         <div id="radio_rules"></div>
         <label>Salary Type</label>
         <div class="md-radio-inline">
-            <?= $form->field($model, 'salary_type')->inline()->radioList([
+            <?= $form->field($model, 'wage_type')->inline()->radioList([
                 1 => 'Fixed',
                 2 => 'Negotiable',
             ], [
@@ -56,17 +56,17 @@ use kartik\widgets\DatePicker;
     </div>
     <div id="fixed_stip">
         <div class="col-md-3">
-            <?= $form->field($model, 'salaryinhand')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
+            <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15'])->label('Salary'); ?>
         </div>
     </div>
     <div id="min_max">
         <div class="col-md-3">
             <div class="row">
                 <div class="col-md-6">
-                    <?= $form->field($model, 'min_salary')->label('Min(Opt)') ?>
+                    <?= $form->field($model, 'min_wage')->label('Min(Opt)') ?>
                 </div>
                 <div class="col-md-6">
-                    <?= $form->field($model, 'max_salary')->label('Max(Opt)') ?>
+                    <?= $form->field($model, 'max_wage')->label('Max(Opt)') ?>
                 </div>
             </div>
             <div class="salary_errors"></div>
@@ -74,7 +74,7 @@ use kartik\widgets\DatePicker;
     </div>
     <div class="col-md-3">
         <?=
-        $form->field($model, 'ctctype')->dropDownList([
+        $form->field($model, 'wage_duration')->dropDownList([
             'Monthly' => 'Monthly',
             'weekly' => 'Weekly',
             'Hourly' => 'Hourly',
@@ -146,7 +146,7 @@ use kartik\widgets\DatePicker;
         ?>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'pref_inds')->dropDownList($industry, ['prompt' => 'Preferred industry'])->label(false); ?>
+        <?= $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry'])->label(false); ?>
     </div>
 </div>
 <div class="row">
@@ -170,11 +170,9 @@ use kartik\widgets\DatePicker;
                     }
                 ])->label(false);
                 ?>
-
             </div>
             <label>Gender Preference</label>
         </div>
-
     </div>
     <div class="col-md-3">
         <?= $form->field($model, 'min_exp')->dropDownList([
@@ -219,3 +217,121 @@ use kartik\widgets\DatePicker;
         ?>
     </div>
 </div>
+<?php
+$script = <<< JS
+ $('#addctc').on('click',function(){
+    $('#addct').hide();
+    $('#ctc-main').show();     
+});
+        
+$('.close-ctc').on('click',function(){
+    $('#ctc-main').hide();
+    $('#addct').show();
+}); 
+$('input[name= "wage_type"]').on('change',function(){
+   var sl_type = $(this).attr("data-title");
+   if(sl_type=='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        $('#min_wage').val('');
+        $('#max_stip').val('');
+        $('#fixed_wage').val('');
+        }
+     
+     else if(sl_type=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        $('#min_wage').val('');
+        $('#max_stip').val('');
+        $('#fixed_wage').val('');
+        }
+   })    
+   $(document).on('click','#weekdays input',function()
+    {
+     if ($('#weekday-5').is(':checked'))
+        {
+         $('.field-weekoptsat').css('display','block');
+         $('.sat').css('display','block');
+        
+        }
+     else if ($('#weekday-5').is(':unchecked'))
+        {
+          $('.field-weekoptsat').css('display','none');
+          $('.sat').css('display','none');
+        }
+    if($('#weekday-6').is(':checked'))
+        {
+          $('.field-weekoptsund').css('display','block');
+          $('.sun').css('display','block');
+        }
+        
+     else if($('#weekday-6').is(':unchecked'))
+        { 
+          $('.field-weekoptsund').css('display','none');
+          $('.sun').css('display','none');
+        }
+   })  
+ var designations = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/account/categories-list/designations?q=%QUERY',
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
+});
+$('#fixed_wage, #ctc').mask("#,#0,#00", {reverse: true});
+$('#max_wage, #min_wage').mask("#,#0,#00", {reverse: true});
+$('#designations').typeahead(null, {
+  name: 'designations_test',
+  display: 'designation',
+   limit: 20,      
+  source: designations
+}).on('typeahead:asyncrequest', function() {
+    $('.desig_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.desig_wrapper .Typeahead-spinner').hide();
+  });
+var prime_id = null;
+var categories = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url:'/account/categories-list/categories-data',
+    prepare: function (query, settings) {
+             settings.url += '?q=' + $('#title').val()+'&id='+prime_id;
+             return settings;
+        },  
+    'cache': false,  
+  }
+});
+
+$('#title').typeahead(null, {
+  name: 'categories',
+  display: 'value',
+  source: categories,
+  minLength: 1,
+  highlight: true, 
+   limit: 20,
+}).on('typeahead:asyncrequest', function() {
+    $('.cat_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.cat_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
+  {
+      var data =  datum.id; 
+      skils_update(data); 
+      educational_update(data);
+      job_desc_update(data);
+      make_removable_jd();
+      make_removable_edu();
+    });
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>

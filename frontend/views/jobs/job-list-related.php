@@ -992,7 +992,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     <span class="application-card-type">{{type}}</span>
     <div class="col-md-12 application-card-border-bottom">
     <div class="application-card-img">
-    <a href="/company/{{organization_link}}"><img src="{{logo}}"></a>
+    <a href="/{{organization_link}}"><img src="{{logo}}"></a>
     </div>
     <div class="application-card-description">
     <h4 class="application-title">{{title}}</h4>

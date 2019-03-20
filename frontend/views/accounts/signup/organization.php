@@ -8,8 +8,6 @@ use borales\extensions\phoneInput\PhoneInput;
 
 $this->title = Yii::t('frontend', 'Organization Signup');
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
-//$this->params['grid_size'] = 'col-md-8 col-md-push-2';
-//$organization_types = ArrayHelper::map($organization_types, 'organization_type_enc_id', 'organization_type');
 $business_activities = ArrayHelper::map($business_activities, 'business_activity_enc_id', 'business_activity');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
@@ -38,7 +36,6 @@ $business_activities = ArrayHelper::map($business_activities, 'business_activity
 <?php
 $form = ActiveForm::begin([
     'id' => 'organization-form',
-    'enableAjaxValidation' => true,
     'options' => [
         'class' => 'clearfix',
     ],
@@ -68,7 +65,7 @@ $form = ActiveForm::begin([
             <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_email')->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
+            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
         </div>
     </div>
     <div class="row">
@@ -77,7 +74,7 @@ $form = ActiveForm::begin([
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
-            $form->field($model, 'organization_phone')->widget(PhoneInput::className(), [
+            $form->field($model, 'organization_phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
                     'allowExtensions' => false,
                     'onlyCountries' => ['in'],
@@ -89,7 +86,7 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?= $form->field($model, 'username')->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
+            <?= $form->field($model, 'username', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
         </div>
     </div>
     <div class="row">
@@ -115,11 +112,11 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'email')->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
-            $form->field($model, 'phone')->widget(PhoneInput::className(), [
+            $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
                     'allowExtensions' => false,
                     'onlyCountries' => ['in'],
@@ -136,7 +133,8 @@ $form = ActiveForm::begin([
     </div>
     <div class="row  pt-20">
         <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="<?= Url::to('/signup/individual'); ?>"
+            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
+               href="<?= Url::to('/signup/individual'); ?>"
                data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
         </div>
     </div>

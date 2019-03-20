@@ -92,9 +92,9 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/interview-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/interview-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/hiring-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -140,12 +140,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="col-md-12">
                             <div class="mt-actions">
                                 <?php
-                                //                                            print_r($applied_applications);
                                 if (!empty($applied_applications)) { ?>
                                     <?php foreach ($applied_applications['list'] as $candiates) { ?>
                                         <div class="mt-action">
                                             <div class="mt-action-img" style="width: auto">
-                                                <a href="/user/<?= $candiates['username'] ?>">
+                                                <a href="/<?= $candiates['username'] ?>">
                                                     <?php if (!empty($candiates['image_location']) && !empty($candiates['image'])) { ?>
                                                         <?php $user_img = Yii::$app->params->upload_directories->users->image . $candiates['image_location'] . DIRECTORY_SEPARATOR . $candiates['image']; ?>
                                                         <img src="<?= $user_img; ?>" width="50px" height="50" class="img-circle"/>
@@ -187,6 +186,14 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?= $this->render('/widgets/drop-resume/internships_drop_resume', [
+                'data' => $primary_fields
+            ]); ?>
         </div>
     </div>
 <?php
