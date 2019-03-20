@@ -152,7 +152,7 @@ class InternshipsController extends Controller
     public function actionPreview()
     {
         if (Yii::$app->user->identity->organization) {
-            $model = new InternshipApplicationForm();
+            $model = new ApplicationForm();
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $var = Yii::$app->request->post('n');

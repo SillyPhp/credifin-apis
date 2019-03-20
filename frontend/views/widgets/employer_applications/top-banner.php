@@ -1,16 +1,9 @@
 <?php
-
 use yii\helpers\Url;
-
-$cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $org_image_location . DIRECTORY_SEPARATOR . $org_image;
-$cover_image_base_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $cover_location . DIRECTORY_SEPARATOR . $cover;
-if (empty($org_image)) {
-    $cover_image = "@eyAssets/images/backgrounds/default_cover.png";
-}
 ?>
     <section class="overlape dark-color">
         <div data-velocity="-.1"
-             style="background: url('<?= Url::to($cover_image); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
+             style="background: url('<?= Url::to("@eyAssets/images/backgrounds/default_cover.png"); ?>') repeat scroll 50% 422.28px transparent;background-size: 100% 100% !important;background-repeat: no-repeat;"
              class="parallax scrolly-invisible no-parallax"></div>
         <div class="background-container">
             <div class="row m-0">

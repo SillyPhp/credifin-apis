@@ -36,7 +36,7 @@ if ($organization['cover_image']) {
 }
 $no_image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
-
+$industries = Json::encode($industries);
 ?>
     <section>
         <div id="cover_img" class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
@@ -138,6 +138,7 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                                 data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
                                         <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span>
                                     </div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" data-type="select" id="industry_enc_id"></span> <span data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span></div>
                                 </div>
                             </div>
                         </div>
@@ -326,7 +327,7 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                 Inside <?= Html::encode($organization['name']) ?>
                                 <div class="button_location pull-right">
                                     <button type="button" class="i-review-nx modal-load-class"
-                                            value="/companies/add-gallery-images">
+                                            value="/organizations/add-gallery-images">
                                             <span class="i-review-button-tx">
                                                 Add New Images <span class="fa fa-long-arrow-right"></span>
                                             </span>
@@ -380,7 +381,7 @@ $no_cover = 'url("/assets/themes/ey/images/backgrounds/default_cover.png")';
                                 Meet The Team
                                 <div class="button_location pull-right">
                                     <button type="button" class="i-review-nx modal-load-class"
-                                            value="/companies/add-employee">
+                                            value="/organizations/add-employee">
                                         <span class="i-review-button-tx">
                                             Add New Employee <span class="fa fa-long-arrow-right"></span>
                                         </span>
@@ -1556,7 +1557,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 $script = <<<JS
 $('.model-link').editable({
     placement: 'bottom',
-    url: '/companies/update-profile',
+    url: '/organizations/update-profile',
     toggle: 'manual',
     display: function(value) {
         $(this).attr('href',value);
@@ -1564,7 +1565,7 @@ $('.model-link').editable({
 });
 $('.model').editable({
     placement: 'top',
-    url: '/companies/update-profile',
+    url: '/organizations/update-profile',
     toggle: 'manual',
 });
 
@@ -1580,7 +1581,7 @@ $('.edit-box').click(function(e){
 });
 $('#establishment_year').editable({
     placement: 'top',
-    url: '/companies/update-profile',
+    url: '/organizations/update-profile',
     toggle: 'manual',
     // display: true,
     // format: 'YYYY',    
@@ -1716,7 +1717,7 @@ $(document).on('click', '#confirm_remove_logo', function(event) {
     $('#pop-content1_2').fadeOut(1000);
     var type = $(this).val();
     $.ajax({
-        url: "/companies/remove-image",
+        url: "/organizations/remove-image",
         method: "POST",
         data: {type:type},
         beforeSend:function(){
@@ -1748,7 +1749,7 @@ $(document).on('click', '#confirm_remove_benefit', function(event) {
     $(this).parent("#confirmation_benefit").fadeOut(500);
     var type = $(this).val();
     $.ajax({
-        url: "/companies/remove-benefit",
+        url: "/organizations/remove-benefit",
         method: "POST",
         data: {type:type},
         beforeSend:function(){
@@ -1777,7 +1778,7 @@ $(document).on('click', '#confirm_g_image', function(event) {
     $('#remove_g_image_confirm').fadeOut(1000);
     var id = $(this).val();
     $.ajax({
-        url: "/companies/delete-images",
+        url: "/organizations/delete-images",
         method: "POST",
         data: {id:id},
         beforeSend:function(){     
@@ -1807,7 +1808,7 @@ $(document).on('click', '#confirm_t_user', function(event) {
     $('#remove_t_user_confirm').fadeOut(1000);
     var id = $(this).val();
     $.ajax({
-        url: "/companies/delete-employee",
+        url: "/organizations/delete-employee",
         method: "POST",
         data: {id:id},
         beforeSend:function(){     
@@ -1841,7 +1842,7 @@ $(document).on('click', '#confirm_remove_cover', function(event) {
     $('#pop-content2_2').fadeOut(1000);
     var type = $(this).val();
     $.ajax({
-        url: "/companies/remove-image",
+        url: "/organizations/remove-image",
         method: "POST",
         data: {type:type},
         beforeSend:function(){
@@ -1870,7 +1871,7 @@ document.querySelector('.vanilla-result').addEventListener('click', function (ev
         // format:'jpeg',
     }).then(function (data) {
         $.ajax({
-            url: "/companies/update-logo",
+            url: "/organizations/update-logo",
             method: "POST",
             data: {data:data},
             beforeSend:function(){
@@ -1902,7 +1903,7 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
         // format:'jpeg',
     }).then(function (data) {
         $.ajax({
-            url: "/companies/update-cover-image",
+            url: "/organizations/update-cover-image",
             method: "POST",
             data: {data:data},
             beforeSend:function(){
@@ -1925,8 +1926,16 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
 
 JS;
 $this->registerJs("
-getCards('Jobs','.blogbox','/companies/organization-opportunities/?org=" . $organization['name'] . "');
-getCards('Internships','.internships_main','/companies/organization-opportunities/?org=" . $organization['name'] . "');
+$('#industry_enc_id').editable({
+    placement: 'bottom',
+    url: '/organizations/update-profile',
+    pk: 'industry_enc_id',
+    toggle: 'manual',
+    value: '" . $organization['industry_enc_id'] . "',
+    source: " . $industries . "
+});
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);

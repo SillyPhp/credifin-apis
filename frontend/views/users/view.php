@@ -36,17 +36,18 @@ $this->params['header_dark'] = false;
                             </ul>
                             <?php
                         }
-                        if($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
+                        if ($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                             ?>
-                            <a href="/<?= Yii::$app->user->identity->username; ?>/edit" class="edit-profile-btn" target="_blank">Edit Profile</a>
+                            <a href="<?= Url::to('/' . $user['username'] . '/edit'); ?>" class="edit-profile-btn"
+                               target="_blank">Edit Profile</a>
                             <?php
                             if (!empty($userCv)) {
-                                $cv = Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.$userCv['resume_location'].DIRECTORY_SEPARATOR.$userCv['resume'];
+                                $cv = Yii::$app->params->upload_directories->resume->file_path . DIRECTORY_SEPARATOR . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
                                 ?>
-                                <a href="<?=$cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
-                           <?php }
+                                <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
+                            <?php }
                         }
-                            ?>
+                        ?>
                     </div>
                 </div>
             </div>
@@ -78,7 +79,8 @@ $this->params['header_dark'] = false;
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
                             <li>
-                                <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>" target="_blank">
+                                <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>"
+                                   target="_blank">
                                     <i class="fa fa-facebook"></i>
                                 </a>
                             </li>
@@ -92,7 +94,8 @@ $this->params['header_dark'] = false;
                         <?php }
                         if (!empty($user['linkedin'])) { ?>
                             <li>
-                                <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>" target="_blank">
+                                <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
+                                   target="_blank">
                                     <i class="fa fa-linkedin"></i>
                                 </a>
                             </li>
@@ -218,7 +221,7 @@ $this->params['header_dark'] = false;
                                             if ($strToArr[3] != 0) {
                                                 echo $strToArr[3] . ' Month(s)';
                                             }
-                                        } else{
+                                        } else {
                                             echo '--';
                                         }
                                         ?>

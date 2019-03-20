@@ -99,7 +99,6 @@ $this->params['header_dark'] = false;
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-//print_r($data);
 ?>
 <?=
 $this->render('/widgets/employer_applications/top-banner', [
@@ -128,7 +127,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'gender'=>$data['preferred_gender'],
                                 'fixed_wage'=>$data['fixed_wage'],
                                 'placement_locations'=>$data['applicationPlacementLocations'],
-                                ]);
+                            ]);
                         }
                         else if ($type=='Job')
                         {
@@ -191,14 +190,14 @@ $this->render('/widgets/employer_applications/top-banner', [
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                 <?=
                 $this->render('/widgets/employer_applications/organization-details', [
-                      'org_logo'=>$org['logo'],
-                      'org_logo_location'=>$org['logo_location'],
-                      'org_name'=>$org['org_name'],
-                      'slug'=>$org['slug'],
-                      'website'=>$org['website'],
-                      'type'=>$type,
-                      'applied'=>$applied,
-                      'application_slug'=>$application_details["slug"],
+                    'org_logo'=>$org['logo'],
+                    'org_logo_location'=>$org['logo_location'],
+                    'org_name'=>$org['org_name'],
+                    'slug'=>$org['slug'],
+                    'website'=>$org['website'],
+                    'type'=>$type,
+                    'applied'=>$applied,
+                    'application_slug'=>$application_details["slug"],
                 ]);
                 ?>
             </div>
