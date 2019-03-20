@@ -14,10 +14,10 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
     <div class="col-md-8 col-md-offset-2">
         <div class="padding-left set-overlay">
             <?php Pjax::begin(['id'=>'profile_icon_pjax']) ?>
-            <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/user-profile/update-profile-picture']) ?>
+            <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/users/update-profile-picture']) ?>
             <div class="profile-title" id="mp">
                 <h3>My Profile</h3>
-                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/user/<?= Yii::$app->user->identity->username ?>" target="_blank">View Profile</a>
+                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/<?= Yii::$app->user->identity->username; ?>" target="_blank">View Profile</a>
                 <div class="upload-img-bar">
                   <?php  if (!empty(Yii::$app->user->identity->image)) {
                     $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
@@ -48,7 +48,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             </div>
             <?php ActiveForm::end(); ?>
             <?php Pjax::end(); ?>
-            <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/user-profile/update-basic-detail']) ?>
+            <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/users/update-basic-detail']) ?>
             <div class="profile-form-edit">
                     <div class="row">
                       <?php
@@ -181,7 +181,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
                         <?php Pjax::begin(['id'=>'pjax_resume']) ?>
                         <div class="col-md-12">
-                                <?= $form->field($basicDetails, 'resume',['template'=>'{input}{error}','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
+                                <?= $form->field($basicDetails, 'resume',['template'=>'<div class="file-upload-wrapper" data-text="Select your file!">{input}{error}</div>','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
                         </div>
                         <?php Pjax::end(); ?>
                         <div class="col-lg-12">
@@ -192,7 +192,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
             <?php ActiveForm::end(); ?>
             <div class="social-edit" id="sn">
                 <h3>Social Edit</h3>
-                <?php ActiveForm::begin(['id'=>'socialDetailForm','action'=>'/user-profile/update-social-detail']) ?>
+                <?php ActiveForm::begin(['id'=>'socialDetailForm','action'=>'/users/update-social-detail']) ?>
                     <div class="row">
                         <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Facebook Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Twitter Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
@@ -472,6 +472,72 @@ background-color: #fff;
     z-index: 9;
     display:none;
 }
+/* file-chosen css ends */
+.file-upload-wrapper {
+    position: relative;
+    width: 330px;
+    height: 50px;
+}
+.file-upload-wrapper:after {
+content: attr(data-text);
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px 15px;
+    display: block;
+    width: calc(100% - 40px);
+    pointer-events: none;
+    z-index: 20;
+    height: 48px;
+    line-height: 27px;
+    border: 2px solid #e8ecec;
+    color: #999;
+    border-radius: 10px 0px 0px 10px;
+}
+.file-upload-wrapper:before {
+    content: 'Upload Resume';
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    height: 48px;
+    background: #fff;
+    color: #555;
+    z-index: 25;
+    font-size: 13px;
+    border: 2px solid #e8ecec;
+    line-height: 45px;
+    padding: 0 15px;
+    pointer-events: none;
+    border-radius: 0 10px 10px 0;
+}
+.file-upload-wrapper:hover:before {
+  background: #ff7803;
+  color:#fff;
+  border-color: #ff7803;
+}
+.file-upload-wrapper input {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  height: 60px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  width: 100%;
+}
+.file-upload-wrapper p.help-block.help-block-error{
+    position: absolute;
+    margin-top: 55px;
+}
+/* file-chosen css ends */
 ");
 $script = <<< JS
 $(document).on('change','#category_drp',function() {
@@ -762,6 +828,14 @@ function readURL(input) {
 
 $(".tg-fileinput").change(function() {
   readURL(this);
+});
+$(document).on("change", ".file-upload-wrapper input", function(){
+    var file_val = document.getElementById("resume_upload").files[0].name;
+    $(this).parent(".file-upload-wrapper").attr("data-text", file_val );
+    var file_name = $('.file-upload-wrapper').attr('data-text');
+    if(file_name == ""){
+        $('.file-upload-wrapper').attr('data-text', 'No file chosed');
+    }
 });
 var ps = new PerfectScrollbar('.perfect_scroll');
 JS;

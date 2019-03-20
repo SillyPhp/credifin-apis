@@ -1,11 +1,71 @@
 <?php
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+
+if ($data['wage_type'] == 'Fixed') {
+    if ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['fixed_wage'] * 24 * 30;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['fixed_wage'] / 7 * 30;
+    } else{
+        $wage = $data['fixed_wage'];
+    }
+    $amount = $wage;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.m.';
+} elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based'){
+    if ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['min_wage'] * 24 * 30;
+        $wage2 = $data['max_wage'] * 24 * 30;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['min_wage'] / 7 * 30;
+        $wage2 = $data['max_wage'] / 7 * 30;
+    } else{
+        $wage = $data['min_wage'];
+        $wage2 = $data['max_wage'];
+    }
+    $amount1 = $wage;
+    $amount2 = $wage2;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.m.';
+}
+
+$this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a  stipend ' . $amount ;
+
+//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
+$keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
+$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
@@ -176,11 +236,33 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <?php setlocale(LC_MONETARY, 'en_IN'); ?>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Maximum Stipend</h3>
-                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) : 'N/A'); ?></span>
+                                        <?php
+                                        if (!empty($data['max_wage'])){
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage2 = $data['max_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage2 = $data['max_wage'] / 7 * 30;
+                                            } else{
+                                                $wage2 = $data['max_wage'];
+                                            }
+                                        }
+                                        ?>
+                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $wage2)) . 'p.m.' : 'N/A'); ?></span>
                                     </li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Minimum stipend</h3>
-                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) : 'N/A'); ?></span>
+                                        <?php
+                                        if (!empty($data['min_wage'])){
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage = $data['min_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage = $data['min_wage'] / 7 * 30;
+                                            } else{
+                                                $wage = $data['min_wage'];
+                                            }
+                                        }
+                                        ?>
+                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $wage)) . 'p.m.' : 'N/A'); ?></span>
                                     </li>
                                     <li><i class="fa fa-mars-double"></i>
                                         <h3>Gender</h3><span><?php
@@ -203,7 +285,23 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                             ?></span></li>
                                     <li><i class="fa fa-money"></i>
                                         <h3>Fixed Stipend</h3>
-                                        <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) : 'N/A') ?></span>
+                                        <?php
+                                        if ($data['wage_type'] == 'Fixed') {
+                                            if ($data['wage_duration'] == 'Hourly'){
+                                                $wage = $data['fixed_wage'] * 24 * 30;
+                                            } elseif ($data['wage_duration'] == 'Weekly'){
+                                                $wage = $data['fixed_wage'] / 7 * 30;
+                                            } else{
+                                                $wage = $data['fixed_wage'];
+                                            }
+                                            $amount = $wage;
+                                            setlocale(LC_MONETARY, 'en_IN');
+                                            $fixed_amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.m.';
+                                        } else{
+                                            $fixed_amount = 'N/A';
+                                        }
+                                        ?>
+                                        <span><?= $fixed_amount ?></span>
                                     </li>
                                     <li><i class="fa fa-line-chart "></i>
                                         <h3>Total Vacancies</h3>
@@ -326,7 +424,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
-                            <a href="/company/<?= $org['slug']; ?>">
+                            <a href="/<?= $org['slug']; ?>">
                                 <?php
                                 if (!empty($org['logo'])) {
                                     ?>
@@ -342,7 +440,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             </a>
                         </div>
                         <div class="job-head-info">
-                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
+                            <a href="/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
                             <?php if ($org['website']): ?>
                                 <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
                             <?php endif; ?>

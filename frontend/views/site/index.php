@@ -14,10 +14,10 @@ $this->params['seo_tags'] = [
     'name' => [
         'keywords' => $keywords,
         'description' => $description,
-        'twitter:card' => 'summary',
+        'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -95,7 +95,7 @@ $this->params['seo_tags'] = [
                         <a href="/employers">
                             <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
                                                    alt="Employers"></div>
-                            <div class="h-heading"><Employers></Employers></div>
+                            <div class="h-heading">Employers</div>
                             <div class="h-text">I want to recruit talent</div>
                         </a>
                     </div>
@@ -147,7 +147,7 @@ $this->params['seo_tags'] = [
 
 <section class="services-section">
     <div class="container">
-        <div class="heading-style ">Our Services</div>
+        <h1 class="heading-style ">Our Services</h1>
         <div class="services row">
             <div class="col-md-6 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
@@ -179,9 +179,9 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="fx-heading">
+                <h1 class="fx-heading">
                     Its Free To Get Hired On Empower Youth
-                </div>
+                </h1>
                 <div class="post-job-bttn">
                     <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
                         Get Hired
@@ -210,7 +210,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/empoweryouth">
+                                                        <a href="/empoweryouth">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
                                                                  alt="Empower Youth"/>
                                                         </a>
@@ -230,7 +230,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/empoweryouth">
+                                                        <a href="/empoweryouth">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
                                                                  alt="Empower Youth"/>
                                                         </a>
@@ -250,7 +250,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/agile">
+                                                        <a href="/agile">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
                                                                  alt="Agile Finserv"/>
                                                         </a>
@@ -272,7 +272,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/agile">
+                                                        <a href="/agile">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
                                                                  alt="Agile Finserv"/>
                                                         </a>
@@ -292,7 +292,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/upmoney">
+                                                        <a href="/upmoney">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>"
                                                                  alt="Up Money Limited"/>
                                                         </a>
@@ -311,7 +311,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/upmoney">
+                                                        <a href="/upmoney">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>"
                                                                  alt="Up Money Limited"/>
                                                         </a>
@@ -338,7 +338,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/agile">
+                                                        <a href="/agile">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
                                                                  alt="Agile Finserv"/>
                                                         </a>
@@ -357,7 +357,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/kmg">
+                                                        <a href="/kmg">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png') ?>"
                                                                  alt="KMG Consultants"/>
                                                         </a>
@@ -377,7 +377,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/upmoney">
+                                                        <a href="/upmoney">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>"
                                                                  alt="Up Money Limited"/>
                                                         </a>
@@ -398,7 +398,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/kmg">
+                                                        <a href="/kmg">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/kmg-logo.png') ?>"
                                                                  alt="KMG Consultants"/>
                                                         </a>
@@ -418,7 +418,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/empoweryouth">
+                                                        <a href="/empoweryouth">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
                                                                  alt="Empower Youth"/>
                                                         </a>
@@ -439,7 +439,7 @@ $this->params['seo_tags'] = [
                                             <a href="">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/company/agile">
+                                                        <a href="/agile">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>"
                                                                  alt="Agile Finserv"/>
                                                         </a>
@@ -537,7 +537,7 @@ $this->params['seo_tags'] = [
         <div class="row">
             <div class="col-md-12">
                 <div class="com-grid">
-                    <div class="heading-style">Companies With Us</div>
+                    <h1 class="heading-style">Companies With Us</h1>
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
                         <div class="com-logo">
@@ -631,7 +631,7 @@ $this->params['seo_tags'] = [
 
 <section class="partner">
     <div class="container">
-        <div class="heading-style ">Join our Community</div>
+        <h1 class="heading-style ">Join our Community</h1>
         <div class="row partner-row">
             <div class="col-md-12">
                 <div class="col-md-6 col-sm-6">
@@ -712,7 +712,7 @@ $this->params['seo_tags'] = [
     </article>
 </div>
 <?php
-echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
 .hiw-heading{
     text-align: center;

@@ -9,7 +9,7 @@
             <div class="contact-edit" id="ci">
                 <h3>Contact</h3>
 
-<?php ActiveForm::begin(['id'=>'contactDetailForm','action'=>'/user-profile/update-contact-detail']) ?>
+<?php ActiveForm::begin(['id'=>'contactDetailForm','action'=>'/users/update-contact-detail']) ?>
 
                     <div class="row">
                         <?= $form->field($contactDetails, 'contact',['template'=>'<div class="col-lg-4"><span class="pf-title">Phone Number</span><div class="pf-field">{input}</div></div>','options'=>[]])->textInput(['placeholder'=>'+90 538 963 58 96'])->label(false) ?>

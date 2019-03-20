@@ -99,7 +99,6 @@ $this->params['header_dark'] = false;
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
-//print_r($data);
 ?>
 <?=
 $this->render('/widgets/employer_applications/top-banner', [
@@ -149,6 +148,11 @@ $this->render('/widgets/employer_applications/top-banner', [
                         } ?>
                     </div>
                     <div class="job-details">
+                        <?=
+                        $this->render('/widgets/employer_applications/working-days', [
+                            'working_days'=>$data['working_days']
+                        ]);
+                        ?>
                         <?=
                         $this->render('/widgets/employer_applications/employee-benefits', [
                             'benefits'=>$data['applicationEmployeeBenefits']
@@ -1294,7 +1298,7 @@ $script = <<< JS
                return false;
             }
          $('#modal').modal('show'); 
-         })
+         });
    
    $('input[name="JobApplied[check]"]').on('change',function()
        {

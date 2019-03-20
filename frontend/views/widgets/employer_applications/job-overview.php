@@ -28,7 +28,7 @@ if (!empty($placement_locations)) {
                     echo '(Fixed)';
                     $amount = $fixed_wage;
                     setlocale(LC_MONETARY, 'en_IN');
-                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
+                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
                 } else if ($wage_type == 'Negotiable') {
                     if (!empty($min_wage) || !empty($max_wage)) {
                         echo '(Negotiable)';
@@ -37,11 +37,11 @@ if (!empty($placement_locations)) {
                     $amount2 = $max_wage;
                     setlocale(LC_MONETARY, 'en_IN');
                     if (!empty($min_wage) && !empty($max_wage)) {
-                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2));
+                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.' . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
                     } elseif (!empty($min_wage)) {
-                        $amount = '&#8377 From ' . utf8_encode(money_format('%!.0n', $amount1));
+                        $amount = 'From &#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
                     } elseif (!empty($max_wage)) {
-                        $amount = '&#8377 Upto ' . utf8_encode(money_format('%!.0n', $amount2));
+                        $amount = 'Upto &#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
                     } elseif (empty($min_wage) && empty($max_wage)) {
                         $amount = 'Negotiable';
                     }
