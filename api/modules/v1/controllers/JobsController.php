@@ -2,11 +2,13 @@
 
 namespace api\modules\v1\controllers;
 
-use api\modules\v1\models\Clients;
+use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Cards;
 use api\modules\v1\models\JobApply;
+use api\modules\v1\models\JobDetail;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
+use common\models\UserAccessTokens;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -18,9 +20,11 @@ use common\models\UserResume;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
 
-class JobsController extends ApiBaseController {
+class JobsController extends ApiBaseController
+{
 
-    public function behaviors(){
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'except' => ['list', 'detail'],
@@ -31,7 +35,8 @@ class JobsController extends ApiBaseController {
             'actions' => [
                 'list' => ['POST'],
                 'detail' => ['POST'],
-                'apply' => ['POST']
+                'apply' => ['POST'],
+                'available-resume' => ['POST']
             ]
         ];
         return $behaviors;
@@ -40,7 +45,8 @@ class JobsController extends ApiBaseController {
     //create, update, delete, view, index
 //    public $modelClass = 'common\models\EmployerApplications';
 
-    public function actionList(){
+    public function actionList()
+    {
         $parameters = \Yii::$app->request->post();
         $options = [];
 
@@ -75,16 +81,19 @@ class JobsController extends ApiBaseController {
         }
     }
 
-    public function actionDetail(){
+    public function actionDetail()
+    {
         $parameters = \Yii::$app->request->post();
-        if(!empty($parameters['id']) && !empty($parameters['auth_key'])) {
-            
-            $application_type = ApplicationTypes::find()
-                                ->select(['application_type_enc_id'])
-                                ->where(['name' => 'Jobs'])
-                                ->asArray()
-                                ->one();
+
+        if (!empty($parameters['id'])) {
+
             $result = [];
+
+            $application_type = ApplicationTypes::find()
+                ->select(['application_type_enc_id'])
+                ->where(['name' => 'Jobs'])
+                ->asArray()
+                ->one();
 
             $id = $parameters['id'];
 
@@ -100,6 +109,31 @@ class JobsController extends ApiBaseController {
                 return $this->response(201);
             }
 
+
+            if (Yii::$app->request->headers->get('Authorization')) {
+
+                $token_holder_id = UserAccessTokens::findOne([
+                    'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+                ]);
+                $user = Candidates::findOne([
+                    'user_enc_id' => $token_holder_id->user_enc_id
+                ]);
+
+                if ($user) {
+                    $hasApplied = AppliedApplications::find()
+                        ->where(['application_enc_id' => $application_details->application_enc_id])
+                        ->andWhere(['created_by' => $user->user_enc_id])
+                        ->exists();
+                    $result['hasApplied'] = $hasApplied;
+
+                    $shortlist = ShortlistedApplications::find()
+                        ->select('shortlisted')
+                        ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => $user->user_enc_id])
+                        ->exists();
+                    $result["hasShortlisted"] = $shortlist;
+                }
+            }
+
             $organization_details = $application_details
                 ->getOrganizationEnc()
                 ->select(['name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
@@ -107,26 +141,6 @@ class JobsController extends ApiBaseController {
                 ->one();
 
             $result['organisation'] = $organization_details;
-
-            $user = Clients::findOne([
-//                'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-                'auth_key' => $parameters['auth_key']
-            ]);
-
-            $hasApplied = AppliedApplications::find()
-                ->where(['application_enc_id' => $application_details->application_enc_id])
-                ->andWhere(['created_by' => $user->user_enc_id])
-                ->exists();
-
-            $result['hasApplied'] = $hasApplied;
-
-            $resume = UserResume::find()
-                ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("'.Url::to(Yii::$app->params->upload_directories->resume->file, true).'", resume_location, "/", resume) url'])
-                ->where(['user_enc_id' => $user->user_enc_id])
-                ->asArray()
-                ->all();
-
-            $result["resume"] = (sizeof($resume)!=0) ? $resume : "No Resume Found";
 
             $application_questionnaire = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
@@ -138,16 +152,19 @@ class JobsController extends ApiBaseController {
 
             $result['hasQuestionnaire'] = $application_questionnaire;
 
-            $shortlist = ShortlistedApplications::find()
-                        ->select('shortlisted')
-                        ->where(['shortlisted' =>1 , 'application_enc_id' => $application_details->application_enc_id, 'created_by' => $user->user_enc_id])
-                        ->exists();
-
-            $result["hasShortlisted"] = $shortlist;
-
-            $object = new \account\models\jobs\JobApplicationForm();
+            $object = new JobDetail();
             $data = $object
                 ->getCloneData($application_details->application_enc_id);
+
+            $i = 0;
+            foreach ($data["applicationEmployeeBenefits"] as $d) {
+                if(!empty($d["icon"])) {
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], true);
+                } else{
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', true);
+                }
+                $i++;
+            }
 
             $temp = $data["cat_name"];
             $data["cat_name"] = $data["name"];
@@ -187,22 +204,25 @@ class JobsController extends ApiBaseController {
             unset($data["created_by"]);
             unset($data["last_updated_on"]);
             unset($data["last_updated_by"]);
-            $data["vacancies"]= 0;
-            foreach ($data['applicationPlacementLocations'] as $apl) {
-                $data["vacancies"] += $apl['positions'];
+            $data["vacancies"] = 0;
+            if (!empty($data['applicationPlacementLocations'])) {
+                foreach ($data['applicationPlacementLocations'] as $apl) {
+                    $data["vacancies"] += $apl['positions'];
+                }
             }
             $data['preferred_gender'] = $this->prefferedGender($data['preferred_gender']);
 
             $result['applicationDetails'] = $data;
 
             return $this->response(200, $result);
-        }else{
+        } else {
             return $this->response(202);
         }
     }
 
-    private function prefferedGender($g){
-        switch($g){
+    private function prefferedGender($g)
+    {
+        switch ($g) {
             case 0:
                 return "No Preference";
             case 1:
@@ -216,39 +236,102 @@ class JobsController extends ApiBaseController {
         }
     }
 
-    public function actionApply(){
+    public function actionAvailableResume()
+    {
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        $resume = UserResume::find()
+            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->resume->file, true) . '", resume_location, "/", resume) url'])
+            ->where(['user_enc_id' => $user->user_enc_id])
+            ->asArray()
+            ->all();
+
+        if (sizeof($resume) != 0) {
+            return $this->response(200, $resume);
+        } else {
+            return $this->response(201);
+        }
+
+    }
+
+    public function actionApply()
+    {
 
         $model = new JobApply();
 
         $reqParams = Yii::$app->request->post();
 
-        if(!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && !empty($reqParams['city_id'])){
+        if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && isset($reqParams['city_id'])) {
 
-            $application_questionnaire = ApplicationInterviewQuestionnaire::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => Yii::$app->request->post("job_id")])
-                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
+            $application_type = ApplicationTypes::find()
+                ->select(['application_type_enc_id'])
+                ->where(['name' => 'Jobs'])
+                ->asArray()
+                ->one();
+
+            $id = $reqParams['job_id'];
+
+            $application_details = EmployerApplications::find()
+                ->where([
+                    'application_enc_id' => $id,
+                    'is_deleted' => 0,
+                    'application_type_enc_id' => $application_type["application_type_enc_id"]
+                ])
+                ->one();
+
+            if (!$application_details) {
+                return $this->response(201);
+            }
+
+            $token_holder_id = UserAccessTokens::findOne([
+                'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+            ]);
+            $user = Candidates::findOne([
+                'user_enc_id' => $token_holder_id->user_enc_id
+            ]);
+
+            $hasApplied = AppliedApplications::find()
+                ->where(['application_enc_id' => $application_details->application_enc_id])
+                ->andWhere(['created_by' => $user->user_enc_id])
                 ->exists();
 
-            $model->id = Yii::$app->request->post("job_id");
-            $model->resume_list = Yii::$app->request->post("resume_enc_id");
-            $model->location_pref = Yii::$app->request->post("city_id");
+            if (!$hasApplied) {
+                $application_questionnaire = ApplicationInterviewQuestionnaire::find()
+                    ->alias('a')
+                    ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
+                    ->where(['a.application_enc_id' => $reqParams['job_id']])
+                    ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
+                    ->andWhere(['b.field_name' => 'Get Applications'])
+                    ->exists();
 
-            if($application_questionnaire){
-                $model->status = 'incomplete';
-            }else{
-                $model->status = 'Pending';
-            }
+                $model->id = $reqParams['job_id'];
+                $model->resume_list = $reqParams['resume_enc_id'];
+                if (empty($reqParams['city_id']) || count($reqParams['city_id']) == 0) {
+                    $model->location_pref = [];
+                } else {
+                    $model->location_pref = $reqParams['city_id'];
+                }
 
-            if ($res = $model->saveValues()) {
-                return $this->response(200, $res);
+                if ($application_questionnaire) {
+                    $model->status = 'incomplete';
+                } else {
+                    $model->status = 'Pending';
+                }
+
+                if ($res = $model->saveValues()) {
+                    return $this->response(200, $res);
+                } else {
+                    return $this->response(204);
+                }
             } else {
-                return $this->response(204);
+                return $this->response(601);
             }
-
-        }else{
+        } else {
             return $this->response(202);
         }
     }

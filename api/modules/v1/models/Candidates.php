@@ -17,6 +17,9 @@ class Candidates extends Users implements \yii\web\IdentityInterface{
         $access_token = UserAccessTokens::findOne(['access_token' => $token]);
         if(!empty($access_token) && Yii::$app->request->headers->get('source') == $access_token->source){
             if(strtotime($access_token->access_token_expiration) > strtotime("now")) {
+                $time_now = date('Y-m-d H:i:s', time('now'));
+                $access_token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
+                $access_token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
                 return static::findOne(['user_enc_id' => $access_token->user_enc_id]);
             }
             return false;

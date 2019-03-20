@@ -94,7 +94,7 @@ class AuthController extends ApiBaseController{
         $token->access_token_enc_id = time() . mt_rand(10, 99);
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
-        $token->access_token_expiration = date('Y-m-d H:i:s',strtotime("+10080 minute", strtotime($time_now)));
+        $token->access_token_expiration = date('Y-m-d H:i:s',strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);
         $token->refresh_token_expiration = date('Y-m-d H:i:s',strtotime("+11520 minute", strtotime($time_now)));
         $token->source = $source_id;
@@ -105,14 +105,11 @@ class AuthController extends ApiBaseController{
     }
 
     private function withoutPassword($username){
-            $user = Candidates::findOne([
-                'username' => $username,
-            ]);
-            if(!$user){
-                $user = Candidates::findOne([
-                    'email' => $username,
-                ]);
-            }
+
+            $user = Candidates::find()
+                    ->where(['username' => $username])
+                    ->orWhere(['email' => $username])
+                    ->one();
             if($user > 0) {
                 return $this->response(103);
             }else{
@@ -142,7 +139,7 @@ class AuthController extends ApiBaseController{
     private function onlyTokens($token){
         $time_now = date('Y-m-d H:i:s', time('now'));
         $token->access_token = \Yii::$app->security->generateRandomString(32);
-        $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+10080 minute", strtotime($time_now)));
+        $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);
         $token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
         if($token->save()){
@@ -153,33 +150,59 @@ class AuthController extends ApiBaseController{
 
     public function actionLogin(){
 
-        $model = new LoginForm();
+        $params = \Yii::$app->request->post();
 
-        $username = \Yii::$app->request->post('username');
-        $password = \Yii::$app->request->post('password');
-        $source = \Yii::$app->request->post('source_id');
+        $username = $params['username'];
+        $password = $params['password'];
+        $source = $params['source'];
 
         if(!isset($password) && isset($username)){
-            $this->withoutPassword($username);
+            $user = Candidates::find()
+                ->where(['username' => $username])
+                ->orWhere(['email' => $username])
+                ->one();
+            if(!empty($user)) {
+                $response = [
+                    'status' => 103,
+                    'message' => 'User already exists'
+                ];
+                echo json_encode($response);
+                die();
+//                return $this->response(103);
+            }else{
+                $response = [
+                    'status' => 201,
+                    'message' => 'Resource Not found'
+                ];
+                echo json_encode($response);
+                die();
+//                return $this->response(201);
+            }
         }
 
-        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
-          if($model->login()) {
-                $user = $this->findUser($model);
-                $token = $this->findToken($user, $source);
-                if(empty($token)) {
-                    if($token = $this->newToken($user->user_enc_id, $source)){
-                        $data = $this->returnData($user, $token);
-                        return $this->response(200, $data);
-                    }
-                }else{
-                    if($token = $this->onlyTokens($token)) {
-                        $data = $this->returnData($user, $token);
-                        return $this->response(200, $data);
+        if(isset($username) && isset($password) && isset($source)) {
+            $model = new LoginForm();
+
+            if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
+                if ($model->login()) {
+                    $user = $this->findUser($model);
+                    $token = $this->findToken($user, $source);
+                    if (empty($token)) {
+                        if ($token = $this->newToken($user->user_enc_id, $source)) {
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
+                        }
+                    } else {
+                        if ($token = $this->onlyTokens($token)) {
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
+                        }
                     }
                 }
+                return $this->response(203, $model->getErrors());
             }
-            return $this->response(203, $model->getErrors());
+        }else{
+                return $this->response(202);
         }
         return $this->response(600);
     }

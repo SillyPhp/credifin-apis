@@ -22,7 +22,6 @@ class JobApply extends Model
     public $fill_question;
     public $location_pref;
     public $status;
-
     public function rules()
     {
         return [
@@ -50,25 +49,28 @@ class JobApply extends Model
         $appliedModel->created_on = date('Y-m-d h:i:s');
         $appliedModel->created_by = $user->user_enc_id;
         if ($appliedModel->save()) {
-            foreach ($this->location_pref as $location) {
-                $locModel = new AppliedApplicationLocations;
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $locModel->application_location_enc_id = $utilitiesModel->encrypt();
-                $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
-                $locModel->city_enc_id = $location;
-                $locModel->created_on = date('Y-m-d h:i:s');
-                $locModel->created_by = $user->user_enc_id;
-                $app_id = $appliedModel->applied_application_enc_id;
-                $id = $this->id;
-                if (!$locModel->save()) {
-                    print_r($locModel->getErrors());
+            if(count($this->location_pref) > 0) {
+                foreach ($this->location_pref as $location) {
+                    $locModel = new AppliedApplicationLocations;
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $locModel->application_location_enc_id = $utilitiesModel->encrypt();
+                    $locModel->applied_application_enc_id = $appliedModel->applied_application_enc_id;
+                    $locModel->city_enc_id = $location;
+                    $locModel->created_on = date('Y-m-d h:i:s');
+                    $locModel->created_by = $user->user_enc_id;
+                    $app_id = $appliedModel->applied_application_enc_id;
+                    $id = $this->id;
+                    $user_enc_id = $user->user_enc_id;
+                    if (!$locModel->save()) {
+                        print_r($locModel->getErrors());
+                    }
                 }
             }
             $status = [
                 'applied_application_enc_id' => $appliedModel->applied_application_enc_id,
             ];
-            $this->save_process($id, $app_id);
+            $this->save_process($id, $app_id, $user_enc_id);
             return $status;
         } else {
             return false;
@@ -76,7 +78,7 @@ class JobApply extends Model
     }
 
 
-    private function save_process($id, $app_id)
+    private function save_process($id, $app_id, $user_enc_id)
     {
         $process_list = EmployerApplications::find()
             ->alias('a')
@@ -93,7 +95,7 @@ class JobApply extends Model
             $processModel->applied_application_enc_id = $app_id;
             $processModel->field_enc_id = $process['field_enc_id'];
             $processModel->created_on = date('Y-m-d h:i:s');
-            $processModel->created_by = Yii::$app->user->identity->user_enc_id;
+            $processModel->created_by = $user_enc_id;
             if (!$processModel->save()) {
                 return false;
             }

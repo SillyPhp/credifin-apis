@@ -26,7 +26,6 @@ class ProfileController extends ApiBaseController{
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'detail' => ['POST'],
-                'edit' => ['POST'],
                 'update-profile' => ['POST'],
                 'update-social' => ['POST'],
             ]

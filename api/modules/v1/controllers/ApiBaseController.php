@@ -39,7 +39,8 @@ class ApiBaseController extends Controller{
             101 => "Couldn't Log in",
             102 => "Token can't be refreshed",
             103 => 'User already exists',
-            600 => 'Format of request is invalid'
+            600 => 'Format of request is invalid',
+            601 => 'Already Applied'
         ];
 //        $codes = [
 //            //Success 2XX
