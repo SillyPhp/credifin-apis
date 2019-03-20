@@ -271,7 +271,7 @@ class JobsController extends Controller
 
     public function actionPreview()
     {
-        $model = new JobApplicationForm();
+        $model = new ApplicationForm();
         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $var = Yii::$app->request->post('n');

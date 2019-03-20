@@ -1,85 +1,91 @@
 <?php
+
 use yii\helpers\Html;
 use kartik\widgets\DatePicker;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
+
 $this->title = Yii::t('frontend', 'My Profile');
 $this->params['header_dark'] = true;
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
 ?>
-<div class="wrapper-bg">
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="padding-left set-overlay">
-            <?php Pjax::begin(['id'=>'profile_icon_pjax']) ?>
-            <?php $form = ActiveForm::begin(['id'=>'userProfilePicture','action'=>'/users/update-profile-picture']) ?>
-            <div class="profile-title" id="mp">
-                <h3>My Profile</h3>
-                <a class="btn btn-danger btn-sm view_profile_btn pull-right" href="/<?= Yii::$app->user->identity->username; ?>" target="_blank">View Profile</a>
-                <div class="upload-img-bar">
-                  <?php  if (!empty(Yii::$app->user->identity->image)) {
-                    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
-                      <span><img src="<?=$image ?>" class="preview_img" alt="" width="200" height="150"></span>
-                   <?php } else {
-                      $first = Yii::$app->user->identity->first_name;
-                      $last = Yii::$app->user->identity->last_name;
-                      $name = strtoupper($first[0].''.$last[0]);
-                      $color = ltrim(Yii::$app->user->identity->initials_color,'#');
-                      $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
-                      ?>
-                      <span><img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150"></span>
-                 <?php } ?>
-                    <div class="upload-info">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label class="tg-fileuploadlabel" for="tg-photogallery">
-                                    <span class="tg-btn">Browse File</span>
-                                    <?= $form->field($userProfilePicture, 'profile_image',['template'=>'{input}{error}','options'=>[]])->fileInput(['id'=>'tg-photogallery','class'=>'tg-fileinput','accept' => 'image/*'])->label(false) ?>
-                                </label>
-                            </div>
-                                <div class="col-md-6">
-                                    <?= Html::submitButton('Update Picture',['class'=>'btn_pink btn_submit_picture','id'=>'picture_submit']); ?>
+    <div class="wrapper-bg">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="padding-left set-overlay">
+                    <?php Pjax::begin(['id' => 'profile_icon_pjax']) ?>
+                    <?php $form = ActiveForm::begin(['id' => 'userProfilePicture', 'action' => '/users/update-profile-picture']) ?>
+                    <div class="profile-title" id="mp">
+                        <h3>My Profile</h3>
+                        <a class="btn btn-danger btn-sm view_profile_btn pull-right"
+                           href="<?= Url::to('/' . Yii::$app->user->identity->username); ?>" target="_blank">View
+                            Profile</a>
+                        <div class="upload-img-bar">
+                            <?php if (!empty(Yii::$app->user->identity->image)) {
+                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
+                                <span><img src="<?= $image ?>" class="preview_img" alt="" width="200"
+                                           height="150"></span>
+                            <?php } else {
+                                $first = Yii::$app->user->identity->first_name;
+                                $last = Yii::$app->user->identity->last_name;
+                                $name = strtoupper($first[0] . '' . $last[0]);
+                                $color = ltrim(Yii::$app->user->identity->initials_color, '#');
+                                $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
+                                ?>
+                                <span><img src="<?= $image ?>" class="preview_img" alt="" width="200"
+                                           height="150"></span>
+                            <?php } ?>
+                            <div class="upload-info">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="tg-fileuploadlabel" for="tg-photogallery">
+                                            <span class="tg-btn">Browse File</span>
+                                            <?= $form->field($userProfilePicture, 'profile_image', ['template' => '{input}{error}', 'options' => []])->fileInput(['id' => 'tg-photogallery', 'class' => 'tg-fileinput', 'accept' => 'image/*'])->label(false) ?>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <?= Html::submitButton('Update Picture', ['class' => 'btn_pink btn_submit_picture', 'id' => 'picture_submit']); ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <?php ActiveForm::end(); ?>
-            <?php Pjax::end(); ?>
-            <?php $form = ActiveForm::begin(['id'=>'basicDetailForm','action'=>'/users/update-basic-detail']) ?>
-            <div class="profile-form-edit">
-                    <div class="row">
-                      <?php
-                      $uname = Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name;
-                      ?>
-                     <?= $form->field($basicDetails, 'full_name',['template'=>'<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['disabled'=>true,'placeholder'=>'First Name','value'=>(($uname) ? ucwords($uname) : '')])->label(false) ?>
-                      <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : '');  ?>
-                      <?= $form->field($basicDetails, 'gender',['template'=>'<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
-                          [1=>'Male',2=>'Female',3=>'Transgender',4=>'Rather not to say'],[
-                          'prompt' => 'Select Gender',
-                          'id' => 'gender_drp',
-                          'class'=>'chosen'])->label(false); ?>
-                     <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : '');  ?>
-                     <?= $form->field($basicDetails, 'category',['template'=>'<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
-                          $industry,[
-                         'prompt' => 'Select Category',
-                         'id' => 'category_drp',
-                         'class'=>'chosen'])->label(false); ?> 
-                     <?= $form->field($basicDetails, 'job_title',['template'=>'<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>','options'=>[]])->textInput(['placeholder'=>'Select Job Profile','value'=>(($getName) ? $getName['name'] : ''),'class'=>'valid_input form-control'])->label(false) ?>
-                    </div>
-                    <div class="row">
-                        <?= $form->field($basicDetails, 'exp_year',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Year','class'=>'valid_input form-control','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[0] : '')])->label(false) ?>
-                        <?= $form->field($basicDetails, 'exp_month',['template'=>'<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textInput(['placeholder'=>'Month','class'=>'valid_input form-control','required'=>true,'maxLength'=>'2','value'=>(($getExperience) ? $getExperience[1] : '')])->label(false) ?>
-                        <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : '');  ?>
-                        <?= $form->field($basicDetails, 'state',['template'=>'<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->dropDownList(
-                            $states, [
-                            'prompt' => 'Select State',
-                            'id' => 'states_drp',
-                            'class'=>'chosen',
-                            'onchange' => '
+                    <?php ActiveForm::end(); ?>
+                    <?php Pjax::end(); ?>
+                    <?php $form = ActiveForm::begin(['id' => 'basicDetailForm', 'action' => '/users/update-basic-detail']) ?>
+                    <div class="profile-form-edit">
+                        <div class="row">
+                            <?php
+                            $uname = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                            ?>
+                            <?= $form->field($basicDetails, 'full_name', ['template' => '<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['disabled' => true, 'placeholder' => 'First Name', 'value' => (($uname) ? ucwords($uname) : '')])->label(false) ?>
+                            <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : ''); ?>
+                            <?= $form->field($basicDetails, 'gender', ['template' => '<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                [1 => 'Male', 2 => 'Female', 3 => 'Transgender', 4 => 'Rather not to say'], [
+                                'prompt' => 'Select Gender',
+                                'id' => 'gender_drp',
+                                'class' => 'chosen'])->label(false); ?>
+                            <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : ''); ?>
+                            <?= $form->field($basicDetails, 'category', ['template' => '<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                $industry, [
+                                'prompt' => 'Select Category',
+                                'id' => 'category_drp',
+                                'class' => 'chosen'])->label(false); ?>
+                            <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
+                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['name'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
+                        </div>
+                        <div class="row">
+                            <?= $form->field($basicDetails, 'exp_year', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Year', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[0] : '')])->label(false) ?>
+                            <?= $form->field($basicDetails, 'exp_month', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Month', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[1] : '')])->label(false) ?>
+                            <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : ''); ?>
+                            <?= $form->field($basicDetails, 'state', ['template' => '<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                $states, [
+                                'prompt' => 'Select State',
+                                'id' => 'states_drp',
+                                'class' => 'chosen',
+                                'onchange' => '
                             $("#cities_drp").empty().append($("<option>", {
                                 value: "",
                                 text : "Select City"
@@ -93,65 +99,76 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 }
                                 }
                                 );',
-                        ])->label(false); ?>
-                        <?=
-                        $form->field($basicDetails, 'city',['template'=>'<div class="col-lg-4"><span class="pf-title">Current City</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->label(false)->dropDownList(
-                            [], [
-                            'prompt' => 'Select City',
-                            'id' => 'cities_drp',
-                            'class'=>'chosen',
-                        ])->label(false);
-                        ?>
-                    </div>
-                <div class="row">
-                    <?=
-                    $form->field($basicDetails, 'dob',['template'=>'<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->widget(DatePicker::classname(), [
-                        'options' => ['class' => 'valid_input form-control','placeholder' => 'Date Of Birth','value'=>((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
-                        'readonly' => true,
-                        'type' => DatePicker::TYPE_INPUT,
-                        'name' => 'dob',
-                        'pluginOptions' => [
-                            'autoclose' => true,
-                            'format' => 'dd-M-yyyy',
-                            'endDate' => "0d"
-                        ]])->label(false);
-                    ?>
-                        <div class="col-lg-8">
-                            <span class="pf-title">Pick Some Languages You Can Read,Write,Speak</span>
-                            <div class="pf-field no-margin">
-                                <ul class="tags languages_tag_list">
-                                    <?php if (!empty($userLanguage)) {
-                                        foreach ($userLanguage as $language){  ?>
-                                            <li class="addedTag"><?= $language['language'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="languages[]" value="<?= $language['language'] ?>"></li>
-                                        <?php }
-                                    } ?>
-                                    <li class="tagAdd taglist">
-                                        <div class="language_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                        <input type="text" id="search-language" class="skill-input lang-input">
-                                        </div>
-                                    </li>
-                                </ul>
+                            ])->label(false); ?>
+                            <?=
+                            $form->field($basicDetails, 'city', ['template' => '<div class="col-lg-4"><span class="pf-title">Current City</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->label(false)->dropDownList(
+                                [], [
+                                'prompt' => 'Select City',
+                                'id' => 'cities_drp',
+                                'class' => 'chosen',
+                            ])->label(false);
+                            ?>
+                        </div>
+                        <div class="row">
+                            <?=
+                            $form->field($basicDetails, 'dob', ['template' => '<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->widget(DatePicker::classname(), [
+                                'options' => ['class' => 'valid_input form-control', 'placeholder' => 'Date Of Birth', 'value' => ((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
+                                'readonly' => true,
+                                'type' => DatePicker::TYPE_INPUT,
+                                'name' => 'dob',
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'dd-M-yyyy',
+                                    'endDate' => "0d"
+                                ]])->label(false);
+                            ?>
+                            <div class="col-lg-8">
+                                <span class="pf-title">Pick Some Languages You Can Read,Write,Speak</span>
+                                <div class="pf-field no-margin">
+                                    <ul class="tags languages_tag_list">
+                                        <?php if (!empty($userLanguage)) {
+                                            foreach ($userLanguage as $language) { ?>
+                                                <li class="addedTag"><?= $language['language'] ?><span
+                                                            onclick="$(this).parent().remove();"
+                                                            class="tagRemove">x</span><input type="hidden"
+                                                                                             name="languages[]"
+                                                                                             value="<?= $language['language'] ?>">
+                                                </li>
+                                            <?php }
+                                        } ?>
+                                        <li class="tagAdd taglist">
+                                            <div class="language_wrapper">
+                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <input type="text" id="search-language" class="skill-input lang-input">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <span class="pf-title">Pick a few tags that You Have Skills</span>
-                            <div class="pf-field no-margin">
-                                <ul class="tags skill_tag_list">
-                                    <?php if(!empty($userSkills)){
-                                        foreach ($userSkills as $skill){ ?>
-                                        <li class="addedTag"><?= $skill['skill'] ?><span onclick="$(this).parent().remove();" class="tagRemove">x</span><input type="hidden" name="skills[]" value="<?= $skill['skill'] ?>"></li>
-                                    <?php } } ?>
-                                    <li class="tagAdd taglist">
-                                        <div class="skill_wrapper">
-                                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                              <input type="text" id="search-skill" class="skill-input">
-                                        </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <span class="pf-title">Pick a few tags that You Have Skills</span>
+                                <div class="pf-field no-margin">
+                                    <ul class="tags skill_tag_list">
+                                        <?php if (!empty($userSkills)) {
+                                            foreach ($userSkills as $skill) { ?>
+                                                <li class="addedTag"><?= $skill['skill'] ?><span
+                                                            onclick="$(this).parent().remove();"
+                                                            class="tagRemove">x</span><input type="hidden"
+                                                                                             name="skills[]"
+                                                                                             value="<?= $skill['skill'] ?>">
+                                                </li>
+                                            <?php }
+                                        } ?>
+                                        <li class="tagAdd taglist">
+                                            <div class="skill_wrapper">
+                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <input type="text" id="search-skill" class="skill-input">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -159,8 +176,8 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         <div class="col-lg-12">
                             <span class="pf-title">Availability</span>
                             <p class="remember-label">
-                            <?php $basicDetails->availability = ((Yii::$app->user->identity->is_available) ? Yii::$app->user->identity->is_available : 1); ?>
-                            <?= $form->field($basicDetails, 'availability')->inline()->radioList([
+                                <?php $basicDetails->availability = ((Yii::$app->user->identity->is_available) ? Yii::$app->user->identity->is_available : 1); ?>
+                                <?= $form->field($basicDetails, 'availability')->inline()->radioList([
                                     1 => 'Available',
                                     2 => 'Open',
                                     3 => 'Actively Looking',
@@ -178,37 +195,38 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         </div>
                     </div>
                     <div class="row">
-                        <?= $form->field($basicDetails, 'description',['template'=>'<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>','options'=>[]])->textArea(['class'=>'perfect_scroll','placeholder'=>'Enter Description','value'=>((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
-                        <?php Pjax::begin(['id'=>'pjax_resume']) ?>
+                        <?= $form->field($basicDetails, 'description', ['template' => '<div class="col-lg-12"><span class="pf-title">About You</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textArea(['class' => 'perfect_scroll', 'placeholder' => 'Enter Description', 'value' => ((Yii::$app->user->identity->description) ? Yii::$app->user->identity->description : '')])->label(false) ?>
+                        <?php Pjax::begin(['id' => 'pjax_resume']) ?>
                         <div class="col-md-12">
-                                <?= $form->field($basicDetails, 'resume',['template'=>'<div class="file-upload-wrapper" data-text="Select your file!">{input}{error}</div>','options'=>[]])->fileInput(['id'=>'resume_upload','class'=>'resume_upload'])->label(false) ?>
+                            <?= $form->field($basicDetails, 'resume', ['template' => '<div class="file-upload-wrapper" data-text="Select your file!">{input}{error}</div>', 'options' => []])->fileInput(['id' => 'resume_upload', 'class' => 'resume_upload'])->label(false) ?>
                         </div>
                         <?php Pjax::end(); ?>
                         <div class="col-lg-12">
-                            <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_basic','id'=>'basic_detail_submit']); ?>
+                            <?= Html::submitButton('Update', ['class' => 'btn_pink btn_submit_basic', 'id' => 'basic_detail_submit']); ?>
                         </div>
                     </div>
-            </div>
-            <?php ActiveForm::end(); ?>
-            <div class="social-edit" id="sn">
-                <h3>Social Edit</h3>
-                <?php ActiveForm::begin(['id'=>'socialDetailForm','action'=>'/users/update-social-detail']) ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+                <div class="social-edit" id="sn">
+                    <h3>Social Edit</h3>
+                    <?php ActiveForm::begin(['id' => 'socialDetailForm', 'action' => '/users/update-social-detail']) ?>
                     <div class="row">
-                        <?= $form->field($socialDetails, 'facebook',['template'=>'<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Facebook Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'twitter',['template'=>'<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Twitter Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'skype',['template'=>'<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Skype Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'linkedin',['template'=>'<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>','options'=>[]])->textInput(['placeholder'=>'Linkedin Username','maxLength'=>50,'value'=>((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'facebook', ['template' => '<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Facebook Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'twitter', ['template' => '<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Twitter Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'skype', ['template' => '<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Skype Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'linkedin', ['template' => '<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Linkedin Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
                         <div class="col-lg-12">
-                            <?= Html::submitButton('Update',['class'=>'btn_pink btn_submit_contact','id'=>'contact_submit']); ?>
+                            <?= Html::submitButton('Update', ['class' => 'btn_pink btn_submit_contact', 'id' => 'contact_submit']); ?>
                         </div>
                     </div>
-                <input type="hidden" name="current_city" id="current_city" value="<?= (($getCurrentCity) ? $getCurrentCity['city_enc_id'] : '') ?>">
-               <?php ActiveForm::end(); ?>
+                    <input type="hidden" name="current_city" id="current_city"
+                           value="<?= (($getCurrentCity) ? $getCurrentCity['city_enc_id'] : '') ?>">
+                    <?php ActiveForm::end(); ?>
+                </div>
             </div>
         </div>
     </div>
-</div>
-</div>
+    </div>
 <?php
 $this->registerCss("
 .taglist
@@ -235,7 +253,7 @@ float:left !important;
 .add_loader
 {
 background-color: #ffffff;
-background-image: url(\"http://loadinggif.com/images/image-selection/3.gif\");
+background-image: url('http://loadinggif.com/images/image-selection/3.gif');
 background-size: 25px 25px;
 background-position:right center;
 background-repeat: no-repeat;
@@ -426,7 +444,6 @@ display: block !important;
     vertical-align: middle;
     text-transform: capitalize;
     background: rgba(0,0,0,0.00);
-//    font: 500 16px/46px 'Quicksand', Arial, Helvetica, sans-serif;
     padding:10px 0 0 0 ;
     font-weight: 500;
     cursor: pointer;
@@ -552,28 +569,28 @@ $(document).on('change','#category_drp',function() {
       $('#job_title').closest('.field-job_title').removeClass('has-success');
       $('#job_title').closest('.field-job_title').addClass('has-error');
   }
-})
+});
 $(document).on('keypress','input',function(e)
 {
     if(e.which==13)
         {
             return false;
         }
-})
+});
 $(document).on('keyup','#search-skill',function(e)
 {
     if(e.which==13)
         {
           add_tags($(this),'skill_tag_list','skills');  
         }
-})
+});
 $(document).on('keyup','#search-language',function(e)
 {
     if(e.which==13)
         {
           add_tags($(this),'languages_tag_list','languages');
         }
-})
+});
  $("#exp_year, #exp_month").on("keypress keyup blur",function (event) {    
            $(this).val($(this).val().replace(/[^\d].+/, ""));
             if ((event.which < 48 || event.which > 57)) {
@@ -853,7 +870,7 @@ function drp_down(id, data) {
     data_chosen.trigger("chosen:updated");
 };
 JS;
-$this->registerJs($script2,yii\web\View::POS_HEAD);
+$this->registerJs($script2, yii\web\View::POS_HEAD);
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -863,6 +880,5 @@ $this->registerCssFile("@web/assets/themes/jobhunt/css/style.css");
 $this->registerCssFile("@web/assets/themes/jobhunt/css/chosen.css");
 $this->registerCssFile("@web/assets/themes/jobhunt/css/colors/colors.css");
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile("@web/assets/themes/jobhunt/js/select-chosen.js",['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile("@web/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>

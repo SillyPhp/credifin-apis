@@ -150,7 +150,37 @@ function scroll_checklist() {
      $("#md-checkbox").html(html); 
      }
      });
-}   
+}  
+
+var Descriptions = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('job_description'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/account/categories-list/description?q=%QUERY',
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
+});   
+        
+var que_type = $('#question_field').typeahead(null, {
+  name: 'question_field',
+  display: 'job_description',
+   limit: 4,      
+  source: Descriptions
+}).on('typeahead:asyncrequest', function() {
+    $('.descrip_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.descrip_wrapper .Typeahead-spinner').hide(); 
+  }).on('typeahead:selected',function(e, datum)
+  { 
+      var id = datum.job_description_enc_id;
+      var questions = datum.job_description;  
+      drop_options(id,questions);
+   });   
 var ps = new PerfectScrollbar('#checkboxlistarea');
 var ps = new PerfectScrollbar('#md-checkbox');
 JS;

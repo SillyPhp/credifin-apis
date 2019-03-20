@@ -151,7 +151,7 @@ use yii\helpers\Url;
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <a href="/user/<?= $u['userEnc']['username'] ?>"
+                                                                <a href="/<?= $u['userEnc']['username'] ?>"
                                                                    class="btn btn-paid-candidate bt-1">View Detail</a>
 
                                                                 <?php if ($u["status"] == 1) { ?>
