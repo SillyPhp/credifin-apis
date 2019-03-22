@@ -154,6 +154,12 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                         ?>
                         <?=
+                        $this->render('/widgets/employer_applications/working-time', [
+                            'working_time_from'=>$data['timings_from'],
+                            'working_time_to'=>$data['timings_to']
+                        ]);
+                        ?>
+                        <?=
                         $this->render('/widgets/employer_applications/employee-benefits', [
                             'benefits'=>$data['applicationEmployeeBenefits']
                         ]);
