@@ -36,7 +36,7 @@ $this->registerCss('
 .week-days ul li{
   position:relative;
   list-style:none;
-  display:inline-block;
+  display:none;
   width:100px;
   height:100px;
   line-height:100px;
@@ -49,6 +49,7 @@ $this->registerCss('
 }
 .week-days ul li.active{
   color:#fff;
+  display:inline-block;
   background-color: #35394F; 
   background-image: linear-gradient(-40deg, #35394F 25%, #787D90);
   border:1px solid #ddd;
