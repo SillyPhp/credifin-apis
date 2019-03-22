@@ -149,6 +149,11 @@ $this->render('/widgets/employer_applications/top-banner', [
                     </div>
                     <div class="job-details">
                         <?=
+                        $this->render('/widgets/employer_applications/working-days', [
+                            'working_days'=>$data['working_days']
+                        ]);
+                        ?>
+                        <?=
                         $this->render('/widgets/employer_applications/employee-benefits', [
                             'benefits'=>$data['applicationEmployeeBenefits']
                         ]);
