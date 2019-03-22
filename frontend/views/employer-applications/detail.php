@@ -62,7 +62,7 @@ if ($type=='Internship') {
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
     }
     $this->title = $org['org_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a stipend ' . $amount;
-    $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
+    $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
 if (!empty($data['applicationPlacementLocations'])) {
@@ -148,6 +148,17 @@ $this->render('/widgets/employer_applications/top-banner', [
                         } ?>
                     </div>
                     <div class="job-details">
+                        <?=
+                        $this->render('/widgets/employer_applications/working-days', [
+                            'working_days'=>$data['working_days']
+                        ]);
+                        ?>
+                        <?=
+                        $this->render('/widgets/employer_applications/working-time', [
+                            'working_time_from'=>$data['timings_from'],
+                            'working_time_to'=>$data['timings_to']
+                        ]);
+                        ?>
                         <?=
                         $this->render('/widgets/employer_applications/employee-benefits', [
                             'benefits'=>$data['applicationEmployeeBenefits']
@@ -461,7 +472,7 @@ $this->registerCss("
         float: left;
         width: 100%;
         position: relative;
-        padding-top: 185px;
+        padding-top: 215px;
         padding-bottom: 15px;
         z-index: 0;
     }
@@ -1234,7 +1245,7 @@ $this->registerCss("
                width: 400px;
           }
           .inner-header {
-               padding-top: 160px;
+               padding-top: 190px;
           }
     }
     @media screen and (max-width: 1024px) and (min-width: 890px) {
@@ -1242,7 +1253,7 @@ $this->registerCss("
                width: 260px;
           }
           .inner-header {
-               padding-top: 150px;
+               padding-top: 160px;
           }
           .inner-header > h3{
                width: 370px;
@@ -1258,7 +1269,7 @@ $this->registerCss("
                margin-bottom: 20px;
           }
           .inner-header {
-               padding-top: 100px;
+               padding-top: 160px;
           }
     }
     @media screen and (max-width: 649px) and (min-width: 0px) {
@@ -1271,7 +1282,7 @@ $this->registerCss("
                margin-bottom: 30px;
           }
           .inner-header {
-               padding-top: 80px;
+               padding-top: 90px;
           }
           .inner-header > h3 {
                font-size: 20px;
@@ -1293,7 +1304,7 @@ $script = <<< JS
                return false;
             }
          $('#modal').modal('show'); 
-         })
+         });
    
    $('input[name="JobApplied[check]"]').on('change',function()
        {
