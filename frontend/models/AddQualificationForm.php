@@ -44,7 +44,7 @@ class AddQualificationForm extends Model {
         $userEducationModel->field = $this->field;
         $userEducationModel->created_by = Yii::$app->user->identity->user_enc_id;
         $userEducationModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
-        $userEducationModel->created_on = date('Y-m-d h:i:s');
+        $userEducationModel->created_on = date('Y-m-d H:i:s');
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userEducationModel->education_enc_id = $utilitiesModel->encrypt();
         if (!$userEducationModel->validate() || !$userEducationModel->save()) {

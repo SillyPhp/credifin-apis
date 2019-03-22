@@ -19,7 +19,11 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_cou
             ]);
             ?>
             <?= Html::submitButton('Save', ['class' => 'btn blue custom-buttons2 submit pull-right']); ?>
-            <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Title'])->label(false); ?>
+            <?php if ($type=='clone'||$type=='edit'):
+            echo  $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Title','value'=>$process['process_name']])->label(false);
+            else:
+            echo  $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Title'])->label(false);
+            endif; ?>
             <?= $form->field($model, 'process_data', ['template' => '{input}'])->hiddenInput(['id' => 'process_data'])->label(false); ?>
             <?= $form->field($model, 'process_validate', ['template' => '{input}'])->hiddenInput(['id' => 'process_validate'])->label(false); ?>
 
@@ -48,7 +52,7 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_cou
             </div>
             <div id="error_placement"></div>
             <?php
-            if ($type=='clone'):
+            if ($type=='clone'|| $type == 'edit'):
                 echo $this->render('/widgets/processes/process_view_bar', [
                     'form' => $form,
                     'model' => $model,
@@ -302,9 +306,9 @@ $(document).on('click','.clickable',function(e)
             document.querySelector('.drag_placeholder').style.display = 'none';
         }
    }
-if (doc_type=='clone')
+if (doc_type=='clone'||doc_type=='edit')
     {
-        count_elem = elements_total_count;
+        count_elem = elements_total_count-2; 
         elem_chk();
         getData();
         checkDiv();
@@ -418,55 +422,55 @@ if (doc_type=='clone')
 
     function process1() {
         var field = generateField();
-        var html = '<li class="a form_output" data-type="interview_process"><i class="fa fa-phone" aria-hidden="true"></i> Phone Interview<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="a form_output" data-type="interview_process"><i class="fa fa-phone" aria-hidden="true"></i><span class="hiring_label">Phone Interview</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process2() {
         var field = generateField();
-        var html = '<li class="b form_output" data-type="interview_process"><i class="fa fa-user" aria-hidden="true"></i> Personal Interview<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="b form_output" data-type="interview_process"><i class="fa fa-user" aria-hidden="true"></i><span class="hiring_label">Personal Interview</span> <a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process3() {
         var field = generateField();
-        var html = '<li class="c form_output" data-type="interview_process"><i class="fa fa-cogs" aria-hidden="true"></i> Technical Inteview<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="c form_output" data-type="interview_process"><i class="fa fa-cogs" aria-hidden="true"></i> <span class="hiring_label">Technical Inteview</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process4() {
         var field = generateField();
-        var html = '<li class="dform_output" data-type="interview_process"><i class="fa fa-user-circle" aria-hidden="true"></i> HR Interview<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="d form_output" data-type="interview_process"><i class="fa fa-user-circle" aria-hidden="true"></i> <span class="hiring_label">HR Interview</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process5() {
         var field = generateField();
-        var html = '<li class="e" data-type="interview_process"><i class="fa fa-users" aria-hidden="true"></i> Group Discussion<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="e form_output" data-type="interview_process"><i class="fa fa-users" aria-hidden="true"></i><span class="hiring_label">Group Discussion</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process6() {
         var field = generateField();
-        var html = '<li class="f form_output" data-type="interview_process"><i class="fa fa-video-camera" aria-hidden="true"></i> Video Call<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="f form_output" data-type="interview_process"><i class="fa fa-video-camera" aria-hidden="true"></i><span class="hiring_label">Video Call</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process7() {
         var field = generateField();
-        var html = '<li class="g form_output" data-type="interview_process"><i class="fa fa-check" aria-hidden="true"></i> Employee Verification<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="g form_output" data-type="interview_process"><i class="fa fa-check" aria-hidden="true"></i><span class="hiring_label">Employee Verification</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process8() {
         var field = generateField();
-        var html = '<li class="h form_output" data-type="interview_process"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Written Examination<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="h form_output" data-type="interview_process"><i class="fa fa-pencil-square-o" aria-hidden="true"></i><span class="hiring_label">Written Examination</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
     function process9() {
         var field = generateField();
-        var html = '<li class="j form_output" data-type="interview_process"><i class="fa fa-envelope" aria-hidden="true"></i> Offer Letter<a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
+        var html = '<li class="j form_output" data-type="interview_process"><i class="fa fa-envelope" aria-hidden="true"></i><span class="hiring_label">Offer Letter</span><a href="#" class="edit_process" data-field="' + field + '"><i class= "fa fa-pencil-square-o"></i></a><a href="#" class="remove_process" data-field="' + field + '"><i class= "fa fa-times"></i></a><ul class="process_desc"><textarea type="text" name="name_' + field + '" placeholder="Add Description(optional)" class="form-control custom_font"></textarea></ul></li>';
         return $('<div>').addClass('li_' + field + ' form_builder_field').html(html);
     }
 
@@ -479,6 +483,7 @@ if (doc_type=='clone')
         count_elem--;
         elem_chk();
         getData();
+        checkDiv();
     });
 
     $('#process_form').validate({
@@ -553,23 +558,35 @@ if (doc_type=='clone')
             var data_type = $(this).attr('data-type');
 
             if (data_type === 'interview_process') {
-                var label = $(this).text();
-                var name = $(this).text();
-                var icon = $(this).find('i').attr('class');
-                var help_text = $(this).find('.custom_font').val();
+                var label = $.trim($(this).find('.hiring_label').text());
+                var name = $.trim($(this).find('.hiring_label').text());
+                var icon = $.trim($(this).find('i').attr('class'));
+                var help_text = $.trim($(this).find('.custom_font').val());
+                if (doc_type=='edit'){
+                    var field_enc_id = $(this).find('.field_enc_id').val();
+                     var obj = {
+                    'label': label,
+                    'name': name,
+                    'icon': icon,
+                    'help_text': help_text,
+                    'field_enc_id': field_enc_id,
+                };
+                }
+                else{ 
                 var obj = {
                     'label': label,
                     'name': name,
                     'icon': icon,
-                    'help_text': help_text
+                    'help_text': help_text,
                 };
+                }
                 result.push(obj);
             }
             if (data_type === 'custom_process') {
-                var label = $(this).find('.valid_input').val();
-                var name = $(this).find('.valid_input').val();
-                var icon = $(this).find('i').attr('class');
-                var help_text = $(this).find('.custom_font').val();
+                var label = $.trim($(this).find('.valid_input').val());
+                var name = $.trim($(this).find('.valid_input').val());
+                var icon = $.trim($(this).find('i').attr('class'));
+                var help_text = $.trim($(this).find('.custom_font').val());
                 var obj1 = {
                     'label': label,
                     'name': name,

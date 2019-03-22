@@ -44,12 +44,12 @@ use yii\widgets\Pjax;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title="" class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
 
                     </li>
                     <li class="inner-child">
-                        <a href="/user-profile/edit" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
                                     class="fa fa-pencil-square-o"></i>Edit Profile</a>
 
                     </li>
@@ -79,7 +79,7 @@ use yii\widgets\Pjax;
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/company/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
                     </li>
                     <li class="inner-child">

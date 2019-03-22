@@ -41,7 +41,7 @@ use yii\helpers\Url;
                                                                     <?= $applied['title']?>
                                                                 </a>
                                                             </div>
-                                                            <div class="cd-u-p-company"><a href="/company/<?= $applied['org_slug']?>"><?= $applied['org_name']?></a>
+                                                            <div class="cd-u-p-company"><a href="/<?= $applied['org_slug']?>"><?= $applied['org_name']?></a>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-8">

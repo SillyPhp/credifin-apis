@@ -44,7 +44,7 @@ echo $this->render('/widgets/header/secondary-header', [
                                                     <div class="cd-box-border" id="cd-box-border">
                                                         <div class="row">
                                                             <div class=" cd-user-icon col-md-6">
-                                                                <a href="<?= '/user/' . $arr['username'] ?>"
+                                                                <a href="<?= '/' . $arr['username'] ?>"
                                                                    target="_blank">
                                                                     <?php if ($arr['image']): ?>
                                                                         <img src="<?= $arr['image'] ?>"
@@ -57,14 +57,14 @@ echo $this->render('/widgets/header/secondary-header', [
                                                                 </a>
                                                             </div>
                                                             <div class="vj-btn col-md-6">
-                                                                <a href="<?= '/user/' . $arr['username'] ?>">View
+                                                                <a href="<?= '/' . $arr['username'] ?>">View
                                                                     Profile</a>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="cd-user-detail col-md-2">
                                                                 <div class="cd-u-name">
-                                                                    <a href="<?= '/user/' . $arr['username'] ?>"
+                                                                    <a href="<?= '/' . $arr['username'] ?>"
                                                                        target="_blank">
                                                                         <?= $arr['name'] ?>
                                                                     </a>

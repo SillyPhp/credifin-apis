@@ -16,7 +16,7 @@ foreach ($services['menu_items'] as $service) {
 
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
-    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/company/' . Yii::$app->user->identity->organization->slug : '/user/' . Yii::$app->user->identity->username),
+    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username),
     'template' => '<a href="{url}" target="_blank">{label}</a>',
 ];
 array_push($result, $profile);

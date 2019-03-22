@@ -11,7 +11,7 @@ if ($organization_data) {
         <div class="col-md-3 hr-j-box">
             <div class="topic-con">
                 <div class="hr-company-box">
-                    <a href="/company/<?= $shortlist['slug']; ?>">
+                    <a href="/<?= $shortlist['slug']; ?>">
                         <div class="hr-com-icon">
                             <?php
                             if (empty($shortlist['logo_location'])) {
@@ -46,7 +46,7 @@ if ($organization_data) {
                                 </button>
                             </div>
                             <div class="col-md-offset-3 col-md-6 minus-15-pad j-grid">
-                                <a  href="/company/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
+                                <a  href="/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
                             </div>
                         </div>
                     </div>

@@ -38,7 +38,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 
-$keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
+$keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,Internships near me';
 $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
@@ -424,7 +424,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
-                            <a href="/company/<?= $org['slug']; ?>">
+                            <a href="/<?= $org['slug']; ?>">
                                 <?php
                                 if (!empty($org['logo'])) {
                                     ?>
@@ -440,7 +440,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             </a>
                         </div>
                         <div class="job-head-info">
-                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
+                            <a href="/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
                             <?php if ($org['website']): ?>
                                 <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
                             <?php endif; ?>

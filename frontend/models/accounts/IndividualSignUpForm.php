@@ -8,6 +8,7 @@ use common\models\RandomColors;
 use common\models\Utilities;
 use common\models\UserTypes;
 use common\models\Users;
+use common\models\Usernames;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
@@ -55,7 +56,7 @@ class IndividualSignUpForm extends Model
             [['phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
             ['email', 'unique', 'targetClass' => Users::className(), 'message' => 'This email address has already been used.'],
-            ['username', 'unique', 'targetClass' => Users::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
         ];
@@ -90,26 +91,38 @@ class IndividualSignUpForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $utilitiesModel = new Utilities();
-            $usersModel = new Users();
-            $usersModel->username = $this->username;
-            $usersModel->first_name = $this->first_name;
-            $usersModel->last_name = $this->last_name;
-            $usersModel->email = $this->email;
-            $usersModel->phone = $this->phone;
-            $usersModel->initials_color = RandomColors::one();
-            $utilitiesModel->variables['password'] = $this->new_password;
-            $usersModel->password = $utilitiesModel->encrypt_pass();
-            $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $usersModel->user_enc_id = $utilitiesModel->encrypt();
-            $usersModel->auth_key = Yii::$app->security->generateRandomString();
-            $usersModel->status = 'Active';
-            if (!$usersModel->validate() || !$usersModel->save()) {
+            $usernamesModel = new Usernames();
+            $usernamesModel->username = $this->username;
+            $usernamesModel->assigned_to = 1;
+            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
                 $transaction->rollBack();
                 $this->_flag = false;
             } else {
                 $this->_flag = true;
+            }
+
+            if ($this->_flag) {
+                $utilitiesModel = new Utilities();
+                $usersModel = new Users();
+                $usersModel->username = $this->username;
+                $usersModel->first_name = $this->first_name;
+                $usersModel->last_name = $this->last_name;
+                $usersModel->email = $this->email;
+                $usersModel->phone = $this->phone;
+                $usersModel->initials_color = RandomColors::one();
+                $utilitiesModel->variables['password'] = $this->new_password;
+                $usersModel->password = $utilitiesModel->encrypt_pass();
+                $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $usersModel->user_enc_id = $utilitiesModel->encrypt();
+                $usersModel->auth_key = Yii::$app->security->generateRandomString();
+                $usersModel->status = 'Active';
+                if (!$usersModel->validate() || !$usersModel->save()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if ($this->_flag) {

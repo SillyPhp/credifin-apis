@@ -8,10 +8,9 @@ use common\models\RandomColors;
 use common\models\Utilities;
 use common\models\UserTypes;
 use common\models\Users;
+use common\models\Usernames;
 use common\models\Organizations;
-use common\models\OrganizationTypes;
 use common\models\BusinessActivities;
-use common\models\Industries;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
@@ -57,7 +56,7 @@ class OrganizationSignUpForm extends Model
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
             [['username', 'email', 'organization_email'], 'string', 'max' => 50],
-            [['new_password', 'confirm_password'], 'string', 'max' => 20],
+            [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
             [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
@@ -69,7 +68,7 @@ class OrganizationSignUpForm extends Model
             ['organization_email', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_email' => 'email'], 'message' => 'This email address has already been used.'],
             ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
-            ['username', 'unique', 'targetClass' => Users::className(), 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
             [['organization_business_activity'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_business_activity' => 'business_activity_enc_id']],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
         ];
@@ -109,6 +108,16 @@ class OrganizationSignUpForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $usernamesModel = new Usernames();
+            $usernamesModel->username = $this->username;
+            $usernamesModel->assigned_to = 2;
+            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                $transaction->rollBack();
+                $this->_flag = false;
+            } else {
+                $this->_flag = true;
+            }
+
             $utilitiesModel = new Utilities();
             $usersModel = new Users();
             $usersModel->username = $this->username;

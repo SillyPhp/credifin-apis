@@ -1,6 +1,8 @@
 <?php
-
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
 ?>
 <div class="row">
@@ -125,6 +127,8 @@ use yii\widgets\Pjax;
                         <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
+                        |
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted1" class="tab-link caption-subject font-dark uppercase">Shorlisted 1</li>
 
                     </ul>
                 </div>
@@ -362,6 +366,71 @@ use yii\widgets\Pjax;
                                         </div>
                                     <?php } ?>
                                 </div>
+                                <div id="tab-5" class="tab-con">
+                                    <?php
+                                    if ($shortlist1) {
+                                        foreach ($shortlist1 as $shortlist) {
+                                            ?>
+                                    <div class="col-md-3 hr-j-box">
+                                        <div class="topic-con">
+                                            <div class="hr-company-box">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name">
+                                                    <?= $shortlist['org_name'] ?>
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $shortlist['name']?>
+                                                </div>
+<!--                                                <div class="opening-txt">-->
+<!--                                                    12 Openings-->
+<!--                                                </div>-->
+                                                <div class="overlay2">
+                                                    <div class="text-o">
+                                                <?php if($applied_jobs){?>
+                                                        <a class="over-bttn ob2 hover_short apply-btn" disabled="disabled">
+                                                            <i class="fa fa-check"></i>Applied</a>
+                                                <?php }else{?>
+                                                    <a class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                <?php } ?>
+                                                    </div>
+                                                </div>
+                                                <div class="hr-com-jobs">
+                                                    <div class="row ">
+                                                        <div class="col-md-12 col-sm-12 minus-15-pad">
+<!--                                                            <div class=" j-cross">-->
+<!--                                                                <button class="rmv_list" value="">-->
+<!--                                                                    <i class="fa fa-times"></i>-->
+<!--                                                                </button>-->
+<!--                                                            </div>-->
+                                                            <div class=" j-grid">
+                                                                <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <div class="col-md-12">
+                                            <div class="tab-empty">
+                                                <div class="tab-empty-icon">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                </div>
+                                                <div class="tab-empty-text">
+                                                    <div class="">There are no Jobs to show.</div>
+                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    } ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -384,7 +453,7 @@ use yii\widgets\Pjax;
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <?=
+                    <?php
                     $this->render('/widgets/organization/card', [
                         'organization_data' => $shortlist_org,
                     ]);
@@ -394,6 +463,77 @@ use yii\widgets\Pjax;
         </div>
     </div>
 </div>
+
+<!--apply comapany modal-->
+
+<?php if (!empty($data['applicationPlacementLocations'])) {
+    $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
+}?>
+
+<?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fill Out The Details</h4>
+                </div>
+                <div class="modal-body">
+                    <?php if (!empty($location)) {
+                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
+                    } ?>
+                    <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
+                    <?php
+                    if ($que > 0) {
+
+                        $ques = 1;
+                    } else {
+
+                        $ques = 0;
+                    }
+                    ?>
+                    <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
+                    <?php
+                    if ($resume) {
+                        $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
+                    } else {
+                        $checkList = [1 => 'Upload New'];
+                    }
+                    ?>
+                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
+
+                    <div id="new_resume">
+                        <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
+                    </div>
+                    <?php if ($resume) { ?>
+                        <div id="use_existing">
+                            <div class="row">
+                                <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
+                                <?php foreach ($resume as $res) {
+                                    ?>
+                                    <div class="col-md-offset-1 col-md-10">
+                                        <div class="radio_questions">
+                                            <div class="inputGroup">
+                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
+                                                       type="radio" value="<?= $res['resume_enc_id']; ?>"/>
+                                                <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php }
+                                ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div class="modal-footer">
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php ActiveForm::end(); ?>
+
 <?php
 $this->registerCss('
 .tab-empty{
@@ -521,8 +661,214 @@ li.current{
 a:hover{
     text-decoration:none;
 }
+
+#new_resume,#use_existing{
+        display:none;
+}
+    
+#warn{
+        color:#e9465d;
+        display:none;
+}
+
+.sub_description_1,sub_description_2{
+        display:none;
+} 
+
+.fader{
+      width:100%;
+      height:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      display:none;
+      z-index:99;
+      background-color:#fff;
+      opacity:0.7;
+    }
+
 ');
 $script = <<<JS
+
+//modal start
+
+$(document).on('click','.apply-btn',function(e)
+            {
+             e.preventDefault();
+             if($('.apply-btn').attr("disabled") == "disabled")
+            {
+               return false;
+            }
+         $('#modal').modal('show'); 
+         });
+   
+   $('input[name="JobApplied[check]"]').on('change',function()
+       {
+        if($(this).val() == 1)
+        {
+          $('#use_existing').css('display','none')
+          $('#new_resume').css('display','block');
+        }
+        else if($(this).val() == 0)
+        {
+           $('#resume_form').yiiActiveForm('validate',false);
+            $('#new_resume').css('display','none');
+            $('#use_existing').css('display','block');
+            
+        }
+        })
+        
+         var que_id = $('#question_id').val();
+         var fill_que = $('#fill_question').val();
+        
+        $(document).on('click','.sav_job',function(e)
+            {
+                e.preventDefault();
+               if($('input[name="JobApplied[location_pref][]"]:checked').length <= 0)
+               {
+                $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-location_pref');
+                   return false;
+                }
+               if($('input[name="JobApplied[check]"]:checked').length > 0){
+                if($('input[name="JobApplied[check]"]:checked').val() == 0)
+                {
+                    if($('input[name="JobApplied[resume_list]"]:checked').length == 0)
+                    {
+                     $('#warn').css('display','block');
+                     $('input[name="JobApplied[check]"]').focus();
+                     return false;   
+                    }
+                    else if ($('input[name="JobApplied[resume_list]"]:checked').length > 0)
+                    {
+                      var formData = new FormData();
+                      var id = $('#application_id').val();
+                      var check = 1;
+                       var loc_array = [];
+                       $("input[name='JobApplied[location_pref][]']:checked").each(function(){
+                        loc_array.push($(this).val()); 
+                        });
+                      var resume_enc_id = $('input[name="JobApplied[resume_list]"]').val();
+                      formData.append('application_enc_id',id);
+                      formData.append('resume_enc_id',resume_enc_id);
+                      formData.append('fill_que',fill_que);
+                      formData.append('check',check);
+                      if($('#question_id').val() == 1)
+                        {
+                          var status = 'incomplete';
+                          formData.append('status',status);
+                        }
+                      else
+                        {
+                          var status = 'Pending';
+                          formData.append('status',status);
+                        }
+                      var json_loc = JSON.stringify(loc_array);
+                      formData.append('json_loc',json_loc);
+                      ajax_call(formData);
+                      $('#warn').css('display','none');
+                    }
+                 }
+         else if($('input[name="JobApplied[check]"]:checked').val()==1)
+          {     
+                if($('#resume_file').val() != '') {            
+                 $.each($('#resume_file').prop("files"), function(k,v){
+                 var filename = v['name'];    
+                 var ext = filename.split('.').pop().toLowerCase();
+                if($.inArray(ext, ['pdf','doc','docx']) == -1) {
+                return false;
+              }
+          else
+        {
+            var formData = new FormData();
+             var loc_array = [];
+                       $("input[name='JobApplied[location_pref][]']:checked").each(function(){
+                        loc_array.push($(this).val()); 
+                        });
+            var formData = new FormData($('form')[0]);
+                 var id = $('#application_id').val();
+                 if($('#question_id').val() == 1)
+                        {
+                          var status = 'incomplete';
+                          formData.append('status',status);
+                        }
+                    else
+                        {
+                          var status = 'Pending';
+                          formData.append('status',status);
+                        }
+                formData.append('id',id);
+                var json_loc = JSON.stringify(loc_array);
+                formData.append('json_loc',json_loc);
+                ajax_call(formData);
+              }
+            });      
+            }
+            }
+           }
+          else
+         {
+         $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
+         return false;
+            }
+            })
+        
+        function ajax_call(formData)
+        {
+            $.ajax({
+                    url:'/account/jobs/jobs-apply',
+                    dataType: 'text',  
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: formData,                         
+                    type: 'post',
+                 beforeSend:function()
+                 {
+                 $('.sav_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                 },     
+                 success:function(data)
+                 {
+            var res = JSON.parse(data);
+            if(res.status == true && $('#question_id').val() == 1){
+                        applied();
+                        $('.sub_description_2').css('display','block');
+                        $('.sub_description_1').css('display','none');
+                        $('#message_img').addClass('show');
+                        $('.fader').css('display','block');
+                     }
+                    else if(res.status == true)
+                      {
+                        $('.sub_description_1').css('display','block');
+                        $('.sub_description_2').css('display','none');
+                        $('#message_img').addClass('show');
+                        $('.fader').css('display','block');
+                        applied();
+                      }
+                      else
+                         {
+                           alert('something went wrong..');
+                         }
+                      }
+                    });
+                    }
+  
+    function applied()
+        {
+             $('#modal').modal('toggle');
+                     $('.apply-btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                     $('.apply-btn').html('<i class = "fa fa-check"></i>Applied');
+                     $('.apply-btn').attr("disabled","true");
+            }
+
+ $(document).on('click','#close_btn',function()
+ {
+    $('.fader').css('display','none');
+    $(this).parent().removeClass('show');
+})      
+
+//modal end
+
+
 $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
 })

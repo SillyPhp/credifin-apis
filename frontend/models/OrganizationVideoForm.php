@@ -47,7 +47,7 @@ class OrganizationVideoForm extends Model {
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $organizationVideosModel->video_enc_id = $utilitiesModel->encrypt();
             $organizationVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
-            $organizationVideosModel->created_on = date('Y-m-d h:i:s');
+            $organizationVideosModel->created_on = date('Y-m-d H:i:s');
             if ($organizationVideosModel->validate() && $organizationVideosModel->save()) {
                 return true;
             } else {
