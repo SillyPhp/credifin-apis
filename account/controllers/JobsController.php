@@ -942,9 +942,6 @@ class JobsController extends Controller
             ->asArray()
             ->all();
 
-        print_r($applicatoin_enc_id);
-        die();
-
         $object = new ApplicationForm();
 
         $resumes = UserResume::find()
