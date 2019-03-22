@@ -1,8 +1,9 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details->logo_location . DIRECTORY_SEPARATOR . $org_details->logo;
 ?>
 <section class="rh-header">
     <div class="container">
@@ -10,13 +11,23 @@ use yii\bootstrap\ActiveForm;
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
                 <div class="logo-box">
                     <div class="logo">
-                        <!--<img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">-->
-                        <img src="<?= Url::to('@eyAssets/images/pages/review/dummy-logo.png') ?>">
+                        <?php
+                        if (!empty($org_details->logo)) {
+                            ?>
+                            <img src="<?= $logo_image; ?>">
+                            <?php
+                        } else {
+                            ?>
+                            <canvas class="user-icon" name="<?= $org_details->name; ?>" width="125" height="125"
+                                    color="" font="55px"></canvas>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name">Company Name</div>
+                <div class="com-name"><?= $org_details->name; ?></div>
                 <div class="com-rating-1">
                     <i class="fa fa-star active"></i>
                     <i class="fa fa-star active"></i>
@@ -24,7 +35,7 @@ use yii\bootstrap\ActiveForm;
                     <i class="fa fa-star active"></i>
                     <i class="fa fa-star"></i>
                 </div>
-                <div class="com-rate">4/5 - based on 234 reviews</div>
+                <div class="com-rate">4/5 - based on <?= count($reviews); ?> reviews</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -33,12 +44,16 @@ use yii\bootstrap\ActiveForm;
                             <button type="button"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
                         </div>
                         <div class="wr-bttn hvr-icon-pulse">
+                            <?php if (!Yii::$app->user->isGuest): ?>
                             <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                            <?php else: ?>
+                                <a href="<?= Url::to('/login'); ?>" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
-                            <a href="/site/company-profile" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                            <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
                         </div>
                     </div>
                 </div>
@@ -50,313 +65,126 @@ use yii\bootstrap\ActiveForm;
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style">Company Name Reviews </h1>
-                <div class="re-box refirst">
-                    <div class="col-md-2 col-sm-2">
-                        <div class="uicon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
-                        </div>
-                        <div class="uname">Employee Name</div>
-                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
-                    </div>
-                    <div class="col-md-10 col-sm-10 user-review-main">
-                        <div class="col-md-6 col-sm-6">
-                            <div class="com-rating">
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star"></i>
-                                <div class="num-rate">4.50/5.00</div>
-                                <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
+                <h1 class="heading-style"><?= $org_details->name; ?> Reviews </h1>
+                <?php foreach ($reviews as $review){
+                    ?>
+                    <div class="re-box refirst">
+                        <div class="col-md-2 col-sm-2">
+                            <?php if ($review['show_user_details']==1){ ?>
+                            <div class="uicon">
+                                <?php
+                                if (!empty($review['user_logo_location']) || !empty($review['user_logo'])):
+                                $image = Yii::$app->params->upload_directories->users->image . $review['user_logo_location'] . DIRECTORY_SEPARATOR . $review['user_logo']; ?>
+                                <img src="<?= $image; ?>">
+                                <?php else: ?>
+                                <?php
+                                    $first = $review['first_name'];
+                                    $last = $review['last_name'];
+                                    $name = strtoupper($first[0].''.$last[0]);
+                                    $color = ltrim($review['initials_color'],'#');
+                                    $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
+                                ?>
+                                <span><img src="<?= $image ?>" class="preview_img" alt="" width="50" height="50"></span>
+                                <?php endif; ?>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="re-bttn">
-                                <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
-                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
+                            <div class="uname"><?= $review['first_name'].' '.$review['last_name']; ?></div>
+                            <?php } else { ?>
+                            <div class="uicon">
+                                <img src="https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg" width="50" height="50">
                             </div>
-                            <div class="publish-date">Published 54 minutes ago</div>
-                            <div class="emp-duration">Current Employee</div>
+                             <div class="uname">Anonymous</div>
+                            <?php } ?>
                         </div>
-                        <div class="col-md-12">
-                            <div class="utitle">
-                                Job Title
-                            </div>
-                        </div>
-                        <div class=" col-md-12 user-saying">
-                            <div class="uheading">Likes</div>
-                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
-                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
-                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
-                                suscipiantur his et.
-                            </div>
-                            <div class="uheading padd-10">Dislikes</div>
-                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
-                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
-                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
-                                suscipiantur his et.
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 user-rating">
-                                <div class="ur-bg padd-lr-5">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Job Security</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Career Growth</div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Company Culture</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Salary & Benefits</div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Work Satisfaction</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Work-Life Balance </div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Skill Development</div>
+                        <?php $average = $review['average'];
+                        ?>
+                        <div class="col-md-10 col-sm-10 user-review-main">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="com-rating">
+                                    <?php  for($i=1; $i<=5; $i++)
+                                    { ?>
+                                        <i class="fa fa-star <?= (($i<=$average) ? 'active' : '') ?>"></i>
+                                    <?php } ?>
+                                    <div class="num-rate"><?= $average.'/5'; ?></div>
+                                    <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="ushare">
-                                <div class="ushare-heading">Share</div>
-                                <i class="fa fa-facebook-square"></i>
-                                <i class="fa fa-twitter-square"></i>
-                                <i class="fa fa-linkedin-square"></i>
-                                <i class="fa fa-google-plus-square"></i>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="usefull-bttn pull-right">
-                                <div class="use-bttn">
-                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="re-bttn">
+                                    <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
                                 </div>
-                                <div class="notuse-bttn">
-                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
+                                <div class="publish-date">Published on <?= date('d-m-Y',strtotime($review['created_on'])); ?></div>
+                                <div class="emp-duration"><?= (($review['is_current_employee']) ? 'Current Employee' : 'Former Employee'); ?></div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="utitle">
+                                    <?= $review['profile'] ?>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="re-box">
-                    <div class="col-md-2 col-sm-2">
-                        <div class="uicon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/uicon.png') ?>">
-                        </div>
-                        <div class="uname">Employee Name</div>
-                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
-                    </div>
-                    <div class="col-md-10 col-sm-10 user-review-main">
-                        <div class="col-md-6 col-sm-6">
-                            <div class="com-rating">
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star"></i>
-                                <div class="num-rate">4.50/5.00</div>
-                                <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="re-bttn">
-                                <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
-                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
-                            </div>
-                            <div class="publish-date">Published 54 minutes ago</div>
-                            <div class="emp-duration">Current Employee</div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="utitle">
-                                Job Title
-                            </div>
-                        </div>
-                        <div class=" col-md-12 user-saying">
-                            <div class="uheading">Likes</div>
-                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
-                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
-                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
-                                suscipiantur his et.
-                            </div>
-                            <div class="uheading padd-10">Dislikes</div>
-                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
-                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
-                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
-                                suscipiantur his et.
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 user-rating">
-                                <div class="ur-bg padd-lr-5">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Job Security</div>
+                            <div class=" col-md-12 user-saying">
+                                <div class="uheading">Likes</div>
+                                <div class="utext">
+                                    <?= $review['likes']; ?>
                                 </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Career Growth</div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Company Culture</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Salary & Benefits</div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Work Satisfaction</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Work-Life Balance </div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Skill Development</div>
+                                <div class="uheading padd-10">Dislikes</div>
+                                <div class="utext">
+                                    <?= $review['dislikes']; ?>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="ushare">
-                                <div class="ushare-heading">Share</div>
-                                <i class="fa fa-facebook-square"></i>
-                                <i class="fa fa-twitter-square"></i>
-                                <i class="fa fa-linkedin-square"></i>
-                                <i class="fa fa-google-plus-square"></i>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="usefull-bttn pull-right">
-                                <div class="use-bttn">
-                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
+                            <div class="row">
+                                <div class="col-md-12 user-rating">
+                                    <div class="ur-bg padd-lr-5">
+                                        <div class="urating"><?= $review['job_security'] ?>/5</div>
+                                        <div class="uratingtitle">Job Security</div>
+                                    </div>
+                                    <div class="ur-bg light-bg">
+                                        <div class="urating"><?= $review['growth'] ?>/5</div>
+                                        <div class="uratingtitle">Career Growth</div>
+                                    </div>
+                                    <div class="ur-bg">
+                                        <div class="urating"><?= $review['organization_culture'] ?>/5</div>
+                                        <div class="uratingtitle">Company Culture</div>
+                                    </div>
+                                    <div class="ur-bg light-bg">
+                                        <div class="urating"><?= $review['compensation'] ?>/5</div>
+                                        <div class="uratingtitle">Salary & Benefits</div>
+                                    </div>
+                                    <div class="ur-bg">
+                                        <div class="urating"><?= $review['work'] ?>/5</div>
+                                        <div class="uratingtitle">Work Satisfaction</div>
+                                    </div>
+                                    <div class="ur-bg light-bg">
+                                        <div class="urating"><?= $review['work_life'] ?>/5</div>
+                                        <div class="uratingtitle">Work-Life Balance </div>
+                                    </div>
+                                    <div class="ur-bg">
+                                        <div class="urating"><?= $review['skill_development'] ?>/5</div>
+                                        <div class="uratingtitle">Skill Development</div>
+                                    </div>
                                 </div>
-                                <div class="notuse-bttn">
-                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="ushare">
+                                    <div class="ushare-heading">Share</div>
+                                    <i class="fa fa-facebook-square"></i>
+                                    <i class="fa fa-twitter-square"></i>
+                                    <i class="fa fa-linkedin-square"></i>
+                                    <i class="fa fa-google-plus-square"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="usefull-bttn pull-right">
+                                    <div class="use-bttn">
+                                        <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
+                                    </div>
+                                    <div class="notuse-bttn">
+                                        <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="re-box">
-                    <div class="col-md-2 col-sm-2">
-                        <div class="uicon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
-                        </div>
-                        <div class="uname">Employee Name</div>
-                        <!--<div class="emp-duration">Current Employee, Worked Since 10 july 2018 - Present  </div>-->
-                    </div>
-                    <div class="col-md-10 col-sm-10 user-review-main">
-                        <div class="col-md-6 col-sm-6">
-                            <div class="com-rating">
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star"></i>
-                                <div class="num-rate">4.50/5.00</div>
-                                <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="re-bttn">
-                                <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
-                                <!--                            <button type="button"><i class="fa fa-thumbs-up"></i></button>
-                                                            <button type="button"><i class="fa fa-thumbs-down fa-flip-horizontal"></i></button>-->
-                            </div>
-                            <div class="publish-date">Published 54 minutes ago</div>
-                            <div class="emp-duration">Current Employee</div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="utitle">
-                                Job Title
-                            </div>
-                        </div>
-                        <div class=" col-md-12 user-saying">
-                            <div class="uheading">Likes</div>
-                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
-                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
-                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
-                                suscipiantur his et.
-                            </div>
-                            <div class="uheading padd-10">Dislikes</div>
-                            <div class="utext">Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod scaevola
-                                sea. Et nec tantas accusamus salutatus, sit commodo veritus te, erat legere fabulas has
-                                ut. Rebum laudem cum ea, ius essent fuisset ut. Viderer petentium cu his. Tollit molestie
-                                suscipiantur his et.
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 user-rating">
-                                <div class="ur-bg padd-lr-5">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Job Security</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Career Growth</div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Company Culture</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Salary & Benefits</div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Work Satisfaction</div>
-                                </div>
-                                <div class="ur-bg light-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Work-Life Balance </div>
-                                </div>
-                                <div class="ur-bg">
-                                    <div class="urating">4/5</div>
-                                    <div class="uratingtitle">Skill Development</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <div class="ushare">
-                                <div class="ushare-heading">Share</div>
-                                <i class="fa fa-facebook-square"></i>
-                                <i class="fa fa-twitter-square"></i>
-                                <i class="fa fa-linkedin-square"></i>
-                                <i class="fa fa-google-plus-square"></i>
-                            </div>
-                        </div>
-                        <div class="col-md-8 col-sm-6">
-                            <div class="usefull-bttn pull-right">
-                                <div class="use-bttn">
-                                    <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
-                                </div>
-                                <div class="notuse-bttn">
-                                    <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
+                    <div class="clearfix"></div>
+                <?php } ?>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button">Load More</button>
                 </div>
@@ -931,6 +759,17 @@ $this->registerCss('
     -webkit-animation-iteration-count: infinite;
     animation-iteration-count: infinite;
 }
+.btn_review
+{
+    background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 9px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    display:block;
+    text-transform: uppercase;
+}
 .hvr-icon-pulse:before{
     content:"" !important;
 }
@@ -1271,13 +1110,26 @@ var popup = new ideaboxPopup({
 					}
 			]
 			});
+if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
-
+}
+JS;
+$headScript = <<< JS
+function review_post_ajax(data) {
+	$.ajax({
+       method: 'POST',
+       url : '/organizations/post-reviews?slug='+slug+'',
+	   data:{data:data},
+       success: function(response) {
+               console.log(response);
+       }
+   });
+}
 JS;
 $this->registerJs($script);
-
+$this->registerJs($headScript,yii\web\View::POS_HEAD);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
