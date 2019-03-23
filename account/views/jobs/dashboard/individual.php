@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
+use yii\bootstrap\Modal;
 ?>
 <div class="row">
     <?php
@@ -388,11 +389,11 @@ use yii\widgets\Pjax;
 <!--                                                </div>-->
                                                 <div class="overlay2">
                                                     <div class="text-o">
-                                                <?php if($applied_jobs){?>
+                                                <?php if($shortlist[appliedApplications]){?>
                                                         <a class="over-bttn ob2 hover_short apply-btn" disabled="disabled">
                                                             <i class="fa fa-check"></i>Applied</a>
                                                 <?php }else{?>
-                                                    <a class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                    <a id="<?=$shortlist['application_enc_id']?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
                                                 <?php } ?>
                                                     </div>
                                                 </div>
@@ -464,75 +465,6 @@ use yii\widgets\Pjax;
     </div>
 </div>
 
-<!--apply comapany modal-->
-
-<?php if (!empty($data['applicationPlacementLocations'])) {
-    $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
-}?>
-
-<?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
-    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Fill Out The Details</h4>
-                </div>
-                <div class="modal-body">
-                    <?php if (!empty($location)) {
-                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
-                    } ?>
-                    <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $data['application_enc_id']]); ?>
-                    <?php
-                    if ($que > 0) {
-
-                        $ques = 1;
-                    } else {
-
-                        $ques = 0;
-                    }
-                    ?>
-                    <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
-                    <?php
-                    if ($resume) {
-                        $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
-                    } else {
-                        $checkList = [1 => 'Upload New'];
-                    }
-                    ?>
-                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
-
-                    <div id="new_resume">
-                        <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
-                    </div>
-                    <?php if ($resume) { ?>
-                        <div id="use_existing">
-                            <div class="row">
-                                <label id="warn" class="col-md-offset-1 col-md-3">Select One</label>
-                                <?php foreach ($resume as $res) {
-                                    ?>
-                                    <div class="col-md-offset-1 col-md-10">
-                                        <div class="radio_questions">
-                                            <div class="inputGroup">
-                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
-                                                       type="radio" value="<?= $res['resume_enc_id']; ?>"/>
-                                                <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php }
-                                ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-                <div class="modal-footer">
-                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php ActiveForm::end(); ?>
 
 <?php
 $this->registerCss('
@@ -692,17 +624,28 @@ $script = <<<JS
 
 //modal start
 
-$(document).on('click','.apply-btn',function(e)
-            {
-             e.preventDefault();
+$(document).on('click','.apply-btn',function(){
+             var app_enc_id = $(this).attr('id');
+             if(app_enc_id){
+                 $.ajax({
+                    type:'post',
+                    url:'/account/jobs/shortlist-apply',
+                    data:{application_enc_id:app_enc_id},
+                    success:function(response){
+                        var res = JSON.parse(response);
+                    }
+                 });
+             }
              if($('.apply-btn').attr("disabled") == "disabled")
             {
                return false;
             }
-         $('#modal').modal('show'); 
-         });
-   
-   $('input[name="JobApplied[check]"]').on('change',function()
+             $('#modal').modal('show')
+             .find('#modalContent')
+             .load($(this).attr('value')); 
+});
+
+$('input[name="JobApplied[check]"]').on('change',function()
        {
         if($(this).val() == 1)
         {
@@ -864,10 +807,9 @@ $(document).on('click','.apply-btn',function(e)
  {
     $('.fader').css('display','none');
     $(this).parent().removeClass('show');
-})      
+})
 
 //modal end
-
 
 $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
@@ -973,3 +915,6 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css');
 $this->registerCssFile('@backendAssets/global/css/components.min.css');
+
+?>
+

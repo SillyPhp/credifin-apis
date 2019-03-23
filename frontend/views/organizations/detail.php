@@ -470,7 +470,7 @@ $this->registerCss('
 $script = <<<JS
 
 var data = {
-    company_name: window.location.pathname.split('/')[2]
+    company_name: window.location.pathname.split('/')[1]
 };
 $.ajax({
     type: 'POST',
