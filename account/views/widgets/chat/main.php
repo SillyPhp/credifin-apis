@@ -2,191 +2,28 @@
 use yii\helpers\Url;
 ?>
 
+<input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user">
+<input type="hidden" value="<?= Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>" id="current-name">
+
 <div class="chat-btn">
     <button type="button" id="trigger"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png')?>"></button>
 </div>
+
 <div class="chat-list fadeout" id="fader">
-    <div class="chat-list-heading">Connections</div>
+    <div class="chat-list-heading">Conversations</div>
     <div class="srch-form">
         <form>
-            <input type="text" placeholder="Search">
+            <input type="text" id="search-user" placeholder="Search">
         </form>
     </div>
-    <ul>
-        <li>
-            <button class="chat-click" type="button" id="1">
-                <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Shshank Vasisht</div>
-            </div>
-            </button>
-        </li>
-        <li>
-            <button class="chat-click" type="button" id="2">
-            <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Shalya Gupta</div>
-            </div>
-            </button>
-        </li>
-        <li>
-            <button class="chat-click" type="button" id="3">
-            <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Ajay Juneja</div>
-            </div>
-            </button>
-        </li>
-        <li>
-            <button class="chat-click" type="button" id="4">
-            <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Shashank Bansal</div>
-            </div>
-            </button>
-        </li>
-        <li>
-            <button class="chat-click" type="button" id="5">
-            <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Nikhil Kumar</div>
-            </div>
-            </button>
-        </li>
-        <li>
-            <button class="chat-click" type="button" id="6">
-            <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Sourav Chayal</div>
-            </div>
-            </button>
-        </li>
-        <li>
-            <button class="chat-click" type="button" id="7">
-            <div class="chat-person">
-                <div class="c-icon"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>"></div>
-                <div class="c-name">Tarandeep Singh Rakhra</div>
-            </div>
-            </button>
-        </li>
+    <ul class="conversations-list">
+
     </ul>
 </div>
-<div class="chat-section fadeout" id="fader1">
-    <div class="portlet light ">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="icon-bubble font-hide hide"></i>
-                <span class="caption-subject font-hide bold uppercase">Chat</span>
-            </div>
-<!--            <div class="actions">-->
-<!--                <div class="portlet-input input-inline">-->
-<!--                    <div class="input-icon right">-->
-<!--                        <i class="icon-magnifier"></i>-->
-<!--                        <input type="text" class="form-control input-circle" placeholder="search..."> </div>-->
-<!--                </div>-->
-<!--            </div>-->
-            <div class="closeBtn">
-                <button type="button" onclick="closeButton()">X</button>
-            </div>
-        </div>
-        <div class="portlet-body" id="chats">
-            <div class="scroller"data-always-visible="1" data-rail-visible1="1">
-                <ul class="chats">
-                    <li class="out">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Lisa Wong </a>
-<!--                            <span class="datetime"> at 20:11 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="out">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Lisa Wong </a>
-<!--                            <span class="datetime"> at 20:11 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="in">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Bob Nilson </a>
-<!--                            <span class="datetime"> at 20:30 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="in">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Bob Nilson </a>
-<!--                            <span class="datetime"> at 20:30 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="out">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Richard Doe </a>
-<!--                            <span class="datetime"> at 20:33 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="in">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Richard Doe </a>
-<!--                            <span class="datetime"> at 20:35 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="out">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Bob Nilson </a>
-<!--                            <span class="datetime"> at 20:40 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="in">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Richard Doe </a>
-<!--                            <span class="datetime"> at 20:40 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </span>
-                        </div>
-                    </li>
-                    <li class="out">
-<!--                        <img class="avatar" alt="" src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?><!--" />-->
-                        <div class="message">
-                            <span class="arrow"> </span>
-                            <a href="javascript:;" class="name"> Bob Nilson </a>
-<!--                            <span class="datetime"> at 20:54 </span>-->
-                            <span class="body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. sed diam nonummy nibh euismod tincidunt ut laoreet. </span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="chat-form">
-                <div class="input-cont">
-                    <input class="form-control" type="text" placeholder="Type a message here..." /> </div>
-                <div class="btn-cont">
-                    <span class="arrow"> </span>
-                    <a href="" class="btn blue icn-only">
-                        <i class="fa fa-check icon-white"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+<div class="chat-section" id="chat-box">
+
 </div>
 <?php
 $this->registerCss("
@@ -196,7 +33,7 @@ $this->registerCss("
 .chat-btn{
     position:fixed;
     bottom:10px;
-    right:20px;
+    right:30px;
 }
 .chat-btn button{
     background:none;
@@ -268,8 +105,16 @@ $this->registerCss("
     max-width:400px;
     max-height:300px !important; 
      position:fixed;
-    bottom:100px;
-    right:250px;
+    bottom:70px;
+    right:342px;
+    z-index:99999;
+}
+#msg-box{position:relative;min-height:300px;}
+.chat-form{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 .chats li.in .message{
     margin-left: 10px !important;
@@ -285,11 +130,13 @@ $this->registerCss("
 }
 .scroller{
     max-width:350px;
+    min-width:250px;
     max-height: 250px !important;
     overflow: hidden;
     width: auto;
     bottom:100px;
     right:50px;
+    padding-bottom:50px;
 }
 .closeBtn{
     position:absolute;
@@ -315,10 +162,50 @@ $this->registerCss("
 .portlet.light{
     padding:12px 10px 15px !important;
 }
+
+element.style {
+}
+.scroller {
+    overflow-y: scroll;
+}
+.conversations-list{
+    max-height: 300px;
+    overflow-y: scroll;
+    width: 320px;
+}
 ");
 $script = <<<JS
-document.getElementById('trigger').addEventListener('click', showDiv);
+
+    var db = firebase.database();
+
+    $(document).on('keyup', '#search-user', function(e){
+        if(e.keyCode >= 65 && e.keyCode <= 90){
+            var data = {
+                key : $(this).val() 
+            };
+            if(data["key"]){
+                $.ajax({
+                    type: 'POST',
+                    url: '/account/chat/search-user',
+                    data: data,
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        if(response.length > 0){
+                          var template = $('#conversations').html();
+                          var rendered = Mustache.render(template, response);
+                          $('.conversations-list').html(rendered);
+                          utilities.initials();
+                        }
+                    }
+                });
+            }
+        }
+    });
+  
+  //trigger chat list
+ document.getElementById('trigger').addEventListener('click', showDiv);
 	
+ //function for triggering chat list
  function showDiv(){
     var a = document.getElementById('fader');
     if(a.classList.contains('fadeout')){
@@ -327,73 +214,278 @@ document.getElementById('trigger').addEventListener('click', showDiv);
     }else{
         a.classList.remove('fadein');
         a.classList.add('fadeout');
+        var msgbox = document.getElementById('msg-box');
+        msgbox.remove();
+        
     }
  }
  
-
-    document.addEventListener('click',function(e) {
-        var b = e.srcElement;
-        if(b.className == "chat-person" || b.className == "c-name" || b.className == "chat-click" || b.className == "c-icon" ){
-            console.log(b.closest("button").id);
-            var a = document.getElementById('fader1');
-                if(a.classList.contains('fadeout')){
-                    a.classList.remove('fadeout');
-                    a.classList.add('fadein');
-                }else{
-                    a.classList.remove('fadein');
-                    a.classList.add('fadeout');
-                }
-           } 
-    })
+ $(document).on('click','#close-btn', function(){
+     var msgbox = document.getElementById('msg-box');
+     msgbox.remove();
+ });
+ 
+ function getUniqueId(){
+     var user_id = $('#msginput').parent().attr('id');
+     var current_user = $('#current-user').val();
+     if(user_id < current_user){
+         return user_id + current_user
+     }else{
+         return current_user + user_id;
+     }
+ }
+ 
+ function sendMessage(){
+     
+     var msginput = $('#msginput').val();
+     var user_id = $('#msginput').parent().attr('id');
+     var current_user = $('#current-user').val();
+     var unique_id = getUniqueId();
+     
+     if(msginput){
+        
+         var converseRef = db.ref('/conversations/' + unique_id );
+         
+         var data = {
+            sender : current_user,
+            receiver : user_id,
+            message : msginput,
+         };
+         var key = converseRef.push(data).key;
+       
+        // var converseRef = db.ref('/conversations/' + unique_id );
+        // converseRef.on('child_added', function(data){
+        //     if(data.val().sender == $('#current-user').val()){
+        //         var res = {
+        //             message : data.val().message,
+        //             sender : $('#current-name').val()
+        //         }
+        //         var temp2 = $('#message-sent').html();
+        //         var render2 = Mustache.render(temp2, res);
+        //         $('.message-list').append(render2);
+        //     }else{
+        //         var res = {
+        //             message : data.val().message,
+        //             receiver : $('#msginput').parent().attr('data-name')
+        //         }
+        //         var temp2 = $('#message-received').html();
+        //         var render2 = Mustache.render(temp2, res);
+        //         $('.message-list').append(render2);
+        //     }
+        //  });
+        $('#msginput').val('');
+        $('#msginput').focus();
+     }
+ }
+ 
+ $(document).on('click','#sendmsg', function(){
+    sendMessage();    
+ });
+ $(document).on("keypress", "#msginput",function(event){
+    if(event.which == '13'){
+        sendMessage();
+    }
+});
+ function showNewData(data){
+        if(data.val().sender == $('#current-user').val()){
+            var res = {
+                message : data.val().message,
+                sender : $('#current-name').val()
+            }
+            var temp2 = $('#message-sent').html();
+            var render2 = Mustache.render(temp2, res);
+            $('.message-list').append(render2);
+        }else{
+            var res = {
+                message : data.val().message,
+                receiver : $('#msginput').parent().attr('data-name')
+            }
+            var temp2 = $('#message-received').html();
+            var render2 = Mustache.render(temp2, res);
+            $('.message-list').append(render2);
+        }
+ }
+    
+ document.addEventListener('click',function(e) {
+    var b = e.srcElement;
+    if(b.className == "chat-person" || b.className == "c-name" || b.className == "chat-click" || b.className == "c-icon" ){
+            var data = {
+                id: b.closest("button").id
+            };
+            
+            var result = {};
+            $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: '/account/chat/get-name',
+                    data: data,
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        result['response'] = response;
+                    }
+            });
+            
+            var temp1 = $('#message-box').html();
+            var render1 = Mustache.render(temp1, result['response']);
+            $('#chat-box').html(render1);            
+            
+            firebase
+                .database()
+                .ref('/conversations/' + getUniqueId())
+                .off();
+            
+            firebase
+                .database()
+                .ref('/conversations/' + getUniqueId())
+                .on('child_added', showNewData);
+            
+            // var unique_id = getUniqueId();
+            //
+            // var converseRef = db.ref('/conversations/' + unique_id );
+            // converseRef.once('value')
+            //     .then(function(d){
+            //             $.each(d.val(), function(key, data){
+            //                 if(data.sender == $('#current-user').val()){
+            //                     var res = {
+            //                         message : data.message,
+            //                         sender : $('#current-name').val()
+            //                     };
+            //                     var temp2 = $('#message-sent').html();
+            //                     var render2 = Mustache.render(temp2, res);
+            //                     $('.message-list').append(render2);
+            //                 }else{
+            //                     var resp = {
+            //                         message : data.message,
+            //                         receiver : $('#msginput').parent().attr('data-name')
+            //                     };
+            //                     var temp3 = $('#message-received').html();
+            //                     var render3 = Mustache.render(temp3, resp);
+            //                     $('.message-list').append(render3);
+            //                 }
+            //             })
+            //     })
+    }
+  })
  
  function chats() {
-            var e = $("#chats"),
-                t = $(".chats", e),
-                a = $(".chat-form", e),
-                i = $("input", a),
-                l = $(".btn", a),
-                o = function(a) {
-                    a.preventDefault();
-                    var l = i.val();
-                    if (0 != l.length) {
-                        var o = new Date,
-                            n = o.getHours() + ":" + o.getMinutes(),
-                            r = "";
-                        r += '<li class="out">', r += '<img class="avatar" alt="" src="/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg"/>', r += '<div class="message">', r += '<span class="arrow"></span>', r += '<a href="#" class="name">Bob Nilson</a>&nbsp;', r += '<span class="datetime">at ' + n + "</span>", r += '<span class="body">', r += l, r += "</span>", r += "</div>", r += "</li>";
-                        t.append(r);
-                        i.val("");
-                        var s = function() {
-                            var t = 0;
-                            return e.find("li.out, li.in").each(function() {
-                                t += $(this).outerHeight()
-                            }), t
-                        };
-                        e.find(".scroller").slimScroll({
-                            scrollTo: s()
-                        })
-                    }
+    var e = $("#chats"),
+        t = $(".chats", e),
+        a = $(".chat-form", e),
+        i = $("input", a),
+        l = $(".btn", a),
+        o = function(a) {
+            a.preventDefault();
+            var l = i.val();
+            if (0 != l.length) {
+                var o = new Date,
+                    n = o.getHours() + ":" + o.getMinutes(),
+                    r = "";
+                r += '<li class="out">', r += '<img class="avatar" alt="" src="/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg"/>', r += '<div class="message">', r += '<span class="arrow"></span>', r += '<a href="#" class="name">Bob Nilson</a>&nbsp;', r += '<span class="datetime">at ' + n + "</span>", r += '<span class="body">', r += l, r += "</span>", r += "</div>", r += "</li>";
+                t.append(r);
+                i.val("");
+                var s = function() {
+                    var t = 0;
+                    return e.find("li.out, li.in").each(function() {
+                        t += $(this).outerHeight()
+                    }), t
                 };
-            $("body").on("click", ".message .name", function(e) {
-                e.preventDefault();
-                var t = $(this).text();
-                i.val("@" + t + ":"), App.scrollTo(i)
-            }), l.click(o), i.keypress(function(e) {
-                if (13 == e.which) return o(e), !1
-            })
-        }
+                e.find(".scroller").slimScroll({
+                    scrollTo: s()
+                })
+            }
+        };
+    $("body").on("click", ".message .name", function(e) {
+        e.preventDefault();
+        var t = $(this).text();
+        i.val("@" + t + ":"), App.scrollTo(i)
+    }), l.click(o), i.keypress(function(e) {
+        if (13 == e.which) return o(e), !1
+    })
+ }
+        
  chats();
- 
  
 JS;
 $this->registerJs($script);
-//$this->registerJsFile('@eyAssets/js/chat.min.js');
 ?>
+<script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
 <script>
-    function closeButton() {
-        var fader1 = document.getElementById('fader1');
-        if(fader1.classList.contains('fadein')){
-            fader1.classList.remove('fadein');
-            fader1.classList.add('fadeout');
-        }
-    }
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDRQXJJP1rOOh8omclQ7146ME-oL9tNDAg",
+        authDomain: "empoweryouth-49c18.firebaseapp.com",
+        databaseURL: "https://empoweryouth-49c18.firebaseio.com",
+        projectId: "empoweryouth-49c18",
+        storageBucket: "empoweryouth-49c18.appspot.com",
+        messagingSenderId: "173074095977"
+    };
+    firebase.initializeApp(config);
+</script>
+<script id="conversations" type="text/template">
+    {{#.}}
+    <li>
+    <button class="chat-click" type="button" id="{{user_enc_id}}">
+        <div class="chat-person">
+            {{#image}}
+                <div class="c-icon"><img src="{{image}}"></div>
+            {{/image}}
+            {{^image}}
+            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"
+                    color="{{initials_color}}" font="18px"></canvas>
+            {{/image}}
+            <div class="c-name">{{first_name}} {{last_name}}</div>
+    </div>
+    </button>
+    </li>
+    {{/.}}
+</script>
+
+<script id="message-sent" type="text/template">
+    <li class="out">
+        <div class="message">
+        <span class="arrow"> </span>
+        <a href="javascript:;" class="name">{{sender}}</a>
+    <span class="body">{{message}}</span>
+    </div>
+    </li>
+</script>
+<script id="message-received" type="text/template">
+    <li class="in">
+        <div class="message">
+            <span class="arrow"> </span>
+            <a href="javascript:;" class="name">{{receiver}}</a>
+            <span class="body">{{message}}</span>
+        </div>
+    </li>
+</script>
+<script id="message-box" type="text/template">
+    <div class="portlet light dynamic-chat" id="msg-box">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-bubble font-hide hide"></i>
+                <span class="caption-subject font-hide bold uppercase">{{first_name}} {{last_name}}</span>
+            </div>
+            <div class="closeBtn">
+                <button type="button" id="close-btn">X</button>
+            </div>
+        </div>
+        <div class="portlet-body" id="chats">
+            <div class="scroller" data-always-visible="1" data-rail-visible1="1">
+                <ul class="chats message-list">
+
+                </ul>
+            </div>
+            <div class="chat-form">
+                <div class="input-cont" id="{{user_enc_id}}" data-name="{{first_name}} {{last_name}}">
+                    <input class="form-control" type="text" placeholder="Type a message here..." id="msginput"/>
+                </div>
+                <div class="btn-cont" id="sendmsg">
+                    <span class="arrow"> </span>
+                    <a href="#" class="btn blue icn-only">
+                        <i class="fa fa-check icon-white"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </script>
