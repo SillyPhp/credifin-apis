@@ -84,7 +84,7 @@ class InternshipsController extends Controller
                 ->asArray()
                 ->one();
             $primary_cat = Categories::find()
-                ->select(['name'])
+                ->select(['name','icon_png'])
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();

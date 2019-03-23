@@ -5,9 +5,9 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 $this->params['header_dark'] = false;
 $this->title = 'Job Preview';
-$object->fixed_wage = (($object->fixed_wage) ? str_replace(',', '', $object->fixed_wage) : '');
-$object->min_wage = (($object->min_wage) ? str_replace(',', '', $object->min_wage) : '');
-$object->max_wage = (($object->max_wage) ? str_replace(',', '', $object->max_wage) : '');
+$object->fixed_wage = (($object->fixed_wage) ? str_replace(',', '', $object->fixed_wage) : 0);
+$object->min_wage = (($object->min_wage) ? str_replace(',', '', $object->min_wage) : 0);
+$object->max_wage = (($object->max_wage) ? str_replace(',', '', $object->max_wage) : 0);
 if (!empty($object->skillsArray))
 {
     $s = json_decode($object->skillsArray);
@@ -152,6 +152,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
     'org_image_location'=>Yii::$app->user->identity->organization->cover_image_location,
     'org_image'=>Yii::$app->user->identity->organization->cover_image,
     'job_title'=>$object->title,
+    'icon_png'=>$primary_cat['icon_png'],
     'shortlist'=>null,
 ]);
 ?>
