@@ -8,6 +8,50 @@ $this->title = 'Job Preview';
 $object->fixed_wage = (($object->fixed_wage) ? str_replace(',', '', $object->fixed_wage) : '');
 $object->min_wage = (($object->min_wage) ? str_replace(',', '', $object->min_wage) : '');
 $object->max_wage = (($object->max_wage) ? str_replace(',', '', $object->max_wage) : '');
+if (!empty($object->skillsArray))
+{
+    $s = json_decode($object->skillsArray);
+    $c = count($s);
+    for ($i = 0;$i<$c;$i++)
+    {
+        $skills[$i]['skill'] = $s[$i];
+    }
+}
+if (!empty($object->qualifications_arr))
+{
+    $e = json_decode($object->qualifications_arr);
+    $cnt = count($e);
+    for ($i = 0;$i<$cnt;$i++)
+    {
+        $ed[$i]['educational_requirement'] = $e[$i];
+    }
+}
+if (!empty($object->placement_loc))
+{
+    $pl_loc = json_decode($object->placement_loc,true);
+    foreach ($pl_loc as $key=>$val){
+        $placement_locations[$key]['positions'] = $val['value'];
+        $placement_locations[$key]['name'] = $val['name'];
+    }
+}
+if (!empty($object->checkboxArray))
+{
+    $j = json_decode($object->checkboxArray);
+    $count = count($j);
+    for ($i = 0;$i<$count;$i++)
+    {
+        $jd[$i]['job_description'] = $j[$i];
+    }
+}
+if (!empty($object->getinterviewcity))
+{
+    $int = json_decode($object->getinterviewcity);
+    $count_int = count($int);
+    for ($i = 0;$i<$count_int;$i++)
+    {
+        $int_t[$i]['name'] = $int[$i];
+    }
+}
 switch ($object->min_exp)
 {
     case '0':
@@ -36,75 +80,72 @@ switch ($object->min_exp)
         break;
 }
 switch ($object->wage_type) {
-    case 1:
+    case '1':
         $object->wage_type = 'Fixed';
         break;
-    case 2:
+    case '2':
         $object->wage_type = 'Negotiable';
         break;
-    case 3:
+    case '3':
         $object->wage_type = 'Performance Based';
         break;
-    case 0:
+    case '0':
         $object->wage_type = 'Unpaid';
         break;
-    default:
-        $object->wage_type = 'Unpaid';
 }
-
 if ($type=='Job') {
     if ($object->wage_type == 'Fixed') {
         if ($object->wage_duration == 'Monthly') {
-            $object->fixed_wage = $object->fixed_wage * 12;
+            $fixd = $object->fixed_wage * 12;
         } elseif ($object->wage_duration == 'Hourly') {
-            $object->fixed_wage = $object->fixed_wage * 40 * 52;
+            $fixd = $object->fixed_wage * 40 * 52;
         } elseif ($object->wage_duration == 'Weekly') {
-            $object->fixed_wage = $object->fixed_wage * 52;
+            $fixd = $object->fixed_wage * 52;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $object->fixed_wage)) . 'p.a.';
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $fixd)) . 'p.a.';
     } else if ($object->wage_type == 'Negotiable') {
         if ($object->wage_duration == 'Monthly') {
-            $object->min_wage = $object->min_wage * 12;
-            $object->max_wage = $object->max_wage * 12;
+            $min_wage = $object->min_wage * 12;
+            $max_wage = $object->max_wage * 12;
         } elseif ($object->wage_duration == 'Hourly') {
-            $object->min_wage = $object->min_wage * 40 * 52;
-            $object->max_wage = $object->max_wage * 40 * 52;
+            $min_wage = $object->min_wage * 40 * 52;
+            $max_wage = $object->max_wage * 40 * 52;
         } elseif ($object->wage_duration == 'Weekly') {
-            $object->min_wage = $object->min_wage * 52;
-            $object->max_wage = $object->max_wage * 52;
+            $min_wage = $object->min_wage * 52;
+            $max_wage = $object->max_wage * 52;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        if (!empty($object->min_wage) && !empty($object->max_wage)) {
-            $amount = '₹' . utf8_encode(money_format('%!.0n', $object->min_wage)) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $object->max_wage)) . 'p.a.';
-        } elseif (!empty($object->min_wage)) {
-            $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $object->min_wage)) . 'p.a.';
-        } elseif (!empty($object->max_wage)) {
-            $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $object->max_wage)) . 'p.a.';
-        } elseif (empty($object->min_wage) && empty($object->max_wage)) {
+        if (!empty($min_wage) && !empty($max_wage)) {
+            $amount = '₹' . utf8_encode(money_format('%!.0n', $min_wage)) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $max_wage)) . 'p.a.';
+        } elseif (!empty($min_wage)) {
+            $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $min_wage)) . 'p.a.';
+        } elseif (!empty($max_wage)) {
+            $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $max_wage)) . 'p.a.';
+        } elseif (empty($min_wage) && empty($max_wage)) {
             $amount = 'Negotiable';
         }
     }
 }
 if ($type=='Internship') {
-    if ($data['wage_type'] == 'Fixed') {
+    if ($object->wage_type == 'Fixed') {
         if ($data['wage_duration'] == 'Hourly') {
-            $data['fixed_wage'] = $data['fixed_wage'] * 24 * 30;
-        } elseif ($data['wage_duration'] == 'Weekly') {
-            $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
+            $fixd = $object->fixed_wage * 24 * 30;
+        } elseif ($object->wage_duration == 'Weekly') {
+            $fixd = $object->fixed_wage / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.';
-    } elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based') {
-        if ($data['wage_duration'] == 'Hourly') {
-            $data['min_wage'] = $data['min_wage'] * 24 * 30;
-            $data['max_wage'] = $data['max_wage'] * 24 * 30;
-        } elseif ($data['wage_duration'] == 'Weekly') {
-            $data['min_wage'] = $data['min_wage'] / 7 * 30;
-            $data['max_wage'] = $data['max_wage'] / 7 * 30;
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $fixd)) . 'p.m.';
+    } elseif ($object->wage_type == 'Negotiable' || $object->wage_type == 'Performance Based') {
+        if ($object->wage_duration == 'Hourly') {
+            $min_wage = $object->min_wage * 24 * 30;
+            $max_wage = $object->max_wage * 24 * 30;
+        } elseif ($object->wage_duration == 'Weekly') {
+            $min_wage = $object->min_wage / 7 * 30;
+            $max_wage = $object->max_wage / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $min_wage)) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $max_wage)) . 'p.m.';
     }
 }
 echo $this->render('/widgets/employer_applications/top-banner', [
@@ -123,15 +164,15 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                             <?php if ($type=='Internship')
                             {
                                 echo $this->render('/widgets/employer_applications/internship-overview', [
-                                    'placement_offer'=>$data['has_placement_offer'],
-                                    'profile_name'=>$data['name'],
-                                    'wage_duration'=>$data['wage_duration'],
-                                    'wage_type'=>$data['wage_type'],
-                                    'max_wage'=>$data['max_wage'],
-                                    'min_wage'=>$data['min_wage'],
-                                    'gender'=>$data['preferred_gender'],
-                                    'fixed_wage'=>$data['fixed_wage'],
-                                    'placement_locations'=>$data['applicationPlacementLocations'],
+                                    'placement_offer'=>$object->has_placement_offer,
+                                    'profile_name'=>$primary_cat['name'],
+                                    'wage_duration'=>$object->wage_duration,
+                                    'wage_type'=>$object->wage_type,
+                                    'max_wage'=>$max_wage,
+                                    'min_wage'=>$min_wage,
+                                    'gender'=>$object->gender,
+                                    'fixed_wage'=>$fixd,
+                                    'placement_locations'=>$placement_locations,
                                 ]);
                             }
                             else if ($type=='Job')
@@ -143,38 +184,49 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                                     'job_type'=>$object->type,
                                     'wage_duration'=>$object->wage_duration,
                                     'wage_type'=>$object->wage_type,
-                                    'max_wage'=>$object->max_wage,
-                                    'min_wage'=>$object->min_wage,
+                                    'max_wage'=>$max_wage,
+                                    'min_wage'=>$min_wage,
                                     'gender'=>$object->gender,
-                                    'fixed_wage'=>$object->fixed_wage,
+                                    'fixed_wage'=>$fixd,
                                     'experience'=>$experience,
-                                    'placement_locations'=>$data['applicationPlacementLocations'],
+                                    'placement_locations'=>$placement_locations,
                                 ]);
                             } ?>
                         </div>
                         <div class="job-details">
                             <?=
+                            $this->render('/widgets/employer_applications/working-days', [
+                                'working_days'=>json_encode($object->weekdays)
+                            ]);
+                            ?>
+                            <?=
+                            $this->render('/widgets/employer_applications/working-time', [
+                                'working_time_from'=>$object->from,
+                                'working_time_to'=>$object->to
+                            ]);
+                            ?>
+                            <?=
                             $this->render('/widgets/employer_applications/employee-benefits', [
                                 'benefits'=>$benefits
                             ]);
                             ?>
-<!--                            --><?php//=
-//                            $this->render('/widgets/employer_applications/skills', [
-//                                'skills'=>$object->skillsArray
-//                            ]);
-//                            ?>
-<!--                            --><?php//=
-//                            $this->render('/widgets/employer_applications/job-description', [
-//                                'job_description'=>$object->checkboxArray,
-//                                'type'=>$type,
-//                            ]);
-//                            ?>
+                            <?=
+                            $this->render('/widgets/employer_applications/skills', [
+                                'skills'=>$skills
+                            ]);
+                            ?>
+                            <?=
+                            $this->render('/widgets/employer_applications/job-description', [
+                                'job_description'=>$jd,
+                                'type'=>$type,
+                            ]);
+                            ?>
 
-<!--                            --><?php//=
-//                            $this->render('/widgets/employer_applications/educational-requirements', [
-//                                'educational_requirements'=>$data['applicationEducationalRequirements'],
-//                            ]);
-//                            ?>
+                              <?=
+                            $this->render('/widgets/employer_applications/educational-requirements', [
+                                'educational_requirements'=>$ed,
+                            ]);
+                           ?>
                         <?=
                         $this->render('/widgets/employer_applications/other-details', [
                                 'other_details'=>$object->othrdetail,
@@ -186,7 +238,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                         $this->render('/widgets/employer_applications/interview-details', [
                                 'interview_start'=>$object->startdate.' '.$object->interviewstarttime,
                                 'interview_end'=>$object->enddate.' '.$object->interviewendtime,
-                                //'interview_locations'=>$object->getinterviewcity,
+                                'interview_locations'=>$int_t,
                         ]);
                         ?>
                     </div>
@@ -200,7 +252,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                         'org_name'=>Yii::$app->user->identity->organization->name,
                         'slug'=>Yii::$app->user->identity->organization->slug,
                         'website'=>Yii::$app->user->identity->organization->website,
-                      'type'=>$type,
+                        'type'=>$type,
                         'applied'=>false,
                         'application_slug'=>'Empoweryouth',
                 ]);

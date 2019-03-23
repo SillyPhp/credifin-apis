@@ -167,7 +167,7 @@ class JobsController extends Controller
 
     public function actionJobPreview($eipdk)
     {
-        if ($eipdk) {
+        if (!empty($eipdk)) {
             $type = 'Job';
             $var = $eipdk;
             $session = Yii::$app->session;

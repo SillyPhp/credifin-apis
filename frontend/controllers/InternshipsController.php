@@ -68,21 +68,20 @@ class InternshipsController extends Controller
         return $this->render('index');
     }
 
-    public function actionInternshipPreview()
+    public function actionInternshipPreview($eipdk)
     {
-        if ($_GET['data']) {
-            $var = $_GET['data'];
+        if (!empty($eipdk)) {
+            $var = $eipdk;
             $session = Yii::$app->session;
             $object = $session->get($var);
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $indstry = Industries::find()
-                ->where(['industry_enc_id' => $object->pref_inds])
+            $industry = Industries::find()
+                ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
                 ->asArray()
                 ->one();
-
             $primary_cat = Categories::find()
                 ->select(['name'])
                 ->where(['category_enc_id' => $object->primaryfield])
@@ -102,7 +101,7 @@ class InternshipsController extends Controller
 
             return $this->render('internship-preview', [
                 'object' => $object,
-                'indst' => $indstry,
+                'industry' => $industry,
                 'primary_cat' => $primary_cat,
                 'benefits' => $benefits
             ]);
