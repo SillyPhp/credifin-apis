@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
-$keywords = 'Jobs services in india,Apply for internship in india,Best career sites in india,Top 50 job portals in india,Summer internships,Paid internships,Online jobs,Best job portal in India,Jobs services in india,Jobs services in ludhiana';
+$keywords = 'Jobs services in india,Apply for Internship in India,Best Career sites in India,Top 50 job portals in india,Summer internships,Paid internships,Online jobs,Best job portal in India,Jobs services in india,Jobs services in ludhiana';
 $description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
