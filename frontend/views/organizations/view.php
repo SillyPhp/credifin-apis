@@ -1001,11 +1001,11 @@ $(document).on('click','.follow',function(e){
          $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
         },
         success:function(data){  
-            if(data == 'following'){
+            if(data.message == 'Following'){
                 $('.follow').html('Following');
                 $('.follow').addClass('followed');
             }
-            else if(data=='unfollow'){
+            else if(data.message == 'Unfollow'){
                 $('.follow').html('Follow');
                 $('.follow').removeClass('followed');
             }

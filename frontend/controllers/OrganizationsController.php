@@ -425,6 +425,7 @@ class OrganizationsController extends Controller
     public function actionFollow()
     {
         if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             $org_id = Yii::$app->request->post("org_id");
             $chkuser = FollowedOrganizations::find()
                 ->select('followed')
@@ -447,23 +448,39 @@ class OrganizationsController extends Controller
                 $followed->last_updated_on = date('Y-m-d H:i:s');
                 $followed->last_updated_by = Yii::$app->user->identity->user_enc_id;
                 if ($followed->save()) {
-                    return 'following';
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Following',
+                    ];
                 } else {
-                    return false;
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'Error',
+                    ];
                 }
             } else if ($status == 1) {
                 $update = Yii::$app->db->createCommand()
                     ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
                     ->execute();
                 if ($update == 1) {
-                    return 'unfollow';
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Unfollow',
+                    ];
                 }
             } else if ($status == 0) {
                 $update = Yii::$app->db->createCommand()
                     ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
                     ->execute();
                 if ($update == 1) {
-                    return 'following';
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Following',
+                    ];
                 }
             }
         }
