@@ -1,10 +1,9 @@
 <?php
+
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
+use frontend\models\applications\CandidateApply;
 ?>
 <div class="row">
     <?php
@@ -394,8 +393,11 @@ use yii\bootstrap\Modal;
                                                             <i class="fa fa-check"></i>Applied</a>
                                                 <?php }else{?>
                                                     <a id="<?=$shortlist['application_enc_id']?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+
                                                 <?php } ?>
                                                     </div>
+                                                    <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/">Apply</a></div>
+                                                    <?= CandidateApply::widget(['application_enc_id' => $shortlist['application_enc_id'],'btn_class'=>'apply-btn']) ?>
                                                 </div>
                                                 <div class="hr-com-jobs">
                                                     <div class="row ">
@@ -454,7 +456,7 @@ use yii\bootstrap\Modal;
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <?php
+                    <?=
                     $this->render('/widgets/organization/card', [
                         'organization_data' => $shortlist_org,
                     ]);
@@ -593,223 +595,9 @@ li.current{
 a:hover{
     text-decoration:none;
 }
-
-#new_resume,#use_existing{
-        display:none;
-}
-    
-#warn{
-        color:#e9465d;
-        display:none;
-}
-
-.sub_description_1,sub_description_2{
-        display:none;
-} 
-
-.fader{
-      width:100%;
-      height:100%;
-      position:fixed;
-      top:0;
-      left:0;
-      display:none;
-      z-index:99;
-      background-color:#fff;
-      opacity:0.7;
-    }
-
 ');
 $script = <<<JS
 
-//modal start
-
-$(document).on('click','.apply-btn',function(){
-             var app_enc_id = $(this).attr('id');
-             if(app_enc_id){
-                 $.ajax({
-                    type:'post',
-                    url:'/account/jobs/shortlist-apply',
-                    data:{application_enc_id:app_enc_id},
-                    success:function(response){
-                        var res = JSON.parse(response);
-                    }
-                 });
-             }
-             if($('.apply-btn').attr("disabled") == "disabled")
-            {
-               return false;
-            }
-             $('#modal').modal('show')
-             .find('#modalContent')
-             .load($(this).attr('value')); 
-});
-
-$('input[name="JobApplied[check]"]').on('change',function()
-       {
-        if($(this).val() == 1)
-        {
-          $('#use_existing').css('display','none')
-          $('#new_resume').css('display','block');
-        }
-        else if($(this).val() == 0)
-        {
-           $('#resume_form').yiiActiveForm('validate',false);
-            $('#new_resume').css('display','none');
-            $('#use_existing').css('display','block');
-            
-        }
-        })
-        
-         var que_id = $('#question_id').val();
-         var fill_que = $('#fill_question').val();
-        
-        $(document).on('click','.sav_job',function(e)
-            {
-                e.preventDefault();
-               if($('input[name="JobApplied[location_pref][]"]:checked').length <= 0)
-               {
-                $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-location_pref');
-                   return false;
-                }
-               if($('input[name="JobApplied[check]"]:checked').length > 0){
-                if($('input[name="JobApplied[check]"]:checked').val() == 0)
-                {
-                    if($('input[name="JobApplied[resume_list]"]:checked').length == 0)
-                    {
-                     $('#warn').css('display','block');
-                     $('input[name="JobApplied[check]"]').focus();
-                     return false;   
-                    }
-                    else if ($('input[name="JobApplied[resume_list]"]:checked').length > 0)
-                    {
-                      var formData = new FormData();
-                      var id = $('#application_id').val();
-                      var check = 1;
-                       var loc_array = [];
-                       $("input[name='JobApplied[location_pref][]']:checked").each(function(){
-                        loc_array.push($(this).val()); 
-                        });
-                      var resume_enc_id = $('input[name="JobApplied[resume_list]"]').val();
-                      formData.append('application_enc_id',id);
-                      formData.append('resume_enc_id',resume_enc_id);
-                      formData.append('fill_que',fill_que);
-                      formData.append('check',check);
-                      if($('#question_id').val() == 1)
-                        {
-                          var status = 'incomplete';
-                          formData.append('status',status);
-                        }
-                      else
-                        {
-                          var status = 'Pending';
-                          formData.append('status',status);
-                        }
-                      var json_loc = JSON.stringify(loc_array);
-                      formData.append('json_loc',json_loc);
-                      ajax_call(formData);
-                      $('#warn').css('display','none');
-                    }
-                 }
-         else if($('input[name="JobApplied[check]"]:checked').val()==1)
-          {     
-                if($('#resume_file').val() != '') {            
-                 $.each($('#resume_file').prop("files"), function(k,v){
-                 var filename = v['name'];    
-                 var ext = filename.split('.').pop().toLowerCase();
-                if($.inArray(ext, ['pdf','doc','docx']) == -1) {
-                return false;
-              }
-          else
-        {
-            var formData = new FormData();
-             var loc_array = [];
-                       $("input[name='JobApplied[location_pref][]']:checked").each(function(){
-                        loc_array.push($(this).val()); 
-                        });
-            var formData = new FormData($('form')[0]);
-                 var id = $('#application_id').val();
-                 if($('#question_id').val() == 1)
-                        {
-                          var status = 'incomplete';
-                          formData.append('status',status);
-                        }
-                    else
-                        {
-                          var status = 'Pending';
-                          formData.append('status',status);
-                        }
-                formData.append('id',id);
-                var json_loc = JSON.stringify(loc_array);
-                formData.append('json_loc',json_loc);
-                ajax_call(formData);
-              }
-            });      
-            }
-            }
-           }
-          else
-         {
-         $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
-         return false;
-            }
-            })
-        
-        function ajax_call(formData)
-        {
-            $.ajax({
-                    url:'/account/jobs/jobs-apply',
-                    dataType: 'text',  
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: formData,                         
-                    type: 'post',
-                 beforeSend:function()
-                 {
-                 $('.sav_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                 },     
-                 success:function(data)
-                 {
-            var res = JSON.parse(data);
-            if(res.status == true && $('#question_id').val() == 1){
-                        applied();
-                        $('.sub_description_2').css('display','block');
-                        $('.sub_description_1').css('display','none');
-                        $('#message_img').addClass('show');
-                        $('.fader').css('display','block');
-                     }
-                    else if(res.status == true)
-                      {
-                        $('.sub_description_1').css('display','block');
-                        $('.sub_description_2').css('display','none');
-                        $('#message_img').addClass('show');
-                        $('.fader').css('display','block');
-                        applied();
-                      }
-                      else
-                         {
-                           alert('something went wrong..');
-                         }
-                      }
-                    });
-                    }
-  
-    function applied()
-        {
-             $('#modal').modal('toggle');
-                     $('.apply-btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                     $('.apply-btn').html('<i class = "fa fa-check"></i>Applied');
-                     $('.apply-btn').attr("disabled","true");
-            }
-
- $(document).on('click','#close_btn',function()
- {
-    $('.fader').css('display','none');
-    $(this).parent().removeClass('show');
-})
-
-//modal end
 
 $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
@@ -915,6 +703,3 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css');
 $this->registerCssFile('@backendAssets/global/css/components.min.css');
-
-?>
-

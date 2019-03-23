@@ -207,7 +207,7 @@ class InternshipsController extends Controller
 
         if (!empty($application_details)) {
             $model = new JobApplied();
-            return $this->render('/employer-application/detail', [
+            return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
                 'data' => $object->getCloneData($application_details->application_enc_id),
                 'org' => $org_details,

@@ -964,45 +964,6 @@ class JobsController extends Controller
         ]);
     }
 
-    public function actionShortlistApply()
-    {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-
-            $applicaton_enc_id = Yii::$app->request->post('application_enc_id');
-
-
-            $resumes = UserResume::find()
-                ->select(['user_enc_id', 'resume_enc_id', 'title'])
-                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()
-                ->all();
-
-            $app_que = ApplicationInterviewQuestionnaire::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => $applicaton_enc_id])
-                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
-                ->exists();
-
-
-            $location = ApplicationPlacementLocations::find()
-                ->alias('a')
-                ->select(['c.name','c.city_enc_id'])
-                ->where(['a.application_enc_id'=> $applicaton_enc_id])
-                ->joinWith(['locationEnc b' => function($y){
-                    $y->joinWith(['cityEnc c'],false);
-                }],false)
-                ->asArray()
-                ->all();
-
-            $model = new JobApplied();
-
-
-
-        }
-    }
-
     private function __organizationDashboard()
     {
         $coaching_category = new WidgetTutorials();
