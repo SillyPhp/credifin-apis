@@ -5,23 +5,23 @@ use yii\helpers\Url;
 $this->registerCssFile('@eyAssets/css/blog-main.css');
 ?>
 
-    <section class="header">
-        <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-cover.png ') ?>" alt=""/>
-    </section>
-    <section class="background-mirror blog-section-0">
-        <div class="container">
+<section class="header">
+    <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-cover.png ') ?>" alt=""/>
+</section>
+<section class="background-mirror blog-section-0">  
+    <div class="container">
 
-            <!--        <div class="row">
+        <!--        <div class="row">
                     <div class="col-md-12 no-padd">
                         <div id="blog-slider" class="owl-carousel-4col" data-dots="false" data-nav="true">
         <?php
-            foreach ($posts as $post) {
-                $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                if (!file_exists($image_path)) {
-                    $image = '//placehold.it/570x390';
-                }
-                ?>
+        foreach ($posts as $post) {
+            $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+            $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+            if (!file_exists($image_path)) {
+                $image = '//placehold.it/570x390';
+            }
+            ?>
                                     <div class="item owl-item">
                                         <div class="single-news-content single-item-hoverly first-column">
                                             <figure class="img-box">
@@ -38,434 +38,633 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
                                                 <div class="text">
                                                     <p>
             <?php
-                $post['slug'] = strip_tags($post['excerpt']);
-                if (strlen($post['excerpt']) > 55) {
-                    echo substr($post['excerpt'], 0, 55) . ' .<a href="' . Url::to('/blog/' . $post['title']) . '"><br><div class="read-more">Read More</div></a>';
-                } else {
-                    echo $post['excerpt'] . ' ... ';
-                    ?>
+            $post['slug'] = strip_tags($post['excerpt']);
+            if (strlen($post['excerpt']) > 55) {
+                echo substr($post['excerpt'], 0, 55) . ' .<a href="' . Url::to('/blog/' . $post['title']) . '"><br><div class="read-more">Read More</div></a>';
+            } else {
+                echo $post['excerpt'] . ' ... ';
+                ?>
                                                                 <a href="<?= Url::to('/blog/' . $post['slug']); ?>" style="color:red;padding-left:5px;font-size:16px;"><?= Yii::t('frontend', 'Read More'); ?></a>
                 <?php
-                }
-                ?>
+            }
+            ?>
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div> 
             <?php
-            }
-            ?>
+        }
+        ?>
                         </div>
                     </div>
                 </div>-->
 
 
+        <div class="row">
             <div class="row">
-                <div class="row">
-                    <div class="col-md-9">
-                        <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
-                    </div>
-                    <div class="col-md-3">
-                        <!-- Controls -->
-                        <div class="controls pull-right hidden-xs">
-                            <a class="left fa fa-chevron-left bttn-left" href="#carousel-example"
-                               data-slide="prev"></a>
-                            <a class="right fa fa-chevron-right bttn-right" href="#carousel-example"
-                               data-slide="next"></a>
-                        </div>
+                <div class="col-md-9">
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h1>
+                </div>
+                <div class="col-md-3">
+                    <!-- Controls -->
+                    <div class="controls pull-right hidden-xs">
+                        <a class="left fa fa-chevron-left btn btn-success" href="#carousel-example"
+                           data-slide="prev"></a>
+                        <a class="right fa fa-chevron-right btn btn-success" href="#carousel-example"
+                           data-slide="next"></a>
                     </div>
                 </div>
-                <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel">
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner">
-                        <?php
-                            $rows = ceil(count($posts) / 4);
-                            $next = 0;
-                            for ($i = 0; $i < $rows; $i++) {
-                                ?>
-                                <div class="item <?php echo $next == 0 ? 'active' : '' ?>">
-                                    <div class="row">
-                                        <?php
-                                        for ($j = 0; $j < 4; $j++) {
-                                            $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
-                                            $image = Yii::$app->params->upload_directories->posts->featured_image . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
-                                            if (!file_exists($image_path)) {
-                                                $image = '//placehold.it/570x390';
-                                            }
-                                            ?>
-                                            <div class="col-sm-3">
-                                                <a href="<?= Url::to('/blog/' . $posts[$next]['slug']); ?>">
-                                                    <div class="col-item">
-                                                        <div class="photo">
-                                                            <img src="<?= $image; ?>" class=""
-                                                                 alt="<?= $posts[$next]['featured_image_alt']; ?>"
-                                                                 title="<?= $posts[$next]['featured_image_title']; ?>"/>
-                                                        </div>
-                                                        <div class="info">
-                                                            <div class="row">
-                                                                <div class="price col-md-12">
-                                                                    <h5> <?= $posts[$next]['title']; ?></h5>
-                                                                </div>
-                                                            </div>
-                                                            <div class="clearfix">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
+            </div>
+            <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel">
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>" class="" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Sample Product</h5>
+                                                <h5 class="price-text-color">
+                                                    $199.99</h5>
                                             </div>
-                                            <?php
-                                            $next++;
-                                        }
-                                        ?>
+                                            <div class="rating hidden-sm col-md-6">
+                                                <i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
                                     </div>
-
                                 </div>
-                                <?php
-                            }
-                                ?>
+                                </a>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-21.jpg') ?>" class="img-responsive" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Product Example</h5>
+                                                <h5 class="price-text-color">
+                                                    $249.99</h5>
+                                            </div>
+                                            <div class="rating hidden-sm col-md-6">
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>" class="img-responsive" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Next Sample Product</h5>
+                                                <h5 class="price-text-color">
+                                                    $149.99</h5>
+                                            </div>
+                                            <div class="rating hidden-sm col-md-6">
+                                                <i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-21.jpg') ?>" class="img-responsive" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Sample Product</h5>
+                                                <h5 class="price-text-color">
+                                                    $199.99</h5>
+                                            </div>
+                                            <div class="rating hidden-sm col-md-6">
+                                                <i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div>
+                        </div>
+                      
+                    </div>
+                    <div class="item">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <a href=""> 
+                                    <div class="col-item">
+                                        <div class="photo">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>" class="img-responsive" alt="a" />
+                                        </div>
+                                        <div class="info">
+                                            <div class="row">
+                                                <div class="price col-md-6">
+                                                    <h5>
+                                                        Product with Variants</h5>
+                                                    <h5 class="price-text-color">
+                                                        $199.99</h5>
+                                                </div>
+                                                <div class="rating hidden-sm col-md-6">
+                                                    <i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                    </i><i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                    </i><i class="fa fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <!--                                    <div class="separator clear-left">
+                                                                                    <p class="btn-add">
+                                                                                        <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                    <p class="btn-details">
+                                                                                        <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                                </div>-->
+                                            <div class="clearfix">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-21.jpg') ?>" class="img-responsive" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Grouped Product</h5>
+                                                <h5 class="price-text-color">
+                                                    $249.99</h5>
+                                            </div>
+                                            <div class="rating hidden-sm col-md-6">
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>" class="img-responsive" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Product with Variants</h5>
+                                                <h5 class="price-text-color">
+                                                    $149.99</h5>
+                                            </div>
+                                            <div class="rating hidden-sm col-md-6">
+                                                <i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>   
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="">
+                                <div class="col-item">
+                                    <div class="photo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/img-21.jpg') ?>" class="img-responsive" alt="a" />
+                                    </div>
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="price col-md-6">
+                                                <h5>
+                                                    Product with Variants</h5>
+                                                <h5 class="price-text-color">
+                                                    $199.99</h5>
+                                            </div>
+                                            <div class="rating hidden-sm col-md-6">
+                                                <i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="price-text-color fa fa-star"></i><i class="price-text-color fa fa-star">
+                                                </i><i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <!--                                    <div class="separator clear-left">
+                                                                                <p class="btn-add">
+                                                                                    <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+                                                                                <p class="btn-details">
+                                                                                    <i class="fa fa-list"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">More details</a></p>
+                                                                            </div>-->
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>   
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
-    </section>
-    <section class="blog-section-1">
-        <div class="container">
+
+
+
+
+    </div>
+</section>
+<section class="blog-section-1"> 
+    <div class="container"> 
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Travel Blogs'); ?></h1>
+            </div>
+        </div> 
+        <div class="section-1-shadow">    
+            <div class="row padd">
+                <div class="col-md-6 col-sm-12 no-padd">
+                    <div class="blog-box col-sm-12 no-padd">
+                        <div class="col-md-6 col-sm-4 no-padd">
+                            <div class="blog-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/blog/p2.png') ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-8 no-padd">
+                            <div class="blog-discription">
+                                <div class="blog-title"><a href="">Fashion Model Shoot</a></div>
+                                <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum dolor sit amet, 
+                                    consectetur Nulla fringilla purus at leo dignissim congue. 
+                                </div>
+                                <div class="read-more"><a href="">Read More</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 no-padd">
+                    <div class="blog-box col-sm-12 no-padd">
+                        <div class="col-md-6 col-sm-4 no-padd">
+                            <div class="blog-img"><img src="<?= Url::to('@eyAssets/images/pages/blog/p3.png') ?>"></div>
+                        </div>
+                        <div class="col-md-6 col-sm-8 no-padd">
+                            <div class="blog-discription">
+                                <div class="blog-title"><a href="">Fashion Model Shoot Lorem ipsum dosectetur</a></div>
+                                <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum dolor sit amet, 
+                                    consectetur Nulla fringilla purus at leo dignissim congue. 
+                                </div>
+                                <div class="read-more"><a href="">Read More</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row blog-row-2 padd">
+                <div class="col-md-6 col-sm-12 no-padd">
+                    <div class="blog-box col-sm-12 no-padd">
+                        <div class="col-md-6 col-sm-8 no-padd">
+                            <div class="blog-discription2">
+                                <div class="blog-title"><a href="">Fashion model shoot</a></div>
+                                <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum dolor sit amet, 
+                                    consectetur Nulla fringilla purus at leo dignissim congue. 
+                                </div>
+                                <div class="read-more"><a href="">Read More</a></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-4 no-padd">
+                            <div class="blog-img-right ">
+                                <img src="<?= Url::to('@eyAssets/images/pages/blog/p3.png') ?>">
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <div class="col-md-6 col-sm-12 no-padd">
+                    <div class="blog-box col-sm-12 no-padd">
+                        <div class="col-md-6 col-sm-8 no-padd">
+                            <div class="blog-discription2">
+                                <div class="blog-title"><a href="">Fashion model shoot Lorem ipsum dosectetur adipisicing elit</a></div>
+                                <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum dolor sit amet, 
+                                    consectetur Nulla fringilla purus at leo dignissim congue. 
+                                </div>
+                                <div class="read-more"><a href="">Read More</a></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-4 no-padd">
+                            <div class="blog-img-right arrow-right">
+                                <img src="<?= Url::to('@eyAssets/images/pages/blog/p2.png') ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>   
+    </div>
+</section>
+<section class="blog-section-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Other Blogs'); ?></h1>
+            </div>
+        </div> 
+        <div class="col-md-3 col-sm-12">
             <div class="row">
                 <div class="col-md-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Travel Blogs'); ?></h2>
+                    <div class="whats-block-heading">What's New</div>
                 </div>
             </div>
-            <div class="section-1-shadow">
-                <div class="row padd">
-                    <div class="col-md-6 col-sm-12 no-padd">
-                        <div class="blog-box col-sm-12 no-padd">
-                            <div class="col-md-6 col-sm-4 no-padd">
-                                <div class="blog-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/p2.png') ?>">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-8 no-padd">
-                                <div class="blog-discription">
-                                    <div class="blog-title"><a href="">Fashion Model Shoot</a></div>
-                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum
-                                        dolor sit amet,
-                                        consectetur Nulla fringilla purus at leo dignissim congue.
-                                    </div>
-                                    <div class="read-more"><a href="">Read More</a></div>
-                                </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-4">
+                    <div class="whats-new-box">
+                        <div class="wn-box-icon">
+                            <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>"></a>
+                            <div class="middle">
+                                <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-sm-12 no-padd">
-                        <div class="blog-box col-sm-12 no-padd">
-                            <div class="col-md-6 col-sm-4 no-padd">
-                                <div class="blog-img"><img src="<?= Url::to('@eyAssets/images/pages/blog/p3.png') ?>">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-8 no-padd">
-                                <div class="blog-discription">
-                                    <div class="blog-title"><a href="">Fashion Model Shoot Lorem ipsum dosectetur</a>
-                                    </div>
-                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum
-                                        dolor sit amet,
-                                        consectetur Nulla fringilla purus at leo dignissim congue.
-                                    </div>
-                                    <div class="read-more"><a href="">Read More</a></div>
-                                </div>
-                            </div>
+                        <div class="wn-box-details">
+                            <a href="">
+                                <div class="wn-box-cat">Health</div>
+                                <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>  
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="row blog-row-2 padd">
-                    <div class="col-md-6 col-sm-12 no-padd">
-                        <div class="blog-box col-sm-12 no-padd">
-                            <div class="col-md-6 col-sm-8 no-padd">
-                                <div class="blog-discription2">
-                                    <div class="blog-title"><a href="">Fashion model shoot</a></div>
-                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum
-                                        dolor sit amet,
-                                        consectetur Nulla fringilla purus at leo dignissim congue.
-                                    </div>
-                                    <div class="read-more"><a href="">Read More</a></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-4 no-padd">
-                                <div class="blog-img-right ">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/p3.png') ?>">
-                                </div>
+                <div class="col-md-12 col-sm-4">
+                    <div class="whats-new-box">
+                        <div class="wn-box-icon">
+                            <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-21.jpg') ?>"></a>
+                            <div class="middle">
+                                <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
                             </div>
                         </div>
+                        <div class="wn-box-details">
+                            <a href="">
+                                <div class="wn-box-cat">Health</div>
+                                <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>  
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-12 no-padd">
-                        <div class="blog-box col-sm-12 no-padd">
-                            <div class="col-md-6 col-sm-8 no-padd">
-                                <div class="blog-discription2">
-                                    <div class="blog-title"><a href="">Fashion model shoot Lorem ipsum dosectetur
-                                            adipisicing elit</a></div>
-                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum
-                                        dolor sit amet,
-                                        consectetur Nulla fringilla purus at leo dignissim congue.
-                                    </div>
-                                    <div class="read-more"><a href="">Read More</a></div>
-                                </div>
+                </div>
+                <div class="col-md-12 col-sm-4">
+                    <div class="whats-new-box">
+                        <div class="wn-box-icon">
+                            <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>"></a>
+                            <div class="middle">
+                                <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
                             </div>
-                            <div class="col-md-6 col-sm-4 no-padd">
-                                <div class="blog-img-right arrow-right">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/p2.png') ?>">
-                                </div>
-                            </div>
+                        </div>
+                        <div class="wn-box-details">
+                            <a href="">
+                                <div class="wn-box-cat">Health</div>
+                                <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>  
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <section class="blog-section-2">
-        <div class="container">
+        <div class="col-md-6 col-sm-12">
             <div class="row">
-                <div class="col-md-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Other Blogs'); ?></h2>
+                <div class="col-md-12 col-sm-12">
+                    <div class="whats-popular-heading">What's Popular</div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="what-popular-box">
+                        <div class="wp-box-icon">
+                            <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>"></a>
+                            <div class="middle">
+                                <a href="" class="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/play1.png') ?>">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="wn-box-details">
+                            <a href="">
+                                <div class="wn-box-cat">Video</div>
+                                <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>
+                            </a>
+                            <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore 
+                                et dolore magna aliqua enim ad minim veniam qui.</div>
+                            <div class=""><a href="" class="button"><span>View Post</span></a></div>
+                        </div>
+                    </div>
+                    <div class="what-popular-box">
+                        <div class="wp-box-icon">
+                            <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-27.jpg') ?>"></a>
+                            <div class="middle">
+                                <a href="" class="">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/audio.png') ?>">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="wn-box-details">
+                            <a href="">
+                                <div class="wn-box-cat">Audio</div>
+                                <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>
+                            </a>
+                            <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore 
+                                et dolore magna aliqua enim ad minim veniam qui.</div>
+                            <div class=""><a href="" class="button"><span>View Post</span></a></div>
+                        </div>
+                    </div>
+                    <div class="what-popular-box">
+                        <div class="wp-box-icon">
+                            <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>"></a>
+                            <div class="middle">
+                                <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
+                            </div>
+                        </div>
+                        <div class="wn-box-details">
+                            <a href="">
+                                <div class="wn-box-cat">Health</div>
+                                <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>
+                            </a>
+                            <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore 
+                                et dolore magna aliqua enim ad minim veniam qui.</div>
+                            <div class=""><a href="" class="button"><span>View Post</span></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="trending-posts">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="whats-block-heading">What's New</div>
+                        <div class="trending-heading">Trending Posts</div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 col-sm-4">
-                        <div class="whats-new-box">
-                            <div class="wn-box-icon">
-                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>"></a>
-                                <div class="middle">
-                                    <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
-                                </div>
+                <div class="tp-box">
+                    <div class="row">
+                        <a href="">
+                            <div class="col-md-5">
+                                <div class="tp-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
+                                </div>    
                             </div>
-                            <div class="wn-box-details">
-                                <a href="">
-                                    <div class="wn-box-cat">Health</div>
-                                    <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens</div>
-                                </a>
+                            <div class="col-md-7 no-padd">
+                                <div class="tp-heading">Fashion Model Shoot....</div>
+                                <div class="tp-date">17 April 2012</div>
+                                <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-4">
-                        <div class="whats-new-box">
-                            <div class="wn-box-icon">
-                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-21.jpg') ?>"></a>
-                                <div class="middle">
-                                    <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
-                                </div>
-                            </div>
-                            <div class="wn-box-details">
-                                <a href="">
-                                    <div class="wn-box-cat">Health</div>
-                                    <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens</div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-4">
-                        <div class="whats-new-box">
-                            <div class="wn-box-icon">
-                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>"></a>
-                                <div class="middle">
-                                    <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
-                                </div>
-                            </div>
-                            <div class="wn-box-details">
-                                <a href="">
-                                    <div class="wn-box-cat">Health</div>
-                                    <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens</div>
-                                </a>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12">
-                        <div class="whats-popular-heading">What's Popular</div>
+                <div class="tp-box">
+                    <div class="row">
+                        <a href="">
+                            <div class="col-md-5">
+                                <div class="tp-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
+                                </div>    
+                            </div>
+                            <div class="col-md-7 no-padd">
+                                <div class="tp-heading">Fashion Model Shoot....</div>
+                                <div class="tp-date">17 April 2012</div>
+                                <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
+                            </div>
+                        </a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 col-sm-12">
-                        <div class="what-popular-box">
-                            <div class="wp-box-icon">
-                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>"></a>
-                                <div class="middle">
-                                    <a href="" class="">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/play-button.png') ?>">
-                                    </a>
-                                </div>
+                <div class="tp-box">
+                    <div class="row">
+                        <a href="">
+                            <div class="col-md-5">
+                                <div class="tp-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
+                                </div>    
                             </div>
-                            <div class="wn-box-details">
-                                <a href="">
-                                    <div class="wn-box-cat">Video</div>
-                                    <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens</div>
-                                </a>
-                                <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                    labore
-                                    et dolore magna aliqua enim ad minim veniam qui.
-                                </div>
-                                <div class=""><a href="" class="button"><span>View Post</span></a></div>
+                            <div class="col-md-7 no-padd">
+                                <div class="tp-heading">Fashion Model Shoot....</div>
+                                <div class="tp-date">17 April 2012</div>
+                                <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
                             </div>
-                        </div>
-                        <div class="what-popular-box">
-                            <div class="wp-box-icon">
-                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-27.jpg') ?>"></a>
-                                <div class="middle">
-                                    <a href="" class="">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/audio.png') ?>">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="wn-box-details">
-                                <a href="">
-                                    <div class="wn-box-cat">Audio</div>
-                                    <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens</div>
-                                </a>
-                                <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                    labore
-                                    et dolore magna aliqua enim ad minim veniam qui.
-                                </div>
-                                <div class=""><a href="" class="button"><span>View Post</span></a></div>
-                            </div>
-                        </div>
-                        <div class="what-popular-box">
-                            <div class="wp-box-icon">
-                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>"></a>
-                                <div class="middle">
-                                    <div class=""><a href="" class="wn-overlay-text">Read More</a></div>
-                                </div>
-                            </div>
-                            <div class="wn-box-details">
-                                <a href="">
-                                    <div class="wn-box-cat">Health</div>
-                                    <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens</div>
-                                </a>
-                                <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                    labore
-                                    et dolore magna aliqua enim ad minim veniam qui.
-                                </div>
-                                <div class=""><a href="" class="button"><span>View Post</span></a></div>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="trending-posts">
+                <div class="tp-box">
+                    <div class="row">
+                        <a href="">
+                            <div class="col-md-5">
+                                <div class="tp-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
+                                </div>    
+                            </div>
+                            <div class="col-md-7 no-padd">
+                                <div class="tp-heading">Fashion Model Shoot....</div>
+                                <div class="tp-date">17 April 2012</div>
+                                <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
+                            </div>
+                        </a>
+                    </div>
+                </div>    
+            </div>    
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="popular-heading">Popular Categories</div>
+                </div>
+            </div>   
+            <div class="tg-widget tg-widgetcategories">
+                <div class="tg-widgetcontent">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="trending-heading">Trending Posts</div>
-                        </div>
-                    </div>
-                    <div class="tp-box">
-                        <div class="row">
-                            <a href="">
-                                <div class="col-md-5">
-                                    <div class="tp-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 no-padd">
-                                    <div class="tp-heading">Fashion Model Shoot....</div>
-                                    <div class="tp-date">17 April 2012</div>
-                                    <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="tp-box">
-                        <div class="row">
-                            <a href="">
-                                <div class="col-md-5">
-                                    <div class="tp-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 no-padd">
-                                    <div class="tp-heading">Fashion Model Shoot....</div>
-                                    <div class="tp-date">17 April 2012</div>
-                                    <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="tp-box">
-                        <div class="row">
-                            <a href="">
-                                <div class="col-md-5">
-                                    <div class="tp-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 no-padd">
-                                    <div class="tp-heading">Fashion Model Shoot....</div>
-                                    <div class="tp-date">17 April 2012</div>
-                                    <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="tp-box">
-                        <div class="row">
-                            <a href="">
-                                <div class="col-md-5">
-                                    <div class="tp-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/wn1.jpg') ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 no-padd">
-                                    <div class="tp-heading">Fashion Model Shoot....</div>
-                                    <div class="tp-date">17 April 2012</div>
-                                    <!--<div class="tp-heading">Fashion Model Shoot....</div>-->
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="popular-heading">Popular Categories</div>
-                    </div>
-                </div>
-                <div class="tg-widget tg-widgetcategories">
-                    <div class="tg-widgetcontent">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul>
-                                    <li><a href="javascript:void(0);"><span>Funny</span>28245</a></li>
-                                    <li><a href="javascript:void(0);"><span>Sports</span>4856</a></li>
-                                    <li><a href="javascript:void(0);"><span>DIY</span>8654</a></li>
-                                    <li><a href="javascript:void(0);"><span>Fashion</span>6247</a></li>
-                                    <li><a href="javascript:void(0);"><span>Travel</span>888654</a></li>
-                                    <li><a href="javascript:void(0);"><span>Lifestyle</span>873144</a></li>
-                                    <li><a href="javascript:void(0);"><span>Gifs</span>873144</a></li>
-                                    <li><a href="javascript:void(0);"><span>Video</span>18465</a></li>
-                                    <li><a href="javascript:void(0);"><span>Gadgets</span>3148</a></li>
-                                    <li><a href="javascript:void(0);"><span>Audio</span>77531</a></li>
-                                    <li><a href="javascript:void(0);"><span>All</span>9247</a></li>
-                                </ul>
-                            </div>
+                            <ul>
+                                <li><a href="javascript:void(0);"><span>Funny</span>28245</a></li> 
+                                <li><a href="javascript:void(0);"><span>Sports</span>4856</a></li>
+                                <li><a href="javascript:void(0);"><span>DIY</span>8654</a></li>
+                                <li><a href="javascript:void(0);"><span>Fashion</span>6247</a></li>
+                                <li><a href="javascript:void(0);"><span>Travel</span>888654</a></li>
+                                <li><a href="javascript:void(0);"><span>Lifestyle</span>873144</a></li>
+                                <li><a href="javascript:void(0);"><span>Gifs</span>873144</a></li>
+                                <li><a href="javascript:void(0);"><span>Video</span>18465</a></li>
+                                <li><a href="javascript:void(0);"><span>Gadgets</span>3148</a></li>
+                                <li><a href="javascript:void(0);"><span>Audio</span>77531</a></li>
+                                <li><a href="javascript:void(0);"><span>All</span>9247</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 <?php
 $this->registerCss('
-.bttn-left, .bttn-right{
-    background:transparent;
-    color:#00a0e3;
-}
  /*blog-section-0-css*/
 .blog-section-0{
     padding:10px 0 30px 0;

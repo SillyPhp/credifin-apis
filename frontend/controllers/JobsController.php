@@ -144,20 +144,6 @@ class JobsController extends Controller
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
                 ->exists();
 
-            $resumes = UserResume::find()
-                ->select(['user_enc_id', 'resume_enc_id', 'title'])
-                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()
-                ->all();
-
-            $app_que = ApplicationInterviewQuestionnaire::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => $application_details->application_enc_id])
-                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
-                ->exists();
-
             $shortlist = \common\models\ShortlistedApplications::find()
                 ->select('shortlisted')
                 ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
@@ -172,15 +158,13 @@ class JobsController extends Controller
             'applied' => $applied_jobs,
             'type' => $type,
             'model' => $model,
-            'resume' => $resumes,
-            'que' => $app_que,
             'shortlist' => $shortlist,
         ]);
     }
 
     public function actionJobPreview($eipdk)
     {
-        if ($eipdk) {
+        if (!empty($eipdk)) {
             $type = 'Job';
             $var = $eipdk;
             $session = Yii::$app->session;

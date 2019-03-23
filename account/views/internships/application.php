@@ -2418,54 +2418,9 @@ $(document).on('click','.questionnaier_display',function(e) {
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
-    window.open('/account/interview-processes/'+data+'/view', "_blank");
+    window.open(hiring-processes+data+'/view', "_blank");
 });
-$('input[name= "pre_place"]').on('change',function(){
-        var pre = $(this).attr("data-title");
-        if(pre==1)
-        {
-         $('#pre_package').show();
-        }
-        else if(pre==2)
-        {
-         $('#pre_package').hide();
-        }
-        });
-$('input[name= "stipendtype"]').on('change',function(){
-        var stipendtyp = $(this).attr("data-title");
-   if(stipendtyp=='1')
-        {
-        $('#fixed_stip').hide();
-        $('#stipend_paid').hide();
-        $('#min_max').hide();
-        $('#minstip').val('');
-        $('#maxstip').val('');
-        $('#stipendpaid').val('');
-        }
-     else if(stipendtyp =='4')
-        {
-        $('#fixed_stip').show();
-        $('#stipend_paid').show();
-        $('#min_max').hide();
-        $('#minstip').val('');
-        $('#maxstip').val('');
-        $('#stipendpaid').val('');
-        }
-     else if(stipendtyp=='2')
-        {
-        $('#fixed_stip').hide();
-        $('#stipend_paid').show();
-        $('#min_max').show(); 
-        $('#stipendpaid').val('');
-        }
-     else if(stipendtyp=='3')
-        {
-        $('#fixed_stip').hide();
-        $('#stipend_paid').show();
-        $('#min_max').show(); 
-        $('#stipendpaid').val('');
-        }
-   }) 
+
 var session_tok = "";
 function genrate_session_token() {
     var possible = "abcdefghijklmnopqrstuvwxyz1234567890";

@@ -54,7 +54,9 @@ $this->registerCss('
   background-image: linear-gradient(-40deg, #35394F 25%, #787D90);
   border:1px solid #ddd;
 }
-.week-days ul li.active h2{color:#fff;}
+.week-days ul li.active h2{
+    color:#fff;
+}
 .week-days ul li span{
   position:absolute;
   top:0px;

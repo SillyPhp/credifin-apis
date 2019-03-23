@@ -30,8 +30,8 @@ use kartik\widgets\DatePicker;
             <?= $form->field($model, 'wage_type')->inline()->radioList([
                 0 => 'Unpaid',
                 3 => 'Performance Based',
-                1 => 'Negotiable',
-                2 => 'Fixed',
+                2 => 'Negotiable',
+                1 => 'Fixed',
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
@@ -236,7 +236,7 @@ $('input[name= "wage_type"]').on('change',function(){
         $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
-     else if(stipendtyp =='2')
+     else if(stipendtyp =='1')
         {
         $('#fixed_stip').show();
         $('#min_max').hide();
@@ -244,7 +244,7 @@ $('input[name= "wage_type"]').on('change',function(){
         $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
-     else if(stipendtyp=='3'||stipendtyp=='1')
+     else if(stipendtyp=='3'||stipendtyp=='2')
         {
         $('#fixed_stip').hide();
         $('#min_max').show(); 

@@ -87,6 +87,7 @@ class CategoriesListController extends Controller
         $id = Yii::$app->request->post("data");
         $listvalues = JobDescription::find()
             ->alias('a')
+            ->distinct()
             ->select(['a.job_description_enc_id jd_id', 'a.job_description jd'])
             ->joinWith(['assignedJobDescriptions b'], false)
             ->where(['b.category_enc_id' => $id])
@@ -107,6 +108,7 @@ class CategoriesListController extends Controller
         $id = Yii::$app->request->post("data");
         $listvalues = EducationalRequirements::find()
             ->alias('a')
+            ->distinct()
             ->select(['a.educational_requirement_enc_id e_id', 'a.educational_requirement ed_req'])
             ->joinWith(['assignedEducationalRequirements b'], false)
             ->where(['b.category_enc_id' => $id])
@@ -128,6 +130,7 @@ class CategoriesListController extends Controller
         $id = Yii::$app->request->post("data");
         $skillvalues = Skills::find()
             ->alias('a')
+            ->distinct()
             ->select(['a.skill_enc_id', 'a.skill'])
             ->joinWith(['assignedSkills b'], false)
             ->where(['b.category_enc_id' => $id])
