@@ -1,13 +1,13 @@
 <h3>Work Timing</h3>
 <div class="time-bar-inner col-md-12">
     <div class="working-time-from">
-        <?= date("H:i", strtotime($working_time_from)); ?>
+        <?= date("H:i", strtotime($working_time_from));?>
     </div>
     <div class="working-time-title">
         Working Hours
     </div>
     <div class="working-time-to">
-        <?= date("H:i", strtotime($working_time_to)); ?>
+        <?= date("H:i", strtotime($working_time_to));?>
     </div>
 </div>
 <?php
