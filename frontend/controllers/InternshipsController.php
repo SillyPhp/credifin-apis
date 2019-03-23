@@ -71,6 +71,7 @@ class InternshipsController extends Controller
     public function actionInternshipPreview($eipdk)
     {
         if (!empty($eipdk)) {
+            $type = 'Internship';
             $var = $eipdk;
             $session = Yii::$app->session;
             $object = $session->get($var);
@@ -99,11 +100,12 @@ class InternshipsController extends Controller
                 $benefits = null;
             }
 
-            return $this->render('internship-preview', [
+            return $this->render('/employer-applications/preview', [
                 'object' => $object,
                 'industry' => $industry,
                 'primary_cat' => $primary_cat,
-                'benefits' => $benefits
+                'benefits' => $benefits,
+                'type' => $type
             ]);
         } else {
             return false;

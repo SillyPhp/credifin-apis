@@ -165,26 +165,6 @@
 </div>
 <?php
 $script = <<< JS
-var session_tok = "";
-genrate_session_token(session_tok);
-function genrate_session_token() {
-    var possible = "abcdefghijklmnopqrstuvwxyz1234567890";
-    for(var i = 0;i < 8; i++) {
-        session_tok += possible.charAt(Math.floor(Math.random()*possible.length));
-    }
-}
-function get_preview(session_tok) {
-  var data = $('#submit_form').serialize()+'&n='+session_tok;
-                    $.ajax({
-                         url: '/account/jobs/preview', 
-                         data:data, 
-                         method:'post',
-                         success: function(data) {
-                            $('.button-preview').attr('href','/jobs/job-preview?eipdk='+session_tok+'');  
-                         }
-                    }); 
-            }
-
 JS;
 $this->registerJs($script);
 ?>

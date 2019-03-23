@@ -129,7 +129,7 @@ if ($type=='Job') {
 }
 if ($type=='Internship') {
     if ($object->wage_type == 'Fixed') {
-        if ($data['wage_duration'] == 'Hourly') {
+        if ($object->wage_duration == 'Monthly') {
             $fixd = $object->fixed_wage * 24 * 30;
         } elseif ($object->wage_duration == 'Weekly') {
             $fixd = $object->fixed_wage / 7 * 30;
@@ -137,7 +137,7 @@ if ($type=='Internship') {
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $fixd)) . 'p.m.';
     } elseif ($object->wage_type == 'Negotiable' || $object->wage_type == 'Performance Based') {
-        if ($object->wage_duration == 'Hourly') {
+        if ($object->wage_duration == 'Monthly') {
             $min_wage = $object->min_wage * 24 * 30;
             $max_wage = $object->max_wage * 24 * 30;
         } elseif ($object->wage_duration == 'Weekly') {
@@ -164,7 +164,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                             <?php if ($type=='Internship')
                             {
                                 echo $this->render('/widgets/employer_applications/internship-overview', [
-                                    'placement_offer'=>$object->has_placement_offer,
+                                    'placement_offer'=>(($object->pre_placement_offer) ? 1 : 0),
                                     'profile_name'=>$primary_cat['name'],
                                     'wage_duration'=>$object->wage_duration,
                                     'wage_type'=>$object->wage_type,
