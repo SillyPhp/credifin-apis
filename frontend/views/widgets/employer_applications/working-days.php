@@ -37,6 +37,7 @@ $this->registerCss('
   position:relative;
   list-style:none;
   display:none;
+  display:inline-block;
   width:100px;
   height:100px;
   line-height:100px;

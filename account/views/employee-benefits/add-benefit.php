@@ -104,6 +104,7 @@ $("#text").keyup(function () {
                     toastr.error(response.message, response.title);
                 }
                 $('#modal_benefit').modal('toggle');
+                $('#modal').modal('toggle');
             }
         });
     });
@@ -131,6 +132,7 @@ $("#text").keyup(function () {
                     toastr.error(response.message, response.title);
                 }
                 $('#modal_benefit').modal('toggle'); 
+                $('#modal').modal('toggle'); 
             }
             })
          }

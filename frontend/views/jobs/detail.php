@@ -1,12 +1,83 @@
 <?php
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
+
+if ($data['wage_type'] == 'Fixed') {
+    if($data['wage_duration'] == 'Monthly'){
+        $wage = $data['fixed_wage'] * 12;
+    } elseif ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['fixed_wage'] * 40 * 52;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['fixed_wage'] * 52;
+    } else{
+        $wage = $data['fixed_wage'];
+    }
+    $amount = $wage;
+    setlocale(LC_MONETARY, 'en_IN');
+    $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
+} else if ($data['wage_type'] == 'Negotiable') {
+    if($data['wage_duration'] == 'Monthly'){
+        $wage = $data['min_wage'] * 12;
+        $wage2 = $data['max_wage'] * 12;
+    } elseif ($data['wage_duration'] == 'Hourly'){
+        $wage = $data['min_wage'] * 40 * 52;
+        $wage2 = $data['max_wage'] * 40 * 52;
+    } elseif ($data['wage_duration'] == 'Weekly'){
+        $wage = $data['min_wage'] * 52;
+        $wage2 = $data['max_wage'] * 52;
+    } else{
+        $wage = $data['min_wage'];
+        $wage2 = $data['max_wage'];
+    }
+    $amount1 = $wage;
+    $amount2 = $wage2;
+    setlocale(LC_MONETARY, 'en_IN');
+    if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
+        $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount1)) . ' - ' . '₹ ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
+    } elseif (!empty($data['min_wage'])) {
+        $amount = '₹ From ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
+    } elseif (!empty($data['max_wage'])) {
+        $amount = '₹ Upto ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
+    } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
+        $amount = 'Negotiable';
+    }
+}
+
+$this->title = $org['org_name'] . ' is hiring for ' . $data['cat_name'] . ' with a ' . $amount . ' package.';
+//$this->title = Yii::t('frontend', $data['cat_name'] . ' ' . $separator . ' ' . $data['name'] . ' ' . $separator . ' ' . $data['industry'] . ' ' . $separator . ' ' . $data['designation'] . ' ' . $separator . ' ' . $org['org_name']);
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
+$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 
 if (!empty($data['applicationPlacementLocations'])) {
     $location = ArrayHelper::map($data['applicationPlacementLocations'], 'city_enc_id', 'name');
@@ -105,22 +176,44 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-money"></i>
                                         <h3>Offered Salary <?php if ($data['wage_type'] == 'Fixed') {
                                                 echo '(Fixed)';
-                                                $amount = $data['fixed_wage'];
+                                                if($data['wage_duration'] == 'Monthly'){
+                                                    $wage = $data['fixed_wage'] * 12;
+                                                } elseif ($data['wage_duration'] == 'Hourly'){
+                                                    $wage = $data['fixed_wage'] * 40 * 52;
+                                                } elseif ($data['wage_duration'] == 'Weekly'){
+                                                    $wage = $data['fixed_wage'] * 52;
+                                                } else{
+                                                    $wage = $data['fixed_wage'];
+                                                }
+                                                $amount = $wage;
                                                 setlocale(LC_MONETARY, 'en_IN');
-                                                $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount));
+                                                $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
                                             } else if ($data['wage_type'] == 'Negotiable') {
                                                 if (!empty($data['min_wage']) || !empty($data['max_wage'])) {
                                                     echo '(Negotiable)';
                                                 }
-                                                $amount1 = $data['min_wage'];
-                                                $amount2 = $data['max_wage'];
+                                                if($data['wage_duration'] == 'Monthly'){
+                                                    $wage = $data['min_wage'] * 12;
+                                                    $wage2 = $data['max_wage'] * 12;
+                                                } elseif ($data['wage_duration'] == 'Hourly'){
+                                                    $wage = $data['min_wage'] * 40 * 52;
+                                                    $wage2 = $data['max_wage'] * 40 * 52;
+                                                } elseif ($data['wage_duration'] == 'Weekly'){
+                                                    $wage = $data['min_wage'] * 52;
+                                                    $wage2 = $data['max_wage'] * 52;
+                                                } else{
+                                                    $wage = $data['min_wage'];
+                                                    $wage2 = $data['max_wage'];
+                                                }
+                                                $amount1 = $wage;
+                                                $amount2 = $wage2;
                                                 setlocale(LC_MONETARY, 'en_IN');
                                                 if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
-                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
                                                 } elseif (!empty($data['min_wage'])) {
-                                                    $amount = '&#8377 From ' . utf8_encode(money_format('%!.0n', $amount1));
+                                                    $amount = '&#8377 From ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
                                                 } elseif (!empty($data['max_wage'])) {
-                                                    $amount = '&#8377 Upto ' . utf8_encode(money_format('%!.0n', $amount2));
+                                                    $amount = '&#8377 Upto ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
                                                 } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
                                                     $amount = 'Negotiable';
                                                 }
@@ -265,7 +358,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                 <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                     <div class="job-single-head style2">
                         <div class="job-thumb">
-                            <a href="/company/<?= $org['slug']; ?>">
+                            <a href="/<?= $org['slug']; ?>">
                                 <?php
                                 if (!empty($org['logo'])) {
                                     ?>
@@ -282,7 +375,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             </a>
                         </div>
                         <div class="job-head-info">
-                            <a href="/company/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
+                            <a href="/<?= $org['slug']; ?>"><h4><?= $org['org_name']; ?></h4></a>
                             <?php if ($org['website']): ?>
                                 <p><i class="fa fa-unlink"></i><?= $org['website']; ?></p>
                             <?php endif; ?>
