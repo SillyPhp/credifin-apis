@@ -2,7 +2,6 @@
 
 namespace account\controllers;
 
-use account\models\applications\ApplicationForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -27,7 +26,8 @@ use account\models\internships\InternshipApplicationForm;
 use account\models\jobs\JobApplicationForm;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
-
+use common\models\InterviewProcessFields;
+use account\models\applications\ApplicationForm;
 
 class InternshipsController extends Controller
 {
@@ -49,47 +49,6 @@ class InternshipsController extends Controller
             return $this->__individualDashboard();
         }
     }
-
-    public function actionCreateXyz()
-    {
-        if (Yii::$app->user->identity->organization) {
-            $object = new JobApplicationForm();
-            $model = new InternshipApplicationForm();
-            $que = $object->getQuestionnnaireList(2);
-            $loc_list = $object->getOrganizationLocationOffice();
-            $int_list = $object->getOrganizationLocationInterview();
-            $primary_cat = $object->getPrimaryFields('Internships');
-            $industry = $object->getndustry();
-            $process = $object->getInterviewProcess();
-            $benefits = $object->getBenefits();
-            if ($model->load(Yii::$app->request->post())) {
-                $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues()) {
-                    $session = Yii::$app->session;
-                    if (!empty($session->get($session_token))) {
-                        $session->remove($session_token);
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return $this->render('application', [
-                    'model' => $model, 'loc_list' => $loc_list,
-                    'que' => $que,
-                    'primary_cat' => $primary_cat,
-                    'int_list' => $int_list,
-                    'industry' => $industry,
-                    'process' => $process,
-                    'benefits' => $benefits,
-
-                ]);
-            }
-        } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
-        }
-    }
-
 
     public function actionApproveCandidate()
     {

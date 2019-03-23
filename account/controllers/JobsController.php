@@ -2,11 +2,6 @@
 
 namespace account\controllers;
 
-use account\models\applications\ApplicationForm;
-use common\models\ApplicationInterviewQuestionnaire;
-use common\models\Cities;
-use common\models\OrganizationAssignedCategories;
-use common\models\UserResume;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -31,10 +26,12 @@ use account\models\jobs\JobApplicationForm;
 use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
 use common\models\InterviewProcessFields;
-use common\models\OrganizationEmployeeBenefits;
+use account\models\applications\ApplicationForm;
+use common\models\ApplicationInterviewQuestionnaire;
+use common\models\UserResume;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
-
+use common\models\DropResumeApplications;
 
 class JobsController extends Controller
 {
@@ -66,44 +63,6 @@ class JobsController extends Controller
             return $this->__organizationDashboard();
         } else {
             return $this->__individualDashboard();
-        }
-    }
-
-    public function actionCreateXyz()
-    {
-        if (Yii::$app->user->identity->organization) {
-            $model = new JobApplicationForm();
-            $que = $model->getQuestionnnaireList();
-            $loc_list = $model->getOrganizationLocationOffice();
-            $int_list = $model->getOrganizationLocationInterview();
-            $primary_cat = $model->getPrimaryFields();
-            $industry = $model->getndustry();
-            $process = $model->getInterviewProcess();
-            $benefits = $model->getBenefits();
-            if ($model->load(Yii::$app->request->post())) {
-                $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues()) {
-                    $session = Yii::$app->session;
-                    if (!empty($session->get($session_token))) {
-                        $session->remove($session_token);
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return $this->render('application', [
-                    'model' => $model, 'loc_list' => $loc_list,
-                    'que' => $que,
-                    'primary_cat' => $primary_cat,
-                    'int_list' => $int_list,
-                    'industry' => $industry,
-                    'process' => $process,
-                    'benefits' => $benefits,
-                ]);
-            }
-        } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
