@@ -5,35 +5,6 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$keywords = $post['meta_keywords'];
-$description = $post['excerpt'];
-$image = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image']);
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Url::canonical(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
-//print_r($post);
-//exit();
 ?>
     <section>
         <div class="container">
@@ -55,7 +26,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3">
                     <div class="about-blogger">
                         <div class="channel">
-                            <a href="javascript:;">
+                            <a href="">
                                 <div class="channel-icon">
                                     <?php
                                     $name = $image = NULL;
@@ -85,7 +56,7 @@ $this->params['seo_tags'] = [
                                 <ul>
                                     <?php
                                     foreach ($post['postCategories'] as $cat) {
-                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+                                        echo '<li><a href="/' . $tags['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
                                     }
                                     ?>
                                 </ul>
@@ -97,7 +68,7 @@ $this->params['seo_tags'] = [
                                 <ul>
                                     <?php
                                     foreach ($post['postTags'] as $tags) {
-                                        echo '<li><a href="/blog/tag/' . $tags['tagEnc']['slug'] . '">' . $tags['tagEnc']['name'] . '</a></li>';
+                                        echo '<li><a href="/' . $tags['tagEnc']['slug'] . '">' . $tags['tagEnc']['name'] . '</a></li>';
                                     }
                                     ?>
                                 </ul>
