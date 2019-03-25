@@ -16,36 +16,49 @@ use common\models\Categories;
 class BlogController extends Controller
 {
 
-    public function actionIndex()
-    {
+    public function actionIndex(){
         $postsModel = new Posts();
         $posts = $postsModel->find()
             ->where(['status' => 'Active', 'is_deleted' => 'false'])
             ->orderby(['created_on' => SORT_ASC])
-            ->limit(4)
+            ->limit(8)
             ->asArray()
             ->all();
-        $quotes = $postsModel->find()->alias('a')
-            ->select(['a.*', 'd.first_name', 'd.last_name'])
-            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => 'quotes', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-            ->orderby(['created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-        $similar_posts = $postsModel->find()
-            ->limit(4)
-            ->orderBy(['created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        return $this->render('index', [
+        return $this->render('blog-main', [
             'posts' => $posts,
-            'quotes' => $quotes,
-            'similar_posts' => $similar_posts,
         ]);
     }
+
+//    public function actionIndex()
+//    {
+//        $postsModel = new Posts();
+//        $posts = $postsModel->find()
+//            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+//            ->orderby(['created_on' => SORT_ASC])
+//            ->limit(4)
+//            ->asArray()
+//            ->all();
+//        $quotes = $postsModel->find()->alias('a')
+//            ->select(['a.*', 'd.first_name', 'd.last_name'])
+//            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+//            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+//            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+//            ->where(['c.slug' => 'quotes', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+//            ->orderby(['created_on' => SORT_DESC])
+//            ->asArray()
+//            ->all();
+//        $similar_posts = $postsModel->find()
+//            ->limit(4)
+//            ->orderBy(['created_on' => SORT_DESC])
+//            ->asArray()
+//            ->all();
+//
+//        return $this->render('index', [
+//            'posts' => $posts,
+//            'quotes' => $quotes,
+//            'similar_posts' => $similar_posts,
+//        ]);
+//    }
 
     public function actionDetail($slug)
     {
@@ -87,7 +100,7 @@ class BlogController extends Controller
         ]);
     }
 
-    public function actionGetPostsByCategory($slug)
+    public function actionGetPostsByCategory($ctidk)
     {
         $postsModel = new Posts();
         $posts = $postsModel->find()->alias('a')
@@ -95,7 +108,7 @@ class BlogController extends Controller
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+            ->where(['c.slug' => $ctidk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
@@ -105,7 +118,7 @@ class BlogController extends Controller
         ]);
     }
 
-    public function actionGetPostsByTag($slug)
+    public function actionGetPostsByTag($tgidk)
     {
         $postsModel = new Posts();
         $posts = $postsModel->find()->alias('a')
@@ -113,7 +126,7 @@ class BlogController extends Controller
             ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+            ->where(['c.slug' => $tgidk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
@@ -123,11 +136,11 @@ class BlogController extends Controller
         ]);
     }
 
-    public function actionCategoryPosts($slug)
+    public function actionCategoryPosts($ctidk)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $postsModel = new Posts();
-        if (!empty($slug)) {
+        if (!empty($ctidk)) {
             $posts = $postsModel->find()
                 ->alias('a')
                 ->distinct()
@@ -142,7 +155,7 @@ class BlogController extends Controller
                 ->innerJoin(PostTags::tableName() . 'as d', 'd.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . 'as e', 'e.tag_enc_id = d.tag_enc_id')
                 ->innerJoin(Users::tableName() . 'as f', 'f.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+                ->where(['c.slug' => $ctidk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit(5)
                 ->asArray()
