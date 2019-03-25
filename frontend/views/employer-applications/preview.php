@@ -129,20 +129,24 @@ if ($type=='Job') {
 }
 if ($type=='Internship') {
     if ($object->wage_type == 'Fixed') {
-        if ($object->wage_duration == 'Monthly') {
-            $fixd = $object->fixed_wage * 24 * 30;
-        } elseif ($object->wage_duration == 'Weekly') {
+        if ($object->wage_duration == 'Weekly') {
             $fixd = $object->fixed_wage / 7 * 30;
+        }
+        else
+        {
+            $fixd = $object->fixed_wage;
         }
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $fixd)) . 'p.m.';
     } elseif ($object->wage_type == 'Negotiable' || $object->wage_type == 'Performance Based') {
-        if ($object->wage_duration == 'Monthly') {
-            $min_wage = $object->min_wage * 24 * 30;
-            $max_wage = $object->max_wage * 24 * 30;
-        } elseif ($object->wage_duration == 'Weekly') {
+        if ($object->wage_duration == 'Weekly') {
             $min_wage = $object->min_wage / 7 * 30;
             $max_wage = $object->max_wage / 7 * 30;
+        }
+        else
+        {
+            $min_wage = $object->min_wage;
+            $max_wage = $object->max_wage;
         }
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $min_wage)) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $max_wage)) . 'p.m.';

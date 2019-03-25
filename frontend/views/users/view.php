@@ -42,7 +42,7 @@ $this->params['header_dark'] = false;
                                target="_blank">Edit Profile</a>
                             <?php
                             if (!empty($userCv)) {
-                                $cv = Yii::$app->params->upload_directories->resume->file_path . DIRECTORY_SEPARATOR . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
                                 ?>
                                 <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
                             <?php }

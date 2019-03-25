@@ -103,18 +103,16 @@ if ($organization['cover_image']) {
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
                                 <div class="row margin-0">
-                                    <?php if(!empty($organization['number_of_employees'])){?>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
-                                                    <?= Html::encode($organization['number_of_employees']) ?>
+                                                    <?= $organization['number_of_employees'] ? Html::encode($organization['number_of_employees']) : 'N/A' ?>
                                                 </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <?php }?>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
@@ -123,18 +121,16 @@ if ($organization['cover_image']) {
                                             </div>
                                         </div>
                                     </div>
-                                    <?php if(!empty($organization['establishment_year'])){?>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
-                                                    <?= $organization['establishment_year']; ?>
+                                                    <?= $organization['establishment_year'] ? $organization['establishment_year'] : 'N/A' ?>
                                                 </div>
                                                 <div class="det-heading">Established</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <?php }?>
                                 </div>
                             </div>
                         </div>

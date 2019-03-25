@@ -646,6 +646,7 @@ class JobsController extends Controller
     public function actionShortlistJob()
     {
         if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             if (!Yii::$app->user->isGuest) {
                 $app_id = Yii::$app->request->post("app_id");
                 $chkuser = ShortlistedApplications::find()
@@ -667,7 +668,11 @@ class JobsController extends Controller
                     $shortlist->last_updated_on = date('Y-m-d H:i:s');
                     $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
                     if ($shortlist->save()) {
-                        return 'short';
+                        return $response = [
+                            'status' => 200,
+                            'title' => 'Success',
+                            'message' => 'Shortlisted',
+                        ];
                     } else {
                         return false;
                     }
@@ -676,14 +681,22 @@ class JobsController extends Controller
                         ->update(ShortlistedApplications::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
-                        return 'unshort';
+                        return $response = [
+                            'status' => 200,
+                            'title' => 'Success',
+                            'message' => 'unshort',
+                        ];
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
                         ->update(ShortlistedApplications::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $app_id])
                         ->execute();
                     if ($update == 1) {
-                        return 'short';
+                        return $response = [
+                            'status' => 200,
+                            'title' => 'Success',
+                            'message' => 'Shortlisted',
+                        ];
                     }
                 }
             }
