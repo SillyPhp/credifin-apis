@@ -145,6 +145,7 @@ class JobsController extends Controller
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['is_deleted'=>0])
                 ->exists();
 
             $shortlist = \common\models\ShortlistedApplications::find()
