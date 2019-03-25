@@ -44,18 +44,13 @@ if ($type=='Job') {
 }
 if ($type=='Internship') {
     if ($data['wage_type'] == 'Fixed') {
-        if ($data['wage_duration'] == 'Monthly') {
-            $data['fixed_wage'] = $data['fixed_wage'] * 24 * 30;
-        } elseif ($data['wage_duration'] == 'Weekly') {
+        if ($data['wage_duration'] == 'Weekly') {
             $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.';
     } elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based') {
-        if ($data['wage_duration'] == 'Monthly') {
-            $data['min_wage'] = $data['min_wage'] * 24 * 30;
-            $data['max_wage'] = $data['max_wage'] * 24 * 30;
-        } elseif ($data['wage_duration'] == 'Weekly') {
+        if ($data['wage_duration'] == 'Weekly') {
             $data['min_wage'] = $data['min_wage'] / 7 * 30;
             $data['max_wage'] = $data['max_wage'] / 7 * 30;
         }
