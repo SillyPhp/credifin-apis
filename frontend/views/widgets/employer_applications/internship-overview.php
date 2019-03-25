@@ -37,12 +37,12 @@ if (!empty($placement_locations)) {
             <h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
         <?php setlocale(LC_MONETARY, 'en_IN'); ?>
         <li><i class="fa fa-money"></i>
-            <h3>Maximum Stipend</h3>
-            <span><?= (($max_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $max_wage)) . 'p.m.' : 'N/A'); ?></span>
+            <h3>Minimum stipend</h3>
+            <span><?= (($min_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $min_wage)) . ' p.m.' : 'N/A'); ?></span>
         </li>
         <li><i class="fa fa-money"></i>
-            <h3>Minimum stipend</h3>
-            <span><?= (($min_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $min_wage)) . 'p.m.' : 'N/A'); ?></span>
+            <h3>Maximum Stipend</h3>
+            <span><?= (($max_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $max_wage)) . ' p.m.' : 'N/A'); ?></span>
         </li>
         <li><i class="fa fa-mars-double"></i>
             <h3>Gender</h3><span><?php
