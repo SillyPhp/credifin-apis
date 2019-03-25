@@ -32,7 +32,6 @@ use account\models\jobs\JobApplicationForm;
 use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
 use common\models\InterviewProcessFields;
-use common\models\OrganizationEmployeeBenefits;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
 
@@ -67,44 +66,6 @@ class JobsController extends Controller
             return $this->__organizationDashboard();
         } else {
             return $this->__individualDashboard();
-        }
-    }
-
-    public function actionCreateXyz()
-    {
-        if (Yii::$app->user->identity->organization) {
-            $model = new JobApplicationForm();
-            $que = $model->getQuestionnnaireList();
-            $loc_list = $model->getOrganizationLocationOffice();
-            $int_list = $model->getOrganizationLocationInterview();
-            $primary_cat = $model->getPrimaryFields();
-            $industry = $model->getndustry();
-            $process = $model->getInterviewProcess();
-            $benefits = $model->getBenefits();
-            if ($model->load(Yii::$app->request->post())) {
-                $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues()) {
-                    $session = Yii::$app->session;
-                    if (!empty($session->get($session_token))) {
-                        $session->remove($session_token);
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return $this->render('application', [
-                    'model' => $model, 'loc_list' => $loc_list,
-                    'que' => $que,
-                    'primary_cat' => $primary_cat,
-                    'int_list' => $int_list,
-                    'industry' => $industry,
-                    'process' => $process,
-                    'benefits' => $benefits,
-                ]);
-            }
-        } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -491,6 +452,7 @@ class JobsController extends Controller
         $model = new JobApplied();
         if (Yii::$app->request->isPost) {
             if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 if (Yii::$app->request->post("check") == 1) {
                     $arr_loc = Yii::$app->request->post("json_loc");
                     $model->id = Yii::$app->request->post("application_enc_id");
@@ -498,12 +460,12 @@ class JobsController extends Controller
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
                     if ($res = $model->saveValues()) {
-                        return json_encode($res);
+                        return $res;
                     } else {
                         $status = [
                             'status' => false,
                         ];
-                        return json_encode($status);
+                        return $status;
                     }
                 } else if (Yii::$app->request->post("check") == 0) {
                     $arr_loc = Yii::$app->request->post("json_loc");
@@ -512,12 +474,12 @@ class JobsController extends Controller
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
                     if ($res = $model->upload()) {
-                        return json_encode($res);
+                        return $res;
                     } else {
                         $status = [
                             'status' => false,
                         ];
-                        return json_encode($status);
+                        return $status;
                     }
                 }
             }
@@ -938,7 +900,7 @@ class JobsController extends Controller
             ->alias('a')
             ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
             ->joinWith(['appliedApplications e' => function ($y) {
-                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id]);
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id,'e.is_deleted'=>0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
             ->joinWith(['title c' => function ($x) {

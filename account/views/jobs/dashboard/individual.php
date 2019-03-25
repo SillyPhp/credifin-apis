@@ -55,7 +55,7 @@ use frontend\models\applications\CandidateApply;
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_accepted ?></span> </div>
                     <div class="desc"> Applications Accepted</div>
                 </div>
@@ -67,7 +67,7 @@ use frontend\models\applications\CandidateApply;
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_pending; ?></span> </div>
                     <div class="desc">Applications Pending</div>
                 </div>
@@ -79,7 +79,7 @@ use frontend\models\applications\CandidateApply;
                     <i class="fa fa-building"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
                     <div class="desc">Companies Shortlisted</div>
                 </div>
@@ -122,13 +122,13 @@ use frontend\models\applications\CandidateApply;
                     <ul class="tabs" id="head-tabs">
                         <li data-tab="tab-1" data-url="/account/jobs/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li> 
+                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li>
                         |
                         <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
                         |
-                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted1" class="tab-link caption-subject font-dark uppercase">Shorlisted 1</li>
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted1" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
 
                     </ul>
                 </div>
@@ -149,7 +149,7 @@ use frontend\models\applications\CandidateApply;
                                         foreach ($reviewlist as $review) {
                                             ?>
                                             <div class="col-md-3 col-sm-6 hr-j-box rev_box" id="<?= $review['application_enc_id']; ?>">
-                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>"> 
+                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
@@ -178,7 +178,7 @@ use frontend\models\applications\CandidateApply;
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div>
-                                                                    <div class="j-grid"> 
+                                                                    <div class="j-grid">
                                                                         <a  href="/job/<?= $review['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
@@ -186,13 +186,13 @@ use frontend\models\applications\CandidateApply;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>  
+                                            </div>
                                             <?php
                                         }
                                     } else {
                                         ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -207,14 +207,14 @@ use frontend\models\applications\CandidateApply;
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <div id="tab-2" class="tab-con" > 
+                                <div id="tab-2" class="tab-con" >
                                     <?php
                                     Pjax::begin(['id' => 'pjax_shortlist']);
                                     if ($shortlisted) {
                                         foreach ($shortlisted as $shortlist) {
                                             ?>
                                             <div class="col-md-3 hr-j-box">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
@@ -238,8 +238,8 @@ use frontend\models\applications\CandidateApply;
                                                                         <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
-                                                                    </div> 
-                                                                    <div class=" j-grid"> 
+                                                                    </div>
+                                                                    <div class=" j-grid">
                                                                         <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
@@ -247,13 +247,13 @@ use frontend\models\applications\CandidateApply;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> 
+                                            </div>
                                             <?php
                                         }
                                     } else {
                                         ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -268,13 +268,13 @@ use frontend\models\applications\CandidateApply;
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <div id="tab-3" class="tab-con" > 
+                                <div id="tab-3" class="tab-con" >
                                     <?php
                                     if ($applied) {
                                         foreach ($applied as $apply) {
-                                            ?>  
+                                            ?>
                                             <div class="col-md-3">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
@@ -304,9 +304,9 @@ use frontend\models\applications\CandidateApply;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
+                                        ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -318,13 +318,13 @@ use frontend\models\applications\CandidateApply;
                                         </div>
                                     <?php } ?>
                                 </div>
-                                <div id="tab-4" class="tab-con" > 
+                                <div id="tab-4" class="tab-con" >
                                     <?php
                                     if ($accepted) {
                                         foreach ($accepted as $accept) {
-                                            ?>  
+                                            ?>
                                             <div class="col-md-3">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('/assets/common/categories/'. $accept['job_icon']) ?>" class="img-responsive ">
@@ -352,9 +352,9 @@ use frontend\models\applications\CandidateApply;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
+                                        ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -383,30 +383,20 @@ use frontend\models\applications\CandidateApply;
                                                 <div class="hr-com-field">
                                                     <?= $shortlist['name']?>
                                                 </div>
-<!--                                                <div class="opening-txt">-->
-<!--                                                    12 Openings-->
-<!--                                                </div>-->
                                                 <div class="overlay2">
                                                     <div class="text-o">
-                                                <?php if($shortlist[appliedApplications]){?>
-                                                        <a class="over-bttn ob2 hover_short apply-btn" disabled="disabled">
+                                                <?php if($shortlist['appliedApplications']){?>
+                                                        <a class="over-bttn ob2 hover_short" disabled="disabled">
                                                             <i class="fa fa-check"></i>Applied</a>
                                                 <?php }else{?>
-                                                    <a id="<?=$shortlist['application_enc_id']?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
-
+                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
                                                 <?php } ?>
                                                     </div>
-                                                    <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/">Apply</a></div>
-                                                    <?= CandidateApply::widget(['application_enc_id' => $shortlist['application_enc_id'],'btn_class'=>'apply-btn']) ?>
+
                                                 </div>
                                                 <div class="hr-com-jobs">
                                                     <div class="row ">
                                                         <div class="col-md-12 col-sm-12 minus-15-pad">
-<!--                                                            <div class=" j-cross">-->
-<!--                                                                <button class="rmv_list" value="">-->
-<!--                                                                    <i class="fa fa-times"></i>-->
-<!--                                                                </button>-->
-<!--                                                            </div>-->
                                                             <div class=" j-grid">
                                                                 <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
                                                             </div>
@@ -433,6 +423,8 @@ use frontend\models\applications\CandidateApply;
                                         </div>
                                         <?php
                                     } ?>
+
+
                                 </div>
                             </div>
                         </div>
@@ -507,8 +499,11 @@ $this->registerCss('
 //    z-index:99999;
 //}
 .topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
-  height: 80%;
+  height: 78%;
   border-radius:10px 10px 0px 0px !important;
+}
+.topic-con:hover .opening-txt ~ .overlay, .topic-con:hover .opening-txt ~ .overlay1,.topic-con:hover .opening-txt ~ .overlay2 {
+    height:80%;
 }
 button.over-bttn, .ob1, button.over-bttn, .ob2{
     background:#00a0e3 !important; 
@@ -595,9 +590,33 @@ li.current{
 a:hover{
     text-decoration:none;
 }
+
+#new_resume,#use_existing{
+        display:none;
+    }
+    
+#warn{
+        color:#e9465d;
+        display:none;
+    }
+    
+.sub_description_1,sub_description_2{
+        display:none;
+     } 
+     
+.fader{
+      width:100%;
+      height:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      display:none;
+      z-index:99;
+      background-color:#fff;
+      opacity:0.7;
+    }
 ');
 $script = <<<JS
-
 
 $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
@@ -697,6 +716,12 @@ $(document).on('click','.rmv_review',function(){
 $(document).on('click', '#removejob', function(){
     $(this).closest('.hr-j-box').remove();
 });   
+
+$(document).on('click','#close_btn',function()
+ {
+    $('.fader').css('display','none');
+    $(this).parent().removeClass('show');
+})
 
 JS;
 $this->registerJs($script);

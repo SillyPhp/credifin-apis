@@ -126,7 +126,8 @@ use yii\widgets\Pjax;
                         <li data-tab="tab-3" data-url="/account/internships/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
                         <li data-tab="tab-4" data-url="/account/internships/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
-
+                        |
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted1" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
                     </ul>
                 </div>
                 <div class="actions col-lg-1">
@@ -357,6 +358,66 @@ use yii\widgets\Pjax;
                                         </div>
                                     <?php } ?>
                                 </div>
+                                <div id="tab-5" class="tab-con">
+                                    <?php
+                                    if ($shortlist1) {
+                                        foreach ($shortlist1 as $shortlist) {
+                                            ?>
+                                            <div class="col-md-3 hr-j-box">
+                                                <div class="topic-con">
+                                                    <div class="hr-company-box">
+                                                        <div class="hr-com-icon">
+                                                            <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                                                        </div>
+                                                        <div class="hr-com-name">
+                                                            <?= $shortlist['org_name'] ?>
+                                                        </div>
+                                                        <div class="hr-com-field">
+                                                            <?= $shortlist['name']?>
+                                                        </div>
+                                                        <div class="overlay2">
+                                                            <div class="text-o">
+                                                                <?php if($shortlist['appliedApplications']){?>
+                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                        <i class="fa fa-check"></i>Applied</a>
+                                                                <?php }else{?>
+                                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                <?php } ?>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="hr-com-jobs">
+                                                            <div class="row ">
+                                                                <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                                    <div class=" j-grid">
+                                                                        <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <div class="col-md-12">
+                                            <div class="tab-empty">
+                                                <div class="tab-empty-icon">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                </div>
+                                                <div class="tab-empty-text">
+                                                    <div class="">There are no Jobs to show.</div>
+                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    } ?>
+
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -489,8 +550,11 @@ $this->registerCss('
     z-index:99999;
 }
 .topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
-  height: 80%;
+  height: 78%;
   border-radius:10px 10px 0px 0px !important;
+}
+.topic-con:hover .opening-txt ~ .overlay, .topic-con:hover .opening-txt ~ .overlay1,.topic-con:hover .opening-txt ~ .overlay2 {
+    height:80%;
 }
 button.over-bttn, .ob1, button.over-bttn, .ob2{
     background:#00a0e3 !important; 

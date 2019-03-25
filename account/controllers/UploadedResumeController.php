@@ -35,6 +35,7 @@ class UploadedResumeController extends Controller {
             }], false)
             ->joinWith(['organizationEnc b'], false)
             ->where(['b.organization_enc_id' => $organization_id['organization_enc_id']])
+            ->andWhere(['c.assigned_to'=>$type])
             ->asArray()
             ->all();
 
@@ -42,6 +43,7 @@ class UploadedResumeController extends Controller {
         return $this->render('candidate-resumes',[
             'user_data'=>$user_data,
             'available_applications' => $employer_applications,
+            'type'=>$type,
         ]);
     }
 

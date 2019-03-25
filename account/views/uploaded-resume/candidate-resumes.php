@@ -216,7 +216,7 @@ use yii\helpers\Url;
                 <?php if(count($available_applications) > 0) { ?>
                     <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>
                 <?php }else{ ?>
-                    <a class="btn btn-primary" href="/account/jobs/create">Create New Job</a>
+                    <a class="btn btn-primary" href="/account/<?=$type?>/create">Create New <?=$type?></a>
                 <?php } ?>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
