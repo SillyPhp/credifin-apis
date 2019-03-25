@@ -47,7 +47,7 @@ $this->params['seo_tags'] = [
                             <img src="<?= $feature_image; ?>">
                         </div>
                         <div class="blog-title"><?= $post['title'] ?></div>
-                        <div class="blog-text">
+                        <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
                     </div>
@@ -443,5 +443,17 @@ textarea::placeholder{
         max-width:100%;
     }
 }
+/*----blog description preview css start----*/
+#blog-description ul{
+    list-style: disc;
+    margin-bottom: 10px;
+    padding-left: 40px;
+}
+#blog-description ol{
+    list-style: decimal;
+    margin-bottom: 10px;
+    padding-left: 40px;
+}
+/*----blog description preview css ends----*/
 ');
 $this->registerJsFile('http://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
