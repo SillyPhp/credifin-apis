@@ -1070,10 +1070,10 @@ $(document).on('click','.follow',function(e){
     });        
 });
 
-var data = {company_name: window.location.pathname.split('/')[1]};
+var data = {slug: window.location.pathname.split('/')[1]};
 $.ajax({
     type: 'POST',
-    url: '/account/resume/check-resume',
+    url: '/drop-resume/check-resume',
     data : data,
     success: function(response){
         $('#dropcv').val(response);
