@@ -17,6 +17,27 @@ use common\models\Designations;
 
 class CategoriesListController extends Controller
 {
+    public function actionLoadTitles($id='', $type = 'Jobs')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $categories = Categories::find()
+            ->alias('a')
+            ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
+            ->joinWith(['assignedCategories b'],false)
+            ->andWhere([
+                'b.assigned_to' => $type,
+                'b.parent_enc_id' => $id,
+            ])
+            ->andWhere([
+                'or',
+                ['=', 'b.status', 'Approved'],
+                ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->asArray()
+            ->all();
+
+        return $categories;
+    }
     public function actionCategories($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

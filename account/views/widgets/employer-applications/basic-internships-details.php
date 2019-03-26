@@ -275,39 +275,7 @@ $(document).on('click','#weekdays input',function()
           $('.field-weekoptsund').css('display','none');
           $('.sun').css('display','none');
         }
-   }) 
-var categories = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url:'/account/categories-list/categories-data',
-    prepare: function (query, settings) {
-             settings.url += '?q=' + $('#title').val()+'&type=Internships&id='+prime_id;
-             return settings;
-        },  
-    'cache': false,  
-  }
-});
-$('#title').typeahead(null, {
-  name: 'categories',
-  display: 'value',
-  source: categories,
-  minLength: 1,
-  highlight: true, 
-   limit: 20,
-}).on('typeahead:asyncrequest', function() {
-    $('.cat_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    $('.cat_wrapper .Typeahead-spinner').hide();
-  }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
-  {
-      var data =  datum.id; 
-      skils_update(data); 
-      educational_update(data);
-      job_desc_update(data);
-      make_removable_jd();
-      make_removable_edu();
-    });
+   });
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
