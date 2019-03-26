@@ -16,7 +16,6 @@ class EmployeeBenefitsController extends Controller
     public function actionCreate()
     {
         $BenefitsModel = new Benefits();
-
         if ($BenefitsModel->load(Yii::$app->request->post()) && $BenefitsModel->validate()) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($BenefitsModel->Add()) {
@@ -45,10 +44,11 @@ class EmployeeBenefitsController extends Controller
         $model = new JobApplicationForm();
         $benefits = $BenefitsModel->getAllBenefits();
         $org_benefits = $model->getBenefits();
-        if ($BenefitsModel->load(Yii::$app->request->post()))
+        if (Yii::$app->request->isPost)
         {
-            $BenefitsModel->benefit = Yii::$app->request->post('str');
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $BenefitsModel->benefit = Yii::$app->request->post('str');
+            $BenefitsModel->predefind_benefit = Yii::$app->request->post('predefind_benefit');
             if ($BenefitsModel->Add()) {
                 return [
                     'status' => 'success',

@@ -1634,7 +1634,6 @@ function validateSelection() {
   for (var i = 0; i < job_titles.length; i++) {
   if (job_titles[i].value == $(this).val()) {
    var data =  job_titles[i].id;
-   console.log(job_titles);
    skils_update(data); 
    educational_update(data);
    job_desc_update(data);
