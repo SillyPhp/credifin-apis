@@ -27,7 +27,7 @@ class ProfileCards
                 $b->andWhere(['e.name' => ucfirst($options['type'])]);
             }], false)
             ->groupBy(['a.parent_enc_id'])
-            ->orderBy(new \yii\db\Expression('rand()'))
+            ->orderBy(['total' => SORT_DESC])
             ->limit(8)
             ->asArray()
             ->all();
