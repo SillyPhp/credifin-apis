@@ -119,8 +119,8 @@ $result = json_encode($r);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
-
-
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
 
 
