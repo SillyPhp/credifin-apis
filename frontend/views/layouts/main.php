@@ -225,6 +225,8 @@ AppAssets::register($this);
     <?php
     if (!Yii::$app->user->isGuest) {
         echo $this->render('/widgets/user-profile-sidebar-right');
+    } elseif (Yii::$app->user->isGuest){
+        echo $this->render('/widgets/login-modal');
     }
     ?>
 </div>
