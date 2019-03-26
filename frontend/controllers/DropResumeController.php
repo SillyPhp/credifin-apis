@@ -22,9 +22,17 @@ class DropResumeController extends Controller
                 ->exists();
 
             if ($cv_exists) {
-                return 'yes';
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'yes',
+                ];
             } else {
-                return 'no';
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'no',
+                ];
             }
         }
     }

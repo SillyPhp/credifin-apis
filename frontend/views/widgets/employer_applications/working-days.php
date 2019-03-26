@@ -1,41 +1,45 @@
 <?php
-if(!empty($working_days)) {
-    ?>
+if (empty($working_days)) {
+    $working_days = [1,2,3,4,5];
+    $working_days = json_encode($working_days);
+}
+$working_days_data = json_decode($working_days);
+?>
     <h3>Working Days</h3>
     <div class="week-days">
         <ul>
-            <li class="<?= in_array(1, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(1, $working_days_data) ? 'active' : '' ?>">
                 <span>Monday</span>
                 <h2>M</h2>
             </li>
-            <li class="<?= in_array(2, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(2, $working_days_data) ? 'active' : '' ?>">
                 <span>Tuesday</span>
                 <h2>T</h2>
             </li>
-            <li class="<?= in_array(3, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(3, $working_days_data) ? 'active' : '' ?>">
                 <span>Wednesday</span>
                 <h2>W</h2>
             </li>
-            <li class="<?= in_array(4, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(4, $working_days_data) ? 'active' : '' ?>">
                 <span>Thursday</span>
                 <h2>T</h2>
             </li>
-            <li class="<?= in_array(5, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(5, $working_days_data) ? 'active' : '' ?>">
                 <span>Friday</span>
                 <h2>F</h2>
             </li>
-            <li class="<?= in_array(6, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(6, $working_days_data) ? 'active' : '' ?>">
                 <span>Saturday</span>
                 <h2>S</h2>
             </li>
-            <li class="<?= in_array(7, json_decode($working_days)) ? 'active' : '' ?>">
+            <li class="<?= in_array(7, $working_days_data) ? 'active' : '' ?>">
                 <span>Sunday</span>
                 <h2>S</h2>
             </li>
         </ul>
     </div>
-    <?php
-    $this->registerCss('
+<?php
+$this->registerCss('
     .week-days ul li{
       position:relative;
       list-style:none;
@@ -79,4 +83,3 @@ if(!empty($working_days)) {
       margin:0px;
     }
 ');
-}
