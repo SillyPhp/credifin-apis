@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\OrganizationReviews;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -540,75 +539,4 @@ class OrganizationsController extends Controller
         }
     }
 
-    public function actionReviews($slug)
-    {
-        $org = Organizations::find()
-            ->select(['organization_enc_id', 'name', 'website', 'email', 'logo', 'logo_location'])
-            ->where([
-                'slug' => $slug,
-                'is_deleted' => 0
-            ])
-            ->one();
-
-        $reviews = OrganizationReviews::find()
-            ->alias('a')
-            ->select(['show_user_details', 'ROUND((job_security+growth+organization_culture+compensation+work+work_life+skill_development)/7) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
-            ->where(['a.organization_enc_id' => $org->organization_enc_id, 'a.status' => 1])
-            ->joinWith(['createdBy b'], false)
-            ->joinWith(['categoryEnc c'], false)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $stats = OrganizationReviews::find()
-            ->select(['SUM(job_security) job_total', 'SUM(growth) growth_total', 'SUM(organization_culture) total_cult', 'SUM(compensation) total_compensation', 'SUM(work) total_work', 'SUM(work_life) total_work_life', 'SUM(skill_development) total_skill'])
-            ->where(['organization_enc_id' => $org->organization_enc_id, 'status' => 1])
-            ->asArray()
-            ->one();
-        return $this->render('review-company', ['slug' => $slug, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
-    }
-
-    public function actionPostReviews($slug)
-    {
-        if (Yii::$app->request->isPost) {
-            $arr = Yii::$app->request->post('data');
-            $org_id = Organizations::find()
-                ->where(['slug' => $slug])
-                ->asArray()
-                ->one();
-            $f_time = strtotime($arr['from']);
-            $from_time = date('Y-m-d', $f_time);
-            $t_time = strtotime($arr['to']);
-            $to_time = date('Y-m-d', $t_time);
-            $companyReview = new OrganizationReviews();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $companyReview->review_enc_id = $utilitiesModel->encrypt();
-            $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
-            $companyReview->category_enc_id = $arr['department'];
-            $companyReview->organization_enc_id = $org_id['organization_enc_id'];
-            $companyReview->average_rating = $arr['average_rating'];
-            $companyReview->is_current_employee = (($arr['current_employee'] == 'current') ? 1 : 0);
-            $companyReview->from_date = $from_time;
-            $companyReview->to_date = $to_time;
-            $companyReview->overall_experience = $arr['overall_experience'];
-            $companyReview->skill_development = $arr['skill_development'];
-            $companyReview->work_life = $arr['work_life'];
-            $companyReview->compensation = $arr['compensation'];
-            $companyReview->organization_culture = $arr['organization_culture'];
-            $companyReview->job_security = $arr['job_security'];
-            $companyReview->growth = $arr['growth'];
-            $companyReview->work = $arr['work'];
-            $companyReview->city_enc_id = $arr['location'];
-            $companyReview->likes = $arr['likes'];
-            $companyReview->dislikes = $arr['dislikes'];
-            $companyReview->created_by = Yii::$app->user->identity->user_enc_id;
-            $companyReview->last_updated_by = Yii::$app->user->identity->user_enc_id;
-            $companyReview->status = 1;
-            $companyReview->created_on = date('Y-m-d h:i:s');
-            if (!$companyReview->save()) {
-                print_r($companyReview->getErrors());
-            }
-        }
-    }
 }
