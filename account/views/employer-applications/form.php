@@ -1573,13 +1573,76 @@ $('.selectBox').prop("disabled", true);
 var data_before = null;
 var checked = null;
 var array = [];
+var prime_id = null;
 $("#title").prop("disabled", false);
 $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
       $('#title').val('');
-      $('.tt-dataset').empty();  
-   })
+      $('#title').typeahead('destroy');
+      load_job_titles(prime_id);
+   });
+var job_titles;
+if (doc_type=='Jobs')
+    {
+        var preview_url = '/account/jobs/preview';
+        var titles_url = '/account/categories-list/load-titles?id=';
+    }
+else if(doc_type=="Internships")
+    {
+        var preview_url = '/account/internships/preview';
+        var titles_url = '/account/categories-list/load-titles?type=Internships&id=';
+    }
+function load_job_titles(prime_id)
+{
+var categories = new Bloodhound({
+  datumTokenizer: function(d) {
+        var tokens = Bloodhound.tokenizers.whitespace(d.value);
+            $.each(tokens,function(k,v){
+                i = 0;
+                while( (i+1) < v.length ){
+                    tokens.push(v.substr(i,v.length));
+                    i++;
+                }
+            })
+            return tokens;
+        },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  {
+      url:titles_url+prime_id,
+      cache:false,
+      filter:function(res) {
+        job_titles = [];
+        job_titles = res;
+        return res;
+      }
+      }
+  
+});
+
+$('#title').typeahead(null, {
+  display: 'value',
+  source: categories,
+  minLength: 1,
+  limit: 20,
+}).blur(validateSelection);
+}
+
+function validateSelection() {
+   var theIndex = -1;
+  for (var i = 0; i < job_titles.length; i++) {
+  if (job_titles[i].value == $(this).val()) {
+   var data =  job_titles[i].id;
+   skils_update(data); 
+   educational_update(data);
+   job_desc_update(data);
+   make_removable_jd();
+   make_removable_edu();
+ break;
+   }
+ }
+}
  $('#type').on('change',function()
   {
    var job_type_str = $(this).val();
@@ -1610,26 +1673,29 @@ window.ChildFunction = ChildFunction;
                    data: data,
                    beforeSend: function()
                        {
-                         $('#loading_img').addClass('show');
                          $('.button-submit').prop('disabled','disabled');
-                         $('.fader').css('display','block');
                        },
                    success: function(data) {
                    if(data == true)
                     {
+                    $('.fader').css('display','block');    
+                    $('#loading_img').addClass('show');    
                     function explode(){
-                     $('#loading_img').removeClass('show');
-                     $('.button-submit').prop('disabled','');
                      window.location.replace('/account/jobs/dashboard'); 
                      }
-                       setTimeout(explode, 3000); 
+                       setTimeout(explode, 2000); 
                      }
                      else {
                      $('#loading_img').removeClass('show');
+                     $('.button-submit').prop('disabled','');
                      $('.fader').css('display','none');
-                     alert('Opps Something Went Wrong..!');
+                     toastr.error('Opps Something went wrong', 'Server Error');
                        }
-                    }            
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                       toastr.error('Your internet connection is interrupted re-submit the application by clicking submit', 'Connection Error');
+                       $('.button-submit').removeAttr('disabled');
+                    }
                     });
                 });
  
@@ -1703,6 +1769,10 @@ function init() {
                     },
                     'type': {
                         required: true
+                    },
+                    'weekdays[]': {
+                        required: true,
+                        minlength: 1
                     },
                     'primaryfield': {
                       
@@ -1793,6 +1863,10 @@ function init() {
                 },
                 },
                 messages: { 
+                    'weekdays[]': {
+                        required: '<div class = "color_red">Choose One</div>',
+                        minlength: '<div class = "color_red">Choose One</div>',
+                    },
                     'pre_placement_offer': {
                       
                        required:'<div class = "color_red">Choose One</div>',
@@ -2100,6 +2174,9 @@ function init() {
                     if (salarycomparison() === false) {
                         return false;
                     }
+                    if (min_weekdays() === false) {
+                        return false;
+                    }
                     if (form.valid() == false) {
                         return false;
                     }
@@ -2144,6 +2221,19 @@ function salarycomparison(){
         return true;
     }
     }
+function min_weekdays()
+{
+    week_length =  $('[name="weekdays[]"]:checked').length;
+    if (week_length==0){
+        $('#weekdays').next('p').html('<div class = "s_error">working days cannot be blank</div>');
+        $('html, body').animate({ scrollTop: 200 }, 1000);
+        return false;
+    }
+    else
+        {
+            return true;
+        }
+}    
 function convertToInt(t){
     t=t.replace(/\,/g,'');
     t=parseInt(t,10);
@@ -2162,15 +2252,6 @@ function genrate_session_token() {
         session_tok += possible.charAt(Math.floor(Math.random()*possible.length));
     }
 }
-if (doc_type=='Jobs')
-    {
-        var preview_url = '/account/jobs/preview';
-    }
-else if(doc_type=="Internships")
-    {
-        var preview_url = '/account/internships/preview';
-    }
-
 function get_preview(session_tok) {
   var data = $('#submit_form').serialize()+'&n='+session_tok;
                     $.ajax({
@@ -2191,6 +2272,8 @@ function get_preview(session_tok) {
             }
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/gmaps/gmaps.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

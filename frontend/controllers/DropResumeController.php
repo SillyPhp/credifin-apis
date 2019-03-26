@@ -1,36 +1,42 @@
 <?php
+
 namespace frontend\controllers;
+
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
+use common\models\OrganizationAssignedCategories;
 
-class DropResumeController extends Controller{
+class DropResumeController extends Controller
+{
 
+    public function actionCheckResume()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $slug = Yii::$app->request->post('slug');
 
+            $cv_exists = OrganizationAssignedCategories::find()
+                ->alias('a')
+                ->select(['a.assigned_category_enc_id'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['b.slug' => $slug])
+                ->exists();
 
-    public function actionIndex(){
-        $jobProfile= [
-            'Information Technology'=>'information_technology',
-            'Accounting'=>'accounting',
-            'Hr'=>'hr',
-            'Designer'=>'designer'
-        ];
-        $jobTitle = [
-            'Front end'=>'front_end',
-            'Back End'=>'back_end',
-            'Software Tester'=>'software_tester'
-        ];
-        $location = [
-            'Ludhiana'=>'ludhiana',
-            'Amritsar'=>'amritsar',
-            'Jalandhar'=>'jalandhar'
-        ];
-
-        return $this->render('/companies/detail_test',[
-            'jobProfile'=>$jobProfile,
-            'jobTitle'=>$jobTitle,
-            'location'=>$location,
-        ]);
+            if ($cv_exists) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'yes',
+                ];
+            } else {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'no',
+                ];
+            }
+        }
     }
-}
 
-?>
+}

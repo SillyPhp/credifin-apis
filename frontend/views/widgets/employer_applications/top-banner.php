@@ -50,10 +50,10 @@ $(document).on('click','.shortlist_job',function(e){
             $('.shortlist_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
         },
         success:function(data){
-            if(data=='short'){
+            if(data.message =='Shortlisted'){
                 $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlisted');
                 $('.hover-change').addClass('col_pink');
-            } else if(data=='unshort'){
+            } else if(data.message =='unshort'){
                 $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlist');
                 $('.hover-change').removeClass('col_pink');
             }

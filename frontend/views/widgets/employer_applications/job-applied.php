@@ -1,15 +1,17 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-$location = ArrayHelper::map($locations,'city_enc_id','name');
-Yii::$app->view->registerJs('var btn_class = "'. $btn_class.'"',  \yii\web\View::POS_HEAD);
+
+$location = ArrayHelper::map($locations, 'city_enc_id', 'name');
+Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
 ?>
-<?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+            <?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
             <div class="modal-header">
                 <h4 class="modal-title">Fill Out The Details</h4>
             </div>
@@ -63,10 +65,10 @@ Yii::$app->view->registerJs('var btn_class = "'. $btn_class.'"',  \yii\web\View:
                 <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
                 <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
             </div>
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>
-<?php ActiveForm::end(); ?>
 <div id="message_img">
     <span id='close_btn'><i class="fa fa-times"></i></span>
     <div id="msg">
@@ -101,6 +103,107 @@ $this->registerCss("
         bottom : 0;
         right : 0;
         top : 20%;
+    }
+    .inputGroup {
+      background-color: #fff;
+      display: block;
+      margin: 10px 0;
+      position: relative;
+    }
+    .inputGroup label {
+       padding: 6px 75px 10px 25px;
+        width: 96%;
+        display: block;
+        margin:auto;
+        text-align: left;
+        color: #3C454C;
+        cursor: pointer;
+        position: relative;
+        z-index: 2;
+        transition: color 1ms ease-out;
+        overflow: hidden;
+        border-radius: 8px !important;
+        line-height: 30px;
+        border:1px solid #eee;
+    }
+    .inputGroup label:before {
+      width: 100%;
+      height: 10px;
+      border-radius: 50%;
+      content: '';
+      background-color: #00a0e3;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale3d(1, 1, 1);
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      z-index: -1;
+    }
+    .inputGroup label:after {
+      width: 32px;
+      height: 32px;
+      content: '';
+      border: 2px solid #D1D7DC;
+      background-color: #fff;
+      background-repeat: no-repeat;
+      background-position: 2px 3px;
+      background-image: url(\"data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E \");
+      border-radius: 50%;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      transition: all 200ms ease-in;
+    }
+    .inputGroup input:checked ~ label {
+      color: #fff;
+    }
+    .inputGroup input:checked ~ label:before {
+      transform: translate(-50%, -50%) scale3d(56, 56, 1);
+      opacity: 1;
+    }
+    .inputGroup input:checked ~ label:after {
+      background-color: #54E0C7;
+      border-color: #54E0C7;
+    }
+    .inputGroup input {
+      width: 32px;
+      height: 32px;
+      order: 1;
+      z-index: 2;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      visibility: hidden;
+    }
+    .has-success .control-label, .has-success.radio-inline label, .has-success .checkbox-inline, .has-success .radio-inline, .has-error .control-label, .has-error.radio-inline label, .has-error .checkbox-inline{
+        color:inherit;
+    }
+    
+    label.control-label {
+        font-family: 'Titillium Web', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    #msg{
+        color:#fff;
+        padding: 5px 5px;
+        text-align:center;
+     }  
+     
+    #close_btn {
+        float: right;
+        display: inline-block;
+        padding: 0px 6px;
+        color: #fff;
+        font-size: 28px;
+        cursor: pointer;
     }
 ");
 $script = <<< JS
@@ -268,6 +371,12 @@ $script = <<< JS
                      $('.'+btn_class+'').html('<i class = "fa fa-check"></i>Applied');
                      $('.'+btn_class+'').attr("disabled","true");
             }
+
+ $(document).on('click','#close_btn',function()
+ {
+    $('.fader').css('display','none');
+    $(this).parent().removeClass('show');
+});
 JS;
 
 $this->registerJs($script)
