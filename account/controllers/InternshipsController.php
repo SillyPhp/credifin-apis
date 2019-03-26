@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\DropResumeApplications;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -786,6 +787,37 @@ class InternshipsController extends Controller
             ->groupBy('a.applied_application_enc_id')
             ->count();
 
+        $application_id = DropResumeApplications::find()
+            ->alias('a')
+            ->innerJoinWith(['dropResumeApplicationTitles b' => function ($x) {
+                $x->joinWith(['title0 c'], false);
+                $x->andWhere(['c.assigned_to' => 'Internships']);
+            }], false)
+            ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['a.status' => 1])
+            ->asArray()
+            ->all();
+
+
+        $application_enc_id = [];
+        foreach ($application_id as $app) {
+            array_push($application_enc_id, $app['application_enc_id']);
+        }
+
+        $shortlist1 = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
+            ->joinWith(['appliedApplications e' => function ($y) {
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id,'e.is_deleted'=>0]);
+            }], true)
+            ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->joinWith(['title c' => function ($x) {
+                $x->joinWith(['categoryEnc d'], false);
+            }], false)
+            ->joinWith(['organizationEnc b'], false)
+            ->asArray()
+            ->all();
+
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
@@ -798,6 +830,7 @@ class InternshipsController extends Controller
             'total_pending' => $total_pending,
             'accepted_jobs' => $accepted_jobs,
             'total_accepted' => $total_accepted,
+            'shortlist1'=>$shortlist1,
         ]);
     }
 

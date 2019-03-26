@@ -93,6 +93,7 @@ class ResumeController extends Controller {
         $alreadyhave = AssignedCategories::find()
             ->where(['category_enc_id'=>$category_enc_id])
             ->andWhere(['parent_enc_id'=>$parent_enc_id])
+            ->andWhere(['organization_enc_id'=>Yii::$app->user->identity->organization_enc_id])
             ->exists();
 
         return $alreadyhave;

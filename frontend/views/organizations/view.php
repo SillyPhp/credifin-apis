@@ -325,11 +325,72 @@ if ($organization['cover_image']) {
         </div>
     </div>
     <input type="hidden" id="organisation_id" value="<?= Html::encode($organization['organization_enc_id']) ?>"/>
+    <section>
+        <div class="container">
+            <div class="empty-field">
+                <input type="hidden" id="loggedIn" value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Please Login as Candidate to drop your resume</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+    <section>
+        <div class="container">
+            <div class="empty-field">
+                <input type="hidden" id="dropcv">
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="existsModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Wait for company to create the feature</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </section>
 <?php
 echo $this->render('/widgets/mustache/organization_locations',[
     'Edit' => false
 ]);
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/drop_resume',[
+    'username'=>$username
+]);
 $this->registerCss('
 /*----jobs and internships----*/
 .internships-block{
@@ -1007,6 +1068,16 @@ $(document).on('click','.follow',function(e){
             }
         }
     });        
+});
+
+var data = {company_name: window.location.pathname.split('/')[1]};
+$.ajax({
+    type: 'POST',
+    url: '/account/resume/check-resume',
+    data : data,
+    success: function(response){
+        $('#dropcv').val(response);
+    }
 });
 JS;
 $this->registerJs("

@@ -55,7 +55,7 @@ class CandidateApply extends Widget
                 ->limit(3)
                 ->all();
         }
-        return $this->render('/widgets/employer_applications/job-applied',['model'=>$model,'btn_class'=>$this->btn_class,'application_enc_id'=>$this->application_enc_id,'locations'=>$locations,'que'=>$app_que,'resumes'=>$resumes]);
+        return $this->render('@frontend/views/widgets/employer_applications/job-applied',['model'=>$model,'btn_class'=>$this->btn_class,'application_enc_id'=>$this->application_enc_id,'locations'=>$locations,'que'=>$app_que,'resumes'=>$resumes]);
     }
 }
 
