@@ -2,6 +2,12 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationForm;
+use common\models\ApplicationInterviewQuestionnaire;
+use common\models\Cities;
+use common\models\DropResumeApplications;
+use common\models\OrganizationAssignedCategories;
+use common\models\UserResume;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -26,12 +32,9 @@ use account\models\jobs\JobApplicationForm;
 use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
 use common\models\InterviewProcessFields;
-use account\models\applications\ApplicationForm;
-use common\models\ApplicationInterviewQuestionnaire;
-use common\models\UserResume;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
-use common\models\DropResumeApplications;
+
 
 class JobsController extends Controller
 {
@@ -889,54 +892,36 @@ class JobsController extends Controller
             ->groupBy('a.applied_application_enc_id')
             ->count();
 
-        $applicatoin_id = DropResumeApplications::find()
-            ->select(['application_enc_id'])
-            ->where(['user_enc_id'=>Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['status'=>1])
+        $application_id = DropResumeApplications::find()
+            ->alias('a')
+            ->innerJoinWith(['dropResumeApplicationTitles b' => function ($x) {
+                $x->joinWith(['title0 c'], false);
+                $x->andWhere(['c.assigned_to' => 'Jobs']);
+            }], false)
+            ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['a.status' => 1])
             ->asArray()
             ->all();
 
 
-
-        $applicatoin_enc_id = [];
-        foreach($applicatoin_id as $app){
-            array_push($applicatoin_enc_id,$app['application_enc_id']);
+        $application_enc_id = [];
+        foreach ($application_id as $app) {
+            array_push($application_enc_id, $app['application_enc_id']);
         }
-
 
         $shortlist1 = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','a.organization_enc_id','a.title','b.name as org_name','a.slug' ,'c.category_enc_id', 'd.name','d.icon'])
-            ->joinWith(['title c' => function($x){
+            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
+            ->joinWith(['appliedApplications e' => function ($y) {
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id,'e.is_deleted'=>0]);
+            }], true)
+            ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
             }], false)
             ->joinWith(['organizationEnc b'], false)
-            ->where(['in','a.application_enc_id' , $applicatoin_enc_id])
             ->asArray()
             ->all();
-
-        $object = new ApplicationForm();
-
-        $resumes = UserResume::find()
-            ->select(['user_enc_id', 'resume_enc_id', 'title'])
-            ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->asArray()
-            ->all();
-
-        $app_que = ApplicationInterviewQuestionnaire::find()
-            ->alias('a')
-            ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-            ->where(['a.application_enc_id' => $applicatoin_id['application_enc_id']])
-            ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-            ->andWhere(['b.field_name' => 'Get Applications'])
-            ->exists();
-
-        $model = new \frontend\models\JobApplied();
-
-        $applied_jobs = AppliedApplications::find()
-            ->where(['application_enc_id' => $applicatoin_id['application_enc_id']])
-            ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-            ->exists();
 
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
@@ -950,12 +935,7 @@ class JobsController extends Controller
             'total_pending' => $total_pending,
             'accepted' => $accepted_jobs,
             'total_accepted' => $total_accepted,
-            'shortlist1'=>$shortlist1,
-            'data' => $object->getCloneData($applicatoin_id['application_enc_id']),
-            'model' => $model,
-            'resume' => $resumes,
-            'que' => $app_que,
-            'applied_jobs'=>$applied_jobs,
+            'shortlist1' => $shortlist1,
         ]);
     }
 
