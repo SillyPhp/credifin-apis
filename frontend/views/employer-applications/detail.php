@@ -176,7 +176,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ?>
                         <?=
                         $this->render('/widgets/employer_applications/other-details', [
-                            'other_details'=>$other,
+                            'other_details'=>$data['description'],
                         ]);
                         ?>
                     </div>
