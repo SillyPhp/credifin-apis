@@ -1076,7 +1076,7 @@ $.ajax({
     url: '/drop-resume/check-resume',
     data : data,
     success: function(response){
-        $('#dropcv').val(response);
+        $('#dropcv').val(response.message);
     }
 });
 JS;
