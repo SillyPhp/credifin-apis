@@ -84,13 +84,23 @@ $("#search_text").keyup(function (e) {
         $(this).toggle(matches)
     });
 });
-$("#search_text").keypress(function(e) {
-    if (e.which==13)
+$(document).on('keypress','input',function(e)
+{
+    if(e.which==13)
+        {
+            return false;
+        }
+})
+$(document).on('keyup','#search_text',function(e)
+{
+    if(e.which==13)
         {
             if ($(this).val()==''){
                 return false;
-            } 
-            $('#add_new_btn').trigger('click');
+            }
+            else {
+                $('#add_new_btn').trigger('click');
+            }
         }
 })
     $(document).on('click', '.sav_benft', function (event) {
@@ -132,8 +142,6 @@ $("#search_text").keypress(function(e) {
         return;
     }
     me.data('requestRunning', true);
-    console.log('ok');
-    return false;
       var str = $.trim($('#search_text').val());
      if (str != '')
          {
