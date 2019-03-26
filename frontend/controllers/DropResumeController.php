@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 use common\models\OrganizationAssignedCategories;
 
 class DropResumeController extends Controller
@@ -12,6 +13,7 @@ class DropResumeController extends Controller
     public function actionCheckResume()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             $slug = Yii::$app->request->post('slug');
 
             $cv_exists = OrganizationAssignedCategories::find()
