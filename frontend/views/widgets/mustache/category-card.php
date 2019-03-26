@@ -71,7 +71,7 @@ function renderCategories(cards){
     var j = 0;
     for(var i = 1; i <= noRows; i++){
         $(".categories").append('<div class="row">' + Mustache.render(card, cards.slice(j, j+4)) + '</div>');
-        j+=3;
+        j+=4;
     }
 }
 
