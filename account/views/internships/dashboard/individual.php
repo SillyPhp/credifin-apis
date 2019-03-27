@@ -127,7 +127,7 @@ use yii\widgets\Pjax;
                         |
                         <li data-tab="tab-4" data-url="/account/internships/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
                         |
-                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted1" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
+                        <li data-tab="tab-5" data-url="/account/internships/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
                     </ul>
                 </div>
                 <div class="actions col-lg-1">

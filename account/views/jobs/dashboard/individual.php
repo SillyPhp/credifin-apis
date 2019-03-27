@@ -128,7 +128,7 @@ use frontend\models\applications\CandidateApply;
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
                         |
-                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted1" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
 
                     </ul>
                 </div>
