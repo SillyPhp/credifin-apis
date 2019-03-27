@@ -1591,13 +1591,13 @@ $('#enable').click(function() {
        $('.edit-box').css('display', 'none');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location').addClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location').removeClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location').removeClass('hide-remove-buttons');
        $(this).text('View Profile');
    }
 }); 
