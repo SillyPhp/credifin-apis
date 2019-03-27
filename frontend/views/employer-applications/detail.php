@@ -207,7 +207,11 @@ $this->render('/widgets/employer_applications/top-banner', [
             </div>
         </div>
     </div>
-    <?= CandidateApply::widget(['application_enc_id' => $data['application_enc_id'],'btn_class'=>'apply-btn']) ?>
+    <?php
+    if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
+        echo CandidateApply::widget(['application_enc_id' => $data['application_enc_id'], 'btn_class' => 'apply-btn']);
+    }
+    ?>
 </section>
 <script>
     function copyToClipboard() {

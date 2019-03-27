@@ -57,6 +57,22 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Successfully Login',
+                ];
+            } else{
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Incorrect username or password.',
+                ];
+            }
+        }
         if (!Yii::$app->session->has("backURL")) {
             Yii::$app->session->set("backURL", Yii::$app->request->referrer);
         }

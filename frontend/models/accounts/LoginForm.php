@@ -34,6 +34,9 @@ class LoginForm extends Model
         return [
             // username and password are both required
             [['username', 'password'], 'required'],
+            [['username'], 'string', 'length' => [3, 20]],
+            [['password'], 'string', 'length' => [8, 20]],
+            [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
             [['username', 'password', 'rememberMe'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],

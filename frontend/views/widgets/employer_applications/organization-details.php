@@ -26,7 +26,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <?php endif; ?>
     </div>
     <?php if (Yii::$app->user->isGuest): ?>
-        <a href="<?= Url::to('/login'); ?>" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
+        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn"><i class="fa fa-paper-plane"></i>Login
             to apply</a>
     <?php else: ?>
         <?php if ($applied): ?>
