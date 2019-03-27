@@ -8,6 +8,7 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
+use frontend\widgets\login;
 
 AppAssets::register($this);
 ?>
@@ -226,7 +227,7 @@ AppAssets::register($this);
     if (!Yii::$app->user->isGuest) {
         echo $this->render('/widgets/user-profile-sidebar-right');
     } elseif (Yii::$app->user->isGuest){
-        echo $this->render('/widgets/login-modal');
+        echo login::widget();
     }
     ?>
 </div>

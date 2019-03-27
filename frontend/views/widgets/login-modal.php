@@ -1,10 +1,14 @@
 <?php
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use borales\extensions\phoneInput\PhoneInput;
 ?>
 <div id="loginModal" class="modal fade-scale" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
+            <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
             <div class="row margin-0">
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
@@ -29,48 +33,99 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>">
                             </div>
                             <div class="login-form" id="loginForm">
-                                <div class="login-heading">Login</div>
-                                <form>
+<!--                                <div class="login-heading">Login</div>-->
+<!--                                <form>-->
+                                <?php
+                                $loginForm = ActiveForm::begin([
+                                    'id' => 'login-form',
+                                    'options' => [
+                                        'class' => 'clearfix',
+                                    ],
+                                    'fieldConfig' => [
+                                        'template' => '{input}{error}',
+                                    ],
+                                ]);
+                                ?>
                                     <div class="uname">
-                                        <input type="text" placeholder="Username" class="uname-in">
+                                        <?=
+                                        $loginForm->field($loginFormModel, 'username')->textInput([
+                                            'autofocus' => true,
+                                            'autocomplete' => 'off',
+                                            'class' => 'uname-in',
+                                            'placeholder' => $loginFormModel->getAttributeLabel('username'),
+                                        ]);
+                                        ?>
+<!--                                        <input type="text" placeholder="Username" class="uname-in">-->
                                     </div>
                                     <div class="pass">
-                                        <input type="password" placeholder="Password" class="pass-in">
+                                        <?=
+                                        $loginForm->field($loginFormModel, 'password')->passwordInput([
+                                            'autocomplete' => 'off',
+                                            'class' => 'uname-in',
+                                            'placeholder' => $loginFormModel->getAttributeLabel('password'),
+                                        ]);
+                                        ?>
+<!--                                        <input type="password" placeholder="Password" class="pass-in">-->
                                     </div>
                                     <div class="forgot-pass">
                                         <div class="row">
-                                            <div class="col-md-6 col-sm-6 col-xs-12 rem-input">
-                                                <input type="checkbox"> <span>Remember Me</span>
+                                            <div class="col-md-6 col-sm-6 col-xs-6 rem-input">
+                                                <?=
+                                                $loginForm->field($loginFormModel, 'rememberMe')->checkbox();
+                                                ?>
+<!--                                                <input type="checkbox"> <span>Remember Me</span>-->
                                             </div>
-                                            <div class="col-md-6 col-sm-6 col-xs-12 for-a">
+                                            <div class="col-md-6 col-sm-6 col-xs-6 for-a">
                                                 <button type="button" onclick="changeSlide()">Forgot password ?
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="login-btn">
-                                        <button type="">Login</button>
+                                        <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+<!--                                        <button type="">Login</button>-->
                                     </div>
-                                </form>
+                                <?php ActiveForm::end(); ?>
+<!--                                </form>-->
                                 <div class="new-user">
-                                    New user ?
+                                    New User?
                                     <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                             </div>
 
                             <div class="forgot-input" id="forgotForm">
-                                <form>
-                                    <div class="f-text">Forgot your password ?</div>
+<!--                                <form>-->
+                                <?php
+                                $fform = ActiveForm::begin([
+                                    'id' => 'forgot-form',
+                                    'options' => [
+                                        'class' => 'clearfix',
+                                    ],
+                                    'fieldConfig' => [
+                                        'template' => '<div class="row"><div class="col-md-12"><div class="form-group">{input}{error}</div></div></div>',
+                                        'labelOptions' => ['class' => ''],
+                                    ],
+                                ]);
+                                ?>
+                                    <div class="f-text">Forgot your password?</div>
                                     <div class="forgot-pass">
-                                        <input type="text" placeholder="Enter Registered Email" class="uname-in">
+                                        <?=
+                                        $fform->field($fmodel, 'email')->textInput([
+                                            'autocomplete' => 'off',
+                                            'placeholder' => $fmodel->getAttributeLabel('email'),
+                                        ]);
+                                        ?>
+<!--                                        <input type="text" placeholder="Enter Registered Email" class="uname-in">-->
                                     </div>
                                     <div class="f-mail">Enter the email address associated with your account</div>
                                     <div class="f-button">
-                                        <button type="button" class="">Send Mail</button>
+                                        <?= Html::submitButton('Send Mail', ['class' => '', 'name' => 'forgot-password-button']); ?>
+<!--                                        <button type="button" class="">Send Mail</button>-->
                                     </div>
-                                </form>
+                                <?php ActiveForm::end(); ?>
+<!--                                </form>-->
                                 <div class="new-user">
-                                    Existing user ?
+                                    Existing User?
                                     <button type="button" onclick="changeBack()"> Login</button>
                                 </div>
                             </div>
@@ -87,7 +142,7 @@ use yii\helpers\Url;
                                     </div>
                                 </form>
                                 <div class="new-user">
-                                    Existing user ?
+                                    Existing User?
                                     <button type="button" onclick="changeBackLogin()"> Login</button>
                                 </div>
                             </div>
@@ -95,33 +150,62 @@ use yii\helpers\Url;
                             <div class="individual-signup" id="individualForm">
                                 <div class="sign-heading">Sign up as an individual</div>
                                 <form>
+<!--                                --><?php
+//                                $form = ActiveForm::begin([
+//                                    'id' => 'user-form',
+//                                    'options' => [
+//                                        'class' => 'clearfix',
+//                                    ],
+//                                    'fieldConfig' => [
+//                                        'template' => '<div class="form-group">{input}{error}</div>',
+//                                        'labelOptions' => ['class' => ''],
+//                                    ],
+//                                ]);
+//                                ?>
                                     <div class="uname-padd-10">
+<!--                                        --><?//= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
                                         <input type="text" placeholder="First Name" class="uname-in">
                                     </div>
                                     <div class=" uname-padd-10">
+<!--                                        --><?//= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
                                         <input type="text" placeholder="Last Name" class="uname-in">
                                     </div>
                                     <div class="uname-padd-10">
+<!--                                        --><?//= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
                                         <input type="text" placeholder="Email" class="uname-in">
                                     </div>
                                     <div class="uname-padd-10">
+<!--                                        --><?//=
+//                                        $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
+//                                            'jsOptions' => [
+//                                                'allowExtensions' => false,
+//                                                'onlyCountries' => ['in'],
+//                                                'nationalMode' => false,
+//                                            ]
+//                                        ]);
+//                                        ?>
                                         <input type="text" placeholder="Phone Number" class="uname-in">
                                     </div>
                                     <div class="uname-padd-10">
+<!--                                        --><?//= $form->field($model, 'username', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
                                         <input type="text" placeholder="Username" class="uname-in">
                                     </div>
                                     <div class="uname-padd-10">
+<!--                                        --><?//= $form->field($model, 'new_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('new_password')]); ?>
                                         <input type="text" placeholder="Password" class="uname-in">
                                     </div>
                                     <div class="uname-padd-10">
+<!--                                        --><?//= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('confirm_password')]); ?>
                                         <input type="text" placeholder="Confirm Password" class="uname-in">
                                     </div>
                                     <div class="login-btn">
+<!--                                        --><?//= Html::submitButton('Sign Up', ['class' => '', 'name' => 'register-button']); ?>
                                         <button type="">Sign Up</button>
                                     </div>
+<!--                                --><?php //ActiveForm::end(); ?>
                                 </form>
                                 <div class="new-user">
-                                    Existing user ?
+                                    Existing User ?
                                     <button type="button" onclick="signupToLogin()"> Login</button>
                                 </div>
                             </div>
@@ -382,10 +466,71 @@ input{
     .modal-dialog {
         width: 750px !important;
         margin: 30px auto;
-    } 
+    }
+}
+body.modal-open{
+    padding-right:0px !important;
+    overflow:visible;
+}
+.error-occcur{color:red;}
+.close-lg-modal{
+    position: absolute;
+    right: -40px;
+    font-size: 40px;
+    color: #fff;
+    opacity: 1;
+    top: -8px;
+    font-weight: 100;
+    background: transparent;
+    border: 0;
+    outline: 0;
+}
+.rem-input .checkbox{
+    padding-left: 20px;
+    margin: 0px;
+    color: inherit;
+}
+.rem-input .checkbox label{
+    font-size: 14px;
 }
 ');
 $script = <<< JS
+$(document).on('submit', '#login-form', function(event) {
+    var btn = $('.lg-form');
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    btn.data('requestRunning', true);
+    var _error = $('.error-occcur');
+    if(_error){
+        _error.remove();
+    }
+    $.ajax({
+        url: "/login",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        beforeSend:function(){
+            $('.lg-form').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');  
+        },
+        success: function (response) {
+            $('#page-loading').fadeOut(1000);
+            if (response.title == 'Success') {
+                location.reload();
+            } else {
+                $('.lg-form').html('Login');
+                $('#loginForm').prepend('<p class="help-block error-occcur">' + response.message + '</p>');
+            }
+        },
+        complete: function() {
+            btn.data('requestRunning', false);
+        }
+    });
+});
 JS;
 $this->registerJs($script);
 ?>
