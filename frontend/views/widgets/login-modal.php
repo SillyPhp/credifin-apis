@@ -3,7 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 ?>
-<div id="loginModal" class="modal fade-scale" role="dialog">
+<div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
@@ -185,7 +185,7 @@ $this->registerCss('
     font-size:13px !important;
 }
 /*---forget box ends---*/
-.modal.in{
+.loginModal.modal.in{
     display:flex !important;
 }
 .modal.in .modal-dialog{
