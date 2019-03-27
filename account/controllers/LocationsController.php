@@ -29,8 +29,8 @@ class LocationsController extends Controller
             } else {
                 return [
                     'status' => 'error',
-                    'message' => 'Something went wrong. Please try again.'
-          'title' => 'Opps!!',
+                    'message' => 'Something went wrong. Please try again.',
+                    'title' => 'Opps!!',
                 ];
             }
         }
@@ -95,7 +95,6 @@ class LocationsController extends Controller
             $locations->latitude = $locationFormModel['latitude'];
             $locations->longitude = $locationFormModel['longitude'];
             $locations->location_for = json_encode($locationFormModel->location_for);
-
 
             if ($locations->update()) {
                 return [
