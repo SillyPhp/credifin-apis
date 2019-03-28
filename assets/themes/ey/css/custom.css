@@ -1366,6 +1366,7 @@ hr .flare :after {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: capitalize;
 }
 .application-card-description h5:last-child{
     font-weight: normal;

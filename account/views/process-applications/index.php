@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Questionnaire',
 ]);
@@ -57,6 +56,11 @@ echo $this->render('/widgets/header/secondary-header', [
                                                                 </a>
                                                             </div>
                                                             <div class="vj-btn col-md-6">
+                                                                <?php
+                                                                $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                                                ?>
+                                                                <a href="<?= $cv ?>">Download
+                                                                    Resume</a>
                                                                 <a href="<?= '/' . $arr['username'] ?>">View
                                                                     Profile</a>
                                                             </div>
