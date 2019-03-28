@@ -7,7 +7,9 @@ echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Internships',
 ]);
 ?>
-    <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
+    <div class="loader"><img
+                src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/>
+    </div>
     <div class="row widget-row">
         <?=
         $this->render('/widgets/internships/stats', [
@@ -15,7 +17,7 @@ echo $this->render('/widgets/header/secondary-header', [
             'applications' => $applications,
             'interview_processes' => $interview_processes,
             'applied_applications' => $applied_applications,
-            'viewed'=>$viewed,
+            'viewed' => $viewed,
         ]);
         ?>
     </div>
@@ -28,9 +30,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/internships/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/internships'); ?>" title=""
+                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -60,9 +64,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($questionnaire['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/questionnaire'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/questionnaire'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -92,9 +98,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/hiring-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/hiring-processes'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -147,12 +155,15 @@ echo $this->render('/widgets/header/secondary-header', [
                                                 <a href="/<?= $candiates['username'] ?>">
                                                     <?php if (!empty($candiates['image_location']) && !empty($candiates['image'])) { ?>
                                                         <?php $user_img = Yii::$app->params->upload_directories->users->image . $candiates['image_location'] . DIRECTORY_SEPARATOR . $candiates['image']; ?>
-                                                        <img src="<?= $user_img; ?>" width="50px" height="50" class="img-circle"/>
+                                                        <img src="<?= $user_img; ?>" width="50px" height="50"
+                                                             class="img-circle"/>
 
                                                         <?php
                                                     } else {
                                                         ?>
-                                                        <canvas class="user-icon img-circle" name="<?= $candiates['first_name'] . ' ' . $candiates['last_name'] ?>" width="50" height="50" font="25px"></canvas>
+                                                        <canvas class="user-icon img-circle"
+                                                                name="<?= $candiates['first_name'] . ' ' . $candiates['last_name'] ?>"
+                                                                width="50" height="50" font="25px"></canvas>
                                                     <?php }
                                                     ?>
                                                 </a>
@@ -162,14 +173,23 @@ echo $this->render('/widgets/header/secondary-header', [
                                                 <div class="mt-action-row">
                                                     <div class="mt-action-info ">
                                                         <div class="mt-action-details ">
-                                                            <span class="mt-action-author"><a href="/site/candidate-profile"><?= $candiates['first_name'] . ' ' . $candiates['last_name']; ?></a></span>
-                                                            <p class="mt-action-desc">Applied For <?= $candiates['name']; ?></p>
+                                                            <span class="mt-action-author"><a
+                                                                        href="/site/candidate-profile"><?= $candiates['first_name'] . ' ' . $candiates['last_name']; ?></a></span>
+                                                            <p class="mt-action-desc">Applied
+                                                                For <?= $candiates['name']; ?></p>
                                                         </div>
                                                     </div>
                                                     <div class="mt-action-buttons">
                                                         <div class="btn-group btn-group-circle">
-                                                            <button type="button" data-key="<?= $candiates['applied_application_enc_id'] ?>" class="btn btn-outline green btn-sm approv_btn">Approve</button>
-                                                            <button type="button" data-key="<?= $candiates['applied_application_enc_id'] ?>" class="btn btn-outline red btn-sm reject_btn">Reject</button>
+                                                            <button type="button"
+                                                                    data-key="<?= $candiates['applied_application_enc_id'] ?>"
+                                                                    class="btn btn-outline green btn-sm approv_btn">
+                                                                Approve
+                                                            </button>
+                                                            <button type="button"
+                                                                    data-key="<?= $candiates['applied_application_enc_id'] ?>"
+                                                                    class="btn btn-outline red btn-sm reject_btn">Reject
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -186,6 +206,13 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?= $this->render('/widgets/drop-resume/internships_drop_resume', [
+                'data' => $primary_fields
+            ]); ?>
         </div>
     </div>
 <?php
