@@ -381,6 +381,9 @@ class SiteController extends Controller {
     public function actionCompanyProfileBeta() {
         return $this->render('company-profile-beta');
     }
+    public function actionVideoDetailBeta(){
+        return $this->render('video-detail-beta');
+    }
     public function actionWalkInInterview() {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
