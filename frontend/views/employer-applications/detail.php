@@ -414,6 +414,7 @@ $this->registerCss("
         text-align: center;
         margin: auto;
         margin-bottom: 50px;
+        text-transform: capitalize;
     }
     .inner-header .container {
         position: relative;
