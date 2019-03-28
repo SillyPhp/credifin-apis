@@ -3,6 +3,8 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
+$this->params['disablefacebookMessenger'] = true;
+
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -467,7 +469,6 @@ $this->registerCss('
 }
 .publish-date{
     text-align:right;
-//    font-style:italic;
     font-size: 14px;
 }
 .view-detail-btn button{
@@ -482,9 +483,6 @@ $this->registerCss('
     -moz-transition:.3s all;
     -o-transition:.3s all;
     transition:.3s all;
-}
-.num-rate{
-    
 }
 .re-btns{
     text-align:right;
@@ -534,8 +532,6 @@ $this->registerCss('
 }
 .emp-duration{
     text-align:right;
-//    line-height:18px;
-//    padding-top:20px;
 }
 .ushare i{
    font-size:20px;
@@ -751,9 +747,6 @@ $this->registerCss('
     font-size:16px;
     font-weight:bold;
 }
-.t-post{
-//    padding-top:10px;
-}
 /*----team ends----*/
 /*----office view-----*/
 .img1 img{
@@ -810,7 +803,6 @@ $this->registerCss('
 /*----about us ends----*/
 /*----grid box----*/
 .a-boxs{
-//        box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.3);
         box-shadow: 2px 5px 24px rgba(221, 216, 216, 0.5);
 }
 .about-box{
@@ -886,7 +878,6 @@ a.web{
     padding:10px 0px;
     width:167px;
      background: transparent;
-//    border: 1px solid #00a0e3;
     border:none;
     font-size: 16px;
     text-transform: capitalize;
