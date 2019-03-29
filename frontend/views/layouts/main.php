@@ -249,12 +249,11 @@ $this->registerCss('
                 background-color: rgba(0, 0, 0, 0.2);
             }
             .secondary-top-header-left, .secondary-top-header-right{
-                width:50%;
-                float:left;
+                width:auto;
             }
-            .secondary-top-header-left{padding-left:50px;}
+            .secondary-top-header-left{padding-left:80px;float:left;}
             .secondary-top-header-left a i{font-size:16px;}
-            .secondary-top-header-right{padding-right:50px;}
+            .secondary-top-header-right{padding-right:50px;float:right;}
             .secondary-top-header a{
                 color:#fff;
                 transition: all 500ms;
@@ -267,6 +266,17 @@ $this->registerCss('
                 margin-left: 5px;
             }
             .secondary-top-header a:hover{color:#ff7803;}
+            @media screen and (max-width: 610px) and (min-width: 0px) {
+                .secondary-top-header-left{padding-left: 20px;}
+            }
+            @media screen and (max-width: 571px) and (min-width: 0px) {
+                .secondary-top-header-right{padding-right:15px;}
+                .secondary-top-header-left{padding-left: 10px;}
+                .secondary-top-header-right a{padding:0px 5px;}
+            }
+            @media screen and (max-width: 450px) and (min-width: 0px) {
+                .secondary-top-header-left{display:none;}
+            }
             .send_mail{word-wrap: break-word;display:block;}
             .send_mail i{color:#00a0e3;float:left;}
             .send_mail span{float:left;}

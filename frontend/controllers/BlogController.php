@@ -104,7 +104,20 @@ class BlogController extends Controller
             'posts' => $posts,
         ]);
     }
-
+    public function actionBlogDetail(){
+        return $this->render('blog-detail');
+    }
+    public function actionBlogList(){
+        $postsModel = new Posts();
+        $posts = $postsModel->find()
+            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+            ->orderby(['created_on' => SORT_ASC])
+            ->asArray()
+            ->all();
+        return $this->render('blog-list',[
+            'posts' => $posts,
+            ]);
+    }
     public function actionGetPostsByTag($slug)
     {
         $postsModel = new Posts();

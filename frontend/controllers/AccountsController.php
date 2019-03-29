@@ -148,10 +148,7 @@ class AccountsController extends Controller
                     $data['password'] = $model->new_password;
                     $model = new OrganizationSignUpForm();
                     if ($this->login($data)) {
-
-
                         return $this->redirect('/account/dashboard');
-
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
@@ -159,7 +156,6 @@ class AccountsController extends Controller
             }
             return $this->render('signup/organization', [
                 'model' => $model,
-                'organization_types' => $organization_types,
                 'business_activities' => $business_activities,
             ]);
         } else {
@@ -245,14 +241,10 @@ class AccountsController extends Controller
             if ($model->forgotPassword()) {
                 $model = new ForgotPasswordForm();
                 return $this->render('/site/message', [
-                    'status' => 'success',
-                    'title' => 'Congratulations',
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
             } else {
                 return $this->render('/site/message', [
-                    'status' => 'error',
-                    'title' => 'Error',
                     'message' => 'An error has occurred. Please try again.'
                 ]);
             }

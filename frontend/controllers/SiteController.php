@@ -1025,7 +1025,7 @@ class SiteController extends Controller {
         return $VideoID;
     }
 
-    public function actionChangepass() {
+    public function actionChangePassword() {
         $ChangePasswordForm = new ChangePasswordForm();
         if ($ChangePasswordForm->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;

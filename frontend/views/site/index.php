@@ -195,7 +195,7 @@ $this->params['seo_tags'] = [
 <section>
     <div class="block">
         <div class="container">
-            <div class="row">
+<!--            <div class="row">-->
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="tab-sec">
                         <ul class="nav nav-tabs">
@@ -463,7 +463,7 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                 </div>
-            </div>
+<!--            </div>-->
         </div>
     </div>
 </section>
@@ -1943,6 +1943,29 @@ textarea {
     width: 100%;
     text-align: center;
     margin-top: 60px;
+}
+.search-job2 form{
+    -webkit-border-radius: 23px;
+    -moz-border-radius: 23px;
+    -ms-border-radius: 23px;
+    -o-border-radius: 23px;
+    border-radius: 23px;
+}
+.search-job2 form button{
+    -webkit-border-radius: 0px 23px 23px 0px !important;
+    -moz-border-radius: 0px 23px 23px 0px !important;
+    -ms-border-radius: 0px 23px 23px 0px !important;
+    -o-border-radius: 0px 23px 23px 0px !important;
+    border-radius: 0px 23px 23px 0px !important;
+}
+@media screen and (max-width: 768px){
+    .search-job2 form button{
+        -webkit-border-radius: 0px 0px 23px 23px !important;
+        -moz-border-radius: 0px 0px 23px 23px !important;
+        -ms-border-radius: 0px 0px 23px 23px !important;
+        -o-border-radius: 0px 0px 23px 23px !important;
+        border-radius: 0px 0px 23px 23px !important;
+    }
 }
 ');
 $script = <<< JS
