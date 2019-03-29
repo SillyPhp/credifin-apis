@@ -26,8 +26,7 @@ $this->params['header_dark'] = true;
                     <div class="col-md-4">
                         <div class="what-popular-box">
                             <div class="wp-box-icon">
-                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>"><img src="<?= $image; ?>" alt="<?= $post['featured_image_alt']; ?>" title="<?= $post['featured_image_title']; ?>"
-                                </a>
+                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>"><img src="<?= $image; ?>" alt="<?= $post['title']; ?>"</a>
                                 <div class="middle">
                                     <a href="" class="">
                                     </a>
