@@ -28,6 +28,7 @@ class ResetPasswordForm extends Model
             [['new_password', 'confirm_password',], 'required'],
             [['new_password', 'confirm_password',], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
+            [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
         ];
     }
 
@@ -47,7 +48,7 @@ class ResetPasswordForm extends Model
 
         $this->_token = UserVerificationTokens::findOne([
             'token' => $token,
-            'verification_type' => 'reset password',
+            'verification_type' => 1,
             'status' => 'Pending',
             'is_deleted' => 0,
         ]);
@@ -91,17 +92,20 @@ class ResetPasswordForm extends Model
         $user->password = $this->new_password;
         if (!$user->validate() || !$user->save()) {
             return false;
-        } else {
-            return true;
         }
+
         if ($user) {
             $user->is_email_verified = 1;
             if ($user->update()) {
                 $this->_token->status = 'Verified';
+                $this->_token->last_updated_by = $this->_token->created_by;
                 $this->_token->is_deleted = 1;
                 $this->_token->update();
+                return true;
             }
         }
+
+        return false;
     }
 
 }

@@ -1,7 +1,9 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
@@ -12,7 +14,7 @@ use yii\bootstrap\ActiveForm;
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
                         <div class="top-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
                         </div>
                         <div class="log-icon">
                             <span></span>
@@ -20,7 +22,7 @@ use yii\bootstrap\ActiveForm;
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
                         </div>
                     </div>
                 </div>
@@ -43,37 +45,38 @@ use yii\bootstrap\ActiveForm;
                                     ],
                                 ]);
                                 ?>
-                                    <div class="uname">
-                                        <?=
-                                        $loginForm->field($loginFormModel, 'username')->textInput([
-                                            'autofocus' => true,
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => $loginFormModel->getAttributeLabel('username'),
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="pass">
-                                        <?=
-                                        $loginForm->field($loginFormModel, 'password')->passwordInput([
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => $loginFormModel->getAttributeLabel('password'),
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="forgot-pass">
-                                        <div class="row">
-                                            <div class="col-md-6 col-sm-6 col-xs-6 rem-input">
-                                                <?=
-                                                $loginForm->field($loginFormModel, 'rememberMe')->checkbox();
-                                                ?>
-                                            </div>
+                                <div class="uname">
+                                    <?=
+                                    $loginForm->field($loginFormModel, 'username')->textInput([
+                                        'autofocus' => true,
+                                        'autocomplete' => 'off',
+                                        'class' => 'uname-in',
+                                        'placeholder' => $loginFormModel->getAttributeLabel('username'),
+                                    ]);
+                                    ?>
+                                </div>
+                                <div class="pass">
+                                    <?=
+                                    $loginForm->field($loginFormModel, 'password')->passwordInput([
+                                        'autocomplete' => 'off',
+                                        'class' => 'uname-in',
+                                        'placeholder' => $loginFormModel->getAttributeLabel('password'),
+                                    ]);
+                                    ?>
+                                </div>
+                                <div class="forgot-pass">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-6 col-xs-6 rem-input">
+                                            <?= $loginForm->field($loginFormModel, 'rememberMe')->checkbox(); ?>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6 for-a">
+                                            <a href="/forgot-password">Forgot password?</a>
                                         </div>
                                     </div>
-                                    <div class="login-btn">
-                                        <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
-                                    </div>
+                                </div>
+                                <div class="login-btn">
+                                    <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+                                </div>
                                 <?php ActiveForm::end(); ?>
                                 <div class="new-user">
                                     New User?
@@ -83,12 +86,12 @@ use yii\bootstrap\ActiveForm;
 
                             <div class="sign-up-form" id="signForm">
                                 <div class="sign-heading">Sign up as</div>
-                                    <div class="indi-btn">
-                                        <a href="/signup/individual">Individual</a>
-                                    </div>
-                                    <div class="organ-btn">
-                                        <a href="/signup/organization">Organization</a>
-                                    </div>
+                                <div class="indi-btn">
+                                    <a href="/signup/individual">Individual</a>
+                                </div>
+                                <div class="organ-btn">
+                                    <a href="/signup/organization">Organization</a>
+                                </div>
                                 <div class="new-user">
                                     Existing User?
                                     <button type="button" onclick="changeBackLogin()"> Login</button>
@@ -296,7 +299,7 @@ $this->registerCss('
     padding-top:3px;
     text-align:right; 
 }
-.for-a button{
+.for-a a{
     background:transparent;
     border:none;
     font-size:13px;
@@ -423,22 +426,27 @@ $this->registerJs($script);
         document.getElementById('loginForm').style.display = "none";
         document.getElementById('forgotForm').style.display = "block";
     }
+
     function changeBack() {
         document.getElementById('forgotForm').style.display = "none";
         document.getElementById('loginForm').style.display = "block";
     }
+
     function changeSignup() {
         document.getElementById('loginForm').style.display = "none";
         document.getElementById('signForm').style.display = "block";
     }
+
     function changeBackLogin() {
         document.getElementById('signForm').style.display = "none";
         document.getElementById('loginForm').style.display = "block";
     }
+
     function individualSign() {
         document.getElementById('signForm').style.display = "none";
         document.getElementById('individualForm').style.display = "block";
     }
+
     function signupToLogin() {
         document.getElementById('individualForm').style.display = "none";
         document.getElementById('loginForm').style.display = "block";
