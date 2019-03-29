@@ -63,7 +63,7 @@ use yii\widgets\Pjax;
                                     class="fa fa-paper-plane-o"></i>Applied Job</a>
                     </li>
                     <li>
-                        <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2"
+                        <a href="#" url="/site/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
                            data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
                         <div class="modal fade" id="myModal2" role="dialog">
                             <div class="modal-dialog modal-md">
