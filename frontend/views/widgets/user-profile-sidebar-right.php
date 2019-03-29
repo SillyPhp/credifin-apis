@@ -62,20 +62,6 @@ use yii\widgets\Pjax;
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
                                     class="fa fa-paper-plane-o"></i>Applied Job</a>
                     </li>
-                    <li>
-                        <a href="#" url="/site/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
-                           data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
-                        <div class="modal fade" id="myModal2" role="dialog">
-                            <div class="modal-dialog modal-md">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                                             alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                                        <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
@@ -98,6 +84,20 @@ use yii\widgets\Pjax;
                                     class="fa fa-paper-plane-o"></i>Create Internships</a>
                     </li>
                 <?php endif; ?>
+                <li>
+                    <a href="#" url="/site/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
+                       data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
+                    <div class="modal fade" id="myModal2" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <li class="inner-child">
                     <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
                 </li>

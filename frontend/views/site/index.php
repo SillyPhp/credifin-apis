@@ -1473,12 +1473,9 @@ textarea {
     }
 }
 .job-field .chosen-container-single .chosen-single{
-//    border-radius:0 23px 0 0;
+    border-radius:0 23px 0 0;
     border:none;
   }
-//  .search-job2 form .row > div:last-child button{
-//        border-radius: 0px 0px 23px 23px;
-//  }
   .search-job2 .job-field2::before{
     background:transparent;
   }
