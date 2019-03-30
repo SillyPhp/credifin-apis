@@ -39,13 +39,13 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                             <?php } ?>
                             <div class="upload-info">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
                                         <label class="tg-fileuploadlabel" for="tg-photogallery">
                                             <span class="tg-btn">Browse File</span>
                                             <?= $form->field($userProfilePicture, 'profile_image', ['template' => '{input}{error}', 'options' => []])->fileInput(['id' => 'tg-photogallery', 'class' => 'tg-fileinput', 'accept' => 'image/*'])->label(false) ?>
                                         </label>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
                                         <?= Html::submitButton('Update Picture', ['class' => 'btn_pink btn_submit_picture', 'id' => 'picture_submit']); ?>
                                     </div>
                                 </div>
@@ -55,37 +55,38 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <?php ActiveForm::end(); ?>
                     <?php Pjax::end(); ?>
                     <?php $form = ActiveForm::begin(['id' => 'basicDetailForm', 'action' => '/users/update-basic-detail']) ?>
-                    <div class="profile-form-edit">
-                        <div class="row">
-                            <?php
-                            $uname = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                            ?>
-                            <?= $form->field($basicDetails, 'full_name', ['template' => '<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['disabled' => true, 'placeholder' => 'First Name', 'value' => (($uname) ? ucwords($uname) : '')])->label(false) ?>
-                            <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : ''); ?>
-                            <?= $form->field($basicDetails, 'gender', ['template' => '<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
-                                [1 => 'Male', 2 => 'Female', 3 => 'Transgender', 4 => 'Rather not to say'], [
-                                'prompt' => 'Select Gender',
-                                'id' => 'gender_drp',
-                                'class' => 'chosen'])->label(false); ?>
-                            <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : ''); ?>
-                            <?= $form->field($basicDetails, 'category', ['template' => '<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
-                                $industry, [
-                                'prompt' => 'Select Category',
-                                'id' => 'category_drp',
-                                'class' => 'chosen'])->label(false); ?>
-                            <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
+                    <div class="row">
+                        <div class="profile-form-edit col-md-12">
+                            <div class="row">
+                                <?php
+                                $uname = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                ?>
+                                <?= $form->field($basicDetails, 'full_name', ['template' => '<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['disabled' => true, 'placeholder' => 'First Name', 'value' => (($uname) ? ucwords($uname) : '')])->label(false) ?>
+                                <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : ''); ?>
+                                <?= $form->field($basicDetails, 'gender', ['template' => '<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                    [1 => 'Male', 2 => 'Female', 3 => 'Transgender', 4 => 'Rather not to say'], [
+                                    'prompt' => 'Select Gender',
+                                    'id' => 'gender_drp',
+                                    'class' => 'chosen'])->label(false); ?>
+                                <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : ''); ?>
+                                <?= $form->field($basicDetails, 'category', ['template' => '<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                    $industry, [
+                                    'prompt' => 'Select Category',
+                                    'id' => 'category_drp',
+                                    'class' => 'chosen'])->label(false); ?>
+                                <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['name'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
-                        </div>
-                        <div class="row">
-                            <?= $form->field($basicDetails, 'exp_year', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Year', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[0] : '')])->label(false) ?>
-                            <?= $form->field($basicDetails, 'exp_month', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Month', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[1] : '')])->label(false) ?>
-                            <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : ''); ?>
-                            <?= $form->field($basicDetails, 'state', ['template' => '<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
-                                $states, [
-                                'prompt' => 'Select State',
-                                'id' => 'states_drp',
-                                'class' => 'chosen',
-                                'onchange' => '
+                            </div>
+                            <div class="row">
+                                <?= $form->field($basicDetails, 'exp_year', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Year', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[0] : '')])->label(false) ?>
+                                <?= $form->field($basicDetails, 'exp_month', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(M)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Month', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[1] : '')])->label(false) ?>
+                                <?php $basicDetails->state = (($getCurrentCity) ? $getCurrentCity['state_enc_id'] : ''); ?>
+                                <?= $form->field($basicDetails, 'state', ['template' => '<div class="col-lg-4"><span class="pf-title">Current State</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                    $states, [
+                                    'prompt' => 'Select State',
+                                    'id' => 'states_drp',
+                                    'class' => 'chosen',
+                                    'onchange' => '
                             $("#cities_drp").empty().append($("<option>", {
                                 value: "",
                                 text : "Select City"
@@ -99,75 +100,77 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 }
                                 }
                                 );',
-                            ])->label(false); ?>
-                            <?=
-                            $form->field($basicDetails, 'city', ['template' => '<div class="col-lg-4"><span class="pf-title">Current City</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->label(false)->dropDownList(
-                                [], [
-                                'prompt' => 'Select City',
-                                'id' => 'cities_drp',
-                                'class' => 'chosen',
-                            ])->label(false);
-                            ?>
-                        </div>
-                        <div class="row">
-                            <?=
-                            $form->field($basicDetails, 'dob', ['template' => '<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->widget(DatePicker::classname(), [
-                                'options' => ['class' => 'valid_input form-control', 'placeholder' => 'Date Of Birth', 'value' => ((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
-                                'readonly' => true,
-                                'type' => DatePicker::TYPE_INPUT,
-                                'name' => 'dob',
-                                'pluginOptions' => [
-                                    'autoclose' => true,
-                                    'format' => 'dd-M-yyyy',
-                                    'endDate' => "0d"
-                                ]])->label(false);
-                            ?>
-                            <div class="col-lg-8">
-                                <span class="pf-title">Pick Some Languages You Can Read,Write,Speak</span>
-                                <div class="pf-field no-margin">
-                                    <ul class="tags languages_tag_list">
-                                        <?php if (!empty($userLanguage)) {
-                                            foreach ($userLanguage as $language) { ?>
-                                                <li class="addedTag"><?= $language['language'] ?><span
-                                                            onclick="$(this).parent().remove();"
-                                                            class="tagRemove">x</span><input type="hidden"
-                                                                                             name="languages[]"
-                                                                                             value="<?= $language['language'] ?>">
-                                                </li>
-                                            <?php }
-                                        } ?>
-                                        <li class="tagAdd taglist">
-                                            <div class="language_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                <input type="text" id="search-language" class="skill-input lang-input">
-                                            </div>
-                                        </li>
-                                    </ul>
+                                ])->label(false); ?>
+                                <?=
+                                $form->field($basicDetails, 'city', ['template' => '<div class="col-lg-4"><span class="pf-title">Current City</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->label(false)->dropDownList(
+                                    [], [
+                                    'prompt' => 'Select City',
+                                    'id' => 'cities_drp',
+                                    'class' => 'chosen',
+                                ])->label(false);
+                                ?>
+                            </div>
+                            <div class="row">
+                                <?=
+                                $form->field($basicDetails, 'dob', ['template' => '<div class="col-lg-4"><span class="pf-title">D.O.B</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->widget(DatePicker::classname(), [
+                                    'options' => ['class' => 'valid_input form-control', 'placeholder' => 'Date Of Birth', 'value' => ((Yii::$app->user->identity->dob) ? date("d-M-Y", strtotime(Yii::$app->user->identity->dob)) : '')],
+                                    'readonly' => true,
+                                    'type' => DatePicker::TYPE_INPUT,
+                                    'name' => 'dob',
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'dd-M-yyyy',
+                                        'endDate' => "0d"
+                                    ]])->label(false);
+                                ?>
+                                <div class="col-lg-8">
+                                    <span class="pf-title">Pick Some Languages You Can Read,Write,Speak</span>
+                                    <div class="pf-field no-margin">
+                                        <ul class="tags languages_tag_list">
+                                            <?php if (!empty($userLanguage)) {
+                                                foreach ($userLanguage as $language) { ?>
+                                                    <li class="addedTag"><?= $language['language'] ?><span
+                                                                onclick="$(this).parent().remove();"
+                                                                class="tagRemove">x</span><input type="hidden"
+                                                                                                 name="languages[]"
+                                                                                                 value="<?= $language['language'] ?>">
+                                                    </li>
+                                                <?php }
+                                            } ?>
+                                            <li class="tagAdd taglist">
+                                                <div class="language_wrapper">
+                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <input type="text" id="search-language"
+                                                           class="skill-input lang-input">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <span class="pf-title">Pick a few tags that You Have Skills</span>
-                                <div class="pf-field no-margin">
-                                    <ul class="tags skill_tag_list">
-                                        <?php if (!empty($userSkills)) {
-                                            foreach ($userSkills as $skill) { ?>
-                                                <li class="addedTag"><?= $skill['skill'] ?><span
-                                                            onclick="$(this).parent().remove();"
-                                                            class="tagRemove">x</span><input type="hidden"
-                                                                                             name="skills[]"
-                                                                                             value="<?= $skill['skill'] ?>">
-                                                </li>
-                                            <?php }
-                                        } ?>
-                                        <li class="tagAdd taglist">
-                                            <div class="skill_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                <input type="text" id="search-skill" class="skill-input">
-                                            </div>
-                                        </li>
-                                    </ul>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <span class="pf-title">Pick a few tags that You Have Skills</span>
+                                    <div class="pf-field no-margin">
+                                        <ul class="tags skill_tag_list">
+                                            <?php if (!empty($userSkills)) {
+                                                foreach ($userSkills as $skill) { ?>
+                                                    <li class="addedTag"><?= $skill['skill'] ?><span
+                                                                onclick="$(this).parent().remove();"
+                                                                class="tagRemove">x</span><input type="hidden"
+                                                                                                 name="skills[]"
+                                                                                                 value="<?= $skill['skill'] ?>">
+                                                    </li>
+                                                <?php }
+                                            } ?>
+                                            <li class="tagAdd taglist">
+                                                <div class="skill_wrapper">
+                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <input type="text" id="search-skill" class="skill-input">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -434,6 +437,9 @@ color:#fff;
 .tg-fileuploadlabel::before{
 border:none !important;
 }
+.tg-fileuploadlabel{
+    height:50px;
+}
 .tg-btn{
 display: block !important;
     color: #ff7803 !important;
@@ -555,6 +561,25 @@ content: attr(data-text);
     margin-top: 55px;
 }
 /* file-chosen css ends */
+.chosen{
+    float: left;
+    width: 100%;
+    background: no-repeat;
+    border: 2px solid #e8ecec;
+    font-size: 13px;
+    color: #888888;
+    margin: 0;
+    padding: 0 70px 0 30px;
+    height: 61px;
+    line-height: 61px;
+    background-color: #FFF;
+    border-radius: 8px;
+}
+@media screen and (max-width: 767px){
+    .tg-fileuploadlabel, .upload-img-bar{
+        padding-left:0px;
+    }
+}
 ");
 $script = <<< JS
 $(document).on('change','#category_drp',function() {
