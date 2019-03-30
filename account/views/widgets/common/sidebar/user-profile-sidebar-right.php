@@ -81,7 +81,7 @@ use yii\helpers\Url;
                     </li>
                 <?php endif; ?>
                 <li>
-                    <a href="#" url="/site/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
+                    <a href="#" url="/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
                        data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
                     <div class="modal fade" id="myModal2" role="dialog">
                         <div class="modal-dialog modal-md">
