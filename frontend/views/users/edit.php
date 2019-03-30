@@ -39,13 +39,11 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                             <?php } ?>
                             <div class="upload-info">
                                 <div class="row">
-                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
                                         <label class="tg-fileuploadlabel" for="tg-photogallery">
                                             <span class="tg-btn">Browse File</span>
                                             <?= $form->field($userProfilePicture, 'profile_image', ['template' => '{input}{error}', 'options' => []])->fileInput(['id' => 'tg-photogallery', 'class' => 'tg-fileinput', 'accept' => 'image/*'])->label(false) ?>
                                         </label>
-                                    </div>
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
                                         <?= Html::submitButton('Update Picture', ['class' => 'btn_pink btn_submit_picture', 'id' => 'picture_submit']); ?>
                                     </div>
                                 </div>
@@ -439,6 +437,7 @@ border:none !important;
 }
 .tg-fileuploadlabel{
     height:50px;
+    float:left;
 }
 .tg-btn{
 display: block !important;
