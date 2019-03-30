@@ -17,6 +17,7 @@ use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
 use frontend\models\accounts\UserEmails;
+use frontend\models\ChangePasswordForm;
 use common\models\Utilities;
 
 class AccountsController extends Controller
@@ -285,6 +286,31 @@ class AccountsController extends Controller
         return $this->render('reset-password', [
             'model' => $model,
         ]);
+    }
+
+    public function actionChangePassword() {
+        if (Yii::$app->request->isAjax) {
+            $changePasswordForm = new ChangePasswordForm();
+            if ($changePasswordForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($changePasswordForm->changePassword()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Password has been changed.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('change-password', [
+                'changePasswordForm' => $changePasswordForm
+            ]);
+        }
     }
 
 }
