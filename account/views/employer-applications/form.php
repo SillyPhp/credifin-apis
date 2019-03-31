@@ -113,8 +113,8 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span></span>
                             </div>
                             <div class="placement_location_hide">
-                                <?=
-                                $this->render('/widgets/employer-applications/placement-locations', [
+                            <?=
+                      $this->render('/widgets/employer-applications/placement-locations', [
                                     'form'=>$form,
                                     'model'=>$model,
                                     'placement_locations' => $placement_locations,
@@ -1554,7 +1554,7 @@ height:17px !important;
 /*Load Suggestions loader css ends */
 ");
 $script = <<< JS
-if(window.location.hash)
+if(window.location.hash) 
     {
         window.location = window.location.pathname;
     }
@@ -1634,7 +1634,6 @@ function validateSelection() {
   for (var i = 0; i < job_titles.length; i++) {
   if (job_titles[i].value == $(this).val()) {
    var data =  job_titles[i].id;
-   console.log(job_titles);
    skils_update(data); 
    educational_update(data);
    job_desc_update(data);
@@ -2234,7 +2233,7 @@ function min_weekdays()
         {
             return true;
         }
-}    
+}
 function convertToInt(t){
     t=t.replace(/\,/g,'');
     t=parseInt(t,10);
