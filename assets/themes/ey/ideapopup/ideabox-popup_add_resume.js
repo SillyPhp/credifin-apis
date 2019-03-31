@@ -823,14 +823,15 @@ function random_fn(t){
 
 		if (qno == 0) {
 			that.type = that.values[that.options.data[qno].formName];
+			var data = {
+				selected_answer: that.values[that.options.data[qno].formName],
+				company_name: window.location.pathname.split('/')[1]
+			};
 			$.ajax({
 				type: 'POST',
 				async: false,
 				url: '/account/resume/resume-type',
-				data: {
-					selected_answer: that.values[that.options.data[qno].formName],
-					company_name: window.location.pathname.split('/')[2]
-				},
+				data: data,
 				success: function (response) {
 					response = JSON.parse(response);
 					if(response.length == 0){
@@ -869,7 +870,7 @@ function random_fn(t){
 				data: {
 					selected_answer: that.values[that.options.data[qno].formName],
 					type: that.type,
-					company_name: window.location.pathname.split('/')[2]
+					company_name: window.location.pathname.split('/')[1]
 
 				},
 				success: function (response) {

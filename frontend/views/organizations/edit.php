@@ -6,6 +6,8 @@ use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
 use yii\helpers\Json;
 
+$this->params['disablefacebookMessenger'] = true;
+
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -16,15 +18,6 @@ if ($organization['logo']) {
     $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
 
-if ($organization['cover_image']) {
-    $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
-    $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
-    if (!file_exists($cover_image_path)) {
-        $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
-    }
-} else {
-    $cover_image = "@eyAssets/images/pages/jobs/default-cover.png";
-}
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
     $cover_image = Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -1600,13 +1593,13 @@ $('#enable').click(function() {
        $('.edit-box').css('display', 'none');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location').addClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location').removeClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location').removeClass('hide-remove-buttons');
        $(this).text('View Profile');
    }
 }); 

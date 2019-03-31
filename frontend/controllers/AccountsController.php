@@ -17,6 +17,7 @@ use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
 use frontend\models\accounts\UserEmails;
+use frontend\models\ChangePasswordForm;
 use common\models\Utilities;
 
 class AccountsController extends Controller
@@ -57,6 +58,22 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Successfully Login',
+                ];
+            } else{
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Incorrect username or password.',
+                ];
+            }
+        }
         if (!Yii::$app->session->has("backURL")) {
             Yii::$app->session->set("backURL", Yii::$app->request->referrer);
         }
@@ -132,10 +149,7 @@ class AccountsController extends Controller
                     $data['password'] = $model->new_password;
                     $model = new OrganizationSignUpForm();
                     if ($this->login($data)) {
-
-
                         return $this->redirect('/account/dashboard');
-
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
@@ -143,7 +157,6 @@ class AccountsController extends Controller
             }
             return $this->render('signup/organization', [
                 'model' => $model,
-                'organization_types' => $organization_types,
                 'business_activities' => $business_activities,
             ]);
         } else {
@@ -229,14 +242,10 @@ class AccountsController extends Controller
             if ($model->forgotPassword()) {
                 $model = new ForgotPasswordForm();
                 return $this->render('/site/message', [
-                    'status' => 'success',
-                    'title' => 'Congratulations',
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
             } else {
                 return $this->render('/site/message', [
-                    'status' => 'error',
-                    'title' => 'Error',
                     'message' => 'An error has occurred. Please try again.'
                 ]);
             }
@@ -277,6 +286,31 @@ class AccountsController extends Controller
         return $this->render('reset-password', [
             'model' => $model,
         ]);
+    }
+
+    public function actionChangePassword() {
+        if (Yii::$app->request->isAjax) {
+            $changePasswordForm = new ChangePasswordForm();
+            if ($changePasswordForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($changePasswordForm->changePassword()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Password has been changed.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('change-password', [
+                'changePasswordForm' => $changePasswordForm
+            ]);
+        }
     }
 
 }

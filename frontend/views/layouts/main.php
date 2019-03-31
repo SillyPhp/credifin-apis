@@ -8,6 +8,7 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
+use frontend\widgets\login;
 
 AppAssets::register($this);
 ?>
@@ -53,9 +54,10 @@ AppAssets::register($this);
 <div id="wrapper" class="clearfix">
     <header id="header" class="header">
         <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
-        <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
+        <div id="header-main"
+             class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-            if(Yii::$app->user->isGuest) {
+            if (Yii::$app->user->isGuest) {
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
@@ -225,6 +227,8 @@ AppAssets::register($this);
     <?php
     if (!Yii::$app->user->isGuest) {
         echo $this->render('/widgets/user-profile-sidebar-right');
+    } elseif (Yii::$app->user->isGuest) {
+        echo login::widget();
     }
     ?>
 </div>
@@ -236,7 +240,6 @@ $this->registerCss('
                 line-height: 30px;
                 display: block;
                 transition: margin 500ms;
-//                background-color: #202c45;
                 background-color: rgba(0, 0, 0, 0.4);
             }
             .header-show .secondary-top-header{
@@ -246,12 +249,11 @@ $this->registerCss('
                 background-color: rgba(0, 0, 0, 0.2);
             }
             .secondary-top-header-left, .secondary-top-header-right{
-                width:50%;
-                float:left;
+                width:auto;
             }
-            .secondary-top-header-left{padding-left:50px;}
+            .secondary-top-header-left{padding-left:80px;float:left;}
             .secondary-top-header-left a i{font-size:16px;}
-            .secondary-top-header-right{padding-right:50px;}
+            .secondary-top-header-right{padding-right:50px;float:right;}
             .secondary-top-header a{
                 color:#fff;
                 transition: all 500ms;
@@ -264,6 +266,17 @@ $this->registerCss('
                 margin-left: 5px;
             }
             .secondary-top-header a:hover{color:#ff7803;}
+            @media screen and (max-width: 610px) and (min-width: 0px) {
+                .secondary-top-header-left{padding-left: 20px;}
+            }
+            @media screen and (max-width: 571px) and (min-width: 0px) {
+                .secondary-top-header-right{padding-right:15px;}
+                .secondary-top-header-left{padding-left: 10px;}
+                .secondary-top-header-right a{padding:0px 5px;}
+            }
+            @media screen and (max-width: 450px) and (min-width: 0px) {
+                .secondary-top-header-left{display:none;}
+            }
             .send_mail{word-wrap: break-word;display:block;}
             .send_mail i{color:#00a0e3;float:left;}
             .send_mail span{float:left;}
@@ -534,7 +547,8 @@ if (Yii::$app->user->isGuest) {
         header_main();
     ');
 }
-$this->registerJs('
+if (!$this->params['disablefacebookMessenger']) {
+    $this->registerJs('
             window.fbAsyncInit = function() {
                FB.init({
                  xfbml            : true,
@@ -549,10 +563,8 @@ $this->registerJs('
              js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
              fjs.parentNode.insertBefore(js, fjs);
             }(document, "script", "facebook-jssdk"));
-            
-            $(".page-loading").fadeOut();
         ');
-
+}
 if (!$this->params['header_dark']) {
     $this->registerJs(" $(document).on('scroll', function () {
                 var header = $('#main-header');
@@ -565,6 +577,7 @@ if (!$this->params['header_dark']) {
                 }
             }); ");
 }
+$this->registerJs('$(".page-loading").fadeOut();');
 $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 $this->registerJs('
             WebFont.load({
@@ -576,9 +589,13 @@ $this->registerJs('
                     }
             });
        ', View::POS_HEAD);
+if (!$this->params['disablefacebookMessenger']) {
+    ?>
+    <div id="fb-root"></div>
+    <div class="fb-customerchat" attribution=setup_tool page_id="383925102019276" theme_color="#00a0e3"></div>
+    <?php
+}
 ?>
-<div id="fb-root"></div>
-<div class="fb-customerchat" attribution=setup_tool page_id="383925102019276" theme_color="#00a0e3"></div>
 <?php $this->endBody(); ?>
 </body>
 </html>

@@ -10,8 +10,6 @@ use yii\bootstrap\ActiveForm;
 <?php
 $form = ActiveForm::begin([
             'id' => 'user-form',
-//            'enableAjaxValidation' => true,
-//            'validationUrl' => ['/' . Yii::$app->controller->id . '/' . 'alertsubmit'],
             'fieldConfig' => [
                 'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
             ],
@@ -20,17 +18,17 @@ $form = ActiveForm::begin([
 <div class="modal-body">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <?= $form->field($ChangePasswordForm, 'oldpassword')->passwordInput(['autocomplete' => 'off', 'placeholder' => 'Old Password'])->label(false); ?>
+            <?= $form->field($changePasswordForm, 'oldpassword')->passwordInput(['autocomplete' => 'off', 'placeholder' => 'Old Password'])->label(false); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <?= $form->field($ChangePasswordForm, 'newpassword')->passwordInput(['autocomplete' => 'off', 'placeholder' => 'New Password'])->label(false); ?>
+            <?= $form->field($changePasswordForm, 'newpassword')->passwordInput(['autocomplete' => 'off', 'placeholder' => 'New Password'])->label(false); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <?= $form->field($ChangePasswordForm, 'repeatnewpassword')->passwordInput(['autocomplete' => 'off', 'placeholder' => 'Repeat New Password'])->label(false); ?>
+            <?= $form->field($changePasswordForm, 'repeatnewpassword')->passwordInput(['autocomplete' => 'off', 'placeholder' => 'Repeat New Password'])->label(false); ?>
         </div>
     </div>
 </div>
@@ -40,13 +38,20 @@ $form = ActiveForm::begin([
 </div>
 <?php ActiveForm::end(); ?>
 <?php
+$this->registerCss('
+.has-error .form-group .help-block.help-block-error {
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);
+}
+');
 $script = <<<JS
 $(document).on("submit", "#user-form", function (a) {
     a.preventDefault();
     var data = $('#user-form').serialize();
     var method = $(this).attr('method');
     $.ajax({
-      url: "/site/change-password",
+      url: "/change-password",
       method: method,
       data: data,
       success: function (response) {

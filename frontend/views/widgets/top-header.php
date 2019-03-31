@@ -10,7 +10,7 @@ use yii\helpers\Url;
             <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
 <!--            <li><a href="--><?//= Url::to('/logout'); ?><!--" data-method="post">--><?//= Yii::t('frontend', 'Logout'); ?><!--</a></li>-->
         <?php else: ?>
-            <li><a href="<?= Url::to('/login'); ?>"><?= Yii::t('frontend', 'Login'); ?></a></li>
+            <li><a href="javascript:;" data-toggle="modal" data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
         <?php endif; ?>
     </ul>
 <?php

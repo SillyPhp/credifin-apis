@@ -7,8 +7,6 @@ use yii\helpers\Url;
         {{#.}}
         <div class="org-location">
             <div class="office-heading">
-                <!--            <img src="-->
-                <? //= Url::to('@eyAssets/images/pages/company-and-candidate/branch-office.png') ?><!--">-->
                 {{location_name}}
             </div>
             <div class="office-loc">
@@ -20,6 +18,7 @@ use yii\helpers\Url;
             <?php
             if ($Edit) {
                 ?>
+                <a value="/account/locations/get-data?id={{location_enc_id}}" class="edit_location"><i class="fa fa-pencil"></i></a>
                 <a href="#" class="remove_location"><i class="fa fa fa-times-circle"></i></a>
                 <div id="remove_location_confirm" class="confirm_remove_loc">
                     <button id="confirm_loc" type="button" value="{{location_enc_id}}"
@@ -37,10 +36,10 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss("
-.org-location:hover .remove_location, .remove_location:hover{
+.org-location:hover .remove_location, .remove_location:hover, .org-location:hover .edit_location, .edit_location:hover{
     display:block;
 }
-.remove_location{
+.remove_location, .edit_location{
     display:none;
     color: red;
     position: absolute;
@@ -48,6 +47,18 @@ $this->registerCss("
     font-size: 24px;
     top: 5px;
     right: 10px;
+}
+.edit_location{
+    right: 38px;
+    color: #fff;
+    width: 22px;
+    font-size: 14px;
+    background-color: #00a0e3;
+    height: 22px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 21px;
+    top: 8px;
 }
 .confirm_remove_loc{
     position: absolute;
@@ -57,6 +68,12 @@ $this->registerCss("
 }
 ");
 $script = <<<JS
+
+$(document).on('click', '.edit_location', function() {
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));
+});
+
+
 function getLocations() {
     $.ajax({
         method: "POST",

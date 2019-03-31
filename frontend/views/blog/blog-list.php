@@ -1,65 +1,59 @@
 <?php
-
-use yii\helpers\Url;
-
 $this->params['header_dark'] = true;
+use yii\helpers\Html;
+use yii\helpers\Url;
 ?>
-
     <section>
         <div class="container">
-            <div class="section-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">All Blogs</div>
+                </div>
+            </div>
+            <div class="row">
                 <?php
-                $i = 1;
                 foreach ($posts as $post) {
-                    $new_row = ($i % 3 == 0) ? true : false;
-                    if ($new_row) {
-                        ?>
-                        <div class="row">
-                        <?php
-                    }
-                    $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                    $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                    if (!file_exists($image_path)) {
-                        $image = '//placehold.it/330x200';
+                    if(!empty($post['featured_image_location'])){
+                        $image = Yii::$app->params->upload_directories->posts->featured_image.$post['featured_image_location']. DIRECTORY_SEPARATOR . $post['featured_image'];
+                    } else{
+                        $image = '//placehold.it/320x200';
                     }
                     ?>
                     <div class="col-md-4">
                         <div class="what-popular-box">
                             <div class="wp-box-icon">
-                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>"><img src="<?= $image; ?>" alt="<?= $post['title']; ?>"</a>
+                                <a href=""><img src="<?= $image ?>"></a>
                                 <div class="middle">
                                     <a href="" class="">
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/blog/audio.png') ?><!--">-->
                                     </a>
                                 </div>
                             </div>
                             <div class="wn-box-details">
-                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                    <div class="wn-box-title"><?= $post['title']; ?></div>
+                                <a href="">
+<!--                                    <div class="wn-box-cat">Audio</div>-->
+                                    <div class="wn-box-title"><?= $post['title'] ?></div>
                                 </a>
-                                <div class="wp-box-des"><?= $post['excerpt']; ?></div>
-                                <div class=""><a href="/blog/<?= $post['slug']; ?>"
-                                                 class="button"><span>View Post</span></a>
+                                <div class="wp-box-des"><?= $post['excerpt']?></div>
+                                <div class=""><a href="/blog/<?= $post['slug']?>" class="button"><span>View Post</span></a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <?php
-                    if ($new_row) {
-                        ?>
-                        </div>
-                        <?php
-                    }
-                    $i++;
-                }
-                ?>
+                        }
+                    ?>
+
             </div>
         </div>
     </section>
+
 <?php
 $this->registerCss('
 .whats-new-box{
     border-radius:5px;
     margin-bottom:20px;
+
 }
 .what-popular-box:hover, .whats-new-box:hover{
     box-shadow:0 0 15px rgba(73, 72, 72, 0.28);
@@ -75,7 +69,7 @@ $this->registerCss('
     margin-bottom:20px;
     border-radius:5px;
     min-height:400px;
-    border: 1px solid rgba(230, 230, 230, 0.7);
+    border: 1px solid rgba(230, 230, 230, .3);
     position:relative;
 }
 .what-popular-box:hover > .wp-box-icon > .middle, .whats-new-box:hover > .wn-box-icon > .middle{
@@ -91,6 +85,7 @@ $this->registerCss('
 .wn-box-details{
     border-top:none;
     padding: 5px 10px 10px 8px;
+//    border: 1px solid rgba(230, 230, 230, .3);
     border-radius:0 0 5px 5px;
 }
 .wn-box-cat{
@@ -142,6 +137,7 @@ a.wn-overlay-text {
   text-align: center;
   font-size: 13px;
   padding: 8px 15px;
+//  width: 200px;
   transition: all 0.3s;
   cursor: pointer;
   margin-top:15px;
@@ -167,9 +163,17 @@ a.wn-overlay-text {
 .button:hover span {
   padding-right: 20px;
 }
+
 .button:hover span:after {
   opacity: 1;
   right: 0;
 }
+
+
 ');
+
+$script = <<< JS
+
+JS;
+$this-> registerJs($script);
 ?>

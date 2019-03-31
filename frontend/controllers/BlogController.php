@@ -16,36 +16,49 @@ use common\models\Categories;
 class BlogController extends Controller
 {
 
-    public function actionIndex()
-    {
+    public function actionIndex(){
         $postsModel = new Posts();
         $posts = $postsModel->find()
             ->where(['status' => 'Active', 'is_deleted' => 'false'])
             ->orderby(['created_on' => SORT_ASC])
-            ->limit(4)
+            ->limit(8)
             ->asArray()
             ->all();
-        $quotes = $postsModel->find()->alias('a')
-            ->select(['a.*', 'd.first_name', 'd.last_name'])
-            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => 'quotes', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-            ->orderby(['created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-        $similar_posts = $postsModel->find()
-            ->limit(4)
-            ->orderBy(['created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        return $this->render('index', [
+        return $this->render('blog-main', [
             'posts' => $posts,
-            'quotes' => $quotes,
-            'similar_posts' => $similar_posts,
         ]);
     }
+
+//    public function actionIndex()
+//    {
+//        $postsModel = new Posts();
+//        $posts = $postsModel->find()
+//            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+//            ->orderby(['created_on' => SORT_ASC])
+//            ->limit(4)
+//            ->asArray()
+//            ->all();
+//        $quotes = $postsModel->find()->alias('a')
+//            ->select(['a.*', 'd.first_name', 'd.last_name'])
+//            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+//            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+//            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+//            ->where(['c.slug' => 'quotes', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+//            ->orderby(['created_on' => SORT_DESC])
+//            ->asArray()
+//            ->all();
+//        $similar_posts = $postsModel->find()
+//            ->limit(4)
+//            ->orderBy(['created_on' => SORT_DESC])
+//            ->asArray()
+//            ->all();
+//
+//        return $this->render('index', [
+//            'posts' => $posts,
+//            'quotes' => $quotes,
+//            'similar_posts' => $similar_posts,
+//        ]);
+//    }
 
     public function actionDetail($slug)
     {
@@ -104,7 +117,20 @@ class BlogController extends Controller
             'posts' => $posts,
         ]);
     }
-
+    public function actionBlogDetail(){
+        return $this->render('blog-detail');
+    }
+    public function actionBlogList(){
+        $postsModel = new Posts();
+        $posts = $postsModel->find()
+            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+            ->orderby(['created_on' => SORT_ASC])
+            ->asArray()
+            ->all();
+        return $this->render('blog-list',[
+            'posts' => $posts,
+            ]);
+    }
     public function actionGetPostsByTag($slug)
     {
         $postsModel = new Posts();
