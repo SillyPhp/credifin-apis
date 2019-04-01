@@ -51,7 +51,7 @@ $form = ActiveForm::begin([
             <?= $form->field($caApplicationFormModel, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('email')]); ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($caApplicationFormModel, 'contact', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
+            <?= $form->field($caApplicationFormModel, 'phone', ['enableAjaxValidation' => false])->widget(PhoneInput::className(), [
                 'jsOptions' => [
                     'allowExtensions' => false,
                     'onlyCountries' => ['in'],

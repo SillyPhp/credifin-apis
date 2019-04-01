@@ -16,11 +16,12 @@ class CAApplicationForm extends Model
     public $first_name;
     public $last_name;
     public $email;
-    public $contact;
+    public $phone;
     public $qualification_enc_id;
     public $college;
     public $state_enc_id;
     public $city_enc_id;
+    public $countryCode;
     public $answers;
 
     public function behaviors()
@@ -36,12 +37,14 @@ class CAApplicationForm extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email', 'state_enc_id', 'qualification_enc_id', 'college', 'city_enc_id', 'contact', 'answers'], 'required'],
-            [['first_name', 'last_name', 'email', 'contact', 'college', 'answers'], 'trim'],
-            [['first_name', 'last_name', 'email', 'state_enc_id', 'qualification_enc_id', 'college', 'city_enc_id', 'contact',],  'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['first_name', 'last_name', 'email', 'state_enc_id', 'qualification_enc_id', 'college', 'city_enc_id', 'phone', 'answers'], 'required'],
+            [['first_name', 'last_name', 'email', 'phone', 'college', 'city_enc_id', 'answers'], 'trim'],
+            [['first_name', 'last_name', 'email', 'state_enc_id', 'qualification_enc_id', 'college', 'city_enc_id', 'phone',],  'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['first_name', 'last_name'], 'string', 'max' => 30],
+            [['email'], 'email'],
+            [['phone'], PhoneInputValidator::className()],
             [['email', 'college'], 'string', 'max' => 50],
-            [['contact'], 'string', 'max' => 15],
+            [['phone'], 'string', 'max' => 15],
         ];
     }
 
@@ -54,7 +57,7 @@ class CAApplicationForm extends Model
             'first_name' => Yii::t('frontend', 'First Name'),
             'last_name' => Yii::t('frontend', 'Last Name'),
             'email' => Yii::t('frontend', 'Email'),
-            'contact' => Yii::t('frontend', 'Phone Number'),
+            'phone' => Yii::t('frontend', 'Phone Number'),
             'qualification_enc_id' => Yii::t('frontend', 'Qualification'),
             'college' => Yii::t('frontend', 'School / College / University'),
             'state_enc_id' => Yii::t('frontend', 'State'),
@@ -77,7 +80,7 @@ class CAApplicationForm extends Model
         $applicationsModel->first_name = $this->first_name;
         $applicationsModel->last_name = $this->last_name;
         $applicationsModel->email = $this->email;
-        $applicationsModel->contact = $this->contact;
+        $applicationsModel->contact = $this->phone;
         $applicationsModel->qualification_enc_id = $this->qualification_enc_id;
         $applicationsModel->college = $this->college;
         $applicationsModel->city_enc_id = $this->city_enc_id;
