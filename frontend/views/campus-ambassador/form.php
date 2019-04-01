@@ -6,69 +6,78 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
+use borales\extensions\phoneInput\PhoneInput;
 
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg19.png');
-$qualifications = ArrayHelper::map($qualificationsModel->find()->select(['qualification_enc_id', 'name'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'qualification_enc_id', 'name');
-$states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
-$application_questions = $applicationQuestionsModel->find()->select(['application_question_enc_id', 'question'])->where(['application_type_enc_id' => '4poVGAw3LZ9YPXAWKwv8ZezgN2P8Ej'])->orderBy(['id' => SORT_ASC])->asArray()->all();
-//print_r($application_questions);
-//exit();
+$qualifications = ArrayHelper::map($qualificationsModel, 'qualification_enc_id', 'name');
+$states = ArrayHelper::map($statesModel, 'state_enc_id', 'name');
+
 $form = ActiveForm::begin([
     'id' => 'ca-application-form',
     'fieldConfig' => [
-        'template' => '<div class="form-group">{input}</div>',
+        'template' => '<div class="form-group">{input}{error}</div>',
     ],
 ]);
 ?>
-<?php if (Yii::$app->session->hasFlash('success')): ?>
-    <div class="alert alert-success alert-dismissable">
-        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-        <h4><i class="fa fa-check-circle-o"></i>Thanks for Applying!</h4>
-        <?= Yii::$app->session->getFlash('success') ?>
-    </div>
-<?php endif; ?>
-
-<?php if (Yii::$app->session->hasFlash('error')): ?>
-    <div class="alert alert-error alert-dismissable">
-        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-        <h4><i class="fa fa-check-circle-o"></i>You have not entered data correctly.</h4>
-        <?= Yii::$app->session->getFlash('error') ?>
-    </div>
-<?php endif; ?>
-
     <div class="row">
-        <div class="col-md-6">
-            <?= $form->field($applicationFormModel, 'first_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => $applicationsModel->getAttributeLabel('first_name')]); ?>
-        </div>
-        <div class="col-md-6">
-            <?= $form->field($applicationFormModel, 'last_name')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationsModel->getAttributeLabel('last_name')]); ?>
+        <div class="col-md-12 text-center">
+            <?php if (Yii::$app->session->hasFlash('success')): ?>
+                <div class="alert alert-success alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <h4><i class="fa fa-check-circle-o"></i>Thanks for Applying!</h4>
+                    <?= Yii::$app->session->getFlash('success') ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (Yii::$app->session->hasFlash('error')): ?>
+                <div class="alert alert-error alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <h4><i class="fa fa-check-circle-o"></i>An error has occurred. Please try again.</h4>
+                    <?= Yii::$app->session->getFlash('error') ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($applicationFormModel, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationsModel->getAttributeLabel('email')]); ?>
+            <?= $form->field($caApplicationFormModel, 'first_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('first_name')]); ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($applicationFormModel, 'contact')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationsModel->getAttributeLabel('contact')]); ?>
+            <?= $form->field($caApplicationFormModel, 'last_name')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('last_name')]); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->field($caApplicationFormModel, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('email')]); ?>
+        </div>
+        <div class="col-md-6">
+            <?= $form->field($caApplicationFormModel, 'contact', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
+                'jsOptions' => [
+                    'allowExtensions' => false,
+                    'onlyCountries' => ['in'],
+                    'nationalMode' => false,
+                ]
+            ]);
+            ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <?=
-            $form->field($applicationFormModel, 'qualification_enc_id')->dropDownList(
+            $form->field($caApplicationFormModel, 'qualification_enc_id')->dropDownList(
                 $qualifications, [
                 'prompt' => 'Select Qualification',
             ])->label(Yii::t('frontend', 'Qualification'));
             ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($applicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationsModel->getAttributeLabel('college')]); ?>
+            <?= $form->field($caApplicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('college')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <?=
-            $form->field($statesModel, 'state_enc_id')->dropDownList(
+            $form->field($caApplicationFormModel, 'state_enc_id')->dropDownList(
                 $states, [
                 'prompt' => 'Select State',
                 'onchange' => '
@@ -90,7 +99,7 @@ $form = ActiveForm::begin([
         </div>
         <div class="col-md-6">
             <?=
-            $form->field($applicationFormModel, 'city_enc_id')->dropDownList(
+            $form->field($caApplicationFormModel, 'city_enc_id')->dropDownList(
                 [], [
                 'prompt' => 'Select City',
                 'id' => 'cities_drp',
@@ -99,12 +108,12 @@ $form = ActiveForm::begin([
         </div>
     </div>
 <?php
-foreach ($application_questions as $question) {
+foreach ($applicationQuestionsModel as $question) {
     ?>
     <div class="row">
         <div class="col-md-12">
             <?php
-            echo $form->field($applicationFormModel, 'answers[' . $question['application_question_enc_id'] . ']')->textArea(['autocomplete' => 'off', 'rows' => 5, 'placeholder' => $applicationsModel->getAttributeLabel($question['question'])]);
+            echo $form->field($caApplicationFormModel, 'answers[' . $question['application_question_enc_id'] . ']')->textArea(['autocomplete' => 'off', 'rows' => 5, 'placeholder' => $caApplicationFormModel->getAttributeLabel($question['question'])]);
             ?>
         </div>
     </div>
@@ -124,7 +133,11 @@ ActiveForm::end();
 $this->registerCss('
 #home {
     height: auto !important;
-}');
+}
+.intl-tel-input {
+    width: 100%;
+}
+');
 
 $this->registerJs("function drp_down(id, data) {
     var selectbox = $('#' + id + '');
