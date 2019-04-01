@@ -1,21 +1,3 @@
-//
-//  var jobProfile = JSON.parse(result['job_profile']);
-//  var jobprofileresult = [];
-//  Object.entries(jobProfile).forEach(([key, value]) => {
-//     jobprofileresult.push({'label': key, 'value':value})
-//  });
-//
-// var jobTitle = JSON.parse(result['job_title']);
-// var jobtitleesult = [];
-// Object.entries(jobTitle).forEach(([key, value]) => {
-//     jobtitleesult.push({'label': key, 'value':value})
-// });
-//
-// var joblocation = JSON.parse(result['location']);
-// var joblocationresult = [];
-// Object.entries(joblocation).forEach(([key, value]) => {
-//     joblocationresult.push({'label': key, 'value':value})
-// });
 var hostname = window.location.hostname;
 var user_profile = 'https://' + hostname + "/user/" + result["username"];
 var popup = new ideaboxPopup({

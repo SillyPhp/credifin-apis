@@ -1,8 +1,10 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
 $separator = Yii::$app->params->seo_settings->title_separator;
 if ($type=='Job') {
     if ($data['wage_type'] == 'Fixed') {

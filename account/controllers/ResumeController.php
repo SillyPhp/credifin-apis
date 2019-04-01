@@ -9,7 +9,6 @@ use common\models\OrganizationAssignedCategories;
 use common\models\OrganizationLocations;
 use common\models\Utilities;
 use frontend\controllers\DropResumeController;
-use http\Env\Response;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
