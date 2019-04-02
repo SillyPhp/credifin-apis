@@ -16,6 +16,11 @@ if (!empty($total_applications)) {
                 <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
+                            <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'clone'); ?>"
+                               target="_blank"
+                               class="j-clone share_btn">
+                                <i class="fa fa-clone"></i>
+                            </a>
                             <button type="button" class="j-delete"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
