@@ -315,7 +315,8 @@ class CandidateProfile extends Model
                 ->where(['a.category_enc_id' => $candidate->job_function])
                 ->asArray()
                 ->one();
-            return $getCategory;
+            $cat_name = Categories::find()->select(['name', 'category_enc_id'])->where(['category_enc_id' => $getCategory['parent_enc_id']])->one();
+            return $cat_name;
         } else {
             $getCategory = '';
             return $getCategory;

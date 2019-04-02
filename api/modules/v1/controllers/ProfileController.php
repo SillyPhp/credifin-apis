@@ -66,7 +66,7 @@ class ProfileController extends ApiBaseController{
         }
 
         if(!($basicDetails->getCurrentCategory() == "")){
-            $result['profile'] = $basicDetails->getCurrentCategory()["name"];
+            $result['profile'] = $basicDetails->getCurrentCategory()['name'];
         }else{
             $result['profile'] = NULL;
         }
