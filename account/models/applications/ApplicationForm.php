@@ -193,9 +193,11 @@ class ApplicationForm extends Model
         }
         if ($type=='Jobs'||$type=='Clone_Jobs') {
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
+            $type = 'Jobs';
         }
         else if (($type=='Internships'||$type=='Clone_Internships')){
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
+            $type = 'Internships';
         }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
