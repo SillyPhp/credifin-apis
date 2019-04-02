@@ -90,6 +90,12 @@ function drop_edu(id,qualification)
             }
         } 
     });
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+    {
+        $.each($model->clone_edu,function(i,v) {
+            drop_edu(id="",v);
+        });
+    }
 $(document).on('click','.quali_drop_options span a', function(event){
 		event.preventDefault();
                 var btn = $(this);
