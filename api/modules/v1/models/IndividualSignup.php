@@ -13,6 +13,7 @@ class IndividualSignup extends Model{
     public $email;
     public $password;
     public $password_confirm;
+    public $source;
 
     public function rules(){
         return [
@@ -36,8 +37,7 @@ class IndividualSignup extends Model{
 
             ['password','required'],
 
-            ['password_confirm', 'required'],
-            ['password_confirm', 'compare', 'compareAttribute'=>'password', 'message'=>'passwords do not match']
+            ['source', 'required']
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\models;
 
+use common\models\AssignedCategories;
 use common\models\Skills;
 use common\models\SpokenLanguages;
 use common\models\UserAccessTokens;
@@ -18,10 +19,10 @@ use common\models\Utilities;
 
 class CandidateProfile extends Model
 {
-    public $first_name;
-    public $last_name;
-    public $job_profile;
-    public $job_profile_id;
+    public $full_name;
+    public $gender;
+    public $category;
+    public $job_title;
     public $exp_month;
     public $exp_year;
     public $dob;
@@ -44,8 +45,10 @@ class CandidateProfile extends Model
     public function rules()
     {
         return [
-            [['job_profile', 'exp_month', 'exp_year', 'dob', 'languages', 'skills', 'availability', 'description', 'state', 'city', 'job_profile_id'], 'required'],
+            [['exp_month', 'gender', 'exp_year', 'dob', 'languages', 'skills', 'availability', 'description', 'state', 'city'], 'required'],
             [['facebook', 'twitter', 'google', 'linkedin'], safe],
+            ['category', 'safe'],
+            ['job_title', 'safe'],
             ['exp_month', 'integer', 'max' => 12],
             ['exp_year', 'integer', 'max' => 99]
         ];
@@ -72,7 +75,48 @@ class CandidateProfile extends Model
         $user->is_available = $this->availability;
         $user->experience = json_encode(['' . $this->exp_year . '', '' . $this->exp_month . '']);
         $user->description = $this->description;
-        $user->job_function = $this->job_profile_id;
+        $user->gender = $this->gender;
+
+        if (!empty($this->job_title)) {
+            $category_execute = Categories::find()
+                ->alias('a')
+                ->where(['name' => $this->job_title]);
+            $chk_cat = $category_execute->asArray()->one();
+            if (empty($chk_cat)) {
+                $categoriesModel = new Categories;
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                $categoriesModel->name = $this->job_title;
+                $utilitiesModel->variables['name'] = $this->job_title;
+                $utilitiesModel->variables['table_name'] = Categories::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $categoriesModel->slug = $utilitiesModel->create_slug();
+                $categoriesModel->created_on = date('Y-m-d H:i:s');
+                $categoriesModel->created_by = $candidate->user_enc_id;
+                if ($categoriesModel->save()) {
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user);
+                } else {
+                    return false;
+                }
+            } else {
+                $chk_assigned = $category_execute
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                    ->andWhere(['not', ['b.parent_enc_id' => null]])
+                    ->andWhere(['b.assigned_to' => 'Profiles', 'b.parent_enc_id' => $this->category])
+                    ->asArray()
+                    ->one();
+                if (empty($chk_assigned)) {
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user);
+                } else {
+                    $user->job_function = $chk_assigned['category_enc_id'];
+                }
+            }
+        } else {
+            $user->job_function = null;
+        }
+
 
         if ($user->update()) {
             $flag++;
@@ -229,6 +273,55 @@ class CandidateProfile extends Model
         }
     }
 
+    private function addNewAssignedCategory($category_id,$user)
+    {
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $candidate = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $this->category;
+        $assignedCategoryModel->assigned_to = 'Profiles';
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = $candidate->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $user->job_function = $assignedCategoryModel->category_enc_id;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getCurrentCategory()
+    {
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $candidate = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+        if (!empty($candidate->job_function)) {
+            $getCategory = Categories::find()
+                ->alias('a')
+                ->select(['a.name', 'a.category_enc_id', 'b.parent_enc_id'])
+                ->joinWith(['assignedCategories b'], false)
+                ->where(['a.category_enc_id' => $candidate->job_function])
+                ->asArray()
+                ->one();
+            return $getCategory;
+        } else {
+            $getCategory = '';
+            return $getCategory;
+        }
+    }
+
     public function getJobFunction()
     {
         $token_holder_id = UserAccessTokens::findOne([
@@ -238,10 +331,7 @@ class CandidateProfile extends Model
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
         if (!empty($candidate->job_function)) {
-            $getName = Categories::find()
-                ->select(['name', 'category_enc_id'])
-                ->where(['category_enc_id' => $candidate->job_function])
-                ->one();
+            $getName = Categories::find()->select(['name', 'category_enc_id'])->where(['category_enc_id' => $candidate->job_function])->one();
             return $getName;
         } else {
             $getName = '';

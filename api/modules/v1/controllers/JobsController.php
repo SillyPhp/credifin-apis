@@ -77,7 +77,7 @@ class JobsController extends ApiBaseController
         if (count($result) > 0) {
             return $this->response(200, $result);
         } else {
-            return $this->response(201);
+            return $this->response(404);
         }
     }
 
@@ -106,15 +106,17 @@ class JobsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(201);
+                return $this->response(404);
             }
 
 
-            if (Yii::$app->request->headers->get('Authorization')) {
+            if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
-                $token_holder_id = UserAccessTokens::findOne([
-                    'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-                ]);
+                $token_holder_id = UserAccessTokens::find()
+                                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                                    ->one();
+
                 $user = Candidates::findOne([
                     'user_enc_id' => $token_holder_id->user_enc_id
                 ]);
@@ -131,6 +133,8 @@ class JobsController extends ApiBaseController
                         ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => $user->user_enc_id])
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
+                }else{
+                    return $this->response(401);
                 }
             }
 
@@ -165,7 +169,6 @@ class JobsController extends ApiBaseController
                 }
                 $i++;
             }
-
             $temp = $data["cat_name"];
             $data["cat_name"] = $data["name"];
             $data["name"] = $temp;
@@ -210,13 +213,15 @@ class JobsController extends ApiBaseController
                     $data["vacancies"] += $apl['positions'];
                 }
             }
+            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], true);
+            unset($data['icon_png']);
             $data['preferred_gender'] = $this->prefferedGender($data['preferred_gender']);
 
             $result['applicationDetails'] = $data;
 
             return $this->response(200, $result);
         } else {
-            return $this->response(202);
+            return $this->response(422);
         }
     }
 
@@ -238,9 +243,11 @@ class JobsController extends ApiBaseController
 
     public function actionAvailableResume()
     {
-        $token_holder_id = UserAccessTokens::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
         $user = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
@@ -254,19 +261,24 @@ class JobsController extends ApiBaseController
         if (sizeof($resume) != 0) {
             return $this->response(200, $resume);
         } else {
-            return $this->response(201);
+            return $this->response(404);
         }
 
     }
 
     public function actionApply()
     {
-
         $model = new JobApply();
 
         $reqParams = Yii::$app->request->post();
 
         if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && isset($reqParams['city_id'])) {
+
+            if($reqParams['city_id'] != ''){
+                $city_enc_ids = explode(",", $reqParams['city_id']);
+            }else{
+                $city_enc_ids = [];
+            }
 
             $application_type = ApplicationTypes::find()
                 ->select(['application_type_enc_id'])
@@ -285,12 +297,14 @@ class JobsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(201);
+                return $this->response(404);
             }
 
-            $token_holder_id = UserAccessTokens::findOne([
-                'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-            ]);
+            $token_holder_id = UserAccessTokens::find()
+                ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                ->one();
+
             $user = Candidates::findOne([
                 'user_enc_id' => $token_holder_id->user_enc_id
             ]);
@@ -311,11 +325,7 @@ class JobsController extends ApiBaseController
 
                 $model->id = $reqParams['job_id'];
                 $model->resume_list = $reqParams['resume_enc_id'];
-                if (empty($reqParams['city_id']) || count($reqParams['city_id']) == 0) {
-                    $model->location_pref = [];
-                } else {
-                    $model->location_pref = $reqParams['city_id'];
-                }
+                $model->location_pref = $city_enc_ids;
 
                 if ($application_questionnaire) {
                     $model->status = 'incomplete';
@@ -326,13 +336,13 @@ class JobsController extends ApiBaseController
                 if ($res = $model->saveValues()) {
                     return $this->response(200, $res);
                 } else {
-                    return $this->response(204);
+                    return $this->response(500);
                 }
             } else {
-                return $this->response(601);
+                return $this->response(409);
             }
         } else {
-            return $this->response(202);
+            return $this->response(422);
         }
     }
 }

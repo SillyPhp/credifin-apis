@@ -71,7 +71,7 @@ class InternshipsController extends ApiBaseController {
         if (count($result) > 0) {
             return $this->response(200, $result);
         } else {
-            return $this->response(201);
+            return $this->response(404);
         }
     }
 
@@ -98,14 +98,16 @@ class InternshipsController extends ApiBaseController {
                 ->one();
 
             if (!$application_details) {
-                return $this->response(201);
+                return $this->response(404);
             }
 
-            if(Yii::$app->request->headers->get('Authorization')){
+            if(Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')){
 
-                $token_holder_id = UserAccessTokens::findOne([
-                    'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-                ]);
+                $token_holder_id = UserAccessTokens::find()
+                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                    ->one();
+
                 $user = Candidates::findOne([
                     'user_enc_id' => $token_holder_id->user_enc_id
                 ]);
@@ -122,6 +124,8 @@ class InternshipsController extends ApiBaseController {
                         ->where(['shortlisted' =>1 , 'application_enc_id' => $application_details->application_enc_id, 'created_by' => $user->user_enc_id])
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
+                }else{
+                    return $this->response(401);
                 }
             }
 
@@ -147,6 +151,16 @@ class InternshipsController extends ApiBaseController {
             $data = $object
                 ->getCloneData($application_details->application_enc_id);
 
+            $i = 0;
+            foreach ($data["applicationEmployeeBenefits"] as $d) {
+                if(!empty($d["icon"])) {
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], true);
+                } else{
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', true);
+                }
+                $i++;
+            }
+            
             unset($data["id"]);
             unset($data["application_number"]);
             unset($data["application_enc_id"]);
@@ -195,12 +209,14 @@ class InternshipsController extends ApiBaseController {
             unset($data["internship_duration_type"]);
             unset($data["internship_duration"]);
             unset($data["has_online_interview"]);
+            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], true);
+            unset($data['icon_png']);
 
             $result['applicationDetails'] = $data;
 
             return $this->response(200, $result);
         }else{
-            return $this->response(202);
+            return $this->response(422);
         }
 
     }
@@ -229,9 +245,11 @@ class InternshipsController extends ApiBaseController {
     }
 
     public function actionAvailableResume(){
-        $token_holder_id = UserAccessTokens::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
         $user = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
@@ -245,7 +263,7 @@ class InternshipsController extends ApiBaseController {
         if(sizeof($resume) != 0){
             return $this->response(200, $resume);
         }else{
-            return $this->response(201);
+            return $this->response(404);
         }
 
     }
@@ -258,6 +276,12 @@ class InternshipsController extends ApiBaseController {
 
         if(!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && !empty($reqParams['city_id'])){
 
+            if($reqParams['city_id'] != ''){
+                $city_enc_ids = explode(",", $reqParams['city_id']);
+            }else{
+                $city_enc_ids = [];
+            }
+            
             $application_type = ApplicationTypes::find()
                 ->select(['application_type_enc_id'])
                 ->where(['name' => 'Internships'])
@@ -275,12 +299,14 @@ class InternshipsController extends ApiBaseController {
                 ->one();
 
             if (!$application_details) {
-                return $this->response(201);
+                return $this->response(404);
             }
 
-            $token_holder_id = UserAccessTokens::findOne([
-                'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-            ]);
+            $token_holder_id = UserAccessTokens::find()
+                ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                ->one();
+
             $user = Candidates::findOne([
                 'user_enc_id' => $token_holder_id->user_enc_id
             ]);
@@ -302,11 +328,8 @@ class InternshipsController extends ApiBaseController {
 
                 $model->id = Yii::$app->request->post("job_id");
                 $model->resume_list = Yii::$app->request->post("resume_enc_id");
-                if(empty($reqParams['city_id']) || count($reqParams['city_id']) == 0) {
-                    $model->location_pref = [];
-                }else{
-                    $model->location_pref = $reqParams['city_id'];
-                }
+                $model->location_pref = $city_enc_ids;
+                
                 if ($application_questionnaire) {
                     $model->status = 'incomplete';
                 } else {
@@ -316,14 +339,14 @@ class InternshipsController extends ApiBaseController {
                 if ($res = $model->saveValues()) {
                     return $this->response(200, $res);
                 } else {
-                    return $this->response(204);
+                    return $this->response(500);
                 }
             }else{
-                return $this->response(601);
+                return $this->response(409);
             }
 
         }else{
-            return $this->response(202);
+            return $this->response(422);
         }
     }
 
