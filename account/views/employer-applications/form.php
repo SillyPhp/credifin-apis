@@ -1584,11 +1584,13 @@ if (doc_type=='Jobs'||doc_type=='Clone_Jobs')
     {
         var preview_url = '/account/jobs/preview';
         var titles_url = '/account/categories-list/load-titles?id=';
+        var redirect_url = '/account/jobs/dashboard';
     }
 else if(doc_type=="Internships"||doc_type=='Clone_Internships')
     {
         var preview_url = '/account/internships/preview';
         var titles_url = '/account/categories-list/load-titles?type=Internships&id=';
+        var redirect_url = '/account/internships/dashboard';
     }
 
 if(doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
@@ -1685,7 +1687,7 @@ window.ChildFunction = ChildFunction;
                     $('.fader').css('display','block');    
                     $('#loading_img').addClass('show');    
                     function explode(){
-                     window.location.replace('/account/jobs/dashboard'); 
+                     window.location.replace(redirect_url); 
                      }
                        setTimeout(explode, 2000); 
                      }
