@@ -76,8 +76,16 @@ function interview_checker(interview_len)
            }
         }
  $(document).on("click",'input[name="interviewcity[]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
+    interview_location_len_validation($(this));
+});
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+    {
+        $.each($('[name="interviewcity[]"]'),function(e) {
+          interview_location_len_validation($(this));
+        })
+    }
+function interview_location_len_validation(thisObj) {
+  if (thisObj.prop("checked")==true) {
         interview_len =  $('[name="interviewcity[]"]:checked').length;
         interview_checker(interview_len);
     } 
@@ -85,9 +93,8 @@ function interview_checker(interview_len)
     else {
         interview_len =  $('[name="interviewcity[]"]:checked').length;
         interview_checker(interview_len); 
-        
    }   
-});
+}
 JS;
 $this->registerJs($script);
 ?>

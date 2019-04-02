@@ -18,7 +18,7 @@ use yii\helpers\URL;
                 ], [
                     'item' => function ($index, $label, $name, $checked, $value) {
                         $return = '<div class="md-radio">';
-                        $return .= '<input type="radio" id="que' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                        $return .= '<input type="radio" id="que' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                         $return .= '<label for="que' . $index . '">';
                         $return .= '<span></span>';
                         $return .= '<span class="check"></span>';
@@ -85,9 +85,47 @@ $script = <<< JS
 var ques_len = 0;
 var stage_len = 0;
 var process_len = 0;
+ $('.selectBox').prop("disabled", true); 
+ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+    {
+        $('.selectBox').html('<option value="">Choose Stage</option>');
+        fetch_hiring_process2('$model->interview_process');
+        process_len =  $('[name="interview_process"]:checked').length;
+        process_checker(process_len);
+        questionnaire_hide_show('$model->questionnaire_selection');
+    }
+function fetch_hiring_process2(id)
+{
+    if(!id=="")
+        {
+           $.ajax({
+                 url:'/account/categories-list/process-list',
+                 data:{id:id},
+                 method:'post',
+                 success:function(res)
+                 {
+                       var obj = JSON.parse(res);
+                       var html = []; 
+                       $.each(obj,function(index,value)
+                             {
+                              html.push('<option value="'+value.field_enc_id+'">'+value.field_name+'</option>');
+                            });
+                        $('.selectBox').append(html);
+                        var fields = $model->questionfields;
+                        $.each($('[name="questionnaire[]"]:checked'),function(i,v) {
+                        questionnaire_process_change($(this),fields[i]);
+                        });
+                  }
+               })
+         }
+}  
 $('input[name= "questionnaire_selection"]').on('change',function(){
         var option = $(this).val();
-        if(option==1)
+        questionnaire_hide_show(option)
+        });
+function questionnaire_hide_show(option)
+{
+    if(option==1)
             {
              $('#questionnaire_hide').css('display','block');   
              $('#add').css('display','block');   
@@ -96,12 +134,12 @@ $('input[name= "questionnaire_selection"]').on('change',function(){
             $('#questionnaire_hide').css('display','none');   
             $('#add').css('display','none');   
         }
-        });
+}
 $(document).on('click','.questionnaier_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
     window.open('/account/questionnaire/'+data+'/view', "_blank");
-});
+}); 
  function ques_checker(ques_len,stage_len)
         {  
           if(ques_len>0&&stage_len>0&&ques_len==stage_len)
@@ -126,25 +164,30 @@ $(document).on('click','.questionnaier_display',function(e) {
               $('#question_process').val(JSON.stringify(process_question_arr)); 
 
        }
+   var box;    
   $(document).on('change','input[name="questionnaire[]"]',function(){
-        var box;
-    if ($(this).is(':checked')) {
-        box =  $(this).closest('.col-md-9').next().find('.selectBox');
+      questionnaire_process_change($(this),"");
+   });
+function questionnaire_process_change(thisObj,field_enc_id)
+{
+    if (thisObj.prop("checked")==true) {
+        box =  thisObj.closest('.col-md-9').next().find('.selectBox');
         box.prop("disabled", false);
+         box.val(field_enc_id);
         ques_len = $('[name="questionnaire[]"]:checked').length;
         stage_len = $('.selectBox option:selected:not([value=""])').length;
         ques_checker(ques_len,stage_len);
         }
-        else if ($(this).is(':unchecked'))
+        else if (thisObj.prop("checked")==false)
         {
-        box =  $(this).closest('.col-md-9').next().find('.selectBox');
+        box =  thisObj.closest('.col-md-9').next().find('.selectBox');
         box.prop("disabled", true);
         box.val("");
         ques_len = $('[name="questionnaire[]"]:checked').length;
         stage_len = $('.selectBox option:selected:not([value=""])').length;
         ques_checker(ques_len,stage_len);
         }
-   }) 
+}  
  $(document).on('change','.selectBox',function()
    {
      if($(this).val()!=="")

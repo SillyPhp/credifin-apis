@@ -21,9 +21,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
                 <span class="caption-subject font-red bold uppercase">
-                    <?php if ($type == 'Jobs'): ?>
+                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'): ?>
                         Job Application
-                    <?php elseif ($type == 'Internships'): ?>
+                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'): ?>
                         Internship Application
                     <?php endif; ?>
                     <span class="step-title"> Step 1 of 4</span>
@@ -56,9 +56,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span class="number"> 2 </span><br/>
                                 <span class="desc">
                                     <i class="fa fa-check"></i>
-                                    <?php if ($type == 'Jobs'): ?>
+                                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'): ?>
                                         Job Description
-                                    <?php elseif ($type == 'Internships'): ?>
+                                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'): ?>
                                         Internship Description
                                     <?php endif; ?>
                                 </span>
@@ -93,19 +93,18 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
                             <?php
-                            if ($type == 'Jobs'):
+                            if ($type == 'Jobs'||$type=='Clone_Jobs'):
                                 echo $this->render('/widgets/employer-applications/basic-job-details', [
                                 'form'=>$form,
                                 'model'=>$model,
                                 'primary_cat'=>$primary_cat,
                                 'industry'=>$industry,
                             ]);
-                            elseif ($type == 'Internships'):
+                            elseif ($type == 'Internships'||$type=='Clone_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
                                     'primary_cat' => $primary_cat,
-                                    'industry' => $industry,
                                 ]);
                             endif;
                             ?>
@@ -1554,6 +1553,7 @@ height:17px !important;
 /*Load Suggestions loader css ends */
 ");
 $script = <<< JS
+var job_titles;
 if(window.location.hash) 
     {
         window.location = window.location.pathname;
@@ -1567,9 +1567,7 @@ function genrate_session_token() {
 }
 genrate_session_token();
 $("#primaryfield").prop("disabled", false);          
-$("#title").prop("disabled", false);
-$('.selectBox').prop("disabled", true);    
-   
+$("#title").prop("disabled", false); 
 var data_before = null;
 var checked = null;
 var array = [];
@@ -1582,17 +1580,22 @@ $('#primaryfield').on('change',function()
       $('#title').typeahead('destroy');
       load_job_titles(prime_id);
    });
-var job_titles;
-if (doc_type=='Jobs')
+if (doc_type=='Jobs'||doc_type=='Clone_Jobs')
     {
         var preview_url = '/account/jobs/preview';
         var titles_url = '/account/categories-list/load-titles?id=';
     }
-else if(doc_type=="Internships")
+else if(doc_type=="Internships"||doc_type=='Clone_Internships')
     {
         var preview_url = '/account/internships/preview';
         var titles_url = '/account/categories-list/load-titles?type=Internships&id=';
     }
+
+if(doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
+    {
+        load_job_titles('$model->primaryfield');
+    }
+
 function load_job_titles(prime_id)
 {
 var categories = new Bloodhound({
@@ -1627,6 +1630,7 @@ $('#title').typeahead(null, {
   minLength: 1,
   limit: 20,
 }).blur(validateSelection);
+return true;
 }
 
 function validateSelection() {
@@ -2259,11 +2263,11 @@ function get_preview(session_tok) {
                          data:data, 
                          method:'post',
                          success: function(data) {
-                           if (doc_type=='Jobs')
+                           if (doc_type=='Jobs'||doc_type=='Clone_Jobs')
                            {
                              $('.button-preview').attr('href','/jobs/job-preview?eipdk='+session_tok+'');
                            }
-                       else if(doc_type=="Internships")
+                       else if(doc_type=="Internships"||doc_type=='Clone_Internships')
                        {
                         $('.button-preview').attr('href','/internships/internship-preview?eipdk='+session_tok+'');
                        }

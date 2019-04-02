@@ -35,7 +35,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
+                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="sti' . $index . $name . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -78,7 +78,6 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="weekDays-selector">
-            <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
             <?=
             $form->field($model, 'weekdays')->inline()->checkBoxList([
                 '1' => 'M',
@@ -191,7 +190,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
+                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="pre' . $index . $name . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -217,7 +216,10 @@ $('#min_wage, #max_wage').mask("#,#0,#00", {reverse: true});
 $('#fixed_wage, #pre_placement_package').mask("#,#0,#00", {reverse: true});
 $('input[name= "pre_placement_offer"]').on('change',function(){
         var pre = $(this).attr("data-title");
-        if(pre==1)
+        pre_placement(pre);
+        });
+function pre_placement(pre) {
+   if(pre==1)
         {
          $('#pre_package').show();
         }
@@ -225,10 +227,37 @@ $('input[name= "pre_placement_offer"]').on('change',function(){
         {
          $('#pre_package').hide();
         }
-        });
+}
+if (doc_type=='Clone_Internships') 
+    {
+        wage_types2('$model->wage_type');
+        pre_placement('$model->pre_placement_offer');
+    }
+function wage_types2(stipendtyp)
+{
+    if(stipendtyp=='0')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').hide();
+        }
+     else if(stipendtyp =='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        }
+     else if(stipendtyp=='3'||stipendtyp=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        }
+}
 $('input[name= "wage_type"]').on('change',function(){
         var stipendtyp = $(this).attr("data-title");
-   if(stipendtyp=='0')
+        wage_types(stipendtyp);
+   });
+function wage_types(stipendtyp)
+{
+    if(stipendtyp=='0')
         {
         $('#fixed_stip').hide();
         $('#min_max').hide();
@@ -250,7 +279,7 @@ $('input[name= "wage_type"]').on('change',function(){
         $('#min_max').show(); 
         $('#fixed_wage').val('');
         }
-   }) 
+}
 $(document).on('click','#weekdays input',function()
     {
      if ($('#weekday-5').is(':checked'))
