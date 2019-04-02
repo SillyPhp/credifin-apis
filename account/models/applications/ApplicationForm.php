@@ -79,7 +79,7 @@ class ApplicationForm extends Model
     public $skillsArray;
     public $interradio;
     public $quesradio;
-    public $weekdays;
+    public $weekdays = [1, 2, 3, 4, 5];
     public $weekoptsat;
     public $weekoptsund;
     public $custom_job_title;
@@ -94,9 +94,11 @@ class ApplicationForm extends Model
     public $question_process;
     public $designations;
     public $emp_benefit;
-    public $clone_desc;
-    public $clone_edu;
-    public $clone_skills;
+    public $clone_desc =[];
+    public $clone_edu = [];
+    public $clone_skills = [];
+    public $positions = [];
+    public $questionfields = [];
     public $benefit_selection;
     public $questionnaire_selection;
 
@@ -189,7 +191,12 @@ class ApplicationForm extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-        $application_type_enc_id = ApplicationTypes::findOne(['name' => $type]);
+        if ($type=='Jobs'||$type=='Clone_Jobs') {
+            $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
+        }
+        else if (($type=='Internships'||$type=='Clone_Internships')){
+            $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
+        }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -358,7 +365,6 @@ class ApplicationForm extends Model
             $applicationoptionsModel->max_wage = (($this->max_wage) ? str_replace(',', '', $this->max_wage) : null);
             $applicationoptionsModel->ctc = (($this->ctc) ? str_replace(',', '', $this->ctc) : null);
             $applicationoptionsModel->wage_duration = $this->wage_duration;
-            $applicationoptionsModel->has_placement_offer = null;
             $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->pre_placement_offer = (($this->pre_placement_package) ? str_replace(',', '', $this->pre_placement_package) : null);

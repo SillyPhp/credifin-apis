@@ -20,7 +20,7 @@ use yii\helpers\URL;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="ben' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                    $return .= '<input type="radio" id="ben' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="ben' . $index . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -98,7 +98,11 @@ $(document).on('click', '.modal-load-benefit', function() {
 });
 $('input[name= "benefit_selection"]').on('change',function(){
         var option = $(this).val();
-        if(option==1)
+        hide_show_benefits(option);
+});
+function hide_show_benefits(option)
+{
+    if(option==1)
             {
              $('#benefits_hide').css('display','block');   
              $('#benefitPopup').css('display','block');   
@@ -107,11 +111,14 @@ $('input[name= "benefit_selection"]').on('change',function(){
             $('#benefits_hide').css('display','none');   
             $('#benefitPopup').css('display','none');   
         }
-          
-        });
+}
 $(document).on("click",'input[name="emp_benefit[]"]', function() {
-    checked = $(this);
-    if (this.checked == true) {
+    benefits_selection($(this)); 
+});
+
+function benefits_selection(thisObj)
+{
+    if (thisObj.prop("checked")==true) {
         benefit_len =  $('[name="emp_benefit[]"]:checked').length;
         benefit_checker(benefit_len);
     } 
@@ -120,8 +127,16 @@ $(document).on("click",'input[name="emp_benefit[]"]', function() {
         benefit_len =  $('[name="emp_benefit[]"]:checked').length;
         benefit_checker(benefit_len); 
         
-   }   
-});
+   }  
+}
+
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+    {
+        hide_show_benefits('$model->benefit_selection');
+        $.each($('[name="emp_benefit[]"]'),function(e) {
+          benefits_selection($(this));
+        })
+    }
 function benefit_checker(benefit_len)
         {
           if(benefit_len == 0)

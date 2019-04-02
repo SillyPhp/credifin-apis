@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationDataProvider;
 use common\models\DropResumeApplications;
 use Yii;
 use yii\web\Controller;
@@ -76,7 +77,6 @@ class InternshipsController extends Controller
             $model = new ApplicationForm();
             $primary_cat = $model->getPrimaryFields('Internships');
             $questionnaire = $model->getQuestionnnaireList(2);
-            $industry = $model->getndustry();
             $benefits = $model->getBenefits();
             $process = $model->getInterviewProcess();
             $placement_locations = $model->getOrganizationLocations();
@@ -95,7 +95,6 @@ class InternshipsController extends Controller
             } else {
                 return $this->render('/employer-applications/form', ['model' => $model,
                     'primary_cat' => $primary_cat,
-                    'industry' => $industry,
                     'placement_locations' => $placement_locations,
                     'interview_locations' => $interview_locations,
                     'benefits' => $benefits,
@@ -154,18 +153,17 @@ class InternshipsController extends Controller
     public function actionClone($aidk)
     {
         if (Yii::$app->user->identity->organization) {
-            $object = new JobApplicationForm();
-            $model = new InternshipApplicationForm();
-            $questions_list = $object->getQuestionnnaireList();
-            $p_list = $object->getOrganizationLocationOffice();
-            $l_list = $object->getOrganizationLocationInterview();
-            $primaryfields = $object->getPrimaryFields('Internships');
-            $industries = $object->getndustry();
-            $interview_process = $object->getInterviewProcess();
-            $benefits = $object->getBenefits();
+            $type = 'Clone_Internships';
+            $model = new ApplicationForm();
+            $primary_cat = $model->getPrimaryFields('Internships');
+            $questionnaire = $model->getQuestionnnaireList(2);
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues()) {
+                if ($model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
@@ -175,19 +173,20 @@ class InternshipsController extends Controller
                     return false;
                 }
             } else {
-                $application = $model->getCloneData($aidk);
-                return $this->render('application_clone', ['data' => $application,
-                    'model' => $model, 'location_list' => $p_list,
-                    'questions_list' => $questions_list,
-                    'primaryfields' => $primaryfields,
-                    'inter_loc' => $l_list,
-                    'industries' => $industries,
-                    'process_list' => $interview_process,
-                    'benefit' => $benefits,
+                $obj = new ApplicationDataProvider();
+                $model = $obj->setValues($model,$aidk);
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
                 ]);
             }
         } else {
-
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 

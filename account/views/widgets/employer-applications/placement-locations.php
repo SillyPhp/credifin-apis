@@ -39,7 +39,7 @@ if (!empty($placement_locations)) {
             $return .= '<span class="state_city_tag">' . $label['city_name'] . ", " . $label['state_name'] . '</span>';
             $return .= '<div class="form-group">';
             $return .= '<div class="input-group spinner">';
-            $return .= '<input type="text" class="form-control place_no" value="1" >';
+            $return .= '<input type="text" class="form-control place_no" value="1">';
             $return .= '<div class="input-group-btn-vertical">';
             $return .= '<button class="btn btn-default up_bt" type="button"><i class="fa fa-caret-up"></i></button>';
             $return .= '<button class="btn btn-default down_bt" type="button"><i class="fa fa-caret-down"></i></button>';
@@ -74,17 +74,29 @@ $(document).on('click', '.modal-load-class', function() {
 });
 
 $(document).on("click",'input[name="placement_locations[]"]' , function() {
-    if (this.checked == true) {
+       placement_location_positions($(this),1);
+});
+
+function placement_location_positions(thisObj,positions) {
+  if (thisObj.prop("checked")==true) {
+        thisObj.next('label').find('input').val(positions);
         place_len =  $('[name="placement_locations[]"]:checked').length;
         place_checker(place_len);
-        showPositionBox($(this));
+        showPositionBox(thisObj);
     } 
     else {
         place_len =  $('[name="placement_locations[]"]:checked').length;
         place_checker(place_len);
-        hidePositionBox($(this));
-   }    
-});
+        hidePositionBox(thisObj);
+   } 
+}
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+    {
+        var positions = $model->positions;
+        $.each($('[name="placement_locations[]"]:checked'),function(i,v) {
+          placement_location_positions($(this),positions[i]);
+        });
+    }
 function showPositionBox(thisObj)
 {
     thisObj.next('label').find('.spinner').css('display','inline-flex');

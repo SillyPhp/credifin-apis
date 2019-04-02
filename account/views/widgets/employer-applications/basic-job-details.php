@@ -43,7 +43,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
+                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="sltype' . $index . $name . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -94,8 +94,6 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="weekDays-selector">
-            <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
-
             <?=
             $form->field($model, 'weekdays')->inline()->checkBoxList([
                 '1' => 'M',
@@ -222,20 +220,40 @@ $script = <<< JS
  $('#addctc').on('click',function(){
     $('#addct').hide();
     $('#ctc-main').show();     
-});
-        
+}); 
 $('.close-ctc').on('click',function(){
     $('#ctc-main').hide();
     $('#addct').show();
 }); 
 $('input[name= "wage_type"]').on('change',function(){
    var sl_type = $(this).attr("data-title");
-   if(sl_type=='1')
+     wage_type(sl_type);
+   })    
+if (doc_type=='Clone_Jobs') 
+    {
+        wage_type2('$model->wage_type');
+    }
+function wage_type2(sl_type) {
+  if(sl_type=='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        }
+     
+     else if(sl_type=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        }
+}    
+function wage_type(sl_type)
+{
+    if(sl_type=='1')
         {
         $('#fixed_stip').show();
         $('#min_max').hide();
         $('#min_wage').val('');
-        $('#max_stip').val('');
+        $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
      
@@ -244,10 +262,10 @@ $('input[name= "wage_type"]').on('change',function(){
         $('#fixed_stip').hide();
         $('#min_max').show();
         $('#min_wage').val('');
-        $('#max_stip').val('');
+        $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
-   })    
+}     
    $(document).on('click','#weekdays input',function()
     {
      if ($('#weekday-5').is(':checked'))

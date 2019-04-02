@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\Cities;
@@ -200,36 +201,43 @@ class JobsController extends Controller
 
     public function actionClone($aidk)
     {
-        $model = new JobApplicationForm();
-        $que = $model->getQuestionnnaireList();
-        $loc_list = $model->getOrganizationLocationOffice();
-        $int_list = $model->getOrganizationLocationInterview();
-        $primary_cat = $model->getPrimaryFields();
-        $industry = $model->getndustry();
-        $process = $model->getInterviewProcess();
-        $benefits = $model->getBenefits();
-        if ($model->load(Yii::$app->request->post())) {
-            $session_token = Yii::$app->request->post('n');
-            if ($model->saveValues()) {
-                $session = Yii::$app->session;
-                if (!empty($session->get($session_token))) {
-                    $session->remove($session_token);
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Clone_Jobs';
+            $model = new ApplicationForm();
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
                 }
-                return true;
             } else {
-                return false;
+                $obj = new ApplicationDataProvider();
+                $model = $obj->setValues($model,$aidk);
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
             }
         } else {
-            $application = $model->getCloneData($aidk);
-            return $this->render('clone', ['data' => $application,
-                'model' => $model, 'loc_list' => $loc_list,
-                'que' => $que,
-                'primary_cat' => $primary_cat,
-                'int_list' => $int_list,
-                'industry' => $industry,
-                'process' => $process,
-                'benefits' => $benefits,
-            ]);
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
