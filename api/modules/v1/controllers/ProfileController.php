@@ -85,18 +85,18 @@ class ProfileController extends ApiBaseController{
         if($candidate->is_available) {
             $result['availability'] = $candidate->is_available;
         }else{
-            $result['availability'] = NULL;
+            $result['availability'] = 5;
 
         }
 
         if($candidate->gender) {
             $result['gender'] = $candidate->gender;
         }else{
-            $result['gender'] = NULL;
+            $result['gender'] = 5;
         }
 
-        $result['experience_years'] = $basicDetails->getExperience()[0] . ' Years';
-        $result['experience_months'] = $basicDetails->getExperience()[1] . ' Months';
+        $result['experience_years'] = $basicDetails->getExperience()[0];
+        $result['experience_months'] = $basicDetails->getExperience()[1];
 
         $result['user_skills'] = $basicDetails->getUserSkills();
         $result['user_languages'] = $basicDetails->getUserLanguages();
