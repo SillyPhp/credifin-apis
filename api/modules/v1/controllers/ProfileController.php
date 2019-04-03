@@ -61,9 +61,11 @@ class ProfileController extends ApiBaseController{
         $result['profile_picture'] = $basicDetails->getProfilePicture();
 
         if(!($basicDetails->getCurrentCity() == "")){
-            $result['current_location'] = $basicDetails->getCurrentCity()["city_name"] . ", " . $basicDetails->getCurrentCity()["state_name"];
+            $result['current_city'] = $basicDetails->getCurrentCity()["city_name"];
+            $result['current_state'] = $basicDetails->getCurrentCity()["state_name"];
         }else{
-            $result['current_location'] = NULL;
+            $result['current_city'] = NULL;
+            $result['current_state'] = NULL;
         }
 
         if(!($basicDetails->getCurrentCategory() == "")){
@@ -80,46 +82,21 @@ class ProfileController extends ApiBaseController{
         $result['linkedin'] = $candidate->linkedin;
         $result['google'] = $candidate->google;
 
-        switch($candidate->is_available){
-            case 1:
-                $result['availability'] = 'Available';
-                break;
-            case 2:
-                $result['availability'] = 'Open';
-                break;
-            case 3:
-                $result['availability'] = 'Actively Looking';
-                break;
-            case 4:
-                $result['availability'] = 'Exploring Possibilites';
-                break;
-            case 0:
-                $result['availability'] = 'Not Available';
-                break;
-            default:
-                $result['availability'] = NULL;
-                break;
+        if($candidate->is_available) {
+            $result['availability'] = $candidate->is_available;
+        }else{
+            $result['availability'] = NULL;
+
         }
 
-        switch($candidate->gender){
-            case 1:
-                $result['gender'] = 'Male';
-                break;
-            case 2:
-                $result['gender'] = 'Female';
-                break;
-            case 3:
-                $result['gender'] = 'Transgender';
-                break;
-            case 4:
-                $result['gender'] = 'Rather not to say';
-                break;
-            default:
-                $result['gender'] = NULL;
-                break;
+        if($candidate->gender) {
+            $result['gender'] = $candidate->gender;
+        }else{
+            $result['gender'] = NULL;
         }
 
-        $result['experience'] = $basicDetails->getExperience()[0] . ' Years '. $basicDetails->getExperience()[1] . ' Months';
+        $result['experience_years'] = $basicDetails->getExperience()[0] . ' Years';
+        $result['experience_months'] = $basicDetails->getExperience()[1] . ' Months';
 
         $result['user_skills'] = $basicDetails->getUserSkills();
         $result['user_languages'] = $basicDetails->getUserLanguages();
