@@ -21,9 +21,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
                 <span class="caption-subject font-red bold uppercase">
-                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'): ?>
+                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                         Job Application
-                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'): ?>
+                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                         Internship Application
                     <?php endif; ?>
                     <span class="step-title"> Step 1 of 4</span>
@@ -56,9 +56,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span class="number"> 2 </span><br/>
                                 <span class="desc">
                                     <i class="fa fa-check"></i>
-                                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'): ?>
+                                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                                         Job Description
-                                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'): ?>
+                                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                                         Internship Description
                                     <?php endif; ?>
                                 </span>
@@ -93,14 +93,14 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
                             <?php
-                            if ($type == 'Jobs'||$type=='Clone_Jobs'):
+                            if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'):
                                 echo $this->render('/widgets/employer-applications/basic-job-details', [
                                 'form'=>$form,
                                 'model'=>$model,
                                 'primary_cat'=>$primary_cat,
                                 'industry'=>$industry,
                             ]);
-                            elseif ($type == 'Internships'||$type=='Clone_Internships'):
+                            elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
@@ -1566,13 +1566,17 @@ function genrate_session_token() {
     }
 }
 genrate_session_token();
+if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
+    {
 $("#primaryfield").prop("disabled", false);          
-$("#title").prop("disabled", false); 
+$("#title").prop("disabled", false);   
+$("#designations").prop("disabled", false);   
+$("#industry").prop("disabled", false);   
+    }
 var data_before = null;
 var checked = null;
 var array = [];
 var prime_id = null;
-$("#title").prop("disabled", false);
 $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
@@ -1580,13 +1584,13 @@ $('#primaryfield').on('change',function()
       $('#title').typeahead('destroy');
       load_job_titles(prime_id);
    });
-if (doc_type=='Jobs'||doc_type=='Clone_Jobs')
+if (doc_type=='Jobs'||doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs')
     {
         var preview_url = '/account/jobs/preview';
         var titles_url = '/account/categories-list/load-titles?id=';
         var redirect_url = '/account/jobs/dashboard';
     }
-else if(doc_type=="Internships"||doc_type=='Clone_Internships')
+else if(doc_type=="Internships"||doc_type=='Clone_Internships'||doc_type=='Edit_Internships')
     {
         var preview_url = '/account/internships/preview';
         var titles_url = '/account/categories-list/load-titles?type=Internships&id=';
@@ -1597,7 +1601,10 @@ if(doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
     {
         load_job_titles('$model->primaryfield');
     }
-
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships')
+    {
+        work_from_home('$model->type');
+    }
 function load_job_titles(prime_id)
 {
 var categories = new Bloodhound({
@@ -1652,7 +1659,10 @@ function validateSelection() {
  $('#type').on('change',function()
   {
    var job_type_str = $(this).val();
-   if(job_type_str == "Work From Home")  
+   work_from_home(job_type_str);
+     });
+function work_from_home(job_type_str) {
+  if(job_type_str == "Work From Home")  
         {
         $('.placement_location_hide').hide();
         }
@@ -1660,7 +1670,7 @@ function validateSelection() {
      { 
        $('.placement_location_hide').show();
          }
-     });  
+}
  function ChildFunction()
      {
        
@@ -2265,11 +2275,11 @@ function get_preview(session_tok) {
                          data:data, 
                          method:'post',
                          success: function(data) {
-                           if (doc_type=='Jobs'||doc_type=='Clone_Jobs')
+                           if (doc_type=='Jobs'||doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs')
                            {
                              $('.button-preview').attr('href','/jobs/job-preview?eipdk='+session_tok+'');
                            }
-                       else if(doc_type=="Internships"||doc_type=='Clone_Internships')
+                       else if(doc_type=="Internships"||doc_type=='Clone_Internships'||doc_type=='Edit_Internships')
                        {
                         $('.button-preview').attr('href','/internships/internship-preview?eipdk='+session_tok+'');
                        }

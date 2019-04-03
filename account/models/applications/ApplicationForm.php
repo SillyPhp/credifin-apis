@@ -591,7 +591,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedEdu($e_id, $cat_id)
+    private function  assignedEdu($e_id, $cat_id)
     {
         $asignedEduModel = new AssignedEducationalRequirements();
         $utilitiesModel = new Utilities();
@@ -794,14 +794,17 @@ class ApplicationForm extends Model
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
+                $b->andWhere(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
             ->joinWith(['applicationSkills g' => function ($b) {
+                $b->andWhere(['g.is_deleted' => 0]);
                 $b->joinWith(['skillEnc h'], false);
                 $b->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
             }])
             ->joinWith(['applicationJobDescriptions i' => function ($b) {
+                $b->andWhere(['i.is_deleted' => 0]);
                 $b->joinWith(['jobDescriptionEnc j'], false);
                 $b->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])

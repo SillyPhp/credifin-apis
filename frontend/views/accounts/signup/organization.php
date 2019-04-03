@@ -55,7 +55,7 @@ $form = ActiveForm::begin([
             <?=
             $form->field($model, 'organization_business_activity')->dropDownList(
                 $business_activities, [
-                'prompt' => Yii::t('frontend', 'Business Activity'),
+                'prompt' => Yii::t('frontend', 'Select Business Activity'),
             ])->label(false);
             ?>
         </div>

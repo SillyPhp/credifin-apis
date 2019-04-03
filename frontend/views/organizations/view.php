@@ -71,6 +71,7 @@ if ($organization['cover_image']) {
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
                         <li><a data-toggle="tab" href="#tab4">Locations</a></li>
+                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -340,6 +341,23 @@ if ($organization['cover_image']) {
                         </div>
                     </div>
                 </div>
+                <div id="menu4" class="tab-pane fade">
+                    <div class="row">
+                        <div class="address-division">
+                            <div class="heading-style">
+                                Empower Youth Reviews
+                                <div class="pull-right">
+                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write Review</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div id="org-reviews"></div>
+                            <div class="viewbtn">
+                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         </div>
@@ -423,7 +441,27 @@ echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => $username
 ]);
+echo $this->render('/widgets/mustache/organization-reviews',[
+    'org_slug' => $organization['slug']
+]);
 $this->registerCss('
+.write-review{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #00a0e3;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+}
+.write-review:hover{
+    background-color: #00a0e3;
+    color: #fff;
+}
 /*----jobs and internships----*/
 .internships-block{
     padding-top:30px;

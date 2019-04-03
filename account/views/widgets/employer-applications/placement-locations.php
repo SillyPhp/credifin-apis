@@ -90,7 +90,7 @@ function placement_location_positions(thisObj,positions) {
         hidePositionBox(thisObj);
    } 
 }
-if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
     {
         var positions = $model->positions;
         $.each($('[name="placement_locations[]"]:checked'),function(i,v) {

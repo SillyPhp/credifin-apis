@@ -25,7 +25,7 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
+            <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','disabled' => true])->label(false); ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -144,7 +144,7 @@ use kartik\widgets\DatePicker;
         ?>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry'])->label(false); ?>
+        <?= $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false); ?>
     </div>
 </div>
 <div class="row">
@@ -229,7 +229,7 @@ $('input[name= "wage_type"]').on('change',function(){
    var sl_type = $(this).attr("data-title");
      wage_type(sl_type);
    })    
-if (doc_type=='Clone_Jobs') 
+if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') 
     {
         wage_type2('$model->wage_type');
     }
