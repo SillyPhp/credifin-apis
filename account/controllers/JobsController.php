@@ -248,9 +248,7 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $var = Yii::$app->request->post('n');
             $session = Yii::$app->session;
-
             $session->set($var, $model);
-
             return $var;
         } else {
             return false;
@@ -258,30 +256,44 @@ class JobsController extends Controller
     }
 
     public function actionEdit($aidk)
-    { // this is in progress will update soon
-        $model = new JobApplicationFormEdit();
-        $object = new JobApplicationForm();
-        if ($model->load(Yii::$app->request->post())) {
-            return json_encode($model->updateValues($aidk));
-
+    {
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Edit_Jobs';
+            $model = new ApplicationForm();
+            $obj = new ApplicationDataProvider();
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                $session_token = Yii::$app->request->post('n');
+                if ($obj->update($model,$aidk,$type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $model = $obj->setValues($model,$aidk);
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
         } else {
-            $application = $object->getCloneData($aidk);
-            $questions_list = $object->getQuestionnnaireList();
-            $p_list = $object->getOrganizationLocationOffice();
-            $l_list = $object->getOrganizationLocationInterview();
-            $primaryfields = $object->getPrimaryFields();
-            $industries = $object->getndustry();
-            $interview_process = $object->getInterviewProcess();
-            $benefits = $object->getBenefits();
-            return $this->render('application_edit', ['data' => $application,
-                'model' => $model, 'location_list' => $p_list,
-                'questions_list' => $questions_list,
-                'primaryfields' => $primaryfields,
-                'inter_loc' => $l_list,
-                'industries' => $industries,
-                'process_list' => $interview_process,
-                'benefit' => $benefits,
-            ]);
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 

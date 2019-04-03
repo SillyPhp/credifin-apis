@@ -86,7 +86,7 @@ var ques_len = 0;
 var stage_len = 0;
 var process_len = 0;
  $('.selectBox').prop("disabled", true); 
- if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
     {
         $('.selectBox').html('<option value="">Choose Stage</option>');
         fetch_hiring_process2('$model->interview_process');

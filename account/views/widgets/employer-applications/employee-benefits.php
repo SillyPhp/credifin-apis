@@ -130,7 +130,7 @@ function benefits_selection(thisObj)
    }  
 }
 
-if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
     {
         hide_show_benefits('$model->benefit_selection');
         $.each($('[name="emp_benefit[]"]'),function(e) {
