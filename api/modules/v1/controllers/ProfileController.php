@@ -50,6 +50,7 @@ class ProfileController extends ApiBaseController{
         $result['first_name'] = $candidate->first_name;
         $result['last_name'] = $candidate->last_name;
         $result['username'] = $candidate->username;
+        $result['color'] = $candidate->initials_color;
 
         if(!($basicDetails->getJobFunction() == "")){
             $result['title'] = $basicDetails->getJobFunction()["name"];
@@ -96,7 +97,7 @@ class ProfileController extends ApiBaseController{
                 $result['availability'] = 'Not Available';
                 break;
             default:
-                $result['availability'] = 'NA';
+                $result['availability'] = NULL;
                 break;
         }
 
@@ -114,7 +115,7 @@ class ProfileController extends ApiBaseController{
                 $result['gender'] = 'Rather not to say';
                 break;
             default:
-                $result['availability'] = 'NA';
+                $result['gender'] = NULL;
                 break;
         }
 

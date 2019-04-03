@@ -32,7 +32,7 @@ use frontend\models\JobApplied;
 class TestController extends ApiBaseController {
 
     public function behaviors(){
-//        $behaviors = parent::behaviors();
+        $behaviors = parent::behaviors();
 //        $behaviors['authenticator'] = [
 //            'class' => HttpBearerAuth::className()
 //        ];
