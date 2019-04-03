@@ -16,6 +16,8 @@ namespace common\models;
  * @property string $last_updated_on On which date Access Token information was updated
  * @property string $source Source
  * @property int $is_deleted Is Access Token Deleted (0 As False, 1 As True)
+ *
+ * @property Users $userEnc
  */
 class UserAccessTokens extends \yii\db\ActiveRecord
 {
@@ -37,11 +39,19 @@ class UserAccessTokens extends \yii\db\ActiveRecord
             [['access_token_expiration', 'refresh_token_expiration', 'created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['access_token_enc_id', 'access_token', 'refresh_token', 'user_enc_id'], 'string', 'max' => 100],
-            [['source'], 'string', 'max' => 10],
+            [['source'], 'string', 'max' => 50],
             [['refresh_token'], 'unique'],
             [['access_token'], 'unique'],
             [['access_token_enc_id'], 'unique'],
+            [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
         ];
     }
-    
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEnc()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 }
