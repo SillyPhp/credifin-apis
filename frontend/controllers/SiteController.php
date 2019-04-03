@@ -1109,7 +1109,8 @@ class SiteController extends Controller {
     }
 
     public function actionTestSitemap() {
-        return Yii::$app->sitemap->AddOrgUrls('http://ajay.eygb.me/jobs');
+//        return Yii::$app->sitemap->AddApplicationUrls();
+        return Yii::$app->sitemap->Generate();
     }
 
 }
