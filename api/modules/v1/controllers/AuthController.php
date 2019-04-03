@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use common\models\Usernames;
 use common\models\UserTypes;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
@@ -39,6 +40,8 @@ class AuthController extends ApiBaseController{
                     }else{
                         return $this->response(500);
                     }
+                }else{
+                    return $this->response(500);
                 }
             }
             return $this->response(409, $model->getErrors());
@@ -74,6 +77,12 @@ class AuthController extends ApiBaseController{
 
     private function newUser($model){
         $user = new Candidates();
+        $usernamesModel = new Usernames();
+        $usernamesModel->username = $model->username;
+        $usernamesModel->assigned_to = 1;
+        if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+            return false;
+        }
         $user->username = $model->username;
         $user->first_name = $model->first_name;
         $user->last_name = $model->last_name;
@@ -89,7 +98,7 @@ class AuthController extends ApiBaseController{
         if($user->save()){
             return $user;
         }
-        return $user->getErrors();
+        return false;
     }
 
     private function newToken($user_id, $source){
