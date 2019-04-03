@@ -95,8 +95,8 @@ class ProfileController extends ApiBaseController{
             $result['gender'] = NULL;
         }
 
-        $result['experience_years'] = $basicDetails->getExperience()[0] . ' Years';
-        $result['experience_months'] = $basicDetails->getExperience()[1] . ' Months';
+        $result['experience_years'] = $basicDetails->getExperience()[0];
+        $result['experience_months'] = $basicDetails->getExperience()[1];
 
         $result['user_skills'] = $basicDetails->getUserSkills();
         $result['user_languages'] = $basicDetails->getUserLanguages();
