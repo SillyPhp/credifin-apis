@@ -43,4 +43,5 @@ class UserAccessTokens extends \yii\db\ActiveRecord
             [['access_token_enc_id'], 'unique'],
         ];
     }
+    
 }
