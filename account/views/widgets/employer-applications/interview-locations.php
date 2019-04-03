@@ -78,7 +78,7 @@ function interview_checker(interview_len)
  $(document).on("click",'input[name="interviewcity[]"]', function() {
     interview_location_len_validation($(this));
 });
-if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
     {
         $.each($('[name="interviewcity[]"]'),function(e) {
           interview_location_len_validation($(this));

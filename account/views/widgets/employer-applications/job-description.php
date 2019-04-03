@@ -66,7 +66,7 @@ $(document).on('click','.drop-options span a', function(event){
                 quesn_count--
                 quesn_upt();
 	});
-if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
     {
         $.each($model->clone_desc,function(i,v) {
             drop_options(id="",v);

@@ -90,7 +90,7 @@ function drop_edu(id,qualification)
             }
         } 
     });
-if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships') 
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
     {
         $.each($model->clone_edu,function(i,v) {
             drop_edu(id="",v);
