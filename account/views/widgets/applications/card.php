@@ -16,6 +16,11 @@ if (!empty($total_applications)) {
                 <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
+                            <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>"
+                               target="_blank"
+                               class="j-edit">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </a>
                             <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'clone'); ?>"
                                target="_blank"
                                class="j-clone share_btn">
