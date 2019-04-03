@@ -131,7 +131,10 @@ $industries = Json::encode($industries);
                                                 data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
                                         <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span>
                                     </div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" data-type="select" id="industry_enc_id"></span> <span data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span></div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span
+                                                class="model" data-type="select" id="industry_enc_id"></span> <span
+                                                data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -148,6 +151,7 @@ $industries = Json::encode($industries);
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
                         <li><a data-toggle="tab" href="#tab4">Locations</a></li>
+                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -497,7 +501,20 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                 </div>
+                <div id="menu4" class="tab-pane fade">
+                    <div class="row">
+                        <div class="address-division">
+                            <div class="heading-style">Empower Youth Reviews</div>
+                            <div class="divider"></div>
+                            <div id="org-reviews"></div>
+                            <div class="viewbtn">
+                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
         </div>
         </div>
     </section>
@@ -560,6 +577,9 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 Pjax::end();
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/mustache/organization-reviews',[
+        'org_slug' => $organization['slug']
+]);
 $this->registerCss('
 /*----jobs and internships----*/
 .internships-block{
@@ -606,7 +626,7 @@ $this->registerCss('
 .uicon{
     text-align:center;
 }
-.uicon img{
+.uicon img, .uicon canvas{
     max-height:80px;
     max-width:80px;
 }

@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\OrganizationReviews;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -26,6 +25,7 @@ use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
 use frontend\models\applications\ApplicationCards;
+use common\models\OrganizationReviews;
 
 class OrganizationsController extends Controller
 {
@@ -654,4 +654,39 @@ class OrganizationsController extends Controller
             }
         }
     }
+    public function actionGetReviews($slug){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $reviews = $this->getReviews($slug, 3);
+        if ($reviews) {
+            $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'reviews' => $reviews
+            ];
+        } else {
+            $response = [
+                'status' => 201,
+            ];
+        }
+        return $response;
+    }
+
+    private function getReviews($slug, $limit){
+        $reviews = OrganizationReviews::find()
+            ->alias('a')
+            ->select(['show_user_details', 'a.review_enc_id','a.status', 'ROUND((job_security+growth+organization_culture+compensation+work+work_life+skill_development)/7) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'c.image user_logo', 'c.image_location user_logo_location', 'c.initials_color'])
+            ->where(['a.status' => 1])
+            ->joinWith(['organizationEnc b'=> function ($b) use ($slug){
+                $b->andWhere(['b.slug' => $slug]);
+            }], false)
+            ->joinWith(['createdBy c'], false)
+            ->joinWith(['categoryEnc d'], false)
+            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"'.Yii::$app->user->identity->user_enc_id.'") DESC, a.created_on DESC')])
+            ->limit($limit)
+            ->asArray()
+            ->all();
+
+        return $reviews;
+    }
+
 }
