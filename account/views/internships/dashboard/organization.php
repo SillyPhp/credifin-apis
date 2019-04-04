@@ -119,73 +119,10 @@ echo $this->render('/widgets/header/secondary-header', [
             </div>
         </div>
         <div class="col-lg-6 col-xs-12 col-sm-12">
-            <div class="portlet light">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?></span>
-                    </div>
-                    <?php
-                    if ($applied_applications['total'] > 10):
-                        ?>
-                        <div class="actions">
-                            <div class="dashboard-button">
-                                <a href="javascript:;" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mt-actions">
-                                <?php
-                                if (!empty($applied_applications)) { ?>
-                                    <?php foreach ($applied_applications['list'] as $candiates) { ?>
-                                        <div class="mt-action">
-                                            <div class="mt-action-img" style="width: auto">
-                                                <a href="/<?= $candiates['username'] ?>">
-                                                    <?php if (!empty($candiates['image_location']) && !empty($candiates['image'])) { ?>
-                                                        <?php $user_img = Yii::$app->params->upload_directories->users->image . $candiates['image_location'] . DIRECTORY_SEPARATOR . $candiates['image']; ?>
-                                                        <img src="<?= $user_img; ?>" width="50px" height="50" class="img-circle"/>
-
-                                                        <?php
-                                                    } else {
-                                                        ?>
-                                                        <canvas class="user-icon img-circle" name="<?= $candiates['first_name'] . ' ' . $candiates['last_name'] ?>" width="50" height="50" font="25px"></canvas>
-                                                    <?php }
-                                                    ?>
-                                                </a>
-
-                                            </div>
-                                            <div class="mt-action-body">
-                                                <div class="mt-action-row">
-                                                    <div class="mt-action-info ">
-                                                        <div class="mt-action-details ">
-                                                            <span class="mt-action-author"><a href="/site/candidate-profile"><?= $candiates['first_name'] . ' ' . $candiates['last_name']; ?></a></span>
-                                                            <p class="mt-action-desc">Applied For <?= $candiates['name']; ?></p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-action-buttons">
-                                                        <div class="btn-group btn-group-circle">
-                                                            <button type="button" data-key="<?= $candiates['applied_application_enc_id'] ?>" class="btn btn-outline green btn-sm approv_btn">Approve</button>
-                                                            <button type="button" data-key="<?= $candiates['applied_application_enc_id'] ?>" class="btn btn-outline red btn-sm reject_btn">Reject</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <?php
-                                    }
-                                } else {
-                                    ?>
-                                    <h3>No Applications To Display</h3>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <?php
+         echo $this->render('/widgets/applied-applications/users-card', [
+        'applied_applications' => $applied_applications,
+    ]); ?>
         </div>
     </div>
 
@@ -215,19 +152,6 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-$(document).on('click', '.approv_btn', function (e) {
-    e.preventDefault();
-    var data = $(this).attr('data-key');
-    $.ajax({
-        url: '/account/accept-application',
-        data: {data: data},
-        method: 'post',
-        beforeSend: function () {
-        },
-        success: function (data) {
-        }
-    });
-});
 $(document).on('click', '.remov_btn', function (e) {
     e.preventDefault();
 });

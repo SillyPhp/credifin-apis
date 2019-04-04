@@ -4,6 +4,7 @@ namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
+use account\models\applications\UserAppliedApplication;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\Cities;
 use common\models\DropResumeApplications;
@@ -999,6 +1000,7 @@ class JobsController extends Controller
     private function __organizationDashboard()
     {
         $coaching_category = new WidgetTutorials();
+        $userApplied = new UserAppliedApplication();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_jobs_stats"])
             ->asArray()
@@ -1018,7 +1020,7 @@ class JobsController extends Controller
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
             'interview_processes' => $this->__interviewProcess(4),
-            'applied_applications' => $this->__candidateApplications(10),
+            'applied_applications' => $userApplied->getUserDetails('Jobs',10),
             'viewed' => $viewed,
             'primary_fields' => $this->getCategories()
         ]);
