@@ -39,6 +39,16 @@ class ProcessApplicationsController extends Controller
                 ->groupBy(['a.applied_application_enc_id'])
                 ->asArray()
                 ->all();
+            $application_name = EmployerApplications::find()
+                                ->alias('a')
+                                ->select(['c.name job_title'])
+                                ->where(['a.application_enc_id'=>$aidk])
+                                ->joinWith(['title b'=>function($b)
+                                {
+                                  $b->joinWith(['categoryEnc c'],false,'INNER JOIN');
+                                }],false,'INNER JOIN')
+                                ->asArray()
+                                ->one();
             $question = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->distinct()
@@ -53,6 +63,7 @@ class ProcessApplicationsController extends Controller
             return $this->render('index', [
                 'fields' => $applied_users,
                 'que' => $question,
+                'application_name' => $application_name,
             ]);
         } else {
             $applied_user = AppliedApplications::find()
