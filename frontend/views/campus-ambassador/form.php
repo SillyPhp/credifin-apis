@@ -64,7 +64,7 @@ $form = ActiveForm::begin([
     <div class="row">
         <div class="col-md-6">
             <?=
-            $form->field($applicationFormModel, 'qualification_enc_id')->dropDownList(
+            $form->field($applicationFormModel, 'qualification_id')->dropDownList(
                 $qualifications, [
                 'prompt' => 'Select Qualification',
             ])->label(Yii::t('frontend', 'Qualification'));
