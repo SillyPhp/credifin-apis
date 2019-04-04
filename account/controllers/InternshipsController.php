@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
+use account\models\applications\UserAppliedApplication;
 use common\models\DropResumeApplications;
 use Yii;
 use yii\web\Controller;
@@ -915,6 +916,7 @@ class InternshipsController extends Controller
     {
 
         $coaching_category = new WidgetTutorials();
+        $userApplied = new UserAppliedApplication();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_internships_stats "])
             ->asArray()
@@ -929,12 +931,11 @@ class InternshipsController extends Controller
         } else {
             $viewed = 1;
         }
-
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
-            'applied_applications' => $this->__candidateApplications(10),
+            'applied_applications' => $userApplied->getUserDetails('Internships',10),
             'primary_fields' => $this->getCategories(),
             'viewed' => $viewed,
         ]);
@@ -1027,6 +1028,7 @@ class InternshipsController extends Controller
             ->where(['a.status' => 'Pending', 'a.status' => 'Incomplete'])
             ->having(['active' => 0])
             ->groupBy('a.applied_application_enc_id')
+            ->orderBy(['a.created_on'=>SORT_DESC])
             ->asArray()
             ->all();
 
