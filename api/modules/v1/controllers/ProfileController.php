@@ -57,9 +57,12 @@ class ProfileController extends ApiBaseController{
         }else{
             $result['title'] = NULL;
         }
-
-        $result['profile_picture'] = $basicDetails->getProfilePicture();
-
+        if(!($basicDetails->getProfilePicture() == "")){
+            $result['profile_picture'] = $basicDetails->getProfilePicture();
+        }else{
+            $result['profile_picture'] = NULL;
+        }
+            
         if(!($basicDetails->getCurrentCity() == "")){
             $result['current_city'] = $basicDetails->getCurrentCity()["city_name"];
             $result['current_state'] = $basicDetails->getCurrentCity()["state_name"];
