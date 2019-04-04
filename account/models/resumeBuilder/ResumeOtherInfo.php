@@ -10,7 +10,7 @@ namespace account\models\resumeBuilder;
 
 use yii\base\Model;
 
-class ResumeOtherInfo extends \yii\db\ActiveRecord
+class ResumeOtherInfo extends Model
 {
     public $dob;
     public $preference;

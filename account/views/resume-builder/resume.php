@@ -299,7 +299,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                     <?php
                                     $fforms = ActiveForm::begin([
                                         'id' => 'add-education-form',
-                                        'action' => '/users/add-qualification',
                                         'fieldConfig' => [
                                             'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
                                         ],
@@ -353,7 +352,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <?= Html::Button('Submit', ['class' => 'btn btn-success  eduSave']); ?>
+                                        <?= Html::submitButton('Submit', ['class' => 'btn btn-success  eduSave']); ?>
                                         <?= Html::Button('Update', ['class' => 'btn btn-success  eduUpdate']); ?>
                                         <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                     </div>
@@ -429,7 +428,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         <?php
                                         $fform = ActiveForm::begin([
                                             'id' => 'add-experience-form',
-                                            'action' => '/users/add-experience',
                                             'fieldConfig' => [
                                                 'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
                                             ],
@@ -447,6 +445,11 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                                 </div>
 
                                                 <div class="col-md-6">
+                                                    <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
                                                     <?= $fform->field($addExperienceForm, 'location')->textInput(['id' => 'cities', 'placeholder' => 'Location', 'autocomplete' => 'off'])->label(false); ?>
                                                     <?= $fform->field($addExperienceForm, 'city_id', ['template' => '{input}'])->hiddenInput(['id' => 'city_id_exp'])->label(false); ?>
                                                 </div>
@@ -514,7 +517,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <?= Html::Button('Submit', ['class' => 'btn btn-primary  expSave']); ?>
+                                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary  expSave']); ?>
                                             <?= Html::Button('Update', ['class' => 'btn btn-success  expUpdate']); ?>
                                             <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                         </div>
@@ -916,7 +919,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
 
                 <div class="row bg-lighter shadow round  working">
 
-                    <div class="col-md-8 col-sm-8">
+                    <div class="col-md-12 col-sm-12">
                         <h4>
                             <icon class="fa fa-graduation-cap"></icon>
                             Skills
@@ -1026,7 +1029,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
 
 
                 <div class="row bg-lighter shadow round working">
-                    <div class="col-md-8 col-sm-8">
+                    <div class="col-md-12 col-sm-12">
                         <h4>
                             <icon class="fa fa-graduation-cap"></icon>
                             Achievements
@@ -1072,7 +1075,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                 </div>
 
                 <div class="row bg-lighter shadow round working">
-                    <div class="col-md-8 col-sm-8">
+                    <div class="col-md-12 col-sm-12">
                         <h4>
                             <icon class="fa fa-graduation-cap"></icon>
                             Hobbies
@@ -1115,7 +1118,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                 </div>
 
                 <div class="row bg-lighter shadow round working">
-                    <div class="col-md-8 col-sm-8">
+                    <div class="col-md-12 col-sm-12">
                         <h4>
                             <icon class="fa fa-graduation-cap"></icon>
                             Interests
@@ -1407,35 +1410,43 @@ $(document).on('submit', '#form-contact-info', function (event) {
         }
     }) ;
     
-    $(document).on('click','.expSave',function(e){
+    $(document).on('submit','#add-experience-form',function(e){
     e.preventDefault();
         var title = $('#addexperienceform-title').val();
         var company = $('#addexperienceform-company').val();
         var city = $('#city_id_exp').val();
        
         var from = $('#addexperienceform-exp_from').val();
-        var to = $('#addexperienceform-exp_to').val();
         if($('#exp_present').prop("checked")){
                 var checkbox = 1;
+                $('#addexperienceform-exp_to').val('');
             }else{
                 var checkbox = 0;
+                if($('#addexperienceform-exp_to').val() == ''){
+                     toastr.error('There is an error.Please try again', 'error');
+                     return false;
+                }else{
+                    var to = $('#addexperienceform-exp_to').val();
+                }
             }
         var description = $('#addexperienceform-description').val();
         $.ajax({
            url: '/account/resume-builder/experience',
            method: 'POST',
            data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description},
+            beforeSend:function(){     
+                      $('.loader-aj-main').fadeIn(1000);  
+                },
            success : function(response){
-                
+               $('.loader-aj-main').fadeOut(1000);
                var res = JSON.parse(response);
                if(res.status == 200)
                {
                    toastr.success(res.message, res.title);
                    $('#add-experience-modal').modal('toggle');
                    $.pjax.reload({container: '#pjax_experience', async: false});
-               }
-               else {
-                   toastr.error('There is an error.Please try again', 'error');
+               } else {
+                   toastr.error('something went wrong.Try Again', 'error');
                }
             }
         });
@@ -1729,7 +1740,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
         });
         
         
-        $(document).on('click','.eduSave',function(e)
+        $(document).on('submit','#add-education-form',function(e)
         {   
         e.preventDefault();
         var data = $('#add-education-form').serialize();
@@ -1737,13 +1748,17 @@ $(document).on('submit', '#form-contact-info', function (event) {
             url: '/account/resume-builder/education',
             method : 'POST',
             data : data,
+            beforeSend:function(){     
+                      $('.loader-aj-main').fadeIn(1000);
+            },
             success : function(res)
             {
+                $('.loader-aj-main').fadeOut(1000);
                  if(res == true){
                     $('#add-education-modal').modal('toggle');
                     $.pjax.reload({container: '#pjax_qualification', async: false});
                 }else{
-                     toastr.error('An error occured.try again', 'error');
+                     toastr.error('something went wrong.Try Again', 'error');
                 }
             } 
             });
@@ -1763,8 +1778,12 @@ $(document).on('submit', '#form-contact-info', function (event) {
             url: '/account/resume-builder/update-education',
             method : 'POST',
             data : {school:school,degree:degree,field:field,from:from,to:to,id:id},
+            beforeSend:function(){     
+                      $('.loader-aj-main').fadeIn(1000);
+            },
             success : function(res)
             {
+                $('.loader-aj-main').fadeOut(1000);
                  if(res==true){
                     $('#add-education-modal').modal('toggle');
                     $.pjax.reload({container: '#pjax_qualification', async: false});
@@ -1784,11 +1803,17 @@ $(document).on('submit', '#form-contact-info', function (event) {
             var company = $('#addexperienceform-company').val();
             var city = $('#city_id_exp').val();
             var from = $('#addexperienceform-exp_from').val();
-            var to = $('#addexperienceform-exp_to').val();
             if($('#exp_present').prop("checked")){
                 var checkbox = 1;
+                $('#addexperienceform-exp_to').val('');
             }else{
                 var checkbox = 0;
+                if($('#addexperienceform-exp_to').val() == ''){
+                     toastr.error('There is an error.Please try again', 'error');
+                     return false;
+                }else{
+                    var to = $('#addexperienceform-exp_to').val();
+                }
             }
             var description = $('#addexperienceform-description').val();
             
@@ -1796,11 +1821,17 @@ $(document).on('submit', '#form-contact-info', function (event) {
             url: '/account/resume-builder/update-experience',
             method : 'POST',
             data: {id:id,title:title,company:company,city:city,from:from,to:to,check:checkbox,description:description},
+            beforeSend:function(){     
+                      $('.loader-aj-main').fadeIn(1000);
+            },
             success:function(res)
             {
+                $('.loader-aj-main').fadeOut(1000);
                 if(res==true){
                     $('#add-experience-modal').modal('toggle');
                     $.pjax.reload({container: '#pjax_experience', async: false});
+                }else {
+                  toastr.error('An error occured.try again', 'error');  
                 }
             }
             });
@@ -1828,7 +1859,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
                 $('#addqualificationform-qualification_from').val(obj.from_date);
                 $('#addqualificationform-qualification_to').val(obj.to_date);
                 $('.eduUpdate').attr('id',obj.education_enc_id);         
-                $('.eduSave').hide();
+                $('.eduSave').remove();
                 $('.eduUpdate').show();
                 $('.eduUpdate').attr('id',obj.education_enc_id);
                 $('#eduTitle').html('Edit Qualification');
@@ -1919,7 +1950,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
                           $('.experience').hide();
                       }
                       $('#addexperienceform-description').val(obj.description );
-                      $('.expSave').hide();
+                      $('.expSave').remove();
                       $('.expUpdate').show();
                       $('.expUpdate').attr('id',obj.experience_enc_id);
                       $('#expTitle').html('Edit Experience');
@@ -1938,7 +1969,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
             $('#addqualificationform-qualification_from').val('');
             $('#addqualificationform-qualification_to').val('');
             $('.eduUpdate').hide();
-            $('.eduSave').show();
+            $('#add-education-form .modal-footer').html('<button type="submit" class="btn btn-success eduSave">Submit</button><button type="button" class="btn btn-success  eduUpdate">Update</button><button type="button" class="btn default " data-dismiss="modal">Close</button>');
             $('#eduTitle').html('Add Education');
         });
         
@@ -1959,7 +1990,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
             }
              $('#addexperienceform-description').val('');
              $('.expUpdate').hide();
-             $('.expSave').show();
+             $('#add-experience-form .modal-footer').html('<button type="submit" class="btn btn-primary  expSave">Submit</button><button type="button" class="btn btn-success  expUpdate" style="display: none;">Update</button><button type="button" class="btn default " data-dismiss="modal">Close</button>');
             $('#expTitle').html('Add Experience');
             
         });
@@ -2088,7 +2119,6 @@ $('#cities').typeahead(null, {
     $('.Typeahead-spinner').hide();
   }).on('typeahead:selected typeahead:completed',function(e,datum)
       {
-        console.log(datum.id);
         $('#city_id_exp').val(datum.id);
      });
 
@@ -2138,7 +2168,7 @@ ul.widget-todo-list li label.line-through span {
     border-radius: 10px;
 }
 .working{
-    padding: 15px 0px;
+    padding: 20px 0px !important;
     margin-bottom: 15px;
     margin-top:8px;
     background-color:#FFF;
@@ -2270,6 +2300,50 @@ ul.widget-todo-list li label.line-through span {
 .twitter-typeahead{
     width:100%;
 }
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    top:1px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
+
 .rounded-experience-period{
     width: 150px;
     height: 150px;
@@ -2625,5 +2699,4 @@ ul.tags.skill_tag_list {
 /*-- skills tags input css starts --*/
 ");
 $this->registerCssFile("@root/assets/themes/jobhunt/css/icons.css");
-//$this->registerCssFile("@root/assets/themes/jobhunt/css/style.css");
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

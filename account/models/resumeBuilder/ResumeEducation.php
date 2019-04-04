@@ -10,7 +10,7 @@ namespace account\models\resumeBuilder;
 
 use yii\base\Model;
 
-class ResumeEducation extends \yii\db\ActiveRecord
+class ResumeEducation extends Model
 {
     public $education_type;
     public $marks;

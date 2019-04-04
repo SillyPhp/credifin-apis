@@ -11,7 +11,7 @@ namespace account\models\resumeBuilder;
 
 use yii\base\Model;
 
-class ResumeAboutMe extends \yii\db\ActiveRecord
+class ResumeAboutMe extends Model
 {
     public $about_me;
     

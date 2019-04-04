@@ -8,23 +8,23 @@
 
 namespace account\models\resumeBuilder;
 
-use common\models\UserHobbies;
+use common\models\UserInterests;
 use common\models\Utilities;
 use Yii;
 use yii\base\Model;
 
-class ResumeHobbies extends Model
+class ResumeInterests extends Model
 {
-    public $hobbies;
+    public $interests;
     
      public function rules()
     {
         return [
-        [['hobbies'],'required'],
+        [['interests'],'required'],
     ];
     }
 
-    public function hobby_add(){
+    public function interest_add(){
 
          if (!$this->validate()) {
             return $this->getErrors();
@@ -32,14 +32,14 @@ class ResumeHobbies extends Model
 
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $hobby = new UserHobbies();
-        $hobby->user_hobby_enc_id = $utilitiesModel->encrypt();
-        $hobby->user_enc_id = Yii::$app->user->identity->user_enc_id;
-        $hobby->hobby = $this->hobbies;
-        $hobby->created_on = date('Y-m-d h:i:s');
-        $hobby->created_by = Yii::$app->user->identity->user_enc_id;
-        if(!$hobby->validate() || !$hobby->save()){
-            return $hobby->getErrors();
+        $interest = new UserInterests();
+        $interest->user_interest_enc_id = $utilitiesModel->encrypt();
+        $interest->user_enc_id = Yii::$app->user->identity->user_enc_id;
+        $interest->interest = $this->interests;
+        $interest->created_on = date('Y-m-d h:i:s');
+        $interest->created_by = Yii::$app->user->identity->user_enc_id;
+        if(!$interest->validate() || !$interest->save()){
+            return $interest->getErrors();
         }else{
             return true;
         }

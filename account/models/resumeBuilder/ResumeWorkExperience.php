@@ -10,7 +10,7 @@ namespace account\models\resumeBuilder;
 
 use yii\base\Model;
 
-class ResumeWorkExperience extends \yii\db\ActiveRecord
+class ResumeWorkExperience extends Model
 {
     public $organisation;
     public $designation;

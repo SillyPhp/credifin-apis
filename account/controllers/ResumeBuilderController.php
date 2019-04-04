@@ -11,6 +11,7 @@ use account\models\resumeBuilder\ResumeCertificates;
 use account\models\resumeBuilder\ResumeContactInfo;
 use account\models\resumeBuilder\ResumeEducation;
 use account\models\resumeBuilder\ResumeHobbies;
+use account\models\resumeBuilder\ResumeInterests;
 use account\models\resumeBuilder\ResumeOtherInfo;
 use account\models\resumeBuilder\ResumeProfilePic;
 use account\models\resumeBuilder\ResumeProject;
@@ -39,6 +40,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
+use kartik\mpdf\Pdf;
 
 
 class ResumeBuilderController extends Controller
@@ -182,34 +184,6 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
-//    public function actionSkillrmv()
-//    {
-//        if (Yii::$app->request->isAjax) {
-//
-//            $id = Yii::$app->request->post('id');
-//
-//            $task = UserSkills::findOne([
-//                'user_skill_enc_id' => $id,
-//                'is_deleted' => 0,
-//            ]);
-//
-//            $task->is_deleted = 1;
-//            if ($task->update()) {
-//                return $response = [
-//                    'status' => 200,
-//                    'title' => 'Success',
-//                    'message' => 'Skill has been deleted.',
-//                ];
-//            } else {
-//                return $response = [
-//                    'status' => 201,
-//                    'title' => 'Error',
-//                    'message' => 'An error has occurred. Please try again.',
-//                ];
-//            }
-//
-//        }
-//    }
 
     public function actionChangeInformation()
     {
@@ -339,7 +313,7 @@ class ResumeBuilderController extends Controller
             $obj->description = $description;
 
             if (!$obj->save()) {
-                print_r($obj->getErrors());
+                return json_encode($obj->getErrors());
             } else {
                 return json_encode($response = [
                     'status' => 200,
@@ -489,8 +463,9 @@ class ResumeBuilderController extends Controller
 
         if (Yii::$app->request->isAjax) {
 
-            $achievement_name = Yii::$app->request->post('achievement_name');
 
+            $achievement_name = Yii::$app->request->post('achievement_name');
+            $model = new ResumeAchievments();
             $already_exits = UserAchievements::findOne([
                 'user_enc_id'=>Yii::$app->user->identity->user_enc_id,
                'achievement'=>$achievement_name,
@@ -504,20 +479,14 @@ class ResumeBuilderController extends Controller
                     'message' => 'Achievement already exists.',
                 ]);
             }else {
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $obj = new UserAchievements();
-                $obj->user_achievement_enc_id = $utilitiesModel->encrypt();
-                $obj->user_enc_id = Yii::$app->user->identity->user_enc_id;
-                $obj->achievement = $achievement_name;
-                $obj->created_on = date('Y-m-d h:i:s');
-                $obj->created_by = Yii::$app->user->identity->user_enc_id;
 
-                if (!$obj->save()) {
+                $model->achievments = $achievement_name;
+
+                if (!$model->add()) {
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
-                        'message' => 'There is an error.please try again later',
+                        'message' => 'There is an error.please try again.',
                     ]);
                 } else {
                     return json_encode($response = [
@@ -536,7 +505,7 @@ class ResumeBuilderController extends Controller
         if (Yii::$app->request->isAjax) {
 
             $hobby_name = Yii::$app->request->post('hobby_name');
-
+            $model = new ResumeHobbies();
             $already_exits = UserHobbies::findOne([
                 'user_enc_id'=>Yii::$app->user->identity->user_enc_id,
                 'hobby'=>$hobby_name,
@@ -550,20 +519,13 @@ class ResumeBuilderController extends Controller
                     'message' => 'Hobby already exists.',
                 ]);
             }else {
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $obj = new UserHobbies();
-                $obj->user_hobby_enc_id = $utilitiesModel->encrypt();
-                $obj->user_enc_id = Yii::$app->user->identity->user_enc_id;
-                $obj->hobby = $hobby_name;
-                $obj->created_on = date('Y-m-d h:i:s');
-                $obj->created_by = Yii::$app->user->identity->user_enc_id;
+                $model->hobbies = $hobby_name;
 
-                if (!$obj->save()) {
+                if (!$model->hobby_add()) {
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
-                        'message' => 'There is an error.please try again later',
+                        'message' => 'There is an error.please try again.',
                     ]);
                 } else {
                     return json_encode($response = [
@@ -582,7 +544,7 @@ class ResumeBuilderController extends Controller
         if (Yii::$app->request->isAjax) {
 
             $interest_name = Yii::$app->request->post('interest_name');
-
+            $model = new ResumeInterests();
             $already_exits = UserInterests::findOne([
                 'user_enc_id'=>Yii::$app->user->identity->user_enc_id,
                 'interest'=>$interest_name,
@@ -596,20 +558,13 @@ class ResumeBuilderController extends Controller
                     'message' => 'interest already exists.',
                 ]);
             }else {
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $obj = new UserInterests();
-                $obj->user_interest_enc_id = $utilitiesModel->encrypt();
-                $obj->user_enc_id = Yii::$app->user->identity->user_enc_id;
-                $obj->interest = $interest_name;
-                $obj->created_on = date('Y-m-d h:i:s');
-                $obj->created_by = Yii::$app->user->identity->user_enc_id;
+                $model->interests = $interest_name;
 
-                if (!$obj->save()) {
+                if (!$model->interest_add()) {
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
-                        'message' => 'There is an error.please try again later',
+                        'message' => 'There is an error.please try again.',
                     ]);
                 } else {
                     return json_encode($response = [
@@ -629,22 +584,10 @@ class ResumeBuilderController extends Controller
         $model = new AddQualificationForm();
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $obj = new UserEducation();
-            $obj->education_enc_id = $utilitiesModel->encrypt();
-            $obj->user_enc_id = Yii::$app->user->identity->user_enc_id;
-            $obj->institute = $model->school;
-            $obj->degree = $model->degree;
-            $obj->field = $model->field;
-            $obj->from_date = $model->qualification_from;
-            $obj->to_date = $model->qualification_to;
-            $obj->created_on = date('Y-m-d h:i:s');
-            $obj->created_by = Yii::$app->user->identity->user_enc_id;
-
-            if (!$obj->save()) {
-                print_r($obj->getErrors());
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+            if (!$model->save()) {
+                print_r($model->getErrors());
             } else {
                 return true;
             }
@@ -774,9 +717,8 @@ class ResumeBuilderController extends Controller
             $model->to_date = $to;
             $model->is_current = $check;
             $model->description = $description;
-            $model->update();
 
-            if ($model) {
+            if ($model->update()) {
                 return true;
             } else {
                 return false;
@@ -836,7 +778,7 @@ class ResumeBuilderController extends Controller
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
-                        'message' => 'There is an error.please try again later',
+                        'message' => 'There is an error.please try again.',
                     ]);
                 } else {
                     return json_encode($response = [
@@ -851,7 +793,8 @@ class ResumeBuilderController extends Controller
             $chkk = UserSkills::find()
                 ->where(['skill_enc_id' => $chk['skill_enc_id'],'is_deleted'=>0])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()->one();
+                ->asArray()
+                ->one();
 
             if (!$chkk) {
                 $user_obj = new UserSkills();
@@ -866,7 +809,7 @@ class ResumeBuilderController extends Controller
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
-                        'message' => 'There is an error.please try again later',
+                        'message' => 'There is an error.please try again.',
                     ]);
                 } else {
                     return json_encode($response = [

@@ -10,7 +10,7 @@ namespace account\models\resumeBuilder;
 
 use yii\base\Model;
 
-class ResumeCertificates extends \yii\db\ActiveRecord
+class ResumeCertificates extends Model
 {
    public $certificates;
    public $certificates_no;

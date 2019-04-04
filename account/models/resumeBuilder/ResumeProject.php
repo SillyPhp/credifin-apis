@@ -10,7 +10,7 @@ namespace account\models\resumeBuilder;
 
 use yii\base\Model;
 
-class ResumeProject extends \yii\db\ActiveRecord
+class ResumeProject extends Model
 {
     public $project_name;
     public $project_start_date;
