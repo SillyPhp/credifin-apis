@@ -449,7 +449,11 @@ class CandidateProfile extends Model
         $candidate = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
-        return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, true);
+        if(!empty($candidate->image_location)){
+            return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, true);
+        }else {
+            return '';
+        }
     }
 }
 
