@@ -9,8 +9,8 @@ use yii\web\View;
 use borales\extensions\phoneInput\PhoneInput;
 
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg19.png');
-$qualifications = ArrayHelper::map($qualificationsModel, 'qualification_enc_id', 'name');
-$states = ArrayHelper::map($statesModel, 'state_enc_id', 'name');
+$qualifications = ArrayHelper::map($qualificationsModel, 'qualification_id', 'name');
+$states = ArrayHelper::map($statesModel, 'state_id', 'name');
 
 $form = ActiveForm::begin([
     'id' => 'ca-application-form',
@@ -40,18 +40,18 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($caApplicationFormModel, 'first_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('first_name')]); ?>
+            <?= $form->field($applicationFormModel, 'first_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => $applicationFormModel->getAttributeLabel('first_name')]); ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($caApplicationFormModel, 'last_name')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('last_name')]); ?>
+            <?= $form->field($applicationFormModel, 'last_name')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationFormModel->getAttributeLabel('last_name')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($caApplicationFormModel, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('email')]); ?>
+            <?= $form->field($applicationFormModel, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationFormModel->getAttributeLabel('email')]); ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($caApplicationFormModel, 'phone', ['enableAjaxValidation' => false])->widget(PhoneInput::className(), [
+            <?= $form->field($applicationFormModel, 'phone', ['enableAjaxValidation' => false])->widget(PhoneInput::className(), [
                 'jsOptions' => [
                     'allowExtensions' => false,
                     'onlyCountries' => ['in'],
@@ -64,20 +64,20 @@ $form = ActiveForm::begin([
     <div class="row">
         <div class="col-md-6">
             <?=
-            $form->field($caApplicationFormModel, 'qualification_enc_id')->dropDownList(
+            $form->field($applicationFormModel, 'qualification_id')->dropDownList(
                 $qualifications, [
                 'prompt' => 'Select Qualification',
             ])->label(Yii::t('frontend', 'Qualification'));
             ?>
         </div>
         <div class="col-md-6">
-            <?= $form->field($caApplicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'placeholder' => $caApplicationFormModel->getAttributeLabel('college')]); ?>
+            <?= $form->field($applicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationFormModel->getAttributeLabel('college')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <?=
-            $form->field($caApplicationFormModel, 'state_enc_id')->dropDownList(
+            $form->field($applicationFormModel, 'state_id')->dropDownList(
                 $states, [
                 'prompt' => 'Select State',
                 'onchange' => '
@@ -99,7 +99,7 @@ $form = ActiveForm::begin([
         </div>
         <div class="col-md-6">
             <?=
-            $form->field($caApplicationFormModel, 'city_enc_id')->dropDownList(
+            $form->field($applicationFormModel, 'city_id')->dropDownList(
                 [], [
                 'prompt' => 'Select City',
                 'id' => 'cities_drp',
@@ -113,7 +113,7 @@ foreach ($applicationQuestionsModel as $question) {
     <div class="row">
         <div class="col-md-12">
             <?php
-            echo $form->field($caApplicationFormModel, 'answers[' . $question['application_question_enc_id'] . ']')->textArea(['autocomplete' => 'off', 'rows' => 5, 'placeholder' => $caApplicationFormModel->getAttributeLabel($question['question'])]);
+            echo $form->field($applicationFormModel, 'answers[' . $question['application_question_id'] . ']')->textArea(['autocomplete' => 'off', 'rows' => 5, 'placeholder' => $applicationFormModel->getAttributeLabel($question['question'])]);
             ?>
         </div>
     </div>

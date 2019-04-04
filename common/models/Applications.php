@@ -15,8 +15,8 @@ namespace common\models;
  * @property string $qualification_enc_id Foreign Key to Qualifications Table
  * @property string $college School/College/University
  * @property string $city_enc_id Foreign Key to Cities Table
- * @property string $status Application Status (Pending, Accepted, Rejected)
- * @property string $is_deleted Is Application Deleted (True, False)
+ * @property int $status Application Status (1 as Pending, 2 as Accepted, 3 as Rejected)
+ * @property string $is_deleted Is Application Deleted (0 as False, 1 as True)
  *
  * @property ApplicationAnswers[] $applicationAnswers
  * @property Qualifications $qualificationEnc
@@ -39,13 +39,12 @@ class Applications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_id', 'first_name', 'last_name', 'email', 'contact', 'qualification_enc_id', 'college', 'city_enc_id'], 'required'],
-            [['application_id'], 'integer'],
-            [['status'], 'string'],
+            [['application_id', 'status'], 'integer'],
             [['application_enc_id', 'qualification_enc_id', 'city_enc_id'], 'string', 'max' => 100],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['email', 'college'], 'string', 'max' => 50],
             [['contact'], 'string', 'max' => 15],
-            [['is_deleted'], 'string', 'max' => 5],
+            [['is_deleted'], 'string', 'max' => 1],
             [['application_enc_id'], 'unique'],
             [['application_id'], 'unique'],
             [['qualification_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Qualifications::className(), 'targetAttribute' => ['qualification_enc_id' => 'qualification_enc_id']],
