@@ -23,6 +23,11 @@ class ApplicationForm extends Model
     public $countryCode;
     public $answers;
 
+    public function formName()
+    {
+        return '';
+    }
+
     public function behaviors()
     {
         return [
