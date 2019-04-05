@@ -17,7 +17,7 @@
 //     joblocationresult.push({'label': key, 'value':value})
 // });
 var hostname = window.location.hostname;
-var user_profile = 'https://' + hostname + "/user/" + result["username"];
+var user_profile = 'https://' + hostname + "/" + result["username"];
 var popup = new ideaboxPopup({
     background: '#234b8f',
     popupView: 'full',

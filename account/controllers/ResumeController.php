@@ -321,7 +321,6 @@ class ResumeController extends Controller
             $job_title = $data['job_title'];
             $location = $data['locations'];
 
-
             switch ($experience) {
 
                 case 'no':
@@ -504,7 +503,7 @@ class ResumeController extends Controller
 
     private function dropResumeApplicationTitle($job_title, $applied_app_enc_id)
     {
-        $d_r_a_title = new OrganizationAssignedCategories();
+        $d_r_a_title = new DropResumeApplicationTitles();
         $d_r_a_title->applied_title_enc_id = Yii::$app->security->generateRandomString(12);
         $d_r_a_title->applied_application_enc_id = $applied_app_enc_id;
         $d_r_a_title->title = $job_title;
