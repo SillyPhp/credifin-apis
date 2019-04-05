@@ -577,15 +577,15 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                <img src="{{logo}}">
+                <a href="/{{slug}}"><img src="{{logo}}"></a>
                 {{/logo}}
                 {{^logo}}
                 <canvas class="user-icon" name="{{name}}" width="100" height="100"
                 color="{{color}}" font="55px"></canvas>
                 {{/logo}}
             </div>
-            <div class="com-name">{{name}}</div>
-            <div class="com-loc"><span>{{cnt}}</span> Applications</div>
+            <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
+            <div class="com-loc"><span>{{cnt}}</span> Openings</div>
             {{#average_rating}}
             <div class="starr" data-score="{{average_rating}}"></div>
             <div class="rating">
