@@ -171,8 +171,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                     <li><i class="fa fa-puzzle-piece"></i><h3>Profile</h3><span><?= $data['name']; ?></span></li>
                                     <li><i class="fa fa-puzzle-piece"></i><h3>Stipend Type</h3><span><?= $type; ?></span></li>
                                     <li><i class="fa fa-thumb-tack"></i><h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
-                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= (($option['max_stipend']) ? $option['max_stipend'] : 'Nil'); ?></span></li>
-                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= (($option['min_stipend']) ? $option['min_stipend'] : 'Nil'); ?></span></li>
+                                    <li><i class="fa fa-thumb-tack"></i><h3>Maximum Stipend</h3><span><?= $option['max_stipend']; ?></span></li>
+                                    <li><i class="fa fa-money"></i><h3>Minimum stipend</h3><span><?= $option['min_stipend']; ?></span></li>
                                     <li><i class="fa fa-mars-double"></i><h3>Gender</h3><span><?php
                                             switch ($data['preferred_gender']) {
                                                 case 0:
@@ -190,7 +190,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                                                     echo 'not found';
                                             }
                                             ?></span></li>
-                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= (($option['fixed_stipend']) ? $option['fixed_stipend'] : 'Nil') ?></span></li>
+                                    <li><i class="fa fa-shield"></i><h3>Fixed Stipend</h3><span><?= $option['fixed_stipend'] ?></span></li>
                                     <li><i class="fa fa-line-chart "></i><h3>Total Vacancies</h3><span><?= $total_vac; ?></span></li>
                                     <li><i class="fa fa-map-marker "></i><h3>Locations</h3><span> <?php
                                             $str = "";
@@ -238,35 +238,24 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org[
                             <h3>Employer Benefits</h3>
                             <ul>
                                 <?php
-                                if (!empty($data['applicationEmployeeBenefits'])){
-                                    foreach ($data['applicationEmployeeBenefits'] as $benefit) {
-                                        ?>
-                                        <li> <?php echo ucwords($benefit['benefit']); ?> </li>
-                                    <?php } } else { ?>
-                                    <li> No Benefits  </li>
+                                foreach ($data['applicationEmployeeBenefits'] as $benefit) {
+                                    ?>
+                                    <li> <?php echo ucwords($benefit['benefit']); ?> </li>
                                 <?php } ?>
                             </ul>
                         </div>
                         <div class="job-overview">
                             <h3>Interview Details</h3>
                             <ul style="border:0px;">
-                                <?php if (!empty($option['interview_start_date']) && $option['interview_start_time']) { ?>
-                                    <li><i class="fa fa-calendar-check-o"></i>
-                                        <h3>Interview Dates</h3>
-                                        <span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span>
-                                    </li>
-                                    <li><i class="fa fa-clock-o"></i>
-                                        <h3>Interview Time</h3>
-                                        <span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span>
-                                    </li>
+                                <?php if (!empty($option['interview_start_date'] && $option['interview_start_time'])) { ?>
+                                    <li><i class="fa fa-calendar-check-o"></i><h3>Interview Dates</h3><span><?php echo $option['interview_start_date']; ?> To <?php echo $option['interview_end_date']; ?></span></li>
+                                    <li><i class="fa fa-clock-o"></i><h3>Interview Time</h3><span><?php echo $option['interview_start_time']; ?> To <?php echo $option['interview_end_time']; ?></span></li>
                                 <?php } ?>
-                                <li><i class="fa fa-map-marker"></i>
-                                    <h3>Interview Locations</h3><span> <?php
+                                <li><i class="fa fa-map-marker"></i><h3>Interview Locations</h3><span> <?php
                                         $str2 = "";
                                         foreach ($data['applicationInterviewLocations'] as $loc) {
                                             $str2 .= $loc['name'] . ',';
-                                        }
-                                        echo rtrim($str2, ',');
+                                        } echo rtrim($str2, ',');
                                         ?></span></li>
                             </ul>
                         </div>

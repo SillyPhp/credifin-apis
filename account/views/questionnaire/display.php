@@ -1,9 +1,7 @@
 <?php
-
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
-
 $this->title = Yii::t('account', $result['questionnaire_name']);
 $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 ?>
@@ -35,7 +33,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                         foreach ($fields['fields'] as $field) { ?>
                             <div class="col-md-12">
                                 <?php
-                                echo $this->render('/widgets/forms/questionnaire/' . $field['field_type'], [
+                                echo $this->renderAjax('/widgets/forms/questionnaire/' . $field['field_type'], [
                                     'model' => $model,
                                     'form' => $form,
                                     'field' => $field,
@@ -60,7 +58,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 <?php
 $this->registerCss('
 body  {
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco.png") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;

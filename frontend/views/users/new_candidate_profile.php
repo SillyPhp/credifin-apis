@@ -9,11 +9,6 @@ $this->params['header_dark'] = false;
 
             <div class="col-md-8">
                 <div class="left-side-container">
-<<<<<<< HEAD:frontend/views/site/new-candidate-profile.php
-                    <div class="freelance-image"><a href="company-detail.html">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="Candidate Picture">
-                        </a></div>
-=======
                     <div class="freelance-image">
                             <?php
                             $name = $image = NULL;
@@ -31,7 +26,6 @@ $this->params['header_dark'] = false;
                                         font="70px"></canvas>
                             <?php endif; ?>
                     </div>
->>>>>>> 47c7003c9d71f03aaccc07dc8396e611e5260142:frontend/views/users/new_candidate_profile.php
                     <div class="header-details">
                         <h4><?= $user['first_name'] ." ". $user['last_name'] ?></h4>
                         <p><?= $user['job_profile'] ?></p>
@@ -119,9 +113,6 @@ $this->params['header_dark'] = false;
                         <span class="sidebar-status"><?= $user['availability'] ?></span>
                         <div class="sidebar-inner-box">
                             <div class="sidebar-box-thumb">
-<<<<<<< HEAD:frontend/views/site/new-candidate-profile.php
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg')?>" class="img-responsive img-circle" alt="Candidate Picture" />
-=======
                                 <?php
                                 if ($image):
                                 ?>
@@ -131,7 +122,6 @@ $this->params['header_dark'] = false;
                                         color="<?= $user['initials_color']; ?>" width="140" height="140"
                                         font="70px"></canvas>
                                 <?php endif; ?>
->>>>>>> 47c7003c9d71f03aaccc07dc8396e611e5260142:frontend/views/users/new_candidate_profile.php
                             </div>
                             <div class="sidebar-box-detail">
                                 <h4><?= $user['first_name'] ." ". $user['last_name'] ?></h4>

@@ -15,7 +15,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="1' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn">';
+                    $return .= '<input type="radio" id="1' . $index . '" name="' . $name . '" value="' . $value . '" class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="1' . $index . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -65,7 +65,11 @@ $script = <<< JS
 $('input[name = "interradio"]').on('change',function()
    {
      var i  = $(this).val();
-        if (i==1) 
+     hide_show_interviews(i);   
+   });
+function hide_show_interviews(i)
+{
+    if (i==1) 
         {
           $('#interview_box').show();
         }
@@ -73,7 +77,11 @@ $('input[name = "interradio"]').on('change',function()
         {
             $('#interview_box').hide();
         }
-   }) 
+}
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
+    {
+         hide_show_interviews($model->interradio); 
+    }   
 JS;
 $this->registerJs($script);
 ?>

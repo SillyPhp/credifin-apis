@@ -6,6 +6,8 @@ use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
 use yii\helpers\Json;
 
+$this->params['disablefacebookMessenger'] = true;
+
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -129,7 +131,10 @@ $industries = Json::encode($industries);
                                                 data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
                                         <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span>
                                     </div>
-                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span class="model" data-type="select" id="industry_enc_id"></span> <span data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span></div>
+                                    <div class="com-establish"><span class="detail-title">Industry:</span> <span
+                                                class="model" data-type="select" id="industry_enc_id"></span> <span
+                                                data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -146,6 +151,7 @@ $industries = Json::encode($industries);
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
                         <li><a data-toggle="tab" href="#tab4">Locations</a></li>
+                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
@@ -495,7 +501,20 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                 </div>
+                <div id="menu4" class="tab-pane fade">
+                    <div class="row">
+                        <div class="address-division">
+                            <div class="heading-style">Empower Youth Reviews</div>
+                            <div class="divider"></div>
+                            <div id="org-reviews"></div>
+                            <div class="viewbtn">
+                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
         </div>
         </div>
     </section>
@@ -558,6 +577,9 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 Pjax::end();
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/mustache/organization-reviews',[
+        'org_slug' => $organization['slug']
+]);
 $this->registerCss('
 /*----jobs and internships----*/
 .internships-block{
@@ -604,7 +626,7 @@ $this->registerCss('
 .uicon{
     text-align:center;
 }
-.uicon img{
+.uicon img, .uicon canvas{
     max-height:80px;
     max-width:80px;
 }
@@ -1591,13 +1613,13 @@ $('#enable').click(function() {
        $('.edit-box').css('display', 'none');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location').addClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location').removeClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location').removeClass('hide-remove-buttons');
        $(this).text('View Profile');
    }
 }); 

@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%organization_locations}}".
  *
@@ -36,29 +34,32 @@ use Yii;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class OrganizationLocations extends \yii\db\ActiveRecord {
-
+class OrganizationLocations extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%organization_locations}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['location_enc_id', 'organization_enc_id', 'location_name', 'location_for', 'address', 'city_enc_id', 'latitude', 'longitude', 'created_on', 'created_by'], 'required'],
+            [['location_enc_id', 'organization_enc_id', 'location_name', 'location_for', 'address', 'city_enc_id', 'latitude', 'longitude', 'created_by'], 'required'],
             [['description', 'status'], 'string'],
             [['latitude', 'longitude'], 'number'],
             [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['location_enc_id', 'organization_enc_id', 'location_name', 'website', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['location_enc_id', 'organization_enc_id', 'website', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['location_name', 'email'], 'string', 'max' => 50],
             [['location_for', 'phone'], 'string', 'max' => 15],
-            [['email', 'address'], 'string', 'max' => 50],
             [['postal_code'], 'string', 'max' => 7],
+            [['address'], 'string', 'max' => 255],
             [['location_enc_id'], 'unique'],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
@@ -70,43 +71,48 @@ class OrganizationLocations extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationInterviewLocations() {
+    public function getApplicationInterviewLocations()
+    {
         return $this->hasMany(ApplicationInterviewLocations::className(), ['location_enc_id' => 'location_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationPlacementLocations() {
+    public function getApplicationPlacementLocations()
+    {
         return $this->hasMany(ApplicationPlacementLocations::className(), ['location_enc_id' => 'location_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCityEnc() {
+    public function getCityEnc()
+    {
         return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationEnc() {
+    public function getOrganizationEnc()
+    {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
-
 }

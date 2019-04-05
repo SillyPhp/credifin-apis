@@ -14,10 +14,10 @@ $this->params['header_dark'] = false;
                             <div class="main-tagline">Want to attract top talent ?</div>
                             <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &
                                 Save Time On Hiring Candidates.</div>
-                            <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>
+                            <div class="main-text2"> <span>Increase Your Efficiency & Effectiveness.</span></div>
                             <div class="main-bttn">
                                 <a href="/signup/organization" class="button2">Create Account
-                                    <span><i class="fa fa-arrow-right"></i></span> </a>
+                                <span><i class="fa fa-arrow-right"></i></span> </a>
                             </div>
                         </div>
                     </div>
@@ -60,22 +60,6 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-    <section class="fixed-bttn">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="fx-heading">
-                        its free to hire from empower youth
-                    </div>
-                    <div class="post-job-bttn">
-                        <a href="#" id="myBttn" class="hvr-float-shadow">
-                            Post Now
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="companies">
         <div class="container">
             <div class="row">
@@ -93,7 +77,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="com2 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/mid1.png') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>">
                             </div>
                             <div class="com-name">
                                 Midland MicroFin
@@ -149,10 +133,10 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="com9 animatable fadeIn">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>">
                             </div>
                             <div class="com-name">
-                                Empower youth
+                                Hamco Ispat
                             </div>
                         </div>
                         <div class="com10 animatable fadeIn">
@@ -178,23 +162,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-
-    <section class="partner">
-        <div class="container">
-            <div class="heading-style ">Join our Community</div>
-            <div class="row partner-row">
-                <div class="col-md-12">
-                    <div class="col-md-6 col-sm-6">
-                        <div class="partner-btn"><button type='button' class="feed-open2">Partner with Us</button></div>
-                    </div>
-                    <div class="col-md-6 col-sm-6">
-                        <div class="partner-btn"><button type="button" class="feed-open">Give us Feedback</button></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-<!--    <div class="bluebg"></div>-->
+    <div class="bluebg"></div>
 <?php
 $this->registerCss('
 .step-heading{
@@ -220,7 +188,7 @@ $this->registerCss('
     height:50px;
 }    
 .header{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/cover-image.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/index2/company-index-bg.png') . ');
     background-repeat:no-repeat; 
     background-size:cover;
 }
@@ -245,9 +213,14 @@ $this->registerCss('
     max-width:600px;
     line-height:27px;
 }
-.main-text span{
-    background:#000;
-    padding:2px 5px;
+.main-text2{ 
+    color:#fff;
+    font-size:17px;
+    line-height:27px;
+}
+.main-text2 span{
+    padding:0 5px;
+   background:#000; 
 }
 .main-bttn{
     padding-top:20px;
@@ -258,10 +231,10 @@ $this->registerCss('
     color:#fff;
     text-transform:uppercase;
     font-weight:bold;
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  position:relative;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    position:relative;
 }
 .button2 span{
     position:absolute;
@@ -272,10 +245,11 @@ $this->registerCss('
 .button2:hover{
     color:#fff;
     padding-right:30px;   
-} 
+}
 .button2:hover span{
     opacity:1;
-   right:10px; 
+   right:10px;
+   
 }
 .button2, .button2 span, .button2:hover {
     -webkit-transition:.3s all;
@@ -283,16 +257,15 @@ $this->registerCss('
     -ms-transition:.3s all;
     -o-transition:.3s all;
     transition:.3s all;
-}
-/**/
+} 
 .how-it-works{
     padding:10px 0 30px;
 }
 .companies{
-//    margin-top:20px;
+    margin-top:20px;
     position:relative;
     background:#ecf5fe;
-    padding:50px 0 100px 0;
+    padding:0 0 50px 0;
 }
 .com-grid{
     text-transform:capitalize;
@@ -306,6 +279,7 @@ $this->registerCss('
     border-radius:50%;
     box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.1);
     padding: 18px !important; 
+    line-height:0px;
 }
 .com-name{ 
     padding-top:8px;
@@ -327,7 +301,7 @@ $this->registerCss('
     top:50%;
     left:50%;
     -webkit-transform: translate(-50%, -50%); 
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%);    
 }
 .com1, .com2, .com3, .com4, .com5, .com6, .com7, .com8, .com9, .com10, .com11{
       position:absolute;
@@ -474,120 +448,6 @@ $this->registerCss('
 		opacity: 1;
 	}
 }
-/*partner with us*/
-.partner{
-    padding:0px 0 80px 0;
-    text-align:center;
-//    background:#ecf5fe;
-}
-.partner-btn button{
-    border: 2px solid #00a0e3;
-    border-width: 2px 12px;
-    padding: 14px 59px;
-    background: #00a0e3 !important;
-    color: #fff;
-    text-transform: uppercase;
-    border-radius: 9px 50px;
-    transition:.6s all;
-    -webkit-transition:.6s all;
-    -o-transition:.6s all;
-    -moz-transition:.6s all;
-    -ms-transition:.6s all;
-}
-.partner-btn button:hover{
-    border:2px solid #00a0e3;
-    border-width: 2px 12px;
-    background: #00a0e3 !important;
-    color: #fff;
-    border-radius: 9px 0px;
-    transition:.6s all;
-    -webkit-transition:.6s all;
-    -moz-transition:.6s all;
-    -o-transition:.6s all;
-    -ms-transition:.6s all;
-}
-.partner-row{
-    padding:30px 0 0 0; 
-}
-/*try now sec*/ 
-
-.fixed-bttn{
-    padding:80px 0 110px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/footer-bg-1.png') . '); 
-    background-size: cover;
-    background-repeat:no-repeat;
-    background-attachment: fixed;
-}
-.fx-heading{
-  text-transform:capitalize;
-    font-size:35px;
-    text-align:center;
-    padding:0 0 20px 0;
-    color:#666666;
-    font-family:lobster;
-}
-.post-job-bttn{
-    text-align:center;
-}
-.post-job-bttn a{
-    background:#00a0e3;
-    color:#fff;
-    border-radius:5px;
-    text-transform: uppercase;
-    padding:10px 20px;
-    font-size:18px;
-    box-shadow:0 0 10px rgba(66, 63, 63, .5);
-    -webkit-transition:.3s all;
-   transition:.3s all;
-   text-align:center;
-   margin:0 auto;
-   max-width:300px;
-   display:block;
-   font-weight:600;
-}
-.post-job-bttn a:hover{
-   box-shadow:none;
-   -webkit-transition:.3s all;
-   transition:.3s all;
-}
-.hvr-float-shadow {
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  position: relative;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform;
-  transition-property: transform;
-}
-.hvr-float-shadow:before {
-  pointer-events: none;
-  position: absolute;
-  z-index: -1;
-  content: \'\';
-  top: 100%;
-  left: 5%;
-  height: 10px;
-  width: 90%;
-  opacity: 0;
-  background: -webkit-radial-gradient(center, ellipse, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform, opacity;
-  transition-property: transform, opacity;
-}
-.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
-  -webkit-transform: translateY(-5px);
-  transform: translateY(-5px);
-}
-.hvr-float-shadow:hover:before, .hvr-float-shadow:focus:before, .hvr-float-shadow:active:before {
-  opacity: 1;
-  -webkit-transform: translateY(5px);
-  transform: translateY(5px);
-}
-
 ');
 $script = <<< JS
  jQuery(function($) {

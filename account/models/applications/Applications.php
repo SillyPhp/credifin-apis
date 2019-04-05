@@ -31,7 +31,7 @@ class Applications extends EmployerApplications
         $applications = self::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.application_enc_id', 'a.title', 'CONCAT("/", "' . $slug . '", "/", a.slug) link', 'c.name', 'd.icon'])
+            ->select(['a.application_enc_id', 'a.title', 'CONCAT("/", "' . $slug . '", "/", a.slug) link', 'c.name', 'd.icon', 'LOWER(f.name) application_type'])
             ->joinWith(['title b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
                 $b->joinWith(['parentEnc d'], false);

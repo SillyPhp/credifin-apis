@@ -27,7 +27,7 @@ $this->params['header_dark'] = false;
 </section>
 <section>
     <div class="container">
-        <div class="heading-style">Candidates</div>
+        <h1 class="heading-style">Candidates</h1>
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="grid-view brows-job-list">

@@ -5,19 +5,23 @@ namespace frontend\models\accounts;
 use Yii;
 use yii\base\Model;
 
-class ForgotPasswordForm extends Model {
+class ForgotPasswordForm extends Model
+{
 
     public $email;
-    
-    public function formName() {
+
+    public function formName()
+    {
         return '';
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['email'], 'required'],
             [['email'], 'trim'],
             ['email', 'email'],
+            ['email', 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             ['email', 'exist',
                 'targetClass' => '\common\models\extended\Users',
                 'filter' => ['status' => 'Active', 'is_deleted' => 0],
@@ -25,14 +29,16 @@ class ForgotPasswordForm extends Model {
             ],
         ];
     }
-    
-    public function attributeLabels() {
+
+    public function attributeLabels()
+    {
         return [
             'email' => Yii::t('frontend', 'Email'),
         ];
     }
 
-    public function forgotPassword() {
+    public function forgotPassword()
+    {
         if (!$this->validate()) {
             return false;
         }

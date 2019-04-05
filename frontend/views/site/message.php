@@ -1,32 +1,35 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert-box text-center">
-            <h1>
-                <?php
-                if ($status == 'success') {
-                    echo '<i class="fa fa-check-circle-o"></i>';
-                }
-                ?> 
-                <?php
-                if ($status == 'error') {
-                    echo '<i class="fa fa-times-circle-o"></i>';
-                }
-                ?> 
-<?php echo $title ?>
-            </h1>
-            <h4><?php echo $message ?></h4>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert-box text-center">
+                <?php if (!empty($title)): ?>
+                    <h1>
+                        <?php
+                        if ($status == 'success') {
+                            echo '<i class="fa fa-check-circle-o"></i>';
+                        }
+                        ?>
+                        <?php
+                        if ($status == 'error') {
+                            echo '<i class="fa fa-times-circle-o"></i>';
+                        }
+                        ?>
+                        <?= $title; ?>
+                    </h1>
+                <?php endif; ?>
+                <h4><?= $message; ?></h4>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
 $this->registerCss('
 body{
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco.png") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;

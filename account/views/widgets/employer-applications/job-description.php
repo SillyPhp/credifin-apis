@@ -34,6 +34,7 @@
     </div>
     <div class="col-md-6">
         <div class="md-checkbox-list" id="md-checkbox">
+
         </div>
         <div id="error-checkbox-msg"></div>
         <?= $form->field($model, 'checkboxArray', ['template' => '{input}'])->hiddenInput(['id' => 'checkbox_array']); ?>
@@ -65,6 +66,12 @@ $(document).on('click','.drop-options span a', function(event){
                 quesn_count--
                 quesn_upt();
 	});
+if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
+    {
+        $.each($model->clone_desc,function(i,v) {
+            drop_options(id="",v);
+        });
+    }
 function drop_options(id,questions)
         {
             var duplicate_jd = [];

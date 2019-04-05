@@ -68,6 +68,7 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+#header-search{height:55px;}
 .input-group{
     width: 100%;
     margin-bottom:10px;

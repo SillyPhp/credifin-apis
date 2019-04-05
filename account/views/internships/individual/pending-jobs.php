@@ -43,7 +43,7 @@ use yii\widgets\Pjax;
                                                 <div class="row ">
                                                     <div class="col-md-12 col-sm-12 minus-15-pad">
                                                         <div class=" j-cross">
-                                                            <button class="rmv_list" value="<?= $pend['shortlisted_enc_id']; ?>">
+                                                            <button class="rmv_list" value="<?= $pend['application_enc_id']; ?>">
                                                                 <i class="fa fa-times"></i>
                                                             </button>
                                                         </div> 
@@ -337,10 +337,39 @@ a:hover{
 //}
 ');
 $script = <<<JS
-                                    
-$(document).on("click", "#uploadcv", function () {
-    $(".load-modal").load($(this).attr("url"));
-});         
+
+function Ajax_call(rmv_id,url,pjax_refresh_id)
+    {
+        $.ajax({
+                url:url,
+                data:{rmv_id:rmv_id},
+                method:'post',
+                beforeSend: function()
+                {
+                    $(".loader").css("display", "block");
+                },
+                success:function(data)
+                       {
+                        if(data == true)
+                          {
+                            $(".loader").css("display", "none");
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            $.pjax.reload({container: '#widgets', async: false});
+                           }
+                       }
+              })
+    }
+
+$(document).on('click','.rmv_list',function(e)
+    {
+        e.preventDefault();
+        if (window.confirm("Do you really want to Delete the current Application?")) {
+            var  url = '/account/internships/pending-delete';
+            var rmv_id = $(this).val();
+            var  pjax_refresh_id = '#pjax_shortlist';
+            Ajax_call(rmv_id,url,pjax_refresh_id);
+        }
+   })
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');

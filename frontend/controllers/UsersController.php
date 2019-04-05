@@ -5,251 +5,175 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use frontend\models\IndividualImageForm;
-use frontend\models\IndividualCoverImageForm;
-use frontend\models\AddExperienceForm;
-use frontend\models\AddQualificationForm;
-use frontend\models\AddSkillForm;
-use common\models\Users;
-use common\models\UserWorkExperience;
-use common\models\UserEducation;
+use yii\web\HttpException;
 use yii\web\UploadedFile;
+use frontend\models\profile\UserProfileBasicEdit;
+use frontend\models\profile\UserProfileSocialEdit;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\States;
+use common\models\Users;
+use frontend\models\profile\UserProfilePictureEdit;
 
 class UsersController extends Controller
 {
 
-    public function actionProfile($uidk)
+    public function actionProfile($username)
     {
         $user = Users::find()
-            ->where(['username' => $uidk, 'status' => 'Active', 'is_deleted' => 0])
-            ->asArray()
-            ->one();
-        $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.experience_enc_id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
-            ->innerJoin(\common\models\Cities::tableName() . 'b', 'b.city_enc_id = a.city_enc_id')
-            ->where(['a.created_by' => $user['user_enc_id']])
-            ->orderBy(['a.id' => SORT_DESC])
+            ->select(['a.*',
+                '(CASE 
+                WHEN a.is_available = "0" THEN "Not Available"
+                WHEN a.is_available = "1" THEN "Available"
+                WHEN a.is_available = "2" THEN "Open"
+                WHEN a.is_available = "3" THEN "Actively Looking"
+                WHEN a.is_available = "4" THEN "Exploring Possibilities"
+                ELSE "Undefined"
+                END) as availability', 'ROUND(DATEDIFF(CURDATE(), a.dob)/ 365.25) as age', 'b.name as city', 'c.name as job_profile'])
+            ->leftJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+            ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
+            ->where(['username' => $username, 'status' => 'Active', 'is_deleted' => 0])
             ->asArray()
             ->one();
-        $education = UserEducation::find()
-            ->where(['created_by' => $user['user_enc_id']])
-            ->orderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->limit(2)
-            ->all();
+
+        if (!count($user) > 0) {
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
+
         $skills = \common\models\UserSkills::find()
             ->alias('a')
             ->select(['a.skill_enc_id', 'b.skill skills'])
             ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
             ->where(['a.created_by' => $user['user_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
 
-        if (!count($user) > 0) {
-            return 'No User Found';
-        }
+        $language = \common\models\UserSpokenLanguages::find()
+            ->alias('a')
+            ->select(['a.language_enc_id', 'b.language language'])
+            ->innerJoin(\common\models\SpokenLanguages::tableName() . 'b', 'b.language_enc_id = a.language_enc_id')
+            ->where(['a.created_by' => $user['user_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->all();
 
-        if (!Yii::$app->user->isGuest && (Yii::$app->user->identity->user_enc_id === $user['user_enc_id'])) {
-            $AddExperienceForm = new AddExperienceForm();
-            $addQualificationForm = new AddQualificationForm();
-            $addSkillForm = new AddSkillForm();
-            $individualImageFormModel = new IndividualImageForm();
-            $individualCoverImageFormModel = new IndividualCoverImageForm();
-            return $this->render('candidate-profile-edit-new', [
-                'user' => $user,
-                'skills' => $skills,
-                'experience' => $experience,
-                'education' => $education,
-                'individualImageFormModel' => $individualImageFormModel,
-                'individualCoverImageFormModel' => $individualCoverImageFormModel,
-                'addQualificationForm' => $addQualificationForm,
-                'AddExperienceForm' => $AddExperienceForm,
-                'addSkillForm' => $addSkillForm,
-            ]);
-        }
+        $userCv = \common\models\UserResume::find()
+            ->select(['resume', 'resume_location'])
+            ->where(['user_enc_id' => $user['user_enc_id']])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->one();
 
-        return $this->render('candidate-profile-new', [
+        return $this->render('view', [
             'user' => $user,
             'skills' => $skills,
-            'experience' => $experience,
-            'education' => $education,
+            'language' => $language,
+            'userCv' => $userCv,
         ]);
     }
 
-    public function actionAddExperience()
+    public function actionEdit()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $AddExperienceForm = new AddExperienceForm();
-        if ($AddExperienceForm->load(Yii::$app->request->post())) {
-            if ($AddExperienceForm->save()) {
-
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Your Experience has been added.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
-            }
-        }
-    }
-
-    public function actionAddSkill()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $addSkillForm = new AddSkillForm();
-        if ($addSkillForm->load(Yii::$app->request->post())) {
-            if ($addSkillForm->save()) {
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Your Skill has been added.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
-            }
-        }
-    }
-
-    public function actionAddQualification()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $addQualificationForm = new AddQualificationForm();
-        if ($addQualificationForm->load(Yii::$app->request->post())) {
-            if ($addQualificationForm->save()) {
-
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Your Experience has been added.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
-            }
-        } else {
-            return 'nothing';
-        }
-    }
-
-    public function actionUpdateProfile()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if (Yii::$app->request->post()) {
-            $userData = Yii::$app->request->post();
-            $user = Users::findOne([
-                'user_enc_id' => Yii::$app->user->identity->user_enc_id,
-                'status' => 'Active',
-                'is_deleted' => 0,
+        if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
+            $userProfilePicture = new UserProfilePictureEdit();
+            $basicDetails = new UserProfileBasicEdit();
+            $socialDetails = new UserProfileSocialEdit();
+            $object = new \account\models\jobs\JobApplicationForm();
+            $industry = $object->getPrimaryFields('Profiles');
+            $statesModel = new States();
+            $getName = $basicDetails->getJobFunction();
+            $getCurrentCity = $basicDetails->getCurrentCity();
+            $getCategory = $basicDetails->getCurrentCategory();
+            $getExperience = $basicDetails->getExperience();
+            $getSkills = $basicDetails->getUserSkills();
+            $getlanguages = $basicDetails->getUserlanguages();
+            return $this->render('edit', [
+                'userProfilePicture' => $userProfilePicture,
+                'userLanguage' => $getlanguages,
+                'userSkills' => $getSkills,
+                'getExperience' => $getExperience,
+                'getCurrentCity' => $getCurrentCity,
+                'getName' => $getName,
+                'getCategory' => $getCategory,
+                'basicDetails' => $basicDetails,
+                'socialDetails' => $socialDetails,
+                'statesModel' => $statesModel,
+                'industry' => $industry,
             ]);
-            $field = $userData['name'];
-            $user->$field = $userData['value'];
-            if ($user->validate()) {
-                if ($user->save()) {
-                    $response = [
-                        'status' => 200,
-                        'message' => Yii::t('frontend', 'You are successfully subscribed.'),
-                    ];
-                    return true;
-                } else {
-                    $response = [
-                        'status' => 201,
-                        'message' => Yii::t('frontend', 'An error has occurred. Please try again.'),
-                    ];
-                    return false;
-                }
+        } else {
+            return 'You are not Login as candidate login';
+        }
+    }
+
+    public function actionUpdateBasicDetail()
+    {
+        $basicDetails = new UserProfileBasicEdit();
+        if ($basicDetails->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($basicDetails->update()) {
+                $response = [
+                    'status' => 'success',
+                    'title' => 'Success',
+                    'message' => 'Successfully Updated.'
+                ];
+                return $response;
             } else {
                 $response = [
-                    'status' => 0,
-                    'message' => Yii::t('frontend', 'Please enter all the information correctly'),
+                    'status' => 'error',
+                    'title' => 'Updated',
+                    'message' => 'Already Updated.'
                 ];
+                return $response;
             }
-            return $response;
         }
     }
 
-    public function actionUpdateProfileImage()
+    public function actionUpdateSocialDetail()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $individualImageFormModel = new IndividualImageForm();
-        if (Yii::$app->request->post()) {
-            $individualImageFormModel->image = UploadedFile::getInstance($individualImageFormModel, 'image');
-            if ($individualImageFormModel->save()) {
-                return $response = [
-                    'status' => 200,
+        $socialDetails = new UserProfileSocialEdit();
+        if ($socialDetails->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($socialDetails->updateValues()) {
+                $response = [
+                    'status' => 'success',
                     'title' => 'Success',
-                    'message' => 'Profile image has been changed.',
+                    'message' => 'Successfully Updated.'
                 ];
+                return $response;
             } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
+                $response = [
+                    'status' => 'error',
+                    'title' => 'Updated',
+                    'message' => 'Already Updated.'
                 ];
+                return $response;
             }
         }
     }
 
-    public function actionUpdateCoverImage()
+    public function actionUpdateProfilePicture()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $individualCoverImageFormModel = new IndividualCoverImageForm();
-        if (Yii::$app->request->post()) {
-            $individualCoverImageFormModel->cover_image = UploadedFile::getInstance($individualCoverImageFormModel, 'cover_image');
-            if ($individualCoverImageFormModel->save()) {
-                return $response = [
-                    'status' => 200,
+        $userProfilePicture = new UserProfilePictureEdit();
+        if ($userProfilePicture->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($userProfilePicture->update()) {
+                $response = [
+                    'status' => 'success',
                     'title' => 'Success',
-                    'message' => 'Cover image has been changed.',
+                    'message' => 'Successfully Updated.'
                 ];
+                return $response;
             } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
+                $response = [
+                    'status' => 'error',
+                    'title' => 'Updated',
+                    'message' => 'Already Updated.'
                 ];
+                return $response;
             }
-        }
-    }
-
-    public function actionRemoveImage()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $type = Yii::$app->request->post('type');
-        if ($type == 'image') {
-            $update = Yii::$app->db->createCommand()
-                ->update(Users::tableName(), ['image' => null, 'image_location' => null], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->execute();
-        } elseif ($type == 'cover') {
-            $update = Yii::$app->db->createCommand()
-                ->update(Users::tableName(), ['cover_image' => null, 'cover_image_location' => null], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->execute();
-        }
-        if ($update) {
-            return $response = [
-                'status' => 200,
-                'title' => 'Success',
-                'message' => 'Image has been Removed.',
-            ];
-        } else {
-            return $response = [
-                'status' => 201,
-                'title' => 'Error',
-                'message' => 'An error has occurred. Please try again.',
-            ];
         }
     }
 

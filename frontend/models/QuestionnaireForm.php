@@ -36,7 +36,7 @@ class QuestionnaireForm extends Model {
         $organizationQuestionnaireModel->questionnaire_for = json_encode($this->formusedcategory);
         $organizationQuestionnaireModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
 
-        $organizationQuestionnaireModel->created_on = date('Y-m-d h:i:s');
+        $organizationQuestionnaireModel->created_on = date('Y-m-d H:i:s');
         $organizationQuestionnaireModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($organizationQuestionnaireModel->save()) {
             $quesionnaire_array = json_decode($this->formbuilderdata);
@@ -59,7 +59,7 @@ class QuestionnaireForm extends Model {
                   
                 $questionnaireFieldsModel->sequence = $i;
                 $questionnaireFieldsModel->questionnaire_enc_id = $organizationQuestionnaireModel->questionnaire_enc_id;
-                $questionnaireFieldsModel->created_on = date('Y-m-d h:i:s');
+                $questionnaireFieldsModel->created_on = date('Y-m-d H:i:s');
                 $questionnaireFieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
 
                 if (!$questionnaireFieldsModel->save()) {
@@ -73,7 +73,7 @@ class QuestionnaireForm extends Model {
                         $questionnaireFieldsOptionsModel->field_option_enc_id = $utilitiesModel->encrypt();
                         $questionnaireFieldsOptionsModel->field_option = $options->option;
                         $questionnaireFieldsOptionsModel->field_enc_id = $questionnaireFieldsModel->field_enc_id;
-                        $questionnaireFieldsOptionsModel->created_on = date('Y-m-d h:i:s');
+                        $questionnaireFieldsOptionsModel->created_on = date('Y-m-d H:i:s');
                         $questionnaireFieldsOptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$questionnaireFieldsOptionsModel->save()) {
                             print_r($questionnaireFieldsOptionsModel->getErrors());

@@ -76,12 +76,12 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="personal-info col-md-12">
                         <div class="personal-detail col-md-6">
-                            <div class="heading-style ">About Me</div>
+                            <h1 class="heading-style ">About Me</h1>
                             <div class="per-discription"><?= $user['description']; ?></div>
                         </div>
                         <div class="col-md-6 per">
                             <div class="per-det col-md-12 row">
-                                <div class="heading-style col-md-12">Personal Details</div>
+                                <h1 class="heading-style col-md-12">Personal Details</h1>
                                 <div class="col-md-6 col-sm-6">
                                     <div class="can-name col-md-6 col-sm-4">Nationality:</div>
                                     <div class="can-name-fill col-md-6 col-sm-8">Indian</div>
@@ -135,7 +135,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="exp col-md-12">
                     <div class="bdy-content">
-                        <div class="heading-style ">Work Experience</div>
+                        <h1 class="heading-style ">Work Experience</h1>
                         <div class="exp-box1 ">
                             <div class="minus-padding col-md-1">
                                 <div class="com-line com-mark">
@@ -246,7 +246,7 @@ use yii\helpers\Url;
         <div class="large-container">
             <div class="edu">
                 <div class="bdy-content">
-                    <div class="heading-style ">Qualification</div>  
+                    <h1 class="heading-style ">Qualification</h1>
                     <div class="col-md-offset-1 col-md-5">
                         <div class="edubox1">
                             <div class="edu-icon"><i class="fa fa-graduation-cap"></i></div>   
@@ -281,7 +281,7 @@ use yii\helpers\Url;
                 <div class="skills col-md-12">
                     <div class="bdy-content">
                         <div class="col-md-8">
-                            <div class="heading-style">Skills & Language</div>
+                            <h1 class="heading-style">Skills & Language</h1>
                             <div class="keyheading">Key Skills</div>
                             <div class="col-md-6">
                                 <div class="progress">

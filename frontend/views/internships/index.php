@@ -1,13 +1,36 @@
 <?php
+
 use yii\helpers\Url;
-$this->params['header_dark'] = false;
+
+$this->title = Yii::t('frontend', 'Internships');
+$keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,Internships near me';
+$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-    <div class="fixed-btn background-logo-blue">
-        <a href="/site/company-index">
-            <img src="<?= Url::to('@eyAssets/images/flaticon-png/small/team-white.png'); ?>"/><br/>
-        Are you an Employer?<br/>
-            <span>Want to post an Internship or a Job?</span></a>
-    </div>
     <section class="backgrounds">
         <div class="container">
             <div class="row">
@@ -17,10 +40,11 @@ $this->params['header_dark'] = false;
                 <div class="col-md-offset-1 col-md-5 col-sm-6 text-center">
                     <h2 class="text-white"><i><?= Yii::t('frontend', 'Intern with the best...'); ?></i></h2>
                     <div class="search-by-type">
-                        <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>" >
+                        <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
                             <div class="input-group mb-10 set-col-2">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input type="text" name="keyword" class="form-control" placeholder="Job Title or Skill"/>
+                                <input type="text" name="keyword" class="form-control"
+                                       placeholder="Job Title or Skill"/>
                             </div>
                             <div class="input-group mb-10 set-col-2">
                                 <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
@@ -28,33 +52,21 @@ $this->params['header_dark'] = false;
                             </div>
                             <div class="input-group mb-10 set-col-2">
                                 <span class="input-group-addon"><i class="fa fa-map-marker fa-lg"></i></span>
-                                <input type="text" id="cities" name="location" class="form-control" autocomplete="off" placeholder="City or State"/>
+                                <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
+                                       placeholder="City or State"/>
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
                             <div class="form-group mb-10 set-col-2">
-                                <input type="submit" class="form-control submit-next hvr-float" id="form_control_1" value="Search">
+                                <input type="submit" class="form-control submit-next hvr-float" id="form_control_1"
+                                       value="Search">
                             </div>
                         </form>
                     </div>
-<!--                    <img src="--><?//= Url::to('@eyAssets/images/pages/internships/c5.png'); ?><!--" width="75%" align="right"/>-->
                 </div>
             </div>
         </div>
     </section>
-
     <section>
-        <div class="container">
-            <div class="row mt-20">
-                <div class="col-md-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
-                </div>
-            </div>
-            <div class="row category-row">
-
-            </div>
-        </div>
-    </section>
-    <section><!--- style="background-color:#edeeef"--->
         <div class="container">
             <center>
                 <h2>
@@ -71,8 +83,21 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <iframe class="video-style" src="<?= Url::to('https://www.youtube.com/embed/TEDR6Jg2Pls'); ?>" frameborder="0" allowfullscreen></iframe>
+                    <iframe class="video-style" src="<?= Url::to('https://www.youtube.com/embed/TEDR6Jg2Pls'); ?>"
+                            frameborder="0" allowfullscreen></iframe>
                 </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row mt-20">
+                <div class="col-md-12 col-sm-12">
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="categories"></div>
             </div>
         </div>
     </section>
@@ -80,9 +105,9 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h1>
                 </div>
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?= Url::to('/internships/list'); ?>" class="btn btn-3">
@@ -94,9 +119,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="row blogbox">
-
-                </div>
+                <div class="blogbox"></div>
             </div>
         </div>
     </section>
@@ -104,15 +127,18 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
+                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
     </section>
 <?php
-echo $this->render('/widgets/blog-slider', [
-    'posts' => $posts,
-]);
+echo $this->render('/widgets/mustache/category-card');
+echo $this->render('/widgets/mustache/application-card');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/blog-slider', [
+//    'posts' => $posts,
+//]);
 $this->registerCss('
 .backgrounds{
     background-size:cover;
@@ -298,51 +324,6 @@ $this->registerCss('
     padding: 0;
 }
 /*Search button css ends*/
-.categories{
-    text-align: center;
-    min-height: 150px;
-    margin-bottom: 20px;
-}
-.image-style img{
-    width: 50px;
-    height: 50px;
-}
-.grids {
-    display: block;
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 24px;
-    border-radius: 50%;
-    -webkit-transition: all .2s ease-out;
-    transition: all .2s ease-out;
-}
-.grids-image {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    margin-top: 44px;
-}
-.grids::after {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 148px;
-    height: 148px;
-    border: 2px solid #afafaf;
-    border-radius: 50%;
-    content: "";
-    -webkit-transition: all .1s ease-out;
-    transition: all .1s ease-out;
-}
-.categories:hover .grids::after {
-    top: -1px;
-    left: -1px;
-    border: 2px solid #f08440;
-    -webkit-transform: scale(.9);
-    transform: scale(.9);
-}
 .blogbox{
     margin-bottom: 20px;
 }
@@ -440,33 +421,6 @@ $this->registerCss('
 }
 
 /*<!---- view-all button css ends --->*/
-.fixed-btn a{
-    position: fixed;
-    text-align: center;
-    width: 150px;
-    color: #fff !important;
-    bottom: 0px;
-    left:0px;
-    border-right: 4px solid orange;
-    z-index: 999999;
-    height: 112px;
-    opacity: 0.9;
-    padding: 10px 0px;
-    transition: ease-in-out .3s;
-    cursor: pointer;
-    bottom: -42px;
-    border-top-right-radius: 28px;
-}
-.fixed-btn a span{
-    font-weight: 700;
-}
-.fixed-btn a:hover{
-    opacity: 1;
-    bottom: 0px;
-}
-.background-logo-blue a{
-    background-color: #49a1e3;
-}
 .background-mirror {
     background: linear-gradient(180deg, #2b2d32 55%, #fff 55%);
 }
@@ -602,9 +556,13 @@ $this->registerCss('
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
 }
+@media only screen and (max-width: 425px){
+    .set-col-2{
+        width:100%;
+    }
+}
 /* animated menu css ends */
 ');
-
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -617,7 +575,7 @@ var city = new Bloodhound({
              return list;
         }
   }
-});    
+});
             
 $('#cities').typeahead(null, {
   name: 'cities',
@@ -632,6 +590,10 @@ $('#cities').typeahead(null, {
     
     $('.Typeahead-spinner').hide();
   });
+
+getCards("Internships");
+getCategories("Internships");
+addToReviewList();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -640,12 +602,3 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-category',
-]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache',
-]);

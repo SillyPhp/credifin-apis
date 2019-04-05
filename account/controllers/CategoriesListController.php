@@ -1,7 +1,8 @@
 <?php
 
 namespace account\controllers;
-
+use common\models\SpokenLanguages;
+use common\models\Utilities;
 use Yii;
 use common\models\CategoriesList;
 use yii\web\Controller;
@@ -16,7 +17,27 @@ use common\models\Designations;
 
 class CategoriesListController extends Controller
 {
+    public function actionLoadTitles($id='', $type = 'Jobs')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $categories = Categories::find()
+            ->alias('a')
+            ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
+            ->joinWith(['assignedCategories b'],false)
+            ->andWhere([
+                'b.assigned_to' => $type,
+                'b.parent_enc_id' => $id,
+            ])
+            ->andWhere([
+                'or',
+                ['=', 'b.status', 'Approved'],
+                ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->asArray()
+            ->all();
 
+        return $categories;
+    }
     public function actionCategories($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -40,13 +61,46 @@ class CategoriesListController extends Controller
         $categories = Categories::find()
             ->alias('a')
             ->select(['a.name as value', 'a.category_enc_id as id', 'b.assigned_category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->joinWith(['assignedCategories b'],false)
             ->where('a.name LIKE "%' . $q . '%"')
-            ->andWhere(['assigned_to' => $type, 'b.parent_enc_id' => $id])
+            ->andWhere([
+                'b.assigned_to' => $type,
+                'b.parent_enc_id' => $id,
+            ])
+            ->andWhere([
+                'or',
+                ['=', 'b.status', 'Approved'],
+                ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
             ->asArray()
             ->all();
-
         return json_encode($categories);
+    }
+
+    public function actionJobProfiles($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $categories = AssignedCategories::find()
+            ->alias('a')
+            ->distinct()
+            ->select(['a.category_enc_id cat_id', 'b.name value'])
+            ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
+            ->andWhere('b.name LIKE "%' . $q . '%"')
+            ->andWhere(['not', ['a.parent_enc_id' => null]])
+            ->asArray()
+            ->all();
+        return $categories;
+    }
+
+    public function actionLanguages($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $languages = SpokenLanguages::find()
+            ->select(['language_enc_id id', 'language value'])
+            ->where('language LIKE "%' . $q . '%"')
+            ->asArray()
+            ->all();
+        return $languages;
     }
 
     public function actionJobDescription()
@@ -54,12 +108,13 @@ class CategoriesListController extends Controller
         $id = Yii::$app->request->post("data");
         $listvalues = JobDescription::find()
             ->alias('a')
-            ->select(['a.id', 'a.job_description_enc_id', 'a.job_description'])
+            ->distinct()
+            ->select(['a.job_description_enc_id jd_id', 'a.job_description jd'])
             ->joinWith(['assignedJobDescriptions b'], false)
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['!=', 'a.status', 'a.Pending'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -74,12 +129,13 @@ class CategoriesListController extends Controller
         $id = Yii::$app->request->post("data");
         $listvalues = EducationalRequirements::find()
             ->alias('a')
-            ->select(['a.id', 'a.educational_requirement_enc_id', 'a.educational_requirement'])
+            ->distinct()
+            ->select(['a.educational_requirement_enc_id e_id', 'a.educational_requirement ed_req'])
             ->joinWith(['assignedEducationalRequirements b'], false)
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['!=', 'a.status', 'a.Pending'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -95,12 +151,13 @@ class CategoriesListController extends Controller
         $id = Yii::$app->request->post("data");
         $skillvalues = Skills::find()
             ->alias('a')
-            ->select(['a.id', 'a.skill_enc_id', 'a.skill'])
+            ->distinct()
+            ->select(['a.skill_enc_id', 'a.skill'])
             ->joinWith(['assignedSkills b'], false)
             ->where(['b.category_enc_id' => $id])
             ->andWhere([
                 'or',
-                ['!=', 'a.status', 'a.Pending'],
+                ['=', 'a.status', 'Publish'],
                 ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
@@ -118,7 +175,7 @@ class CategoriesListController extends Controller
             ->where('skill LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['!=', 'status', 'Pending'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -136,7 +193,7 @@ class CategoriesListController extends Controller
             ->where('educational_requirement LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['!=', 'status', 'Pending'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -153,7 +210,7 @@ class CategoriesListController extends Controller
             ->where('designation LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['!=', 'status', 'Pending'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
@@ -170,11 +227,53 @@ class CategoriesListController extends Controller
             ->where('job_description LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['!=', 'status', 'Pending'],
+                ['=', 'status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['is_deleted' => 0])
             ->limit(50)
+            ->all();
+        return $list;
+    }
+
+    public function actionFetchJd()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = JobDescription::find()
+            ->select(['id', 'job_description_enc_id', 'job_description'])
+            ->andWhere([
+                'or',
+                ['=', 'status', 'Publish'],
+                ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->all();
+        return $list;
+    }
+
+    public function actionFetchEr()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = EducationalRequirements::find()
+            ->select(['id', 'educational_requirement_enc_id', 'educational_requirement'])
+            ->andWhere([
+                'or',
+                ['=', 'status', 'Publish'],
+                ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+            ])
+            ->andWhere(['is_deleted' => 0])
+            ->all();
+        return $list;
+    }
+
+    public function actionFetchSkills($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = Skills::find()
+            ->select(['skill', 'skill_enc_id'])
+            ->where('skill LIKE "%' . $q . '%"')
+            ->where(['is_deleted' => 0])
+            ->asArray()
             ->all();
         return $list;
     }

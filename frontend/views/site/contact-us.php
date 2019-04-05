@@ -5,7 +5,33 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
-
+$keywords = 'Jobs services in india,Apply for Internship in India,Best Career sites in India,Top 50 job portals in india,Summer internships,Paid internships,Online jobs,Best job portal in India,Jobs services in india,Jobs services in ludhiana';
+$description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 $data = [
     'title' => $this->title,
     'background' => Url::to('@eyAssets/images/backgrounds/contact-us.png'),
@@ -36,7 +62,7 @@ echo $this->render('/widgets/breadcrumbs', [
             <div class="row">
                 <div class="col-md-5">
                     <!-- Google Map HTML Codes -->
-                    <div 
+                    <div
                         data-address="<?= Yii::t('frontend', Yii::$app->params->contact_address); ?>"
                         data-popupstring-id="#popupstring1"
                         class="map-canvas autoload-map"

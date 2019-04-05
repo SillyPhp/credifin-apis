@@ -49,6 +49,7 @@ namespace common\models;
  * @property EmployeeBenefits[] $employeeBenefits
  * @property EmployerApplications[] $employerApplications
  * @property JobDescription[] $jobDescriptions
+ * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
  * @property OrganizationImages[] $organizationImages
  * @property OrganizationInterviewProcess[] $organizationInterviewProcesses
@@ -84,7 +85,7 @@ class Organizations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_on', 'created_by'], 'required'],
+            [['organization_enc_id', 'business_activity_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_by'], 'required'],
             [['establishment_year', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'mission', 'vision', 'value', 'status'], 'string'],
             [['is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_deleted'], 'integer'],
@@ -142,6 +143,14 @@ class Organizations extends \yii\db\ActiveRecord
     public function getJobDescriptions()
     {
         return $this->hasMany(JobDescription::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationAssignedCategories()
+    {
+        return $this->hasMany(OrganizationAssignedCategories::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**

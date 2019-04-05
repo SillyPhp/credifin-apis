@@ -10,45 +10,52 @@ use yii\base\InvalidParamException;
 use common\models\Users;
 use common\models\UserVerificationTokens;
 
-class ResetPasswordForm extends Model {
+class ResetPasswordForm extends Model
+{
 
     public $new_password;
     public $confirm_password;
     private $_token;
-    
-    public function formName() {
+
+    public function formName()
+    {
         return '';
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['new_password', 'confirm_password',], 'required'],
+            [['new_password', 'confirm_password',], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
+            [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
         ];
     }
 
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'new_password' => Yii::t('frontend', 'New Password'),
             'confirm_password' => Yii::t('frontend', 'Confirm Password'),
         ];
     }
 
-    public function __construct($token, $config = []) {
+    public function __construct($token, $config = [])
+    {
         if (empty($token) || !is_string($token)) {
             throw new InvalidParamException('Password reset token cannot be blank.');
         }
 
         $this->_token = UserVerificationTokens::findOne([
-                    'token' => $token,
-                    'verification_type' => 'reset password',
-                    'status' => 'Pending',
-                    'is_deleted' => 0,
+            'token' => $token,
+            'verification_type' => 1,
+            'status' => 'Pending',
+            'is_deleted' => 0,
         ]);
 
         if (!$this->_token) {
             throw new InvalidParamException('Wrong password reset token.');
-        }   
+        }
         $date_expire = $this->_token->created_on;
         $date = new DateTime($date_expire);
         $now = new DateTime();
@@ -60,20 +67,21 @@ class ResetPasswordForm extends Model {
         $minute = $res->i * 60;
         $second = $res->s;
         $result = $year + $month + $day + $hour + $minute + $second;
-        if($result > Yii::$app->params->expiration_time->reset_password){
+        if ($result > Yii::$app->params->expiration_time->reset_password) {
             throw new InvalidParamException('Password reset token has expired.');
         }
         parent::__construct($config);
     }
-    
-    
-    public function resetPassword() {
+
+
+    public function resetPassword()
+    {
         $utilitiesModel = new Utilities();
         $this->_token->created_by;
         $user = Users::findOne([
-                    'user_enc_id' => $this->_token->created_by,
-                    'status' => 'Active',
-                    'is_deleted' => 0,
+            'user_enc_id' => $this->_token->created_by,
+            'status' => 'Active',
+            'is_deleted' => 0,
         ]);
         if (!empty($user)) {
             $utilitiesModel->variables['password'] = $this->new_password;
@@ -84,17 +92,20 @@ class ResetPasswordForm extends Model {
         $user->password = $this->new_password;
         if (!$user->validate() || !$user->save()) {
             return false;
-        } else {
-            return true;
         }
+
         if ($user) {
             $user->is_email_verified = 1;
             if ($user->update()) {
                 $this->_token->status = 'Verified';
+                $this->_token->last_updated_by = $this->_token->created_by;
                 $this->_token->is_deleted = 1;
                 $this->_token->update();
+                return true;
             }
         }
+
+        return false;
     }
 
 }

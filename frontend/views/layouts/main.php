@@ -1,224 +1,351 @@
 <?php
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
+use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
+use frontend\widgets\login;
 
 AppAssets::register($this);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language; ?>">
-    <head>
-        <meta charset="<?= Yii::$app->charset; ?>">
-        <?= Html::csrfMetaTags(); ?>
-        <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <?php
-        if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
-            foreach ($this->params['seo_tags']['rel'] as $key => $value) {
-                $this->registerLinkTag([
-                    'rel' => $key,
-                    'href' => $value,
-                ]);
-            }
-            foreach ($this->params['seo_tags']['name'] as $key => $value) {
-                $this->registerMetaTag([
-                    'name' => $key,
-                    'content' => $value,
-                ]);
-            }
-            foreach ($this->params['seo_tags']['property'] as $key => $value) {
-                $this->registerMetaTag([
-                    'property' => $key,
-                    'content' => $value,
-                ]);
-            }
-            if(!isset($this->params['header_dark'])) {
-                $this->params['header_dark'] = false;
-            }
+<head>
+    <meta charset="<?= Yii::$app->charset; ?>">
+    <?= Html::csrfMetaTags(); ?>
+    <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
+    <?php
+    if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
+        foreach ($this->params['seo_tags']['rel'] as $key => $value) {
+            $this->registerLinkTag([
+                'rel' => $key,
+                'href' => $value,
+            ]);
         }
-        ?>
-        <?php $this->head(); ?>
-    </head>
-    <body class="fullwidth-page">
-        <?php $this->beginBody(); ?>
-        <div class="body-overlay"></div>
-        <div id="wrapper" class="clearfix">
-            <header id="header" class="header">
-                <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
-                <div class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-                    <div class="container-fluid">
-                        <nav id="menuzord-right" class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
-                            <a class="menuzord-brand pull-left flip mt-15" href="<?= Url::to('/'); ?>">
-                                <?php
-                                if (!Yii::$app->user->isGuest) {
-                                    ?>
-                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
-                                    <?php
-                                    if (!$this->params['header_dark']) {
-                                        ?>
-                                    <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus_white.svg'); ?>">
-                                    <?php
-                                    }
-                                    ?>
-                                    <span class="logo_beta">Beta</span>
-                                    <?php
-                                } else{
-                                ?>
-                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                                    <?php
-                                    if (!$this->params['header_dark']) {
-                                        ?>
-                                    <img id="logo-white"  alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
-                                    <?php
-                                    }
-                                    ?>
-                                    <span class="logo-beta">Beta</span>
-                                    <?php
-                                }
-                                ?>
-
-                            </a>
-                            <?php
-                            if (!Yii::$app->user->isGuest) {
-                                $name = $image = $color = NULL;
-                                if (Yii::$app->user->identity->organization->organization_enc_id) {
-                                    if (Yii::$app->user->identity->organization->logo) {
-                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                                    }
-                                    $name = Yii::$app->user->identity->organization->name;
-                                    $color = Yii::$app->user->identity->organization->initials_color;
-                                } else {
-                                    if (Yii::$app->user->identity->image) {
-                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                                    }
-                                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                                    $color = Yii::$app->user->identity->initials_color;
-                                }
-                                ?>
-                                <div class="my-profiles-sec">
-                                    <?php if ($image): ?>
-                                        <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>" /></span>
-                                    <?php else: ?>
-                                        <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40" height="40" font="20px"></canvas></span>
-                                    <?php endif; ?>
-                                </div>
-                                <?php
-                            }
-
-                            echo $this->render('/widgets/top-header', [
-                                'menu_class' => 'menuzord-menu' . (!$this->params['header_dark']) ? ' dark' : '',
-                            ]);
-                            ?>
-                        </nav>
-                    </div>
-                </div>
-                <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
-            </header>
-            <div class="main-content">
-                <div id="page-loading" class="page-loading">
-                    <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
-                </div>
-                <?= $content; ?>
-            </div>
-            <footer id="footer" class="footer">
-                <div class="footer-border">
-                    <a href="/"><img src="<?= Url::to('/assets/common/logos/footer-logo.png'); ?>"> </a>
-                </div>
-                <div class="set_container container">
-                    <div class="row">
-                        <div class="mt-6 useful-links col-sm-12 col-md-4">
-<!--                            <ul>-->
-<!--                                <li><a href="--><?//= Url::to('/about-us'); ?><!--">About Us</a></li> |-->
-<!--                                <li><a href="">Team</a></li> |-->
-<!--                                <li><a href="">Vision</a></li>-->
-<!--                            </ul>-->
-                        </div>
-                        <div class="set1 col-sm-12 col-md-4">
-                            <div class="footer-widget ">
-                                <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
-                                <ul class="styled-icons icon-bordered icon-sm mb-5">
-                                    <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fa fa-facebook"></i></a></li>
-                                    <li><a href="https://twitter.com/EmpowerYouth2" target="_blank" class="overtw"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="https://plus.google.com/104048743553712680190" target="_blank" class="overgp"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="https://www.youtube.com/channel/UCEF_0LfJ9zMa99aPoGwNdtg" target="_blank" class="overyt"><i class="fa fa-youtube"></i></a></li>
-                                    <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fa fa-instagram"></i></a></li>
-                                    <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
-                                </ul>
-                            </div>  
-                        </div>
-                        <div class="col-sm-12 useful-links col-md-4 mt-6 text-right">
-<!--                            <ul>-->
-<!--                                <li><a href="--><?//= Url::to('/contact-us'); ?><!--">Contact Us</a></li> |-->
-<!--                                <li><a href="">FAQ'S</a></li> |-->
-<!--                                <li><a href="">Help Counter</a></li>-->
-<!--                            </ul>-->
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="container pt-20 pb-20">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12 text-center">
-                                <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
-                            </div>
-<!--                            <div class="col-md-6 col-sm-6 text-right">-->
-<!--                                <div class="widget no-border m-0">-->
-<!--                                    <ul class="list-inline  sm-text-center mt-5 font-12">-->
-<!--                                        <li>-->
-<!--                                            <a href="--><?//= Url::to('/about-us'); ?><!--" class="">Terms & Conditions</a>-->
-<!--                                        </li>-->
-<!--                                        |-->
-<!--                                        <li>-->
-<!--                                            <a href="--><?//= Url::to('/contact-us'); ?><!--" class="">Privacy Policies</a>-->
-<!--                                        </li>    -->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </div>-->
-                        </div>
-                    </div>
-                </div>
-            </footer>
+        foreach ($this->params['seo_tags']['name'] as $key => $value) {
+            $this->registerMetaTag([
+                'name' => $key,
+                'content' => $value,
+            ]);
+        }
+        foreach ($this->params['seo_tags']['property'] as $key => $value) {
+            $this->registerMetaTag([
+                'property' => $key,
+                'content' => $value,
+            ]);
+        }
+        if (!isset($this->params['header_dark'])) {
+            $this->params['header_dark'] = false;
+        }
+    }
+    ?>
+    <?php $this->head(); ?>
+</head>
+<body class="fullwidth-page">
+<?php $this->beginBody(); ?>
+<div class="body-overlay"></div>
+<div id="wrapper" class="clearfix">
+    <header id="header" class="header">
+        <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
+        <div id="header-main"
+             class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-            if (!Yii::$app->user->isGuest) {
-                echo $this->render('/widgets/user-profile-sidebar-right');
+            if (Yii::$app->user->isGuest) {
+                ?>
+                <div class="secondary-top-header">
+                    <div class="secondary-top-header-left">
+                        <a href="/employers"><i class="fa fa-user-circle"></i> Employer Zone</a>
+                    </div>
+                    <div class="secondary-top-header-right">
+                        <a href="/signup/organization">Signup as Company</a>
+                        <a href="/signup/individual">Signup as Candidate</a>
+                    </div>
+                </div>
+                <?php
             }
             ?>
+            <div class="container-fluid">
+                <nav id="menuzord-right"
+                     class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
+                    <a class="menuzord-brand pull-left flip mt-15" href="<?= Url::to('/'); ?>">
+                        <?php
+                        if (!Yii::$app->user->isGuest) {
+                            ?>
+                            <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                 src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
+                            <?php
+                            if (!$this->params['header_dark']) {
+                                ?>
+                                <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
+                                     src="<?= Url::to('@commonAssets/logos/empower_youth_plus_white.svg'); ?>">
+                                <?php
+                            }
+                            ?>
+                            <span class="logo_beta">Beta</span>
+                            <?php
+                        } else {
+                            ?>
+                            <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                 src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                            <?php
+                            if (!$this->params['header_dark']) {
+                                ?>
+                                <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
+                                     src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
+                                <?php
+                            }
+                            ?>
+                            <span class="logo-beta">Beta</span>
+                            <?php
+                        }
+                        ?>
+
+                    </a>
+                    <?php
+                    if (!Yii::$app->user->isGuest) {
+                        $name = $image = $color = NULL;
+                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                            if (Yii::$app->user->identity->organization->logo) {
+                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                            }
+                            $name = Yii::$app->user->identity->organization->name;
+                            $color = Yii::$app->user->identity->organization->initials_color;
+                        } else {
+                            if (Yii::$app->user->identity->image) {
+                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                            }
+                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                            $color = Yii::$app->user->identity->initials_color;
+                        }
+                        ?>
+                        <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
+                        <div class="my-profiles-sec">
+                            <?php if ($image): ?>
+                                <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/></span>
+                            <?php else: ?>
+                                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40"
+                                              height="40" font="20px"></canvas></span>
+                            <?php endif; ?>
+                        </div>
+                        <?php Pjax::end(); ?>
+                        <?php
+                    }
+
+                    echo $this->render('/widgets/top-header', [
+                        'menu_class' => 'menuzord-menu' . (!$this->params['header_dark']) ? ' dark' : '',
+                    ]);
+                    ?>
+                </nav>
+            </div>
         </div>
-        <?php
-        $this->registerCss('
-        .menuzord-brand{position:relative;}
-        .logo-beta{font-size: 11px;position: absolute;bottom: -2px;right: -25px;color: #444;}
-        .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #444;}
-        .add-padding nav .menuzord-brand .logo_beta{color:#fff;}
-        .add-padding nav .menuzord-brand .logo-beta{color:#fff;}
-        .page-loading {
-            background-color: #ffffff;
-            content: "";
-            height: 100%;
-            left: 0;
-            position: fixed;
-            text-align: center;
-            margin:0px;
-            top: 0;
-            width: 100%;
-            z-index: 2147483647;
-        }
-        .page-loading > img {
-            left: 50%;
-            position: absolute;
-            top: 50%;
-            -webkit-transform: translateX(-50%) translateY(-50%);
-            -moz-transform: translateX(-50%) translateY(-50%);
-            -ms-transform: translateX(-50%) translateY(-50%);
-            -o-transform: translateX(-50%) translateY(-50%);
-            transform: translateX(-50%) translateY(-50%);
-        }
+        <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
+    </header>
+    <div class="main-content">
+        <div id="page-loading" class="page-loading">
+            <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+        </div>
+        <?= $content; ?>
+    </div>
+    <footer id="footer" class="footer">
+        <div class="footer-border">
+            <a href="/"><img src="<?= Url::to('/assets/common/logos/footer-logo.png'); ?>"> </a>
+        </div>
+        <div class="set_container container">
+            <div class="row">
+                <div class="mt-6 useful-links col-sm-6 col-xs-12 col-md-3">
+                    <div class="footer-widget ">
+                        <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
+                        <ul class="styled-icons icon-bordered icon-sm mb-5">
+                            <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
+                                            class="fa fa-facebook"></i></a></li>
+                            <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
+                                            class="fa fa-twitter"></i></a></li>
+                            <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i
+                                            class="fa fa-instagram"></i></a></li>
+                            <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
+                                            class="fa fa-pinterest"></i></a></li>
+                            <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
+                                   class="overlink"><i class="fa fa-linkedin"></i></a></li>
+                        </ul>
+                        <br/><br/>
+                        <a class="text-gray mt-10 send_mail" href="mailto:info@empoweryouth.com"><i
+                                    class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="col-sm-6 col-xs-12 col-md-3">
+                        <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Jobs By Location'); ?></div>
+                        <ul class="footer-list">
+                            <li><a href="/jobs/list?location=Ludhiana">Jobs in Ludhiana</a></li>
+                            <li><a href="/jobs/list?location=Jalandhar">Jobs in Jalandhar</a></li>
+                            <li><a href="/jobs/list?location=Chandigarh">Jobs in Chandigarh</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-xs-12 col-md-3">
+                        <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Jobs By Profile'); ?></div>
+                        <ul class="footer-list">
+                            <li><a href="/jobs/list?keyword=Information%20Technology">IT Jobs</a></li>
+                            <li><a href="/jobs/list?keyword=Social%20Services">Social Services Jobs</a></li>
+                            <li><a href="/jobs/list?keyword=Business%20Development">Business Development Jobs</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-xs-12 col-md-3">
+                        <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Internships By Location'); ?></div>
+                        <ul class="footer-list">
+                            <li><a href="/internships/list?location=Ludhiana">Internships in Ludhiana</a></li>
+                            <li><a href="/internships/list?location=Jalandhar">Internships in Jalandhar</a></li>
+                            <li><a href="/internships/list?location=Chandigarh">Internships in Chandigarh</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-xs-12 col-md-3">
+                        <div class="footer-widget mb-10"><?= Yii::t('frontend', 'Internships By Profile'); ?></div>
+                        <ul class="footer-list">
+                            <li><a href="/internships/list?keyword=Marketing">Marketing Internships</a></li>
+                            <li><a href="/internships/list?keyword=Arts%20and%20Design">Arts and Design Internships</a>
+                            </li>
+                            <li><a href="/internships/list?keyword=Administrative">Administrative Internships</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container pt-20 pb-20">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <?php
+    if (!Yii::$app->user->isGuest) {
+        echo $this->render('/widgets/user-profile-sidebar-right');
+    } elseif (Yii::$app->user->isGuest) {
+        echo login::widget();
+    }
+    ?>
+</div>
+<?php
+$this->registerCss('
+            .secondary-top-header{
+                height:30px;
+                margin-top:-30px;
+                line-height: 30px;
+                display: block;
+                transition: margin 500ms;
+                background-color: rgba(0, 0, 0, 0.4);
+            }
+            .header-show .secondary-top-header{
+                margin-top:0px;
+            }
+            .animated-active .header-show .secondary-top-header{
+                background-color: rgba(0, 0, 0, 0.2);
+            }
+            .secondary-top-header-left, .secondary-top-header-right{
+                width:auto;
+            }
+            .secondary-top-header-left{padding-left:80px;float:left;}
+            .secondary-top-header-left a i{font-size:16px;}
+            .secondary-top-header-right{padding-right:50px;float:right;}
+            .secondary-top-header a{
+                color:#fff;
+                transition: all 500ms;
+            }
+            .secondary-top-header-right a{
+                float: right;
+                height: 30px;
+                line-height: 30px;
+                padding: 0px 20px;
+                margin-left: 5px;
+            }
+            .secondary-top-header a:hover{color:#ff7803;}
+            @media screen and (max-width: 610px) and (min-width: 0px) {
+                .secondary-top-header-left{padding-left: 20px;}
+            }
+            @media screen and (max-width: 571px) and (min-width: 0px) {
+                .secondary-top-header-right{padding-right:15px;}
+                .secondary-top-header-left{padding-left: 10px;}
+                .secondary-top-header-right a{padding:0px 5px;}
+            }
+            @media screen and (max-width: 450px) and (min-width: 0px) {
+                .secondary-top-header-left{display:none;}
+            }
+            .send_mail{word-wrap: break-word;display:block;}
+            .send_mail i{color:#00a0e3;float:left;}
+            .send_mail span{float:left;}
+             .feed-btn a{
+                border:2px solid #00a0e3;
+                color:#00a0e3;
+                padding:5px 10px;
+                border-radius:20px;
+                margin-top:20px !important;
+                -webkit-transition: .3s all;
+                -moz-transition: .3s all;
+                -ms-transition: .3s all;
+                -o-transition: .3s all;
+                transition: .3s all;
+             }
+             .feed-btn a:hover{
+                color:#fff;
+                background:#00a0e3;
+                -webkit-transition: .3s all;
+                -moz-transition: .3s all;
+                -ms-transition: .3s all;
+                -o-transition: .3s all;
+                transition: .3s all;
+             }
+            .menuzord-brand{
+                position:relative;
+             }
+            .logo-beta{
+                font-size: 11px;
+                position: absolute;
+                bottom: -2px;
+                right: -25px;
+                color: #444;
+             }
+            .logo_beta{
+                font-size: 11px;
+                 position: absolute;
+                 bottom: -2px; 
+                 right: -15px;
+                 color: #444;
+             }
+            .add-padding nav .menuzord-brand .logo_beta{
+                color:#fff;
+             }
+            .add-padding nav .menuzord-brand .logo-beta{
+                color:#fff;
+             }
+            .page-loading {
+                background-color: #ffffff;
+                content: "";
+                height: 100%;
+                left: 0;
+                position: fixed;
+                text-align: center;
+                margin:0px;
+                top: 0;
+                width: 100%;
+                z-index: 2147483647;
+            }
+            .page-loading > img {
+                left: 50%;
+                position: absolute;
+                top: 50%;
+                -webkit-transform: translateX(-50%) translateY(-50%);
+                -moz-transform: translateX(-50%) translateY(-50%);
+                -ms-transform: translateX(-50%) translateY(-50%);
+                -o-transform: translateX(-50%) translateY(-50%);
+                transform: translateX(-50%) translateY(-50%);
+            }
             #main-header #logo-black{
                 display:none;
             }
@@ -238,16 +365,17 @@ AppAssets::register($this);
                 -o-border-radius: 50%;
                 border-radius: 50% !important;
             }
+            @media screen and (max-width: 900px) and (min-width: 0px) {
+                .my-profiles-sec span{
+                    margin-top:9.5px !important;
+                }
+                .menuzord .showhide em{
+                    background-color:#fff;
+                }
+            }
             /*footer css*/
-            .useful-links{
-               
-            }
-            .useful-links ul{
-                padding-top:40px;
-            }
             .useful-links ul li{
                 display:inline;
-                padding:10px;
             }
             .footer a {
                 text-align: center;
@@ -268,8 +396,8 @@ AppAssets::register($this);
                 margin-top: 60px;
             } 
             .footer-widget{
-                text-align:center;
                 color:#00a0e3;
+                margin: 0 auto;
             }
             .icons-ss{
                 padding-top:15px;
@@ -321,27 +449,18 @@ AppAssets::register($this);
                 background-color:#1c99e9 !important;
                 color:white;
             }
-            .overgp:hover{
-                background-color:#d34836 !important;
-                color:white;
-            }
             .overig:hover{
                 background: #d6249f;
                 background: radial-gradient(circle at 33% 100%, #FED373 4%, #F15245 30%, #D92E7F 62%, #9B36B7 85%, #515ECF);
                 color:white;
                 border-color:#b8319c !important;
             }
-            .overyt:hover{
-                background-color:#ff0000 !important;
-                color:white;
-            }
             .overpt:hover{
                 background-color:#C92228 !important;
                 color:white;
             }
-            .overig2:hover{
-                background: #d6249f;
-                background: radial-gradient(circle at 1% 100%, #fdf497 0%, #fdf497 5%, #fd5949 35%,#d6249f 60%,#285AEB 90%);
+            .overlink:hover{
+                background-color: #0077B5 !important;
                 color:white;
             }
             @media only screen and (min-width: 991px){
@@ -374,10 +493,22 @@ AppAssets::register($this);
                 -o-border-radius: 50% !important;
                 border-radius: 50% !important;
             }
+            .footer-list li{
+                float: left;
+                width: 100%;
+                margin: 0;
+                margin-bottom: 0px;
+                position: relative;
+                padding-left: 10px;
+                line-height: 21px;
+                margin-bottom: 10px;
+                font-size: 13px;
+                color: #888888;
+            }
             ');
 
-        if ($this->params['header_dark']) {
-            $this->registerCss('@media only screen and (max-width:900px){
+if ($this->params['header_dark']) {
+    $this->registerCss('@media only screen and (max-width:900px){
                 .header {
                     max-height:80px !important;
                 }
@@ -386,37 +517,56 @@ AppAssets::register($this);
                 padding:0px !important;
             }
             ');
-        }
+}
 
-        $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=UA-121432126-1', [
-            'depends' => [\yii\web\JqueryAsset::className()],
-            'sync' => 'async',
-        ]);
+if (!empty(Yii::$app->params->google->analytics->id)) {
+    $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
+        'depends' => [\yii\web\JqueryAsset::className()],
+        'sync' => 'async',
+    ]);
 
-        $this->registerJs('
-        window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag("js", new Date());
-                    gtag("config", "UA-121432126-1");
-         
-//         document.onreadystatechange = function () {
-//          var state = document.readyState
-//          if (state == "interactive") {
-//                 document.getElementById("page-loading").style.visibility="visible";
-//                 console.log("if");
-//          } else if (state == "complete") {
-//              setTimeout(function(){
-//                 document.getElementById("page-loading").style.visibility="hidden";
-//                 console.log("else if");
-//              },1000);
-//          }
-//        }
-            $(".page-loading").fadeOut();
-                    
+    $this->registerJs('
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag("js", new Date());
+            gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
         ');
+}
+if (Yii::$app->user->isGuest) {
+    $this->registerJs('
+        window.addEventListener("scroll", header_main);
         
-        if (!$this->params['header_dark']) {
-            $this->registerJs(" $(document).on('scroll', function () {
+        function header_main() {
+            var check_h_type = document.getElementById("header-main");
+            if(window.pageYOffset <= 0) {
+                check_h_type.classList.add("header-show");
+            } else if(window.pageYOffset > 5){
+                check_h_type.classList.remove("header-show");
+            }
+        }
+        header_main();
+    ');
+}
+if (!$this->params['disablefacebookMessenger']) {
+    $this->registerJs('
+            window.fbAsyncInit = function() {
+               FB.init({
+                 xfbml            : true,
+                 version          : "v3.2"
+               });
+             };
+            
+             (function(d, s, id) {
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) return;
+             js = d.createElement(s); js.id = id;
+             js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
+             fjs.parentNode.insertBefore(js, fjs);
+            }(document, "script", "facebook-jssdk"));
+        ');
+}
+if (!$this->params['header_dark']) {
+    $this->registerJs(" $(document).on('scroll', function () {
                 var header = $('#main-header');
                 if (!header.hasClass('animated-active')) {
                     $('#logo-white').hide();
@@ -426,9 +576,10 @@ AppAssets::register($this);
                     $('#logo-white').show();
                 }
             }); ");
-        }
-        $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-        $this->registerJs('
+}
+$this->registerJs('$(".page-loading").fadeOut();');
+$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJs('
             WebFont.load({
                     google: {
                             "families": ["Lobster", "Roboto", "Poppins", "Open+Sans","Didact Gothic", "Raleway", "Playfair+Display"]
@@ -438,8 +589,14 @@ AppAssets::register($this);
                     }
             });
        ', View::POS_HEAD);
-        ?>
-        <?php $this->endBody(); ?>
-    </body>
+if (!$this->params['disablefacebookMessenger']) {
+    ?>
+    <div id="fb-root"></div>
+    <div class="fb-customerchat" attribution=setup_tool page_id="383925102019276" theme_color="#00a0e3"></div>
+    <?php
+}
+?>
+<?php $this->endBody(); ?>
+</body>
 </html>
 <?php $this->endPage(); ?>

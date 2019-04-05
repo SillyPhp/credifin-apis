@@ -126,6 +126,12 @@ $("#inputfield").keypress(function(e){
             }
         } 
     })
+ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships') 
+    {
+        $.each($model->clone_skills,function(i,v) {
+            addTags(v,value = "");
+        });
+    }   
 $(document).on('click','#shownlist span a', function(event){
 		event.preventDefault();
 		var btn = $(this);

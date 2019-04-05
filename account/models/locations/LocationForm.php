@@ -43,10 +43,10 @@ class LocationForm extends Model {
             ['email', 'email'],
             [['latitude'], 'required', 'message' => 'Get The Location First'],
             [['latitude', 'longitude'], 'number'],
-            [['email', 'address'], 'string', 'max' => 50],
+            [['email', 'name'], 'string', 'max' => 50],
+            [['address'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['postal_code'], 'string', 'max' => 7],
-            [['name'], 'string', 'max' => 100],
             [['phone'], PhoneInputValidator::className()],
         ];
     }
