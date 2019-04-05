@@ -109,6 +109,7 @@ class ProfileController extends ApiBaseController{
 
     public function actionUpdateProfile(){
         $basicDetails = new CandidateProfile();
+        return Yii::$app->request->post();
         if($basicDetails->load(Yii::$app->request->post())){
             if($basicDetails->validate()) {
                 if ($basicDetails->update()) {
