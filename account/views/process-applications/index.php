@@ -25,7 +25,7 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title tabbable-line">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h3>Process Applications of <?= $application['name']; ?></h3>
+                            <h3>Process Applications of <?= $application_name['job_title']; ?></h3>
                         </div>
                     </div>
                 </div>

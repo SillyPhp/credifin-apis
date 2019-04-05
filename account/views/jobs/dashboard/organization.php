@@ -87,8 +87,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6 col-xs-12 col-sm-12">
             <div class="portlet light">
                 <div class="portlet-title">
                     <div class="caption">
@@ -123,6 +121,12 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?php
+            echo $this->render('/widgets/applied-applications/users-card', [
+                'applied_applications' => $applied_applications,
+            ]); ?>
         </div>
     </div>
     <div class="row">
