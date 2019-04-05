@@ -18,210 +18,57 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<section>
+<section id="companies">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="heading-style">Companies</div>
             </div>
-            <div class="col-md-6">
-                <div class="type-1">
-                    <div>
-                        <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
-                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
 
         </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="com-review-box onestar-box">
-                    <div class="com-logo">
-                        <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
-                    </div>
-                    <div class="com-name">Empower Youth</div>
-                    <div class="com-loc"><span>5</span> Jobs</div>
-                    <div class="com-dep"><span>5</span> Internships</div>
-                    <div class="starr" data-score="3"></div>
-                    <div class="rating">
-                        <div class="stars">1 </div>
-                        <div class="reviews-rate"> of 1.5k review</div>
-                    </div>
-                    <div class="row">
-                        <div class="cm-btns padd-0">
-                            <div class="col-md-6">
-                                <div class="color-blue">
-                                    <a href="">View Profile</a>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="color-orange">
-                                    <a href="">Read Review</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="row companies-list">
+
         </div>
     </div>
 </section>
 
-<section>
+<section id="jobs">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="heading-style">Jobs</div>
             </div>
-            <div class="col-md-6">
-                <div class="type-1">
-                    <div>
-                        <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
-                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
 
         </div>
-        <div class="row">
-            <div class="col-md-4 col-sm-12 pt-5">
-                <div class="application-card-main">
-                    <span class="application-card-type"><i class="fa fa-inr"></i></span>
-                    <span class="application-card-type"></span>
-                    <div class="col-md-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="">
-                                <img src="">
-                                <canvas class="user-icon" name="" width="80" height="80"
-                                        color="" font="35px"></canvas>
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href=""><h4 class="application-title"></h4></a>
-                            <h5 class="location" data-lat="" data-long="" data-locations=""><i
-                                    class="fa fa-map-marker"></i>&nbsp;</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                    </h4>
-                    <div class="col-md-12">
-                        <h4 class="org_name text-right"></h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
+        <div class="row jobs-list">
+
         </div>
     </div>
 </section>
 
-<section>
+<section id="internships">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="heading-style">Internships</div>
             </div>
-            <div class="col-md-6">
-                <div class="type-1">
-                    <div>
-                        <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
-                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
-        <div class="row">
-            <div class="col-md-4 col-sm-12 pt-5">
-                <div class="application-card-main">
-                    <span class="application-card-type"><i class="fa fa-inr"></i></span>
-                    <span class="application-card-type"></span>
-                    <div class="col-md-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="">
-                                <img src="">
-                                <canvas class="user-icon" name="" width="80" height="80"
-                                        color="" font="35px"></canvas>
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href=""><h4 class="application-title"></h4></a>
-                            <h5 class="location" data-lat="" data-long="" data-locations=""><i
-                                    class="fa fa-map-marker"></i>&nbsp;</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                    </h4>
-                    <div class="col-md-12">
-                        <h4 class="org_name text-right"></h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
+        <div class="row internships-list">
+
         </div>
     </div>
 </section>
 
-<section>
+<section id="posts">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="heading-style">Blogs</div>
             </div>
-            <div class="col-md-6">
-                <div class="type-1">
-                    <div>
-                        <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
-                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="what-popular-box">
-                    <div class="wp-box-icon">
-                        <a href=""><img src="<?= Url::to('@eyAssets/images/pages/blog/img-27.jpg') ?>"></a>
-                        <div class="middle">
-                            <a href="" class="">
-                                <img src="<?= Url::to('@eyAssets/images/pages/blog/audio.png') ?>">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="wn-box-details">
-                        <a href="">
-                            <div class="wn-box-cat">Audio</div>
-                            <div class="wn-box-title">Top 10 Relaxing Position For Adult Womens </div>
-                        </a>
-                        <div class="wp-box-des">Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore
-                            et dolore magna aliqua enim ad minim veniam qui.</div>
-                        <div class=""><a href="" class="button"><span>View Post</span></a></div>
-                    </div>
-                </div>
-            </div>
+        <div class="row blogs-list">
+
         </div>
     </div>
 </section>
@@ -236,6 +83,10 @@ $this->registerCss('
     padding:5px 5px;
     border:2px solid #eee;
     color:#bcbaba
+}
+.wp-box-icon a img {
+    height: 220px;
+    width: 100%;
 }
 .s-input{
     width:94%;
@@ -282,7 +133,6 @@ form input[type="text"]:focus{
     width:100px;
     height:100px;
     margin:0 auto;
-    padding:0 10px;
     border-radius:10px;
     border:2px solid rgba(238,238,238,.5);
     position:relative;
@@ -579,5 +429,213 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
+$('.s-input').val(window.location.search.split('=')[1]);
+
+$(document).on('click', '.s-btn', function(e){
+    e.preventDefault();
+    var query_string = window.location.search;
+    var search_params = new URLSearchParams(query_string);
+    var search_key = $('.s-input').val();
+    search_params.set('keyword', search_key);
+    window.location.search = search_params.toString();
+});
+function fillData(){
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: window.location.pathname,
+        data: {
+            'keyword' : window.location.search.split('=')[1]
+        },
+        success: function(result){
+            result = JSON.parse(result);
+            
+            if(result["jobs"].length){
+                var application_card = $('#application-card').html();
+                var jobs_render = Mustache.render(application_card, result['jobs']);
+                $('.jobs-list').html(jobs_render);
+            }else{
+               $('#jobs').remove(); 
+            }
+            
+            if(result["organizations"].length){
+                var company_card = $('#company-card').html();
+                var company_render = Mustache.render(company_card, result['organizations']);
+                $('.companies-list').html(company_render);
+            }else{
+               $('#companies').remove(); 
+            }
+            
+            if(result["internships"].length){
+                var application_card = $('#application-card').html();
+                var internships_render = Mustache.render(application_card, result['internships']);
+                $('.internships-list').html(internships_render);
+            }else{
+               $('#internships').remove(); 
+            }
+            
+            if(result["posts"].length){
+                var blog_card = $('#blog-card').html();
+                var blog_render = Mustache.render(blog_card, result['posts']);
+                $('.blogs-list').html(blog_render);
+            }else{
+               $('#posts').remove(); 
+            }
+            
+            utilities.initials();
+        }
+    })
+}
+fillData();
+
+$.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
+$('.starr').raty({
+  readOnly: true,
+  hints:['','','','',''],
+ score: function() {
+   return $(this).attr('data-score');
+ }
+});
+
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
+$this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+<script id="application-card" type="text/template">
+    {{#.}}
+    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+             class="application-card-main">
+            {{#city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;{{city}}
+                </span>
+            {{/city}}
+            {{^city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;All India
+                </span>
+            {{/city}}
+            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                <div class="application-card-img">
+                    <a href="{{organization_link}}">
+                        {{#logo}}
+                        <img src="{{logo}}">
+                        {{/logo}}
+                        {{^logo}}
+                        <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                color="{{color}}" font="35px"></canvas>
+                        {{/logo}}
+                    </a>
+                </div>
+                <div class="application-card-description">
+                    <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
+                    {{#salary}}
+                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    {{/salary}}
+                    {{^salary}}
+                    <h5>Negotiable</h5>
+                    {{/salary}}
+                    {{#type}}
+                    <h5>{{type}}</h5>
+                    {{/type}}
+                    {{#experience}}
+                    <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    {{/experience}}
+                </div>
+            </div>
+            {{#last_date}}
+            <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                Last Date to Apply
+                <br>
+                {{last_date}}
+            </h6>
+            <h4 class="col-md-7 org_name text-right pr-10">
+                {{organization_name}}
+            </h4>
+            {{/last_date}}
+            {{^last_date}}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h4 class="org_name text-right">{{organization_name}}</h4>
+            </div>
+            {{/last_date}}
+            <div class="application-card-wrapper">
+                <a href="{{link}}" class="application-card-open">View Detail</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+            </div>
+        </div>
+    </div>
+    {{/.}}
+</script>
+<script id="company-card" type="text/template">
+    {{#.}}
+    <div class="col-md-3">
+        <div class="com-review-box onestar-box">
+            <div class="com-logo">
+                {{#logo}}
+                <img src="{{logo}}">
+                {{/logo}}
+                {{^logo}}
+                <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                color="{{color}}" font="55px"></canvas>
+                {{/logo}}
+            </div>
+            <div class="com-name">{{name}}</div>
+            <div class="com-loc"><span>{{cnt}}</span> Applications</div>
+            {{#average_rating}}
+            <div class="starr" data-score="{{average_rating}}"></div>
+            <div class="rating">
+                <div class="stars">{{average_rating}}</div>
+                <div class="reviews-rate"> of {{reviews_cnt}} review</div>
+            </div>
+            {{/average_rating}}
+            {{^average_rating}}
+            <div class="starr" data-score="0"></div>
+            <div class="rating">
+                <div class="reviews-rate">No reviews</div>
+            </div>
+            {{/average_rating}}
+            <div class="row">
+                 <div class="cm-btns padd-0">
+                    <div class="col-md-6">
+                        <div class="color-blue">
+                             <a href="/{{slug}}">View Profile</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="color-orange">
+                            <a href="/{{slug}}/reviews">Read Review</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/.}}
+</script>
+<script id="blog-card" type="text/template">
+    {{#.}}
+    <div class="col-md-4">
+        <div class="what-popular-box">
+            <div class="wp-box-icon">
+                <a href="{{link}}"><img src="{{image}}"></a>
+            </div>
+            <div class="wn-box-details">
+                <a href="">
+                    <div class="wn-box-title">{{title}}</div>
+                </a>
+                <div class="wp-box-des">{{excerpt}}</div>
+                <div class="">
+                    <a href="{{link}}" class="button">
+                        <span>View Post</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/.}}
+</script>
