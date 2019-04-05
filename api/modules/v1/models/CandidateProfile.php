@@ -121,10 +121,16 @@ class CandidateProfile extends Model
         if ($user->update()) {
             $flag++;
         }
-
-        if (!empty($this->skills)) {
+        
+        if($this->skills != ''){
+            $skills_array = explode(",", $this->skills);
+        }else{
+            $skills_array = [];
+        }
+        
+        if (!empty($skills_array)) {
             $skill_set = [];
-            foreach ($this->skills as $val) {
+            foreach ($skills_array as $val) {
                 $chk_skill = Skills::find()
                     ->distinct()
                     ->select(['skill_enc_id'])
@@ -193,10 +199,16 @@ class CandidateProfile extends Model
                 }
             }
         }
+        
+        if($this->languages != ''){
+            $languages_array = explode(",", $this->languages);
+        }else{
+            $languages_array = [];
+        }
 
-        if (!empty($this->languages)) {
+        if (!empty($languages_array)) {
             $language_set = [];
-            foreach ($this->languages as $val) {
+            foreach ($languages_array as $val) {
                 $chk_language = SpokenLanguages::find()
                     ->distinct()
                     ->select(['language_enc_id'])
