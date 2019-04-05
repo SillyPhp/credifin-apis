@@ -18,7 +18,6 @@
 // });
 var hostname = window.location.hostname;
 var user_profile = 'https://' + hostname + "/" + result["username"];
-console.log(user_profile);
 var popup = new ideaboxPopup({
     background: '#234b8f',
     popupView: 'full',

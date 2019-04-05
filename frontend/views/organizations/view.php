@@ -439,7 +439,7 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
-    'username' => $username
+    'username' => Yii::$app->user->identity->username
 ]);
 echo $this->render('/widgets/mustache/organization-reviews',[
     'org_slug' => $organization['slug']
