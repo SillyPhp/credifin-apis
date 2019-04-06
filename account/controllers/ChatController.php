@@ -2,9 +2,11 @@
 
 namespace account\controllers;
 
+use common\models\AppliedApplications;
 use common\models\ConversationMessages;
 use common\models\ConversationParticipants;
 use common\models\Conversations;
+use common\models\Organizations;
 use common\models\Users;
 use Yii;
 use yii\helpers\Url;
@@ -18,17 +20,73 @@ class ChatController extends Controller{
     public function actionSearchUser(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $key =  Yii::$app->request->post('user');
-            $result = Users::find()
-                ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
-                ->where([
-                    'or',
-                    ['like', 'first_name', $key],
-                ])
-                ->andWhere(['!=', 'user_enc_id',  Yii::$app->user->identity->user_enc_id ])
-                ->andWhere(['is_deleted' => 0])
-                ->asArray()
-                ->all();
-            return json_encode($result);
+
+            if(Yii::$app->user->identity->organization->organization_enc_id){
+                $applied_ids = [];
+                $applied_candidates = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.created_by'])
+                    ->joinWith(['applicationEnc b' => function($x){
+                        $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                    }], false)
+                    ->where(['a.is_deleted' => 0])
+                    ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                    ->groupBy(['a.created_by'])
+                    ->asArray()
+                    ->all();
+                foreach ($applied_candidates as $a){
+                    array_push($applied_ids, $a['created_by']);
+                }
+                $applicable_users = Users::find()
+                    ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                    ->where(['in', 'user_enc_id', $applied_ids])
+                    ->andWhere([
+                        'or',
+                        ['like', 'first_name', $key],
+                    ])
+                    ->asArray()
+                    ->all();
+                return json_encode($applicable_users);
+
+            }else{
+                $organization_ids = [];
+                $applied_applications = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.applied_application_enc_id', 'a.application_enc_id', 'b.organization_enc_id'])
+                    ->joinWith(['applicationEnc b' => function($x){
+                        $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                    }], false)
+                    ->where(['a.is_deleted' => 0])
+                    ->andWhere(['a.status' => 'Accepted'])
+                    ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->groupBy(['b.organization_enc_id'])
+                    ->asArray()
+                    ->all();
+                foreach ($applied_applications as $a){
+                    array_push($organization_ids, $a['organization_enc_id']);
+                }
+                $applicable_organizations = Organizations::find()
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->where(['in', 'organization_enc_id', $organization_ids])
+                    ->andWhere([
+                        'or',
+                        ['like', 'name', $key],
+                    ])
+                    ->asArray()
+                    ->all();
+                return json_encode($applicable_organizations);
+            }
+//            $result = Users::find()
+//                ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+//                ->where([
+//                    'or',
+//                    ['like', 'first_name', $key],
+//                ])
+//                ->andWhere(['!=', 'user_enc_id',  Yii::$app->user->identity->user_enc_id ])
+//                ->andWhere(['is_deleted' => 0])
+//                ->asArray()
+//                ->all();
+//            return json_encode($result);
         }
     }
 
@@ -40,7 +98,16 @@ class ChatController extends Controller{
                 ->where(['user_enc_id' => $id])
                 ->asArray()
                 ->all();
-            return json_encode($result);
+            if(count($result) == 0){
+                $r = Organizations::find()
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->where(['organization_enc_id' => $id])
+                    ->asArray()
+                    ->all();
+                return json_encode($r);
+            }else{
+                return json_encode($result);
+            }
         }
     }
 
@@ -95,16 +162,115 @@ class ChatController extends Controller{
         }
     }
 
-    public function actionGetRandomValues(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
-            $result = Users::find()
-                ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
-                ->where(['is_deleted' => 0])
-                ->orderBy(new Expression('rand()'))
+    public function actionTest(){
+      if(Yii::$app->user->identity->organization->organization_enc_id){
+            $applied_ids = [];
+            $applied_candidates = AppliedApplications::find()
+                ->alias('a')
+                ->select(['a.created_by'])
+                ->joinWith(['applicationEnc b' => function($x){
+                    $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                }], false)
+                ->where(['a.is_deleted' => 0])
+                ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->groupBy(['a.created_by'])
                 ->limit(10)
                 ->asArray()
                 ->all();
-            return json_encode($result);
+            foreach ($applied_candidates as $a){
+                array_push($applied_ids, $a['created_by']);
+            }
+            $applicable_users = Users::find()
+              ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+              ->where(['in', 'user_enc_id', $applied_ids])
+              ->asArray()
+              ->all();
+
+      }else{
+            $organization_ids = [];
+            $applied_applications = AppliedApplications::find()
+                                    ->alias('a')
+                                    ->select(['a.applied_application_enc_id', 'a.application_enc_id', 'b.organization_enc_id'])
+                                    ->joinWith(['applicationEnc b' => function($x){
+                                        $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                                    }], false)
+                                    ->where(['a.is_deleted' => 0])
+                                    ->andWhere(['a.status' => 'Accepted'])
+                                    ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                                    ->groupBy(['b.organization_enc_id'])
+                                    ->limit(10)
+                                    ->asArray()
+                                    ->all();
+          foreach ($applied_applications as $a){
+              array_push($organization_ids, $a['organization_enc_id']);
+          }
+          $applicable_organizations = Organizations::find()
+              ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+              ->where(['in', 'organization_enc_id', $organization_ids])
+              ->asArray()
+              ->all();
+      }
+    }
+
+    public function actionGetRandomValues(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            if(Yii::$app->user->identity->organization->organization_enc_id){
+                $applied_ids = [];
+                $applied_candidates = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.created_by'])
+                    ->joinWith(['applicationEnc b' => function($x){
+                        $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                    }], false)
+                    ->where(['a.is_deleted' => 0])
+                    ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                    ->groupBy(['a.created_by'])
+                    ->limit(10)
+                    ->asArray()
+                    ->all();
+                foreach ($applied_candidates as $a){
+                    array_push($applied_ids, $a['created_by']);
+                }
+                $applicable_users = Users::find()
+                    ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                    ->where(['in', 'user_enc_id', $applied_ids])
+                    ->asArray()
+                    ->all();
+                return json_encode($applicable_users);
+
+            }else{
+                $organization_ids = [];
+                $applied_applications = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['a.applied_application_enc_id', 'a.application_enc_id', 'b.organization_enc_id'])
+                    ->joinWith(['applicationEnc b' => function($x){
+                        $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
+                    }], false)
+                    ->where(['a.is_deleted' => 0])
+                    ->andWhere(['a.status' => 'Accepted'])
+                    ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->groupBy(['b.organization_enc_id'])
+                    ->limit(10)
+                    ->asArray()
+                    ->all();
+                foreach ($applied_applications as $a){
+                    array_push($organization_ids, $a['organization_enc_id']);
+                }
+                $applicable_organizations = Organizations::find()
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->where(['in', 'organization_enc_id', $organization_ids])
+                    ->asArray()
+                    ->all();
+                return json_encode($applicable_organizations);
+            }
+//            $result = Users::find()
+//                ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+//                ->where(['is_deleted' => 0])
+//                ->orderBy(new Expression('rand()'))
+//                ->limit(10)
+//                ->asArray()
+//                ->all();
+//            return json_encode($result);
         }
     }
 

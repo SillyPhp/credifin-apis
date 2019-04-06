@@ -2,8 +2,8 @@
 use yii\helpers\Url;
 ?>
 
-<input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user">
-<input type="hidden" value="<?= Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>" id="current-name">
+<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->organization_enc_id : Yii::$app->user->identity->user_enc_id ?>" id="current-user">
+<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->name : Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>" id="current-name">
 
 <div id="chat-icon">
     <button type="button" id="trigger"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png')?>"></button>
@@ -628,8 +628,12 @@ $script = <<<JS
         });
         
         if(users_list.childElementCount <= 1){
-            users_list.children[0].remove();
+            if(users_list.children[0]){
+                users_list.children[0].remove();
+            }
         }
+        
+        console.log(result['response']);
         
         var template = $('#users').html();
         var rendered = Mustache.render(template, result['response']);
