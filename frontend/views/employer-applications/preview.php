@@ -34,6 +34,10 @@ if (!empty($object->placement_loc))
         $placement_locations[$key]['name'] = $val['name'];
     }
 }
+if ($object->type=='Work From Home')
+{
+    $placement_locations = [];
+}
 if (!empty($object->checkboxArray))
 {
     $j = json_decode($object->checkboxArray);
