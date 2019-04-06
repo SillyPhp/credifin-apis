@@ -633,8 +633,6 @@ $script = <<<JS
             }
         }
         
-        console.log(result['response']);
-        
         var template = $('#users').html();
         var rendered = Mustache.render(template, result['response']);
         $('#users-list').prepend(rendered);

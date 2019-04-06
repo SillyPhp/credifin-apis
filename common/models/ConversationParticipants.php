@@ -11,6 +11,7 @@ use Yii;
  * @property string $participant_enc_id Participant Encrypted ID
  * @property string $conversation_enc_id Foreign Key to Conversations Table
  * @property string $user_enc_id Foreign Key to Users Table
+ * @property string $organization_enc_id
  * @property string $created_on On which date Participant information was added to database
  * @property string $created_by By which User Participant information was added
  * @property string $last_updated_on On which date Participant information was updated
@@ -38,9 +39,9 @@ class ConversationParticipants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['participant_enc_id', 'conversation_enc_id', 'user_enc_id', 'created_by'], 'required'],
+            [['participant_enc_id', 'conversation_enc_id', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['participant_enc_id', 'conversation_enc_id', 'user_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['participant_enc_id', 'conversation_enc_id', 'user_enc_id', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['participant_enc_id'], 'unique'],
             [['conversation_enc_id', 'user_enc_id'], 'unique', 'targetAttribute' => ['conversation_enc_id', 'user_enc_id']],
             [['conversation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Conversations::className(), 'targetAttribute' => ['conversation_enc_id' => 'conversation_enc_id']],

@@ -274,13 +274,21 @@ class ChatController extends Controller{
         }
     }
 
-    private function createConversation($uniqueid, $sender, $receiver){
+    private function createConversation($uniqueid, $sender, $receiver, $sender_type, $sender_user_id, $receiver_type){
         $conversations = new Conversations();
         $conversations->conversation_enc_id = $uniqueid;
-        $conversations->created_by = $sender;
+        if($sender_type) {
+            $conversations->created_by = $sender_user_id;
+        }else{
+            $conversations->created_by = $sender;
+        }
         if($conversations->save()){
-            $saveSender = $this->addToParticipants($sender, $conversations->conversation_enc_id);
-            $saveReceiver = $this->addToParticipants($receiver, $conversations->conversation_enc_id);
+            if($sender_type) {
+                $saveSender = $this->addToParticipants($sender_user_id, $conversations->conversation_enc_id, $sender_type);
+            }else{
+                $saveSender = $this->addToParticipants($sender, $conversations->conversation_enc_id, $sender_type);
+            }
+            $saveReceiver = $this->addToParticipants($receiver, $conversations->conversation_enc_id, $receiver_type);
             if($saveSender && $saveReceiver){
                 return true;
             }
@@ -288,7 +296,7 @@ class ChatController extends Controller{
         }
     }
 
-    private function addToParticipants($user_id, $cid){
+    private function addToParticipants($user_id, $cid, $type){
         $utilitiesModel = new Utilities();
         $participants = new ConversationParticipants();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -303,6 +311,12 @@ class ChatController extends Controller{
         }
     }
 
+    private function organizationExists($id){
+        return Organizations::find()
+            ->where(['organization_enc_id' => $id])
+            ->exists();
+    }
+
     public function actionSaveMessages(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $sender = Yii::$app->request->post('sender');
@@ -310,8 +324,21 @@ class ChatController extends Controller{
             $message = Yii::$app->request->post('message');
             $uniqueid = Yii::$app->request->post('uniqueid');
             $messagekey = Yii::$app->request->post('key');
-
             $message = Html::encode($message);
+
+            $sender_type = false;
+            $receiver_type = false;
+
+            $sender_check = $this->organizationExists($sender);
+            if($sender_check){
+                $sender_user_id = Yii::$app->user->identity->user_enc_id;
+                $sender_type = true;
+            }
+
+            $receiver_check = $this->organizationExists($receiver);
+            if($receiver_check){
+               $receiver_type = true;
+            }
 
             $success = [
                 'code' => 200,
@@ -327,17 +354,39 @@ class ChatController extends Controller{
                             ->exists();
 
             if(!$conversationExists){
-                if(!$this->createConversation($uniqueid, $sender, $receiver)){
+                if(!$this->createConversation($uniqueid, $sender, $receiver, $sender_type, $sender_user_id, $receiver_type)){
                     return json_encode($failure);
                 }
             }
 
-            $pid = ConversationParticipants::find()
-                        ->select(['participant_enc_id'])
-                        ->where(['conversation_enc_id' => $uniqueid])
-                        ->andWhere(['user_enc_id' => $sender])
-                        ->asArray()
-                        ->one();
+            if($sender_type) {
+                $pid = ConversationParticipants::find()
+                    ->select(['participant_enc_id'])
+                    ->where(['conversation_enc_id' => $uniqueid])
+                    ->andWhere(['user_enc_id' => $sender_user_id])
+                    ->asArray()
+                    ->one();
+
+                if(count($pid) == 0){
+                    if(!$this->addToParticipants($sender_user_id, $uniqueid)){
+                        return json_encode($failure);
+                    }else{
+                        $pid = ConversationParticipants::find()
+                            ->select(['participant_enc_id'])
+                            ->where(['conversation_enc_id' => $uniqueid])
+                            ->andWhere(['user_enc_id' => $sender_user_id])
+                            ->asArray()
+                            ->one();
+                    }
+                }
+            }else{
+                $pid = ConversationParticipants::find()
+                    ->select(['participant_enc_id'])
+                    ->where(['conversation_enc_id' => $uniqueid])
+                    ->andWhere(['user_enc_id' => $sender])
+                    ->asArray()
+                    ->one();
+            }
 
             if(!$this->saveMessage($uniqueid, $messagekey, $pid['participant_enc_id'], $sender, $message)){
                 return json_encode($failure);
