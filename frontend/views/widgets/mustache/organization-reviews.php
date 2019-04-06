@@ -10,12 +10,12 @@ $link = Url::to($org_slug.'/reviews', true);
             <div class="col-md-2 col-sm-2">
                 {{#show_user_details}}
                 <div class="uicon">
-                    {{#user_logo}}
-                    <img src="<?= Url::to('@eyAssets/images/pages/review/user2.png') ?>">
-                    {{/user_logo}}
-                    {{^user_logo}}
+                    {{#image}}
+                    <img src="{{image}}">
+                    {{/image}}
+                    {{^image}}
                     <canvas class="user-icon" name="{{first_name}} {{last_name}}" color="{{initials_color}}" width="80" height="80" font="35px"></canvas>
-                    {{/user_logo}}
+                    {{/image}}
                 </div>
                 <div class="uname">{{first_name}} {{last_name}}</div>
                 {{/show_user_details}}
@@ -130,6 +130,7 @@ function getReviews() {
         url : '/organizations/get-reviews?slug=' + slug,
         success: function(response) {
             if(response.status === 200) {
+                console.log(response.reviews);
                 var reviews_data = $('#organization-reviews').html();
                 $("#org-reviews").html(Mustache.render(reviews_data, response.reviews));
                 utilities.initials();
@@ -141,6 +142,8 @@ function getReviews() {
                     return $(this).attr('data-score');
                   }
                 });
+            } else if(response.status === 201){
+                $('.viewbtn').hide();
             }
         }
     });
