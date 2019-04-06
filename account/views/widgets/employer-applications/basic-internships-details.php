@@ -5,7 +5,15 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-4">
         <div class="select">
-            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false); ?>
+            <?php if ($type == 'Edit_Internships'||$type=='Clone_Internships') {
+                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
+            }
+            else
+            {
+                echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+            }
+            ?>
         </div>
     </div>
     <div class="col-md-4">
@@ -228,7 +236,7 @@ function pre_placement(pre) {
          $('#pre_package').hide();
         }
 }
-if (doc_type=='Clone_Internships') 
+if (doc_type=='Clone_Internships'||doc_type=='Edit_Internships') 
     {
         wage_types2('$model->wage_type');
         pre_placement('$model->pre_placement_offer');
@@ -280,31 +288,6 @@ function wage_types(stipendtyp)
         $('#fixed_wage').val('');
         }
 }
-$(document).on('click','#weekdays input',function()
-    {
-     if ($('#weekday-5').is(':checked'))
-        {
-         $('.field-weekoptsat').css('display','block');
-         $('.sat').css('display','block');
-        
-        }
-     else if ($('#weekday-5').is(':unchecked'))
-        {
-          $('.field-weekoptsat').css('display','none');
-          $('.sat').css('display','none');
-        }
-    if($('#weekday-6').is(':checked'))
-        {
-          $('.field-weekoptsund').css('display','block');
-          $('.sun').css('display','block');
-        }
-        
-     else if($('#weekday-6').is(':unchecked'))
-        { 
-          $('.field-weekoptsund').css('display','none');
-          $('.sun').css('display','none');
-        }
-   });
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

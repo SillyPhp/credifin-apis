@@ -60,6 +60,8 @@ class ApplicationForm extends Model
     public $primaryfield;
     public $internshiptitle;
     public $fieldofwork;
+    public $mainfield;
+    public $pref_indus;
     public $internshiptype;
     public $cities;
     public $specialskillsrequired;
@@ -112,6 +114,8 @@ class ApplicationForm extends Model
         return [
             [[
                 'questions',
+                'pref_indus',
+                'mainfield',
                 'primaryfield',
                 'workfromhome',
                 'is_online_interview',
@@ -370,7 +374,7 @@ class ApplicationForm extends Model
             $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->pre_placement_offer = (($this->pre_placement_package) ? str_replace(',', '', $this->pre_placement_package) : null);
-            $applicationoptionsModel->has_placement_offer = (($this->pre_placement_offer) ? str_replace(',', '', $this->pre_placement_offer) : null);
+            $applicationoptionsModel->has_placement_offer = $this->pre_placement_offer;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
             $applicationoptionsModel->working_days = json_encode($this->weekdays);
             $applicationoptionsModel->saturday_frequency = $weekoptionsat;

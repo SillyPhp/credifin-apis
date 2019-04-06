@@ -5,7 +5,15 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false); ?>
+            <?php if ($type == 'Edit_Jobs'||$type=='Clone_Jobs') {
+                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
+            }
+            else
+            {
+               echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+            }
+             ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -15,7 +23,11 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title', 'disabled' => true])->label(false) ?>
+    <?php if ($type == 'Edit_Jobs'||$type=='Clone_Jobs') {
+        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','readonly' => true])->label(false);
+    } else {
+        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','disabled' => true])->label(false);
+    } ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -25,7 +37,11 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','disabled' => true])->label(false); ?>
+    <?php if ($type == 'Edit_Jobs'||$type=='Clone_Jobs') {
+        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','readonly' => true])->label(false);
+    } else {
+        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','disabled' => true])->label(false);
+    }?>
         </div>
     </div>
     <div class="col-md-3">
@@ -144,7 +160,17 @@ use kartik\widgets\DatePicker;
         ?>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false); ?>
+        <?php
+        if ($type=='Clone_Jobs'||$type=='Edit_Jobs')
+        {
+            echo $form->field($model, 'pref_indus')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
+            echo $form->field($model, 'industry',['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
+        }
+        else
+            {
+              echo $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
+            }
+        ?>
     </div>
 </div>
 <div class="row">
@@ -265,32 +291,7 @@ function wage_type(sl_type)
         $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
-}     
-   $(document).on('click','#weekdays input',function()
-    {
-     if ($('#weekday-5').is(':checked'))
-        {
-         $('.field-weekoptsat').css('display','block');
-         $('.sat').css('display','block');
-        
-        }
-     else if ($('#weekday-5').is(':unchecked'))
-        {
-          $('.field-weekoptsat').css('display','none');
-          $('.sat').css('display','none');
-        }
-    if($('#weekday-6').is(':checked'))
-        {
-          $('.field-weekoptsund').css('display','block');
-          $('.sun').css('display','block');
-        }
-        
-     else if($('#weekday-6').is(':unchecked'))
-        { 
-          $('.field-weekoptsund').css('display','none');
-          $('.sun').css('display','none');
-        }
-   })  
+}
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,

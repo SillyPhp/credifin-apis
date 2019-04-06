@@ -25,7 +25,7 @@ class ApplicationDataProvider extends Model
         $object = EmployerApplications::find()
             ->alias('a')
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.application_enc_id', 'b.interview_start_date', 'b.interview_end_date', 'a.interview_process_enc_id', 'b.pre_placement_offer', 'b.has_placement_offer', 'b.has_online_interview', 'b.has_questionnaire', 'b.has_benefits', 'b.wage_duration', 'b.wage_type', 'b.min_wage', 'b.max_wage', 'b.fixed_wage', 'b.wage_type', 'a.experience', 'a.preferred_industry', 'a.preferred_gender', 'a.description', 'a.type', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'l.category_enc_id primaryfield', 'm.name titles', 'n.designation_enc_id', 'n.designation',
+            ->select(['a.application_enc_id', 'b.interview_start_date','b.pre_placement_offer','b.has_placement_offer', 'b.interview_end_date', 'a.interview_process_enc_id', 'b.pre_placement_offer', 'b.has_placement_offer', 'b.has_online_interview', 'b.has_questionnaire', 'b.has_benefits', 'b.wage_duration', 'b.wage_type', 'b.min_wage', 'b.max_wage', 'b.fixed_wage', 'b.wage_type', 'a.experience', 'a.preferred_industry', 'a.preferred_gender', 'a.description', 'a.type', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'l.category_enc_id primaryfield', 'm.name titles', 'n.designation_enc_id', 'n.designation',
                 '(CASE
                 WHEN b.wage_type = "Unpaid" THEN 0
                 WHEN b.wage_type = "Fixed" THEN 1
@@ -87,6 +87,7 @@ class ApplicationDataProvider extends Model
         $model->title = $object['titles'];
         $model->designations = $object['designation'];
         $model->primaryfield = $object['primaryfield'];
+        $model->mainfield = $object['primaryfield'];
         $model->type = $object['type'];
         $model->gender = $object['preferred_gender'];
         $model->from = date("g:i a", strtotime($object['timings_from']));
@@ -444,7 +445,7 @@ class ApplicationDataProvider extends Model
         $applicationoptionsModel->has_online_interview = $has_online_int;
         $applicationoptionsModel->has_questionnaire = $model->questionnaire_selection;
         $applicationoptionsModel->pre_placement_offer = (($model->pre_placement_package) ? str_replace(',', '', $model->pre_placement_package) : null);
-        $applicationoptionsModel->has_placement_offer = (($model->pre_placement_offer) ? str_replace(',', '', $model->pre_placement_offer) : null);
+        $applicationoptionsModel->has_placement_offer = $model->pre_placement_offer;
         $applicationoptionsModel->has_benefits = $model->benefit_selection;
         $applicationoptionsModel->working_days = json_encode($model->weekdays);
         $applicationoptionsModel->saturday_frequency = $weekoptionsat;
