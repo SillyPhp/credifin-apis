@@ -132,7 +132,7 @@ class JobsController extends Controller
                     'status' => true,
                     'active' => $count['active']
                 ];
-                if ($count['active']>1)
+                if ($count['active']>=1)
                 {
                     $obj = AppliedApplications::find()->where(['applied_application_enc_id'=>$app_id])->one();
                     $obj->status = 'Accepted';
