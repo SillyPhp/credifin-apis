@@ -1,0 +1,1426 @@
+<?php
+use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+$radios_array = [1=>1,2=>2,3=>3,4=>4,5=>5];
+Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
+$overall_avg = array_sum($stats)/count($stats);
+$round_avg = round($overall_avg);
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details->logo_location . DIRECTORY_SEPARATOR . $org_details->logo;
+?>
+<section class="rh-header">
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
+                <div class="logo-box">
+                    <div class="logo">
+                        <?php
+                        if (!empty($org_details->logo)) {
+                            ?>
+                            <img src="<?= $logo_image; ?>">
+                            <?php
+                        } else {
+                            ?>
+                            <canvas class="user-icon" name="<?= $org_details->name; ?>" width="125" height="125"
+                                    color="" font="55px"></canvas>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="com-name"><?= $org_details->name; ?></div>
+                <div class="com-rating-1">
+                    <?php for ($i=1;$i<=5;$i++){ ?>
+                        <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
+                    <?php } ?>
+                </div>
+                <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="header-bttns">
+                    <div class="header-bttns-flex">
+                        <?php if (!Yii::$app->user->isGuest){ ?>
+                        <?php if (!empty($follow) && $follow['followed'] == 1) {
+                            ?>
+                            <div class="follow-bttn hvr-icon-pulse">
+                                <button type="button" class="follow" value="<?= $org_details->organization_enc_id; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
+                            </div>
+                            <?php
+                        } else  {
+                            ?>
+                            <div class="follow-bttn hvr-icon-pulse">
+                                <button type="button" class="follow" value="<?= $org_details->organization_enc_id; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                            </div>
+                        <?php }} else { ?>
+                            <div class="follow-bttn hvr-icon-pulse">
+                                <button type="button" data-toggle="modal" data-target="#loginModal"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                            </div>
+                        <?php } ?>
+                        <div class="wr-bttn hvr-icon-pulse">
+                            <?php if (!Yii::$app->user->isGuest){
+                                if(!empty($edit)){ ?>
+                                   <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Edit Your Review</a>
+                               <?php } else { ?>
+                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                            <?php } } else{ ?>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="col-md-12 cp-center no-padd">
+                        <div class="cp-bttn hvr-icon-pulse">
+                            <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="rh-body">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="heading-style"><?= $org_details->name; ?> Reviews </h1>
+                <?php if (!empty($reviews)){ ?>
+                <?php foreach ($reviews as $review){
+                    ?>
+                    <div class="re-box refirst">
+                        <div class="col-md-2 col-sm-2">
+                            <?php if ($review['show_user_details']==1){ ?>
+                            <div class="uicon">
+                                <?php
+                                if (!empty($review['user_logo_location']) || !empty($review['user_logo'])):
+                                $image = Yii::$app->params->upload_directories->users->image . $review['user_logo_location'] . DIRECTORY_SEPARATOR . $review['user_logo']; ?>
+                                <img src="<?= $image; ?>">
+                                <?php else: ?>
+                                <?php
+                                    $first = $review['first_name'];
+                                    $last = $review['last_name'];
+                                    $name = strtoupper($first[0].''.$last[0]);
+                                    $color = ltrim($review['initials_color'],'#');
+                                    $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
+                                ?>
+                                <span><img src="<?= $image ?>" class="preview_img" alt="" width="50" height="50"></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="uname"><?= $review['first_name'].' '.$review['last_name']; ?></div>
+                            <?php } else { ?>
+                            <div class="uicon">
+                                <img src="https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg" width="50" height="50">
+                            </div>
+                             <div class="uname">Anonymous</div>
+                            <?php } ?>
+                        </div>
+                        <?php $average = $review['average'];
+                        ?>
+                        <div class="col-md-10 col-sm-10 user-review-main">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="com-rating">
+                                    <?php  for($i=1; $i<=5; $i++)
+                                    { ?>
+                                        <i class="fa fa-star <?= (($i<=$average) ? 'active' : '') ?>"></i>
+                                    <?php } ?>
+                                    <div class="num-rate"><?= $average.'/5'; ?></div>
+                                    <div class="view-detail-btn"><button type="button">View Detailed Review</button> </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="re-bttn">
+                                    <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
+                                </div>
+                                <div class="publish-date">Published on <?= date('d-m-Y',strtotime($review['created_on'])); ?></div>
+                                <div class="emp-duration"><?= (($review['is_current_employee']) ? 'Current Employee' : 'Former Employee'); ?></div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="utitle">
+                                    <?= $review['profile'] ?>
+                                </div>
+                            </div>
+                            <div class=" col-md-12 user-saying">
+                                <div class="uheading">Likes</div>
+                                <div class="utext">
+                                    <?= Html::encode($review['likes']); ?>
+                                </div>
+                                <div class="uheading padd-10">Dislikes</div>
+                                <div class="utext">
+                                    <?= Html::encode($review['dislikes']); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 user-rating">
+                                    <div class="ur-bg padd-lr-5">
+                                        <div class="urating"><?= $review['job_security'] ?>/5</div>
+                                        <div class="uratingtitle">Job Security</div>
+                                    </div>
+                                    <div class="ur-bg light-bg">
+                                        <div class="urating"><?= $review['growth'] ?>/5</div>
+                                        <div class="uratingtitle">Career Growth</div>
+                                    </div>
+                                    <div class="ur-bg">
+                                        <div class="urating"><?= $review['organization_culture'] ?>/5</div>
+                                        <div class="uratingtitle">Company Culture</div>
+                                    </div>
+                                    <div class="ur-bg light-bg">
+                                        <div class="urating"><?= $review['compensation'] ?>/5</div>
+                                        <div class="uratingtitle">Salary & Benefits</div>
+                                    </div>
+                                    <div class="ur-bg">
+                                        <div class="urating"><?= $review['work'] ?>/5</div>
+                                        <div class="uratingtitle">Work Satisfaction</div>
+                                    </div>
+                                    <div class="ur-bg light-bg">
+                                        <div class="urating"><?= $review['work_life'] ?>/5</div>
+                                        <div class="uratingtitle">Work-Life Balance </div>
+                                    </div>
+                                    <div class="ur-bg">
+                                        <div class="urating"><?= $review['skill_development'] ?>/5</div>
+                                        <div class="uratingtitle">Skill Development</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <?php
+                                $link = Url::to($org_details->slug.'/reviews', true);
+                                ?>
+                                <div class="ushare">
+                                    <div class="ushare-heading">Share</div>
+                                    <i class="fa fa-facebook-square" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u='.$link.''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                                    <i class="fa fa-twitter-square" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                                    <i class="fa fa-linkedin-square" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                                    <i class="fa fa-whatsapp wa_icon_hover" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="usefull-bttn pull-right">
+                                    <div class="use-bttn">
+                                        <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
+                                    </div>
+                                    <div class="notuse-bttn">
+                                        <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                <?php } ?>
+                    <div class="col-md-offset-2 load-more-bttn">
+                        <button type="button" class="load_reviews">Load More</button>
+                    </div>
+                <?php } else { ?>
+                <h1 class="heading-style">Currently No Reviews Found For This Company.. !!</h1>
+               <?php } ?>
+            </div>
+            <div class="col-md-4">
+                <div class="review-summary">
+                    <h1 class="heading-style">Overall Reviews</h1>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs-main <?= (($reviews) ? '': 'fade_background') ?>">
+                                <div class="rating-large"><?= $round_avg ?>/5</div>
+                                <div class="com-rating-1">
+                                    <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Job Security</div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <i class="fa fa-star <?=(($stats['job_avg']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Career growth </div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                            <i class="fa fa-star <?=(($stats['growth_avg']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Company culture </div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                            <i class="fa fa-star <?=(($stats['avg_cult']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Salary & Benefits</div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                            <i class="fa fa-star <?=(($stats['avg_compensation']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Work Satisfaction</div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
+                                    <div class="threestar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                            <i class="fa fa-star <?=(($stats['avg_work']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Work-Life Balance</div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                            <i class="fa fa-star <?=(($stats['avg_work_life']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-4">
+                            <div class="rs1">
+                                <div class="re-heading">Skill development </div>
+                                <div class="summary-box">
+                                    <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
+                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
+                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                            <i class="fa fa-star <?=(($stats['avg_skill']<$i) ?  '': 'active') ?>"></i>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="col-md-10 col-md-offset-2 col-sm-11 col-sm-offset-1 no-padd">-->
+<!--                    <div class="filter-review">-->
+<!--                        <div class="oa-review">Filter Reviews</div>-->
+<!--                        <div class="form-group form-md-line-input form-md-floating-label">-->
+<!--                            <input type="text" class="form-control" id="form_control_1">-->
+<!--                            <label for="form_control_1">Job Profile</label>-->
+<!--                            <span class="help-block">Eg: Web Developer</span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group form-md-line-input form-md-floating-label">-->
+<!--                            <input type="text" class="form-control" id="form_control_1">-->
+<!--                            <label for="form_control_1">Location</label>-->
+<!--                            <span class="help-block">Eg: Ludhiana</span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group form-md-line-input form-md-floating-label">-->
+<!--                            <input type="text" class="form-control" id="form_control_1">-->
+<!--                            <label for="form_control_1">Division</label>-->
+<!--                            <span class="help-block">Eg: IT, Finance, Design</span>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <div class="filter-bttn">-->
+<!--                                <button type="button">Filter</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+</section>
+<div id="report" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                <h4 class="modal-title">Reason for reporting?</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group form-md-radios">
+                    <label></label>
+                    <div class="md-radio-list">
+                        <div class="md-radio">
+                            <input type="radio" id="radio1" name="radio1" class="md-radiobtn">
+                            <label for="radio1">
+                                <span class="inc"></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                                This post contains hateful, violent, or inappropriate content </label>
+                        </div>
+                        <div class="md-radio">
+                            <input type="radio" id="radio2" name="radio1" class="md-radiobtn">
+                            <label for="radio2">
+                                <span class="inc"></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                                This post contains advertising or spam</label>
+                        </div>
+                        <div class="md-radio">
+                            <input type="radio" id="radio3" name="radio1" class="md-radiobtn">
+                            <label for="radio3">
+                                <span class="inc"></span>
+                                <span class="check"></span>
+                                <span class="box"></span> Off-topic </label>
+                        </div>
+                        <div class="md-radio">
+                            <input type="radio" id="radio4" name="radio1" class="md-radiobtn">
+                            <label for="radio4">
+                                <span class="inc"></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                                This post contains conflicts of interest </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="edit_review" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Your Review</h4>
+            </div>
+            <div class="modal-body">
+            <?php
+            $form = ActiveForm::begin([
+            'id' => 'edit-review-form',
+            'action'=>Url::to(['/organizations/edit-review']),
+            'fieldConfig' => [
+                'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+            ]
+            ]);
+            ?>
+             <div class="row">
+                 <div class="col-md-6">
+                     <?= $form->field($editReviewForm, 'identity')->dropDownList([0=>Anonymous,1=>Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name])->label('Post As'); ?>
+                 </div>
+                 <div class="col-md-6">
+                     <?= $form->field($editReviewForm, 'dept')->dropDownList($primary_cat)->label('Department'); ?>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="col-md-3 col-md-offset-1">
+                     <label class="control-label padding_top">Career Growth</label>
+                 </div>
+                 <div class="col-md-8">
+                     <div class="star-rating1">
+                         <fieldset>
+                             <?=
+                             $form->field($editReviewForm, 'career_growth',['template'=>'{input}{error}'])->inline()->radioList([
+                                 5 => '5 stars',
+                                 4 => '4 stars',
+                                 3 => '3 stars',
+                                 2 => '2 stars',
+                                 1 => '1 stars',
+                             ], [
+                                 'item' => function($index, $label, $name, $checked, $value) {
+                                     $return = '<input type="radio" id="career'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                     $return .= '<label for="career'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                     return $return;
+                                 }
+                             ])->label(false);
+                             ?>
+                         </fieldset>
+                     </div>
+                 </div>
+             </div>
+               <div class="row">
+                 <div class="col-md-3 col-md-offset-1">
+                     <label class="control-label padding_top">Company Culture</label>
+                 </div>
+                   <div class="col-md-8">
+                     <div class="star-rating1">
+                         <fieldset>
+                             <?=
+                             $form->field($editReviewForm, 'compnay_culture',['template'=>'{input}{error}'])->inline()->radioList([
+                                 5 => '5 stars',
+                                 4 => '4 stars',
+                                 3 => '3 stars',
+                                 2 => '2 stars',
+                                 1 => '1 stars',
+                             ], [
+                                 'item' => function($index, $label, $name, $checked, $value) {
+                                     $return = '<input type="radio" id="compnay_culture'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                     $return .= '<label for="compnay_culture'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                     return $return;
+                                 }
+                             ])->label(false);
+                             ?>
+                         </fieldset>
+                     </div>
+                 </div>
+               </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <label class="control-label padding_top">Salary Benefits</label>
+                    </div>
+                    <div class="col-md-8">
+                     <div class="star-rating1">
+                         <fieldset>
+                             <?=
+                             $form->field($editReviewForm, 'salary_benefits',['template'=>'{input}{error}'])->inline()->radioList([
+                                 5 => '5 stars',
+                                 4 => '4 stars',
+                                 3 => '3 stars',
+                                 2 => '2 stars',
+                                 1 => '1 stars',
+                             ], [
+                                 'item' => function($index, $label, $name, $checked, $value) {
+                                     $return = '<input type="radio" id="salary_benefits'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                     $return .= '<label for="salary_benefits'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                     return $return;
+                                 }
+                             ])->label(false);
+                             ?>
+                         </fieldset>
+                     </div>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="col-md-3 col-md-offset-1">
+                     <label class="control-label padding_top">Work satisfaction</label>
+                 </div>
+                 <div class="col-md-8">
+                     <div class="star-rating1">
+                         <fieldset>
+                             <?=
+                             $form->field($editReviewForm, 'work_satisfaction',['template'=>'{input}{error}'])->inline()->radioList([
+                                 5 => '5 stars',
+                                 4 => '4 stars',
+                                 3 => '3 stars',
+                                 2 => '2 stars',
+                                 1 => '1 stars',
+                             ], [
+                                 'item' => function($index, $label, $name, $checked, $value) {
+                                     $return = '<input type="radio" id="work_satisfaction'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                     $return .= '<label for="work_satisfaction'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                     return $return;
+                                 }
+                             ])->label(false);
+                             ?>
+                         </fieldset>
+                     </div>
+                 </div>
+             </div>
+              <div class="row">
+                 <div class="col-md-3 col-md-offset-1">
+                     <label class="control-label padding_top">Work-Life Balance</label>
+                 </div>
+                  <div class="col-md-8">
+                     <div class="star-rating1">
+                         <fieldset>
+                             <?=
+                             $form->field($editReviewForm, 'work_life',['template'=>'{input}{error}'])->inline()->radioList([
+                                 5 => '5 stars',
+                                 4 => '4 stars',
+                                 3 => '3 stars',
+                                 2 => '2 stars',
+                                 1 => '1 stars',
+                             ], [
+                                 'item' => function($index, $label, $name, $checked, $value) {
+                                     $return = '<input type="radio" id="work_life'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                     $return .= '<label for="work_life'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                     return $return;
+                                 }
+                             ])->label(false);
+                             ?>
+                         </fieldset>
+                     </div>
+                  </div>
+              </div>
+               <div class="row">
+                 <div class="col-md-3 col-md-offset-1">
+                     <label class="control-label padding_top">Skill Development</label>
+                 </div>
+                   <div class="col-md-8">
+                     <div class="star-rating1">
+                         <fieldset>
+                             <?=
+                             $form->field($editReviewForm, 'skill_devel',['template'=>'{input}{error}'])->inline()->radioList([
+                                 5 => '5 stars',
+                                 4 => '4 stars',
+                                 3 => '3 stars',
+                                 2 => '2 stars',
+                                 1 => '1 stars',
+                             ], [
+                                 'item' => function($index, $label, $name, $checked, $value) {
+                                     $return = '<input type="radio" id="skill_devel'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                     $return .= '<label for="skill_devel'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                     return $return;
+                                 }
+                             ])->label(false);
+                             ?>
+                         </fieldset>
+                     </div>
+                   </div>
+             </div>
+             <div class="row">
+                     <div class="col-md-3 col-md-offset-1">
+                         <label class="control-label padding_top">Job Security</label>
+                     </div>
+                     <div class="col-md-8">
+                         <div class="star-rating1">
+                             <fieldset>
+                                 <?=
+                                 $form->field($editReviewForm, 'job_security',['template'=>'{input}{error}'])->inline()->radioList([
+                                     5 => '5 stars',
+                                     4 => '4 stars',
+                                     3 => '3 stars',
+                                     2 => '2 stars',
+                                     1 => '1 stars',
+                                 ], [
+                                     'item' => function($index, $label, $name, $checked, $value) {
+                                         $return = '<input type="radio" id="job_security'.$index.'" name="'.$name.'" value="'.$value.'" ' . (($checked) ? 'checked' : '') . '>';
+                                         $return .= '<label for="job_security'.$index.'" title="'.$label.'">"'.$label.'"</label>';
+                                         return $return;
+                                     }
+                                 ])->label(false);
+                                 ?>
+                             </fieldset>
+                         </div>
+                     </div>
+             </div>
+             <div class="row">
+                 <div class="col-md-12">
+                     <?= $form->field($editReviewForm, 'likes')->textArea(['rows'=>4])->label('Likes'); ?>
+                 </div>
+                 <div class="col-md-12">
+                     <?= $form->field($editReviewForm, 'dislikes')->textArea(['rows'=>4])->label('Dislikes'); ?>
+                 </div>
+             </div>
+              <div class="row">
+                 <div class="col-md-12">
+                     <?= $form->field($editReviewForm, 'org_id',['template'=>'{input}'])->hiddenInput()->label(false); ?>
+                 </div>
+             </div>
+            </div>
+            <div class="modal-footer">
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>
+                <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
+            </div>
+            <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+$this->registerCss('
+.star-rating1 {
+  font-family: "FontAwesome";
+}
+.star-rating1 > fieldset {
+  border: none;
+  display: inline-block;
+}
+.star-rating1 fieldset:not(:checked) input {
+  position: absolute;
+  top: -9999px;
+  clip: rect(0, 0, 0, 0);
+}
+.star-rating1 fieldset:not(:checked) label {
+  float: right;
+  width: 1em;
+  padding: 0 0.05em;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 200%;
+  color: #36c6d3;
+  font-family: "FontAwesome";
+}
+.star-rating1 fieldset:not(:checked) label:before {
+  content: "\f006  ";
+}
+.star-rating1 fieldset:not(:checked) label:hover,
+.star-rating1 fieldset:not(:checked) label:hover ~ label {
+  color:#36c6d3;
+  text-shadow: 0 0 3px #36c6d3;
+}
+.star-rating1 fieldset:not(:checked) label:hover:before,
+.star-rating1 fieldset:not(:checked) label:hover ~ label:before {
+  content: "\f005  ";
+}
+.star-rating1 fieldset input:checked ~ label:before {
+  content: "\f005  ";
+}
+.star-rating1 fieldset label:active {
+  position: relative;
+  top: 2px;
+}
+
+.padd-lr-5{
+    padding-left:10px !important;
+    padding-right:10px !important;
+}   
+.light-bg{
+    background:#f4f4f4 !important;
+}
+.rh-header{
+    background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
+    background-size:100% 300px;
+    background-repeat: no-repeat;
+} 
+.no-padd{
+    padding-left:0px !important;
+    padding-right:0px !important
+}
+.padd-10{
+    padding-top:20px;
+}
+.header-bttns-flex{
+    display:flex;
+    padding: 20px 0 0 0;
+    justify-content:center;
+}
+.padding_top
+{
+padding:16px 0px;
+}
+.follow-bttn button ,.wr-bttn button, .cp-bttn a{
+    background:#fff;
+    border:1px solid #00a0e3;
+    color:#00a0e3;
+    padding:12px 15px;
+    font-size:14px;
+    border-radius:5px;
+    text-transform:uppercase;
+}
+.cp-center{
+    text-align:center;
+}
+.cp-bttn{
+    margin-top:25px;
+}
+.rh-header{
+    padding:80px 0;
+}
+.fade_background
+{
+background: #cadfe8 !important;
+}  
+.fade_border
+{
+border: 2px solid #cadfe8 !important;
+}  
+.logo-box{
+    height:150px;
+    width:150px;
+    padding:0 10px;
+    background:#fff;
+    display:table; 
+    text-align:center;
+    border-radius:6px;
+}  
+.logo{
+    display:table-cell;
+    vertical-align: middle;     
+}
+.com-name{
+    font-size:40px;
+    font-family:lobster;
+    color:#fff;
+    margin-top: -16px;
+}
+.com-rating i{
+    font-size:16px;
+    background:#ccc;
+    color:#fff;
+    padding:7px 5px;
+    border-radius:5px;
+}
+.com-rating i.active{
+    background:#ff7803;
+    color:#fff;
+}
+.com-rate{
+    color: #fff;
+    font-size: 13px;
+    font-style: italic;
+    padding:10px 0;
+}
+.rh-main-heading{
+    font-size:30px;
+    font-family:lobster;
+    padding-left:20px;
+}
+.refirst{
+    padding-top:25px !important;
+}
+.re-box{
+    padding-top:60px;
+}
+.uicon{
+    text-align:center;
+}
+.uicon img{
+    max-height:80px;
+    max-width:80px;
+}
+.uname{
+    text-align:center;
+    text-transform:uppercase;
+    font-weight:bold;
+    padding-top:10px;
+    line-height:15px;
+    color:#00a0e3;
+}
+.user-saying{
+    padding-top:20px;
+}
+.user-rating{
+    display:flex;
+    justify-content:center; 
+    text-align:center;
+    padding-top:20px;
+}
+.uheading{
+    font-weight:bold;
+    
+}
+.utext{
+    text-align:justify;
+}
+.publish-date{
+    text-align:right;
+//    font-style:italic;
+    font-size: 14px;
+}
+.view-detail-btn button{
+    background:transparent;
+    border:none;
+    font-size:14px;
+    padding:0px
+}
+.view-detail-btn button:hover, .re-btns button:hover{
+    color:#00a0e3;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    transition:.3s all;
+}
+.num-rate{
+    
+}
+.re-btns{
+    text-align:right;
+    padding-top: 5px;
+}
+.re-btns button{
+    background:none;
+    border:none;
+    font-size:19px;
+    color:#ccc;
+}
+.re-btns button:hover{
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+}
+.re-btns button:hover i.fa-flag{
+    color:#d72a2a;
+}
+.re-btns button i.fa-thumbs-down{
+    margin-left:-8px;
+}
+.utitle{
+    font-size:20px;
+    font-weight:bold;
+    padding-top:8px;
+    color:#00a0e3;
+}
+.user-review-main{
+    border-left:2px solid #ccc;
+}
+.ur-bg{
+   background:#edecec;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 5px;
+    border-right: 1px solid #fff;
+    height: 95px;
+}
+.uratingtitle{
+    font-size:12px;
+    line-height:15px;
+}
+.urating{
+    font-size:25px;
+}
+.emp-duration{
+    text-align:right;
+//    line-height:18px;
+//    padding-top:20px;
+}
+.ushare i{
+   font-size:20px;
+    color:#ccc; 
+}
+.ushare i.fa-facebook-square:hover{
+    color:#4267B2; 
+    cursor: pointer;
+}
+.wa_icon_hover:hover
+{
+    cursor: pointer;
+    color: #56dc56 !important;
+}
+.ushare i.fa-twitter-square:hover{
+    color:#38A1F3; 
+    cursor: pointer;
+}
+.ushare i.fa-linkedin-square:hover{
+    color:#0077B5;
+    cursor: pointer; 
+}
+.ushare i.fa-google-plus-square:hover{
+    color:#CC3333;
+    cursor: pointer;
+}
+.ushare-heading{
+    font-size:14px;
+    padding-top:20px;
+    line-height:23px;
+    font-weight:bold;
+}
+.usefull-bttn{
+    padding-top:33px;
+    display:flex;
+}
+.re-bttn{
+    text-align:right
+}
+.use-bttn button, .notuse-bttn button, .re-bttn button{
+    background: transparent !important;
+    border:1px solid #ccc;
+    color:#ccc;
+    padding:5px 15px;
+    margin-left:10px;
+    border-radius:10px;
+    font-size:14px;
+    transition:.2s all;
+    -webkit-transition:.2s all;
+    -moz-transition:.2s all;
+    -o-transition:.2s all;
+}
+.re-bttn{
+    padding-bottom:5px;
+}
+.use-bttn button:hover{
+    color:#00a0e3;
+    border-color:#00a0e3;
+    transition:.2s all;
+    -webkit-transition:.2s all;
+    -moz-transition:.2s all;
+    -o-transition:.2s all;
+}
+.re-bttn button:hover, .notuse-bttn button:hover{
+    color:#d72a2a;
+    border-color:#d72a2a;
+     transition:.2s all;
+    -webkit-transition:.2s all;
+    -moz-transition:.2s all;
+    -o-transition:.2s all;
+}
+.review-summary{
+    text-align:left;
+    padding-left:50px
+}
+.oa-review{
+    font-size:30px;
+    font-family:lobster;
+    padding-bottom:22px;
+}
+.rs1{
+    padding-top:20px;
+}
+.re-heading{
+    font-size: 17px;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+.filter-review{
+    padding-top:80px;
+//    text-align:center;
+}
+.form-group.form-md-line-input {
+    position: relative;
+    margin: 0 0 10px;
+    text-align:left;
+}
+.filter-bttn{
+    padding-top:15px;
+}
+.rs-main{
+    background: #00a0e3;
+    max-width: 200px;
+    padding: 10px 13px 15px 13px;
+    text-align: center;
+    color: #fff;
+    border-radius: 6px;
+}
+.rating-large{
+    font-size:56px;
+}
+.com-rating-1 i{ 
+    font-size:16px;
+    background:#fff;
+    color:#ccc;
+    padding:7px 5px;
+    border-radius:5px;
+}
+.com-rating-1 i.active{
+    background:#fff;
+    color:#00a0e3;
+}
+.summary-box{ 
+    display:flex
+}
+.com-rating-2 {
+    padding: 13px 23px 15px 42px;
+    height: 46px;
+    margin-top: 5px;
+    border: 2px solid #00a0e3;
+    border-radius: 5px;
+    margin-left: -30px;
+}
+.com-rating-2 i{
+    font-size:22px;
+    color: #ccc;
+}
+.com-rating-2 .active{
+    color:#ff7803;
+}
+.sr-rating{
+   background: #00a0e3;
+    padding: 12px 15px;
+    z-index: 9;
+    color: #fff;
+//    margin-left: 11px;
+    font-size: 19px;
+    border-radius:5px;    
+}
+.hvr-icon-pulse {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    padding-right:1.2em;
+}
+.hvr-icon-pulse .hvr-icon {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+.hvr-icon-pulse:hover .hvr-icon, .hvr-icon-pulse:focus .hvr-icon, .hvr-icon-pulse:active .hvr-icon {
+    -webkit-animation-name: hvr-icon-pulse;
+    animation-name: hvr-icon-pulse;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+.btn_review
+{
+    background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 9px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    display:block;
+    text-transform: uppercase;
+}
+.hvr-icon-pulse:before{
+    content:"" !important;
+}
+.filter-bttn button, .load-more-bttn button{
+    background: #00a0e3;
+    border: 1px solid #00a0e3;
+    padding: 12px 25px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-radius: 40px;
+    
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+}
+.filter-bttn button:hover, .load-more-bttn button:hover{
+    border-radius:8px;
+    -webkit-border-radius:8px;
+    -moz-border-radius:8px;
+    -o-border-radius:8px;
+    
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+}
+.load-more-bttn{
+    padding-top:50px;
+    text-align:center;
+}
+.form-group.form-md-line-input.form-md-floating-label .form-control~label{
+    font-size: 14px;
+}
+.fivestar-box i.active {
+    color:#fd7100;
+}
+.fourstar-box i.active {
+    color:#fa8f01;
+}
+.threestar-box i.active {
+    color:#fcac01;
+}
+.twostar-box i.active {
+    color:#fabf37;
+}
+.onestar-box i.active {
+    color:#ffd478;
+}
+@media only screen and (max-width: 992px){
+    .cp-bttn button {
+        margin-top: 20px; 
+    }
+    .cp-bttn {
+        padding-left: 0px;
+    }
+    .header-bttns{
+        display: flex;
+        justify-content:center;
+        margin: 20px 0 0 0;
+    }
+    .com-name{
+        margin-top:0px;
+    }
+    .rh-header {
+        padding: 65px 0;
+    }
+    .review-summary{
+        padding-top:40px;
+    }
+    .oa-review{
+        padding-bottom:20px;
+    }
+}
+');
+$script = <<< JS
+$(document).on('click','.follow',function(e){
+    e.preventDefault();
+    var org_id = $(this).val();
+    $.ajax({
+        url:'/organizations/follow',
+        data: {org_id:org_id},                         
+        method: 'post',
+        beforeSend:function(){
+         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        },
+        success:function(data){  
+            if(data.message == 'Following'){
+                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Following');
+                $('.follow').addClass('followed');
+            }
+            else if(data.message == 'Unfollow'){
+                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Follow');
+                $('.follow').removeClass('followed');
+            }
+        }
+    });        
+});
+
+$(document).on('click','.load_reviews',function(e){
+    e.preventDefault();
+    $.ajax({
+        url:'/organizations/load-reviews',                         
+        method: 'post',
+        beforeSend:function(){
+         $('.load_reviews').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        },
+        success:function(res){
+            if(res==true){
+                $('.load_reviews').html('<i class="fa fa-heart-o hvr-icon"></i> Load More');
+                }
+         }
+    });        
+});
+var yearsObj = [];
+selectObj = {
+    label : '-Select-',
+    value : ''
+};
+yearsObj.push(selectObj);
+var currentD = new Date();
+var currentY = currentD.getFullYear();
+for(var i=currentY; i > 1950; i--){
+    var singleObj = {};
+    singleObj['label'] = i;
+    singleObj['value'] = i;
+    yearsObj.push(singleObj);
+}
+var popup = new ideaboxPopup({
+			background : '#2995c2',
+			popupView : 'full',
+			startPage: {
+					msgTitle        : 'Rate the company on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the company',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+					{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 2',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+					{
+						question 	: 'Are you a current or former employee?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+					{
+						question 	: 'Period of work',
+						answerType	: 'selectbox',
+						formName	: 'tenure',
+						choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+						description	: 'Choose dates of work.',
+						nextLabel	: 'Go to Step 4',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please selecty our tenure</b>'
+					},
+					
+					{
+						question 	: 'Overall Experience',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'overall_experience',
+						description	: '',
+						nextLabel	: 'Go to Step 5',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Skill Development & Learning',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'skill_development',
+						description	: '',
+						nextLabel	: 'Go to Step 6',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Work-Life Balance',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'work_life',
+						description	: '',
+						nextLabel	: 'Go to Step 7',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Compensation & Benefits',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'compensation',
+						description	: '',
+						nextLabel	: 'Go to Step 8',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Company culture',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'organization_culture',
+						description	: '',
+						nextLabel	: 'Go to Step 9',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Job Security',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'job_security',
+						description	: '',
+						nextLabel	: 'Go to Step 10',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Growth & Opportunities',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'growth',
+						description	: '',
+						nextLabel	: 'Go to Step 11',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+					{
+						question 	: 'Work Satisfaction',
+						answerType	: 'starrate',
+						starCount	: 5,
+						formName	: 'work',
+						description	: '',
+						nextLabel	: 'Go to Step 12',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
+					},
+				
+					{
+						question 	: 'Location of your office',
+						answerType	: 'location_autocomplete',
+						formName	: 'location',
+						description	: 'Please enter your office location',
+						nextLabel	: 'Go to Step 13',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
+					},
+					{
+						question 	: 'your department or division you worked in',
+						answerType	: 'department_autocomplete',
+						formName	: 'department',
+						description	: 'Please enter your department or division',
+						nextLabel	: 'Go to Step 14',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select a department</b>'
+					},
+					{
+						question 	: 'Things you like about the company',
+						answerType	: 'textarea',
+						formName	: 'likes',
+						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
+						nextLabel	: 'Go to Step 15',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please write a review</b>'
+					},
+					{
+						question 	: 'Things you dislike about the company',
+						answerType	: 'textarea',
+						formName	: 'dislikes',
+						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
+						nextLabel	: 'Finish',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please share your reviews.</b>'
+					
+					}
+			]
+			});
+if($("#wr").length>0){
+document.getElementById("wr").addEventListener("click", function(e){
+            popup.open();
+        });
+}
+JS;
+$headScript = <<< JS
+function review_post_ajax(data) {
+	$.ajax({
+       method: 'POST',
+       url : '/organizations/post-reviews?slug='+slug+'',
+	   data:{data:data},
+       success: function(response) {
+               if (response==true)
+                   {
+                       window.location = window.location.pathname;
+                   }
+               else 
+                   {
+                       window.location = window.location.pathname;}
+       }
+   });
+}
+JS;
+$this->registerJs($script);
+$this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+$this->registerCssFile('@backendAssets/global/css/components-md.min.css');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+<script id="review-cards" type="text/template">
+
+</script>
