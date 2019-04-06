@@ -120,7 +120,7 @@ class JobsController extends Controller
                 ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                 ->execute();
             $count = AppliedApplicationProcess::find()
-                ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active', 'COUNT(is_completed) as total'])
+                ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active','status', 'COUNT(is_completed) as total'])
                 ->where(['applied_application_enc_id' => $app_id])
                 ->asArray()
                 ->one();
@@ -132,6 +132,12 @@ class JobsController extends Controller
                     'status' => true,
                     'active' => $count['active']
                 ];
+                if ($count['active']>1)
+                {
+                    $obj = AppliedApplications::find()->where(['applied_application_enc_id'=>$app_id])->one();
+                    $obj->status = 'Accepted';
+                    $obj->save();
+                }
                 if ($count['active'] == $count['total']) {
                     $update_status = Yii::$app->db->createCommand()
                         ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
