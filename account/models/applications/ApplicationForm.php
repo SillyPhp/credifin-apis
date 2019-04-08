@@ -68,6 +68,8 @@ class ApplicationForm extends Model
     public $earliestjoiningdate;
     public $from;
     public $to;
+    public $internship_duration;
+    public $internship_duration_type;
     public $is_online_interview;
     public $is_online_options;
     public $questions;
@@ -115,6 +117,8 @@ class ApplicationForm extends Model
             [[
                 'questions',
                 'pref_indus',
+                'internship_duration',
+                'internship_duration_type',
                 'mainfield',
                 'primaryfield',
                 'workfromhome',
@@ -347,10 +351,15 @@ class ApplicationForm extends Model
             }
             if (in_array("6", $this->weekdays)) {
                 $weekoptionsat = $this->weekoptsat;
-            } else if (in_array("7", $this->weekdays)) {
-                $weekoptionsund = $this->weekoptsund;
-            } else {
+            }
+            else
+            {
                 $weekoptionsat = NULL;
+            }
+            if (in_array("7", $this->weekdays)) {
+                $weekoptionsund = $this->weekoptsund;
+            }
+            else{
                 $weekoptionsund = NULL;
             }
             if ($this->interradio == 1) {
@@ -376,6 +385,8 @@ class ApplicationForm extends Model
             $applicationoptionsModel->pre_placement_offer = (($this->pre_placement_package) ? str_replace(',', '', $this->pre_placement_package) : null);
             $applicationoptionsModel->has_placement_offer = $this->pre_placement_offer;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
+            $applicationoptionsModel->internship_duration = $this->internship_duration;
+            $applicationoptionsModel->internship_duration_type = $this->internship_duration_type;
             $applicationoptionsModel->working_days = json_encode($this->weekdays);
             $applicationoptionsModel->saturday_frequency = $weekoptionsat;
             $applicationoptionsModel->sunday_frequency = $weekoptionsund;
