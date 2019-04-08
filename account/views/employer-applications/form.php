@@ -1861,7 +1861,6 @@ function init() {
                     },
                     'fixed_wage': {
                         required: true,
-                        
                     },
                     'last_date': {
                         required: true,
@@ -2226,6 +2225,9 @@ function init() {
                     if (min_weekdays() === false) {
                         return false;
                     }
+                    if (duration() === false) {
+                        return false;
+                    } 
                     if (form.valid() == false) {
                         return false;
                     }
@@ -2270,6 +2272,19 @@ function salarycomparison(){
         return true;
     }
     }
+function duration()
+{
+    var numb = $('#internship_duration').val();
+    if (numb<=0||numb=='')
+        {
+        $('.duration_errors').html('<div class = "s_error">Enter a valid number</div>');
+        $('html, body').animate({ scrollTop: 200 }, 1000);
+            return false;
+        }
+    else {
+        return true;
+    }
+}    
 function min_weekdays()
 {
     week_length =  $('[name="weekdays[]"]:checked').length;
