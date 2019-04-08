@@ -3,7 +3,7 @@ use kartik\widgets\TimePicker;
 use kartik\widgets\DatePicker;
 ?>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="select">
             <?php if ($type == 'Edit_Internships'||$type=='Clone_Internships') {
                 echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
@@ -16,7 +16,7 @@ use kartik\widgets\DatePicker;
             ?>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="cat_wrapper">
             <div class="load-suggestions Typeahead-spinner">
                 <span></span>
@@ -26,8 +26,19 @@ use kartik\widgets\DatePicker;
             <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title', 'disabled' => true])->label(false) ?>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+    </div>
+    <div class="col-md-3">
+      <div class="row">
+          <div class="col-md-6">
+              <?= $form->field($model, 'internship_duration')->textInput(['maxLength'=>1])->label('Duration'); ?>
+              <div class="duration_errors"></div>
+          </div>
+          <div class="col-md-6">
+              <?= $form->field($model, 'internship_duration_type')->dropDownList(['Months' => 'Months','Weeks' => 'Weeks', ])->label(false); ?>
+          </div>
+      </div>
     </div>
 </div>
 <div class="row">
@@ -108,18 +119,18 @@ use kartik\widgets\DatePicker;
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsat')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sat">Sat</span>
                 </div>
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsund')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sun">Sun</span>
                 </div>
@@ -221,6 +232,7 @@ $this->registerCss("
 ");
 $script = <<< JS
 $('#min_wage, #max_wage').mask("#,#0,#00", {reverse: true}); 
+$('#internship_duration').mask("#", {reverse: true}); 
 $('#fixed_wage, #pre_placement_package').mask("#,#0,#00", {reverse: true});
 $('input[name= "pre_placement_offer"]').on('change',function(){
         var pre = $(this).attr("data-title");

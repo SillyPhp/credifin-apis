@@ -133,18 +133,18 @@ use kartik\widgets\DatePicker;
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsat')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sat">Sat</span>
                 </div>
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsund')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sun">Sun</span>
                 </div>
