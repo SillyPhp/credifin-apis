@@ -44,9 +44,11 @@ use frontend\models\questionnaire\QuestionnaireForm;
 /**
  * Site controller
  */
-class SiteController extends Controller {
+class SiteController extends Controller
+{
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -59,16 +61,18 @@ class SiteController extends Controller {
     }
 
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $feedbackFormModel = new FeedbackForm();
         $partnerWithUsModel = new PartnerWithUsForm();
         return $this->render('index', [
-                    'feedbackFormModel' => $feedbackFormModel,
-                    'partnerWithUsModel' => $partnerWithUsModel,
+            'feedbackFormModel' => $feedbackFormModel,
+            'partnerWithUsModel' => $partnerWithUsModel,
         ]);
     }
-    
-    public function actionSendFeedback() {
+
+    public function actionSendFeedback()
+    {
         $feedbackFormModel = new FeedbackForm();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -79,18 +83,19 @@ class SiteController extends Controller {
                     'title' => 'Success',
                     'message' => 'Feedback has been sent.',
                 ];
-            } else{
+            } else {
                 return $response = [
                     'status' => 201,
                     'title' => 'Error',
                     'message' => 'An error has occurred. Please try again.',
                 ];
             }
-            
+
         }
     }
-    
-    public function actionPartnerWithUs() {
+
+    public function actionPartnerWithUs()
+    {
         $partnerWithUsModel = new PartnerWithUsForm();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -101,22 +106,24 @@ class SiteController extends Controller {
                     'title' => 'Success',
                     'message' => 'Request has been sent.',
                 ];
-            } else{
+            } else {
                 return $response = [
                     'status' => 201,
                     'title' => 'Error',
                     'message' => 'An error has occurred. Please try again.',
                 ];
             }
-            
+
         }
     }
 
-    public function actionAboutUs() {
+    public function actionAboutUs()
+    {
         return $this->render('about-us');
     }
 
-    public function actionContactUs() {
+    public function actionContactUs()
+    {
         $contactFormModel = new ContactForm();
         if ($contactFormModel->load(Yii::$app->request->post()) && $contactFormModel->validate()) {
             if ($contactFormModel->contact('jyoti@empoweryouth.in')) {
@@ -127,15 +134,17 @@ class SiteController extends Controller {
             }
         }
         return $this->render('contact-us', [
-                    'contactFormModel' => $contactFormModel,
+            'contactFormModel' => $contactFormModel,
         ]);
     }
 
-    public function actionTp() {
-        return $this->actionTrainingProgram();
+    public function actionEmployers()
+    {
+        return $this->render('employers');
     }
 
-    public function actionAddNewSubscriber() {
+    public function actionAddNewSubscriber()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
             $userData = Yii::$app->request->post();
@@ -150,41 +159,26 @@ class SiteController extends Controller {
                 if ($subscribersForm->save()) {
                     $response = [
                         'status' => 200,
-                        'message' => Yii::t('empoweryouth', 'You are successfully subscribed.'),
+                        'message' => Yii::t('frontend', 'You are successfully subscribed.'),
                     ];
                 } else {
                     $response = [
                         'status' => 201,
-                        'message' => Yii::t('empoweryouth', 'An error has occurred. Please try again.'),
+                        'message' => Yii::t('frontend', 'An error has occurred. Please try again.'),
                     ];
                 }
             } else {
                 $response = [
                     'status' => 0,
-                    'message' => Yii::t('empoweryouth', 'Please enter all the information correctly'),
+                    'message' => Yii::t('frontend', 'Please enter all the information correctly'),
                 ];
             }
             return $response;
         }
     }
 
-    public function actionFifaQuiz($s = NULL, $t = NULL) {
-        $this->layout = 'quiz-main';
-        return $this->render('fifa-quiz', [
-                    'score' => $s,
-                    'total' => $t,
-        ]);
-    }
-
-    public function actionFifaQuiz2($s = NULL, $t = NULL) {
-        $this->layout = 'quiz2-main';
-        return $this->render('fifa-quiz-2', [
-                    'score' => $s,
-                    'total' => $t,
-        ]);
-    }
-
-    public function actionCareers() {
+    public function actionCareers()
+    {
         $this->layout = 'main-secondary';
         $careerFormModel = new CareerForm();
         if (Yii::$app->request->isAjax) {
@@ -200,28 +194,29 @@ class SiteController extends Controller {
             }
         }
         return $this->render('careers', [
-                    'careerFormModel' => $careerFormModel,
+            'careerFormModel' => $careerFormModel,
         ]);
     }
 
-    public function actionExploreCompany() {
+    public function actionExploreCompany()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $companycards = Organizations::find()
-                    ->alias('a')
-                    ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
-                    ->where(['a.is_sponsored' => 0])
-                    ->limit(8)
-                    ->asArray()
-                    ->all();
+                ->alias('a')
+                ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
+                ->where(['a.is_sponsored' => 0])
+                ->limit(8)
+                ->asArray()
+                ->all();
 
             $featured_companycards = Organizations::find()
-                    ->alias('a')
-                    ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
-                    ->where(['a.is_sponsored' => 1])
-                    ->limit(4)
-                    ->asArray()
-                    ->all();
+                ->alias('a')
+                ->select(['a.is_sponsored', 'a.tag_line', 'a.name org_name', 'a.description', 'a.slug organization_link', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image) . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'])
+                ->where(['a.is_sponsored' => 1])
+                ->limit(4)
+                ->asArray()
+                ->all();
             if ($companycards) {
                 $response = [
                     'status' => 200,
@@ -241,19 +236,21 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionCareerCoach() {
+    public function actionCareerCoach()
+    {
         $posts = Posts::find()
-                ->where(['status' => 'Active', 'is_deleted' => 'false'])
-                ->orderby(['created_on' => SORT_ASC])
-                ->limit(4)
-                ->asArray()
-                ->all();
+            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+            ->orderby(['created_on' => SORT_ASC])
+            ->limit(4)
+            ->asArray()
+            ->all();
         return $this->render('career-coach', [
-                    'posts' => $posts,
+            'posts' => $posts,
         ]);
     }
 
-    public function actionFreelancers() {
+    public function actionFreelancers()
+    {
         $this->layout = 'main-secondary';
         $freelancersFormModel = new FreelancersForm();
 
@@ -266,11 +263,12 @@ class SiteController extends Controller {
             }
         }
         return $this->render('freelancers', [
-                    'freelancersFormModel' => $freelancersFormModel,
+            'freelancersFormModel' => $freelancersFormModel,
         ]);
     }
 
-    public function actionFreeForm() {
+    public function actionFreeForm()
+    {
         $this->layout = 'main-secondary';
         $freeFormModel = new FreeForm();
         if (Yii::$app->request->isAjax) {
@@ -279,19 +277,20 @@ class SiteController extends Controller {
             return ActiveForm::validate($freeFormModel);
         }
         $primaryfields = Categories::find()
-                ->alias('a')
-                ->select(['a.name', 'a.category_enc_id'])
-                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
-                ->asArray()
-                ->all();
+            ->alias('a')
+            ->select(['a.name', 'a.category_enc_id'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+            ->asArray()
+            ->all();
         return $this->render('form', [
-                    'freeFormModel' => $freeFormModel,
-                    'primaryfields' => $primaryfields,
+            'freeFormModel' => $freeFormModel,
+            'primaryfields' => $primaryfields,
         ]);
     }
 
-    public function actionValidateForm() {
+    public function actionValidateForm()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $freeFormModel = new FreeForm();
         if ($freeFormModel->load(Yii::$app->request->post())) {
@@ -316,7 +315,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionLearning() {
+    public function actionLearning()
+    {
         $this->layout = 'main-secondary';
         $learningCornerFormModel = new OrganisationVideoForm();
         $session = Yii::$app->session;
@@ -353,17 +353,18 @@ class SiteController extends Controller {
             }
         }
         return $this->render('learning-corner', [
-                    'learningCornerFormModel' => $learningCornerFormModel,
+            'learningCornerFormModel' => $learningCornerFormModel,
         ]);
     }
 
-    public function actionUploadCompanyLogo() {
+    public function actionUploadCompanyLogo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isAjax) {
             $companyLogoFormModel = new CompanyLogoForm();
             $companyLogoFormModel->logo = UploadedFile::getInstance($companyLogoFormModel, 'logo');
             if ($companyLogoFormModel->save()) {
-                return[
+                return [
                     'status' => 'success',
                     'title' => 'Success',
                     'message' => 'Logo successfully changed.',
@@ -378,52 +379,60 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionCandidateform() {
+    public function actionCandidateform()
+    {
         $statesModel = new States();
         $organizationLocationFormModel = new OrganizationLocationForm();
         return $this->render('candidates/candidate_form', [
-                    'statesModel' => $statesModel,
-                    'organizationLocationFormModel' => $organizationLocationFormModel,
+            'statesModel' => $statesModel,
+            'organizationLocationFormModel' => $organizationLocationFormModel,
         ]);
     }
 
-    public function actionWorkExperience() {
+    public function actionWorkExperience()
+    {
         $workExperienceFormModel = new WorkExpierenceForm();
         return $this->renderPartial('candidates/work_experience', [
-                    'workExperienceFormModel' => $workExperienceFormModel,
+            'workExperienceFormModel' => $workExperienceFormModel,
         ]);
     }
 
-    public function actionPersonalProfile() {
+    public function actionPersonalProfile()
+    {
         $personalProfileFormModel = new PersonalProfileForm();
         return $this->renderPartial('candidates/personal_profile', [
-                    'personalProfileFormModel' => $personalProfileFormModel,
+            'personalProfileFormModel' => $personalProfileFormModel,
         ]);
     }
 
-    public function actionQualification() {
+    public function actionQualification()
+    {
         $qualificationFormModel = new QualificationForm();
         return $this->renderPartial('candidates/qualification_form', [
-                    'qualificationFormModel' => $qualificationFormModel,
+            'qualificationFormModel' => $qualificationFormModel,
         ]);
     }
 
-    public function actionSkillAndLanguage() {
+    public function actionSkillAndLanguage()
+    {
         $skillsAndLanguagesFormModel = new SkillsAndLanguagesForm();
         return $this->renderPartial('candidates/skills_form', [
-                    'skillsAndLanguagesFormModel' => $skillsAndLanguagesFormModel,
+            'skillsAndLanguagesFormModel' => $skillsAndLanguagesFormModel,
         ]);
     }
 
-    public function actionTermsConditions() {
+    public function actionTermsConditions()
+    {
         return $this->render('terms-conditions');
     }
 
-    public function actionPrivacyPolicy() {
+    public function actionPrivacyPolicy()
+    {
         return $this->render('privacy-policy');
     }
 
-    public function actionUpdateProfile() {
+    public function actionUpdateProfile()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->post()) {
             $userData = Yii::$app->request->post();
@@ -457,26 +466,27 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionQuestionnaire($qidk) {
+    public function actionQuestionnaire($qidk)
+    {
         $result = OrganizationQuestionnaire::find()
-                ->select(['questionnaire_enc_id', 'questionnaire_name'])
-                ->where(['questionnaire_enc_id' => $qidk])
-                ->asArray()
-                ->one();
+            ->select(['questionnaire_enc_id', 'questionnaire_name'])
+            ->where(['questionnaire_enc_id' => $qidk])
+            ->asArray()
+            ->one();
 
         $fields = QuestionnaireFields::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
-                ->where(['a.questionnaire_enc_id' => $result['questionnaire_enc_id']])
-                ->asArray()
-                ->all();
+            ->alias('a')
+            ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+            ->where(['a.questionnaire_enc_id' => $result['questionnaire_enc_id']])
+            ->asArray()
+            ->all();
 
         foreach ($fields as $field) {
             $field_option = QuestionnaireFieldOptions::find()
-                    ->select(['field_option_enc_id', 'field_option'])
-                    ->where(['field_enc_id' => $field['field_enc_id']])
-                    ->asArray()
-                    ->all();
+                ->select(['field_option_enc_id', 'field_option'])
+                ->where(['field_enc_id' => $field['field_enc_id']])
+                ->asArray()
+                ->all();
             $field['options'] = $field_option;
             $arr['fields'][] = $field;
         }
@@ -549,8 +559,8 @@ class SiteController extends Controller {
                 }
 
                 $update = Yii::$app->db->createCommand()
-                        ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $applied_id])
-                        ->execute();
+                    ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $applied_id])
+                    ->execute();
                 if ($update) {
                     return true;
                 } else {
@@ -558,14 +568,15 @@ class SiteController extends Controller {
                 }
             } else {
                 return $this->renderAjax('questionnaire-ui', [
-                            'fields' => $arr,
-                            'model' => $model,
+                    'fields' => $arr,
+                    'model' => $model,
                 ]);
             }
         }
     }
 
-    private function getYouTubeID($URL) {
+    private function getYouTubeID($URL)
+    {
         $YouTubeCheck = preg_match('![?&]{1}v=([^&]+)!', $URL . '&', $Data);
         If ($YouTubeCheck) {
             $VideoID = $Data[1];
@@ -573,7 +584,8 @@ class SiteController extends Controller {
         return $VideoID;
     }
 
-    public function actionChangePassword() {
+    public function actionChangePassword()
+    {
         $ChangePasswordForm = new ChangePasswordForm();
         if ($ChangePasswordForm->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -592,7 +604,7 @@ class SiteController extends Controller {
             }
         }
         return $this->renderAjax('changepassword', [
-                    'ChangePasswordForm' => $ChangePasswordForm
+            'ChangePasswordForm' => $ChangePasswordForm
         ]);
     }
 
