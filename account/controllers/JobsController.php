@@ -2,7 +2,9 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
+use account\models\applications\UserAppliedApplication;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\Cities;
 use common\models\DropResumeApplications;
@@ -118,7 +120,7 @@ class JobsController extends Controller
                 ->update(AppliedApplicationProcess::tableName(), ['is_completed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['field_enc_id' => $f_id, 'applied_application_enc_id' => $app_id])
                 ->execute();
             $count = AppliedApplicationProcess::find()
-                ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active', 'COUNT(is_completed) as total'])
+                ->select(['COUNT(CASE WHEN is_completed = 1 THEN 1 END) as active','status', 'COUNT(is_completed) as total'])
                 ->where(['applied_application_enc_id' => $app_id])
                 ->asArray()
                 ->one();
@@ -130,6 +132,12 @@ class JobsController extends Controller
                     'status' => true,
                     'active' => $count['active']
                 ];
+                if ($count['active']>=1)
+                {
+                    $obj = AppliedApplications::find()->where(['applied_application_enc_id'=>$app_id])->one();
+                    $obj->status = 'Accepted';
+                    $obj->save();
+                }
                 if ($count['active'] == $count['total']) {
                     $update_status = Yii::$app->db->createCommand()
                         ->update(AppliedApplications::tableName(), ['status' => 'Hired', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $app_id])
@@ -200,36 +208,43 @@ class JobsController extends Controller
 
     public function actionClone($aidk)
     {
-        $model = new JobApplicationForm();
-        $que = $model->getQuestionnnaireList();
-        $loc_list = $model->getOrganizationLocationOffice();
-        $int_list = $model->getOrganizationLocationInterview();
-        $primary_cat = $model->getPrimaryFields();
-        $industry = $model->getndustry();
-        $process = $model->getInterviewProcess();
-        $benefits = $model->getBenefits();
-        if ($model->load(Yii::$app->request->post())) {
-            $session_token = Yii::$app->request->post('n');
-            if ($model->saveValues()) {
-                $session = Yii::$app->session;
-                if (!empty($session->get($session_token))) {
-                    $session->remove($session_token);
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Clone_Jobs';
+            $model = new ApplicationForm();
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                $session_token = Yii::$app->request->post('n');
+                if ($model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
                 }
-                return true;
             } else {
-                return false;
+                $obj = new ApplicationDataProvider();
+                $model = $obj->setValues($model,$aidk);
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
             }
         } else {
-            $application = $model->getCloneData($aidk);
-            return $this->render('clone', ['data' => $application,
-                'model' => $model, 'loc_list' => $loc_list,
-                'que' => $que,
-                'primary_cat' => $primary_cat,
-                'int_list' => $int_list,
-                'industry' => $industry,
-                'process' => $process,
-                'benefits' => $benefits,
-            ]);
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -240,9 +255,7 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $var = Yii::$app->request->post('n');
             $session = Yii::$app->session;
-
             $session->set($var, $model);
-
             return $var;
         } else {
             return false;
@@ -250,30 +263,44 @@ class JobsController extends Controller
     }
 
     public function actionEdit($aidk)
-    { // this is in progress will update soon
-        $model = new JobApplicationFormEdit();
-        $object = new JobApplicationForm();
-        if ($model->load(Yii::$app->request->post())) {
-            return json_encode($model->updateValues($aidk));
-
+    {
+        if (Yii::$app->user->identity->organization) {
+            $type = 'Edit_Jobs';
+            $model = new ApplicationForm();
+            $obj = new ApplicationDataProvider();
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                $session_token = Yii::$app->request->post('n');
+                if ($obj->update($model,$aidk,$type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $model = $obj->setValues($model,$aidk);
+                return $this->render('/employer-applications/form', ['model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
         } else {
-            $application = $object->getCloneData($aidk);
-            $questions_list = $object->getQuestionnnaireList();
-            $p_list = $object->getOrganizationLocationOffice();
-            $l_list = $object->getOrganizationLocationInterview();
-            $primaryfields = $object->getPrimaryFields();
-            $industries = $object->getndustry();
-            $interview_process = $object->getInterviewProcess();
-            $benefits = $object->getBenefits();
-            return $this->render('application_edit', ['data' => $application,
-                'model' => $model, 'location_list' => $p_list,
-                'questions_list' => $questions_list,
-                'primaryfields' => $primaryfields,
-                'inter_loc' => $l_list,
-                'industries' => $industries,
-                'process_list' => $interview_process,
-                'benefit' => $benefits,
-            ]);
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -979,6 +1006,7 @@ class JobsController extends Controller
     private function __organizationDashboard()
     {
         $coaching_category = new WidgetTutorials();
+        $userApplied = new UserAppliedApplication();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_jobs_stats"])
             ->asArray()
@@ -998,7 +1026,7 @@ class JobsController extends Controller
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
             'interview_processes' => $this->__interviewProcess(4),
-            'applied_applications' => $this->__candidateApplications(10),
+            'applied_applications' => $userApplied->getUserDetails('Jobs',10),
             'viewed' => $viewed,
             'primary_fields' => $this->getCategories()
         ]);

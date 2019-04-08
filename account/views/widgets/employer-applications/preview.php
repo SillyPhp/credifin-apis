@@ -8,30 +8,30 @@
         <table class="table table-bordered table-striped table-condensed flip-content">
             <tbody>
             <tr>
-                <?php if ($type == 'Jobs'): ?>
-                <td><strong><?=$type?></strong></td>
-                <?php elseif ($type=='Internships'): ?>
+                <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
+                <td><strong>Job Profile</strong></td>
+                <?php elseif ($type=='Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                     <td><strong>Internship Profile:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm"
-                       data-display="primaryfield"
+                       data-display="<?= (($type=='Clone_Jobs'||$type=='Edit_Jobs'||$type=='Edit_Internships'||$type=='Clone_Internships') ? 'mainfield' : 'primaryfield');?>"
                        id="fieldvalue"></p></td>
-                <?php if ($type =='Jobs'): ?>
+                <?php if ($type =='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                 <td><strong>Job Title:</strong></td>
-                <?php elseif ($type=='Internships'): ?>
+                <?php elseif ($type=='Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                 <td><strong>Internship Title:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm"
                        data-display="title"></p></td>
-                <?php if ($type=='Jobs'): ?>
+                <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                     <td><strong>Job Type:</strong></td>
-                <?php elseif ($type =='Internships'): ?>
+                <?php elseif ($type =='Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                     <td><strong>Internship Type:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm"
                        data-display="type"></p></td>
             </tr>
-            <?php if ($type=='Jobs'):?>
+            <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'):?>
                 <tr>
                     <td><strong>Designation:</strong></td>
                     <td><p class="final_confrm"
@@ -42,15 +42,15 @@
                 </tr>
             <?php endif; ?>
             <tr>
-                <?php if ($type=='Jobs'): ?>
+                <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                     <td><strong>Salary Type:</strong></td>
-                <?php elseif ($type=='Internships'): ?>
+                <?php elseif ($type=='Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                 <td><strong>Stipend Type:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm" data-display="wage_type"></p></td>
-                <?php if ($type=='Jobs'): ?>
+                <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                 <td colspan="2"><strong>Salary Duration:</strong></td>
-                <?php elseif ($type=='Internships'): ?>
+                <?php elseif ($type=='Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
                     <td colspan="2"><strong>Stipend Duration:</strong></td>
                 <?php endif; ?>
                 <td colspan="2"><p class="final_confrm"
@@ -138,11 +138,11 @@
                                    data-display="gender"
                                    id="gendr_text"></p></td>
             </tr>
-            <?php if ($type=='Jobs'): ?>
+            <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
             <tr>
                 <td><strong>Preferred Industry:</strong></td>
                 <td colspan="5"><p class="final_confrm"
-                                   data-display="pref_inds"></p>
+                                   data-display="<?= (($type=='Clone_Jobs'||$type=='Edit_Jobs') ? 'pref_indus' : 'industry');?>"></p>
                 </td>
             </tr>
             <?php endif; ?>
@@ -152,7 +152,7 @@
                                    data-display="last_date"></p>
                 </td>
             </tr>
-            <?php if ($type=='Jobs'): ?>
+            <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
             <tr>
                 <td><strong>Minimum Experience:</strong></td>
                 <td colspan="5"><p class="final_confrm"

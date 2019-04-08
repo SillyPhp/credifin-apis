@@ -60,12 +60,16 @@ class ApplicationForm extends Model
     public $primaryfield;
     public $internshiptitle;
     public $fieldofwork;
+    public $mainfield;
+    public $pref_indus;
     public $internshiptype;
     public $cities;
     public $specialskillsrequired;
     public $earliestjoiningdate;
     public $from;
     public $to;
+    public $internship_duration;
+    public $internship_duration_type;
     public $is_online_interview;
     public $is_online_options;
     public $questions;
@@ -79,7 +83,7 @@ class ApplicationForm extends Model
     public $skillsArray;
     public $interradio;
     public $quesradio;
-    public $weekdays;
+    public $weekdays = [1, 2, 3, 4, 5];
     public $weekoptsat;
     public $weekoptsund;
     public $custom_job_title;
@@ -94,9 +98,11 @@ class ApplicationForm extends Model
     public $question_process;
     public $designations;
     public $emp_benefit;
-    public $clone_desc;
-    public $clone_edu;
-    public $clone_skills;
+    public $clone_desc =[];
+    public $clone_edu = [];
+    public $clone_skills = [];
+    public $positions = [];
+    public $questionfields = [];
     public $benefit_selection;
     public $questionnaire_selection;
 
@@ -110,6 +116,10 @@ class ApplicationForm extends Model
         return [
             [[
                 'questions',
+                'pref_indus',
+                'internship_duration',
+                'internship_duration_type',
+                'mainfield',
                 'primaryfield',
                 'workfromhome',
                 'is_online_interview',
@@ -189,7 +199,14 @@ class ApplicationForm extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-        $application_type_enc_id = ApplicationTypes::findOne(['name' => $type]);
+        if ($type=='Jobs'||$type=='Clone_Jobs') {
+            $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
+            $type = 'Jobs';
+        }
+        else if (($type=='Internships'||$type=='Clone_Internships')){
+            $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
+            $type = 'Internships';
+        }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -334,10 +351,15 @@ class ApplicationForm extends Model
             }
             if (in_array("6", $this->weekdays)) {
                 $weekoptionsat = $this->weekoptsat;
-            } else if (in_array("7", $this->weekdays)) {
-                $weekoptionsund = $this->weekoptsund;
-            } else {
+            }
+            else
+            {
                 $weekoptionsat = NULL;
+            }
+            if (in_array("7", $this->weekdays)) {
+                $weekoptionsund = $this->weekoptsund;
+            }
+            else{
                 $weekoptionsund = NULL;
             }
             if ($this->interradio == 1) {
@@ -358,12 +380,13 @@ class ApplicationForm extends Model
             $applicationoptionsModel->max_wage = (($this->max_wage) ? str_replace(',', '', $this->max_wage) : null);
             $applicationoptionsModel->ctc = (($this->ctc) ? str_replace(',', '', $this->ctc) : null);
             $applicationoptionsModel->wage_duration = $this->wage_duration;
-            $applicationoptionsModel->has_placement_offer = null;
             $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->pre_placement_offer = (($this->pre_placement_package) ? str_replace(',', '', $this->pre_placement_package) : null);
-            $applicationoptionsModel->has_placement_offer = (($this->pre_placement_offer) ? str_replace(',', '', $this->pre_placement_offer) : null);
+            $applicationoptionsModel->has_placement_offer = $this->pre_placement_offer;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
+            $applicationoptionsModel->internship_duration = $this->internship_duration;
+            $applicationoptionsModel->internship_duration_type = $this->internship_duration_type;
             $applicationoptionsModel->working_days = json_encode($this->weekdays);
             $applicationoptionsModel->saturday_frequency = $weekoptionsat;
             $applicationoptionsModel->sunday_frequency = $weekoptionsund;
@@ -583,7 +606,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedEdu($e_id, $cat_id)
+    private function  assignedEdu($e_id, $cat_id)
     {
         $asignedEduModel = new AssignedEducationalRequirements();
         $utilitiesModel = new Utilities();
@@ -786,14 +809,17 @@ class ApplicationForm extends Model
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
+                $b->andWhere(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
             ->joinWith(['applicationSkills g' => function ($b) {
+                $b->andWhere(['g.is_deleted' => 0]);
                 $b->joinWith(['skillEnc h'], false);
                 $b->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
             }])
             ->joinWith(['applicationJobDescriptions i' => function ($b) {
+                $b->andWhere(['i.is_deleted' => 0]);
                 $b->joinWith(['jobDescriptionEnc j'], false);
                 $b->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])

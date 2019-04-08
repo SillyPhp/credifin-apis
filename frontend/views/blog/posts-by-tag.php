@@ -5,48 +5,171 @@ use yii\helpers\Url;
 $this->params['header_dark'] = true;
 ?>
 
-<section>
-    <div class="container">
-        <div class="section-content">
-            <div class="row">
+    <section>
+        <div class="container">
+            <div class="section-content">
                 <?php
+                $i = 1;
                 foreach ($posts as $post) {
+                    $new_row = ($i % 3 == 0) ? true : false;
+                    if ($new_row) {
+                        ?>
+                        <div class="row">
+                        <?php
+                    }
                     $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
                     $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
                     if (!file_exists($image_path)) {
                         $image = '//placehold.it/330x200';
                     }
-                    $date = strtotime($post['created_on']);
                     ?>
-                    <div class="col-sm-6 col-md-3">
-                        <article class="post clearfix mb-30 bg-lighter">
-                            <div class="entry-header">
-                                <div class="post-thumb thumb"> 
-                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>"><img src="<?= $image; ?>" width="330" height="200" alt="<?= $post['featured_image_alt']; ?>" title="<?= $post['featured_image_title']; ?>" </a>
-                                </div>                    
-                                <div class="entry-date media-left text-center flip bg-theme-colored border-top-theme-color-2-3px pt-5 pr-15 pb-5 pl-15">
-                                    <ul>
-                                        <li class="font-16 font-weight-600"><?= date('d', $date); ?></li>
-                                        <li class="font-12 text-uppercase"><?= date('M, Y', $date); ?></li>
-                                    </ul>
+                    <div class="col-md-4">
+                        <div class="what-popular-box">
+                            <div class="wp-box-icon">
+                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>"><img src="<?= $image; ?>" alt="<?= $post['title']; ?>"</a>
+                                <div class="middle">
+                                    <a href="" class="">
+                                    </a>
                                 </div>
                             </div>
-                            <div class="entry-content p-15 pt-10 pb-10">
-                                <div class="entry-meta media no-bg no-border mt-0 mb-10">
-                                    <div class="media-body pl-0">
-                                        <div class="event-content pull-left flip">
-                                            <h4 class="entry-title text-white text-uppercase font-weight-600 m-0 mt-5"><a href="<?= Url::to('/blog/' . $post['slug']); ?>"><?= $post['title']; ?></a></h4>
-                                        </div>
-                                    </div>
+                            <div class="wn-box-details">
+                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
+                                    <div class="wn-box-title"><?= $post['title']; ?></div>
+                                </a>
+                                <div class="wp-box-des"><?= $post['excerpt']; ?></div>
+                                <div class=""><a href="/blog/<?= $post['slug']; ?>"
+                                                 class="button"><span>View Post</span></a>
                                 </div>
-                                <a href="<?= Url::to('/blog/' . $post['slug']); ?>"><p class="mt-5"><?= $post['excerpt']; ?><a class="text-theme-color-2 font-12 ml-5" href="<?= Url::to('/blog/' . $post['slug']); ?>"> Read More</a></p>
                             </div>
-                        </article>
+                        </div>
                     </div>
                     <?php
+                    if ($new_row) {
+                        ?>
+                        </div>
+                        <?php
+                    }
+                    $i++;
                 }
                 ?>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+<?php
+$this->registerCss('
+.whats-new-box{
+    border-radius:5px;
+    margin-bottom:20px;
+}
+.what-popular-box:hover, .whats-new-box:hover{
+    box-shadow:0 0 15px rgba(73, 72, 72, 0.28);
+    transition:.3s all;
+}
+.what-popular-box:hover .wp-box-icon img, .whats-new-box:hover .wn-box-icon img{
+     -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    opacity: 1; 
+    transition:.3s all;
+}
+.what-popular-box{
+    margin-bottom:20px;
+    border-radius:5px;
+    min-height:400px;
+    border: 1px solid rgba(230, 230, 230, 0.7);
+    position:relative;
+}
+.what-popular-box:hover > .wp-box-icon > .middle, .whats-new-box:hover > .wn-box-icon > .middle{
+    opacity:1 !important;
+}
+.what-popular-box:hover > .wp-box-icon > .middle > a > img, .whats-new-box:hover >.wn-box-icon > .middle > a > img{
+    opacity:1 !important;
+}
+.wn-box-title{
+    font-weight: bold;
+   
+}
+.wn-box-details{
+    border-top:none;
+    padding: 5px 10px 10px 8px;
+    border-radius:0 0 5px 5px;
+}
+.wn-box-cat{
+   font-size:14px;
+   color: #9e9e9e;
+}
+a.wn-overlay-text {
+  background-color: #00a0e3;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius:5px;
+}
+.middle {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+.wp-box-icon{
+    width:100%;
+    heigth:100%;
+    overflow:hidden;
+     border-radius:5px 5px 0 0; 
+    position:relative;   
+}
+.wp-box-icon img{
+    height:200px;
+    width:100%;
+    object-fit:cover;
+}
+.middle img{
+    object-fit:contain;
+}
+.wp-box-des{
+    padding-top:15px;
+    font-size:13px;
+}
+.button {
+  display: inline-block;
+  background-color: #00a0e3;
+  border-radius: 5px;
+  border:none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 13px;
+  padding: 8px 15px;
+  transition: all 0.3s;
+  cursor: pointer;
+  margin-top:15px;
+  position:absolute;
+  bottom:10px;
+}
+.button span {
+  color:#fff;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.3s;
+}
+.button span:after {
+  content: "\00bb";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  color:#fff;
+  right: -20px;
+  transition: 0.5s;
+}
+.button:hover span {
+  padding-right: 20px;
+}
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+');
+?>

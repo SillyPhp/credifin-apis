@@ -49,19 +49,16 @@ $this->registerCss('
 }
 .fab-hover-message{
     bottom: 120px;
-    right: 6px;
-    color:#222;
+    right: 7px;
     opacity: 0; 
     position: absolute;
-    font-size: 18px; 
-    padding: 15px;
-     border-radius: 3px;
-     z-index:9; 
+    padding: 14px;
+    border-radius: 3px;
+    z-index:9;
 }
-
 .fab-hover-image img{
     width:85px;
-    height:85px;
+    height:auto;
 }
 .i-review-question-title{
     color:#fff;

@@ -5,7 +5,15 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false); ?>
+            <?php if ($type == 'Edit_Jobs') {
+                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
+            }
+            else
+            {
+               echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+            }
+             ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -15,7 +23,11 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title', 'disabled' => true])->label(false) ?>
+    <?php if ($type == 'Edit_Jobs') {
+        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','readonly' => true])->label(false);
+    } else {
+        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','disabled' => true])->label(false);
+    } ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -25,7 +37,11 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation'])->label(false); ?>
+    <?php if ($type == 'Edit_Jobs') {
+        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','readonly' => true])->label(false);
+    } else {
+        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','disabled' => true])->label(false);
+    }?>
         </div>
     </div>
     <div class="col-md-3">
@@ -43,7 +59,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
+                    $return .= '<input type="radio" id="sltype' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="sltype' . $index . $name . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -94,8 +110,6 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="weekDays-selector">
-            <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
-
             <?=
             $form->field($model, 'weekdays')->inline()->checkBoxList([
                 '1' => 'M',
@@ -119,18 +133,18 @@ use kartik\widgets\DatePicker;
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsat')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sat">Sat</span>
                 </div>
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsund')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sun">Sun</span>
                 </div>
@@ -146,7 +160,17 @@ use kartik\widgets\DatePicker;
         ?>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry'])->label(false); ?>
+        <?php
+        if ($type=='Edit_Jobs')
+        {
+            echo $form->field($model, 'pref_indus')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
+            echo $form->field($model, 'industry',['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
+        }
+        else
+            {
+              echo $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
+            }
+        ?>
     </div>
 </div>
 <div class="row">
@@ -222,20 +246,40 @@ $script = <<< JS
  $('#addctc').on('click',function(){
     $('#addct').hide();
     $('#ctc-main').show();     
-});
-        
+}); 
 $('.close-ctc').on('click',function(){
     $('#ctc-main').hide();
     $('#addct').show();
 }); 
 $('input[name= "wage_type"]').on('change',function(){
    var sl_type = $(this).attr("data-title");
-   if(sl_type=='1')
+     wage_type(sl_type);
+   })    
+if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') 
+    {
+        wage_type2('$model->wage_type');
+    }
+function wage_type2(sl_type) {
+  if(sl_type=='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        }
+     
+     else if(sl_type=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        }
+}    
+function wage_type(sl_type)
+{
+    if(sl_type=='1')
         {
         $('#fixed_stip').show();
         $('#min_max').hide();
         $('#min_wage').val('');
-        $('#max_stip').val('');
+        $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
      
@@ -244,35 +288,10 @@ $('input[name= "wage_type"]').on('change',function(){
         $('#fixed_stip').hide();
         $('#min_max').show();
         $('#min_wage').val('');
-        $('#max_stip').val('');
+        $('#max_wage').val('');
         $('#fixed_wage').val('');
         }
-   })    
-   $(document).on('click','#weekdays input',function()
-    {
-     if ($('#weekday-5').is(':checked'))
-        {
-         $('.field-weekoptsat').css('display','block');
-         $('.sat').css('display','block');
-        
-        }
-     else if ($('#weekday-5').is(':unchecked'))
-        {
-          $('.field-weekoptsat').css('display','none');
-          $('.sat').css('display','none');
-        }
-    if($('#weekday-6').is(':checked'))
-        {
-          $('.field-weekoptsund').css('display','block');
-          $('.sun').css('display','block');
-        }
-        
-     else if($('#weekday-6').is(':unchecked'))
-        { 
-          $('.field-weekoptsund').css('display','none');
-          $('.sun').css('display','none');
-        }
-   })  
+}
  var designations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,

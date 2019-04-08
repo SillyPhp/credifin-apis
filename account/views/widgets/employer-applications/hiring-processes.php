@@ -73,8 +73,15 @@ $(document).on('click','.process_display',function(e) {
 $(document).on('change','input[name="interview_process"]',function()
       {
         $('.selectBox').html('<option value="">Choose Stage</option>');
+        ques_len = $('[name="questionnaire[]"]:checked').length;
+        stage_len = $('.selectBox option:selected:not([value=""])').length;
+        ques_checker(ques_len,stage_len);
          var id = $(this).val();
-        if(!id=="")
+         fetch_hiring_process(id);
+   });
+function fetch_hiring_process(id)
+{
+    if(!id=="")
         {
            $.ajax({
                  url:'/account/categories-list/process-list',
@@ -92,13 +99,12 @@ $(document).on('change','input[name="interview_process"]',function()
                   }
                })
          }
-   })
+}   
 $(document).on("click",'input[name="interview_process"]', function() {
     checked = $(this);
     if (this.checked == true) {
         process_len =  $('[name="interview_process"]:checked').length;
         process_checker(process_len);
-
     } 
         
     else {

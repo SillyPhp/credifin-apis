@@ -3,23 +3,46 @@ use kartik\widgets\TimePicker;
 use kartik\widgets\DatePicker;
 ?>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="select">
-            <?= $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false); ?>
+            <?php if ($type == 'Edit_Internships') {
+                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
+            }
+            else
+            {
+                echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
+            }
+            ?>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="cat_wrapper">
             <div class="load-suggestions Typeahead-spinner">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title', 'disabled' => true])->label(false) ?>
+            <?php if ($type == 'Edit_Internships') {
+                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','readonly' => true])->label(false);
+            } else {
+                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','disabled' => true])->label(false);
+            } ?>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+    </div>
+    <div class="col-md-3">
+      <div class="row">
+          <div class="col-md-6">
+              <?= $form->field($model, 'internship_duration')->textInput(['maxLength'=>1])->label('Duration'); ?>
+              <div class="duration_errors"></div>
+          </div>
+          <div class="col-md-6">
+              <?= $form->field($model, 'internship_duration_type')->dropDownList(['Months' => 'Months','Weeks' => 'Weeks', ])->label(false); ?>
+          </div>
+      </div>
     </div>
 </div>
 <div class="row">
@@ -35,7 +58,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
+                    $return .= '<input type="radio" id="sti' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="sti' . $index . $name . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -78,7 +101,6 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="weekDays-selector">
-            <?php $model->weekdays = [1, 2, 3, 4, 5]; ?>
             <?=
             $form->field($model, 'weekdays')->inline()->checkBoxList([
                 '1' => 'M',
@@ -101,18 +123,18 @@ use kartik\widgets\DatePicker;
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsat')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sat">Sat</span>
                 </div>
                 <div class="sat-sun">
                     <?=
                     $form->field($model, 'weekoptsund')->dropDownList([
-                        'always' => 'Always',
-                        'alternative' => 'Alternative',
-                        'rearly' => 'Rearly'])->label(false);
+                        'Always' => 'Always',
+                        'Alternative' => 'Alternative',
+                        'Rearly' => 'Rearly'])->label(false);
                     ?>
                     <span class="sun">Sun</span>
                 </div>
@@ -191,7 +213,7 @@ use kartik\widgets\DatePicker;
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-radio">';
-                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn">';
+                    $return .= '<input type="radio" id="pre' . $index . $name . '" name="' . $name . '"  value="' . $value . '" data-title="' . $value . '" data-name = "' . $label . '"  class="md-radiobtn" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="pre' . $index . $name . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -214,10 +236,14 @@ $this->registerCss("
 ");
 $script = <<< JS
 $('#min_wage, #max_wage').mask("#,#0,#00", {reverse: true}); 
+$('#internship_duration').mask("#", {reverse: true}); 
 $('#fixed_wage, #pre_placement_package').mask("#,#0,#00", {reverse: true});
 $('input[name= "pre_placement_offer"]').on('change',function(){
         var pre = $(this).attr("data-title");
-        if(pre==1)
+        pre_placement(pre);
+        });
+function pre_placement(pre) {
+   if(pre==1)
         {
          $('#pre_package').show();
         }
@@ -225,10 +251,37 @@ $('input[name= "pre_placement_offer"]').on('change',function(){
         {
          $('#pre_package').hide();
         }
-        });
+}
+if (doc_type=='Clone_Internships'||doc_type=='Edit_Internships') 
+    {
+        wage_types2('$model->wage_type');
+        pre_placement('$model->pre_placement_offer');
+    }
+function wage_types2(stipendtyp)
+{
+    if(stipendtyp=='0')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').hide();
+        }
+     else if(stipendtyp =='1')
+        {
+        $('#fixed_stip').show();
+        $('#min_max').hide();
+        }
+     else if(stipendtyp=='3'||stipendtyp=='2')
+        {
+        $('#fixed_stip').hide();
+        $('#min_max').show();
+        }
+}
 $('input[name= "wage_type"]').on('change',function(){
         var stipendtyp = $(this).attr("data-title");
-   if(stipendtyp=='0')
+        wage_types(stipendtyp);
+   });
+function wage_types(stipendtyp)
+{
+    if(stipendtyp=='0')
         {
         $('#fixed_stip').hide();
         $('#min_max').hide();
@@ -250,32 +303,7 @@ $('input[name= "wage_type"]').on('change',function(){
         $('#min_max').show(); 
         $('#fixed_wage').val('');
         }
-   }) 
-$(document).on('click','#weekdays input',function()
-    {
-     if ($('#weekday-5').is(':checked'))
-        {
-         $('.field-weekoptsat').css('display','block');
-         $('.sat').css('display','block');
-        
-        }
-     else if ($('#weekday-5').is(':unchecked'))
-        {
-          $('.field-weekoptsat').css('display','none');
-          $('.sat').css('display','none');
-        }
-    if($('#weekday-6').is(':checked'))
-        {
-          $('.field-weekoptsund').css('display','block');
-          $('.sun').css('display','block');
-        }
-        
-     else if($('#weekday-6').is(':unchecked'))
-        { 
-          $('.field-weekoptsund').css('display','none');
-          $('.sun').css('display','none');
-        }
-   });
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
