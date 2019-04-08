@@ -1,58 +1,107 @@
 <?php
 
 namespace frontend\models;
+
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
-use common\models\OrganizationVideos;
-use yii\httpclient\Client;
+use common\models\SubmittedVideos;
 
 class OrganizationVideoForm extends Model {
 
-    public $link;
+    public $video_title;
+    public $video_type;
+    public $type_input;
+    public $category;
+    public $sub_category;
+    public $cover_image;
     public $description;
-    public $name;
+    public $tags;
+    public $video_url;
 
     public function rules() {
         return [
-            [['link','description','name'], 'required'],
+            [['video_title', 'video_type', 'video_url', 'cover_image', 'description'], 'required'],
+            [['video_title', 'video_type', 'category', 'video_url', 'cover_image', 'sub_category', 'description', 'tags'], 'trim'],
+            [['description'], 'string'],
+            [['video_url', 'cover_image'], 'url', 'defaultScheme' => 'http'],
+            [['video_type', 'category', 'sub_category'], 'string', 'max' => 30],
+            [['video_title', 'cover_image'], 'string', 'max' => 100],
+            [
+                ['type_input'], 'required', 'when' => function ($model, $attribute) {
+                return $model->video_type == 'Others';
+            }, 'whenClient' => "function (attribute, value) {
+                        return $('#video_type').val() == 'Others';
+                }"
+            ],
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels() {
-        return[
-            'link' => Yii::t('frontend', 'Link'),
+        return [
+            'video_title' => Yii::t('frontend', 'Video Title'),
+            'video_type' => Yii::t('frontend', 'Video Type'),
+            'type_input' => Yii::t('frontend', 'Video Type'),
+            'category' => Yii::t('frontend', 'Category'),
+            'video_url' => Yii::t('frontend', 'Video URL'),
+            'sub_category' => Yii::t('frontend', 'Sub Category'),
+            'youtube_description' => Yii::t('frontend', 'Youtube Description'),
             'description' => Yii::t('frontend', 'Description'),
-            'name' => Yii::t('frontend', 'Name'),
+            'tags' => Yii::t('frontend', 'Tags'),
         ];
     }
 
-    public function add() {
+    public function save($userID = NULL) {
         if ($this->validate()) {
-            $organizationVideosModel = new OrganizationVideos();
+
+            $submittedVideosModel = new SubmittedVideos();
             $utilitiesModel = new Utilities();
-            $client = new Client(['baseUrl' => 'https://www.googleapis.com/youtube/v3']);
-            
-            $response = $client->get('videos', [
-                        'key' => 'AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
-                        'part' => 'snippet',
-                        'id' => $this->link,
-                    ])->send();
-            $video = $response->getData();
-            $organizationVideosModel->name = $video['items'][0]['snippet']['title'];
-            $organizationVideosModel->link = $this->link;
-            $organizationVideosModel->cover_image = $video['items'][0]['snippet']['thumbnails']['high']['url'];
-            $organizationVideosModel->description = $video['items'][0]['snippet']['description'];
-            $organizationVideosModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $submittedVideosModel->name = $this->video_title;
+            $submittedVideosModel->link = $this->video_url;
+            $submittedVideosModel->cover_image = $this->cover_image;
+            $submittedVideosModel->description = $this->description;
+
+
+            if (!empty($this->tags)) {
+                $submittedVideosModel->tags = $this->tags;
+            } else {
+                $submittedVideosModel->tags = NULL;
+            }
+            if (!empty($this->category)) {
+                $submittedVideosModel->category = $this->category;
+            } else {
+                $submittedVideosModel->category = NULL;
+            }
+            if (!empty($this->sub_category)) {
+                $submittedVideosModel->sub_category = $this->sub_category;
+            } else {
+                $submittedVideosModel->sub_category = NULL;
+            }
+            if ($this->video_type == 'Others') {
+                $submittedVideosModel->type = $this->type_input;
+            } else {
+                $submittedVideosModel->type = $this->video_type;
+            }
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $organizationVideosModel->video_enc_id = $utilitiesModel->encrypt();
-            $organizationVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
-            $organizationVideosModel->created_on = date('Y-m-d H:i:s');
-            if ($organizationVideosModel->validate() && $organizationVideosModel->save()) {
+            $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();
+            if ($userID) {
+                $submittedVideosModel->created_by = $userID;
+            } else {
+                $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
+            }
+            $submittedVideosModel->created_on = date('Y-m-d h:i:s');
+            $submittedVideosModel->slug = 'temp';
+
+            if ($submittedVideosModel->validate() && $submittedVideosModel->save()) {
                 return true;
             } else {
-                return false;
+                print_r ($submittedVideosModel->getErrors());
             }
+        } else {
+            return false;
         }
     }
 
