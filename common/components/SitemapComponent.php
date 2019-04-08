@@ -51,10 +51,11 @@ class SitemapComponent extends Component
         $sitemap->addItem(Url::to('/', true), null, Sitemap::ALWAYS, 1);
         $baseUrls = [
             '/employers',
-            '/about-us',
-            '/contact-us',
             '/jobs',
             '/internships',
+            '/login',
+            '/signup/individual',
+            '/signup/organization',
         ];
         $orgdata = $this->AddOrgUrls();
 //        $userdata = $this->AddUserUrls();
