@@ -114,50 +114,97 @@ class ChatController extends Controller{
     public function actionGetRecentUsers(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
 
-            $allConversations = Conversations::find()
-                ->alias('a')
-                ->select(['a.conversation_enc_id'])
-                ->joinWith(['conversationParticipants b'], false)
-                ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()
-                ->all();
-
-            if(count($allConversations) > 0){
-                $recentChats = [];
-                foreach($allConversations as $a){
-                    array_push($recentChats, $a['conversation_enc_id']);
-                }
-                $users = ConversationParticipants::find()
-                    ->select(['user_enc_id'])
-                    ->where(['in','conversation_enc_id',$recentChats])
-                    ->andWhere(['!=', 'user_enc_id',  Yii::$app->user->identity->user_enc_id ])
+            if(Yii::$app->user->identity->organization->organization_enc_id) {
+                $allConversations = Conversations::find()
+                    ->alias('a')
+                    ->select(['a.conversation_enc_id'])
+                    ->joinWith(['conversationParticipants b'], false)
+                    ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                     ->asArray()
                     ->all();
 
-                $r = [];
+                if(count($allConversations) > 0){
+                    $recentChats = [];
+                    foreach($allConversations as $a){
+                        array_push($recentChats, $a['conversation_enc_id']);
+                    }
+                    $users = ConversationParticipants::find()
+                        ->select(['user_enc_id'])
+                        ->where(['in','conversation_enc_id',$recentChats])
+                        ->andWhere(['!=', 'organization_enc_id',  Yii::$app->user->identity->organization->organization_enc_id])
+                        ->asArray()
+                        ->all();
 
-                foreach($users as $u){
-                    array_push($r, $u["user_enc_id"]);
+                    $r = [];
+
+                    foreach($users as $u){
+                        array_push($r, $u["user_enc_id"]);
+                    }
+
+                    $result = Users::find()
+                        ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                        ->where(['in', 'user_enc_id', $r])
+                        ->limit(10)
+                        ->asArray()
+                        ->all();
+
+                    $res = [
+                        'code' => 200,
+                        'data' => $result
+                    ];
+
+                    return json_encode($res);
+                }else{
+                    $noResult = [
+                        'code'=>101,
+                    ];
+                    return json_encode($noResult);
                 }
-
-                $result = Users::find()
-                    ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
-                    ->where(['in', 'user_enc_id', $r])
-                    ->limit(10)
-                    ->asArray()
-                    ->all();
-
-                $res = [
-                    'code' => 200,
-                    'data' => $result
-                ];
-
-                return json_encode($res);
             }else{
-                $noResult = [
-                    'code'=>101,
-                ];
-                return json_encode($noResult);
+                $allConversations = Conversations::find()
+                    ->alias('a')
+                    ->select(['a.conversation_enc_id'])
+                    ->joinWith(['conversationParticipants b'], false)
+                    ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                    ->asArray()
+                    ->all();
+                if(count($allConversations) > 0){
+                    $recentChats = [];
+                    foreach($allConversations as $a){
+                        array_push($recentChats, $a['conversation_enc_id']);
+                    }
+                    $users = ConversationParticipants::find()
+                        ->select(['organization_enc_id'])
+                        ->where(['in','conversation_enc_id',$recentChats])
+                        ->andWhere(['!=', 'user_enc_id',  Yii::$app->user->identity->user_enc_id ])
+                        ->asArray()
+                        ->all();
+
+                    $r = [];
+
+                    foreach($users as $u){
+                        array_push($r, $u["organization_enc_id"]);
+                    }
+
+                    $result = Organizations::find()
+                        ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                        ->where(['in', 'organization_enc_id', $r])
+                        ->limit(10)
+                        ->asArray()
+                        ->all();
+
+                    $res = [
+                        'code' => 200,
+                        'data' => $result
+                    ];
+
+                    return json_encode($res);
+                }else{
+                    $noResult = [
+                        'code'=>101,
+                    ];
+                    return json_encode($noResult);
+                }
             }
         }
     }
@@ -195,7 +242,11 @@ class ChatController extends Controller{
                                         $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
                                     }], false)
                                     ->where(['a.is_deleted' => 0])
-                                    ->andWhere(['a.status' => 'Accepted'])
+                                    ->andWhere([
+                                        'or',
+                                        ['a.status' => 'Accepted'],
+                                        ['a.status' => 'Hired']
+                                    ])
                                     ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
                                     ->groupBy(['b.organization_enc_id'])
                                     ->limit(10)
@@ -400,8 +451,7 @@ class ChatController extends Controller{
             }
         }
     }
-
-
+    
     private function saveMessage($uniqueid, $messagekey, $pid, $sender, $message){
         $messages = new ConversationMessages();
         $messages->message_enc_id = $messagekey;
