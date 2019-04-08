@@ -5,7 +5,7 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?php if ($type == 'Edit_Internships'||$type=='Clone_Internships') {
+            <?php if ($type == 'Edit_Internships') {
                 echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
                 echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
             }
@@ -23,7 +23,11 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title', 'disabled' => true])->label(false) ?>
+            <?php if ($type == 'Edit_Internships') {
+                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','readonly' => true])->label(false);
+            } else {
+                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','disabled' => true])->label(false);
+            } ?>
         </div>
     </div>
     <div class="col-md-3">
