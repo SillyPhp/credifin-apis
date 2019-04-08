@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\OrganizationVideoForm;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -318,7 +319,7 @@ class SiteController extends Controller {
 
     public function actionLearning() {
         $this->layout = 'main-secondary';
-        $learningCornerFormModel = new OrganisationVideoForm();
+        $learningCornerFormModel = new OrganizationVideoForm();
         $session = Yii::$app->session;
         if (!$session->isActive) {
             $session->open();
