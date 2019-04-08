@@ -14,7 +14,7 @@
                     <td><strong>Internship Profile:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm"
-                       data-display="primaryfield"
+                       data-display="<?= (($type=='Clone_Jobs'||$type=='Edit_Jobs'||$type=='Edit_Internships'||$type=='Clone_Internships') ? 'mainfield' : 'primaryfield');?>"
                        id="fieldvalue"></p></td>
                 <?php if ($type =='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                 <td><strong>Job Title:</strong></td>
@@ -142,7 +142,7 @@
             <tr>
                 <td><strong>Preferred Industry:</strong></td>
                 <td colspan="5"><p class="final_confrm"
-                                   data-display="pref_inds"></p>
+                                   data-display="<?= (($type=='Clone_Jobs'||$type=='Edit_Jobs') ? 'pref_indus' : 'industry');?>"></p>
                 </td>
             </tr>
             <?php endif; ?>

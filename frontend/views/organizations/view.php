@@ -439,7 +439,7 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
-    'username' => $username
+    'username' => Yii::$app->user->identity->username
 ]);
 echo $this->render('/widgets/mustache/organization-reviews',[
     'org_slug' => $organization['slug']
@@ -582,6 +582,7 @@ $this->registerCss('
 }
 .user-review-main{
     border-left:2px solid #ccc;
+    margin-bottom:30px;
 }
 .ur-bg{
    background:#edecec;
@@ -996,7 +997,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     display:inherit;
     width:100%;
 }
-.com-details{width:100%;}
+.com-details{width:auto;}
 .logo-box{
     height:200px;
     width:200px;

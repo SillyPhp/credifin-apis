@@ -60,12 +60,16 @@ class ApplicationForm extends Model
     public $primaryfield;
     public $internshiptitle;
     public $fieldofwork;
+    public $mainfield;
+    public $pref_indus;
     public $internshiptype;
     public $cities;
     public $specialskillsrequired;
     public $earliestjoiningdate;
     public $from;
     public $to;
+    public $internship_duration;
+    public $internship_duration_type;
     public $is_online_interview;
     public $is_online_options;
     public $questions;
@@ -112,6 +116,10 @@ class ApplicationForm extends Model
         return [
             [[
                 'questions',
+                'pref_indus',
+                'internship_duration',
+                'internship_duration_type',
+                'mainfield',
                 'primaryfield',
                 'workfromhome',
                 'is_online_interview',
@@ -343,10 +351,15 @@ class ApplicationForm extends Model
             }
             if (in_array("6", $this->weekdays)) {
                 $weekoptionsat = $this->weekoptsat;
-            } else if (in_array("7", $this->weekdays)) {
-                $weekoptionsund = $this->weekoptsund;
-            } else {
+            }
+            else
+            {
                 $weekoptionsat = NULL;
+            }
+            if (in_array("7", $this->weekdays)) {
+                $weekoptionsund = $this->weekoptsund;
+            }
+            else{
                 $weekoptionsund = NULL;
             }
             if ($this->interradio == 1) {
@@ -370,8 +383,10 @@ class ApplicationForm extends Model
             $applicationoptionsModel->has_online_interview = $has_online_int;
             $applicationoptionsModel->has_questionnaire = $this->questionnaire_selection;
             $applicationoptionsModel->pre_placement_offer = (($this->pre_placement_package) ? str_replace(',', '', $this->pre_placement_package) : null);
-            $applicationoptionsModel->has_placement_offer = (($this->pre_placement_offer) ? str_replace(',', '', $this->pre_placement_offer) : null);
+            $applicationoptionsModel->has_placement_offer = $this->pre_placement_offer;
             $applicationoptionsModel->has_benefits = $this->benefit_selection;
+            $applicationoptionsModel->internship_duration = $this->internship_duration;
+            $applicationoptionsModel->internship_duration_type = $this->internship_duration_type;
             $applicationoptionsModel->working_days = json_encode($this->weekdays);
             $applicationoptionsModel->saturday_frequency = $weekoptionsat;
             $applicationoptionsModel->sunday_frequency = $weekoptionsund;
@@ -569,7 +584,7 @@ class ApplicationForm extends Model
                     }
                 }
             }
-
+            Yii::$app->sitemap->generate();
             return true;
         } else {
             return false;

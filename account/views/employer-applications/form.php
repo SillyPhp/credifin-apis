@@ -99,12 +99,14 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 'model'=>$model,
                                 'primary_cat'=>$primary_cat,
                                 'industry'=>$industry,
+                                'type'=>$type,
                             ]);
                             elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
                                     'primary_cat' => $primary_cat,
+                                    'type' => $type,
                                 ]);
                             endif;
                             ?>
@@ -1559,6 +1561,36 @@ if(window.location.hash)
         window.location = window.location.pathname;
     }
 var session_tok = "";
+$(document).on('click','#weekdays input',function()
+    {
+     week_selecter();
+   });
+ 
+function week_selecter()
+{
+    if ($('#weekday-5').is(':checked'))
+        {
+         $('.field-weekoptsat').css('display','block');
+         $('.sat').css('display','block');
+        
+        }
+     else if ($('#weekday-5').is(':unchecked'))
+        {
+          $('.field-weekoptsat').css('display','none');
+          $('.sat').css('display','none');
+        }
+    if($('#weekday-6').is(':checked'))
+        {
+          $('.field-weekoptsund').css('display','block');
+          $('.sun').css('display','block');
+        }
+        
+     else if($('#weekday-6').is(':unchecked'))
+        { 
+          $('.field-weekoptsund').css('display','none');
+          $('.sun').css('display','none');
+        }
+}
 function genrate_session_token() {
     var possible = "abcdefghijklmnopqrstuvwxyz1234567890";
     for(var i = 0;i < 8; i++) {
@@ -1604,6 +1636,7 @@ if(doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
 if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships')
     {
         work_from_home('$model->type');
+        week_selecter();
     }
 function load_job_titles(prime_id)
 {
@@ -1828,7 +1861,6 @@ function init() {
                     },
                     'fixed_wage': {
                         required: true,
-                        
                     },
                     'last_date': {
                         required: true,
@@ -2193,6 +2225,9 @@ function init() {
                     if (min_weekdays() === false) {
                         return false;
                     }
+                    if (duration() === false) {
+                        return false;
+                    } 
                     if (form.valid() == false) {
                         return false;
                     }
@@ -2237,6 +2272,19 @@ function salarycomparison(){
         return true;
     }
     }
+function duration()
+{
+    var numb = $('#internship_duration').val();
+    if (numb<=0||numb=='')
+        {
+        $('.duration_errors').html('<div class = "s_error">Enter a valid number</div>');
+        $('html, body').animate({ scrollTop: 200 }, 1000);
+            return false;
+        }
+    else {
+        return true;
+    }
+}    
 function min_weekdays()
 {
     week_length =  $('[name="weekdays[]"]:checked').length;

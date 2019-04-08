@@ -2,7 +2,7 @@
 if (!empty($working_time_from) && !empty($working_time_to)) {
     ?>
     <h3>Work Timing</h3>
-    <div class="time-bar-inner col-md-12">
+    <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
         <div class="working-time-from">
             <?= date("H:i", strtotime($working_time_from)); ?>
         </div>
@@ -44,6 +44,16 @@ if (!empty($working_time_from) && !empty($working_time_to)) {
     .working-time-title{
         width: 70%;
         float: left;
+    }
+    @media screen and (max-width: 767px) {
+        .time-bar-inner{
+            font-size: 17px;
+        }
+    }
+    @media screen and (max-width: 450px) {
+        .time-bar-inner{
+            font-size: 13px;
+        }
     }
 ');
 }

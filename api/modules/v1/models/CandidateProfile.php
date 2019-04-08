@@ -121,10 +121,16 @@ class CandidateProfile extends Model
         if ($user->update()) {
             $flag++;
         }
-
-        if (!empty($this->skills)) {
+        
+        if($this->skills != ''){
+            $skills_array = explode(",", $this->skills);
+        }else{
+            $skills_array = [];
+        }
+        
+        if (!empty($skills_array)) {
             $skill_set = [];
-            foreach ($this->skills as $val) {
+            foreach ($skills_array as $val) {
                 $chk_skill = Skills::find()
                     ->distinct()
                     ->select(['skill_enc_id'])
@@ -193,10 +199,16 @@ class CandidateProfile extends Model
                 }
             }
         }
+        
+        if($this->languages != ''){
+            $languages_array = explode(",", $this->languages);
+        }else{
+            $languages_array = [];
+        }
 
-        if (!empty($this->languages)) {
+        if (!empty($languages_array)) {
             $language_set = [];
-            foreach ($this->languages as $val) {
+            foreach ($languages_array as $val) {
                 $chk_language = SpokenLanguages::find()
                     ->distinct()
                     ->select(['language_enc_id'])
@@ -449,7 +461,11 @@ class CandidateProfile extends Model
         $candidate = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
-        return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, true);
+        if(!empty($candidate->image_location)){
+            return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, true);
+        }else {
+            return '';
+        }
     }
 }
 

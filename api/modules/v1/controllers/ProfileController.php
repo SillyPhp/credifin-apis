@@ -57,9 +57,12 @@ class ProfileController extends ApiBaseController{
         }else{
             $result['title'] = NULL;
         }
-
-        $result['profile_picture'] = $basicDetails->getProfilePicture();
-
+        if(!($basicDetails->getProfilePicture() == "")){
+            $result['profile_picture'] = $basicDetails->getProfilePicture();
+        }else{
+            $result['profile_picture'] = NULL;
+        }
+            
         if(!($basicDetails->getCurrentCity() == "")){
             $result['current_city'] = $basicDetails->getCurrentCity()["city_name"];
             $result['current_state'] = $basicDetails->getCurrentCity()["state_name"];
@@ -104,16 +107,22 @@ class ProfileController extends ApiBaseController{
         return $this->response(200, $result);
     }
 
-    public function actionUpdateProfile(){
+    public function actionUpdateProfile()
+    {
         $basicDetails = new CandidateProfile();
-        if($basicDetails->load(Yii::$app->request->post())){
-            if($basicDetails->validate()) {
-                if ($basicDetails->update()) {
-                    return $this->response(202, 'Successfully Updated');
+        $req = Yii::$app->request->post();
+        if (!empty($req['exp_month']) && !empty($req['gender']) && !empty($req['exp_year']) && !empty($req['dob']) && !empty($req['languages']) && !empty($req['skills']) && !empty($req['availability']) && !empty($req['description']) && !empty($req['state']) && !empty($req['city'])){
+            if ($basicDetails->load(Yii::$app->request->post())) {
+                if ($basicDetails->validate()) {
+                    if ($basicDetails->update()) {
+                        return $this->response(202, 'Successfully Updated');
+                    }
+                    return $this->response(200, 'Already Updated');
+                } else {
+                    return $this->response(409, $basicDetails->getErrors());
                 }
-                return $this->response(200, 'Already Updated');
-            }else{
-                return $this->response(409, $basicDetails->getErrors());
+            } else {
+                return $this->response(422);
             }
         }else{
             return $this->response(422);
