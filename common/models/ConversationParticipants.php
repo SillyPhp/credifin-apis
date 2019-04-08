@@ -18,10 +18,11 @@ use Yii;
  * @property string $last_updated_by By which User Participant information was updated
  *
  * @property ConversationMessages[] $conversationMessages
- * @property Conversations $conversationEnc
- * @property Users $userEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Conversations $conversationEnc
+ * @property Users $userEnc
+ * @property Organizations $organizationEnc
  */
 class ConversationParticipants extends \yii\db\ActiveRecord
 {
@@ -39,15 +40,16 @@ class ConversationParticipants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['participant_enc_id', 'conversation_enc_id', 'created_by'], 'required'],
+            [['participant_enc_id', 'conversation_enc_id', 'user_enc_id', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['participant_enc_id', 'conversation_enc_id', 'user_enc_id', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['participant_enc_id'], 'unique'],
-            [['conversation_enc_id', 'user_enc_id'], 'unique', 'targetAttribute' => ['conversation_enc_id', 'user_enc_id']],
-            [['conversation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Conversations::className(), 'targetAttribute' => ['conversation_enc_id' => 'conversation_enc_id']],
-            [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['conversation_enc_id', 'user_enc_id', 'organization_enc_id'], 'unique', 'targetAttribute' => ['conversation_enc_id', 'user_enc_id', 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['conversation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Conversations::className(), 'targetAttribute' => ['conversation_enc_id' => 'conversation_enc_id']],
+            [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
 
@@ -57,6 +59,22 @@ class ConversationParticipants extends \yii\db\ActiveRecord
     public function getConversationMessages()
     {
         return $this->hasMany(ConversationMessages::className(), ['participant_enc_id' => 'participant_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
     /**
@@ -78,16 +96,8 @@ class ConversationParticipants extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy()
+    public function getOrganizationEnc()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastUpdatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 }

@@ -2,6 +2,7 @@
 use yii\helpers\Url;
 ?>
 
+<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->user_enc_id : null ?>" id="current-organization-user">
 <input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->organization_enc_id : Yii::$app->user->identity->user_enc_id ?>" id="current-user">
 <input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->name : Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>" id="current-name">
 
@@ -226,6 +227,7 @@ $script = <<<JS
     
     //all variables defined
     var current_user = $('#current-user').val(); //id of current user   
+    var current_organization_user = $('#current-organization-user').val(); //id of current organization user   
     var current_user_name = $('#current-name').val(); // name of current user
     var chat_icon = document.getElementById('chat-icon'); // chat icon
     var chat_list = document.getElementById('chat-list');// main id of conversations list
@@ -328,6 +330,7 @@ $script = <<<JS
              var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
              var data = {
                 sender : current_user,
+                sender_organization_id : current_organization_user,
                 receiver : user_id,
                 message : msginput,
                 hasSeen : false,
@@ -341,7 +344,7 @@ $script = <<<JS
              
              $.ajax({
                 type: 'POST',
-                url: '/account/chat/save-messages',
+                url: '/account/chat/save-sender',
                 data: data
              });
              
@@ -555,9 +558,18 @@ $script = <<<JS
                         hasSeen: true
                     };
                     
+                    
                     db
                     .ref('/conversations/' + getUniqueId(single_user_id) + '/' + data.key)
                     .update(udata);
+                    
+                    udata['uniqueid'] = getUniqueId(single_user_id);
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '/account/chat/save-receiver',
+                        data: udata
+                     });
                     
                     db
                     .ref('/notifications/' + current_user + '/' + data.val().sender)
