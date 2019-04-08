@@ -50,17 +50,21 @@ class SitemapComponent extends Component
     {
         $sitemap->addItem(Url::to('/', true), null, Sitemap::ALWAYS, 1);
         $baseUrls = [
-            '/about-us', '/contact-us'
+            '/employers',
+            '/about-us',
+            '/contact-us',
+            '/jobs',
+            '/internships',
         ];
         $orgdata = $this->AddOrgUrls();
-        $userdata = $this->AddUserUrls();
+//        $userdata = $this->AddUserUrls();
         $applicationdata = $this->AddApplicationUrls();
         foreach ($orgdata as $d) {
             $sitemap->addItem(Url::toRoute($d['slug'], true), null, null, null);
         }
-        foreach ($userdata as $ud) {
-            $sitemap->addItem(Url::toRoute($ud['username'], true), null, null, null);
-        }
+//        foreach ($userdata as $ud) {
+//            $sitemap->addItem(Url::toRoute($ud['username'], true), null, null, null);
+//        }
         foreach ($applicationdata as $ad) {
             $sitemap->addItem(Url::toRoute($ad['application'], true), null, null, null);
         }
