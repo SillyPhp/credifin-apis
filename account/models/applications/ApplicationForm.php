@@ -584,7 +584,7 @@ class ApplicationForm extends Model
                     }
                 }
             }
-
+            Yii::$app->sitemap->generate();
             return true;
         } else {
             return false;

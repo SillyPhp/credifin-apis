@@ -312,6 +312,7 @@ class JobsController extends Controller
                 ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
                 ->execute();
             if ($update) {
+                Yii::$app->sitemap->generate();
                 return true;
             } else {
                 return false;
