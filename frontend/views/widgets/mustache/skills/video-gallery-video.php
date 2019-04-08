@@ -1,24 +1,19 @@
-<script id="related-videos" type="text/template">
+<script id="video-gallery-video" type="text/template">
     {{#.}}
-    <div class="col-md-12 col-sm-4">
-        <div class="related-video-box">
+    <div class="col-md-3 col-sm-4">
+        <div class="video-container2">
             <a href="/learning/video-detail?vidk={{slug}}">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="re-v-icon">
-                            <img src="{{cover_image}}">
-                        </div>
-                    </div>
-                    <div class="col-md-7 padd-left-0">
-                        <div class="re-v-name">{{name}}</div>
-                    </div>
+                <div class="video-icon2">
+                    <img src="{{cover_image}}" alt="Cover Image">
+                </div>
+                <div class="r-video2">
+                    <div class="r-v-name">{{name}}</div>
                 </div>
             </a>
         </div>
     </div>
     {{/.}}
 </script>
-
 
 <?php
 $this->registerCss('
@@ -36,6 +31,12 @@ $this->registerCss('
     overflow:hidden;
     object-fit:cover;
 }
+.video-icon2 img{
+    border-radius:10px 10px 0 0;
+    object-fit:cover;
+    width:100%;
+    height:200px;
+}
 .r-video2{
     padding:5px 10px 10px 10px;
     background:#fff;
@@ -50,20 +51,21 @@ $this->registerCss('
     left:10px;
 }
 ');
+
 $script = <<<JS
-function getRelatedVideos() {
+function getVideoGallery() {
     $.ajax({
         method: "POST",
         url : window.location.href,
         success: function(response) {
             if(response.status === 200) {
-                var videos = $('#related-videos').html();
-                $("#r-videos").html(Mustache.render(videos, response.related_videos));
+                var videos = $('#video-gallery-video').html();
+                $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
             }
         }
     });
 }
-getRelatedVideos();
+getVideoGallery();
 JS;
 $this->registerJs($script);
-?>
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -1,19 +1,19 @@
 <script id="top-category-card" type="text/template">
-    {{#.}}
-    <li><a href="javascript:void(0);"><span>{{category_name}}</span>{{video_count}}</a></li>
-    {{/.}}
-</script>
-<div class="tg-widget tg-widgetcategories">
-    <div class="tg-widgetcontent">
-        <div class="row">
-            <div class="col-md-12">
-                <ul id="top-categories">
-
-                </ul>
+    <div class="tg-widget tg-widgetcategories">
+        <div class="tg-widgetcontent">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul id="top-categories">
+                        {{#.}}
+                        <li><a href="/learning/category"><span>{{category}}</span> 0 </a></li>
+                        {{/.}}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</script>
+
 
 <?php
 $this->registerCss('
@@ -29,6 +29,7 @@ $this->registerCss('
     position: relative;
     display:block;
     transition:.3s all;
+    text-transform:capitalize;
 }
 .tg-widgetcategories .tg-widgetcontent ul li a:hover{
     padding: 0 0 0 15px;
@@ -58,4 +59,22 @@ $this->registerCss('
 }
 
 ');
+
+$script = <<<JS
+function getTopCategory() {
+    $.ajax({
+        method: "POST",
+        url : window.location.href,
+        success: function(response) {
+            if(response.status === 200) {
+                var videos = $('#top-category-card').html();
+                $("#top-category").html(Mustache.render(videos, response.top_category));
+            }
+        }
+    });
+}
+getTopCategory();
+JS;
+$this->registerJs($script);
+
 ?>

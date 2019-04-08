@@ -2,12 +2,12 @@
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container">
-            <a href="{{link}}">
+            <a href="/skills/video-detail?vidk={{slug}}">
                 <div class="video-icon">
-                    <img src="{{thumb}}" alt="Cover Image">
+                    <img src="{{cover_image}}" alt="Cover Image">
                 </div>
                 <div class="r-video">
-                    <div class="r-v-name">{{video_title}}</div>
+                    <div class="r-v-name">{{name}}</div>
                     <div class="r-ch-name">{{channel_name}}</div>
                 </div>
             </a>
@@ -48,4 +48,21 @@ $this->registerCss('
     left:10px;
 }
 ');
+
+$script = <<<JS
+function getInterestedVideos() {
+    $.ajax({
+        method: "POST",
+        url : window.location.href,
+        success: function(response) {
+            if(response.status === 200) {
+                var videos = $('#interested-topics-card').html();
+                $("#i-videos").html(Mustache.render(videos, response.related_videos));
+            }
+        }
+    });
+}
+getInterestedVideos();
+JS;
+$this->registerJs($script);
 ?>

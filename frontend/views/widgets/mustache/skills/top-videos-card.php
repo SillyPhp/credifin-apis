@@ -2,12 +2,12 @@
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="video-container2">
-            <a href="{{link}}">
+            <a href="/skills/video-detail?vidk={{slug}}">
                 <div class="video-icon2">
-                    <img src="{{thumb}}" alt="Cover Image">
+                    <img src="{{cover_image}}" alt="Cover Image">
                 </div>
                 <div class="r-video2">
-                    <div class="r-v-name">{{video_title}}</div>
+                    <div class="r-v-name">{{name}}</div>
                     <div class="r-ch-name">{{channel_name}}</div>
                 </div>
             </a>
@@ -18,7 +18,7 @@
 
 <?php
 $this->registerCss('
- .video-container2{
+.video-container2{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
     border-radius:10px;
     height:300px;
@@ -46,4 +46,20 @@ $this->registerCss('
     left:10px;
 }
 ');
+$script = <<<JS
+function getTopVideos() {
+    $.ajax({
+        method: "POST",
+        url : window.location.href,
+        success: function(response) {
+            if(response.status === 200) {
+                var videos = $('#top-videos-card').html();
+                $("#top-videos").html(Mustache.render(videos, response.top_videos));
+            }
+        }
+    });
+}
+getTopVideos();
+JS;
+$this->registerJs($script);
 ?>
