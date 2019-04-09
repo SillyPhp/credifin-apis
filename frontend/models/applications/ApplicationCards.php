@@ -1,7 +1,5 @@
 <?php
-
 namespace frontend\models\applications;
-
 use Yii;
 use yii\helpers\Url;
 use common\models\Organizations;
@@ -15,15 +13,12 @@ use common\models\ApplicationTypes;
 use common\models\Industries;
 use common\models\Designations;
 use common\models\ApplicationOptions;
-
 class ApplicationCards
 {
-
     public static function jobs($options = [])
     {
         return self::_getCardsFromJobs($options);
     }
-
     private static function _getCardsFromJobs($options)
     {
         $cards = EmployerApplications::find()
@@ -74,21 +69,18 @@ class ApplicationCards
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->joinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
-
         if (isset($options['company'])) {
             $cards->andWhere([
                 'or',
                 ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
-
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',
                 ['g.name' => $options['location']]
             ]);
         }
-
         if (isset($options['category'])) {
             $cards->andWhere([
                 'or',
@@ -100,7 +92,6 @@ class ApplicationCards
                 ['like', 'i.name', $options['category']],
             ]);
         }
-
         if (isset($options['keyword'])) {
             $cards->andWhere([
                 'or',
@@ -111,12 +102,10 @@ class ApplicationCards
                 ['like', 'i.name', $options['keyword']],
             ]);
         }
-
         if (isset($options['limit'])) {
             $cards->limit = $options['limit'];
             $cards->offset = ($options['page'] - 1) * $options['limit'];
         }
-
         $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
         $i = 0;
         foreach ($result as $val) {
@@ -168,12 +157,10 @@ class ApplicationCards
         }
         return $result;
     }
-
     public static function internships($options = [])
     {
         return self::_getCardsFromInternships($options);
     }
-
     private static function _getCardsFromInternships($options)
     {
         $cards = EmployerApplications::find()
@@ -209,14 +196,12 @@ class ApplicationCards
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->joinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0]);
-
         if (isset($options['company'])) {
             $cards->andWhere([
                 'or',
                 ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
-
         if (isset($options['category'])) {
             $cards->andWhere([
                 'or',
@@ -226,7 +211,6 @@ class ApplicationCards
                 ['like', 'i.name', $options['category']],
             ]);
         }
-
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',
@@ -241,14 +225,11 @@ class ApplicationCards
                 ['like', 'i.name', $options['keyword']],
             ]);
         }
-
         if (isset($options['limit'])) {
             $cards->limit = $options['limit'];
             $cards->offset = ($options['page'] - 1) * $options['limit'];
         }
-
         $result =  $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
-
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y',strtotime($val['last_date']));
@@ -299,5 +280,4 @@ class ApplicationCards
         }
         return $result;
     }
-
 }
