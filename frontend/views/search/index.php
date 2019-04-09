@@ -73,6 +73,9 @@ use yii\helpers\Url;
     </div>
 </section>
 
+<section id="not-found" class="text-center">
+    <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
+</section>
 <?php
 $this->registerCss('
 .search-bar{
@@ -425,19 +428,31 @@ a.wn-overlay-text {
  .onestar-box .stars{
    color:#ffd478;
 }
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
+}
+#not-found{
+    display:none;
+}
 ');
 
 $script = <<< JS
 
-$('.s-input').val(window.location.search.split('=')[1]);
+$('.s-input').val(window.location.search.split('=')[1].split('+').join(' '));
 
 $(document).on('click', '.s-btn', function(e){
     e.preventDefault();
     var query_string = window.location.search;
     var search_params = new URLSearchParams(query_string);
     var search_key = $('.s-input').val();
-    search_params.set('keyword', search_key);
-    window.location.search = search_params.toString();
+    if(search_key){
+        if(search_key.trim()){
+            search_params.set('keyword', search_key.trim());
+            window.location.search = search_params.toString();
+        }
+    }
 });
 function fillData(){
     $.ajax({
@@ -445,11 +460,14 @@ function fillData(){
         async: false,
         url: window.location.pathname,
         data: {
-            'keyword' : window.location.search.split('=')[1]
+            'keyword' : window.location.search.split('=')[1].split('+').join(' ')
         },
         success: function(result){
             result = JSON.parse(result);
-            
+            if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0){
+                $('#not-found').fadeIn(1000);
+            }
+                
             if(result["jobs"].length){
                 var application_card = $('#application-card').html();
                 var jobs_render = Mustache.render(application_card, result['jobs']);
