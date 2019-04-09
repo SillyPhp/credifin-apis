@@ -11,7 +11,7 @@ use common\models\Qualifications;
 use common\models\States;
 use frontend\models\campusAmbassador\ApplicationForm;
 
-class CampusAmbassadorController extends Controller
+class CampusAmbassadorsController extends Controller
 {
     public function actionApply()
     {

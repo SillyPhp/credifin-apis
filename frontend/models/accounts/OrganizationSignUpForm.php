@@ -180,6 +180,7 @@ class OrganizationSignUpForm extends Model
         }
 
         if ($this->_flag) {
+            Yii::$app->sitemap->generate();
             return true;
         } else {
             return false;
