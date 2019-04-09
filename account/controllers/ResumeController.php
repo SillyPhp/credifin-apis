@@ -28,7 +28,6 @@ class ResumeController extends Controller
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
                 ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id])
-                ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
                 ->asArray()
                 ->all();
 
@@ -53,9 +52,6 @@ class ResumeController extends Controller
             $type = Yii::$app->request->post('type');
 
             $data = $this->addCategory($new_value);
-            if ($data['category_enc_id'] == $parent_enc_id) {
-                return json_encode($failure);
-            }
 
             if ($this->alreadyHave($data['category_enc_id'], $parent_enc_id)) {
                 return json_encode($failure);
