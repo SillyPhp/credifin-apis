@@ -10,7 +10,7 @@ use yii\helpers\Url;
                 <form>
                     <div class="search-bar">
                         <input type="text" class="s-input" placeholder="Search Companies, Jobs, Internships, Blogs">
-                        <button type="submit" class="s-btn"><i class="fa fa-search"></i> </button>
+                        <button type="submit" class="s-btn">Search</button>
                     </div>
                 </form>
             </div>
@@ -79,13 +79,14 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .search-bar{
-    width:100%;
+    width:66%;
     background:#fff;
-    border-radius:10px;
+    border-radius:50px;
     display:flex;
     padding:5px 5px;
-    border:2px solid #eee;
-    color:#bcbaba
+    border:1px solid #eee;
+    margin:auto;
+    box-shadow: 0px 1px 12px 0px #f5f5f5ba;
 }
 .wp-box-icon a img {
     height: 220px;
@@ -96,7 +97,7 @@ $this->registerCss('
     padding:10px 15px;
     border:none;
     border-radius:10px;
-    color:#bcbaba;
+    color:#777;
 }
 input::placeholder{
     color:#bcbaba;
@@ -107,17 +108,22 @@ form input[type="text"]:focus{
     box-shadow:none;
 }
 .s-btn{
-    width:5%;
-     padding:10px 15px;
-    border:none;
-    background:none;
-    color:#bcbaba;
+    width: 115px;
+    border: none;
+    background: none;
+    color: #fff;
+    background-color: #2cb9f3;
+    border-radius: 42px;
+    line-height: 39px;
+    height: 40px;
+    text-align: center;
+    font-size: 14px;
 }
 .rh-header{
     background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
     background-size:100% 300px;
     background-repeat: no-repeat;
-    padding:60px 0 35px 0;
+    padding:100px 0 35px 0;
     color:#fff;
     margin-bottom:20px;
 } 
