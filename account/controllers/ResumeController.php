@@ -28,6 +28,7 @@ class ResumeController extends Controller
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
                 ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id])
+                ->andWhere(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
