@@ -48,7 +48,7 @@ class SitemapComponent extends Component
 
     private function addUrls(Sitemap $sitemap)
     {
-        $sitemap->addItem(Url::to('/', true), null, Sitemap::ALWAYS, 1);
+        $sitemap->addItem(Url::to('/', 'https'), null, Sitemap::ALWAYS, 1);
         $baseUrls = [
             '/employers',
             '/jobs',
@@ -61,16 +61,16 @@ class SitemapComponent extends Component
 //        $userdata = $this->AddUserUrls();
         $applicationdata = $this->AddApplicationUrls();
         foreach ($orgdata as $d) {
-            $sitemap->addItem(Url::toRoute($d['slug'], true), null, null, null);
+            $sitemap->addItem(Url::toRoute($d['slug'], 'https'), null, null, null);
         }
 //        foreach ($userdata as $ud) {
 //            $sitemap->addItem(Url::toRoute($ud['username'], true), null, null, null);
 //        }
         foreach ($applicationdata as $ad) {
-            $sitemap->addItem(Url::toRoute($ad['application'], true), null, null, null);
+            $sitemap->addItem(Url::toRoute($ad['application'], 'https'), null, null, null);
         }
         foreach ($baseUrls as $baseUrl) {
-            $sitemap->addItem(Url::toRoute($baseUrl, true), null, null, null);
+            $sitemap->addItem(Url::toRoute($baseUrl, 'https'), null, null, null);
         }
     }
 
