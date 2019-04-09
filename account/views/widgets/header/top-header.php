@@ -21,6 +21,12 @@ $profile = [
 ];
 array_push($result, $profile);
 
+$learning = [
+    'label' => '<i class=""></i>' . Yii::t('account', 'Learning'),
+    'url' => Url::toRoute('learning/dashboard'),
+];
+array_push($result, $learning);
+
 echo Menu::widget([
     'activateItems' => true,
     'activateParents' => true,
