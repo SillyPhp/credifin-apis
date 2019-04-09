@@ -100,10 +100,7 @@ class SearchController extends Controller{
                         $x->joinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false)
-                ->where(['b.name' => 'Jobs'])
-                ->where(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active']);
+                ->joinWith(['applicationOptions l'], false);
 
             $jobs
                 ->andFilterWhere([
@@ -132,6 +129,9 @@ class SearchController extends Controller{
             $jobs->limit = 6;
 
             $final_jobs = $jobs
+                ->andWhere(['b.name' => 'Jobs'])
+                ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'Active'])
                 ->groupBy(['a.application_enc_id'])
                 ->asArray()
                 ->all();
@@ -219,10 +219,7 @@ class SearchController extends Controller{
                         $x->joinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false)
-                ->where(['b.name' => 'Internships'])
-                ->where(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active']);
+                ->joinWith(['applicationOptions l'], false);
 
             $internships
                 ->andFilterWhere([
@@ -247,6 +244,9 @@ class SearchController extends Controller{
             $internships->limit = 6;
 
             $final_internships = $internships
+                ->andWhere(['b.name' => 'Internships'])
+                ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'Active'])
                 ->groupBy(['a.application_enc_id'])
                 ->asArray()
                 ->all();
