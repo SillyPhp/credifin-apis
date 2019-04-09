@@ -30,9 +30,7 @@ class SearchController extends Controller{
                 ->joinWith(['organizationReviews f'], false)
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->joinWith(['businessActivityEnc c'], false)
-                ->joinWith(['industryEnc d'], false)
-                ->where(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active']);
+                ->joinWith(['industryEnc d'], false);
 
             $organizations
                 ->andFilterWhere([
@@ -48,6 +46,8 @@ class SearchController extends Controller{
             $organizations->limit = 8;
 
             $valid_organization = $organizations
+                ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'Active'])
                 ->groupBy(['a.organization_enc_id'])
                 ->asArray()
                 ->all();
