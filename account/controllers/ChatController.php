@@ -57,7 +57,11 @@ class ChatController extends Controller{
                         $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
                     }], false)
                     ->where(['a.is_deleted' => 0])
-                    ->andWhere(['a.status' => 'Accepted'])
+                    ->andWhere([
+                        'or',
+                        ['a.status' => 'Accepted'],
+                        ['a.status' => 'Hired']
+                    ])
                     ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
                     ->groupBy(['b.organization_enc_id'])
                     ->asArray()
@@ -298,7 +302,11 @@ class ChatController extends Controller{
                         $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
                     }], false)
                     ->where(['a.is_deleted' => 0])
-                    ->andWhere(['a.status' => 'Accepted'])
+                    ->andWhere([
+                        'or',
+                        ['a.status' => 'Accepted'],
+                        ['a.status' => 'Hired']
+                    ])
                     ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
                     ->groupBy(['b.organization_enc_id'])
                     ->limit(10)
