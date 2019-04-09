@@ -40,6 +40,7 @@ $this->registerCss("
     border:none;
 }
 .fadein, .fadeout {
+    display:none;
     opacity: 0;
     -moz-transition: opacity 0.4s ease-in-out;
     -o-transition: opacity 0.4s ease-in-out;
@@ -47,6 +48,7 @@ $this->registerCss("
     transition: opacity 0.4s ease-in-out;
 }
 .fadein {
+    display:block;
     opacity: 1;
 }
 .c-icon img{
