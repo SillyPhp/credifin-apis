@@ -56,23 +56,14 @@ $this->params['seo_tags'] = [
                                 <h3>Discover a New Career Specially Designed For You</h3>
                                 <span>The Easiest Way to Get Your New Job</span>
                                 <div class="search-job2">
-                                    <form id="search_jobs_internships" action="<?= Url::to('/jobs/list'); ?>">
+                                    <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
                                         <div class="row no-gape">
-                                            <div class="col-lg-7 col-md-7 col-sm-4 col-xs-6">
+                                            <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
                                                 <div class="job-field">
-                                                    <input type="text" name="category" placeholder="Keywords"/>
+                                                    <input type="text" name="keyword" placeholder="Keywords"/>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-6">
-                                                <div class="job-field job-field2">
-                                                    <select data-placeholder="Any category" id="search_type"
-                                                            class="chosen-city">
-                                                        <option value="jobs">Jobs</option>
-                                                        <option value="internships">Internships</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-12">
+                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
                                                 <button type="submit">Search <i class="fa fa-search"></i></button>
                                             </div>
                                         </div>
@@ -1997,10 +1988,6 @@ function scrollFunction() {
     document.getElementById("myBttn").style.display = "none";
   }
 }
-$(document).on('change', '#search_type', function(){
-    var value = $(this).val();
-    $('#search_jobs_internships').attr('action', '/'+value+'/list');
-});
 
 $(document).on('click', '.feed-open', function(){
    $('.window-popup').addClass('open') ;
