@@ -30,9 +30,7 @@ class SearchController extends Controller{
                 ->joinWith(['organizationReviews f'], false)
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->joinWith(['businessActivityEnc c'], false)
-                ->joinWith(['industryEnc d'], false)
-                ->where(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active']);
+                ->joinWith(['industryEnc d'], false);
 
             $organizations
                 ->andFilterWhere([
@@ -48,6 +46,8 @@ class SearchController extends Controller{
             $organizations->limit = 8;
 
             $valid_organization = $organizations
+                ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'Active'])
                 ->groupBy(['a.organization_enc_id'])
                 ->asArray()
                 ->all();
@@ -308,9 +308,7 @@ class SearchController extends Controller{
                     'CONCAT("/blog/", slug) link',
                     'excerpt',
                     'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", featured_image_location, "/", featured_image) ELSE NULL END image'
-                ])
-                ->where(['status' => 'Active'])
-                ->where(['is_deleted' => 0]);
+                ]);
 
             $posts
                 ->andFilterWhere([
@@ -323,6 +321,8 @@ class SearchController extends Controller{
             $posts->limit = 3;
 
             $posts_filter = $posts
+                ->andWhere(['status' => 'Active'])
+                ->andWhere(['is_deleted' => 0])
                 ->asArray()
                 ->all();
 
