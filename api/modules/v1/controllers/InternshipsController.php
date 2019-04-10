@@ -204,7 +204,6 @@ class InternshipsController extends ApiBaseController {
             }
             if(!$data["vacancies"]){
                 unset($data["vacancies"]);
-                $data["applicationPlacementLocations"] = "Work From Home";
             }
             unset($data["internship_duration_type"]);
             unset($data["internship_duration"]);
