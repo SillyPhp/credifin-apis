@@ -72,6 +72,7 @@ $this->registerCss("
     border: none;
     width:100%;
 }
+.chats.message-list{margin-bottom:50px}
 #chat-list ul{
     padding-inline-start:0px !important;
 }
@@ -141,7 +142,7 @@ $this->registerCss("
     width: auto;
     bottom:100px;
     right:50px;
-    padding-bottom:50px;
+//    padding-bottom:50px;
 }
 .closeBtn{
     position:absolute;
