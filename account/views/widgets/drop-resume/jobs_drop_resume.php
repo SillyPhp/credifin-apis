@@ -36,8 +36,8 @@
                 <div class="row padd10">
                     <?php foreach ($data as $p) { ?>
                         <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search search">
-                            <input type="radio" id="<?= $p['category_enc_id']?>" class="category-input"/>
-                            <label class="work-profile-box parent_category" id = "<?= $p['category_enc_id']?>">
+                            <input type="radio" data-id="<?= $p['category_enc_id']?>" class="category-input"/>
+                            <label class="work-profile-box parent_category" data-id = "<?= $p['category_enc_id']?>">
                                 <div class="work-profile">
                                     <p><?php echo $p['name'] ?></p>
                                 </div>
@@ -145,7 +145,7 @@ $(document).ready(function(){
 
 $(document).on('click', '.parent_category', function(){
         var data = {
-            parent_id:$(this).attr('id'),
+            parent_id:$(this).attr('data-id'),
             type: 'Jobs'
         };
         $.ajax({

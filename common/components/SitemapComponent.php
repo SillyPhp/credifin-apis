@@ -28,7 +28,7 @@ class SitemapComponent extends Component
         $this->addUrls($sitemap);
         $sitemap->write();
         $sitemapIndex = new Index($tmpPath . '/sitemap.xml');
-        $sitemapFiles = $sitemap->getSitemapUrls(Url::to('/sitemap/', true));
+        $sitemapFiles = $sitemap->getSitemapUrls(Url::to('/sitemap/', 'https'));
         foreach ($sitemapFiles as $sitemapFile) {
             $sitemapIndex->addSitemap($sitemapFile);
         }
