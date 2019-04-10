@@ -34,7 +34,7 @@ use yii\widgets\Pjax;
                 <?php endif; ?>
             </div>
             <?php Pjax::end(); ?>
-            <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
+            <h3 class="capitalize"><?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name ?></h3>
             <p><?= Yii::$app->user->identity->email ?></p>
         </div>
         <div class="tree_widget-sec">
