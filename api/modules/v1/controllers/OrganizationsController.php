@@ -195,6 +195,8 @@ class OrganizationsController extends ApiBaseController
                         return $this->response(200);
                     }
                 }
+            }else{
+                return $this->response(422);
             }
 
     }
