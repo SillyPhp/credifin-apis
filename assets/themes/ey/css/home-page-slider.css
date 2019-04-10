@@ -397,7 +397,10 @@
 }
 @media only screen and (max-width: 575px) {
     .job-search-sec {
-        transform: translateY(18%) translateX(-50%);
+        transform: translateY(30%) translateX(-50%);
+    }
+    .search-job2{
+        margin-top: 35px;
     }
 }
 .chosen-container {

@@ -1961,15 +1961,6 @@ textarea {
     -o-border-radius: 0px 23px 23px 0px !important;
     border-radius: 0px 23px 23px 0px !important;
 }
-@media screen and (max-width: 768px){
-    .search-job2 form button{
-        -webkit-border-radius: 0px 0px 23px 23px !important;
-        -moz-border-radius: 0px 0px 23px 23px !important;
-        -ms-border-radius: 0px 0px 23px 23px !important;
-        -o-border-radius: 0px 0px 23px 23px !important;
-        border-radius: 0px 0px 23px 23px !important;
-    }
-}
 ');
 $script = <<< JS
  $('.tab-sec li a').on("click", function(){

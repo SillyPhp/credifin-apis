@@ -504,7 +504,7 @@ $industries = Json::encode($industries);
                 <div id="menu4" class="tab-pane fade">
                     <div class="row">
                         <div class="address-division">
-                            <div class="heading-style">Empower Youth Reviews</div>
+                            <div class="heading-style"><?= Html::encode($organization['name']) ?> Reviews</div>
                             <div class="divider"></div>
                             <div id="org-reviews"></div>
                             <div class="viewbtn">

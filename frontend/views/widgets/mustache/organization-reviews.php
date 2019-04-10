@@ -130,7 +130,6 @@ function getReviews() {
         url : '/organizations/get-reviews?slug=' + slug,
         success: function(response) {
             if(response.status === 200) {
-                console.log(response.reviews);
                 var reviews_data = $('#organization-reviews').html();
                 $("#org-reviews").html(Mustache.render(reviews_data, response.reviews));
                 utilities.initials();
