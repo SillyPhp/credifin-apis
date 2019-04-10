@@ -23,6 +23,7 @@ class Cards
                 'a.type',
                 'l.designation',
                 'd.initials_color color',
+                'd.organization_enc_id',
                 "g.name as city",
                 "g.city_enc_id as city_id",
                 'c.name as title',
@@ -159,6 +160,7 @@ class Cards
             ->select([
                 'a.application_enc_id application_id',
                 'd.initials_color color',
+                'd.organization_enc_id',
                 "g.name as city",
                 'a.type',
                 'm.fixed_wage as fixed_salary',
