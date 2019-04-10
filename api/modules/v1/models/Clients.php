@@ -31,6 +31,7 @@ class Clients extends Users implements \yii\web\IdentityInterface{
         return static::find()
                 ->where(['username' => $username])
                 ->orWhere(['email' => $username])
+                ->andWhere(['organization_enc_id' => NULL])
                 ->one();
     }
 
