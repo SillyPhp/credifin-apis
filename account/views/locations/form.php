@@ -217,18 +217,20 @@ $script = <<<JS
     tab_count = $('.tab-pane.active').attr('id');
 
     $(document).on('submit', '#location-form', function (event) {
+        var l_btn = $('.sav_loc');
         event.preventDefault();
-        // var url = $(this).attr('action');
-        // var data = $(this).serialize();
+        event.stopImmediatePropagation();
+        if ( l_btn.data('requestRunning') ) {
+            return false;
+        }
+        
+        l_btn.data('requestRunning', true);
         $.ajax({
             url: '/account/locations/create',
             type: 'post',
-            async: false,
-            cache: false,
             data: $(this).serialize(),
             beforeSend: function () {
                 $("#page-loading").css("display", "block");
-                // $('.sav_loc').prop('disabled', 'disabled');
             },
             success: function (response) {
                 if (response.status == 'success') {
@@ -250,11 +252,11 @@ $script = <<<JS
                     $("#page-loading").css("display", "none");
                     toastr.error(response.message, response.title);
                 }
+            },
+            complete: function() {
+                l_btn.data('requestRunning', false);
             }
         });
-        event.stopImmediatePropagation();
-        return false;
-        
     });
 JS;
 $this->registerJs($script);
