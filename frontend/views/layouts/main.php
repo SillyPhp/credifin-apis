@@ -370,6 +370,9 @@ $this->registerCss('
                     margin-top:9.5px !important;
                 }
                 .menuzord .showhide em{
+                    background-color: #777;
+                }
+                .add-padding .menuzord .showhide em{
                     background-color:#fff;
                 }
             }

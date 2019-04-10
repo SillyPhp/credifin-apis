@@ -345,7 +345,7 @@ if ($organization['cover_image']) {
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style">
-                                Empower Youth Reviews
+                                <?= Html::encode($organization['name']) ?> Reviews
                                 <div class="pull-right">
                                     <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write Review</a>
                                 </div>
