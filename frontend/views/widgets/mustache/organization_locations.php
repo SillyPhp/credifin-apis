@@ -124,7 +124,7 @@ if ($Edit) {
             $('#remove_video_confirm').fadeOut(1000);
             var id = $(this).val();
             $.ajax({
-                url: '/companies/location-delete',
+                url: '/organizations/location-delete',
                 method: 'POST',
                 data: {id:id},
                 beforeSend:function(){     
