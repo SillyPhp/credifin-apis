@@ -1403,20 +1403,31 @@ JS;
 $headScript = <<< JS
 var j = {};
 var d = {};
+var countries = [];
+var departments = [];
+function location_auto_fn(a){
+	autocomplete(a, countries);
+}
+function department_auto_fn(a){
+	autocomplete(a, departments);
+}
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
        url : '/organizations/post-reviews?slug='+slug+'',
 	   data:{data:data},
        success: function(response) {
-               if (response==true)
-                   {
-                       window.location = window.location.pathname;
-                   }
-               else 
-                   {
-                       window.location = window.location.pathname;}
-       }
+               // if (response==true)
+               //     {
+               //         window.location = window.location.pathname;
+               //     }
+               // else 
+               //     {
+               //         window.location = window.location.pathname;}
+               //  }
+               console.log(response);
+               }
+               
    });
 }
 ajax_fetch_city();
