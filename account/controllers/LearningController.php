@@ -14,7 +14,4 @@ class LearningController extends Controller
         return $this->render('dashboard');
     }
 
-    public function actionAddPlaylist(){
-        return $this->render('add-playlist');
-    }
 }
