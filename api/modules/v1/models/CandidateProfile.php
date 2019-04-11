@@ -124,6 +124,9 @@ class CandidateProfile extends Model
         
         if($this->skills != ''){
             $skills_array = explode(",", $this->skills);
+            foreach ($skills_array as $s){
+                trim($s);
+            }
         }else{
             $skills_array = [];
         }
@@ -202,6 +205,9 @@ class CandidateProfile extends Model
         
         if($this->languages != ''){
             $languages_array = explode(",", $this->languages);
+            foreach ($languages_array as $t){
+                trim($t);
+            }
         }else{
             $languages_array = [];
         }
