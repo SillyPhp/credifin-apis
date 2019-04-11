@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -24,6 +25,7 @@ use common\models\States;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
+use common\models\BusinessActivities;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
 
@@ -577,7 +579,7 @@ class OrganizationsController extends Controller
 
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND((job_security+growth+organization_culture+compensation+work+work_life+skill_development)/7) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
+            ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND(average_rating) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
             ->where(['a.organization_enc_id' => $org->organization_enc_id, 'a.status' => 1])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['categoryEnc c'], false)
@@ -689,6 +691,39 @@ class OrganizationsController extends Controller
             ->all();
 
         return $reviews;
+    }
+
+    public function actionSearch($keywords)
+    {
+        $business_activity =  BusinessActivities::find()
+                               ->select(['business_activity_enc_id','business_activity'])
+                               ->asArray()
+                               ->all();
+
+        return $this->render('filter-companies',['keywords'=>$keywords,'business_activity'=>$business_activity]);
+    }
+
+    public function actionFetchReviewCards()
+    {
+        $get = new ReviewCards();
+        if (Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $options = Yii::$app->request->post('params');
+            $cards = $get->getReviewCards($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
     }
 
 }

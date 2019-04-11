@@ -31,6 +31,9 @@ class AuthController extends ApiBaseController{
         $model = new IndividualSignup();
         if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
             if($model->validate()) {
+                if(!$this->usernameValid($model)){
+                    return $this->response(409, 'Username already taken');
+                }
                 if ($user = $this->newUser($model)) {
                     if(!empty($user->user_enc_id)){
                         if ($token = $this->newToken($user->user_enc_id, \Yii::$app->request->post('source'))) {
@@ -40,13 +43,22 @@ class AuthController extends ApiBaseController{
                     }else{
                         return $this->response(500);
                     }
-                }else{
-                    return $this->response(500);
                 }
             }
             return $this->response(409, $model->getErrors());
         }
         return $this->response(422);
+    }
+
+    private function usernameValid($model){
+        $usernamesModel = new Usernames();
+        $usernamesModel->username = $model->username;
+        $usernamesModel->assigned_to = 1;
+        if (!$usernamesModel->validate()) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private function returnData($user, $token){
