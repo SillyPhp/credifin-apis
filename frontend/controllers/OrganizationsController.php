@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -24,6 +25,7 @@ use common\models\States;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
+use common\models\BusinessActivities;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
 
@@ -689,6 +691,39 @@ class OrganizationsController extends Controller
             ->all();
 
         return $reviews;
+    }
+
+    public function actionSearch($keywords)
+    {
+        $business_activity =  BusinessActivities::find()
+                               ->select(['business_activity_enc_id','business_activity'])
+                               ->asArray()
+                               ->all();
+
+        return $this->render('filter-companies',['keywords'=>$keywords,'business_activity'=>$business_activity]);
+    }
+
+    public function actionFetchReviewCards()
+    {
+        $get = new ReviewCards();
+        if (Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $options = Yii::$app->request->post('params');
+            $cards = $get->getReviewCards($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
     }
 
 }
