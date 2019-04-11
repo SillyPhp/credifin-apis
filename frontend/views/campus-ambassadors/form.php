@@ -26,7 +26,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
         <div class="row">
             <div class="col-md-6 input-with-hints">
                 <?= $form->field($applicationFormModel, 'first_name')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('first_name')]); ?>
-                <div class="error-message"></div>
                 <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your First Name.
@@ -34,7 +33,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
             </div>
             <div class="col-md-6 input-with-hints">
                 <?= $form->field($applicationFormModel, 'last_name')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('last_name')]); ?>
-                <div class="error-message"></div>
                 <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your Last Name.
@@ -44,7 +42,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
         <div class="row">
             <div class="col-md-6 i-hint-medium input-with-hints">
                 <?= $form->field($applicationFormModel, 'email', ['enableAjaxValidation' => true])->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('email')]); ?>
-                <div class="error-message"></div>
                 <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your active Email ID.<br/>
@@ -61,7 +58,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                     'options' => ['class' => 'form-control campus-apply'],
                 ]);
                 ?>
-                <div class="error-message"></div>
                 <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your active Phone Number. Note: WhatsApp Number is Preferred.
@@ -77,11 +73,9 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                     'class' => 'form-control campus-apply',
                 ])->label(Yii::t('frontend', 'Qualification'));
                 ?>
-                <div class="error-message"></div>
             </div>
             <div class="col-md-6 i-hint-medium input-with-hints">
                 <?= $form->field($applicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('college')]); ?>
-                <div class="error-message"></div>
                 <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your Highest Education Institution.
@@ -111,7 +105,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                             );',
                 ]);
                 ?>
-                <div class="error-message"></div>
             </div>
             <div class="col-md-6">
                 <?=
@@ -122,7 +115,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                     'class' => 'form-control campus-apply'
                 ]);
                 ?>
-                <div class="error-message"></div>
             </div>
         </div>
         <?php
@@ -133,7 +125,6 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                     <?php
                     echo $form->field($applicationFormModel, 'answers[' . $question['application_question_id'] . ']')->textArea(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'rows' => 5, 'placeholder' => $applicationFormModel->getAttributeLabel($question['question'])]);
                     ?>
-                    <div class="error-message"></div>
                     <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
                     <div class="i-message">
                         Answer in about 100 words.
@@ -247,9 +238,6 @@ input, textarea {
 .i-hint-large .i-message{top:-16px}
 .tab_2{
     display:none;
-}
-.error-message p{
-    color: #e73d4a;
 }
 ');
 $script = <<< JS
