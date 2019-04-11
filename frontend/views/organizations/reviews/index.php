@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Url;
 ?>
     <section class="head-bg">
@@ -10,11 +9,10 @@ use yii\helpers\Url;
                         <div class="search-box">
                             <div class="head-text">
                                 <p>Find your next great place to work</p>
-                                <!--<p>to make smart career decisions</p>-->
                             </div>
-                            <form>
+                            <form id="form-search" action="<?=Url::to(['/organizations/search']) ?>">
                                 <div class="input-group search-bar">
-                                    <input type="text" class="form-control" placeholder="Search Companies" name="search">
+                                    <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
                                     <div class="input-group-btn">
                                         <button><i class="fa fa-search"></i></button>
                                     </div>
@@ -568,6 +566,10 @@ $this->registerCss('
     padding-top:20px;
     text-align:center;
 }
+.twitter-typeahead
+{
+width:100%;
+}
 .benifit-bttn a{
   border:2px solid #00a0e3;
   padding:5px 15px;
@@ -593,14 +595,132 @@ $this->registerCss('
         height:300px;
     }
 } 
+
+.typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.form-wizard .steps>li.done>a.step .number {
+    background-color: #ffac64 !important;
+    color: #fff;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.logo_wrap
+{
+    display: inline-block;
+    width: 30px;
+    height: 25px;
+    vertical-align: middle;
+    margin-right: .6rem;
+    float:left;
+}
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          text-align: left;
+//          max-height:158px;
+//          overflow-y:auto;
+}
+.tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
+    background-color: #eff1f6;
+    }
+ .suggestion_wrap
+ {
+     margin-top: 3px;
+ }   
+.suggestion
+{
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 70%;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
 ');
 $script = <<< JS
+// $(document).on('submit','#form-search',function(e)
+// {
+//    e.preventDefault();
+// });
+var companies = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/organizations/reviews/search?query=%QUERY',
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  },
+});
 
+$('#search_comp').typeahead(null, {
+  name: 'search_companies',
+  displayKey: "name",
+  limit: 5,      
+  source: companies,
+  templates: {
+suggestion: function(data) {
+return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews"><div class="logo_wrap"><img src = "'+data.logo+'"></div><div class="suggestion"><p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
+},
+empty: ['<div class="tt-suggestion tt-selectable">', "sorry! No results found", "</div>"].join("/n"),
+},
+});
 JS;
 $this->registerJs($script);
-
 $this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js');
-
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
