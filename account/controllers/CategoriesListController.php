@@ -298,6 +298,7 @@ class CategoriesListController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $primaryfields = Categories::find()
             ->alias('a')
+            ->distinct()
             ->select(['a.name', 'a.category_enc_id'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
