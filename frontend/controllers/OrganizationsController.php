@@ -579,7 +579,7 @@ class OrganizationsController extends Controller
 
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND((job_security+growth+organization_culture+compensation+work+work_life+skill_development)/7) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
+            ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND(average_rating) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
             ->where(['a.organization_enc_id' => $org->organization_enc_id, 'a.status' => 1])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['categoryEnc c'], false)
