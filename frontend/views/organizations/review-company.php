@@ -1417,18 +1417,15 @@ function review_post_ajax(data) {
        url : '/organizations/post-reviews?slug='+slug+'',
 	   data:{data:data},
        success: function(response) {
-               // if (response==true)
-               //     {
-               //         window.location = window.location.pathname;
-               //     }
-               // else 
-               //     {
-               //         window.location = window.location.pathname;}
-               //  }
-               console.log(response);
-               }
-               
-   });
+               if (response==true)
+                   {
+                       window.location = window.location.pathname;
+                   }
+               else 
+                   {
+                       window.location = window.location.pathname;
+                   }
+          }});
 }
 ajax_fetch_city();
 ajax_fetch_category();
