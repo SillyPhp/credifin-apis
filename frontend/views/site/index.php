@@ -264,7 +264,7 @@ $this->params['seo_tags'] = [
                                             <a href="/job/business-development-business-develpment-executive-20931553506890">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/agile">
+                                                        <a href="/hamco">
                                                             <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
                                                                  alt="Hamco"/>
                                                         </a>
