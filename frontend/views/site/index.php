@@ -219,7 +219,7 @@ $this->params['seo_tags'] = [
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
-                                            <a href="/jobs/business-development-executive-1901271548600570">
+                                            <a href="/job/business-development-executive-1901271548600570">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/dsbedutech">
@@ -227,7 +227,7 @@ $this->params['seo_tags'] = [
                                                                  alt="DSB EduTech"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/jobs/business-development-executive-1901271548600570"
+                                                    <h3><a href="/job/business-development-executive-1901271548600570"
                                                            title="">Business Development Executive</a></h3>
                                                     <span>DSB EduTech</span>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
