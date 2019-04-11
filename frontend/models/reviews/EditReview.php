@@ -74,7 +74,7 @@ class EditReview extends Model {
          return true;
      }
      else{
-         return false;
+         print_r($modal->getErrors());
      }
     }
 
