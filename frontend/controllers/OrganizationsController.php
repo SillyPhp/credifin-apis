@@ -549,7 +549,6 @@ class OrganizationsController extends Controller
     {
         $editReviewForm = new EditReview;
         if ($editReviewForm->load(Yii::$app->request->post())) {
-            return json_encode($editReviewForm->save());
             if ($editReviewForm->save()) {
                 return $this->redirect(Yii::$app->request->referrer);
             } else {

@@ -68,13 +68,14 @@ class EditReview extends Model {
         $modal->growth = $this->career_growth;
         $modal->category_enc_id = $this->dept;
         $modal->show_user_details = $this->identity;
+        $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
 
      if ($modal->update())
      {
          return true;
      }
      else{
-         print_r($modal->getErrors());
+         return false;
      }
     }
 
