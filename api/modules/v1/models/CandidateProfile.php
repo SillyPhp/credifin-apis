@@ -127,6 +127,7 @@ class CandidateProfile extends Model
             foreach ($skills_array as $s){
                 trim($s);
             }
+            $skills_array = array_unique($skills_array);
         }else{
             $skills_array = [];
         }
@@ -208,6 +209,7 @@ class CandidateProfile extends Model
             foreach ($languages_array as $t){
                 trim($t);
             }
+            $languages_array = array_unique($languages_array);
         }else{
             $languages_array = [];
         }
