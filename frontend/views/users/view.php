@@ -26,7 +26,7 @@ $this->params['header_dark'] = false;
                         <?php endif; ?>
                     </div>
                     <div class="header-details">
-                        <h4><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
+                        <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <p><?= $user['job_profile'] ?></p>
                         <?php
                         if ($user['city']) {
@@ -117,7 +117,7 @@ $this->params['header_dark'] = false;
             <div class="col-md-8 col-sm-8">
                 <div class="container-detail-box">
                     <div class="apply-job-header">
-                        <h4><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
+                        <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                         <?php
                         if ($user['job_profile']) {
                             ?>
@@ -187,7 +187,7 @@ $this->params['header_dark'] = false;
                                 <?php endif; ?>
                             </div>
                             <div class="sidebar-box-detail">
-                                <h4><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
+                                <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                                 <span class="desination"><?= $user['job_profile'] ?></span>
                             </div>
                         </div>
