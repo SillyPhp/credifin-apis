@@ -58,16 +58,21 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                 <button type="button" data-toggle="modal" data-target="#loginModal"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
                             </div>
                         <?php } ?>
-                        <div class="wr-bttn hvr-icon-pulse">
                             <?php if (!Yii::$app->user->isGuest){
                                 if(!empty($edit)){ ?>
-                                   <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Edit Your Review</a>
-                               <?php } else { ?>
-                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
-                            <?php } } else{ ?>
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
-                            <?php } ?>
+                        <div class="wr-bttn hvr-icon-pulse">
+                              <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Edit Your Review</a>
                         </div>
+                               <?php } else {
+                                     if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
+                        <div class="wr-bttn hvr-icon-pulse">
+                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                        </div>
+                            <?php } } } else{ ?>
+                        <div class="wr-bttn hvr-icon-pulse">
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                        </div>
+                            <?php } ?>
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
@@ -1396,6 +1401,8 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
+var j = {};
+var d = {};
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
@@ -1409,6 +1416,39 @@ function review_post_ajax(data) {
                else 
                    {
                        window.location = window.location.pathname;}
+       }
+   });
+}
+ajax_fetch_city();
+ajax_fetch_category();
+function ajax_fetch_city() {
+  $.ajax({
+       method: 'GET',
+       url : '/account/cities/cities',
+       success: function(response) {
+              for (i=0;i<response.length;i++)
+                  {
+                      j[response[i].city_enc_id] = response[i].name;
+                  }
+              for (var key in j) {
+	            countries.push(j[key]);
+            }
+       }
+   });
+}
+
+function ajax_fetch_category() {
+  $.ajax({
+       method: 'GET',
+       url : '/account/categories-list/profiles',
+       success: function(response) {
+              for (i=0;i<response.length;i++)
+                  {
+                      d[response[i].category_enc_id] = response[i].name;
+                  }
+              for(var key in d){
+	            departments.push(d[key]);
+            }
        }
    });
 }
