@@ -8,7 +8,7 @@ use yii\helpers\Url;
             <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
-                        <div class="col-md-4 col-xs-6 ">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
@@ -20,7 +20,7 @@ use yii\helpers\Url;
                                         <?php }?>
                             </div>
                         </div>
-                        <div class="col-md-3 col-xs-6">
+                        <div class="col-md-3 col-xs-12 col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
                                 <?php
@@ -32,7 +32,7 @@ use yii\helpers\Url;
                                 <?php }?>
                             </div>
                         </div>
-                        <div class="col-md-3 col-xs-6">
+                        <div class="col-md-3 col-xs-12 col-sm-6">
                             <div class="input-group display-flex">
                                 <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
                                 <?php
@@ -45,7 +45,7 @@ use yii\helpers\Url;
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
                         </div>
-                        <div class="col-md-2 col-xs-6 text-center">
+                        <div class="col-md-2 col-xs-12 col-sm-6 text-center">
                             <input type="submit" class="form-control submit-next hvr-float search-button" id="form_control_1" value="Search">
                         </div>
                     </div>
@@ -115,7 +115,7 @@ $this->registerCss('
 .stickyheader{
     position: fixed;
     top: -100%;
-    width: 81%;
+    width: 80.3%;
     margin-top: 0;
     border-bottom: 1px solid #ccc;
     z-index: 999;
@@ -195,6 +195,41 @@ $this->registerCss('
     border-color: transparent;
     border-radius: 4px;
     width:100% !important;
+}
+@media only screen and (max-width: 991px) {
+    #header-search {
+        height: 110px;
+    }
+    .stickyheader {
+        width: 69.3%;
+    }
+    .twitter-typeahead input{
+        width:100% !important;
+    }
+}
+@media only screen and (max-width: 767px) {
+    .stickyheader {
+        width: auto;
+        position: relative !important;
+        top: 0 !important;
+        background-color: transparent;
+        border-bottom: none !important;
+        box-shadow: none;
+    }
+    #header-search {
+        height: 225px;
+    }
+    .set-heights {
+        padding-right: 30px;
+    }
+}
+@media screen and (max-width: 1160px) and (min-width: 992px) {
+    .twitter-typeahead input{
+        max-width:165px;
+    }
+    .twitter-typeahead .tt-menu{
+        max-width:165px;
+    }
 }
 ');
 $script = <<<JS
