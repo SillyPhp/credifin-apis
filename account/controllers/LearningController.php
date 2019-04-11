@@ -10,8 +10,8 @@ use yii\web\Response;
 
 class LearningController extends Controller
 {
-    public function actionDashboard()
-    {
+    public function actionDashboard(){
         return $this->render('dashboard');
     }
+
 }
