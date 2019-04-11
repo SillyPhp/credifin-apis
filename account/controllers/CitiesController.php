@@ -50,12 +50,12 @@ class CitiesController extends Controller
         }
     }
 
-    public function actionCities($q)
+    public function actionCities($q=null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Cities::find()
                 ->alias('a')
-                ->select('a.name')
+                ->select(['a.name','a.city_enc_id'])
                 ->where('a.name LIKE "%' . $q . '%"')
                 ->joinWith(['stateEnc b'=>function($b)
                 {
