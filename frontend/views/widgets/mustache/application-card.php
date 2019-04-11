@@ -67,6 +67,7 @@
     {{/.}}
 </script>
 <?php
+$c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<<JS
 let loader = false;
 let draggable = false;
@@ -129,6 +130,14 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             $.each($('.application-card-main'), function(){
                 $(this).draggable({
                     helper: "clone",
+                    drag: function() { 
+                        $('#sticky').addClass('drag-on');
+                        $('#review-internships').addClass('drop-on');
+                     },
+                     stop: function() { 
+                        $('#sticky').removeClass('drag-on');
+                        $('#review-internships').removeClass('drop-on');
+                     },
                 });
             });
         }
@@ -138,7 +147,12 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
 function addToReviewList(){
     if(loader === false){
         $(document).on('click','.application-card-add', function(event){
-             event.preventDefault();
+            event.preventDefault();
+            var c_user = "$c_user"
+            if(c_user == ""){
+                $('#loginModal').modal('show');
+                return false;
+            }
             var itemid = $(this).closest('.application-card-main').attr('data-id');
             $.ajax({
                 url: "/jobs/item-id",
@@ -148,10 +162,9 @@ function addToReviewList(){
         //            $('.loader-aj-main').fadeIn(1000);  
                 },
                 success: function (response) {
-        //        $('.loader-aj-main').fadeOut(1000);
-                    if (response.status == '200' || response == 'short') {
+                    if (response.status == '200' || response.status == 'short') {
                         toastr.success('Added to your Review list', 'Success');
-                    } else if (response == 'unshort') {
+                    } else if (response.status == 'unshort') {
                         toastr.success('Delete from your Review list', 'Success');
                     } else {
                         toastr.error('Please try again Later', 'Error');

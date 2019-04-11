@@ -10,11 +10,14 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
                 <?php if (empty($reviews)) { ?>
                     <div class="col-md-12">
-                        <p id="hidder">Click on plus button or <br>drag and drop any<br><?= $type; ?> to review<br>it later on.</p>
+                        <p id="hidder">Click on plus button or <br>drag and drop any<br><?= $type; ?> to review<br>it
+                            later on.</p>
                     </div>
                 <?php } ?>
             </div>
             <div id="review-internships" style="background-color: #fff;" class="font-georgia">
+                <span class="review-list-hint">Drop here to add to review list</span>
+                <a href="#" class="review-list-toggler"><i class="fa fa-chevron-up"></i></a>
                 <ul id="ilist" class="drop-options connected-sortable droppable-area">
                     <div class="loader-inner-main shadow pt-0">
                         <div class="col-md-3 col-xs-3 pt-10 p-0">
@@ -39,6 +42,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 </div>
 
 <?php
+$c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .highlight{
     background-color: #CCC !important;
@@ -151,6 +155,97 @@ li.draggable-item.ui-sortable-placeholder {
     margin-top: -5px;
     border-radius: 50%;
 }
+.review-list-hint, .review-list-toggler{display:none;}
+@media only screen and (max-width: 767px) {
+    .sidebar-review-bar{
+//        display:none;
+    }
+    #sticky{
+        height: 20%;
+//        bottom: 0px;
+        width: 96%;
+        left:2%;
+        top: 90.5% !important;
+        z-index: 999;
+        -moz-transition: all 0.3s ease-out;
+        -webkit-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+    }
+    #hidder{display:none !important;}
+    .profile-sidebar{
+        padding-top: 0px !important;
+        margin-top: 0px !important;
+    }
+    #review-internships{
+        height: 60px !important;
+        bottom: 0;
+        width: 96% !important;
+        left: 2%;
+        border-radius: 20px 20px 0px 0px;
+        box-shadow: 0px 0px 12px 1px #ddd;
+        -moz-transition: all 0.3s ease-out;
+        -webkit-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        pointer-events: none;
+    }
+    .review-list-hint{
+        text-align: center;
+        width: 100%;
+        display: block;
+        padding: 18px;
+    }
+    .review-list-toggler{
+        position: absolute;
+        display: block;
+        top: 12px;
+        width: 36px;
+        height: 36px;
+        text-align: center;
+        font-size: 20px;
+        right: 13px;
+        padding: 0px;
+        border-radius: 100px;
+        box-shadow: 0px 1px 10px 2px #ddd;
+        pointer-events: all;
+    }
+    .review-list-toggler i{
+        display: block;
+        line-height: 33px;
+    }
+    .review-open .profile #sticky{
+        top: 100px !important;
+        height: auto;
+    }
+    .review-open .profile #sticky .profile-sidebar #review-internships{
+        height: calc(100vh - 90px) !important;
+        pointer-events: auto;
+    }
+    .review-open .profile #sticky .profile-sidebar #review-internships .review-list-toggler{
+        transform: rotate(-180deg);
+    }
+    .application-card-main{
+        margin-right: 40px;
+    }
+    .applications-cards-list{padding:0px 15px;}
+    #sticky.drag-on{
+        top: 75% !important;
+    }
+    #review-internships.drop-on{
+        height: 294px !important;
+    }
+//    *::-webkit-scrollbar {
+//        width: 2em !important;
+//    }
+//    *::-webkit-scrollbar-track {
+//        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important;
+//    }
+//    *::-webkit-scrollbar-thumb {
+//      background-color: darkgrey !important;
+//      outline: 1px solid slategrey !important;
+//    }
+}
 ');
 
 $script = <<<JS
@@ -176,10 +271,10 @@ function reviewlists(response){
         $(".loader-inner-main").show();
         $(".loader-inner-main").hide();
 
-        $(".droppable-area").sortable({
-            connectWith: ".connected-sortable",
-            stack: '.connected-sortable ul'
-        }).disableSelection();
+        // $(".droppable-area").sortable({
+        //     connectWith: ".connected-sortable",
+        //     stack: '.connected-sortable ul'
+        // }).disableSelection();
     }
 
 
@@ -192,9 +287,14 @@ function reviewlists(response){
             $('#review-internships').removeClass('highlight');
         },
         drop: function(event, ui) {
-            $('#ilist').append(widget(ui.draggable));
-            var itemid = $.trim(ui.draggable.attr('data-key'));
-            var me = ui.draggable.clone();
+            var c_user = "$c_user"
+            if(c_user == ""){
+                $('#loginModal').modal('show');
+            } else{
+                $('#ilist').append(widget(ui.draggable));
+                var itemid = $.trim(ui.draggable.attr('data-key'));
+                var me = ui.draggable.clone();
+            }
             $('.side-menu, #review-internships').removeClass('highlight');
             check_list();
         }
@@ -255,10 +355,8 @@ function Ajax_call(itemid) {
     }).done(function(data) {
         check_list();
         if(data.status == 200){
-            console.log(data.message,'test2');
             toastr.success(data.message, 'Success');
         } else if(data.status == 201) {
-            console.log(data.message,'test');
             toastr.error(data.message, 'Error');
         } else if (data.status == 'short') {
             toastr.success(data.message, 'Reviewed Success');
@@ -271,10 +369,15 @@ function Ajax_call(itemid) {
 }
 
 $(document).on('click', '.application-card-add', function(event) {
-    widget($(this).closest('.application-card-main'));
-    event.preventDefault();
-    check_list();
-    var itemid = $(this).closest('.application-card-main').attr('data-id');
+    var c_user = "$c_user"
+    if(c_user == ""){
+        $('#loginModal').modal('show');
+    } else{
+        widget($(this).closest('.application-card-main'));
+        event.preventDefault();
+        check_list();
+        var itemid = $(this).closest('.application-card-main').attr('data-id');
+    }
 });
 
 $(document).on('click', '.close', function(event) {
@@ -321,7 +424,9 @@ $(function() {
 });
 
 var ps = new PerfectScrollbar('#review-internships');
-
+$(document).on('click', '.review-list-toggler', function() {
+    $('.sidebar-review-bar').toggleClass('review-open');
+});
    //});
 
 JS;
@@ -334,29 +439,31 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 
 <script id="review-cards" type="text/template">
     {{#.}}
-    <li class="draggable-item" data-id="{{application_id}}" data-key="{{data_key}}" >
-    <div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5">
-    <span id="set-types" type="{{type}}" lat="{{latitude}}" long="{{longitude}}" logo="{{logo}}" company="{{org_name}}" title="{{title}}" location="{{city}}" period="" lastdate=""></span>
-    <div class="col-md-3 col-xs-3 pt-10 p-0">
-    <div class="sidebar-logo-main">
-        {{#logo}}
-            <img class="side-bar_logo" src="{{logo}}" height="40px">
-        {{/logo}}
-        {{^logo}}
-            <canvas class="user-icon" name="{{org_name}}" width="40" height="40" color="{{color}}" font="22px"></canvas>
-        {{/logo}}
-    </div>
-    </div>
-    <div class="col-md-9 col-xs-9 pt-5 p-0">
-    <p class="mb-0 text-wrap-ellipsis">
-    <a class="close" data-id="{{application_id}}" href="#" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </a>
-    <strong>{{title}}</strong>
-    </p>
-    <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
-    </div>
-    </div>
+    <li class="draggable-item" data-id="{{application_id}}" data-key="{{data_key}}">
+        <div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5">
+            <span id="set-types" type="{{type}}" lat="{{latitude}}" long="{{longitude}}" logo="{{logo}}"
+                  company="{{org_name}}" title="{{title}}" location="{{city}}" period="" lastdate=""></span>
+            <div class="col-md-3 col-xs-3 pt-10 p-0">
+                <div class="sidebar-logo-main">
+                    {{#logo}}
+                    <img class="side-bar_logo" src="{{logo}}" height="40px">
+                    {{/logo}}
+                    {{^logo}}
+                    <canvas class="user-icon" name="{{org_name}}" width="40" height="40" color="{{color}}"
+                            font="22px"></canvas>
+                    {{/logo}}
+                </div>
+            </div>
+            <div class="col-md-9 col-xs-9 pt-5 p-0">
+                <p class="mb-0 text-wrap-ellipsis">
+                    <a class="close" data-id="{{application_id}}" href="#" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <strong>{{title}}</strong>
+                </p>
+                <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
+            </div>
+        </div>
     </li>
     {{/.}}
 </script>

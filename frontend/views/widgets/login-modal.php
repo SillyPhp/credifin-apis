@@ -371,6 +371,7 @@ body.modal-open{
     background: transparent;
     border: 0;
     outline: 0;
+    z-index: 99;
 }
 .rem-input .checkbox{
     padding-left: 20px;
@@ -379,6 +380,12 @@ body.modal-open{
 }
 .rem-input .checkbox label{
     font-size: 14px;
+}
+@media only screen and (max-width: 450px) {
+    .close-lg-modal{
+        right: -5px;
+        color: #777;
+    }
 }
 ');
 $script = <<< JS
