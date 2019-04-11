@@ -206,13 +206,14 @@ $this->params['seo_tags'] = [
                                                                  alt="Midland Microfin"/>
                                                         </a>
                                                     </div>
-                                                    <h3>
-                                                        <a href="/job/audit-and-risk-mangement-manager-65391554294078"
+                                                    <div class="sm-100">
+                                                    <h3><a href="/job/audit-and-risk-mangement-manager-65391554294078"
                                                            title="">Audit And Risk Mangement</a></h3>
                                                     <span>Midland Microfin Ltd.</span>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jodhpur,
                                                         <a href="/job/audit-and-risk-mangement-manager-65391554294078"> 4 more</a></div>
-                                                </div>
+                                                    </div>
+                                                    </div>
                                                 <div class="job-style-bx">
                                                     <span class="job-is ft fill">Full time</span>
                                                 </div>
@@ -227,15 +228,16 @@ $this->params['seo_tags'] = [
                                                                  alt="DSB EduTech"/>
                                                         </a>
                                                     </div>
+
                                                     <h3><a href="/job/business-development-executive-1901271548600570"
                                                            title="">Business Development Executive</a></h3>
                                                     <span>DSB EduTech</span>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
-                                                    </div>
+                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
                                                     <span class="job-is ft fill">Full time</span>
                                                 </div>
+
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
@@ -256,8 +258,9 @@ $this->params['seo_tags'] = [
                                                 <div class="job-style-bx">
                                                     <span class="job-is ft fill">Full time</span>
                                                 </div>
-                                        </div>
-                                        </a><!-- Job -->
+                                            </a>
+                                            </div>
+                                        <!-- Job -->
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
@@ -1961,6 +1964,27 @@ textarea {
     -ms-border-radius: 0px 23px 23px 0px !important;
     -o-border-radius: 0px 23px 23px 0px !important;
     border-radius: 0px 23px 23px 0px !important;
+}
+@media only screen and (max-width:500px){
+    .c-logo{
+        width:100% !important ;
+        text-align:center;
+        margin-botom:15px;
+    }
+    .job-title-sec h3, .job-title-sec span{
+        width:100%;
+    }
+    
+    .job-lctn{
+        width:100%;
+    }
+    .job-listing{
+        padding:20px 25px !important;
+    }
+    .job-listing.wtabs .job-title-sec {
+        float: left;
+        width: 100%;
+    }
 }
 ');
 $script = <<< JS
