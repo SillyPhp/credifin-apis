@@ -1,7 +1,8 @@
 <?php
 
-namespace frontend\controllers\organizations;
+namespace frontend\controllers;
 
+use common\models\BusinessActivities;
 use common\models\Organizations;
 use Yii;
 use yii\web\Controller;
@@ -15,14 +16,16 @@ class ReviewsController extends Controller
     {
         return $this->render('index');
     }
-
-
-    public function actionOrganizationReviews($slug)
+    public function actionSearch($keywords)
     {
-        //main review pppost
-    }
+        $business_activity =  BusinessActivities::find()
+            ->select(['business_activity_enc_id','business_activity'])
+            ->asArray()
+            ->all();
 
-    public function actionSearch($query)
+        return $this->render('filter-companies',['keywords'=>$keywords,'business_activity'=>$business_activity]);
+    }
+    public function actionSearchOrg($query)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Organizations::find()

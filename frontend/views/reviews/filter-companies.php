@@ -959,7 +959,7 @@ var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
-    url: '/organizations/reviews/search?query=%QUERY',
+    url: '/reviews/search-org?query=%QUERY',
     wildcard: '%QUERY',
     cache: true,     
         filter: function(list) {
