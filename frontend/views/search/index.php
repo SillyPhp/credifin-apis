@@ -77,6 +77,7 @@ use yii\helpers\Url;
     <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
 </section>
 <?php
+$c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .search-bar{
     width:66%;
@@ -99,10 +100,10 @@ $this->registerCss('
     border-radius:10px;
     color:#777;
 }
-input::placeholder{
+.s-input::placeholder{
     color:#bcbaba;
 }
-form input[type="text"]:focus{
+.s-input:focus{
     outline:none;
     border:none !important;
     box-shadow:none;
@@ -520,12 +521,40 @@ $('.starr').raty({
    return $(this).attr('data-score');
  }
 });
+$(document).on('click','.application-card-add', function(event){
+    event.preventDefault();
+    var c_user = "$c_user"
+    if(c_user == ""){
+        $('#loginModal').modal('show');
+        return false;
+    }
+    var itemid = $(this).closest('.application-card-main').attr('data-id');
+    $.ajax({
+        url: "/jobs/item-id",
+        method: "POST",
+        data: {'itemid': itemid},
+        beforeSend:function(){
+//            $('.loader-aj-main').fadeIn(1000);  
+        },
+        success: function (response) {
+            if (response.status == '200' || response.status == 'short') {
+                toastr.success('Added to your Review list', 'Success');
+            } else if (response.status == 'unshort') {
+                toastr.success('Delete from your Review list', 'Success');
+            } else {
+                toastr.error('Please try again Later', 'Error');
+            }
+        }
+    });
+});
 
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="application-card" type="text/template">
     {{#.}}
