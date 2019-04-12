@@ -2,6 +2,7 @@
 
 namespace frontend\models\campusAmbassador;
 
+use common\models\Users;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -55,6 +56,12 @@ class CaApplicationForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $update = Yii::$app->db->createCommand()
+                ->update(Users::tableName(), ['city_enc_id' => $this->city_id], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->execute();
+            if (!$update) {
+                return false;
+            }
             $utilitiesModel = new Utilities();
             $applicationsModel = new Applications();
             $applicationsModel->application_id = time();
