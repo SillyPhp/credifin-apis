@@ -960,8 +960,13 @@ function random_fn(t){
 		
 		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
 		{
-			if (val1 == '' || val2 == '' || val3 == '' || val4 == '')
-				that.validate = false;
+			if (val1 == '' || val2 == '' || val3 == '' || val4 == '') {
+                that.validate = false;
+            }
+			if (val2>val4)
+            {
+                that.validate = false;
+            }
 		}
             }else{
                 var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
