@@ -46,7 +46,7 @@ class CampusAmbassadorsController extends Controller
             $applicationFormModel = new CaApplicationForm();
             if ($applicationFormModel->load(Yii::$app->request->post())) {
                 if ($applicationFormModel->save()) {
-                    $applicationFormModel = new ApplicationForm();
+                    $applicationFormModel = new CaApplicationForm();
                     Yii::$app->session->setFlash('success', 'We will connect with you shortly.');
                 } else {
                     Yii::$app->session->setFlash('error');
