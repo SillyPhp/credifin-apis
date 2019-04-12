@@ -13,7 +13,13 @@ foreach ($services['menu_items'] as $service) {
     ];
     array_push($result, $new);
 }
-
+if (!empty(Yii::$app->user->identity->organization)) {
+    $template = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Templates'),
+        'url' => Url::toRoute('/templates'),
+    ];
+    array_push($result, $template);
+}
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
     'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username),
