@@ -234,6 +234,7 @@ $script = <<<JS
     var current_user_name = $('#current-name').val(); // name of current user
     var chat_icon = document.getElementById('chat-icon'); // chat icon
     var chat_list = document.getElementById('chat-list');// main id of conversations list
+    var specialKey = 'BnE3860mWdnBEZMLXlwkdjw9A2K5DJ';
     var search_user = document.getElementById('search-user'); // search user input id
     var users_list = document.getElementById('users-list'); // id of ul in conversations list
     var chat_icon_button = document.getElementById('trigger');
@@ -327,7 +328,7 @@ $script = <<<JS
          }
          
          if(msginput && msginput.length < 1500){
-             var converseRef = db.ref('/conversations/' + unique_id );
+             var converseRef = db.ref(specialKey + '/conversations/' + unique_id );
              var currentDate = new Date();
              var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()];
              var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
@@ -397,7 +398,7 @@ $script = <<<JS
                     while (chat_box.firstChild) {
                         if(chat_box.firstChild.innerText){
                             db
-                             .ref('/conversations/' + getUniqueId(chat_box.firstChild.getAttribute('data-id')))
+                             .ref(specialKey + '/conversations/' + getUniqueId(chat_box.firstChild.getAttribute('data-id')))
                              .off();
                         }
                         chat_box.removeChild(chat_box.firstChild);
@@ -477,13 +478,13 @@ $script = <<<JS
         
         //listening messages for specific users
             db
-            .ref('/conversations/' + getUniqueId(single_user_id))
+            .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
             .off();
 
             var existingDates = {};
             
             db
-            .ref('/conversations/' + getUniqueId(single_user_id))
+            .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
             .on('child_added', function(data){
                 if(data.val().sender == current_user){
                     var res = {
@@ -563,7 +564,7 @@ $script = <<<JS
                     
                     
                     db
-                    .ref('/conversations/' + getUniqueId(single_user_id) + '/' + data.key)
+                    .ref(specialKey + '/conversations/' + getUniqueId(single_user_id) + '/' + data.key)
                     .update(udata);
                     
                     udata['uniqueid'] = getUniqueId(single_user_id);
@@ -575,7 +576,7 @@ $script = <<<JS
                      });
                     
                     db
-                    .ref('/notifications/' + current_user + '/' + data.val().sender)
+                    .ref(specialKey + '/notifications/' + current_user + '/' + data.val().sender)
                     .remove();
                 }
                 
@@ -589,7 +590,7 @@ $script = <<<JS
      $(document).on('click','.close-btn', function(){
          var single_user_id = $(this).parents('.dynamic-chat').attr('data-id');
          db
-         .ref('/conversations/' + getUniqueId(single_user_id))
+         .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
          .off();
          
          $(this).parents('.dynamic-chat').remove();
@@ -609,7 +610,7 @@ $script = <<<JS
     
     //listening messages
     db.
-    ref('/notifications/' + current_user)
+    ref(specialKey + '/notifications/' + current_user)
     .on('child_added', function(data){
         
         //add bounce
@@ -723,7 +724,7 @@ $script = <<<JS
  
 JS;
 $this->registerJs($script);
-$this->registerJsFile('/assets/themes/chat/hashids.js');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
 <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
 <script>
