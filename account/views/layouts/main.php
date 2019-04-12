@@ -1,109 +1,110 @@
-<?php
 
+<?php
 use yii\helpers\Html;
 use account\assets\AppAssets;
 use yii\helpers\Url;
-
 AppAssets::register($this);
 ?>
 <?php $this->beginPage(); ?>
-    <!DOCTYPE html>
-    <!--[if IE 8]>
-    <html lang="en" class="ie8 no-js"> <![endif]-->
-    <!--[if IE 9]>
-    <html lang="en" class="ie9 no-js"> <![endif]-->
-    <!--[if !IE]><!-->
-    <html lang="<?= Yii::$app->language; ?>">
-    <!--<![endif]-->
-    <head>
-        <meta charset="<?= Yii::$app->charset; ?>">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport"/>
-        <?= Html::csrfMetaTags(); ?>
-        <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <title><?= Html::encode((!empty($this->title)) ? Yii::t('account', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
-        <?php $this->head(); ?>
-    </head>
-    <body class="page-header-fixed page-sidebar-closed-hide-logo page-md page-container-bg-solid">
-    <?php $this->beginBody(); ?>
-    <div class="wrapper">
-        <header class="page-header">
-            <nav class="navbar mega-menu" role="navigation">
-                <div class="container-fluid">
-                    <div class="clearfix navbar-fixed-top">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                                data-target=".navbar-responsive-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="toggle-icon">
+<!DOCTYPE html>
+<!--[if IE 8]>
+<html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="<?= Yii::$app->language; ?>">
+<!--<![endif]-->
+<head>
+    <meta charset="<?= Yii::$app->charset; ?>">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <?= Html::csrfMetaTags(); ?>
+    <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
+    <title><?= Html::encode((!empty($this->title)) ? Yii::t('account', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
+    <?php $this->head(); ?>
+</head>
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-md page-container-bg-solid">
+<?php $this->beginBody(); ?>
+<div class="wrapper">
+    <header class="page-header">
+        <nav class="navbar mega-menu" role="navigation">
+            <div class="container-fluid">
+                <div class="clearfix navbar-fixed-top">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-responsive-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="toggle-icon">
                                     <span class="icon-bar"></span>
                                     <span class="icon-bar"></span>
                                     <span class="icon-bar"></span>
                                 </span>
-                        </button>
-                        <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
-                            <div id="menuzord" class="menuzord">
-                                <a style="position:relative;float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
-                                    <img id="header-logo" alt="<?= Yii::$app->params->site_name; ?>"
-                                         src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
-                                    <span class="logo_beta">Beta</span>
-                                </a>
-                                <?php
-                                $name = $image = $color = NULL;
-                                if (Yii::$app->user->identity->organization->organization_enc_id) {
-                                    if (Yii::$app->user->identity->organization->logo) {
-                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                                    }
-                                    $name = Yii::$app->user->identity->organization->name;
-                                    $color = Yii::$app->user->identity->organization->initials_color;
-                                } else {
-                                    if (Yii::$app->user->identity->image) {
-                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                                    }
-                                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                                    $color = Yii::$app->user->identity->initials_color;
+                    </button>
+                    <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
+                        <div id="menuzord" class="menuzord">
+                            <a style="position:relative;float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
+                                <img id="header-logo" alt="<?= Yii::$app->params->site_name; ?>"
+                                     src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
+                                <span class="logo_beta">Beta</span>
+                            </a>
+                            <?php
+                            $name = $image = $color = NULL;
+                            if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                if (Yii::$app->user->identity->organization->logo) {
+                                    $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                 }
-                                ?>
-                                <div class="my-profiles-sec">
-                                    <?php if ($image): ?>
-                                        <span><img src="<?= $image; ?>" title="<?= $name; ?>"
-                                                   alt="<?= $name; ?>"/></span>
-                                    <?php else: ?>
-                                        <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>"
-                                                      width="40" height="40" font="20px"></canvas></span>
-                                    <?php endif; ?>
-                                </div>
-                                <?=
-                                $this->render('/widgets/common/header/top-header', [
-                                    'menu_class' => 'menuzord-menu'
-                                ]);
-                                ?>
+                                $name = Yii::$app->user->identity->organization->name;
+                                $color = Yii::$app->user->identity->organization->initials_color;
+                            } else {
+                                if (Yii::$app->user->identity->image) {
+                                    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                }
+                                $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                $color = Yii::$app->user->identity->initials_color;
+                            }
+                            ?>
+                            <div class="my-profiles-sec">
+                                <?php if ($image): ?>
+                                    <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                               alt="<?= $name; ?>"/></span>
+                                <?php else: ?>
+                                    <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>"
+                                                  width="40" height="40" font="20px"></canvas></span>
+                                <?php endif; ?>
                             </div>
+
+                            <?=
+                            $this->render('/widgets/common/header/top-header', [
+                                'menu_class' => 'menuzord-menu'
+                            ]);
+                            ?>
                         </div>
                     </div>
-                    <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">
-                        <?= $this->render('/widgets/header/top-header'); ?>
-                    </div>
                 </div>
-            </nav>
-        </header>
-        <div class="container-fluid">
-            <div class="page-content" style="padding-top:20px;">
-                <div id="page-loading" class="page-loading">
-                    <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+                <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">
+                    <?= $this->render('/widgets/header/top-header'); ?>
                 </div>
-                <?= $content; ?>
             </div>
-            <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>
-            </p>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <div class="page-content" style="padding-top:20px;">
+            <div id="page-loading" class="page-loading">
+                <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
+            </div>
+            <?= $content; ?>
         </div>
-        <?php
-//        if (!Yii::$app->user->identity->organization) {
-            echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
-//        }
-        ?>
+        <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>
+        </p>
     </div>
     <?php
-    $this->registerCss('
+    //        if (!Yii::$app->user->identity->organization) {
+    echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
+    //        }
+    ?>
+</div>
+<?php
+echo $this->render('/widgets/chat/main');
+$this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #fff;}
             .page-loading {
                 background-color: #ffffff;
@@ -216,7 +217,6 @@ AppAssets::register($this);
             .page-sidebar .page-sidebar-menu .sub-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a {
                 color: #49a1e3 !important;
             }
-
             .page-sidebar .page-sidebar-menu .sub-menu>li>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a>i {
                 color: #49a1e3;
             }
@@ -274,9 +274,7 @@ AppAssets::register($this);
                 margin-top:5px;
             }
         ');
-
-
-    $script = <<<JS
+$script = <<<JS
         jQuery("#menuzord").menuzord({
             align: "right",
         });
@@ -297,10 +295,10 @@ AppAssets::register($this);
         };
         $(".page-loading").fadeOut();
 JS;
-    $this->registerJs($script);
-    $this->registerJsFile('@eyAssets/js/functions.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-    $this->endBody();
-    ?>
-    </body>
-    </html>
+$this->registerJs($script);
+$this->registerJsFile('@eyAssets/js/functions.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->endBody();
+?>
+</body>
+</html>
 <?php $this->endPage(); ?>
