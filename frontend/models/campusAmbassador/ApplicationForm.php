@@ -127,6 +127,7 @@ class ApplicationForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $usersModel->user_enc_id = $utilitiesModel->encrypt();
             $usersModel->auth_key = Yii::$app->security->generateRandomString();
+            $usersModel->city_enc_id = $this->city_id;
             $usersModel->status = 'Active';
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $transaction->rollBack();

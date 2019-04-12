@@ -36,6 +36,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
     <hr>
+
     <div class="row">
         <div class="col-md-12">
             <?php if (Yii::$app->session->hasFlash('error')): ?>
@@ -47,19 +48,24 @@ $this->params['seo_tags'] = [
             <?php endif; ?>
         </div>
     </div>
-<?php if (Yii::$app->session->hasFlash('success')): ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="fader"></div>
-            <div class="light-box-outer">
-                <div class="light-box-inner">
-                    <h2><i class="fa fa-check-circle-o"></i> Thank You!</h2>
-                    <p><?= Yii::$app->session->getFlash('success'); ?></p>
-                </div>
+
+<?php
+    if (Yii::$app->session->hasFlash('success')):
+?>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="fader"></div>
+        <div class="light-box-outer">
+            <div class="light-box-inner">
+                <h2><i class="fa fa-check-circle-o"></i> Thank You!</h2>
+                <p><?= Yii::$app->session->getFlash('success'); ?></p>
             </div>
         </div>
     </div>
-    <?php
+</div>
+
+<?php
     $this->registerJs("
         $('.fader').fadeIn(500);
         $('.light-box-outer').fadeIn(1000);
@@ -71,38 +77,45 @@ $this->params['seo_tags'] = [
         
         setTimeout(function(){ window.location = '/'; }, 3000);
     ");
-endif;
-$form = ActiveForm::begin([
-    'id' => 'careers-form',
-    'options' => [
-        'class' => 'clearfix',
-    ],
-    'fieldConfig' => [
-        'template' => '<div class="row"><div class="col-md-12"><div class="form-group">{input}{error}</div></div></div>',
-        'labelOptions' => ['class' => ''],
-    ],
-]);
+
+    endif;
 ?>
-<?=
-$form->field($learningCornerFormModel, 'video_type')->dropDownList([
-    'Education' => 'Education',
-    'Film & Animation' => 'Film & Animation',
-    'Music' => 'Music',
-    'Nonprofits & Activism' => 'Nonprofits & Activism',
-    'People & Blogs' => 'People & Blogs',
-    'Science & Technology' => 'Science & Technology',
-    'Sports' => 'Sports',
-    'Others' => 'Others',
-], [
-    'id' => 'video_type',
-    'prompt' => 'Video Type',
-]);
+
+<?php
+    $form = ActiveForm::begin([
+        'id' => 'careers-form',
+        'options' => [
+            'class' => 'clearfix',
+        ],
+        'fieldConfig' => [
+            'template' => '<div class="row"><div class="col-md-12"><div class="form-group">{input}{error}</div></div></div>',
+            'labelOptions' => ['class' => ''],
+        ],
+    ]);
 ?>
+
+    <?=
+        $form->field($learningCornerFormModel, 'video_type')->dropDownList([
+            'Education' => 'Education',
+            'Film & Animation' => 'Film & Animation',
+            'Music' => 'Music',
+            'Nonprofits & Activism' => 'Nonprofits & Activism',
+            'People & Blogs' => 'People & Blogs',
+            'Science & Technology' => 'Science & Technology',
+            'Sports' => 'Sports',
+            'Others' => 'Others',
+        ], [
+            'id' => 'video_type',
+            'prompt' => 'Video Type',
+        ]);
+    ?>
+
     <div id="field-hidden" class="row">
         <div class="col-md-12">
             <?= $form->field($learningCornerFormModel, 'type_input')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('type_input')]); ?>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-6">
             <?= $form->field($learningCornerFormModel, 'category')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('category'), 'id' => 'categories']); ?>
@@ -111,8 +124,15 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
             <?= $form->field($learningCornerFormModel, 'sub_category')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('sub_category'), 'id' => 'sub-cat']); ?>
         </div>
     </div>
-<?= $form->field($learningCornerFormModel, 'video_url')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']); ?>
-<?= $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']); ?>
+
+    <?=
+        $form->field($learningCornerFormModel, 'video_url')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
+    ?>
+
+    <?=
+        $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']);
+    ?>
+
     <div class="row title">
         <div class="col-md-12">
             <div id="tooltip">
@@ -121,6 +141,7 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
             <?= $form->field($learningCornerFormModel, 'video_title')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_title'), 'id' => 'youtube-title']); ?>
         </div>
     </div>
+
     <div class="row description">
         <div class="col-md-12">
             <div id="tooltip" class="tooltip1">
@@ -129,36 +150,42 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
             <?= $form->field($learningCornerFormModel, 'description')->textArea(['rows' => 6, 'autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('description'), 'id' => 'youtube-description']); ?>
         </div>
     </div>
+
     <div class="row ci">
         <div class="col-md-12">
             <?= $form->field($learningCornerFormModel, 'cover_image')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('cover_image'), 'id' => 'cover-image']); ?>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-lg btn-block mt-15', 'name' => 'register-button']); ?>
         </div>
     </div>
+
 <?php ActiveForm::end(); ?>
-    <div class="col-md-12 text-center">
-        <h2 class="subscribe-head">Subscribe <span>Us</span></h2>
-        <div class="effect jaques">
-            <div class="buttons">
-                <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-            </div>
+
+<div class="col-md-12 text-center">
+    <h2 class="subscribe-head">Subscribe <span>Us</span></h2>
+    <div class="effect jaques">
+        <div class="buttons">
+            <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+            <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+            <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
         </div>
     </div>
-    <div style="position: fixed;width: 100%;z-index: 9999;top: 20%;right: 0;">
-        <div class="row row-offcanvas">
-            <div class="sidebar-offcanvas sidebar">
-                <h3>Why we are Doing this?</h3>
-                <h5>This is a small form that would help in a very big way we hope all of you can fill this up and also pass it along to your friends and family.</h5>
-            </div>
-            <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Close</span></a>
+</div>
+
+<div style="position: fixed;width: 100%;z-index: 9999;top: 20%;right: 0;">
+    <div class="row row-offcanvas">
+        <div class="sidebar-offcanvas sidebar">
+            <h3>Why we are Doing this?</h3>
+            <h5>This is a small form that would help in a very big way we hope all of you can fill this up and also pass it along to your friends and family.</h5>
         </div>
+        <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Close</span></a>
     </div>
+</div>
+
 <?php
 $this->registerCss('
 .fader{
@@ -417,31 +444,29 @@ $this->registerCss('
 ');
 
 $script = <<< JS
-        
-$(document).ready(function () {
-  $('[data-toggle=offcanvas]').click(function () {
-    $('.row-offcanvas').toggleClass('active');
-  });
+  
+    $('[data-toggle=offcanvas]').click(function () {
+        $('.row-offcanvas').toggleClass('active');
+    });
         
     $('#change').click(function(){
         $('#change-text').toggleText('Close', 'Open');
     });
         
-        $.fn.toggleText = function(t1, t2){
-  if (this.text() == t1) this.text(t2);
-  else                   this.text(t1);
-  return this;
-};
-});
-//        
-//$('.add-more').click(function() {
-//  var clone = $('#careers-form div > input').clone('#careers-form div > input');
-//  $('#careers-form').append(clone);
-//});
+    $.fn.toggleText = function(t1, t2){
+      if (this.text() == t1) 
+          this.text(t2); 
+      else 
+          this.text(t1);
+      return this;
+    };
 
     $(".title").hide();
+    
     $(".description").hide();
+    
     $('#url').blur(geturl);
+    
     function geturl(){
         var link = $('#url').val();
         var videoid = link.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
@@ -462,20 +487,21 @@ $(document).ready(function () {
     }
         
         
-$("#field-hidden").hide();
+    $("#field-hidden").hide();
 
-$(document).on('change', '#video_type', function () {
-    var value = $(this).val();
-    if (value == "Others"){
-        $("#field-hidden").show();
-    } else {
-        $("#field-hidden").hide();
-    }
-});
-$('#categories, #sub-cat').tagsinput({
-    maxTags: 1,
-    trimValue: true
-});
+    $(document).on('change', '#video_type', function () {
+        var value = $(this).val();
+        if (value == "Others"){
+            $("#field-hidden").show();
+        } else {
+            $("#field-hidden").hide();
+        }
+    });
+    
+    $('#categories, #sub-cat').tagsinput({
+        maxTags: 1,
+        trimValue: true
+    });
 
 JS;
 $this->registerJs($script);
