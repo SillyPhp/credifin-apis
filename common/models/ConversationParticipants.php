@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%conversation_participants}}".
  *
@@ -11,7 +9,7 @@ use Yii;
  * @property string $participant_enc_id Participant Encrypted ID
  * @property string $conversation_enc_id Foreign Key to Conversations Table
  * @property string $user_enc_id Foreign Key to Users Table
- * @property string $organization_enc_id
+ * @property string $organization_enc_id Foreign Key to Organizations Table
  * @property string $created_on On which date Participant information was added to database
  * @property string $created_by By which User Participant information was added
  * @property string $last_updated_on On which date Participant information was updated

@@ -133,9 +133,9 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-6">
-                                <div class="re-bttn">
-                                    <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>
-                                </div>
+<!--                                <div class="re-bttn">-->
+<!--                                    <button type="button" data-toggle="modal" data-target="#report"><i class="fa fa-flag"></i> Report</button>-->
+<!--                                </div>-->
                                 <div class="publish-date">Published on <?= date('d-m-Y',strtotime($review['created_on'])); ?></div>
                                 <div class="emp-duration"><?= (($review['is_current_employee']) ? 'Current Employee' : 'Former Employee'); ?></div>
                             </div>
@@ -199,14 +199,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-6">
-                                <div class="usefull-bttn pull-right">
-                                    <div class="use-bttn">
-                                        <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>
-                                    </div>
-                                    <div class="notuse-bttn">
-                                        <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>
-                                    </div>
-                                </div>
+<!--                                <div class="usefull-bttn pull-right">-->
+<!--                                    <div class="use-bttn">-->
+<!--                                        <button type="button"><i class="fa fa-thumbs-up"></i> Usefull</button>-->
+<!--                                    </div>-->
+<!--                                    <div class="notuse-bttn">-->
+<!--                                        <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </div>
