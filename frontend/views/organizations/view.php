@@ -300,7 +300,12 @@ if ($organization['cover_image']) {
                 </div>
                 <div id="menu1" class="tab-pane fade">
                     <div class="row">
-                        <div class="heading-style">Available Jobs</div>
+                        <div class="heading-style">
+                            Available Jobs
+                            <div class="pull-right">
+                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View All</a>
+                            </div>
+                        </div>
                         <div class="divider"></div>
                         <div class="row">
                             <div class="col-md-12">
@@ -311,7 +316,12 @@ if ($organization['cover_image']) {
 
                     <div class="row">
                         <div class="internships-block">
-                            <div class="heading-style">Available Internships</div>
+                            <div class="heading-style">
+                                Available Internships
+                                <div class="pull-right">
+                                    <a href="/internships/list?company=<?= $organization['slug'] ?>" class="write-review">View All</a>
+                                </div>
+                            </div>
                             <div class="divider"></div>
                             <div class="row">
                                 <div class="col-md-12">
