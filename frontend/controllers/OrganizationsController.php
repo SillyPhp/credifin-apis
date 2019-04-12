@@ -693,16 +693,6 @@ class OrganizationsController extends Controller
         return $reviews;
     }
 
-    public function actionSearch($keywords)
-    {
-        $business_activity =  BusinessActivities::find()
-                               ->select(['business_activity_enc_id','business_activity'])
-                               ->asArray()
-                               ->all();
-
-        return $this->render('filter-companies',['keywords'=>$keywords,'business_activity'=>$business_activity]);
-    }
-
     public function actionFetchReviewCards()
     {
         $get = new ReviewCards();
