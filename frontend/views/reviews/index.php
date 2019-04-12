@@ -10,7 +10,7 @@ use yii\helpers\Url;
                             <div class="head-text">
                                 <p>Find your next great place to work</p>
                             </div>
-                            <form id="form-search" action="<?=Url::to(['/organizations/search']) ?>">
+                            <form id="form-search" action="<?=Url::to(['search']) ?>">
                                 <div class="input-group search-bar">
                                     <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
                                     <div class="input-group-btn">
@@ -688,15 +688,11 @@ width:100%;
 }
 ');
 $script = <<< JS
-// $(document).on('submit','#form-search',function(e)
-// {
-//    e.preventDefault();
-// });
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
-    url: '/organizations/reviews/search?query=%QUERY',
+    url: '/reviews/search-org?query=%QUERY',
     wildcard: '%QUERY',
     cache: true,     
         filter: function(list) {
@@ -714,7 +710,7 @@ $('#search_comp').typeahead(null, {
 suggestion: function(data) {
 return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews"><div class="logo_wrap"><img src = "'+data.logo+'"></div><div class="suggestion"><p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="tt-suggestion tt-selectable">', "sorry! No results found", "</div>"].join("/n"),
+empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
 },
 });
 JS;

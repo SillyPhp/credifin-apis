@@ -452,7 +452,12 @@ $industries = Json::encode($industries);
                 </div>
                 <div id="menu1" class="tab-pane fade">
                     <div class="row">
-                        <div class="heading-style">Available Jobs</div>
+                        <div class="heading-style">
+                            Available Jobs
+                            <div class="pull-right">
+                                <a href="/account/jobs/create" class="write-review">Add New</a>
+                            </div>
+                        </div>
                         <div class="divider"></div>
                         <div class="row">
                             <div class="col-md-12">
@@ -463,7 +468,12 @@ $industries = Json::encode($industries);
 
                     <div class="row">
                         <div class="internships-block">
-                            <div class="heading-style">Available Internships</div>
+                            <div class="heading-style">
+                                Available Internships
+                                <div class="pull-right">
+                                    <a href="/account/internships/create" class="write-review">Add New</a>
+                                </div>
+                            </div>
                             <div class="divider"></div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -581,6 +591,23 @@ echo $this->render('/widgets/mustache/organization-reviews',[
         'org_slug' => $organization['slug']
 ]);
 $this->registerCss('
+.write-review{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #00a0e3;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+}
+.write-review:hover{
+    background-color: #00a0e3;
+    color: #fff;
+}
 /*----jobs and internships----*/
 .internships-block{
     padding-top:30px;
@@ -1611,13 +1638,13 @@ $('#enable').click(function() {
    var edit_toggle = $('.edit-box').css('display');
    if(edit_toggle == 'block' || edit_toggle == 'inline-block'){
        $('.edit-box').css('display', 'none');
-       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').hide();
+       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image, .write-review').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
        $('.remove_g_image, .remove_location, .edit_location').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
-       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image').show();
+       $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image, .write-review').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
        $('.remove_g_image, .remove_location, .edit_location').removeClass('hide-remove-buttons');
        $(this).text('View Profile');

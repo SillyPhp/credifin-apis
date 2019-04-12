@@ -18,9 +18,9 @@ $this->registerCss('
 ');
 ?>
 
-    <section>
+    <section class="applications-cards-list">
         <div class="row">
-            <div class="col-md-2 col-sm-3">
+            <div class="col-md-2 col-sm-3 sidebar-review-bar">
                 <?=
                 $this->render('/widgets/sidebar-review', [
                     'type' => 'internships',

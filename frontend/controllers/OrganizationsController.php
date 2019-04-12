@@ -497,7 +497,7 @@ class OrganizationsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
             $options = [];
-            $options['limit'] = 3;
+            $options['limit'] = 6;
             $options['page'] = 1;
             $options['company'] = $org;
             if ($type == 'Jobs') {
@@ -691,16 +691,6 @@ class OrganizationsController extends Controller
             ->all();
 
         return $reviews;
-    }
-
-    public function actionSearch($keywords)
-    {
-        $business_activity =  BusinessActivities::find()
-                               ->select(['business_activity_enc_id','business_activity'])
-                               ->asArray()
-                               ->all();
-
-        return $this->render('filter-companies',['keywords'=>$keywords,'business_activity'=>$business_activity]);
     }
 
     public function actionFetchReviewCards()
