@@ -1,5 +1,6 @@
 <?php
 $this->params['header_dark'] = true;
+$this->title = $post['title'];
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
@@ -46,7 +47,7 @@ $this->params['seo_tags'] = [
                             ?>
                             <img src="<?= $feature_image; ?>">
                         </div>
-                        <div class="blog-title"><?= $post['title'] ?></div>
+                        <div class="blog-title"><?= $post['title']; ?></div>
                         <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
@@ -456,4 +457,4 @@ textarea::placeholder{
 }
 /*----blog description preview css ends----*/
 ');
-$this->registerJsFile('http://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
