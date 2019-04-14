@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\HttpException;
 use yii\helpers\Url;
 use common\models\Posts;
 use common\models\PostTags;
@@ -16,10 +17,11 @@ use common\models\Categories;
 class BlogController extends Controller
 {
 
-    public function actionIndex(){
+    public function actionIndex()
+    {
         $postsModel = new Posts();
         $posts = $postsModel->find()
-            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
             ->orderby(['created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
@@ -82,22 +84,27 @@ class BlogController extends Controller
             ->asArray()
             ->one();
 
-        $similar_posts = $postsModel->find()->alias('a')
-            ->select(['a.title', 'a.slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
-            ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
-            ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
-            ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
-            ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
-            ->andWhere(['c.tag_enc_id' => $post['postTags'][0]['tag_enc_id']])
-            ->limit(3)
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
+        if ($post) {
+            $similar_posts = $postsModel->find()->alias('a')
+                ->select(['a.title', 'a.slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
+                ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
+                ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
+                ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
+                ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
+                ->andWhere(['c.tag_enc_id' => $post['postTags'][0]['tag_enc_id'],
+                    'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->limit(3)
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
 
-        return $this->render('detail', [
-            'post' => $post,
-            'similar_posts' => $similar_posts,
-        ]);
+            return $this->render('detail', [
+                'post' => $post,
+                'similar_posts' => $similar_posts,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
 
     public function actionGetPostsByCategory($slug)
@@ -108,29 +115,34 @@ class BlogController extends Controller
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
-        return $this->render('posts-by-category', [
-            'posts' => $posts,
-        ]);
+        if ($posts) {
+            return $this->render('posts-by-category', [
+                'posts' => $posts,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
-    public function actionBlogDetail(){
-        return $this->render('blog-detail');
-    }
-    public function actionBlogList(){
+
+    public function actionBlogList()
+    {
         $postsModel = new Posts();
         $posts = $postsModel->find()
-            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
             ->orderby(['created_on' => SORT_ASC])
             ->asArray()
             ->all();
-        return $this->render('blog-list',[
+
+        return $this->render('blog-list', [
             'posts' => $posts,
-            ]);
+        ]);
     }
+
     public function actionGetPostsByTag($slug)
     {
         $postsModel = new Posts();
@@ -139,14 +151,18 @@ class BlogController extends Controller
             ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
-        return $this->render('posts-by-tag', [
-            'posts' => $posts,
-        ]);
+        if ($posts) {
+            return $this->render('posts-by-tag', [
+                'posts' => $posts,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
 
     public function actionCategoryPosts($slug)
@@ -168,7 +184,7 @@ class BlogController extends Controller
                 ->innerJoin(PostTags::tableName() . 'as d', 'd.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . 'as e', 'e.tag_enc_id = d.tag_enc_id')
                 ->innerJoin(Users::tableName() . 'as f', 'f.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
+                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit(5)
                 ->asArray()
