@@ -38,7 +38,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <!-- <div class="col-md-2 col-sm-4">-->
         <!-- <div class="col-md-12 bg-theme-colored round">
-            <img width="100%" id="img_id" src="<?/*= Url::to($image); */ ?>"/>-->
+            <img width="100%" id="img_id" src="<? /*= Url::to($image); */ ?>"/>-->
         <!--<input type="file" name="photo" id="upload-photo" />-->
         <?php
         $form = ActiveForm::begin(['id' => 'form-profile', 'class' => 'form-body',
@@ -53,7 +53,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
              <ul class="dropdown-menu">
                  <li>
                      <a href="#">-->
-        <!--    --><?/*= $form->field($individualImageFormModel, 'image')->fileInput(['id' => 'profile_pic'])->label(false) */ ?>
+        <!--    --><? /*= $form->field($individualImageFormModel, 'image')->fileInput(['id' => 'profile_pic'])->label(false) */ ?>
         <!--<input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />-->
         <!--  <label class="profile-label" for="profile_pic">Change Profile Picture</label>
       </a>
@@ -63,7 +63,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
 </ul>
 </div>-->
         <!-- <div id="pop-content" class="hiden">
-                <?/*= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) */ ?>
+                <? /*= Html::submitButton('<i class="glyphicon glyphicon-ok"></i>', ['class' => 'btn btn-primary btn-sm editable-submit']) */ ?>
                 <button id="cancel_image" type="button" class="btn btn-default btn-sm editable-cancel">
                     <i class="glyphicon glyphicon-remove"></i>
                 </button>
@@ -89,7 +89,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
              </label>
          </div>-->
         <!--  <div style="color:#000" class="col-md-12">--><!--- align="center"--->
-        <!--<p id="about_me"><?/*= $user['description']; */ ?></p>
+        <!--<p id="about_me"><? /*= $user['description']; */ ?></p>
                 <div align="center" class="col-md-12">
                     <icon class="fa fa-edit"></icon>
                     <a href="#" data-toggle = "modal" data-target = "#about_me_modal">Edit</a>
@@ -213,19 +213,19 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
         ?>
         <!--  <ul>
                 <li>
-                    <label><h5><strong>Phone : <?/*= $user['phone']; */ ?></strong></h5></label>
+                    <label><h5><strong>Phone : <? /*= $user['phone']; */ ?></strong></h5></label>
                     <label id="contact_label"></label>
                 </li>
                 <li>
-                    <label><h5><strong>Email : <?/*= $user['email']; */ ?></strong></h5></label>
+                    <label><h5><strong>Email : <? /*= $user['email']; */ ?></strong></h5></label>
                     <label id="email_label"></label>
                 </li>
                 <li>
-                    <label><h5><strong>Address : <?/*= $user['address']; */ ?></strong></h5></label>
+                    <label><h5><strong>Address : <? /*= $user['address']; */ ?></strong></h5></label>
                     <label id="address_label"></label>
                 </li>
                 <li>
-                    <label><h5><strong>City : <?/*= $user['city_enc_id']; */ ?></strong></h5></label>
+                    <label><h5><strong>City : <? /*= $user['city_enc_id']; */ ?></strong></h5></label>
                     <label id="address_label"></label>
                 </li>
             </ul>-->
@@ -353,7 +353,6 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                     </div>
                                     <div class="modal-footer">
                                         <?= Html::submitButton('Submit', ['class' => 'btn btn-success  eduSave']); ?>
-                                        <?= Html::Button('Update', ['class' => 'btn btn-success  eduUpdate']); ?>
                                         <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                     </div>
                                     <?php ActiveForm::end(); ?>
@@ -361,7 +360,80 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                             </div>
                         </div>
 
-                        <button id="addEdu" class="btn btn-primary btn-lg btn-block  " data-toggle="modal">
+                        <div class="modal fade " id="update-education-modal" tabindex="-1" role="dialog"
+                             aria-labelledby="mySmallModalLabel">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 id="eduTitle"
+                                            class="modal-title"><?= Yii::t('account', 'Update Education'); ?></h4>
+                                    </div>
+                                    <?php
+                                    $fforms = ActiveForm::begin([
+                                        'id' => 'update-education-form',
+                                        'fieldConfig' => [
+                                            'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+                                        ],
+                                    ]);
+                                    ?>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <?= $fforms->field($addQualificationForm, 'school')->textInput(['autocomplete' => 'off', 'id' => 'update_school'])->label(true); ?>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <?= $fforms->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off', 'id' => 'update_degree'])->label(true); ?>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <?= $fforms->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off', 'id' => 'update_field'])->label(true); ?>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <?=
+                                                $fforms->field($addQualificationForm, 'qualification_from')->widget(DatePicker::classname(), [
+                                                    'options' => ['placeholder' => 'From Year', 'id' => 'update_qualification_from'],
+                                                    'readonly' => true,
+                                                    'pluginOptions' => [
+                                                        'autoclose' => true,
+                                                        'format' => 'yyyy-mm-dd',
+                                                        'name' => 'qualification_from',
+                                                        'todayHighlight' => true,
+                                                    ]])->label(false);
+                                                ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="check_exp">
+                                                    <?=
+                                                    $fforms->field($addQualificationForm, 'qualification_to')->widget(DatePicker::classname(), [
+                                                        'options' => ['placeholder' => 'To Year', 'id' => 'update_qualification_to'],
+                                                        'readonly' => true,
+                                                        'pluginOptions' => [
+                                                            'autoclose' => true,
+                                                            'format' => 'yyyy-mm-dd',
+                                                            'name' => 'qualification_to',
+                                                            'todayHighlight' => true,
+                                                        ]])->label(false);
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <?= Html::submitButton('Update', ['class' => 'btn btn-success  eduUpdate']); ?>
+                                        <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
+                                    </div>
+                                    <?php ActiveForm::end(); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="addEdu" class="btn btn-primary btn-lg btn-block" data-toggle="modal">
                             <icon class="fa fa-plus"></icon>
                             Add Education
                         </button>
@@ -407,6 +479,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                     </div>
                     <?php Pjax::end(); ?>
                 </div>
+
                 <div class="row bg-lighter shadow round working">
 
                     <div class="col-md-8 col-sm-8">
@@ -416,7 +489,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                         </h4>
                     </div>
                     <div class="experiences">
-                        <div class="col-md-4  col-sm-4 ">
+                        <div class="col-md-4  col-sm-4">
                             <div class="modal fade" id="add-experience-modal" tabindex="-1" role="dialog">
                                 <div class="modal-dialog modal-md">
                                     <div class="modal-content">
@@ -518,7 +591,115 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         </div>
                                         <div class="modal-footer">
                                             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary  expSave']); ?>
-                                            <?= Html::Button('Update', ['class' => 'btn btn-success  expUpdate']); ?>
+                                            <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
+                                        </div>
+                                        <?php ActiveForm::end(); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="update-experience-modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-md">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 id="expTitle"
+                                                class="modal-title"><?= Yii::t('account', 'Add Work Experience'); ?></h4>
+                                        </div>
+                                        <?php
+                                        $fform = ActiveForm::begin([
+                                            'id' => 'update-experience-form',
+                                            'fieldConfig' => [
+                                                'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
+                                            ],
+                                        ]);
+                                        ?>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12 ">
+                                                    <?= $fform->field($addExperienceForm, 'title')->textInput(['autocomplete' => 'off','id'=>'update_exp_title'])->label(true); ?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <?= $fform->field($addExperienceForm, 'company')->textInput(['autocomplete' => 'off','id'=>'update_exp_company'])->label(true); ?>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
+                                                    <?= $fform->field($addExperienceForm, 'location')->textInput(['id' => 'update_cities', 'placeholder' => 'Location', 'autocomplete' => 'off'])->label(false); ?>
+                                                    <?= $fform->field($addExperienceForm, 'city_id', ['template' => '{input}'])->hiddenInput(['id' => 'update_city_id_exp'])->label(false); ?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <?=
+                                                    $fform->field($addExperienceForm, 'exp_from')->widget(DatePicker::classname(), [
+                                                        'options' => ['placeholder' => 'Work Experience From','id'=>'update_exp_from'],
+                                                        'readonly' => true,
+                                                        'pluginOptions' => [
+                                                            'autoclose' => true,
+                                                            'format' => 'yyyy-mm-dd',
+                                                            'name' => 'exp_from',
+                                                            'todayHighlight' => true,
+                                                        ]])->label(false);
+                                                    ?>
+                                                </div>
+                                                <div class="col-md-6 update_experience">
+                                                    <div class="check_exp">
+                                                        <?=
+                                                        $fform->field($addExperienceForm, 'exp_to')->widget(DatePicker::classname(), [
+                                                            'options' => ['placeholder' => 'Work Experience To','id'=>'update_exp_to'],
+                                                            'readonly' => true,
+                                                            'pluginOptions' => [
+                                                                'autoclose' => true,
+                                                                'format' => 'yyyy-mm-dd',
+                                                                'name' => 'earliestjoiningdate',
+                                                                'todayHighlight' => true,
+                                                            ]])->label(false);
+                                                        ?>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="md-checkbox-inline">
+                                                        <?=
+                                                        $fform->field($addExperienceForm, 'present')->checkBoxList([
+                                                            1 => 'I currently work here',
+                                                        ], [
+                                                                'id'=>'update_present',
+                                                            'item' => function ($index, $label, $name, $checked) {
+                                                                $return = '<div class="md-checkbox check_this">';
+                                                                $return .= '<input type="checkbox" id="update_exp_present" value="0" name="' . $name . '"  class="md-check" ' . $checked . ' >';
+                                                                $return .= '<label for="update_exp_present">';
+                                                                $return .= '<span></span>';
+                                                                $return .= '<span class="check"></span>';
+                                                                $return .= '<span class="box"></span> ' . $label . ' </label>';
+                                                                $return .= '</div>';
+                                                                return $return;
+                                                            }
+                                                        ])->label(false);
+                                                        ?>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 ">
+                                                    <?=
+                                                    $fform->field($addExperienceForm, 'description')->textarea(['rows' => 6,'id'=>'update_description'])->label('Description');
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <?= Html::submitButton('Update', ['class' => 'btn btn-success  expUpdate']); ?>
                                             <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                         </div>
                                         <?php ActiveForm::end(); ?>
@@ -547,11 +728,11 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         <div class="rounded-experience-period">
                                             <?= $ex['from_date']; ?><br/>
                                             -<br/>
-                                            <?php if($ex['is_current']){
+                                            <?php if ($ex['is_current']) {
                                                 echo 'I am currently work here';
-                                            } else{
+                                            } else {
                                                 echo $ex['to_date'];
-                                            }?>
+                                            } ?>
                                         </div>
                                     </div>
                                     <div class="col-md-9 col-sm-8 col-xs-12">
@@ -616,12 +797,12 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                                     ]);
                                                     */ ?>
 
-                                    <?/*= $form->field($ResumeCertificates, 'certificates')->label('Certificates') */ ?>
+                                    <? /*= $form->field($ResumeCertificates, 'certificates')->label('Certificates') */ ?>
 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default btn-md" data-dismiss="modal">Close</button>
-                                    <?/*= Html::submitButton('Save', ['class' => 'btn btn-success btn-md certificatesave']); */ ?>
+                                    <? /*= Html::submitButton('Save', ['class' => 'btn btn-success btn-md certificatesave']); */ ?>
                                 </div>
                             </div>
                         </div>
@@ -650,14 +831,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                            */ ?>
                 <li>
                     <div class="checkbox-custom checkbox-default">
-                        <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                            <span><?/*= $user['facebook']; */ ?></span>
+                        <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                            <span><? /*= $user['facebook']; */ ?></span>
 
 
                         </label>
                     </div>
 
-                    <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                    <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                         <a class="todo-remove" href="">
                             <i class="fa fa-times"></i>
                         </a>
@@ -682,14 +863,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         */ ?>
                         <li>
                             <div class="checkbox-custom checkbox-default">
-                                <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                                    <span><?/*= $user['instagram']; */ ?></span>
+                                <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                                    <span><? /*= $user['instagram']; */ ?></span>
 
 
                                 </label>
                             </div>
 
-                            <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                            <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                                 <a class="todo-remove" href="">
                                     <i class="fa fa-times"></i>
                                 </a>
@@ -713,14 +894,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         */ ?>
                         <li>
                             <div class="checkbox-custom checkbox-default">
-                                <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                                    <span><?/*= $user['linkedin']; */ ?></span>
+                                <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                                    <span><? /*= $user['linkedin']; */ ?></span>
 
 
                                 </label>
                             </div>
 
-                            <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                            <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                                 <a class="todo-remove" href="">
                                     <i class="fa fa-times"></i>
                                 </a>
@@ -745,14 +926,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         */ ?>
                         <li>
                             <div class="checkbox-custom checkbox-default">
-                                <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                                    <span><?/*= $user['google']; */ ?></span>
+                                <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                                    <span><? /*= $user['google']; */ ?></span>
 
 
                                 </label>
                             </div>
 
-                            <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                            <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                                 <a class="todo-remove" href="">
                                     <i class="fa fa-times"></i>
                                 </a>
@@ -777,14 +958,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         */ ?>
                         <li>
                             <div class="checkbox-custom checkbox-default">
-                                <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                                    <span><?/*= $user['twitter']; */ ?></span>
+                                <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                                    <span><? /*= $user['twitter']; */ ?></span>
 
 
                                 </label>
                             </div>
 
-                            <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                            <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                                 <a class="todo-remove" href="">
                                     <i class="fa fa-times"></i>
                                 </a>
@@ -809,14 +990,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         */ ?>
                         <li>
                             <div class="checkbox-custom checkbox-default">
-                                <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                                    <span><?/*= $user['youtube']; */ ?></span>
+                                <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                                    <span><? /*= $user['youtube']; */ ?></span>
 
 
                                 </label>
                             </div>
 
-                            <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                            <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                                 <a class="todo-remove" href="">
                                     <i class="fa fa-times"></i>
                                 </a>
@@ -840,14 +1021,14 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                         */ ?>
                         <li>
                             <div class="checkbox-custom checkbox-default">
-                                <label class="todo-label" for="<?/*= $user['user_enc_id']; */ ?>">
-                                    <span><?/*= $user['skype']; */ ?></span>
+                                <label class="todo-label" for="<? /*= $user['user_enc_id']; */ ?>">
+                                    <span><? /*= $user['skype']; */ ?></span>
 
 
                                 </label>
                             </div>
 
-                            <div class="todo-actions" id="<?/*= $user['user_enc_id']; */ ?>">
+                            <div class="todo-actions" id="<? /*= $user['user_enc_id']; */ ?>">
                                 <a class="todo-remove" href="">
                                     <i class="fa fa-times"></i>
                                 </a>
@@ -886,15 +1067,15 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                      <div class="modal-body">-->
                 <?php /*$form = ActiveForm::begin(['id'=>'social-links']); */ ?>
 
-                <?/*= $form->field($sociallinks, 'facebook')->textInput(['value' => $user['facebook']]) */ ?>
+                <? /*= $form->field($sociallinks, 'facebook')->textInput(['value' => $user['facebook']]) */ ?>
 
-                <?/*= $form->field($sociallinks, 'instagram')->textInput(['value' => $user['instagram']]) */ ?>
+                <? /*= $form->field($sociallinks, 'instagram')->textInput(['value' => $user['instagram']]) */ ?>
 
-                <?/*= $form->field($sociallinks, 'linkedin')->textInput(['value' => $user['linkedin']]) */ ?>
-                <?/*= $form->field($sociallinks,'google')->textInput(['value' => $user['google']]) */ ?>
-                <?/*= $form->field($sociallinks,'twitter')->textInput(['value' => $user['twitter']]) */ ?>
-                <?/*=  $form->field($sociallinks,'youtube')->textInput(['value' => $user['youtube']])*/ ?>
-                <?/*= $form->field($sociallinks,'skype')->textInput(['value' => $user['skype']]) */ ?>
+                <? /*= $form->field($sociallinks, 'linkedin')->textInput(['value' => $user['linkedin']]) */ ?>
+                <? /*= $form->field($sociallinks,'google')->textInput(['value' => $user['google']]) */ ?>
+                <? /*= $form->field($sociallinks,'twitter')->textInput(['value' => $user['twitter']]) */ ?>
+                <? /*=  $form->field($sociallinks,'youtube')->textInput(['value' => $user['youtube']])*/ ?>
+                <? /*= $form->field($sociallinks,'skype')->textInput(['value' => $user['skype']]) */ ?>
 
 
                 <!-- --><?php /*/*ActiveForm::end(); */ ?><!--
@@ -903,7 +1084,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default btn-md" data-dismiss="modal">Close</button>
-                                <?/*= Html::submitButton('Save', ['class' => 'btn btn-success btn-md socialsave' ]); */ ?>
+                                <? /*= Html::submitButton('Save', ['class' => 'btn btn-success btn-md socialsave' ]); */ ?>
 
                             </div>
                         </div>
@@ -960,9 +1141,7 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                             </div>
                         </div>
                     </div>
-                 </div>
-
-
+                </div>
 
 
                 <!--<div class="row bg-lighter shadow round working">
@@ -992,29 +1171,29 @@ $no_image = "https://ui-avatars.com/api/?name=" . $user['first_name'] . "+" . $u
                                                     */ ?>
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <?/*= $form->field($ResumeProject, 'project_name')->label('Project Name') */ ?>
+                                            <? /*= $form->field($ResumeProject, 'project_name')->label('Project Name') */ ?>
                                         </div>
 
                                         <div class="col-sm-4">
-                                            <?/*= $form->field($ResumeProject, 'project_start_date')->widget(DatePicker::classname())->label('Start Date'); */ ?>
+                                            <? /*= $form->field($ResumeProject, 'project_start_date')->widget(DatePicker::classname())->label('Start Date'); */ ?>
                                         </div>
                                         <div class="col-sm-4">
-                                            <?/*= $form->field($ResumeProject, 'project_end_date')->widget(DatePicker::classname())->label('End Date'); */ ?>
+                                            <? /*= $form->field($ResumeProject, 'project_end_date')->widget(DatePicker::classname())->label('End Date'); */ ?>
                                         </div>
                                         <div class="col-sm-12">
-                                            <?/*= $form->field($ResumeProject, 'project_associate')->label('Project Associate') */ ?>
+                                            <? /*= $form->field($ResumeProject, 'project_associate')->label('Project Associate') */ ?>
                                         </div>
                                         <div class="col-sm-12">
-                                            <?/*= $form->field($ResumeProject, 'project_url')->label('Project URL') */ ?>
+                                            <? /*= $form->field($ResumeProject, 'project_url')->label('Project URL') */ ?>
                                         </div>
                                         <div class="col-sm-12">
-                                            <?/*= $form->field($ResumeProject, 'project_desc')->label('Project Description') */ ?>
+                                            <? /*= $form->field($ResumeProject, 'project_desc')->label('Project Description') */ ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default btn-md" data-dismiss="modal">Close</button>
-                                    <?/*= Html::submitButton('Save', ['class' => 'btn btn-success btn-md ']); */ ?>
+                                    <? /*= Html::submitButton('Save', ['class' => 'btn btn-success btn-md ']); */ ?>
                                 </div>
                             </div>
                         </div>
@@ -1403,10 +1582,24 @@ $(document).on('submit', '#form-contact-info', function (event) {
 
     $('#exp_present').click(function(){
         if (this.checked) {
+            $(this).val('1');
             $('.experience').hide();
         }else{
+            $(this).val('0');
             $('.experience').show();
             $('#addexperienceform-exp_to').val('');
+        }
+    }) ;
+    
+    $('#update_exp_present').click(function(){
+        if (this.checked) {
+            $(this).val('1');
+            $('.update_experience').hide();
+        }else{
+            $(this).val('0');
+            $('.update_experience').show();
+            $('#update_exp_to').val('');
+            $('#update_exp_to').focus();
         }
     }) ;
     
@@ -1423,7 +1616,6 @@ $(document).on('submit', '#form-contact-info', function (event) {
             }else{
                 var checkbox = 0;
                 if($('#addexperienceform-exp_to').val() == ''){
-                     toastr.error('There is an error.Please try again', 'error');
                      return false;
                 }else{
                     var to = $('#addexperienceform-exp_to').val();
@@ -1547,6 +1739,8 @@ $(document).on('submit', '#form-contact-info', function (event) {
         
         $(document).on('click','.achievement_remove', function(e) {
             e.preventDefault();
+            var tag_main = $(this).parent();
+            tag_main.hide();
                 var id = e.target.id;
             $.ajax({
                 url: "/account/resume-builder/achievement-remove",
@@ -1558,6 +1752,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
                     if(data.status == 200){
                         $.pjax.reload({container: '#pjax_achievements', async: false});
                     }else{
+                        tag_main.show();
                         toastr.error(data.message, data.title);
                     }
                 }
@@ -1643,6 +1838,8 @@ $(document).on('submit', '#form-contact-info', function (event) {
         
         $(document).on('click','.hobby_remove', function(e) {
             e.preventDefault();
+            var tag_main = $(this).parent();
+            tag_main.hide();
                 var id = e.target.id;
             $.ajax({
                 url: "/account/resume-builder/hobby-remove",
@@ -1654,6 +1851,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
                     if(data.status == 200){
                         $.pjax.reload({container: '#pjax_hobby', async: false});
                     }else{
+                        tag_main.show();
                         toastr.error(data.message, data.title);
                     }
                 }
@@ -1662,6 +1860,8 @@ $(document).on('submit', '#form-contact-info', function (event) {
         
         $(document).on('click','.skill_remove', function(e) {
             e.preventDefault();
+            var tag_main = $(this).parent('li');
+            tag_main.hide();
                 var id = e.target.id;
             $.ajax({
                 url: "/account/resume-builder/skill-remove",
@@ -1673,6 +1873,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
                     if(data.status == 200){
                         $.pjax.reload({container: '#pjax_skills', async: false});
                     }else{
+                        tag_main.show();
                         toastr.error(data.message, data.title);
                     }
                 }
@@ -1722,6 +1923,8 @@ $(document).on('submit', '#form-contact-info', function (event) {
         
         $(document).on('click','.interest_remove', function(e) {
             e.preventDefault();
+            var tag_main = $(this).parent();
+            tag_main.hide();
                 var id = e.target.id;
             $.ajax({
                 url: "/account/resume-builder/interest-remove",
@@ -1733,6 +1936,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
                     if(data.status == 200){
                         $.pjax.reload({container: '#pjax_interest', async: false});
                     }else{
+                        tag_main.show();
                         toastr.error(data.message, data.title);
                     }
                 }
@@ -1765,15 +1969,15 @@ $(document).on('submit', '#form-contact-info', function (event) {
         
         });
         
-        $(document).on('click','.eduUpdate',function(e)
+        $(document).on('submit','#update-education-form',function(e)
         {   
         e.preventDefault();
-        var id = $(this).attr('id');
-        var school = $('#addqualificationform-school').val();
-        var degree = $('#addqualificationform-degree').val();
-        var field = $('#addqualificationform-field').val();
-        var from = $('#addqualificationform-qualification_from').val();
-        var to = $('#addqualificationform-qualification_to').val();
+        var id = $('.eduUpdate').attr('id');
+        var school = $('#update_school').val();
+        var degree = $('#update_degree').val();
+        var field = $('#update_field').val();
+        var from = $('#update_qualification_from').val();
+        var to = $('#update_qualification_to').val();
         $.ajax({
             url: '/account/resume-builder/update-education',
             method : 'POST',
@@ -1785,7 +1989,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
             {
                 $('.loader-aj-main').fadeOut(1000);
                  if(res==true){
-                    $('#add-education-modal').modal('toggle');
+                    $('#update-education-modal').modal('toggle');
                     $.pjax.reload({container: '#pjax_qualification', async: false});
                 }
             } 
@@ -1794,28 +1998,27 @@ $(document).on('submit', '#form-contact-info', function (event) {
         });
         
         
-        $(document).on('click','.expUpdate',function(e)
+        $(document).on('submit','#update-experience-form',function(e)
         {
             e.preventDefault();
            
-            var id = $(this).attr('id');
-            var title = $('#addexperienceform-title').val();
-            var company = $('#addexperienceform-company').val();
-            var city = $('#city_id_exp').val();
-            var from = $('#addexperienceform-exp_from').val();
-            if($('#exp_present').prop("checked")){
+            var id = $('.expUpdate').attr('id');
+            var title = $('#update_exp_title').val();
+            var company = $('#update_exp_company').val();
+            var city = $('#update_city_id_exp').val();
+            var from = $('#update_exp_from').val();
+            if($('#update_exp_present').prop("checked")){
                 var checkbox = 1;
-                $('#addexperienceform-exp_to').val('');
+                $('#update_exp_to').val('');
             }else{
                 var checkbox = 0;
-                if($('#addexperienceform-exp_to').val() == ''){
-                     toastr.error('There is an error.Please try again', 'error');
+                if($('#update_exp_to').val() == ''){
                      return false;
                 }else{
-                    var to = $('#addexperienceform-exp_to').val();
+                    var to = $('#update_exp_to').val();
                 }
             }
-            var description = $('#addexperienceform-description').val();
+            var description = $('#update_description').val();
             
              $.ajax({
             url: '/account/resume-builder/update-experience',
@@ -1828,7 +2031,7 @@ $(document).on('submit', '#form-contact-info', function (event) {
             {
                 $('.loader-aj-main').fadeOut(1000);
                 if(res==true){
-                    $('#add-experience-modal').modal('toggle');
+                    $('#update-experience-modal').modal('toggle');
                     $.pjax.reload({container: '#pjax_experience', async: false});
                 }else {
                   toastr.error('An error occured.try again', 'error');  
@@ -1851,18 +2054,14 @@ $(document).on('submit', '#form-contact-info', function (event) {
             success : function(res)
             {   
                  $('.loader-aj-main').fadeOut(50);
-                $('#add-education-modal').modal('show');
+                $('#update-education-modal').modal('show');
                 var obj = JSON.parse(res);
-                $('#addqualificationform-school').val(obj.institute);
-                $('#addqualificationform-degree').val(obj.degree);
-                $('#addqualificationform-field').val(obj.field);
-                $('#addqualificationform-qualification_from').val(obj.from_date);
-                $('#addqualificationform-qualification_to').val(obj.to_date);
-                $('.eduUpdate').attr('id',obj.education_enc_id);         
-                $('.eduSave').remove();
-                $('.eduUpdate').show();
+                $('#update_school').val(obj.institute);
+                $('#update_degree').val(obj.degree);
+                $('#update_field').val(obj.field);
+                $('#update_qualification_from').val(obj.from_date);
+                $('#update_qualification_to').val(obj.to_date);
                 $('.eduUpdate').attr('id',obj.education_enc_id);
-                $('#eduTitle').html('Edit Qualification');
             } 
             });
         });
@@ -1937,24 +2136,20 @@ $(document).on('submit', '#form-contact-info', function (event) {
                   success : function(res)
                   {
                       $('.loader-aj-main').fadeOut(50);
-                      $('#add-experience-modal').modal('show');
+                      $('#update-experience-modal').modal('show');
                       var obj = JSON.parse(res);
-                      $('#addexperienceform-title').val(obj.title);
-                      $('#addexperienceform-company').val(obj.company);
-                      $('#city_id_exp').val(obj.city_enc_id);
-                      $('#cities').val(obj.name);
-                      $('#addexperienceform-exp_from').val(obj.from_date);
-                      $('#addexperienceform-exp_to').val(obj.to_date);
+                      $('#update_exp_title').val(obj.title);
+                      $('#update_exp_company').val(obj.company);
+                      $('#update_city_id_exp').val(obj.city_enc_id);
+                      $('#update_cities').val(obj.name);
+                      $('#update_exp_from').val(obj.from_date);
+                      $('#update_exp_to').val(obj.to_date);
                       if(obj.is_current == 1){
-                          $('#exp_present').prop('checked', true);
-                          $('.experience').hide();
+                          $('#update_exp_present').prop('checked', true);
+                          $('.update_experience').hide();
                       }
-                      $('#addexperienceform-description').val(obj.description );
-                      $('.expSave').remove();
-                      $('.expUpdate').show();
+                      $('#update_description').val(obj.description );
                       $('.expUpdate').attr('id',obj.experience_enc_id);
-                      $('#expTitle').html('Edit Experience');
-                      
                   }
             });
         });
@@ -1968,9 +2163,6 @@ $(document).on('submit', '#form-contact-info', function (event) {
             $('#addqualificationform-field').val('');
             $('#addqualificationform-qualification_from').val('');
             $('#addqualificationform-qualification_to').val('');
-            $('.eduUpdate').hide();
-            $('#add-education-form .modal-footer').html('<button type="submit" class="btn btn-success eduSave">Submit</button><button type="button" class="btn btn-success  eduUpdate">Update</button><button type="button" class="btn default " data-dismiss="modal">Close</button>');
-            $('#eduTitle').html('Add Education');
         });
         
         $(document).on('click','#addExp',function(event)
@@ -1989,9 +2181,6 @@ $(document).on('submit', '#form-contact-info', function (event) {
                 $('.experience').show();
             }
              $('#addexperienceform-description').val('');
-             $('.expUpdate').hide();
-             $('#add-experience-form .modal-footer').html('<button type="submit" class="btn btn-primary  expSave">Submit</button><button type="button" class="btn btn-success  expUpdate" style="display: none;">Update</button><button type="button" class="btn default " data-dismiss="modal">Close</button>');
-            $('#expTitle').html('Add Experience');
             
         });
         
@@ -2120,6 +2309,23 @@ $('#cities').typeahead(null, {
   }).on('typeahead:selected typeahead:completed',function(e,datum)
       {
         $('#city_id_exp').val(datum.id);
+     });
+
+$('#update_cities').typeahead(null, {
+  name: 'cities',
+  highlight: true,       
+  display: 'text',
+  source: city,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.Typeahead-spinner').hide();
+  }).on('typeahead:selected typeahead:completed',function(e,datum)
+      {
+        $('#update_city_id_exp').val(datum.id);
      });
 
 JS;
@@ -2442,9 +2648,6 @@ h4.colored{
     font-size:14px;
     margin:0px;
 }
-.eduUpdate{
-    display:none;
-}
 .hiden{
     display:none;
     position: absolute;
@@ -2694,9 +2897,12 @@ ul.tags.skill_tag_list {
     list-style: outside none none;
     margin: 0 0 30px;
 }
-
-
 /*-- skills tags input css starts --*/
+.has-error .form-group .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);
+}
 ");
 $this->registerCssFile("@root/assets/themes/jobhunt/css/icons.css");
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

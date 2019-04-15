@@ -26,6 +26,8 @@ class AddQualificationForm extends Model {
             'school' => Yii::t('account', 'School'),
             'degree' => Yii::t('account', 'Degree'),
             'field' => Yii::t('account', 'Field of Study'),
+            'qualification_from' => Yii::t('account', 'From Year'),
+            'qualification_to' => Yii::t('account', 'To Year'),
         ];
     }
     

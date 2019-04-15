@@ -679,7 +679,6 @@ class ResumeBuilderController extends Controller
         $from = Yii::$app->request->post('from');
         $to = Yii::$app->request->post('to');
 
-
         if (Yii::$app->request->isAjax) {
             $update = Yii::$app->db->createCommand()
                 ->update(UserEducation::tableName(), ['institute' => $school, 'degree' => $degree, 'field' => $field, 'from_date' => $from, 'to_date' => $to, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['education_enc_id' => $id])

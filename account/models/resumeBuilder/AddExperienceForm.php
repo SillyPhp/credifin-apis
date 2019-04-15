@@ -27,7 +27,7 @@ class AddExperienceForm extends Model {
                 ['exp_to'], 'required', 'when' => function ($model, $attribute) {
                     return $model->present == 0;
                 }, 'whenClient' => "function (attribute, value) {
-                        return $('#exp_present').val() == 0;
+                        return $('input[name=\"AddExperienceForm[present][]\"]').val() == 0;
                 }"
             ],
         ];
