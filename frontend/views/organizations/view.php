@@ -244,6 +244,77 @@ if ($organization['cover_image']) {
                                 </div>
                             </div>
                         </div>
+<!--                        <div class="row">-->
+<!--                            <div class="office-view">-->
+<!--                                <div class="heading-style">-->
+<!--                                    Products-->
+<!--                                </div>-->
+<!--                                <div class="divider"></div>-->
+<!--                                <div class="office-pics">-->
+<!--                                    <div class="col-md-6 col-sm-6 col-xs-12" style="border-right: 1px solid #ddd;">-->
+<!--                                        <div class="p-preview-img">-->
+<!--                                            <a href="" data-fancybox="images">-->
+<!--                                                <img src="" alt="company image 1">-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-6 col-sm-6 col-xs-12">-->
+<!--                                        --><?php
+//                                        foreach ($gallery as $g_image) {
+//                                            ?>
+<!--                                            <div class="p-img-thumbnail">-->
+<!--                                                <a href="--><?//= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?><!--"-->
+<!--                                                   data-fancybox="images">-->
+<!--                                                    <img src="--><?//= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?><!--"-->
+<!--                                                         alt="company image 1">-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                            --><?php
+//                                        }
+//                                        ?>
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="row">
+                            <div class="office-view">
+                                <div class="heading-style">
+                                    Products
+                                </div>
+                                <div class="divider"></div>
+                                <div class="office-pics">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                        <div class="p-preview-img">
+                                            <a href="" data-fancybox="images">
+                                                <img src="" alt="company image 1">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
+                                        <?php
+                                        foreach ($gallery as $g_image) {
+                                            ?>
+                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                   data-fancybox="images">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                         alt="company image 1">
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                        <h4>Brief Desciption</h4>
+                                        <p>
+                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     <?php }
                     if (!empty($our_team)) {
                         ?>
@@ -303,7 +374,8 @@ if ($organization['cover_image']) {
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View All</a>
+                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View
+                                    All</a>
                             </div>
                         </div>
                         <div class="divider"></div>
@@ -319,7 +391,8 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 Available Internships
                                 <div class="pull-right">
-                                    <a href="/internships/list?company=<?= $organization['slug'] ?>" class="write-review">View All</a>
+                                    <a href="/internships/list?company=<?= $organization['slug'] ?>"
+                                       class="write-review">View All</a>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -357,7 +430,8 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 <?= Html::encode($organization['name']) ?> Reviews
                                 <div class="pull-right">
-                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write Review</a>
+                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
+                                        Review</a>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -451,7 +525,7 @@ echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username
 ]);
-echo $this->render('/widgets/mustache/organization-reviews',[
+echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug']
 ]);
 $this->registerCss('
@@ -991,6 +1065,24 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     border:none;
 }
 /*----tabs end----*/
+/*----company products css starts----*/
+.p-img-thumbnail {
+    width: 120px;
+    height: 120px;
+    float: left;
+    line-height: 116px;
+    border: 1px solid #eee;
+    margin: 2px 5px;
+}
+.p-preview-img{
+    height: 300px;
+    text-align: center;
+    line-height: 300px;
+}
+.p-preview-img a img{
+    max-height: 300px;
+}
+/*----company products css ends----*/
 .header-bg{
     background-repeat: no-repeat !important;
     background-size: 100% 100% !important;
@@ -1149,10 +1241,20 @@ $.ajax({
         $('#dropcv').val(response.message);
     }
 });
+
+var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
+$('.p-preview-img a').attr('href', first_preview);
+$('.p-preview-img a img').attr('src', first_preview);
+
+$(document).on('mouseover', '.p-img-thumbnail', function(){
+    var path = $(this).find('a').attr('href');
+    $('.p-preview-img a').attr('href', path);
+    $('.p-preview-img a img').attr('src', path);
+});
 JS;
 $this->registerJs("
-getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
-getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);

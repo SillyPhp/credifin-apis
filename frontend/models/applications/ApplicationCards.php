@@ -75,6 +75,12 @@ class ApplicationCards
                 ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
+        if (isset($options['slug'])) {
+            $cards->andWhere([
+                'or',
+                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+            ]);
+        }
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',

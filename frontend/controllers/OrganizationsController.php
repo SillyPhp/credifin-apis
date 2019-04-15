@@ -499,7 +499,7 @@ class OrganizationsController extends Controller
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
-            $options['company'] = $org;
+            $options['slug'] = $org;
             if ($type == 'Jobs') {
                 $cards = ApplicationCards::jobs($options);
             } else {
