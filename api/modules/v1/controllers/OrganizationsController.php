@@ -43,6 +43,70 @@ class OrganizationsController extends ApiBaseController
         return $behaviors;
     }
     
+    public function actionOpportunities(){
+        $req = Yii::$app->request->post();
+        if (!empty($req['id'])) {
+            $result = [];
+
+            $organization = Organizations::find()
+                ->select(['organization_enc_id', 'name', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
+                ->where(['organization_enc_id' => $req['id']])
+                ->andWhere(['status' => 'Active'])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if ($organization) {
+    
+                $options = [];
+                $options['organization_id'] = $organization['organization_enc_id'];
+                $result['jobs'] = Cards::jobs($options);
+                $result['internships'] = Cards::internships($options);
+
+                return $this->response(200, $result);
+            } else {
+                return $this->response(404);
+            }
+        } else {
+            return $this->response(422);
+        }
+    }
+    
+    public function actionLocations(){
+        $req = Yii::$app->request->post();
+        if (!empty($req['id'])) {
+            $result = [];
+
+            $organization = Organizations::find()
+                ->select(['organization_enc_id', 'name', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
+                ->where(['organization_enc_id' => $req['id']])
+                ->andWhere(['status' => 'Active'])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if ($organization) {
+
+                $organizationLocations = OrganizationLocations::find()
+                    ->alias('a')
+                    ->select(['a.location_enc_id', 'a.location_name', 'a.address', 'a.postal_code', 'a.latitude', 'a.longitude', 'b.name as city', 'c.name as state', 'd.name as country'])
+                    ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
+                    ->innerJoin(States::tableName() . 'as c', 'c.state_enc_id = b.state_enc_id')
+                    ->innerJoin(Countries::tableName() . 'as d', 'd.country_enc_id = c.country_enc_id')
+                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.status' => 'Active', 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+                $result['organization_locations'] = $organizationLocations;
+
+                return $this->response(200, $result);
+            } else {
+                return $this->response(404);
+            }
+        } else {
+            return $this->response(422);
+        }
+    }
+    
     public function actionDetail()
     {
         $req = Yii::$app->request->post();
@@ -59,11 +123,6 @@ class OrganizationsController extends ApiBaseController
 
             if ($organization) {
                 $result['organization'] = $organization;
-
-                $options = [];
-                $options['organization_id'] = $organization['organization_enc_id'];
-                $result['jobs'] = Cards::jobs($options);
-                $result['internships'] = Cards::internships($options);
                 
                 $benefit = OrganizationEmployeeBenefits::find()
                     ->alias('a')
@@ -95,18 +154,6 @@ class OrganizationsController extends ApiBaseController
                                         ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
                                         ->count();
                 $result['opportunties_count'] = $opportunities_count;
-
-
-                $organizationLocations = OrganizationLocations::find()
-                    ->alias('a')
-                    ->select(['a.location_enc_id', 'a.location_name', 'a.address', 'a.postal_code', 'a.latitude', 'a.longitude', 'b.name as city', 'c.name as state', 'd.name as country'])
-                    ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
-                    ->innerJoin(States::tableName() . 'as c', 'c.state_enc_id = b.state_enc_id')
-                    ->innerJoin(Countries::tableName() . 'as d', 'd.country_enc_id = c.country_enc_id')
-                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.status' => 'Active', 'a.is_deleted' => 0])
-                    ->asArray()
-                    ->all();
-                $result['organization_locations'] = $organizationLocations;
 
                 $industry = Industries::find()
                     ->select(['industry'])
