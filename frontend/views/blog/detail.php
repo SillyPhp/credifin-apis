@@ -321,6 +321,7 @@ textarea::placeholder{
     height:300px;
     position:relative;
     margin-top:20px;
+    overflow:hidden;
 }
 .video-container:hover{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
@@ -349,9 +350,13 @@ textarea::placeholder{
     font-weight:bold;
 }
 .r-ch-name{
-    position:absolute;
-    bottom:5px;
-    left:10px;
+    position:relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 5px;
 }
 .padd-top{
     margin-top:30px;

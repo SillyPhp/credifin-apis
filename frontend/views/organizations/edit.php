@@ -455,7 +455,7 @@ $industries = Json::encode($industries);
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/account/jobs/create" class="write-review">Add New</a>
+                                <a href="/account/jobs/create" class="write-review">Create New Job</a>
                             </div>
                         </div>
                         <div class="divider"></div>
@@ -471,7 +471,7 @@ $industries = Json::encode($industries);
                             <div class="heading-style">
                                 Available Internships
                                 <div class="pull-right">
-                                    <a href="/account/internships/create" class="write-review">Add New</a>
+                                    <a href="/account/internships/create" class="write-review">Create New Internship</a>
                                 </div>
                             </div>
                             <div class="divider"></div>
