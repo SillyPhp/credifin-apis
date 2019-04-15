@@ -70,7 +70,7 @@ class Cards
         }
         
         if (isset($options['organization_id'])) {
-            $cards->andWhere(['organization_enc_id' => $options['organization_id'])]);
+            $cards->andWhere(['organization_enc_id' => $options['organization_id']]);
         }
         
         if (isset($options['location'])) {
@@ -197,7 +197,7 @@ class Cards
         }
         
         if (isset($options['organization_id'])) {
-            $cards->andWhere(['organization_enc_id' => $options['organization_id'])]);
+            $cards->andWhere(['organization_enc_id' => $options['organization_id']]);
         }
         
         if (isset($options['location'])) {
