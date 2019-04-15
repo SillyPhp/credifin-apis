@@ -31,13 +31,16 @@ class OrganizationsController extends ApiBaseController
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['detail'],
+            'except' => ['detail', 'opportunities', 'locations'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'detail' => ['POST'],
+                'opportunities' => ['POST'],
+                'locations' => ['POST'],
+                'follow' => ['POST']
             ]
         ];
         return $behaviors;
