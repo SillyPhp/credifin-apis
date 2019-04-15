@@ -155,18 +155,6 @@ class OrganizationsController extends ApiBaseController
                                         ->count();
                 $result['opportunties_count'] = $opportunities_count;
 
-
-                $organizationLocations = OrganizationLocations::find()
-                    ->alias('a')
-                    ->select(['a.location_enc_id', 'a.location_name', 'a.address', 'a.postal_code', 'a.latitude', 'a.longitude', 'b.name as city', 'c.name as state', 'd.name as country'])
-                    ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
-                    ->innerJoin(States::tableName() . 'as c', 'c.state_enc_id = b.state_enc_id')
-                    ->innerJoin(Countries::tableName() . 'as d', 'd.country_enc_id = c.country_enc_id')
-                    ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.status' => 'Active', 'a.is_deleted' => 0])
-                    ->asArray()
-                    ->all();
-                $result['organization_locations'] = $organizationLocations;
-
                 $industry = Industries::find()
                     ->select(['industry'])
                     ->where(['industry_enc_id' => $organization['industry_enc_id']])
