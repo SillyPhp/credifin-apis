@@ -1,5 +1,6 @@
 <?php
 $this->params['header_dark'] = true;
+$this->title = $post['title'];
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
@@ -46,7 +47,7 @@ $this->params['seo_tags'] = [
                             ?>
                             <img src="<?= $feature_image; ?>">
                         </div>
-                        <div class="blog-title"><?= $post['title'] ?></div>
+                        <div class="blog-title"><?= $post['title']; ?></div>
                         <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
@@ -320,6 +321,7 @@ textarea::placeholder{
     height:300px;
     position:relative;
     margin-top:20px;
+    overflow:hidden;
 }
 .video-container:hover{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
@@ -348,9 +350,13 @@ textarea::placeholder{
     font-weight:bold;
 }
 .r-ch-name{
-    position:absolute;
-    bottom:5px;
-    left:10px;
+    position:relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 5px;
 }
 .padd-top{
     margin-top:30px;
@@ -456,4 +462,4 @@ textarea::placeholder{
 }
 /*----blog description preview css ends----*/
 ');
-$this->registerJsFile('http://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);

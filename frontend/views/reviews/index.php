@@ -24,135 +24,135 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <!--<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="heading-style">Top Categories</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/accounts_and_finance.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        accounts & finance
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/arts_design.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        arts & design
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/media_communication.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        media communication
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/real_estate.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        real estate
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/healthcare_services.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        healthcare services
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/legal.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        legal
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/information_technology.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        information technology
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cat-box">
-                    <div class="cat-icon">
-                        <img src="<?= Url::to('@commonAssets/categories/marketing.svg') ?>">
-                    </div>
-                    <div class="cat-title">
-                        marketing
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>-->
-    <section>
-        <div class="container">
-            <div class="row mt-20">
-                <div class="col-md-12 col-sm-12">
-                    <h1 class="heading-style"><?= Yii::t('frontend', 'Top Rated Jobs'); ?></h1>
-                </div>
-            </div>
-            <?php
-            $total_categories = count($categories);
-            $rows = ceil($total_categories / 4);
-            $next = 0;
-            for ($i = 1; $i <= $rows; $i++) {
-                ?>
-                <div class="row">
-                    <?php
-                    for ($j = 0; $j < 4; $j++) {
-                        if ($next < $total_categories) {
-                            ?>
-                            <div class="col-md-3 col-sm-6 categories">
-                                <a href="javascript:;">
-                                    <figure class="grids">
-                                        <img class="grids-image" src="<?= Url::to('@commonAssets/categories/') . $categories[$next]["icon"] ?>">
-                                    </figure>
-                                    <h4><?= Yii::t('frontend', $categories[$next]['name']); ?></h4>
-                                </a>
-                            </div>
-                            <?php
-                        }
-                        $next++;
-                    }
-                    ?>
-                </div>
-                <?php
-            }
-            ?>
-        </div>
-    </section>
+<!--    <section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <h1 class="heading-style">Top Categories</h1>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/accounts_and_finance.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        accounts & finance-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/arts_design.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        arts & design-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/media_communication.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        media communication-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/real_estate.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        real estate-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/healthcare_services.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        healthcare services-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/legal.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        legal-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/information_technology.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        information technology-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="cat-box">-->
+<!--                    <div class="cat-icon">-->
+<!--                        <img src="--><?//= Url::to('@commonAssets/categories/marketing.svg') ?><!--">-->
+<!--                    </div>-->
+<!--                    <div class="cat-title">-->
+<!--                        marketing-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+<!--    <section>-->
+<!--        <div class="container">-->
+<!--            <div class="row mt-20">-->
+<!--                <div class="col-md-12 col-sm-12">-->
+<!--                    <h1 class="heading-style">--><?//= Yii::t('frontend', 'Top Rated Jobs'); ?><!--</h1>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            --><?php
+//            $total_categories = count($categories);
+//            $rows = ceil($total_categories / 4);
+//            $next = 0;
+//            for ($i = 1; $i <= $rows; $i++) {
+//                ?>
+<!--                <div class="row">-->
+<!--                    --><?php
+//                    for ($j = 0; $j < 4; $j++) {
+//                        if ($next < $total_categories) {
+//                            ?>
+<!--                            <div class="col-md-3 col-sm-6 categories">-->
+<!--                                <a href="javascript:;">-->
+<!--                                    <figure class="grids">-->
+<!--                                        <img class="grids-image" src="--><?//= Url::to('@commonAssets/categories/') . $categories[$next]["icon"] ?><!--">-->
+<!--                                    </figure>-->
+<!--                                    <h4>--><?//= Yii::t('frontend', $categories[$next]['name']); ?><!--</h4>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            --><?php
+//                        }
+//                        $next++;
+//                    }
+//                    ?>
+<!--                </div>-->
+<!--                --><?php
+//            }
+//            ?>
+<!--        </div>-->
+<!--    </section>-->
 
     <section class="review-benifit">
         <div class="container">
@@ -294,9 +294,8 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .review-benifit{
-    background:#ecf5fe;
-    padding-bottom:50px;
-    
+//    background:#ecf5fe;
+    padding-bottom:50px;    
 }    
 .com-review-box{
     text-align:center;
