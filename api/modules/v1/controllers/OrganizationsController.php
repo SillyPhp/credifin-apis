@@ -3,6 +3,7 @@
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\models\Candidates;
+use api\modules\v1\models\Cards;
 use common\models\AppliedApplications;
 use common\models\Cities;
 use common\models\Utilities;
@@ -41,7 +42,7 @@ class OrganizationsController extends ApiBaseController
         ];
         return $behaviors;
     }
-
+    
     public function actionDetail()
     {
         $req = Yii::$app->request->post();
@@ -59,6 +60,11 @@ class OrganizationsController extends ApiBaseController
             if ($organization) {
                 $result['organization'] = $organization;
 
+                $options = [];
+                $options['organization_id'] = $organization['organization_enc_id'];
+                $result['jobs'] = Cards::jobs($options);
+                $result['internships'] = Cards::internships($options);
+                
                 $benefit = OrganizationEmployeeBenefits::find()
                     ->alias('a')
                     ->select(['a.organization_benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', true) . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon, true) . '", b.icon_location, "/", b.icon) END icon'])
