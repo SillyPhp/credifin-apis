@@ -21,7 +21,7 @@ if (!empty($total_questionnaire)) {
                                 <div class="ring2"></div>
                                 <input type="hidden" value="<?=$questionnaire[$next]["id"]; ?>">
                             </div>
-                            <a href="" onclick="window.open('<?= Url::to('templates/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>', '_blank');" >
+                            <a href="" onclick="window.open('<?= Url::to('/template/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>', '_blank');" >
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>
@@ -63,7 +63,7 @@ $(document).on('click','.click',function() {
 
 function run_ajax(id) {
   $.ajax({
-  url:'templates/assign-questionnaire-template',
+  url:'/template/questionnaire/assign-questionnaire-template',  
   data:{id:id},
   method:'post',
   success:function(res)
