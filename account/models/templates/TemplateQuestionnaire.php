@@ -23,7 +23,9 @@ class TemplateQuestionnaire extends \common\models\QuestionnaireTemplates {
     public function getQuestionnaire($options = []) {
         $this->__setOptions($options);
         $questionnaire = self::find()
-            ->select(['questionnaire_enc_id id', 'questionnaire_name', 'questionnaire_for'])
+            ->alias('a')
+            ->select(['questionnaire_enc_id id', 'questionnaire_name', 'questionnaire_for','is_bookmared'])
+            ->joinWith(['bookmarkedQuestionnaireTemplates b'],false)
             ->where(['is_deleted' => 0]);
 
         if ($this->questionnaireType) {
