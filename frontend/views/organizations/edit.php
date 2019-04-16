@@ -376,6 +376,14 @@ $industries = Json::encode($industries);
                         <div class="office-view">
                             <div class="heading-style">
                                 Products
+                                <div class="button_location pull-right">
+                                    <button type="button" class="i-review-nx modal-load-class"
+                                            value="/organizations/add-products">
+                                            <span class="i-review-button-tx">
+                                                Add New Product <span class="fa fa-long-arrow-right"></span>
+                                            </span>
+                                    </button>
+                                </div>
                             </div>
                             <div class="divider"></div>
                             <div class="office-pics">

@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\OrganizationProductsForm;
 use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
@@ -350,6 +351,34 @@ class OrganizationsController extends Controller
             }
             return $this->renderAjax('image-gallery-form', [
                 'companyImagesForm' => $companyImagesForm,
+            ]);
+        }
+    }
+
+    public function actionAddProducts()
+    {
+        if (Yii::$app->request->isAjax) {
+            $organizationProductsForm = new OrganizationProductsForm();
+            if (Yii::$app->request->post()) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $organizationProductsForm->image = UploadedFile::getInstance($organizationProductsForm, 'image');
+//                return $organizationProductsForm->save();
+                if ($organizationProductsForm->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Image has been Uploaded.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('add-products-form', [
+                'organizationProductsForm' => $organizationProductsForm,
             ]);
         }
     }
