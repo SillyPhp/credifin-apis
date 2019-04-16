@@ -183,8 +183,6 @@ class JobsController extends ApiBaseController
             unset($data["preferred_industry"]);
             unset($data["interview_process_enc_id"]);
             unset($data["slug"]);
-            unset($data["timings_from"]);
-            unset($data["timings_to"]);
             unset($data["option_enc_id"]);
             unset($data["fixed_wage"]);
             unset($data["min_wage"]);
@@ -194,7 +192,6 @@ class JobsController extends ApiBaseController
             unset($data["has_placement_offer"]);
             unset($data["pre_placement_offer"]);
             unset($data["wage_duration"]);
-            unset($data["working_days"]);
             unset($data["applicationInterviewQuestionnaires"]);
             unset($data["saturday_frequency"]);
             unset($data["sunday_frequency"]);
