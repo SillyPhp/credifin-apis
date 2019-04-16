@@ -12,9 +12,14 @@ use yii\helpers\Url;
                             </div>
                             <form id="form-search" action="<?=Url::to(['search']) ?>">
                                 <div class="input-group search-bar">
+                                    <div class="load-suggestions Typeahead-spinner">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
                                     <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
                                     <div class="input-group-btn">
-                                        <button><i class="fa fa-search"></i></button>
+                                        <button class="loader_btn_search"><i class="fa fa-search"></i></button>
                                     </div>
                                 </div>
                             </form>
@@ -187,106 +192,9 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <h1 class="heading-style">Recent Reviews</h1>
-            <div class="companies-reviews">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="com-review-box fivestar-box">
-                            <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
-                            </div>
-                            <div class="com-name">Empower Youth</div>
-                            <div class="com-loc"><i class="fa fa-map-marker"></i> Ludhiana</div>
-                            <div class="com-dep"><i class="fa fa-briefcase"></i> IT</div>
-                            <div class="rating-stars">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="rating">
-                                <div class="stars">5 </div>
-                                <div class="reviews-rate"> of 1.5k review</div>
-                            </div>
-                            <div class="read-bttn">
-                                <a href="/site/review-company">Read Reviews</a>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+                <div id="review_container">
 
-                    <div class="col-md-3">
-                        <div class="com-review-box fourstar-box">
-                            <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
-                            </div>
-                            <div class="com-name">Empower Youth</div>
-                            <div class="com-loc"><i class="fa fa-map-marker"></i> Ludhiana</div>
-                            <div class="com-dep"><i class="fa fa-briefcase"></i> IT</div>
-                            <div class="rating-stars">
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="rating">
-                                <div class="stars">4 </div>
-                                <div class="reviews-rate"> of 1.5k review</div>
-                            </div>
-                            <div class="read-bttn">
-                                <a href="/site/review-company">Read Reviews</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="com-review-box threestar-box">
-                            <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
-                            </div>
-                            <div class="com-name">Empower Youth</div>
-                            <div class="com-loc"><i class="fa fa-map-marker"></i> Ludhiana</div>
-                            <div class="com-dep"><i class="fa fa-briefcase"></i> IT</div>
-                            <div class="rating-stars">
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="rating">
-                                <div class="stars">3 </div>
-                                <div class="reviews-rate"> of 1.5k review</div>
-                            </div>
-                            <div class="read-bttn">
-                                <a href="/site/review-company">Read Reviews</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="com-review-box threestar-box">
-                            <div class="com-logo">
-                                <img src="<?= Url::to('@commonAssets/logos/logo-vertical.svg') ?>">
-                            </div>
-                            <div class="com-name">Empower Youth</div>
-                            <div class="com-loc"><i class="fa fa-map-marker"></i> Ludhiana</div>
-                            <div class="com-dep"><i class="fa fa-briefcase"></i> IT</div>
-                            <div class="rating-stars">
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star active"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="rating">
-                                <div class="stars">3 </div>
-                                <div class="reviews-rate"> of 1.5k review</div>
-                            </div>
-                            <div class="read-bttn">
-                                <a href="/site/review-company">Read Reviews</a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -685,8 +593,55 @@ width:100%;
 .tt-suggestion p {
   margin: 0;
 }
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    z-index: 999;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ');
+echo $this->render('/widgets/mustache/review-cards', [
+]);
 $script = <<< JS
+fetch_cards(params={'rating':[4,5],'limit':4});  
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -699,7 +654,42 @@ var companies = new Bloodhound({
         }
   },
 });
-
+function fetch_cards(params)
+{
+    $.ajax({
+        url : '/organizations/fetch-review-cards',
+        method: "POST",
+        data: {params:params},
+        beforeSend: function(){
+          $('#loading_img').addClass('show');
+          $('.fader').css('display','block');
+        },
+        success: function(response) {
+            if (response.status==200){
+            $('#loading_img').removeClass('show');
+            $('.fader').css('display','none');
+            $('#review_container').html('');
+            $('#load_review_card_btn').show();
+            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
+                $('.average-star').raty({
+                   readOnly: true, 
+                   hints:['','','','',''],
+                  score: function() {
+                    return $(this).attr('data-score');
+                  }
+                });
+            }
+            else 
+                {
+            $('#loading_img').removeClass('show');
+            $('#load_review_card_btn').hide();
+            $('.fader').css('display','none');
+                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
+                }
+        }
+    });
+}
 $('#search_comp').typeahead(null, {
   name: 'search_companies',
   displayKey: "name",
@@ -711,7 +701,12 @@ return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews"><div class
 },
 empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
 },
-});
+}).on('typeahead:asyncrequest', function() {
+    $('.load-suggestions').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.load-suggestions').hide();
+  });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
