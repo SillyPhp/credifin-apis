@@ -192,10 +192,11 @@ class InternshipsController extends ApiBaseController {
             unset($data["has_benefits"]);
             unset($data["saturday_frequency"]);
             unset($data["sunday_frequency"]);
-            unset($data["working_days"]);
             unset($data["pre_placement_offer"]);
-            unset($data["timings_from"]);
-            unset($data["timings_to"]);
+            
+            $data['description'] = strip_tags($data['description']);
+            $data['description'] = str_replace("&nbsp;", "", $data['description']);
+            
             $data["vacancies"]= 0;
             if(!empty($data['applicationPlacementLocations'])) {
                 foreach ($data['applicationPlacementLocations'] as $apl) {
