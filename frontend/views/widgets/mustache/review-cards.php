@@ -48,7 +48,6 @@ use yii\helpers\Url;
 </script>
 <?php
 $script = <<< JS
-
 JS;
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
