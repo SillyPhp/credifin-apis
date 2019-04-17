@@ -9,15 +9,15 @@ use yii\helpers\Url;
                 <img src="{{logo}}">
             </div>
             <div class="com-name">{{name}}</div>
-            <div class="com-loc"><span>5</span> Jobs</div>
-            <div class="com-dep"><span>5</span> Internships</div>
+            <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
+            <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
             {{#rating}}
             <div class="com-rating">
                 <div class="average-star" data-score="{{rating}}"></div>
             </div>
             <div class="rating">
                 <div class="stars">{{rating}}</div>
-                <div class="reviews-rate"> of {{total_reviews}} review</div>
+                <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
             </div>
             {{/rating}}
             {{^rating}}
@@ -37,7 +37,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-6">
                         <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Review</a>
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
                         </div>
                     </div>
                 </div>
