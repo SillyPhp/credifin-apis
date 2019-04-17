@@ -21,7 +21,9 @@ class TemplateHiringProcess extends \common\models\HiringProcessTemplates {
     public function getProcesses($options = []) {
         $this->__setOptions($options);
         $processes = self::find()
-            ->select(['hiring_process_enc_id id', 'process_name'])
+            ->alias('a')
+            ->select(['a.hiring_process_enc_id id', 'process_name','is_bookmared'])
+            ->joinWith(['bookmarkedHiringTemplates b'],false)
             ->where(['is_deleted' => 0]);
 
         if ($this->_where) {
