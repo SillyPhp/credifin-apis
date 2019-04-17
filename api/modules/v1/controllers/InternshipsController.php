@@ -203,9 +203,15 @@ class InternshipsController extends ApiBaseController {
                     $data["vacancies"] += $apl['positions'];
                 }
             }
-            if(!$data["vacancies"]){
-                $data["vacancies"] = "NA";
+            
+            if(empty($data['applicationInterviewLocations'])){
+                $data['applicationInterviewLocations'] = '';    
             }
+            
+            if(!$data["vacancies"]){
+                $data["vacancies"] = 0;
+            }
+            
             unset($data["internship_duration_type"]);
             unset($data["internship_duration"]);
             unset($data["has_online_interview"]);
