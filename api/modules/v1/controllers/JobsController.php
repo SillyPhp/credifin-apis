@@ -219,6 +219,10 @@ class JobsController extends ApiBaseController
                 $data['applicationInterviewLocations'] = '';    
             }
             
+            if(!$data["vacancies"]){
+                $data["vacancies"] = 0;
+            }
+            
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], true);
             unset($data['icon_png']);
             $data['preferred_gender'] = $this->prefferedGender($data['preferred_gender']);
