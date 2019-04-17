@@ -9,7 +9,7 @@ if (!empty($placement_locations)) {
         $total_vac += $placements['positions'];
         array_push($locations, $placements['name']);
     }
-    $str = implode(", ", $locations);
+    $str = implode(", ", array_unique($locations));
 }
 ?>
 <div class="job-overview">
