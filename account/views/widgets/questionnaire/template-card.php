@@ -15,13 +15,18 @@ if (!empty($total_questionnaire)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
-                            <div class="click">
-                                <span class="fa fa-star-o"></span>
+                            <div class="click <?= (($questionnaire[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
+                                <span class="fa <?= (($questionnaire[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?>"></span>
                                 <div class="ring"></div>
                                 <div class="ring2"></div>
                                 <input type="hidden" value="<?=$questionnaire[$next]["id"]; ?>">
                             </div>
-                            <a href="" onclick="window.open('<?= Url::to('/template/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>', '_blank');" >
+                            <div class="rt-bttns">
+                                <a class="clone-bttn set-right-align two copy_content_questionnaire" href=""  value="<?=$questionnaire[$next]["id"]; ?>">
+                                    <i class="fa fa-files-o"></i>
+                                </a>
+                            </div>
+                            <a href="" onclick="window.open('<?= Url::to('templates/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>/view', '_blank');" >
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>
@@ -49,6 +54,7 @@ if (!empty($total_questionnaire)) {
 <?php }
 Pjax::end();
 $script = <<<JS
+//bookmark template 
 $(document).on('click','.click',function() {
 	if (!$(this).find('span').hasClass("fa-star")) { 
 		$(this).addClass('active');
@@ -57,13 +63,22 @@ $(document).on('click','.click',function() {
 		$(this).find('span').removeClass('fa-star-o');
 		$(this).addClass('active-3');
 		var que_template_id = $(this).find('input').val();
-		run_ajax(que_template_id);
+		run_ajax(que_template_id,url='/account/templates/questionnaire/bookmark-questionnaire-template');
 	}
 });
+//assignt template to organizations
+$(document).on('click','.copy_content_questionnaire',function(e) {
+  e.preventDefault();
+  var que_template_id = $(this).attr('value');
+  if (window.confirm("Do You Want To Use this Questionaire For Your Jobs And Internships?"))
+      {
+          run_ajax(que_template_id,url='/account/templates/questionnaire/assign-questionnaire-template');
+      }
+})
 
-function run_ajax(id) {
+function run_ajax(id,url) {
   $.ajax({
-  url:'/template/questionnaire/assign-questionnaire-template',  
+  url:url,  
   data:{id:id},
   method:'post',
   success:function(res)
@@ -118,7 +133,14 @@ span:active {
 	border-radius: 50%;
 	cursor: pointer;
 }
-
+.clone-bttn
+{
+display:block;
+left:0;
+width: fit-content;
+    font-size: 19px;
+    top: 7px;
+}
 .active span, .active-2 span {
 	color: #F5CC27 !important;
 }

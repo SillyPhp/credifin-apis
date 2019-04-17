@@ -1,5 +1,6 @@
 <?php
 namespace account\controllers;
+use common\models\BookmarkedQuestionnaireTemplates;
 use common\models\QuestionnaireTemplateFieldOptions;
 use common\models\QuestionnaireTemplateFields;
 use common\models\QuestionnaireTemplates;
@@ -12,7 +13,6 @@ class TemplatesController extends Controller
    public function actionIndex()
    {
        if (!empty(Yii::$app->user->identity->organization)) {
-
            return  $this->render('index',[
                'questionnaire' => $this->__questionnaire(4),
                'interview_processes' => $this->__interviewProcess(4),
@@ -24,13 +24,11 @@ class TemplatesController extends Controller
        }
 
    }
-
     private function __questionnaire($limit = NULL)
     {
         $options = [
-            'questionnaireType' => 1,
             'orderBy' => [
-                'created_on' => SORT_DESC,
+                'a.created_on' => SORT_DESC,
             ],
             'limit' => $limit,
         ];

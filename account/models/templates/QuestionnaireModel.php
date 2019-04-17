@@ -1,5 +1,6 @@
 <?php
 namespace account\models\templates;
+use common\models\BookmarkedQuestionnaireTemplates;
 use common\models\OrganizationQuestionnaire;
 use common\models\QuestionnaireFieldOptions;
 use common\models\QuestionnaireFields;
@@ -59,5 +60,25 @@ class QuestionnaireModel
           }
        }
         return true;
+     }
+
+     public function assignToBookMark($id)
+     {
+        $model = new BookmarkedQuestionnaireTemplates();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->bookmared_enc_id = $utilitiesModel->encrypt();
+        $model->questionnnaire_enc_id = $id;
+        $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+        $model->created_by = Yii::$app->user->identity->user_enc_id;
+        $model->is_bookmared = 1;
+        if ($model->save()) {
+            return true;
+        }
+
+        else{
+            return false;
+        }
+
      }
 }
