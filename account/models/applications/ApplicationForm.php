@@ -783,12 +783,16 @@ class ApplicationForm extends Model
         return $getWorkFromCity;
     }
 
-    public function getCloneData($aidk)
+    public function getCloneData($aidk,$application_type)
     {
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
+            ->joinWith(['applicationTypeEnc y'=>function($b) use ($application_type)
+            {
+                $b->andWhere(['y.name'=>$application_type]);
+            }],false,'INNER JOIN')
             ->joinWith(['preferredIndustry x'], false)
             ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date',
                 '(CASE

@@ -28,6 +28,7 @@ class CandidateApply extends Widget
         $model = new JobApplied();
         $locations = ApplicationPlacementLocations::find()
             ->alias('a')
+            ->distinct()
             ->select(['b.city_enc_id','name'])
             ->where(['a.application_enc_id'=>$this->application_enc_id])
             ->joinWith(['locationEnc b'=>function($b)
@@ -36,7 +37,6 @@ class CandidateApply extends Widget
             }],false)
             ->asArray()
             ->all();
-
         if (!Yii::$app->user->isGuest) {
 
             $app_que = ApplicationInterviewQuestionnaire::find()

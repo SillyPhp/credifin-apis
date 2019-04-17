@@ -19,7 +19,7 @@
                 foreach ($interview_locations as $loc) {
                     array_push($locations , $loc['name']);
                 }
-                $str2 = implode(", ", $locations );
+                $str2 = implode(", ", array_unique($locations));
                 echo rtrim($str2, ',');
             }
             else

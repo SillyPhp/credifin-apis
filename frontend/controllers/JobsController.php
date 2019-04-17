@@ -157,7 +157,7 @@ class JobsController extends Controller
         $model = new JobApplied();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
-            'data' => $object->getCloneData($application_details->application_enc_id),
+            'data' => $object->getCloneData($application_details->application_enc_id,$application_type='Jobs'),
             'org' => $org_details,
             'applied' => $applied_jobs,
             'type' => $type,
