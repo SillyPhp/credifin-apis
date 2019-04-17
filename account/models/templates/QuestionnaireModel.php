@@ -39,18 +39,19 @@ class QuestionnaireModel
           $model4->id = NULL;
           if ($model4->save())
           {
-          $model5 = QuestionnaireTemplateFieldOptions::findOne(['field_enc_id'=>$model->field_enc_id]);
+          $model5 = QuestionnaireTemplateFieldOptions::findAll(['field_enc_id'=>$model->field_enc_id]);
           if (!empty($model5)){
-              $model6 = new QuestionnaireFieldOptions();
-              $model6->setAttributes($model5->getAttributes(), true);
-              $utilitiesModel = new Utilities();
-              $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-              $model6->field_option_enc_id = $utilitiesModel->encrypt();
-              $model6->field_enc_id = $model4->field_enc_id;
-              $model6->id = NULL;
-              if (!$model6->save())
-              {
-                  return false;
+              foreach ($model5 as $model) {
+                  $model6 = new QuestionnaireFieldOptions();
+                  $model6->setAttributes($model->getAttributes(), true);
+                  $utilitiesModel = new Utilities();
+                  $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                  $model6->field_option_enc_id = $utilitiesModel->encrypt();
+                  $model6->field_enc_id = $model4->field_enc_id;
+                  $model6->id = NULL;
+                  if (!$model6->save()) {
+                      return false;
+                  }
               }
           }
         }
@@ -64,21 +65,45 @@ class QuestionnaireModel
 
      public function assignToBookMark($id)
      {
-        $model = new BookmarkedQuestionnaireTemplates();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $model->bookmared_enc_id = $utilitiesModel->encrypt();
-        $model->questionnnaire_enc_id = $id;
-        $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-        $model->created_by = Yii::$app->user->identity->user_enc_id;
-        $model->is_bookmared = 1;
-        if ($model->save()) {
-            return true;
+        $model = BookmarkedQuestionnaireTemplates::findOne(['questionnnaire_enc_id'=>$id]);
+        if (empty($model))
+        {
+            $model = new BookmarkedQuestionnaireTemplates();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->bookmared_enc_id = $utilitiesModel->encrypt();
+            $model->questionnnaire_enc_id = $id;
+            $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $model->created_by = Yii::$app->user->identity->user_enc_id;
+            $model->is_bookmared = 1;
+            if ($model->save()) {
+                return 'mark';
+            }
+            else{
+                return false;
+            }
         }
+        else
+            {
+                if ($model->is_bookmared==0)
+                {
+                    $model->is_bookmared = 1;
+                    if ($model->save())
+                    {
+                        return 'mark';
+                    }
+                }
+                elseif ($model->is_bookmared==1)
+                {
+                    $model->is_bookmared = 0;
+                    if ($model->save())
+                    {
+                        return 'unmark';
+                    }
+                }
+            }
 
-        else{
-            return false;
-        }
+
 
      }
 }

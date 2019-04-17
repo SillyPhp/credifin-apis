@@ -1,6 +1,5 @@
 <?php
 use yii\helpers\Url;
-use yii\widgets\Pjax;
 $total_processes = count($processes);
 $next = 0;
 if (!empty($total_processes)) {
@@ -44,15 +43,24 @@ if (!empty($total_processes)) {
 $script = <<<JS
 //bookmark template 
 $(document).on('click','.hiring-click',function() {
+    var que_template_id = $(this).find('input').val();
 	if (!$(this).find('span').hasClass("fa-star")) { 
 		$(this).addClass('active');
 		$(this).addClass('active-2');
 		$(this).find('span').addClass('fa-star');
 		$(this).find('span').removeClass('fa-star-o');
 		$(this).addClass('active-3');
-		var que_template_id = $(this).find('input').val();
 		run_ajax(que_template_id,url='/account/templates/hiring-process/bookmark-hiring-process-template');
 	}
+	else
+	    {
+	    $(this).removeClass('active');
+		$(this).removeClass('active-2');
+		$(this).find('span').removeClass('fa-star');
+		$(this).find('span').addClass('fa-star-o');
+		$(this).removeClass('active-3');
+		run_ajax(que_template_id,url='/account/templates/hiring-process/bookmark-hiring-process-template');
+	    }
 });
 //assignt template to organizations
 $(document).on('click','.copy_content_hiring',function(e) {
