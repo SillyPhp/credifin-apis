@@ -218,70 +218,43 @@ if ($organization['cover_image']) {
                         </div>
                     <?php }
                     if (!empty($gallery)) {
-                        ?>
-                        <div class="row">
-                            <div class="office-view">
-                                <div class="heading-style">
-                                    Inside <?= Html::encode($organization['name']) ?>
-                                </div>
-                                <div class="divider"></div>
-                                <div class="office-pics">
-                                    <?php
-                                    foreach ($gallery as $g_image) {
-                                        ?>
-                                        <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
-                                            <div class="img1">
-                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                   data-fancybox="image">
-                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                         alt="company image 1">
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <?php
-                                    }
+                    ?>
+                    <div class="row">
+                        <div class="office-view">
+                            <div class="heading-style">
+                                Inside <?= Html::encode($organization['name']) ?>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="office-pics">
+                                <?php
+                                foreach ($gallery as $g_image) {
                                     ?>
-                                </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
+                                        <div class="img1">
+                                            <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                               data-fancybox="image">
+                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                     alt="company image 1">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         </div>
-<!--                        <div class="row">-->
-<!--                            <div class="office-view">-->
-<!--                                <div class="heading-style">-->
-<!--                                    Products-->
-<!--                                </div>-->
-<!--                                <div class="divider"></div>-->
-<!--                                <div class="office-pics">-->
-<!--                                    <div class="col-md-6 col-sm-6 col-xs-12" style="border-right: 1px solid #ddd;">-->
-<!--                                        <div class="p-preview-img">-->
-<!--                                            <a href="" data-fancybox="images">-->
-<!--                                                <img src="" alt="company image 1">-->
-<!--                                            </a>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-6 col-sm-6 col-xs-12">-->
-<!--                                        --><?php
-//                                        foreach ($gallery as $g_image) {
-//                                            ?>
-<!--                                            <div class="p-img-thumbnail">-->
-<!--                                                <a href="--><?//= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?><!--"-->
-<!--                                                   data-fancybox="images">-->
-<!--                                                    <img src="--><?//= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?><!--"-->
-<!--                                                         alt="company image 1">-->
-<!--                                                </a>-->
-<!--                                            </div>-->
-<!--                                            --><?php
-//                                        }
-//                                        ?>
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                    </div>
+                    <?php
+                    }
+                    if(!empty($org_products['organizationProductImages']) || !empty($org_products['description'])){
+                        ?>
                         <div class="row">
                             <div class="office-view">
                                 <div class="heading-style">
                                     Products
                                 </div>
                                 <div class="divider"></div>
+                                <?php if(!empty($org_products['organizationProductImages'])){ ?>
                                 <div class="office-pics">
                                     <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
                                         <div class="p-preview-img">
@@ -292,27 +265,31 @@ if ($organization['cover_image']) {
                                     </div>
                                     <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
                                         <?php
-                                        foreach ($gallery as $g_image) {
+                                        foreach ($org_products['organizationProductImages'] as $p_image) {
                                             ?>
                                             <div class="p-img-thumbnail" style="float: none;display: inline-block;">
-                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
                                                    data-fancybox="images">
-                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                         alt="company image 1">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                         alt="<?= $p_image['title'] ?>">
                                                 </a>
                                             </div>
                                             <?php
                                         }
                                         ?>
                                     </div>
-                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                        <h4>Brief Desciption</h4>
-                                        <p>
-                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                                        </p>
-                                    </div>
-
                                 </div>
+                                <?php
+                                }
+                                if(!empty($org_products['description'])){
+                                ?>
+                                <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                    <h4>Brief Desciption</h4>
+                                    <p>
+                                        <?= $org_products['description']; ?>
+                                    </p>
+                                </div>
+                                    <?php } ?>
                             </div>
                         </div>
                     <?php }
@@ -1081,6 +1058,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .p-preview-img a img{
     max-height: 300px;
+}
+.p-img-thumbnail a img{
+    width: 100%;
+    height: 100%;
 }
 /*----company products css ends----*/
 .header-bg{

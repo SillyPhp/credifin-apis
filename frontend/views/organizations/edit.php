@@ -386,36 +386,43 @@ $industries = Json::encode($industries);
                                 </div>
                             </div>
                             <div class="divider"></div>
-                            <div class="office-pics">
-                                <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
-                                    <div class="p-preview-img">
-                                        <a href="" data-fancybox="images">
-                                            <img src="" alt="company image 1">
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
-                                    <?php
-                                    foreach ($gallery as $g_image) {
-                                        ?>
-                                        <div class="p-img-thumbnail" style="float: none;display: inline-block;">
-                                            <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                               data-fancybox="images">
-                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                     alt="company image 1">
+                            <?php
+                            Pjax::begin(['id' => 'product_images']);
+                            if(!empty($org_products['organizationProductImages'])) {
+                                ?>
+                                <div class="office-pics">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                        <div class="p-preview-img">
+                                            <a href="" data-fancybox="images">
+                                                <img src="" alt="company image 1">
                                             </a>
                                         </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
                                         <?php
-                                    }
-                                    ?>
+                                        foreach ($org_products['organizationProductImages'] as $p_image) {
+                                            ?>
+                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                   data-fancybox="images">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                         alt="<?= $p_image['title'] ?>">
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
-                                <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                    <h4>Brief Desciption</h4>
-                                    <p>
-                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                                    </p>
-                                </div>
-
+                                <?php
+                            }
+                            Pjax::end()
+                            ?>
+                            <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fa fa-pencil"></i></span></h4>
+                                <p>
+                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -1657,6 +1664,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 .p-preview-img a img{
     max-height: 300px;
 }
+.p-img-thumbnail a img{
+    width: 100%;
+    height: 100%;
+}
 /*----company products css ends----*/
 ');
 $script = <<<JS
@@ -1671,6 +1682,11 @@ $('.model-link').editable({
 $('.model').editable({
     placement: 'top',
     url: '/organizations/update-profile',
+    toggle: 'manual',
+});
+$('.model-product').editable({
+    placement: 'top',
+    url: '/organizations/add-product-description',
     toggle: 'manual',
 });
 

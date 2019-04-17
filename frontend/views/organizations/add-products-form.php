@@ -141,7 +141,7 @@ $(document).on('submit', '#upload-product-detail', function(event) {
             $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-                // $.pjax.reload({container: '#image_gallery', async: false});
+                $.pjax.reload({container: '#product_images', async: false});
             } else {
                 toastr.error(response.message, response.title);
             }
