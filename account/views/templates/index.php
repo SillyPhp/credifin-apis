@@ -45,7 +45,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="actions">
                     <?php if ($interview_processes['total'] > 4): ?>
-                        <a href="<?= Url::toRoute('/hiring-processes'); ?>"
+                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                     <?php endif; ?>
                 </div>
