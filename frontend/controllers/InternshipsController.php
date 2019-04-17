@@ -210,7 +210,7 @@ class InternshipsController extends Controller
             $model = new JobApplied();
             return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
-                'data' => $object->getCloneData($application_details->application_enc_id),
+                'data' => $object->getCloneData($application_details->application_enc_id,$application_type='Internships'),
                 'org' => $org_details,
                 'type' => $type,
                 'applied' => $applied_jobs,
