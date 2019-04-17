@@ -227,44 +227,44 @@ class Cards
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 12;
+                    $result[$i]['salary'] = "₹" . $val['fixed_salary'] * 12;
                 } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52;
+                    $result[$i]['salary'] = "₹" . $val['fixed_salary'] * 40 * 52;
                 } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 52;
+                    $result[$i]['salary'] = "₹" . $val['fixed_salary'] * 52;
                 } else {
-                    $result[$i]['salary'] = $val['fixed_salary'];
+                    $result[$i]['salary'] = "₹" . $val['fixed_salary'];
                 }
             } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12;
+                        $result[$i]['salary'] = "₹" . (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12;
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52);
+                        $result[$i]['salary'] = "₹" . (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52);
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52);
+                        $result[$i]['salary'] = "₹" . (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52);
                     } else {
-                        $result[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']);
+                        $result[$i]['salary'] = "₹" . (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']);
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary'] * 12;
+                        $result[$i]['salary'] = "₹" . (string)$val['min_salary'] * 12;
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52);
+                        $result[$i]['salary'] = "₹" . (string)($val['min_salary'] * 40 * 52);
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 52);
+                        $result[$i]['salary'] = "₹" . (string)($val['min_salary'] * 52);
                     } else {
-                        $result[$i]['salary'] = (string)($val['min_salary']);
+                        $result[$i]['salary'] = "₹" . (string)($val['min_salary']);
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['max_salary'] * 12;
+                        $result[$i]['salary'] = "₹" . (string)$val['max_salary'] * 12;
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52);
+                        $result[$i]['salary'] = "₹" . (string)($val['max_salary'] * 40 * 52);
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (string)($val['max_salary'] * 52);
+                        $result[$i]['salary'] = "₹" . (string)($val['max_salary'] * 52);
                     } else {
-                        $result[$i]['salary'] = (string)($val['max_salary']);
+                        $result[$i]['salary'] = "₹" . (string)($val['max_salary']);
                     }
                 }
             }
