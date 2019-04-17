@@ -11,7 +11,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="actions">
                     <?php if ($questionnaire['total'] > 4): ?>
-                        <a href="<?= Url::toRoute('/questionnaire'); ?>"
+                        <a href="<?= Url::toRoute('templates/questionnaire/index'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                     <?php endif; ?>
                 </div>
