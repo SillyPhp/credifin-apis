@@ -1,9 +1,5 @@
 <?php
 namespace account\controllers;
-use common\models\BookmarkedQuestionnaireTemplates;
-use common\models\QuestionnaireTemplateFieldOptions;
-use common\models\QuestionnaireTemplateFields;
-use common\models\QuestionnaireTemplates;
 use yii\web\Response;
 use Yii;
 use yii\web\Controller;
@@ -41,7 +37,7 @@ class TemplatesController extends Controller
     {
         $options = [
             'orderBy' => [
-                'created_on' => SORT_DESC,
+                'a.created_on' => SORT_DESC,
             ],
             'limit' => $limit,
         ];

@@ -26,7 +26,7 @@ if (!empty($total_questionnaire)) {
                                     <i class="fa fa-files-o"></i>
                                 </a>
                             </div>
-                            <a href="" onclick="window.open('<?= Url::to('templates/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>/view', '_blank');" >
+                            <a href="#" onclick="window.open('<?= Url::to('/account/templates/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"]); ?>/view', '_blank');" >
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>
@@ -141,7 +141,7 @@ width: fit-content;
     font-size: 19px;
     top: 7px;
 }
-.active span, .active-2 span {
+.active > span, .active-2 > span {
 	color: #F5CC27 !important;
 }
 
