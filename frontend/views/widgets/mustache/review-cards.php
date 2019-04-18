@@ -6,18 +6,28 @@ use yii\helpers\Url;
     <div class="col-md-4">
         <div class="com-review-box fivestar-box">
             <div class="com-logo">
+                {{#logo}}
+                <a href="/{{slug}}">
                 <img src="{{logo}}">
+                </a>
+                {{/logo}}
+                {{^logo}}
+                <a href="/{{slug}}">
+                <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                        color="{{color}}" font="35px"></canvas>
+                </a>
+                {{/logo}}
             </div>
-            <div class="com-name">{{name}}</div>
-            <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
-            <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
+            <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
+            <div class="com-loc"><span>5</span> Jobs</div>
+            <div class="com-dep"><span>5</span> Internships</div>
             {{#rating}}
             <div class="com-rating">
                 <div class="average-star" data-score="{{rating}}"></div>
             </div>
             <div class="rating">
                 <div class="stars">{{rating}}</div>
-                <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
+                <div class="reviews-rate"> of {{total_reviews}} review</div>
             </div>
             {{/rating}}
             {{^rating}}
@@ -37,7 +47,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-6">
                         <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Reviews</a>
+                            <a href="/{{slug}}/reviews">Read Review</a>
                         </div>
                     </div>
                 </div>
