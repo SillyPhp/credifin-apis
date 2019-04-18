@@ -562,7 +562,6 @@ form input[type="text"]:focus{
     width:100px;
     height:100px;
     margin:0 auto;
-    padding:0 10px;
     border-radius:10px;
     border:2px solid rgba(238,238,238,.5);
     position:relative;
@@ -921,11 +920,11 @@ width:100%;
 .logo_wrap
 {
     display: inline-block;
-    width: 30px;
     height: 25px;
     vertical-align: middle;
     margin-right: .6rem;
     float:left;
+    max-width:50px;
 }
 /*new modal css ends*/
 ');
@@ -954,7 +953,6 @@ $(document).on('submit','#search-form-submit',function(e)
     e.preventDefault();
     fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6});
 });
-
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -975,11 +973,18 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews"><div class="logo_wrap"><img src = "'+data.logo+'"></div><div class="suggestion"><p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
+return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+ +'<div class="logo_wrap">'
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="35px"></canvas>')
+ +'</div>'
+ +'<div class="suggestion">'
+ +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
 empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
 },
-});
+}).on('typeahead:asyncreceive', function() {
+    utilities.initials();
+  });
 
 var locations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -1022,6 +1027,7 @@ function fetch_cards(params)
             $('#review_container').html('');
             $('#load_review_card_btn').show();
             $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
                    readOnly: true, 
