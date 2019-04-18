@@ -6,7 +6,6 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
-
 $this->title = Yii::t('frontend', 'My Profile');
 $this->params['header_dark'] = true;
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
@@ -66,14 +65,14 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                     'prompt' => 'Select Gender',
                                     'id' => 'gender_drp',
                                     'class' => 'chosen'])->label(false); ?>
-                                <?php $basicDetails->category = (($getCategory) ? $getCategory['parent_enc_id'] : ''); ?>
+                                <?php $basicDetails->category = (($getName) ? $getName['parent_enc_id'] : ''); ?>
                                 <?= $form->field($basicDetails, 'category', ['template' => '<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
                                     $industry, [
                                     'prompt' => 'Select Category',
                                     'id' => 'category_drp',
                                     'class' => 'chosen'])->label(false); ?>
                                 <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['name'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
+                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['title'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
                             </div>
                             <div class="row">
                                 <?= $form->field($basicDetails, 'exp_year', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Year', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[0] : '')])->label(false) ?>
