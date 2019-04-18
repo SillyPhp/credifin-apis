@@ -287,4 +287,29 @@ class JobsController extends Controller
         }
     }
 
+    public function actionJobDetail($eaidk)
+    {
+        $application_details = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.*','b.name org_name', 'b.tag_line', 'b.initials_color color', 'b.slug as org_slug', 'b.email', 'b.website', 'b.logo', 'b.logo_location', 'b.cover_image', 'b.cover_image_location'])
+            ->joinWith(['organizationEnc b'],false)
+            ->where([
+                'a.slug' => $eaidk,
+                'a.is_deleted' => 0
+            ])
+            ->asArray()
+            ->one();
+
+        if (!$application_details) {
+            return 'Not Found';
+        }
+        $object = new \account\models\applications\ApplicationForm();
+
+        return $this->render('pop_up_detail', [
+            'application_details' => $application_details,
+            'data' => $object->getCloneData($application_details['application_enc_id']),
+            ]);
+
+    }
+
 }
