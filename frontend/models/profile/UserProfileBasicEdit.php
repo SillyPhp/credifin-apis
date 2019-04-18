@@ -110,6 +110,7 @@ class UserProfileBasicEdit extends Model {
                 }
                 else{
                     $user->job_function = $chk_assigned['category_enc_id'];
+                    $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
                 }
             }
         }
@@ -321,6 +322,7 @@ class UserProfileBasicEdit extends Model {
         $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($assignedCategoryModel->save()) {
             $user->job_function = $assignedCategoryModel->category_enc_id;
+            $user->asigned_job_function = $assignedCategoryModel->category_enc_id;
         }
         else
         {
@@ -331,7 +333,14 @@ class UserProfileBasicEdit extends Model {
     {
         if (!empty(Yii::$app->user->identity->job_function))
         {
-            $getName = Categories::find()->select(['name','category_enc_id'])->where(['category_enc_id'=>Yii::$app->user->identity->job_function])->one();
+            $getName = AssignedCategories::find()
+                 ->alias('a')
+                 ->select(['a.category_enc_id','c.name profile','b.name title','a.parent_enc_id'])
+                 ->where(['assigned_category_enc_id'=>Yii::$app->user->identity->asigned_job_function])
+                 ->joinWith(['parentEnc c'],false)
+                 ->joinWith(['categoryEnc b'],false)
+                 ->asArray()
+                 ->one();
             return $getName;
         }
         else
