@@ -29,7 +29,7 @@ class ReviewsController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Organizations::find()
-                  ->select(['name','slug','CASE WHEN logo IS NULL OR logo = "" THEN "' . Url::to('@commonAssets/categories/enterprise.png') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo','business_activity'])
+                  ->select(['name','slug','initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo','business_activity'])
                   ->where('name LIKE "%' . $query . '%"')
                   ->joinWith(['businessActivityEnc'],false)
                   ->limit(20)

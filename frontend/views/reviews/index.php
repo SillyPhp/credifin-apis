@@ -217,7 +217,6 @@ $this->registerCss('
     width:100px;
     height:100px;
     margin:0 auto;
-    padding:0 10px;
     border-radius:10px;
     border:2px solid rgba(238,238,238,.5);
     position:relative;
@@ -536,7 +535,7 @@ width:100%;
 .logo_wrap
 {
     display: inline-block;
-    width: 30px;
+    max-width:50px;
     height: 25px;
     vertical-align: middle;
     margin-right: .6rem;
@@ -641,7 +640,7 @@ width:100%;
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 $script = <<< JS
-fetch_cards(params={'rating':[4,5],'limit':4});  
+fetch_cards(params={'rating':[4,5],'limit':3});  
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -671,6 +670,7 @@ function fetch_cards(params)
             $('#review_container').html('');
             $('#load_review_card_btn').show();
             $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
                    readOnly: true, 
@@ -697,14 +697,19 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews"><div class="logo_wrap"><img src = "'+data.logo+'"></div><div class="suggestion"><p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
+return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+ +'<div class="logo_wrap">'
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="35px"></canvas>')
+ +'</div>'
+ +'<div class="suggestion">'
+ +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
 empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
+    utilities.initials();
     $('.load-suggestions').hide();
   });
 JS;

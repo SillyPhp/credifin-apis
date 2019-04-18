@@ -12,20 +12,12 @@ class ReviewCards {
     {
         $cards =  Organizations::find()
               ->alias('a')
-              ->select(['a.organization_enc_id','a.name','a.slug','CASE WHEN a.logo IS NULL OR a.logo = "" THEN "' . Url::to('@commonAssets/categories/enterprise.png') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
+              ->select(['a.organization_enc_id','a.initials_color color','a.name','a.slug','CASE WHEN a.logo IS NOT NULL  THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating','COUNT(c.average_rating) total_reviews'])
               ->joinWith(['businessActivityEnc b'],false)
               ->joinWith(['organizationReviews c'=>function($b)
               {
-                  $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
                   $b->groupBy(['organization_enc_id']);
-              }],true)
-              ->joinWith(['employerApplications e'=>function($x)
-              {
-                  $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
-                  $x->joinWith(['applicationTypeEnc h'],false);
-                  $x->andWhere(['e.is_deleted'=>0]);
-                  $x->groupBy(['organization_enc_id']);
-              }],true)
+              }],false)
               ->limit($options['limit'])
               ->joinWith(['organizationLocations d'=>function($x)
               {
