@@ -231,9 +231,12 @@ textarea::placeholder{
     margin-top:20px;
 }
 .blog-title{
-    font-size:25px;
-    padding-bottom:20px;
-    padding-left:10px;
+    font-size: 25px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-top: 20px;
+    border-bottom: 1px solid #eee;
+    color:#000;
 }
 .blog-comm, .reply-comm{
     border-bottom: 1px dotted #eee;
@@ -391,6 +394,7 @@ textarea::placeholder{
 .reply button:hover{
     color:#00a0e3;
 }
+
 /*----blog section ends----*/
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
     .popular-heading:before{
@@ -459,6 +463,10 @@ textarea::placeholder{
     list-style: decimal;
     margin-bottom: 10px;
     padding-left: 40px;
+}
+div#blog-description * {
+    font-size: 20px !important;
+    line-height: 29px !important;
 }
 /*----blog description preview css ends----*/
 ');
