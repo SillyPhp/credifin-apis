@@ -14,7 +14,7 @@ namespace common\models;
  * @property string $description Application Description
  * @property string $title Foreign Key to Assigned Categories Table
  * @property string $designation_enc_id Foreign Key to Designations Table
- * @property string $type Type (Full Time, Part Time, Work from Home)
+ * @property string $type Type (Full Time, Part Time, Work From Home)
  * @property string $preferred_industry Foreign Key to Industries Table
  * @property string $interview_process_enc_id Foreign Key to Organization Interview Process
  * @property string $timings_from Timings From
@@ -44,8 +44,10 @@ namespace common\models;
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations
  * @property ApplicationSkills[] $applicationSkills
  * @property AppliedApplications[] $appliedApplications
+ * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
+ * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title
+ * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Designations $designationEnc
@@ -166,6 +168,22 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getDropResumeApplicationTitles()
+    {
+        return $this->hasMany(DropResumeApplicationTitles::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDropResumeApplications()
+    {
+        return $this->hasMany(DropResumeApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getApplicationTypeEnc()
     {
         return $this->hasOne(ApplicationTypes::className(), ['application_type_enc_id' => 'application_type_enc_id']);
@@ -174,7 +192,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTitle()
+    public function getTitle0()
     {
         return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'title']);
     }
