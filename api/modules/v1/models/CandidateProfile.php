@@ -358,8 +358,8 @@ class CandidateProfile extends Model
         if (!empty($candidate->job_function)) {
             $getName = AssignedCategories::find()
                 ->alias('a')
-                ->select(['a.category_enc_id', 'b.name'])
-                ->where(['a.assigned_category_enc_id' => $candidate->job_function])
+                ->select(['a.category_enc_id', 'c.name profile', 'b.name title', 'a.parent_enc_id'])
+                ->where(['assigned_category_enc_id' => Yii::$app->user->identity->asigned_job_function])
                 ->joinWith(['parentEnc c'], false)
                 ->joinWith(['categoryEnc b'], false)
                 ->asArray()
