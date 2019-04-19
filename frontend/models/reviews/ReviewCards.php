@@ -12,7 +12,7 @@ class ReviewCards {
     {
         $cards =  Organizations::find()
               ->alias('a')
-              ->select(['a.organization_enc_id','a.name','a.slug','CASE WHEN a.logo IS NULL OR a.logo = "" THEN "' . Url::to('@commonAssets/categories/enterprise.png') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
+              ->select(['a.organization_enc_id','a.name','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
               ->joinWith(['businessActivityEnc b'],false)
               ->joinWith(['organizationReviews c'=>function($b)
               {
