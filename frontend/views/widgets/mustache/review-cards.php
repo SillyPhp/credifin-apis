@@ -32,7 +32,9 @@ use yii\helpers\Url;
             {{/rating}}
             {{^rating}}
             <div class="com-rating">
+
                 <div class="average-star" data-score="0"></div>
+
             </div>
             <div class="rating">
                 <div class="reviews-rate"> Currenlty No Review</div>
