@@ -53,7 +53,7 @@ class ProfileController extends ApiBaseController{
         $result['color'] = $candidate->initials_color;
 
         if(!($basicDetails->getJobFunction() == "")){
-            $result['title'] = $basicDetails->getJobFunction()["name"];
+            $result['title'] = $basicDetails->getJobFunction()["title"];
         }else{
             $result['title'] = NULL;
         }
@@ -71,8 +71,8 @@ class ProfileController extends ApiBaseController{
             $result['current_state'] = NULL;
         }
 
-        if(!($basicDetails->getCurrentCategory() == "")){
-            $result['profile'] = $basicDetails->getCurrentCategory()['name'];
+        if(!($basicDetails->getJobFunction() == "")){
+            $result['profile'] = $basicDetails->getJobFunction()['profile'];
         }else{
             $result['profile'] = NULL;
         }
