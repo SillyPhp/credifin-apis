@@ -24,6 +24,7 @@ class ReviewCards {
                   $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
                   $x->joinWith(['applicationTypeEnc h'],false);
                   $x->andWhere(['e.is_deleted'=>0]);
+
                   $x->groupBy(['organization_enc_id']);
               }],true)
               ->limit($options['limit'])
