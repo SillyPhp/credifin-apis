@@ -287,7 +287,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionJobDetail($eaidk)
+    public function actionJobDetail($eaidk, $type)
     {
         $application_details = EmployerApplications::find()
             ->alias('a')
@@ -307,6 +307,7 @@ class JobsController extends Controller
 
         return $this->render('pop_up_detail', [
             'application_details' => $application_details,
+            'type' => $type,
             'data' => $object->getCloneData($application_details['application_enc_id']),
             ]);
 
