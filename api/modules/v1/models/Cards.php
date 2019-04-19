@@ -21,6 +21,7 @@ class Cards
             ->select([
                 'a.application_enc_id application_id',
                 'a.type',
+                'a.last_date',
                 'l.designation',
                 'd.initials_color color',
                 'd.organization_enc_id',
@@ -163,6 +164,7 @@ class Cards
             ->alias('a')
             ->select([
                 'a.application_enc_id application_id',
+                'a.last_date',
                 'd.initials_color color',
                 'd.organization_enc_id',
                 "g.name as city",
