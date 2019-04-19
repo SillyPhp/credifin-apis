@@ -44,6 +44,31 @@ class OrganizationsController extends Controller
         ];
     }
 
+    public function actionIndex()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $organization = Organizations::find()
+                ->select(['name', 'slug', '(CASE WHEN is_featured = "1" THEN "1" ELSE NULL END) as is_featured','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->where(['status' => 'Active', 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+            if ($organization) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'organization' => $organization,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('index');
+    }
+
     public function actionProfile($slug)
     {
         $organization = Organizations::find()
