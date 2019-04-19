@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%users}}".
  *
@@ -34,7 +32,7 @@ use Yii;
  * @property string $city_enc_id Foreign Key to Cities Table
  * @property string $organization_enc_id Foreign Key to Organizations Table
  * @property string $job_function Foreign Key to Categories Table
- * @property string $asigned_job_function Foreign Key to Assigned Table
+ * @property string $asigned_job_function Foreign Key to Assigned Categories Table
  * @property string $dob Date of Birth
  * @property string $experience Experience
  * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
@@ -63,8 +61,6 @@ use Yii;
  * @property ApplicationJobDescription[] $applicationJobDescriptions0
  * @property ApplicationOptions[] $applicationOptions
  * @property ApplicationOptions[] $applicationOptions0
- * @property ApplicationOptions-bk[] $applicationOptions-bks
- * @property ApplicationOptions-bk[] $applicationOptions-bks0
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations0
  * @property ApplicationSkills[] $applicationSkills
@@ -324,10 +320,6 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     */
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAnsweredQuestionnaires()
@@ -458,1748 +450,1744 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getApplicationPlacementLocations()
-{
-    return $this->hasMany(ApplicationPlacementLocations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationPlacementLocations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-public function getApplicationPlacementLocations0()
-{
-    return $this->hasMany(ApplicationPlacementLocations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    public function getApplicationPlacementLocations0()
+    {
+        return $this->hasMany(ApplicationPlacementLocations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationSkills()
-{
-    return $this->hasMany(ApplicationSkills::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationSkills::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationSkills0()
-{
-    return $this->hasMany(ApplicationSkills::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationSkills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationTemplateJobDescriptions()
-{
-    return $this->hasMany(ApplicationTemplateJobDescription::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationTemplateJobDescription::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationTemplateJobDescriptions0()
-{
-    return $this->hasMany(ApplicationTemplateJobDescription::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationTemplateJobDescription::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationTemplateOptions()
-{
-    return $this->hasMany(ApplicationTemplateOptions::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationTemplateOptions::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationTemplateOptions0()
-{
-    return $this->hasMany(ApplicationTemplateOptions::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationTemplateOptions::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationTemplates()
-{
-    return $this->hasMany(ApplicationTemplates::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplicationTemplates0()
-{
-    return $this->hasMany(ApplicationTemplates::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ApplicationTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplications()
-{
-    return $this->hasMany(Applications::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Applications::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplications0()
-{
-    return $this->hasMany(Applications::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Applications::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getApplications1()
-{
-    return $this->hasMany(Applications::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Applications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAppliedApplicationLocations()
-{
-    return $this->hasMany(AppliedApplicationLocations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AppliedApplicationLocations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAppliedApplicationLocations0()
-{
-    return $this->hasMany(AppliedApplicationLocations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AppliedApplicationLocations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAppliedApplicationProcesses()
-{
-    return $this->hasMany(AppliedApplicationProcess::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AppliedApplicationProcess::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAppliedApplicationProcesses0()
-{
-    return $this->hasMany(AppliedApplicationProcess::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AppliedApplicationProcess::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAppliedApplications()
-{
-    return $this->hasMany(AppliedApplications::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AppliedApplications::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAppliedApplications0()
-{
-    return $this->hasMany(AppliedApplications::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AppliedApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedCategories()
-{
-    return $this->hasMany(AssignedCategories::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedCategories::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedCategories0()
-{
-    return $this->hasMany(AssignedCategories::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedCategories::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedEducationalRequirements()
-{
-    return $this->hasMany(AssignedEducationalRequirements::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedEducationalRequirements::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedEducationalRequirements0()
-{
-    return $this->hasMany(AssignedEducationalRequirements::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedEducationalRequirements::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedIndustries()
-{
-    return $this->hasMany(AssignedIndustries::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedIndustries::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedIndustries0()
-{
-    return $this->hasMany(AssignedIndustries::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedIndustries::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedJobDescriptions()
-{
-    return $this->hasMany(AssignedJobDescription::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedJobDescription::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedJobDescriptions0()
-{
-    return $this->hasMany(AssignedJobDescription::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedJobDescription::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedSkills()
-{
-    return $this->hasMany(AssignedSkills::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedSkills::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedSkills0()
-{
-    return $this->hasMany(AssignedSkills::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedSkills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedTags()
-{
-    return $this->hasMany(AssignedTags::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedTags::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedTags0()
-{
-    return $this->hasMany(AssignedTags::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(AssignedTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBookmarkedHiringTemplates()
-{
-    return $this->hasMany(BookmarkedHiringTemplates::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(BookmarkedHiringTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBookmarkedHiringTemplates0()
-{
-    return $this->hasMany(BookmarkedHiringTemplates::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(BookmarkedHiringTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBookmarkedQuestionnaireTemplates()
-{
-    return $this->hasMany(BookmarkedQuestionnaireTemplates::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(BookmarkedQuestionnaireTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBookmarkedQuestionnaireTemplates0()
-{
-    return $this->hasMany(BookmarkedQuestionnaireTemplates::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(BookmarkedQuestionnaireTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategories()
-{
-    return $this->hasMany(Categories::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Categories::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategories0()
-{
-    return $this->hasMany(Categories::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Categories::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategoriesLists()
-{
-    return $this->hasMany(CategoriesList::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(CategoriesList::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategoriesLists0()
-{
-    return $this->hasMany(CategoriesList::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(CategoriesList::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversationMessages()
-{
-    return $this->hasMany(ConversationMessages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ConversationMessages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversationMessages0()
-{
-    return $this->hasMany(ConversationMessages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ConversationMessages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversationParticipants()
-{
-    return $this->hasMany(ConversationParticipants::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ConversationParticipants::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversationParticipants0()
-{
-    return $this->hasMany(ConversationParticipants::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ConversationParticipants::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversationParticipants1()
-{
-    return $this->hasMany(ConversationParticipants::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ConversationParticipants::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversations()
-{
-    return $this->hasMany(Conversations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Conversations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getConversations0()
-{
-    return $this->hasMany(Conversations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Conversations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCustomForms()
-{
-    return $this->hasMany(CustomForm::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(CustomForm::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCustomForms0()
-{
-    return $this->hasMany(CustomForm::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(CustomForm::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDesignations()
-{
-    return $this->hasMany(Designations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Designations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDesignations0()
-{
-    return $this->hasMany(Designations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Designations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplicationLocations()
-{
-    return $this->hasMany(DropResumeApplicationLocations::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplicationLocations::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplicationLocations0()
-{
-    return $this->hasMany(DropResumeApplicationLocations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplicationLocations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplicationLocations1()
-{
-    return $this->hasMany(DropResumeApplicationLocations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplicationLocations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplicationTitles()
-{
-    return $this->hasMany(DropResumeApplicationTitles::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplicationTitles::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplicationTitles0()
-{
-    return $this->hasMany(DropResumeApplicationTitles::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplicationTitles::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplicationTitles1()
-{
-    return $this->hasMany(DropResumeApplicationTitles::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplicationTitles::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplications()
-{
-    return $this->hasMany(DropResumeApplications::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplications::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplications0()
-{
-    return $this->hasMany(DropResumeApplications::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplications::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getDropResumeApplications1()
-{
-    return $this->hasMany(DropResumeApplications::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(DropResumeApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEducationalRequirements()
-{
-    return $this->hasMany(EducationalRequirements::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(EducationalRequirements::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEducationalRequirements0()
-{
-    return $this->hasMany(EducationalRequirements::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(EducationalRequirements::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEmployeeBenefits()
-{
-    return $this->hasMany(EmployeeBenefits::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(EmployeeBenefits::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEmployeeBenefits0()
-{
-    return $this->hasMany(EmployeeBenefits::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(EmployeeBenefits::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEmployerApplications()
-{
-    return $this->hasMany(EmployerApplications::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(EmployerApplications::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEmployerApplications0()
-{
-    return $this->hasMany(EmployerApplications::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(EmployerApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getFeedbacks()
-{
-    return $this->hasMany(Feedback::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Feedback::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getFeedbacks0()
-{
-    return $this->hasMany(Feedback::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Feedback::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getFollowedOrganizations()
-{
-    return $this->hasMany(FollowedOrganizations::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(FollowedOrganizations::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getFollowedOrganizations0()
-{
-    return $this->hasMany(FollowedOrganizations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(FollowedOrganizations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getFollowedOrganizations1()
-{
-    return $this->hasMany(FollowedOrganizations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(FollowedOrganizations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationEncs()
-{
-    return $this->hasMany(Organizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%followed_organizations}}', ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Organizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%followed_organizations}}', ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getHiringProcessTemplateFields()
-{
-    return $this->hasMany(HiringProcessTemplateFields::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(HiringProcessTemplateFields::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getHiringProcessTemplateFields0()
-{
-    return $this->hasMany(HiringProcessTemplateFields::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(HiringProcessTemplateFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getHiringProcessTemplates()
-{
-    return $this->hasMany(HiringProcessTemplates::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(HiringProcessTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getHiringProcessTemplates0()
-{
-    return $this->hasMany(HiringProcessTemplates::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(HiringProcessTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getInterviewProcessFields()
-{
-    return $this->hasMany(InterviewProcessFields::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(InterviewProcessFields::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getInterviewProcessFields0()
-{
-    return $this->hasMany(InterviewProcessFields::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(InterviewProcessFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getInterviewSchedulers()
-{
-    return $this->hasMany(InterviewScheduler::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(InterviewScheduler::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getInterviewSchedulers0()
-{
-    return $this->hasMany(InterviewScheduler::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(InterviewScheduler::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getJobDescriptions()
-{
-    return $this->hasMany(JobDescription::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(JobDescription::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getJobDescriptions0()
-{
-    return $this->hasMany(JobDescription::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(JobDescription::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getLearningCornerResourceDiscussions()
-{
-    return $this->hasMany(LearningCornerResourceDiscussion::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(LearningCornerResourceDiscussion::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getLearningCornerResourceDiscussions0()
-{
-    return $this->hasMany(LearningCornerResourceDiscussion::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(LearningCornerResourceDiscussion::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getLearningVideoTags()
-{
-    return $this->hasMany(LearningVideoTags::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(LearningVideoTags::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getLearningVideoTags0()
-{
-    return $this->hasMany(LearningVideoTags::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(LearningVideoTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getLearningVideos()
-{
-    return $this->hasMany(LearningVideos::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(LearningVideos::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getLearningVideos0()
-{
-    return $this->hasMany(LearningVideos::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(LearningVideos::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationAssignedCategories()
-{
-    return $this->hasMany(OrganizationAssignedCategories::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationAssignedCategories::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationAssignedCategories0()
-{
-    return $this->hasMany(OrganizationAssignedCategories::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationAssignedCategories::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationEmployeeBenefits()
-{
-    return $this->hasMany(OrganizationEmployeeBenefits::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationEmployeeBenefits::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationEmployeeBenefits0()
-{
-    return $this->hasMany(OrganizationEmployeeBenefits::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationEmployeeBenefits::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationEmployees()
-{
-    return $this->hasMany(OrganizationEmployees::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationEmployees::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationEmployees0()
-{
-    return $this->hasMany(OrganizationEmployees::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationEmployees::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationImages()
-{
-    return $this->hasMany(OrganizationImages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationImages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationImages0()
-{
-    return $this->hasMany(OrganizationImages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationImages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationInterviewProcesses()
-{
-    return $this->hasMany(OrganizationInterviewProcess::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationInterviewProcess::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationInterviewProcesses0()
-{
-    return $this->hasMany(OrganizationInterviewProcess::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationInterviewProcess::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationLocations()
-{
-    return $this->hasMany(OrganizationLocations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationLocations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationLocations0()
-{
-    return $this->hasMany(OrganizationLocations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationLocations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationProductImages()
-{
-    return $this->hasMany(OrganizationProductImages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationProductImages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationProductImages0()
-{
-    return $this->hasMany(OrganizationProductImages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationProductImages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationProducts()
-{
-    return $this->hasMany(OrganizationProducts::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationProducts::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationProducts0()
-{
-    return $this->hasMany(OrganizationProducts::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationProducts::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationQuestionnaires()
-{
-    return $this->hasMany(OrganizationQuestionnaire::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationQuestionnaire::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationQuestionnaires0()
-{
-    return $this->hasMany(OrganizationQuestionnaire::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationQuestionnaire::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationReviewFeedbacks()
-{
-    return $this->hasMany(OrganizationReviewFeedback::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationReviewFeedback::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationReviewFeedbacks0()
-{
-    return $this->hasMany(OrganizationReviewFeedback::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationReviewFeedback::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationReviewFeedbacks1()
-{
-    return $this->hasMany(OrganizationReviewFeedback::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationReviewFeedback::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getReviewEncs()
-{
-    return $this->hasMany(OrganizationReviews::className(), ['review_enc_id' => 'review_enc_id'])->viaTable('{{%organization_review_feedback}}', ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationReviews::className(), ['review_enc_id' => 'review_enc_id'])->viaTable('{{%organization_review_feedback}}', ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationReviews()
-{
-    return $this->hasMany(OrganizationReviews::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationReviews::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationReviews0()
-{
-    return $this->hasMany(OrganizationReviews::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationReviews::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationVideos()
-{
-    return $this->hasMany(OrganizationVideos::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationVideos::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationVideos0()
-{
-    return $this->hasMany(OrganizationVideos::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(OrganizationVideos::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizations()
-{
-    return $this->hasMany(Organizations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Organizations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizations0()
-{
-    return $this->hasMany(Organizations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Organizations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostCategories()
-{
-    return $this->hasMany(PostCategories::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostCategories::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostCategories0()
-{
-    return $this->hasMany(PostCategories::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostCategories::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostEmbeddedImages()
-{
-    return $this->hasMany(PostEmbeddedImages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostEmbeddedImages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostEmbeddedImages0()
-{
-    return $this->hasMany(PostEmbeddedImages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostEmbeddedImages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostMedia()
-{
-    return $this->hasMany(PostMedia::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostMedia::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostMedia0()
-{
-    return $this->hasMany(PostMedia::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostMedia::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostTags()
-{
-    return $this->hasMany(PostTags::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostTags::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPostTags0()
-{
-    return $this->hasMany(PostTags::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(PostTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPosts()
-{
-    return $this->hasMany(Posts::className(), ['author_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Posts::className(), ['author_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPosts0()
-{
-    return $this->hasMany(Posts::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Posts::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireFieldOptions()
-{
-    return $this->hasMany(QuestionnaireFieldOptions::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireFieldOptions::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireFieldOptions0()
-{
-    return $this->hasMany(QuestionnaireFieldOptions::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireFieldOptions::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireFields()
-{
-    return $this->hasMany(QuestionnaireFields::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireFields::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireFields0()
-{
-    return $this->hasMany(QuestionnaireFields::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireTemplateFieldOptions()
-{
-    return $this->hasMany(QuestionnaireTemplateFieldOptions::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireTemplateFieldOptions::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireTemplateFieldOptions0()
-{
-    return $this->hasMany(QuestionnaireTemplateFieldOptions::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireTemplateFieldOptions::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireTemplateFields()
-{
-    return $this->hasMany(QuestionnaireTemplateFields::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireTemplateFields::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireTemplateFields0()
-{
-    return $this->hasMany(QuestionnaireTemplateFields::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireTemplateFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireTemplates()
-{
-    return $this->hasMany(QuestionnaireTemplates::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuestionnaireTemplates0()
-{
-    return $this->hasMany(QuestionnaireTemplates::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(QuestionnaireTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getReviewedApplications()
-{
-    return $this->hasMany(ReviewedApplications::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ReviewedApplications::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getReviewedApplications0()
-{
-    return $this->hasMany(ReviewedApplications::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ReviewedApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSelectedServices()
-{
-    return $this->hasMany(SelectedServices::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SelectedServices::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSelectedServices0()
-{
-    return $this->hasMany(SelectedServices::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SelectedServices::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSeos()
-{
-    return $this->hasMany(Seo::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Seo::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSeos0()
-{
-    return $this->hasMany(Seo::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Seo::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSharingLinks()
-{
-    return $this->hasMany(SharingLinks::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SharingLinks::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSharingLinks0()
-{
-    return $this->hasMany(SharingLinks::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SharingLinks::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getShortlistedApplications()
-{
-    return $this->hasMany(ShortlistedApplications::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ShortlistedApplications::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getShortlistedApplications0()
-{
-    return $this->hasMany(ShortlistedApplications::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ShortlistedApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getShortlistedOrganizations()
-{
-    return $this->hasMany(ShortlistedOrganizations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ShortlistedOrganizations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getShortlistedOrganizations0()
-{
-    return $this->hasMany(ShortlistedOrganizations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(ShortlistedOrganizations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSitemaps()
-{
-    return $this->hasMany(Sitemap::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Sitemap::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSitemaps0()
-{
-    return $this->hasMany(Sitemap::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Sitemap::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSitemapComments()
-{
-    return $this->hasMany(SitemapComments::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SitemapComments::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSitemapComments0()
-{
-    return $this->hasMany(SitemapComments::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SitemapComments::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSkills()
-{
-    return $this->hasMany(Skills::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Skills::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSkills0()
-{
-    return $this->hasMany(Skills::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Skills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialOwnedGroups()
-{
-    return $this->hasMany(SocialOwnedGroups::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialOwnedGroups::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialOwnedGroups0()
-{
-    return $this->hasMany(SocialOwnedGroups::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialOwnedGroups::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialPages()
-{
-    return $this->hasMany(SocialPages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialPages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialPages0()
-{
-    return $this->hasMany(SocialPages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialPages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialProfiles()
-{
-    return $this->hasMany(SocialProfiles::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialProfiles::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialProfiles0()
-{
-    return $this->hasMany(SocialProfiles::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialProfiles::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialPublicGroups()
-{
-    return $this->hasMany(SocialPublicGroups::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialPublicGroups::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSocialPublicGroups0()
-{
-    return $this->hasMany(SocialPublicGroups::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SocialPublicGroups::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSpokenLanguages()
-{
-    return $this->hasMany(SpokenLanguages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SpokenLanguages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSpokenLanguages0()
-{
-    return $this->hasMany(SpokenLanguages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SpokenLanguages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSubmittedVideos()
-{
-    return $this->hasMany(SubmittedVideos::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SubmittedVideos::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSubmittedVideos0()
-{
-    return $this->hasMany(SubmittedVideos::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(SubmittedVideos::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTags()
-{
-    return $this->hasMany(Tags::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Tags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTags0()
-{
-    return $this->hasMany(Tags::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(Tags::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingApplications()
-{
-    return $this->hasMany(TrainingApplications::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(TrainingApplications::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingProgramBatches()
-{
-    return $this->hasMany(TrainingProgramBatches::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(TrainingProgramBatches::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingProgramBatches0()
-{
-    return $this->hasMany(TrainingProgramBatches::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(TrainingProgramBatches::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingProgramBatches1()
-{
-    return $this->hasMany(TrainingProgramBatches::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(TrainingProgramBatches::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingPrograms()
-{
-    return $this->hasMany(TrainingPrograms::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(TrainingPrograms::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingPrograms0()
-{
-    return $this->hasMany(TrainingPrograms::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(TrainingPrograms::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserAccessTokens()
-{
-    return $this->hasMany(UserAccessTokens::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserAccessTokens::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserAchievements()
-{
-    return $this->hasMany(UserAchievements::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserAchievements::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserAchievements0()
-{
-    return $this->hasMany(UserAchievements::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserAchievements::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserAchievements1()
-{
-    return $this->hasMany(UserAchievements::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserAchievements::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserCoachingTutorials()
-{
-    return $this->hasMany(UserCoachingTutorials::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserCoachingTutorials::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserCoachingTutorials0()
-{
-    return $this->hasMany(UserCoachingTutorials::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserCoachingTutorials::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserEducations()
-{
-    return $this->hasMany(UserEducation::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserEducation::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserEducations0()
-{
-    return $this->hasMany(UserEducation::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserEducation::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserEducations1()
-{
-    return $this->hasMany(UserEducation::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserEducation::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserHobbies()
-{
-    return $this->hasMany(UserHobbies::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserHobbies::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserHobbies0()
-{
-    return $this->hasMany(UserHobbies::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserHobbies::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserHobbies1()
-{
-    return $this->hasMany(UserHobbies::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserHobbies::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserInterests()
-{
-    return $this->hasMany(UserInterests::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserInterests::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserInterests0()
-{
-    return $this->hasMany(UserInterests::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserInterests::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserInterests1()
-{
-    return $this->hasMany(UserInterests::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserInterests::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferences()
-{
-    return $this->hasMany(UserPreferences::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferences::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferences0()
-{
-    return $this->hasMany(UserPreferences::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferences::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredIndustries()
-{
-    return $this->hasMany(UserPreferredIndustries::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredIndustries::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredIndustries0()
-{
-    return $this->hasMany(UserPreferredIndustries::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredIndustries::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredJobProfiles()
-{
-    return $this->hasMany(UserPreferredJobProfile::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredJobProfile::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredJobProfiles0()
-{
-    return $this->hasMany(UserPreferredJobProfile::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredJobProfile::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredLocations()
-{
-    return $this->hasMany(UserPreferredLocations::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredLocations::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredLocations0()
-{
-    return $this->hasMany(UserPreferredLocations::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredLocations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredSkills()
-{
-    return $this->hasMany(UserPreferredSkills::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredSkills::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserPreferredSkills0()
-{
-    return $this->hasMany(UserPreferredSkills::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserPreferredSkills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserResumes()
-{
-    return $this->hasMany(UserResume::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserResume::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserResumes0()
-{
-    return $this->hasMany(UserResume::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserResume::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserResumes1()
-{
-    return $this->hasMany(UserResume::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserResume::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserSkills()
-{
-    return $this->hasMany(UserSkills::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserSkills::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserSkills0()
-{
-    return $this->hasMany(UserSkills::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserSkills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserSpokenLanguages()
-{
-    return $this->hasMany(UserSpokenLanguages::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserSpokenLanguages::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserSpokenLanguages0()
-{
-    return $this->hasMany(UserSpokenLanguages::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserSpokenLanguages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserTasks()
-{
-    return $this->hasMany(UserTasks::className(), ['assigned_to' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserTasks::className(), ['assigned_to' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserTasks0()
-{
-    return $this->hasMany(UserTasks::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserTasks::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserTasks1()
-{
-    return $this->hasMany(UserTasks::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserTasks::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserVerificationTokens()
-{
-    return $this->hasMany(UserVerificationTokens::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserVerificationTokens::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserVerificationTokens0()
-{
-    return $this->hasMany(UserVerificationTokens::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserVerificationTokens::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserWorkExperiences()
-{
-    return $this->hasMany(UserWorkExperience::className(), ['created_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserWorkExperience::className(), ['created_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserWorkExperiences0()
-{
-    return $this->hasMany(UserWorkExperience::className(), ['last_updated_by' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserWorkExperience::className(), ['last_updated_by' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserWorkExperiences1()
-{
-    return $this->hasMany(UserWorkExperience::className(), ['user_enc_id' => 'user_enc_id']);
-}
+    {
+        return $this->hasMany(UserWorkExperience::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getCityEnc()
-{
-    return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
-}
+    {
+        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOrganizationEnc()
-{
-    return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
-}
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUserTypeEnc()
-{
-    return $this->hasOne(UserTypes::className(), ['user_type_enc_id' => 'user_type_enc_id']);
-}
+    {
+        return $this->hasOne(UserTypes::className(), ['user_type_enc_id' => 'user_type_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getJobFunction()
-{
-    return $this->hasOne(Categories::className(), ['category_enc_id' => 'job_function']);
-}
+    {
+        return $this->hasOne(Categories::className(), ['category_enc_id' => 'job_function']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAsignedJobFunction()
-{
-    return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'asigned_job_function']);
-}
+    {
+        return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'asigned_job_function']);
+    }
 }

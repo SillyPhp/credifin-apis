@@ -111,6 +111,7 @@ class CandidateProfile extends Model
                     $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user);
                 } else {
                     $user->job_function = $chk_assigned['category_enc_id'];
+                    $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
                 }
             }
         } else {
@@ -312,6 +313,7 @@ class CandidateProfile extends Model
         $assignedCategoryModel->created_by = $candidate->user_enc_id;
         if ($assignedCategoryModel->save()) {
             $user->job_function = $assignedCategoryModel->category_enc_id;
+            $user->asigned_job_function = $assignedCategoryModel->category_enc_id;
         }
         else
         {
@@ -352,7 +354,14 @@ class CandidateProfile extends Model
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
         if (!empty($candidate->job_function)) {
-            $getName = Categories::find()->select(['name', 'category_enc_id'])->where(['category_enc_id' => $candidate->job_function])->one();
+            $getName = AssignedCategories::find()
+                ->alias('a')
+                ->select(['a.category_enc_id', 'b.name'])
+                ->where(['a.assigned_category_enc_id' => $candidate->job_function])
+                ->joinWith(['parentEnc c'], false)
+                ->joinWith(['categoryEnc b'], false)
+                ->asArray()
+                ->one();
             return $getName;
         } else {
             $getName = '';
