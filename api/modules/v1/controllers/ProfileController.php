@@ -111,7 +111,7 @@ class ProfileController extends ApiBaseController{
     {
         $basicDetails = new CandidateProfile();
         $req = Yii::$app->request->post();
-        if (!empty($req['exp_month']) && !empty($req['gender']) && !empty($req['exp_year']) && !empty($req['dob']) && !empty($req['languages']) && !empty($req['skills']) && !empty($req['availability']) && !empty($req['description']) && !empty($req['state']) && !empty($req['city'])){
+        if (isset($req['exp_month']) && isset($req['gender']) && isset($req['exp_year']) && isset($req['dob']) && isset($req['languages']) && isset($req['skills']) && isset($req['availability']) && isset($req['description']) && isset($req['state']) && isset($req['city'])){
             if ($basicDetails->load(Yii::$app->request->post())) {
                 if ($basicDetails->validate()) {
                     if ($basicDetails->update()) {
