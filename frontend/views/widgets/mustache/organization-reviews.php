@@ -34,11 +34,11 @@ $link = Url::to($org_slug.'/reviews', true);
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
-                    <div class="re-bttn">
-                        <button type="button" data-toggle="modal" data-target="#report">
-                            <i class="fa fa-flag"></i> Report
-                        </button>
-                    </div>
+<!--                    <div class="re-bttn">-->
+<!--                        <button type="button" data-toggle="modal" data-target="#report">-->
+<!--                            <i class="fa fa-flag"></i> Report-->
+<!--                        </button>-->
+<!--                    </div>-->
                     <div class="publish-date">{{created_on}}</div>
                     {{#is_current_employee}}
                     <div class="emp-duration">Current Employee</div>
@@ -64,6 +64,10 @@ $link = Url::to($org_slug.'/reviews', true);
                 </div>
                 <div class="row">
                     <div class="col-md-12 user-rating">
+                        <div class="ur-bg padd-lr-5">
+                            <div class="urating">{{overall_experience}}/5</div>
+                            <div class="uratingtitle">Overall Experience</div>
+                        </div>
                         <div class="ur-bg padd-lr-5">
                             <div class="urating">{{job_security}}/5</div>
                             <div class="uratingtitle">Job Security</div>
@@ -104,16 +108,16 @@ $link = Url::to($org_slug.'/reviews', true);
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6">
-                    <div class="usefull-bttn pull-right">
-                        <div class="use-bttn">
-                            <button type="button"><i class="fa fa-thumbs-up"></i> Usefull
-                            </button>
-                        </div>
-                        <div class="notuse-bttn">
-                            <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull
-                            </button>
-                        </div>
-                    </div>
+<!--                    <div class="usefull-bttn pull-right">-->
+<!--                        <div class="use-bttn">-->
+<!--                            <button type="button"><i class="fa fa-thumbs-up"></i> Usefull-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                        <div class="notuse-bttn">-->
+<!--                            <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
