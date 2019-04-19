@@ -95,7 +95,7 @@ class CandidateProfile extends Model
                 $categoriesModel->created_on = date('Y-m-d H:i:s');
                 $categoriesModel->created_by = $candidate->user_enc_id;
                 if ($categoriesModel->save()) {
-                    $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user);
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user, $flag);
                 } else {
                     return false;
                 }
@@ -108,19 +108,15 @@ class CandidateProfile extends Model
                     ->asArray()
                     ->one();
                 if (empty($chk_assigned)) {
-                    $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user);
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user, $flag);
                 } else {
                     $user->job_function = $chk_assigned['category_enc_id'];
                     $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
+                    $flag++;
                 }
             }
         } else {
             $user->job_function = null;
-        }
-
-
-        if ($user->update()) {
-            $flag++;
         }
         
         if($this->skills != ''){
@@ -286,6 +282,11 @@ class CandidateProfile extends Model
                 }
             }
         }
+        
+        if ($user->update())
+        {
+            $flag++;
+        }
 
         if ($flag == 0) {
             return false;
@@ -294,7 +295,7 @@ class CandidateProfile extends Model
         }
     }
 
-    private function addNewAssignedCategory($category_id,$user)
+    private function addNewAssignedCategory($category_id,$user,$flag)
     {
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
@@ -313,7 +314,8 @@ class CandidateProfile extends Model
         $assignedCategoryModel->created_by = $candidate->user_enc_id;
         if ($assignedCategoryModel->save()) {
             $user->job_function = $assignedCategoryModel->category_enc_id;
-            $user->asigned_job_function = $assignedCategoryModel->category_enc_id;
+            $user->asigned_job_function = $assignedCategoryModel->assigned_category_enc_id;
+            $flag++;
         }
         else
         {
