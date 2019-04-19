@@ -47,7 +47,7 @@ namespace common\models;
  * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
  * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title0
+ * @property AssignedCategories $title
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Designations $designationEnc
@@ -192,7 +192,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTitle0()
+    public function getTitle()
     {
         return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'title']);
     }
