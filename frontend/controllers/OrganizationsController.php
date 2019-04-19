@@ -44,6 +44,31 @@ class OrganizationsController extends Controller
         ];
     }
 
+    public function actionIndex()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $organization = Organizations::find()
+                ->select(['name', 'slug', '(CASE WHEN is_featured = "1" THEN "1" ELSE NULL END) as is_featured','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->where(['status' => 'Active', 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+            if ($organization) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'organization' => $organization,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('index');
+    }
+
     public function actionProfile($slug)
     {
         $organization = Organizations::find()
@@ -656,7 +681,9 @@ class OrganizationsController extends Controller
             }
         }
     }
-    public function actionGetReviews($slug){
+
+    public function actionGetReviews($slug)
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getReviews($slug, 3);
@@ -675,17 +702,18 @@ class OrganizationsController extends Controller
         }
     }
 
-    private function getReviews($slug, $limit){
+    private function getReviews($slug, $limit)
+    {
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id','a.status', 'ROUND((job_security+growth+organization_culture+compensation+work+work_life+skill_development)/7) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'ROUND((job_security+growth+organization_culture+compensation+work+work_life+skill_development)/7) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
             ->where(['a.status' => 1])
-            ->joinWith(['organizationEnc b'=> function ($b) use ($slug){
+            ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
             }], false)
             ->joinWith(['createdBy c'], false)
             ->joinWith(['categoryEnc d'], false)
-            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"'.Yii::$app->user->identity->user_enc_id.'") DESC, a.created_on DESC')])
+            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
             ->limit($limit)
             ->asArray()
             ->all();
@@ -696,7 +724,7 @@ class OrganizationsController extends Controller
     public function actionFetchReviewCards()
     {
         $get = new ReviewCards();
-        if (Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             $options = Yii::$app->request->post('params');
