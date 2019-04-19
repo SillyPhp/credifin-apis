@@ -92,7 +92,7 @@ class UserProfileBasicEdit extends Model {
                 $categoriesModel->created_on = date('Y-m-d H:i:s');
                 $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if ($categoriesModel->save()) {
-                    $this->addNewAssignedCategory($categoriesModel->category_enc_id,$user);
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id,$user,$flag);
                 } else {
                     return false;
                 }
@@ -106,21 +106,18 @@ class UserProfileBasicEdit extends Model {
                     ->one();
                 if (empty($chk_assigned))
                 {
-                    $this->addNewAssignedCategory($chk_cat['category_enc_id'],$user);
+                   $this->addNewAssignedCategory($chk_cat['category_enc_id'],$user,$flag);
                 }
                 else{
                     $user->job_function = $chk_assigned['category_enc_id'];
                     $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
+                    $flag++;
                 }
             }
         }
         else
         {
             $user->job_function = null;
-        }
-        if ($user->update())
-        {
-            $flag++;
         }
         if (!empty($this->skills))
         {
@@ -300,6 +297,13 @@ class UserProfileBasicEdit extends Model {
             }
         }
 
+        if ($user->update())
+        {
+            $flag++;
+        }else
+        {
+            return false;
+        }
             if ($flag==0)
             {
                 return false;
@@ -309,7 +313,7 @@ class UserProfileBasicEdit extends Model {
                 return true;
             }
     }
-    private function addNewAssignedCategory($category_id,$user)
+    private function addNewAssignedCategory($category_id,$user,$flag)
     {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
@@ -322,7 +326,8 @@ class UserProfileBasicEdit extends Model {
         $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($assignedCategoryModel->save()) {
             $user->job_function = $assignedCategoryModel->category_enc_id;
-            $user->asigned_job_function = $assignedCategoryModel->category_enc_id;
+            $user->asigned_job_function = $assignedCategoryModel->assigned_category_enc_id;
+            $flag++;
         }
         else
         {

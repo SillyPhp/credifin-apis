@@ -259,7 +259,7 @@ if ($organization['cover_image']) {
                                             <div class="team-container">
                                                 <a href="#">
                                                     <div class="team-icon">
-                                                        <img src="<?= Url::to('/' . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
                                                         <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
                                                             <div class="team-overlay">
                                                                 <div class="team-text">
@@ -303,7 +303,8 @@ if ($organization['cover_image']) {
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View All</a>
+                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View
+                                    All</a>
                             </div>
                         </div>
                         <div class="divider"></div>
@@ -319,7 +320,8 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 Available Internships
                                 <div class="pull-right">
-                                    <a href="/internships/list?company=<?= $organization['slug'] ?>" class="write-review">View All</a>
+                                    <a href="/internships/list?company=<?= $organization['slug'] ?>"
+                                       class="write-review">View All</a>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -357,7 +359,8 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 <?= Html::encode($organization['name']) ?> Reviews
                                 <div class="pull-right">
-                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write Review</a>
+                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
+                                        Review</a>
                                 </div>
                             </div>
                             <div class="divider"></div>
@@ -451,7 +454,7 @@ echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username
 ]);
-echo $this->render('/widgets/mustache/organization-reviews',[
+echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug']
 ]);
 $this->registerCss('
