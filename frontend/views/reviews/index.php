@@ -167,7 +167,7 @@ use yii\helpers\Url;
                         <div class="benifit-heading">Unquestionable <span>Reputation</span> </div>
                         <div class=""> Consumers share their experiences, unveiling the working atmosphere.
                             Know more by going through and make a right choice.</div>
-                        <div class="benifit-bttn"><a href="/site/review-company-list">Read Reviews</a></div>
+                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
                     </div>
                     <div class="col-md-4">
                         <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
@@ -183,7 +183,7 @@ use yii\helpers\Url;
                         <div class="benifit-heading">Perception <span>overview</span></div>
                         <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
                             Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
-                        <div class="benifit-bttn"><a href="/site/review-company-list">Read Reviews</a></div>
+                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
                     </div>
                 </div>
             </div>
@@ -704,13 +704,15 @@ return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
+empty: ['<div class="tt-suggestion tt-selectable">Sorry! No results found</div><div class"add_org"><a href="">Add New Organizatons</a></div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     utilities.initials();
     $('.load-suggestions').hide();
+  }).on('typeahead:selected',function(e,datum) {
+    window.location.replace('/"'+datum.slug+'"/reviews'); 
   });
 JS;
 $this->registerJs($script);

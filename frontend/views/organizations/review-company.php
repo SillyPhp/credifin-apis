@@ -3,17 +3,45 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 $radios_array = [1=>1,2=>2,3=>3,4=>4,5=>5];
+$this->title = $org_details->name.' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
 Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats)/count($stats);
 $round_avg = round($overall_avg);
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details->logo_location . DIRECTORY_SEPARATOR . $org_details->logo;
+$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::canonical(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::canonical(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 <section class="rh-header">
     <div class="container">
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
                 <div class="logo-box">
-                    <div class="logo">
+<!--                    <div class="logo">-->
                         <?php
                         if (!empty($org_details->logo)) {
                             ?>
@@ -21,12 +49,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                             <?php
                         } else {
                             ?>
-                            <canvas class="user-icon" name="<?= $org_details->name; ?>" width="125" height="125"
-                                    color="" font="55px"></canvas>
+                            <canvas class="user-icon" name="<?= $org_details->name; ?>" width="150" height="150"
+                                    color="" font="70px"></canvas>
                             <?php
                         }
                         ?>
-                    </div>
+<!--                    </div>-->
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -592,16 +620,21 @@ border: 2px solid #cadfe8 !important;
 .logo-box{
     height:150px;
     width:150px;
-    padding:0 10px;
+//    padding:0 10px;
     background:#fff;
-    display:table; 
+    display:block;
+    line-height:150px; 
     text-align:center;
     border-radius:6px;
 }  
-.logo{
-    display:table-cell;
-    vertical-align: middle;     
+.logo-box img, .logo-box canvas{
+    border-radius:6px;
 }
+//.logo{
+//    display:table-cell;
+//    vertical-align: middle;  
+//    max-width:150px;   
+//}
 .com-name{
     font-size:40px;
     font-family:lobster;
