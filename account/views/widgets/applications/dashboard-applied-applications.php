@@ -183,6 +183,7 @@ $(document).on('click','.cancel-app',function(e)
             {
                return false;
             }
+           var btncancl = $(this);  
          if (window.confirm("Do you really want to Cancel the current Application?")) { 
             
             var data = $(this).attr('data');
@@ -192,16 +193,18 @@ $(document).on('click','.cancel-app',function(e)
                 method:'post',
                 beforeSend:function()
                 {
-                    $('.cancel-app').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                    btncancl.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                 },
                 success:function(data)
                     {
                       if(data==true)
                         {
-                          $('.cancel-app').addClass('reject_btn');
-                          $('.cancel-app').prop('disabled',true);  
-                          $('.cancel-app').html('Cancelled'); 
-                          $('.cancel-app').removeClass('cancel-app');
+                    btncancl.addClass('reject_btn');
+                    btncancl.prop('disabled',true);  
+                    btncancl.html('Cancelled');
+                    btncancl.removeClass('cancel-app');
+                    btncancl.attr('style', 'background-color: #e43a45 !important');
+                    btncancl.css("color", "#fdfbfb");
                         }
                       else {
                           alert('something went wrong');
