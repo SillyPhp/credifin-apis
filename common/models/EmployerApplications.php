@@ -25,6 +25,7 @@ namespace common\models;
  * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)
+ * @property int $for_careers
  * @property string $published_on On which date application was published
  * @property string $image Application Image
  * @property string $image_location Application Image Path
@@ -47,7 +48,7 @@ namespace common\models;
  * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
  * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title
+ * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Designations $designationEnc
@@ -75,7 +76,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_number', 'organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location', 'created_by'], 'required'],
-            [['application_number', 'is_sponsored', 'is_featured', 'is_deleted'], 'integer'],
+            [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'is_deleted'], 'integer'],
             [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
             [['application_enc_id', 'organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
