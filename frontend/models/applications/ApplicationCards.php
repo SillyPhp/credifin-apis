@@ -1,5 +1,7 @@
 <?php
+
 namespace frontend\models\applications;
+
 use Yii;
 use yii\helpers\Url;
 use common\models\Organizations;
@@ -13,12 +15,14 @@ use common\models\ApplicationTypes;
 use common\models\Industries;
 use common\models\Designations;
 use common\models\ApplicationOptions;
+
 class ApplicationCards
 {
     public static function jobs($options = [])
     {
         return self::_getCardsFromJobs($options);
     }
+
     private static function _getCardsFromJobs($options)
     {
         $cards = EmployerApplications::find()
@@ -35,6 +39,7 @@ class ApplicationCards
                 'CONCAT("/", d.slug) organization_link',
                 "g.name as city",
                 'c.name as title',
+                'i.icon',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
@@ -69,6 +74,7 @@ class ApplicationCards
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->joinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
+
         if (isset($options['company'])) {
             $cards->andWhere([
                 'or',
@@ -81,6 +87,16 @@ class ApplicationCards
                 ['g.name' => $options['location']]
             ]);
         }
+
+        if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
+            $options['for_careers'] = 0;
+        }
+
+        $cards->andWhere([
+            'or',
+            ['a.for_careers' => $options['for_careers']]
+        ]);
+
         if (isset($options['category'])) {
             $cards->andWhere([
                 'or',
@@ -109,7 +125,7 @@ class ApplicationCards
         $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
         $i = 0;
         foreach ($result as $val) {
-            $result[$i]['last_date'] = date('d-m-Y',strtotime($val['last_date']));
+            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
                     $result[$i]['salary'] = $val['fixed_salary'] * 12;
@@ -157,10 +173,12 @@ class ApplicationCards
         }
         return $result;
     }
+
     public static function internships($options = [])
     {
         return self::_getCardsFromInternships($options);
     }
+
     private static function _getCardsFromInternships($options)
     {
         $cards = EmployerApplications::find()
@@ -181,6 +199,7 @@ class ApplicationCards
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
                 'c.name as title',
+                'i.icon',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
             ->joinWith(['title b' => function ($x) {
@@ -202,6 +221,16 @@ class ApplicationCards
                 ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
+
+        if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
+            $options['for_careers'] = 0;
+        }
+
+        $cards->andWhere([
+            'or',
+            ['a.for_careers' => $options['for_careers']]
+        ]);
+
         if (isset($options['category'])) {
             $cards->andWhere([
                 'or',
@@ -229,10 +258,10 @@ class ApplicationCards
             $cards->limit = $options['limit'];
             $cards->offset = ($options['page'] - 1) * $options['limit'];
         }
-        $result =  $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+        $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
         $i = 0;
         foreach ($result as $val) {
-            $result[$i]['last_date'] = date('d-m-Y',strtotime($val['last_date']));
+            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
                     $result[$i]['salary'] = $val['fixed_salary'] * 12;
