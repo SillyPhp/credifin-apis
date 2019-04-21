@@ -16,6 +16,22 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="search-container">
+                <form action="">
+                    <input type="text" placeholder="Search Companies" name="search">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+</div>
+</section>
+<section>
     <div class="container">
         <div class="row">
             <div id="companies-card"></div>
@@ -80,13 +96,14 @@ use yii\helpers\Url;
 echo $this->render('/widgets/mustache/all-companies-card');
 $this->registerCss('
 .headerbg{
-    background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/all-com-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/com-bg.png') . ');
     background-size:cover;
-    min-height:400px !important;
+    background-repeat:no-repeat;
+//    min-height:400px !important;
 }
 .main-heading{
     position:relative;
-    min-height:300px;
+    height:200px;
     text-align:left;
 }
 .main-text{
@@ -159,6 +176,45 @@ $this->registerCss('
 .com-box:hover .com-name{
     color:#00a0e3;
     transition:.2s ease-in;
+}
+.search-container {
+    border:1px solid #eee;
+    margin: 0 0px 10px;
+    position:relative;
+    border-radius:10px;
+}
+.search-container input[type=text] {
+   padding: 6px 0px 6px 15px;
+   font-size: 15px;
+   border: none;
+   width: 100%;
+   margin:6px 0;
+}
+.search-container input[type=text]:focus{
+   box-shadow:none;
+}
+form {
+   margin-bottom: 0px !important;
+}
+.search-container button {
+   position: absolute;
+   padding: 11px 25px;
+   background: #00a0e3;
+   font-size: 17px;
+   border: none;
+   color: #fff;
+   cursor: pointer;
+   top: -1px;
+   right: 0;
+   border-radius: 0 8px 8px 0;
+}
+
+.search-container button:hover {
+ background: #00a0e3;
+}
+.divider{
+   border-top:1px solid #eee;
+   margin:15px 0px 15px 0px;
 }
 ');
 

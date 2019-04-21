@@ -21,7 +21,7 @@ $link = Url::to($org_slug.'/reviews', true);
                 {{/show_user_details}}
                 {{^show_user_details}}
                 <div class="uicon">
-                    <img src="https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg" width="50" height="50">
+                    <img src="/assets/common/images/user1.png" width="50" height="50">
                 </div>
                 <div class="uname">Anonymous</div>
                 {{/show_user_details}}
@@ -125,6 +125,13 @@ $link = Url::to($org_slug.'/reviews', true);
     {{/.}}
 </script>
 <?php
+$this->registerCss("
+.heading_style_1
+{
+font-size:18px;
+}
+");
+
 $script = <<<JS
 
 function getReviews() {
@@ -146,6 +153,7 @@ function getReviews() {
                   }
                 });
             } else if(response.status === 201){
+                $("#org-reviews").html('<div class = "heading_style_1">Currenlty No Review Has Been Given To This Company</div>');
                 $('.viewbtn').hide();
             }
         }

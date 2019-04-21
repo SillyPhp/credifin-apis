@@ -1,6 +1,6 @@
 <script id="all-companies-card" type="text/template">
     {{#.}}
-    <div class="col-md-4">
+    <div class="col-md-4 col-sm-6 col-xs-12">
         <div class="com-box">
             <a href="{{slug}}">
                 <div class="com-icon">
