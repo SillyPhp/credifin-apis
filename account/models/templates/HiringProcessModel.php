@@ -11,20 +11,40 @@ class HiringProcessModel
 {
     public function assignToBookMark($id)
     {
-        $model = new BookmarkedHiringTemplates();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $model->bookmared_enc_id = $utilitiesModel->encrypt();
-        $model->hiring_process_enc_id = $id;
-        $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-        $model->created_by = Yii::$app->user->identity->user_enc_id;
-        $model->is_bookmared = 1;
-        if ($model->save()) {
-            return true;
+        $model = BookmarkedHiringTemplates::findOne(['hiring_process_enc_id'=>$id]);
+        if (empty($model)) {
+            $model = new BookmarkedHiringTemplates();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->bookmared_enc_id = $utilitiesModel->encrypt();
+            $model->hiring_process_enc_id = $id;
+            $model->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $model->created_by = Yii::$app->user->identity->user_enc_id;
+            $model->is_bookmared = 1;
+            if ($model->save()) {
+                return 'mark';
+            } else {
+                return false;
+            }
         }
-
-        else{
-            return false;
+        else
+        {
+            if ($model->is_bookmared==0)
+            {
+                $model->is_bookmared = 1;
+                if ($model->save())
+                {
+                    return 'mark';
+                }
+            }
+            elseif ($model->is_bookmared==1)
+            {
+                $model->is_bookmared = 0;
+                if ($model->save())
+                {
+                    return 'unmark';
+                }
+            }
         }
 
     }

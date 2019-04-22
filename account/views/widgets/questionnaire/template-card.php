@@ -1,10 +1,8 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Json;
-use yii\widgets\Pjax;
 $total_questionnaire = count($questionnaire);
 $next = 0;
-Pjax::begin(['id' => 'pjax_active_questionnaire']);
 if (!empty($total_questionnaire)) {
     ?>
     <div class="cat-sec">
@@ -15,7 +13,7 @@ if (!empty($total_questionnaire)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
-                            <div class="click <?= (($questionnaire[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
+                            <div class="click question-click <?= (($questionnaire[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
                                 <span class="fa <?= (($questionnaire[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?>"></span>
                                 <div class="ring"></div>
                                 <div class="ring2"></div>
@@ -52,19 +50,27 @@ if (!empty($total_questionnaire)) {
 } else { ?>
     <h3>No Questionnaire To Display</h3>
 <?php }
-Pjax::end();
 $script = <<<JS
 //bookmark template 
-$(document).on('click','.click',function() {
-	if (!$(this).find('span').hasClass("fa-star")) { 
+$(document).on('click','.question-click',function() {
+    var que_template_id = $(this).find('input').val();
+	if (!$(this).find('span').hasClass("fa-star")) {
 		$(this).addClass('active');
 		$(this).addClass('active-2');
 		$(this).find('span').addClass('fa-star');
 		$(this).find('span').removeClass('fa-star-o');
 		$(this).addClass('active-3');
-		var que_template_id = $(this).find('input').val();
 		run_ajax(que_template_id,url='/account/templates/questionnaire/bookmark-questionnaire-template');
 	}
+	else 
+	    {
+	    $(this).removeClass('active');
+		$(this).removeClass('active-2');
+		$(this).find('span').removeClass('fa-star');
+		$(this).find('span').addClass('fa-star-o');
+		$(this).removeClass('active-3');
+		run_ajax(que_template_id,url='/account/templates/questionnaire/bookmark-questionnaire-template');
+	    }
 });
 //assignt template to organizations
 $(document).on('click','.copy_content_questionnaire',function(e) {

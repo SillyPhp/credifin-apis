@@ -1,6 +1,15 @@
 <?php
+use yii\helpers\Url;
+
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
+if($type == "jobs"){
+    $a_type = "Jobs";
+}
+if ($type == "internships"){
+    $a_type = "Internships";
+}
 ?>
 <div class="profile">
     <div id="sticky-anchor"></div>
@@ -40,8 +49,18 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         </div>
     </div>
 </div>
-
+<div class="modal fade bs-modal-lg in" id="pop_up_modal"  aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
+//echo $this->render('/widgets/popup');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .highlight{
@@ -111,7 +130,7 @@ body {
 li.draggable-item {
   width: inherit;
   padding: 0px;
-  cursor:move;
+  cursor:pointer;
   -webkit-transition: transform .25s ease-in-out;
   -moz-transition: transform .25s ease-in-out;
   -o-transition: transform .25s ease-in-out;
@@ -246,6 +265,14 @@ li.draggable-item.ui-sortable-placeholder {
 //      outline: 1px solid slategrey !important;
 //    }
 }
+li.draggable-item{position:relative;}
+.close{
+    text-align: center;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    z-index: 99999;
+}
 ');
 
 $script = <<<JS
@@ -309,23 +336,26 @@ function widget(selector) {
     var company = $.trim(selector.find('.org_name').text());
     var location = $.trim(selector.find('.location').text());
     var period = $.trim(selector.find('.period').text());
+    var slug = $.trim(selector.find('.application-card-description a').attr('href'));
     var lastDate = $.trim(selector.find('.lastDate').text());
     var lat = $.trim(selector.find('.location').attr('data-lat'));
     var long = $.trim(selector.find('.location').attr('data-long'));
     var dataId = $.trim(selector.attr("data-id"));
     var dataKey = $.trim(selector.attr("data-key"));
+    slug = slug.split('/')[2];
     if(!logo){
        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
     }else{
-        logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">'
+        logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
     }
-    droppingWidgets(type, logo, logo_main, internship, company, location, period, lastDate, lat, long, dataKey, dataId);
+    droppingWidgets(type, logo, logo_main, internship, slug, company, location, period, lastDate, lat, long, dataKey, dataId);
 }
 
-function droppingWidgets(type, logo, logo_main, internship, company, location, period, lastDate, lat, long, dataKey, dataId) {
+function droppingWidgets(type, logo, logo_main, internship, slug, company, location, period, lastDate, lat, long, dataKey, dataId) {
+    console.log(company);
     if ($("#review-internships > ul > li").length == 0) {
         Ajax_call(dataId);
-        $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
+        $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
         utilities.initials();
         check_list();
     } else {
@@ -338,7 +368,7 @@ function droppingWidgets(type, logo, logo_main, internship, company, location, p
             return false;
         } else {
             Ajax_call(dataId);
-            $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
+            $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
             utilities.initials();
             check_list();
         }
@@ -367,6 +397,21 @@ function Ajax_call(itemid) {
         }
     });
 }
+$(document).on('click','li.draggable-item .opens', function(){
+    var data_main = $(this).children('span');
+    $('#pop_up_modal').modal('toggle');
+    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type=$a_type');
+    // $('#openModal').addClass('j-open');
+    // $('.com-name').text(data_main.attr('company'));
+    // $('.j-title').text(data_main.attr('title'));
+    // if(data_main.attr('logo') == ""){
+    //    $('.company-logo').html('<canvas class="user-icon" name="'+data_main.attr('company')+'" color="'+data_main.attr('color')+'" width="100" height="100" font="55px"></canvas>');
+    //    utilities.initials();
+    // } else{
+    //     $('.company-logo').html('<img class="img-responsive" src="' + data_main.attr('logo') + '">');
+    // }
+    // console.log(data_main);
+});
 
 $(document).on('click', '.application-card-add', function(event) {
     var c_user = "$c_user"
@@ -440,8 +485,11 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 <script id="review-cards" type="text/template">
     {{#.}}
     <li class="draggable-item" data-id="{{application_id}}" data-key="{{data_key}}">
+        <a class="close" data-id="{{application_id}}" href="#" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </a>
         <div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5">
-            <span id="set-types" type="{{type}}" lat="{{latitude}}" long="{{longitude}}" logo="{{logo}}"
+            <span id="set-types" type="{{type}}" slug="{{slug}}" lat="{{latitude}}" long="{{longitude}}" logo="{{logo}}"
                   company="{{org_name}}" title="{{title}}" location="{{city}}" period="" lastdate=""></span>
             <div class="col-md-3 col-xs-3 pt-10 p-0">
                 <div class="sidebar-logo-main">
@@ -456,9 +504,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             </div>
             <div class="col-md-9 col-xs-9 pt-5 p-0">
                 <p class="mb-0 text-wrap-ellipsis">
-                    <a class="close" data-id="{{application_id}}" href="#" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </a>
                     <strong>{{title}}</strong>
                 </p>
                 <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>

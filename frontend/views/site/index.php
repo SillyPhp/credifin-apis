@@ -198,7 +198,7 @@ $this->params['seo_tags'] = [
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
-                                            <a href="/job/audit-and-risk-mangement-manager-65391554294078">
+                                            <a href="<?= Url::to('/job/audit-and-risk-management-manager-65391554294078')?>">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/midland">
@@ -206,13 +206,13 @@ $this->params['seo_tags'] = [
                                                                  alt="Midland Microfin"/>
                                                         </a>
                                                     </div>
-                                                    <div class="sm-100">
-                                                    <h3><a href="/job/audit-and-risk-mangement-manager-65391554294078"
-                                                           title="">Audit And Risk Mangement</a></h3>
-                                                    <span>Midland Microfin Ltd.</span>
+
+                                                    <h3><a href="/job/audit-and-risk-management-manager-65391554294078"
+                                                           title="">Audit And Risk Management</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/midland"> Midland Microfin Ltd.</a></div>
+
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jodhpur,
-                                                        <a href="/job/audit-and-risk-mangement-manager-65391554294078"> 4 more</a></div>
-                                                    </div>
+                                                        <a href="/job/audit-and-risk-management-manager-65391554294078"> 4 more</a></div>
                                                     </div>
                                                 <div class="job-style-bx">
                                                     <span class="job-is ft fill">Full time</span>
@@ -231,7 +231,7 @@ $this->params['seo_tags'] = [
 
                                                     <h3><a href="/job/business-development-executive-1901271548600570"
                                                            title="">Business Development Executive</a></h3>
-                                                    <span>DSB EduTech</span>
+                                                    <div class="wtabs-com-name"><a href="/dsbedutech"> DSB EduTech</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -250,7 +250,7 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3><a href="/job/credit-officer-credit-development-officer-28891553595039" title="">Credit Officer</a></h3>
-                                                    <span>Capital Small Finance Bank</span>
+                                                    <div class="wtabs-com-name"><a href="/capitalbank"> Capital Small Finance Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar,
                                                         <a href="/job/credit-officer-credit-development-officer-28891553595039">10 More</a>
                                                     </div>
@@ -274,7 +274,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/job/business-development-business-develpment-executive-20931553506890" title="">
                                                             Business Development</a></h3>
-                                                    <span>Hamco</span>
+                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
                                                     </div>
                                                 </div>
@@ -294,7 +294,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/sales-officer-29591553927078"
                                                            title="">Sales Officer</a></h3>
-                                                    <span>Citizens Bank</span>
+                                                    <div class="wtabs-com-name"><a href="/citizenbank"> Citizens Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Mohali, <a href="/internship/sales-officer-29591553927078">8 More</a></div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -314,7 +314,7 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3><a href="/internship/assistant-director-98591554009460" title="">Assistant Director</a></h3>
-                                                    <span>Fame Finders Media </span>
+                                                    <div class="wtabs-com-name"><a href="/manojoshempo"> Fame Finders Media </a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>New Delhi</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -341,7 +341,7 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3><a href="/job/web-developer-front-backend-developer-72621553337524" title="">Web Developer</a></h3>
-                                                    <span>Web Riderz</span>
+                                                    <div class="wtabs-com-name"><a href="/webriderz"> Web Riderz</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -360,7 +360,7 @@ $this->params['seo_tags'] = [
                                                     <h3>
                                                         <a href="/internship/business-development-associate-62841553668575"
                                                            title="">Business Development Associate</a></h3>
-                                                    <span>The SmartTree</span>
+                                                    <div class="wtabs-com-name"><a href="/thesmarttree"> The SmartTree</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Work From Home</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -380,7 +380,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/market-research-analyst-11301553596170"
                                                            title="">Market Research Analyst</a></h3>
-                                                    <span>Hamco</span>
+                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -402,7 +402,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/teaching-electronics-65721553323006"
                                                            title="">Teaching (Electronics)</a></h3>
-                                                    <span>Be Cre8v</span>
+                                                    <div class="wtabs-com-name"><a href="/becre8v"> Be Cre8v</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana, <a href="">3 More</a>
                                                     </div>
                                                 </div>
@@ -424,7 +424,7 @@ $this->params['seo_tags'] = [
                                                     <h3>
                                                         <a href="/internship/full-stack-developer-1902011549002251"
                                                            title="">Full Stack Developer</a></h3>
-                                                    <span>Empower Youth</span>
+                                                    <div class="wtabs-com-name"><a href="/empoweryouth"> Empower Youth</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
                                                     </div>
                                                 </div>
@@ -444,7 +444,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/website-designing-internship-in-gurgaon-26131551884452" title="">
                                                             Website Designing</a></h3>
-                                                    <span>Akrolix Innovations</span>
+                                                    <div class="wtabs-com-name"><a href="/akrolixinnovations"> Akrolix Innovations</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Gurgaon</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -1701,14 +1701,20 @@ textarea {
     float: left;
     width: 80%;
 }
-.job-listing.wtabs .job-title-sec > span {
-    color: #1e83f0;
+.wtabs-com-name{
+    
     display: table;
     float: none;
+  
+}
+.wtabs-com-name a{
+    color: #1e83f0 !important;
+      font-size:14px;
+      font-weight:normal;
+    width:100%;
 }
 .job-listing.wtabs .job-lctn {
     display: inline;
-    padding-top: 20px;
     width: 100%;
     font-size: 13px;
 }

@@ -81,12 +81,21 @@ class HiringProcessController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
             $q = new HiringProcessModel();
-            if ($q->assignToBookMark($id))
+            $execute = $q->assignToBookMark($id);
+            if ($execute=='mark')
             {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Added To BookMark List'
+                ];
+            }
+            elseif ($execute =='unmark')
+            {
+                return [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Removed From BookMark List'
                 ];
             }
             else
@@ -101,6 +110,5 @@ class HiringProcessController extends Controller
 
         }
     }
-
 
 }
