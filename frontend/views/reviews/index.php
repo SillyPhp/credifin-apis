@@ -918,7 +918,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/"'+datum.slug+'"/reviews');
+    window.location.replace('/'+datum.slug+'/reviews');
   });
 JS;
 $this->registerJs($script);
