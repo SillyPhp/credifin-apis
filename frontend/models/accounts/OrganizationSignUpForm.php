@@ -77,15 +77,15 @@ class OrganizationSignUpForm extends Model
     public function attributeLabels()
     {
         return [
-            'username' => Yii::t('frontend', 'Username'),
+            'username' => Yii::t('frontend', 'Organization Username'),
             'email' => Yii::t('frontend', 'Email'),
             'password' => Yii::t('frontend', 'Password'),
             'confirm_password' => Yii::t('frontend', 'Confirm Password'),
             'first_name' => Yii::t('frontend', 'First Name'),
             'last_name' => Yii::t('frontend', 'Last Name'),
             'phone' => Yii::t('frontend', 'Contact Number'),
-            'organization_name' => Yii::t('frontend', 'Name'),
-            'organization_email' => Yii::t('frontend', 'Email'),
+            'organization_name' => Yii::t('frontend', 'Organization Name'),
+            'organization_email' => Yii::t('frontend', 'Organization Email'),
             'organization_website' => Yii::t('frontend', 'Website'),
             'organization_phone' => Yii::t('frontend', 'Phone'),
             'organization_business_activity' => Yii::t('frontend', 'Business Activity'),
