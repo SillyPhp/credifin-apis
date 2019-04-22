@@ -14,7 +14,7 @@ if (!empty($data['applicationPlacementLocations'])) {
     }
     $str = implode(", ", $locations);
 }
-if ($type == '"internships"') {
+if ($type == 'Internships') {
     if ($data['wage_type'] == 'Fixed') {
         if ($data['wage_duration'] == 'Weekly') {
             $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
@@ -30,7 +30,7 @@ if ($type == '"internships"') {
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
     }
     $link = Url::to('internship/' . $application_details['slug'], true);
-} else if ($type == '"jobs"') {
+} else if ($type == 'Jobs') {
     if ($data['wage_type'] == 'Fixed') {
         if ($data['wage_duration'] == 'Monthly') {
             $data['fixed_wage'] = $data['fixed_wage'] * 12;
