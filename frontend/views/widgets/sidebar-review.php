@@ -3,6 +3,13 @@ use yii\helpers\Url;
 
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
+if($type == "jobs"){
+    $a_type = "Jobs";
+}
+if ($type == "internships"){
+    $a_type = "Internships";
+}
 ?>
 <div class="profile">
     <div id="sticky-anchor"></div>
@@ -393,7 +400,7 @@ function Ajax_call(itemid) {
 $(document).on('click','li.draggable-item .opens', function(){
     var data_main = $(this).children('span');
     $('#pop_up_modal').modal('toggle');
-    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type="$type"');
+    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type=$a_type');
     // $('#openModal').addClass('j-open');
     // $('.com-name').text(data_main.attr('company'));
     // $('.j-title').text(data_main.attr('title'));
