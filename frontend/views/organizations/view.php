@@ -284,7 +284,7 @@ if ($organization['cover_image']) {
                                                         <?php } ?>
                                                     </div>
                                                     <div class="t-member">
-                                                        <div class="t-name"><?= Html::encode($team['first_name'] . $team['last_name']); ?></div>
+                                                        <div class="t-name"><?= Html::encode($team['first_name'] . " " . $team['last_name']); ?></div>
                                                         <div class="t-post"><?= Html::encode($team['designation']) ?></div>
                                                     </div>
                                                 </a>

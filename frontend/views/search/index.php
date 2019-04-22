@@ -131,7 +131,7 @@ $this->registerCss('
 .com-review-box{
     text-align:center;
     border:1px solid #eee;
-    padding:20px 0 3px 0;
+    padding:20px 10px 3px 10px;
     margin-bottom:20px;
     border-radius:10px;
     color:#999;
@@ -160,6 +160,9 @@ $this->registerCss('
     padding-top: 10px;
     color: #bcbaba;
     font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-transform: capitalize;
 }
 .rating-stars{

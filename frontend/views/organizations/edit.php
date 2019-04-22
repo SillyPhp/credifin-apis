@@ -434,7 +434,7 @@ $industries = Json::encode($industries);
                                                     <?php } ?>
                                                 </div>
                                                 <div class="t-member">
-                                                    <div class="t-name"><?= $team['first_name'] . $team['last_name']; ?></div>
+                                                    <div class="t-name"><?= $team['first_name'] . " " . $team['last_name']; ?></div>
                                                     <div class="t-post"><?= $team['designation'] ?></div>
                                                 </div>
                                             </a>
