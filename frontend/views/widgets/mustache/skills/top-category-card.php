@@ -5,7 +5,7 @@
                 <div class="col-md-12">
                     <ul id="top-categories">
                         {{#.}}
-                        <li><a href="/learning/category"><span>{{category}}</span> 0 </a></li>
+                        <li><a href="/learning/video-gallery?type=categories&id={{parent_enc_id}}"><span>{{parent_name}}</span> {{cnt}} </a></li>
                         {{/.}}
                     </ul>
                 </div>
@@ -65,6 +65,7 @@ function getTopCategory() {
     $.ajax({
         method: "POST",
         url : window.location.href,
+        async: false,
         success: function(response) {
             if(response.status === 200) {
                 var videos = $('#top-category-card').html();

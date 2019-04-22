@@ -2,311 +2,80 @@
 $this->title = Yii::t('frontend', 'Learning Corner');
 
 use yii\helpers\Url;
+
 ?>
     <section class="backgrounds">
         <div class="container headsec">
             <div class="row">
-            <div class="col-md-6 col-sm-12 mt-50">
-                <div class="jumbo-heading">BOOST YOUR SKILLS</div>
-                <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
-                <div class="search-box1">
-                    <form action="">
-                        <input type="text" placeholder="Search" name="search">
-                        <button type="submit"><i class="fa fa-search"></i></button>
-                    </form>
+                <div class="col-md-6 col-sm-12 mt-50">
+                    <div class="jumbo-heading">BOOST YOUR SKILLS</div>
+                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
+                    <div class="search-box1">
+                        <form action="<?= Url::to('/learning/search-video') ?>">
+                            <input type="text" placeholder="Search" name="keyword">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6 sm-hidden">
-                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?>" align="right" class="responsive"/>
-            </div>
+                <div class="col-md-6 sm-hidden">
+                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?>" align="right"
+                         class="responsive"/>
+                </div>
             </div>
         </div>
     </section>
 
     <div class="clearfix"></div>
-
-    <!--<div class="container ">
-    <div class="cat-padding">
-        <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">All Category</div>
-            <div class="search-box">
-                <form action="">
-                    <input type="text" placeholder="Search Category" name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-        </div>
-         Example row of columns
-        <div class="categories">
-            <div class="row category b-padding">
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/business2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/business.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text"> Business Management</div>
-                        </a>
-                    </div>
-                </div>
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/computer-science2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/computer-science.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text"> Computer Science</div>
-                        </a>
-                    </div>
-                </div>
-                <div class="f-box col-md-3 col-sm-6">
-                    <div  class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/media2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/media.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text"> Arts & Media</div>
-                        </a>
-                    </div>
-                </div>
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/heart2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/heart.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text"> Health & Psychology</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-
-            <div class="row c-padding">
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/law2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/law.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text">Law</div>
-                        </a>
-                    </div>
-                </div>
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/history2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/history.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text"> History </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/literature2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/literature.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text"> Literature</div>
-                        </a>
-                    </div>
-                </div>
-                <div class="f-box col-md-3 col-sm-6">
-                    <div class="flipbox ">
-                        <a href="/learning-corner/categories" class="lc-link">
-                            <div class="back">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/culture2.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="front">
-                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/culture.svg'); ?>" alt=""/></div>
-                            </div>
-                            <div class="b-text">Languages & Cultures</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
     <div class="clearfix"></div>
     <div class="empty"></div>
 
-    <!--dynamic categories start-->
 
-    <div class="clearfix"></div>
-<?php
-$total_categories = count($job_categories);
-if ($total_categories > 0):
-    ?>
     <div class="container ">
         <div class="cat-padding">
             <div class="row col-md-12">
                 <div class="heading-style col-md-6 col-sm-6">All Category</div>
-                <div class="search-box">
-                    <form action="">
-                        <input type="text" placeholder="Search Category" name="search">
-                        <button type="submit"><i class="fa fa-search"></i></button>
-                    </form>
-                </div>
+<!--                <div class="search-box">-->
+<!--                    <form action="">-->
+<!--                        <input type="text" placeholder="Search Category" name="search">-->
+<!--                        <button type="submit"><i class="fa fa-search"></i></button>-->
+<!--                    </form>-->
+<!--                </div>-->
             </div>
-            <!-- Example row of columns -->
             <div class="categories">
-                <?php
-                $rows = ceil($total_categories / 4);
-                $next = 0;
-                for ($i = 1;$i <= $rows;$i++) {
-                    ?>
-                    <div class="row category b-padding">
-                        <?php
-                        for ($j = 0; $j < 4; $j++) {
-                            if ($next < $total_categories) {
-                                ?>
-                                <div class="f-box col-md-3 col-sm-6">
-                                    <div class="flipbox ">
-                                        <a href="/learning/category" class="lc-link">
-                                            <div class="back">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/business2.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="front">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/business.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <!--<div class="b-text"> Business Management</div>-->
-                                            <div class="b-text"><?= $job_categories[$next]['category']; ?></div>
-                                        </a>
-                                    </div>
-                                </div>
+                <div class="row category b-padding">
 
-                                <!--                <div class="f-box col-md-3 col-sm-6">
-                                    <div class="flipbox ">
-                                        <a href="/learning-corner/categories" class="lc-link">
-                                            <div class="back">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/computer-science2.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="front">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/computer-science.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="b-text"> Computer Science</div>
-                                        </a>
+                    <?php foreach($categories as $c) { ?>
+                        <div class="f-box col-md-3 col-sm-6">
+                            <div class="flipbox ">
+                                <a href="/learning/video-gallery?type=categories&id=<?= $c['parent_enc_id'] ?>" class="lc-link">
+                                    <div class="back">
+                                        <div class="b-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"  alt=""/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="f-box col-md-3 col-sm-6">
-                                    <div  class="flipbox ">
-                                        <a href="/learning-corner/categories" class="lc-link">
-                                            <div class="back">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/media2.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="front">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/media.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="b-text"> Arts & Media</div>
-                                        </a>
+                                    <div class="front">
+                                        <div class="b-icon">
+                                            <?php if($c['child_icon']){ ?>
+                                                <img src="" alt=""/>
+                                            <?php } else{ ?>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories.png'); ?>" alt=""/>
+                                            <?php } ?>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="f-box col-md-3 col-sm-6">
-                                    <div class="flipbox ">
-                                        <a href="/learning-corner/categories" class="lc-link">
-                                            <div class="back">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/heart2.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="front">
-                                                <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/heart.svg'); ?>" alt=""/></div>
-                                            </div>
-                                            <div class="b-text"> Health & Psychology</div>
-                                        </a>
-                                    </div>
-                                </div>  -->
-                                <?php
-                            }
-                            $next++;
-                        }
-                        ?>
-                    </div>
-                    <?php
-                }
-                ?>
-                <div class="clearfix"></div>
+                                    <div class="b-text"><?= $c['parent_name']; ?></div>
+                                </a>
+                            </div>
+                        </div>
+                    <?php } ?>
 
-                <!--            <div class="row c-padding">
-                            <div class="f-box col-md-3 col-sm-6">
-                                <div class="flipbox ">
-                                    <a href="/learning-corner/categories" class="lc-link">
-                                        <div class="back">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/law2.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="front">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/law.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="b-text">Law</div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="f-box col-md-3 col-sm-6">
-                                <div class="flipbox ">
-                                    <a href="/learning-corner/categories" class="lc-link">
-                                        <div class="back">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/history2.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="front">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/history.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="b-text"> History </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="f-box col-md-3 col-sm-6">
-                                <div class="flipbox ">
-                                    <a href="/learning-corner/categories" class="lc-link">
-                                        <div class="back">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/literature2.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="front">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/literature.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="b-text"> Literature</div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="f-box col-md-3 col-sm-6">
-                                <div class="flipbox ">
-                                    <a href="/learning-corner/categories" class="lc-link">
-                                        <div class="back">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/culture2.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="front">
-                                            <div class="b-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/culture.svg'); ?>" alt=""/></div>
-                                        </div>
-                                        <div class="b-text">Languages & Cultures</div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>-->
+                </div>
             </div>
         </div>
     </div>
-<?php endif; ?>
+
+    <!--dynamic categories start-->
+
+    <div class="clearfix"></div>
     <div class="clearfix"></div>
     <div class="empty"></div>
 
@@ -317,26 +86,31 @@ if ($total_categories > 0):
             <div class="heading-style">How It Works</div>
         </div>
         <div class="box1 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-1.png'); ?>" alt=""/></div>
-            <div class="w-heading">Want to Learn </div>
-            <div class="w-text">Do you have something in mind that you want to learn </div>
+            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-1.png'); ?>"
+                                       alt=""/></div>
+            <div class="w-heading">Want to Learn</div>
+            <div class="w-text">Do you have something in mind that you want to learn</div>
         </div>
         <div class="box2 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-2.png'); ?>" alt=""/></div>
-            <div class="w-heading">Don't Know </div>
-            <div class="w-text">Missing resources from where you can learn </div>
+            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-2.png'); ?>"
+                                       alt=""/></div>
+            <div class="w-heading">Don't Know</div>
+            <div class="w-text">Missing resources from where you can learn</div>
         </div>
         <div class="box3 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-3.png'); ?>" alt=""/></div>
+            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-3.png'); ?>"
+                                       alt=""/></div>
             <div class="w-heading">Search Here</div>
-            <div class="w-text">Search Empower Youth's learning corner. </div>
+            <div class="w-text">Search Empower Youth's learning corner.</div>
         </div>
         <div class="box4 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-4.png'); ?>" alt=""/></div>
+            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-4.png'); ?>"
+                                       alt=""/></div>
             <div class="w-heading">Start Learning</div>
-            <div class="w-text">Find resources and start learning at empower youth </div>
+            <div class="w-text">Find resources and start learning at empower youth</div>
         </div>
     </div>
+
     <div class="clearfix"></div>
     <div class="empty"></div>
 
@@ -345,166 +119,35 @@ if ($total_categories > 0):
             <div class="mv">
                 <div class="container">
                     <div class="heading-style">Most Popular Topics</div>
-                    <div class="mt-actions " style="" >
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/category">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon1.png'); ?>" class="img-responsive ">
+                    <div class="mt-actions " style="">
+                        <?php foreach($topics as $t) { ?>
+                            <div class="col-md-3 col-sm-4">
+                                <div class="topic-con">
+                                    <a href="/learning/video-gallery?type=topics&id=<?= $t['tag_enc_id']?>">
+                                        <div class="hr-company-box">
+                                            <div class="hr-company-box-center">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
+                                                         class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name">
+                                                    <?= $t['name']; ?>
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $t['cnt']; ?> Videos
+                                                </div>
                                             </div>
-                                            <div class="hr-com-name">
-                                                Marketing
-                                            </div>
-                                            <div class="hr-com-field">
-                                            5 Videos
                                         </div>
-                                        </div>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon2.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Blogging
-                                            </div>
-                                            <div class="hr-com-field">
-                                            5 Videos
-                                        </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon3.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Social Media Marketing
-                                            </div>
-                                            <div class="hr-com-field">
-                                            5 Videos
-                                        </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon4.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Web Design
-                                            </div>
-                                            <div class="hr-com-field">
-                                            16 Videos
-                                        </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon5.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Business Management
-                                            </div>
-                                            <div class="hr-com-field">
-                                                10 Videos
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon6.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Accounting
-                                            </div>
-                                            <div class="hr-com-field">
-                                                5 Videos
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon7.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Robotics
-                                            </div>
-                                            <div class="hr-com-field">
-                                                10 Videos
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="/learning/video-gallery">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/icon8.png'); ?>" class="img-responsive ">
-                                            </div>
-                                            <div class="hr-com-name">
-                                                Art & Craft
-                                            </div>
-                                            <div class="hr-com-field">
-                                                5 Videos
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                        <?php } ?>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-    </div>
+
     <div class="clearfix"></div>
     <div class="empty"></div>
 
@@ -518,25 +161,21 @@ if ($total_categories > 0):
         <div class="container">
             <div id="mixedSlider">
                 <div class="MS-content">
-                    <?php
-                    foreach ($submittedVideos as $submittedVideo) {
-                        ?>
+                    <?php foreach ($popular_videos as $p) { ?>
                         <div class="item">
                             <div class="imgTitle">
-                                <a href="<?= Url::to('learning/video-detail/?vidk=' . $submittedVideo['slug']); ?>" >
-                                    <img src="<?= Url::to($submittedVideo['cover_image']); ?>" alt=""/>
+                                <a href="<?= Url::to('learning/video-detail/?vidk=' . $p['slug']); ?>">
+                                    <img src="<?= Url::to($p['cover_image']); ?>" alt=""/>
                                 </a>
                             </div>
                             <div class="clearfix"></div>
                             <div class="blogTitle">
-                                <a href="<?= Url::to('learning/video-detail/?vidk=' . $submittedVideo['slug']); ?>" >
-                                    <?= Yii::t('frontend', $submittedVideo['name']); ?>
+                                <a href="<?= Url::to('learning/video-detail/?vidk=' . $p['slug']); ?>">
+                                    <?= Yii::t('frontend', $p['title']); ?>
                                 </a>
                             </div>
                         </div>
-                        <?php
-                    }
-                    ?>
+                        <?php } ?>
                 </div>
                 <div class="MS-controls">
                     <button class="MS-left"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
@@ -684,7 +323,8 @@ $this->registerCss('
     transition: transform .5s linear 0s;	
 }
 .flipbox > a .back > .b-icon{
-    padding:40px 0 0 0;  
+    height: 160px;
+    line-height: 160px;  
 }
 .flipbox a:hover > .front{
     transform: perspective(600px) rotateY(-180deg );
@@ -1063,11 +703,6 @@ $script = <<< JS
     }(window, document, 'script', 'ga'));
     ga('create', 'UA-XXXXX-X', 'auto');
     ga('send', 'pageview');
-
-    $("#seemore").click(function (e) {
-        e.preventDefault();
-        $(".category:first").clone().appendTo(".categories");
-    });
 
     $('#mixedSlider').multislider({
         duration: 750,

@@ -7,7 +7,7 @@
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
                 <div class="r-video2">
-                    <div class="r-v-name">{{name}}</div>
+                    <div class="r-v-name">{{title}}</div>
                 </div>
             </a>
         </div>
@@ -53,10 +53,18 @@ $this->registerCss('
 ');
 
 $script = <<<JS
-function getVideoGallery() {
+    function getQueryStringValue (key) {  
+      return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+    }
+    data = {
+        type: getQueryStringValue('type'),
+        id: getQueryStringValue('id')
+    };
     $.ajax({
         method: "POST",
         url : window.location.href,
+        data: data,
+        async: false,
         success: function(response) {
             if(response.status === 200) {
                 var videos = $('#video-gallery-video').html();
@@ -64,8 +72,6 @@ function getVideoGallery() {
             }
         }
     });
-}
-getVideoGallery();
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

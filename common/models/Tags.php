@@ -14,73 +14,78 @@ use Yii;
  * @property string $created_on On which date Tag information was added to database
  * @property string $created_by By which User Tag  information was added
  * @property string $last_updated_on On which date Tag information was updated
- * @property string $last_updated_by  By which User Tag information was updated
+ * @property string $last_updated_by By which User Tag information was updated
  *
- * @property PostTags[] $postTags
- * @property Users $createdBy
+ * @property AssignedTags[] $assignedTags
+ * @property LearningVideoTags[] $learningVideoTags
+ * @property LearningVideos[] $videoEncs
  * @property Users $lastUpdatedBy
+ * @property Users $createdBy
  */
-class Tags extends \yii\db\ActiveRecord {
-
+class Tags extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%tags}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['tag_enc_id', 'name', 'slug', 'created_on', 'created_by'], 'required'],
-            [['tag_enc_id', 'name', 'slug'], 'trim'],
+            [['tag_enc_id', 'name', 'slug', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['tag_enc_id', 'name', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['tag_enc_id'], 'unique'],
-            [['slug'], 'unique'],
             [['name'], 'unique'],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['slug'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels() {
-        return [
-            'id' => Yii::t('common', 'ID'),
-            'tag_enc_id' => Yii::t('common', 'Tag Enc ID'),
-            'name' => Yii::t('common', 'Name'),
-            'slug' => Yii::t('common', 'Slug'),
-            'created_on' => Yii::t('common', 'Created On'),
-            'created_by' => Yii::t('common', 'Created By'),
-            'last_updated_on' => Yii::t('common', 'Last Updated On'),
-            'last_updated_by' => Yii::t('common', 'Last Updated By'),
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPostTags() {
-        return $this->hasMany(PostTags::className(), ['tag_enc_id' => 'tag_enc_id']);
+    public function getAssignedTags()
+    {
+        return $this->hasMany(AssignedTags::className(), ['tag_enc_id' => 'tag_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    public function getLearningVideoTags()
+    {
+        return $this->hasMany(LearningVideoTags::className(), ['tag_enc_id' => 'tag_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getVideoEncs()
+    {
+        return $this->hasMany(LearningVideos::className(), ['video_enc_id' => 'video_enc_id'])->viaTable('{{%learning_video_tags}}', ['tag_enc_id' => 'tag_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
 }

@@ -553,46 +553,26 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionLearning() {
-        $this->layout = 'main-secondary';
-        $learningCornerFormModel = new OrganisationVideoForm();
-        $session = Yii::$app->session;
-        if (!$session->isActive) {
-            $session->open();
-        }
-        if ($session->has('video')) {
-            $session->remove('video');
-        }
-        if ($learningCornerFormModel->load(Yii::$app->request->post())) {
-            if (Yii::$app->user->isGuest) {
-                if ($learningCornerFormModel->validate()) {
-                    $session['video'] = [
-                        'title' => $learningCornerFormModel->video_title,
-                        'type' => $learningCornerFormModel->video_type,
-                        'type_input' => $learningCornerFormModel->type_input,
-                        'category' => $learningCornerFormModel->category,
-                        'sub_category' => $learningCornerFormModel->sub_category,
-                        'description' => $learningCornerFormModel->description,
-                        'tags' => $learningCornerFormModel->tags,
-                        'url' => $learningCornerFormModel->video_url,
-                        'image' => $learningCornerFormModel->cover_image,
-                    ];
-                    if ($session->has('video')) {
-                        $this->redirect('/signup/student');
-                    }
-                }
-            } else {
-                if ($learningCornerFormModel->save()) {
-                    Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
-                } else {
-                    Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
-                }
-            }
-        }
-        return $this->render('learning-corner', [
-                    'learningCornerFormModel' => $learningCornerFormModel,
-        ]);
-    }
+//    public function actionLearning() {
+//        $this->layout = 'main-secondary';
+//
+//        $learningCornerFormModel = new OrganizationVideoForm();
+//
+//        if(!Yii::$app->user->isGuest) {
+//            if ($learningCornerFormModel->load(Yii::$app->request->post()) && $learningCornerFormModel->validate()) {
+//                if ($learningCornerFormModel->save()) {
+//                    Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
+//                } else {
+//                    Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
+//                }
+//            }
+//            return $this->render('learning-corner', [
+//                        'learningCornerFormModel' => $learningCornerFormModel,
+//            ]);
+//        }else{
+//            return $this->redirect('/login');
+//        }
+//    }
 
     public function actionCompanys1() {
         $organizationVideoForm = new OrganizationVideoForm();

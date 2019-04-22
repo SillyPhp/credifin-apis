@@ -1,13 +1,16 @@
 <?php
 $this->params['header_dark'] = true;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
+
 ?>
     <div class="container sec2">
         <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">Videos </div>
+            <div class="heading-style col-md-6 col-sm-6">Videos</div>
         </div>
     </div>
+
     <!--Other Videos-->
     <div class="videorows">
         <div class="videorow container">
@@ -15,145 +18,14 @@ use yii\helpers\Html;
 
                 <div id="gallery-video"></div>
 
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!---->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!---->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!---->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!---->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
-<!--            <div class="col-md-12 v-padding v-sm-padding">-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-12 v-padding">-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-3 col-sm-4">-->
-<!--                    <div class="v-videobox">-->
-<!--                        <a href="/learning-corner/video-detail">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/candidates-list/video.png') ?><!--" alt="" class="img-responsive"/>-->
-<!--                            <div class="v-text">-->
-<!--                                Lorem Ipsum is simply dummy text-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-        </div>
-
-        <div class="container view-box">
-            <a id="seemore" href="#">
-                See more
-            </a>
         </div>
     </div>
+
 <?php
+
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
+
 $this->registerCss('
 .heading-style{
     font-family: lobster;
@@ -215,10 +87,8 @@ $this->registerCss('
     }
 }
 ');
+
 $script = <<< JS
-$("#seemore").click(function (e) {
-        e.preventDefault();
-    $(".row1:first").clone().appendTo(".videorow");
-});
+
 JS;
 $this->registerJs($script);

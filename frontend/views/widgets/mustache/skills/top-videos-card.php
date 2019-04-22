@@ -2,13 +2,12 @@
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="video-container2">
-            <a href="/skills/video-detail?vidk={{slug}}">
+            <a href="/learning/video-detail?vidk={{slug}}">
                 <div class="video-icon2">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
                 <div class="r-video2">
-                    <div class="r-v-name">{{name}}</div>
-                    <div class="r-ch-name">{{channel_name}}</div>
+                    <div class="r-v-name">{{title}}</div>
                 </div>
             </a>
         </div>
@@ -51,6 +50,7 @@ function getTopVideos() {
     $.ajax({
         method: "POST",
         url : window.location.href,
+        async: false,
         success: function(response) {
             if(response.status === 200) {
                 var videos = $('#top-videos-card').html();

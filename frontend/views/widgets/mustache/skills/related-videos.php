@@ -51,19 +51,25 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-function getRelatedVideos() {
-    $.ajax({
-        method: "POST",
-        url : window.location.href,
-        success: function(response) {
-            if(response.status === 200) {
+data = {
+    video_id: document.getElementById('cate').getAttribute('data-id')
+};
+$.ajax({
+    method: "POST",
+    url : window.location.href,
+    async: false,
+    data: data,
+    success: function(response) {
+        if(response.status === 200) {
+            if(response.related_videos.length > 0){
                 var videos = $('#related-videos').html();
                 $("#r-videos").html(Mustache.render(videos, response.related_videos));
+            }else{
+                document.getElementById('related-videos').remove();
             }
         }
-    });
-}
-getRelatedVideos();
+    }
+});
 JS;
 $this->registerJs($script);
 ?>
