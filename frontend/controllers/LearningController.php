@@ -470,13 +470,16 @@ class LearningController extends Controller
                         ->andWhere(['status' => 1])
                         ->andWhere(['is_deleted' => 0])
                         ->one();
-            $interested_videos = LearningVideos::find()
-                ->alias('a')
-                ->joinWith(['learningVideoTags b'], false)
-                ->where(['in', 'b.tag_enc_id', $tags_id])
-                ->andWhere(['not', ['b.video_enc_id' => $current_video_id['video_enc_id']]])
-                ->asArray()
-                ->all();
+            $interested_videos = [];
+            if(count($tags_id) > 0 ) {
+                $interested_videos = LearningVideos::find()
+                    ->alias('a')
+                    ->joinWith(['learningVideoTags b'], false)
+                    ->where(['in', 'b.tag_enc_id', $tags_id])
+                    ->andWhere(['not', 'b.video_enc_id', $current_video_id['video_enc_id']])
+                    ->asArray()
+                    ->all();
+            }
             $related_videos = LearningVideos::find()
                 ->alias('a')
                 ->joinWith(['assignedCategoryEnc b'], false)

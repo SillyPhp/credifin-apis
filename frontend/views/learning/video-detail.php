@@ -1206,8 +1206,9 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
-        document.getElementById(parent_id).classList.add('hidden');
-
+        if(document.getElementById(parent_id)) {
+            document.getElementById(parent_id).classList.add('hidden');
+        }
         if (!hasPushed) {
             hasPushed = !hasPushed;
 
