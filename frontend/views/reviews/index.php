@@ -5,6 +5,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
+                    <div class="pos-relative">
                     <div class="header-bg">
                         <div class="search-box">
                             <div class="head-text">
@@ -24,6 +25,7 @@ use yii\helpers\Url;
                                 </div>
                             </form>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -72,23 +74,23 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="review-benifits">
-                    <div class="col-md-8 ">
+                    <div class="col-md-8 col-sm-8 ">
                         <div class="benifit-heading">Unquestionable <span>Reputation</span> </div>
                         <div class=""> Consumers share their experiences, unveiling the working atmosphere.
                             Know more by going through and make a right choice.</div>
                         <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-4">
                         <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="review-benifits">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-4">
                         <div class="benifits-icon bi-right"><img src="<?= Url::to('@eyAssets/images/pages/review/overview.png') ?>"></div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-8 col-sm-8">
                         <div class="benifit-heading">Perception <span>overview</span></div>
                         <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
                             Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
@@ -231,18 +233,26 @@ $this->registerCss('
     
 .head-bg{
     background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
-    background-size: contain;
+    background-size: cover;
     width: 100%;
-    min-height: 500px; 
+    background-repeat: no-repeat; 
     text-align:center
 }  
 .head-text{
     font-size:30px;
     text-transform:uppercase;
 }
+.pos-relative{
+    position:relative;
+    height:450px
+}
 .header-bg{
-    height:400px;
-    text-align:center
+    text-align:center;
+    width:100%;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
 }  
 .search-box{
     position:relative;
@@ -374,8 +384,7 @@ $this->registerCss('
     color:#ff7803;
 }
 .review-benifits{
-    padding:30px 100px
-    
+    padding:30px 100px;
 }
 .benifit-bttn{
     padding-top:20px;
@@ -774,47 +783,14 @@ input{
     border-radius:5px;
     font-size:13px;
 }
-@media screen and (max-width: 992px){
-    .half-bg{
-        border-radius:5px 5px 0 0;
-    }
-    .bg-log{
-        border-radius:0px 0px 5px 5px;
-    }
-    .rem-input input{
-        margin-left:0px;
-    }
-}
-@media screen and (max-width: 767px){
-    .rem-input{
-        padding-right:15px !important;
-    }
-    .half-bg{
-        display:none;
-    }
-    .bg-log{
-        min-width:300px;
-    }
-    .f-mail{
-        white-space: normal !important;
-    }
-}
-@media screen and(max-width: 550px){
-    .bg-log{
-        max-width:280px;
-    }
-}
-@media screen and (min-width: 768px){
-    .modal-dialog {
-        width: 750px !important;
-        margin: 30px auto;
-    }
-}
+
 body.modal-open{
     padding-right:0px !important;
     overflow:visible;
 }
-.error-occcur{color:red;}
+.error-occcur{
+    color:red;
+}
 .close-lg-modal{
     position: absolute;
     right: -40px;
@@ -836,11 +812,68 @@ body.modal-open{
 .rem-input .checkbox label{
     font-size: 14px;
 }
+@media screen and (max-width: 992px){
+    .half-bg{
+        border-radius:5px 5px 0 0;
+    }
+    .bg-log{
+        border-radius:0px 0px 5px 5px;
+    }
+    .rem-input input{
+        margin-left:0px;
+    }
+    .benifits-icon img{
+        max-width:150px;
+        padding-top:30px;
+    }
+}
+@media only screen and (max-width: 767px){
+    .rem-input{
+        padding-right:15px !important;
+    }
+    .half-bg{
+        display:none;
+    }
+    .bg-log{
+        min-width:300px;
+    }
+    .f-mail{
+        white-space: normal !important;
+    }
+    .benifits-icon{
+       display:none;
+    }
+}
+@media only screen and (min-width: 768px){
+    .modal-dialog {
+        width: 750px !important;
+        margin: 30px auto;
+    }
+}
+@media only screen and (max-width: 550px){
+    .bg-log{
+        max-width:280px;
+    }
+    .review-benifits{
+        padding:30px 15px !important;
+    }
+    .benifits-icon{
+        padding-top:20px;
+        display:none;
+    }
+    .head-text p{
+        line-height: 35px;
+    }
+}
+
 @media only screen and (max-width: 450px) {
     .close-lg-modal{
         right: -5px;
         color: #777;
     }
+     .review-benifits{
+        padding:30px 15px;
+    {
 }
 ');
 echo $this->render('/widgets/mustache/review-cards', [

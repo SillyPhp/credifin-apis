@@ -576,10 +576,13 @@ form input[type="text"]:focus{
     text-align: center;
 }
 .com-name{
-    padding-top: 10px;
+    padding: 10px 10px 0 10px;
     color: #bcbaba;
     font-size: 18px;
     text-transform: capitalize;
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 .rating-stars{
     font-size:20px;
