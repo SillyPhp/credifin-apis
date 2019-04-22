@@ -29,136 +29,45 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-<!--    <section>-->
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12">-->
-<!--                <h1 class="heading-style">Top Categories</h1>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/accounts_and_finance.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        accounts & finance-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/arts_design.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        arts & design-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/media_communication.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        media communication-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/real_estate.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        real estate-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/healthcare_services.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        healthcare services-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/legal.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        legal-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/information_technology.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        information technology-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--                <div class="cat-box">-->
-<!--                    <div class="cat-icon">-->
-<!--                        <img src="--><?//= Url::to('@commonAssets/categories/marketing.svg') ?><!--">-->
-<!--                    </div>-->
-<!--                    <div class="cat-title">-->
-<!--                        marketing-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!---->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
-<!--    <section>-->
-<!--        <div class="container">-->
-<!--            <div class="row mt-20">-->
-<!--                <div class="col-md-12 col-sm-12">-->
-<!--                    <h1 class="heading-style">--><?//= Yii::t('frontend', 'Top Rated Jobs'); ?><!--</h1>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            --><?php
-//            $total_categories = count($categories);
-//            $rows = ceil($total_categories / 4);
-//            $next = 0;
-//            for ($i = 1; $i <= $rows; $i++) {
-//                ?>
-<!--                <div class="row">-->
-<!--                    --><?php
-//                    for ($j = 0; $j < 4; $j++) {
-//                        if ($next < $total_categories) {
-//                            ?>
-<!--                            <div class="col-md-3 col-sm-6 categories">-->
-<!--                                <a href="javascript:;">-->
-<!--                                    <figure class="grids">-->
-<!--                                        <img class="grids-image" src="--><?//= Url::to('@commonAssets/categories/') . $categories[$next]["icon"] ?><!--">-->
-<!--                                    </figure>-->
-<!--                                    <h4>--><?//= Yii::t('frontend', $categories[$next]['name']); ?><!--</h4>-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                            --><?php
-//                        }
-//                        $next++;
-//                    }
-//                    ?>
-<!--                </div>-->
-<!--                --><?php
-//            }
-//            ?>
-<!--        </div>-->
-<!--    </section>-->
+<!--registration model-->
+    <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content half-bg-color">
+                <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
+                <div class="row margin-0">
+                    <div class="col-md-6 col-sm-6">
+                        <div class=" half-bg half-bg-color">
+                            <div class="top-circle">
+                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
+                            </div>
+                            <div class="log-icon">
+                                <span></span>
+                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-image.png') ?>"
+                                     class="centerthis">
+                            </div>
+                            <div class="bottom-circle">
+                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 padding-0 bg-log">
+                        <div class="log-fom">
+                            <div class="inner-log-fom"></div>
+                            <div class="inner-main-log-fom">
+                                <div class="ey-logo">
+                                    <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>">
+                                </div>
+                                <div class="login-form" id="loginForm">
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <section class="review-benifit">
         <div class="container">
             <div class="row">
@@ -619,7 +528,14 @@ width:100%;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
-
+.no_result_found
+{
+display:inline-block;
+}
+.add_org
+{
+float:right;
+}
 @keyframes bounce{
   0%, 75%, 100%{
     -webkit-transform: translateY(0);
@@ -636,6 +552,296 @@ width:100%;
   }
 }
 /*Load Suggestions loader css ends */
+.no_result_display{
+    padding:0px 15px;
+}
+.no_result_display .add_org{
+    border-left: 1px solid #ddd;
+    padding: 0px 5px 0px 15px;
+}
+.no_result_display .add_org a{
+    color: #00a0e3;
+    font-size: 13px;
+}
+::placeholder{
+    color:#999;
+}
+.login-heading{
+    text-align:left;
+    padding-left:40px;
+}
+.top-circle{
+    position:absolute;
+    top: 0;
+    left: 40px;
+    max-width: 100px;
+}
+.bottom-circle{
+    position:absolute;
+    bottom: 0;
+    right: 40px;
+    max-width: 80px;
+}
+#signForm, #individualForm{
+    display:none;
+}
+.sign-heading{
+    padding: 30px 0px 10px 0;
+}
+.indi-btn a{
+    background: #00a0e3;
+    color: #fff;
+    padding: 7px 42px;
+    border: 1px solid #00a0e3;
+    border-radius: 5px;
+    text-transform: capitalize;
+    font-size: 15px;
+    width: 160px;
+    margin: auto;
+    margin-top: 5px;
+    display: block;
+}
+.organ-btn{
+    margin-top:20px;
+}
+.organ-btn a{
+    padding: 10px 37px;
+    background: #ff7803;
+    border:1px solid #ff7803;
+    margin-top:10px;
+    color:#fff;
+    border-radius: 5px;
+    text-transform: capitalize;
+    font-size: 14px;
+}
+.uname-padd-10{
+    padding-top:5px !important;
+}
+/*---forget box---*/
+#forgotForm{
+    display:none;
+}
+.f-text{
+    padding:45px 0 5px 35px;
+    text-align:left; 
+    font-size:13px;
+}
+.f-button{
+    padding:20px 0 0 0;
+}
+.f-mail{
+    font-size:13px;
+    padding:10px 50px 0 50px;
+    white-space: normal !important;
+}
+.f-button button{
+    background:#00a0e3;
+    color:#fff;
+    border:#00a0e3;
+    padding:10px 20px;
+    border-radius:5px;
+    font-size:13px !important;
+}
+/*---forget box ends---*/
+.loginModal.modal.in{
+    display:flex !important;
+}
+.modal.in .modal-dialog{
+    margin:auto;
+}
+.fade-scale {
+  transform: scale(0);
+  opacity: 0;
+  -webkit-transition: all .25s linear;
+  -o-transition: all .25s linear;
+  transition: all .25s linear;
+}
+.fade-scale.in {
+  opacity: 1;
+  transform: scale(1);
+}
+.new-user{
+    font-size:13px;
+    position:absolute;
+    bottom:5px;
+    left:50%;
+    transform: translateX(-50%);
+}
+.new-user button{
+    font-size:14px;
+    background:none;
+    border:none;
+    color:#00a0e3;
+}
+.bg-log{
+    background:#fff;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0 5px 5px 0;
+    min-height:365px;
+}
+.margin-0{
+    margin-left:0px !important;
+    margin-right:0px !important;
+}
+.half-bg-color{
+    background: #00a0e3;
+}
+.half-bg{
+    background-size:cover;
+    height:100%;
+    border-radius: 5px 0 0 5px;
+}
+.log-fom, .log-icon{
+    padding:50px 0;
+    text-align:center;
+    white-space: nowrap;
+    height: 540px;
+}
+.ey-logo{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+}
+.ey-logo img{
+    max-width:200px;
+}
+.log-btn{
+    padding:100px
+}
+.log-icon span{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.log-icon img{
+    max-width:315px;
+    vertical-align: middle;
+}
+.inner-log-fom{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.inner-main-log-fom{
+    vertical-align: middle;
+    display: inline-block;
+    width:100%;
+}
+.uname{
+    padding:10px 0 10px 0;
+    
+}
+.uname-in, .pass-in{
+    padding:10px 15px;
+    border:1px solid #ddd;
+    border-radius:5px;
+    width:80%;
+    font-size: 13px;
+}
+.forgot-pass{
+    font-size:12px;
+}
+.rem-input{
+    padding-top: 3px;
+    padding-left: 30px;
+}
+.rem-input span{
+    padding-left:3px;
+}
+.for-a{
+    padding-top:3px;
+    text-align:right; 
+}
+.for-a a{
+    background:transparent;
+    border:none;
+    font-size:13px;
+    margin-right:30px
+}
+input{
+    font: normal;
+}
+.login-btn{
+    padding-top:10px;
+}
+.login-btn button{
+    background:#00a0e3;
+    color:#fff;
+    border:#00a0e3;
+    padding:10px 20px;
+    border-radius:5px;
+    font-size:13px;
+}
+@media screen and (max-width: 992px){
+    .half-bg{
+        border-radius:5px 5px 0 0;
+    }
+    .bg-log{
+        border-radius:0px 0px 5px 5px;
+    }
+    .rem-input input{
+        margin-left:0px;
+    }
+}
+@media screen and (max-width: 767px){
+    .rem-input{
+        padding-right:15px !important;
+    }
+    .half-bg{
+        display:none;
+    }
+    .bg-log{
+        min-width:300px;
+    }
+    .f-mail{
+        white-space: normal !important;
+    }
+}
+@media screen and(max-width: 550px){
+    .bg-log{
+        max-width:280px;
+    }
+}
+@media screen and (min-width: 768px){
+    .modal-dialog {
+        width: 750px !important;
+        margin: 30px auto;
+    }
+}
+body.modal-open{
+    padding-right:0px !important;
+    overflow:visible;
+}
+.error-occcur{color:red;}
+.close-lg-modal{
+    position: absolute;
+    right: -40px;
+    font-size: 40px;
+    color: #fff;
+    opacity: 1;
+    top: -8px;
+    font-weight: 100;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    z-index: 99;
+}
+.rem-input .checkbox{
+    padding-left: 20px;
+    margin: 0px;
+    color: inherit;
+}
+.rem-input .checkbox label{
+    font-size: 14px;
+}
+@media only screen and (max-width: 450px) {
+    .close-lg-modal{
+        right: -5px;
+        color: #777;
+    }
+}
 ');
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
@@ -704,7 +910,7 @@ return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="tt-suggestion tt-selectable">Sorry! No results found</div><div class"add_org"><a href="">Add New Organizatons</a></div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div></div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();
@@ -712,7 +918,7 @@ empty: ['<div class="tt-suggestion tt-selectable">Sorry! No results found</div><
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/"'+datum.slug+'"/reviews'); 
+    window.location.replace('/'+datum.slug+'/reviews');
   });
 JS;
 $this->registerJs($script);
