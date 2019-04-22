@@ -25,7 +25,7 @@ namespace common\models;
  * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)
- * @property int $for_careers
+ * @property int $for_careers Is Application for Careers (0 as False, 1 as True)
  * @property string $published_on On which date application was published
  * @property string $image Application Image
  * @property string $image_location Application Image Path
@@ -48,7 +48,7 @@ namespace common\models;
  * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
  * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title0
+ * @property AssignedCategories $title
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Designations $designationEnc
