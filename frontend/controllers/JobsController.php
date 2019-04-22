@@ -315,4 +315,8 @@ class JobsController extends Controller
         }
     }
 
+    public function actionNearMe(){
+        return $this->render('near-me-beta');
+    }
+
 }
