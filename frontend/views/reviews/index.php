@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 ?>
     <section class="head-bg">
         <div class="container">
@@ -59,7 +61,49 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>">
                                 </div>
                                 <div class="login-form" id="loginForm">
-
+                                    <?php
+                                    $form = ActiveForm::begin([
+                                        'id' => 'signup-form',
+                                        'options' => [
+                                            'class' => 'clearfix',
+                                        ],
+                                        'fieldConfig' => [
+                                            'template' => '{input}{error}',
+                                        ],
+                                    ]);
+                                    ?>
+                                    <div class="uname">
+                                        <?=
+                                        $form->field($model, 'name')->textInput([
+                                            'autofocus' => true,
+                                            'autocomplete' => 'off',
+                                            'class' => 'uname-in',
+                                            'placeholder' => 'Enter Organization Name',
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <div class="pass">
+                                        <?=
+                                        $form->field($model, 'email')->textInput([
+                                            'autocomplete' => 'off',
+                                            'class' => 'uname-in',
+                                            'placeholder' => 'Enter Organization Email',
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <div class="pass">
+                                        <?=
+                                        $form->field($model, 'website')->textInput([
+                                            'autocomplete' => 'off',
+                                            'class' => 'uname-in',
+                                            'placeholder' => 'Enter Organization Website',
+                                        ]);
+                                        ?>
+                                    </div>
+                                    <div class="login-btn">
+                                        <?= Html::submitButton('Submit', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+                                    </div>
+                                    <?php ActiveForm::end(); ?>
                                 </div>
                             </div>
                         </div>
@@ -875,7 +919,7 @@ function fetch_cards(params)
             $('.fader').css('display','none');
             $('#review_container').html('');
             $('#load_review_card_btn').show();
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
@@ -910,7 +954,7 @@ return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div></div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" data-toggle="modal" data-target="#org_sign_up_Modal">Add New Organizatons</a></div></div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();

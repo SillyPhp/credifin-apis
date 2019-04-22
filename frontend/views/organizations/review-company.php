@@ -1030,6 +1030,20 @@ border: 2px solid #cadfe8 !important;
         padding-bottom:20px;
     }
 }
+#autocomplete-list{
+    background-color: #fff;
+    border-radius: 0px 0px 10px 10px;
+    max-height: 350px;
+    overflow-y: scroll;
+}
+#autocomplete-list div {
+    padding: 3px;
+    border-bottom: .5px solid #eee;
+    font-size: 16px;
+}
+#autocomplete-list div:last-child {
+    border-bottom:0px;
+}
 ');
 $script = <<< JS
 $(document).on('click','.follow',function(e){
@@ -1239,7 +1253,7 @@ var popup = new ideaboxPopup({
 					},
 				
 					{
-						question 	: 'Location of your office',
+						question 	: 'City of Your Office',
 						answerType	: 'location_autocomplete',
 						formName	: 'location',
 						description	: 'Please enter your office location',
@@ -1248,7 +1262,7 @@ var popup = new ideaboxPopup({
 						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
 					},
 					{
-						question 	: 'your department or division you worked in',
+						question 	: 'Your Job Profile',
 						answerType	: 'department_autocomplete',
 						formName	: 'department',
 						description	: 'Please enter your department or division',
@@ -1257,11 +1271,20 @@ var popup = new ideaboxPopup({
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
 					{
+						question 	: 'Your Designation',
+						answerType	: 'designation_autocomplete',
+						formName	: 'designation',
+						description	: 'Please enter your designation',
+						nextLabel	: 'Go to Step 15',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select a department</b>'
+					},
+					{
 						question 	: 'Things you like about the company',
 						answerType	: 'textarea',
 						formName	: 'likes',
 						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
-						nextLabel	: 'Go to Step 15',
+						nextLabel	: 'Go to Step 16',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please write a review</b>'
 					},

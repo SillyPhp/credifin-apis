@@ -17,21 +17,20 @@ class ReviewCards {
               ->joinWith(['organizationReviews c'=>function($b)
               {
                   $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
-                  $b->groupBy(['organization_enc_id']);
+                  $b->groupBy(['c.organization_enc_id']);
               }],true)
               ->joinWith(['employerApplications e'=>function($x)
               {
                   $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
                   $x->joinWith(['applicationTypeEnc h'],false);
                   $x->andWhere(['e.is_deleted'=>0]);
-
-                  $x->groupBy(['organization_enc_id']);
+                  $x->groupBy(['e.organization_enc_id']);
               }],true)
-              ->limit($options['limit'])
               ->joinWith(['organizationLocations d'=>function($x)
               {
                       $x->joinWith(['cityEnc g'], false);
-              }],false);
+              }],false)
+              ->groupBy('a.organization_enc_id');
         if (isset($options['business_activity']))
         {
            $cards->orFilterWhere([
@@ -57,6 +56,12 @@ class ReviewCards {
         {
             $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
         }
-        return $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+        $total_cards = $cards->count();
+        $data = $cards->orderBy(['a.id' => SORT_DESC])->limit($options['limit'])->asArray()->all();
+
+        return [
+            'total'=>$total_cards,
+            'cards'=>$data
+        ];
     }
 }

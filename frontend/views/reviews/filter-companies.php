@@ -1026,7 +1026,11 @@ function fetch_cards(params)
             $('.fader').css('display','none');
             $('#review_container').html('');
             $('#load_review_card_btn').show();
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            if (response.cards.total<9)
+                {
+                    $('.load-more-bttn').hide();
+                }
+            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({

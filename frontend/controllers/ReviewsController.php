@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\BusinessActivities;
 use common\models\Organizations;
+use frontend\models\reviews\RegistrationForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -14,7 +15,19 @@ class ReviewsController extends Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new RegistrationForm();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if ($model->saveVal())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return $this->render('index',['model'=>$model]);
     }
     public function actionSearch($keywords)
     {
@@ -29,7 +42,7 @@ class ReviewsController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Organizations::find()
-                  ->select(['name','slug','CASE WHEN logo IS NULL OR logo = "" THEN "' . Url::to('@commonAssets/categories/enterprise.png') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo','business_activity'])
+                  ->select(['name','slug','initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo','business_activity'])
                   ->where('name LIKE "%' . $query . '%"')
                   ->joinWith(['businessActivityEnc'],false)
                   ->limit(20)
