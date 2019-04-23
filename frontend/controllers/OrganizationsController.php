@@ -49,10 +49,13 @@ class OrganizationsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $organization = Organizations::find()
-                ->select(['name', 'slug', '(CASE WHEN is_featured = "1" THEN "1" ELSE NULL END) as is_featured','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
-                ->where(['status' => 'Active', 'is_deleted' => 0])
+                ->alias('a')
+                ->select(['a.name', 'a.slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo','b.business_activity'])
+                ->joinWith(['businessActivityEnc b'],false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
             if ($organization) {
                 $response = [
                     'status' => 200,

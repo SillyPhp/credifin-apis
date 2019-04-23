@@ -227,6 +227,7 @@ function getCompanies() {
                 if(response.status == 200){
                     var get_companies = $('#all-companies-card').html();
                     $("#companies-card").html(Mustache.render(get_companies, response.organization));
+                    utilities.initials();
                 }
             }
         })

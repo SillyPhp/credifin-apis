@@ -24,7 +24,7 @@
                 </div>
                 <div class="com-det">
                     <div class="com-name">{{name}}</div>
-                    <div class="com-cate">{{category}} </div>
+                    <div class="com-cate">{{business_activity}} </div>
                 </div>
             </a>
         </div>
@@ -80,6 +80,10 @@ $this->registerCss('
 .com-name{
     font-size:20px;
     color:#525252;
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   text-transform: capitalize;
 }
 .featured{
     background:#00a0e3;
