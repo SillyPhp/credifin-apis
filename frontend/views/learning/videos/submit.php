@@ -129,6 +129,8 @@ $form->field($learningCornerFormModel, 'video_url', ['enableAjaxValidation' => t
 
 <?= $form->field($learningCornerFormModel, 'video_id', ['enableAjaxValidation' => true])->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
 
+<?= $form->field($learningCornerFormModel, 'video_duration')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_duration'), 'id' => 'video-duration']); ?>
+
 <?=
 $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']);
 ?>
@@ -466,15 +468,15 @@ $script = <<< JS
         var link = $('#url').val();
         var videoid = link.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
         $.ajax({
-            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+videoid[1]+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
+            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id='+videoid[1]+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
             contentType: "application/json",
             dataType: "json",
             success: function(data){
-                console.log(data);
                 $("#youtube-title").val(data.items[0].snippet.title);
                 $("#youtube-description").val(data.items[0].snippet.description);
                 $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);
                 $("#video-id").val(videoid[1]);
+                $("#video-duration").val(data.items[0].contentDetails.duration);
             }
         });
         $(".title").show();

@@ -44,6 +44,7 @@ class LearningController extends Controller
             $description = $req['description'];
             $tags = $req['tags'];
             $created_by = $req['created_by'];
+            $duration = $req['video_duration'];
 
             $tags_array = explode(",", trim($tags));
             $tags_id = [];
@@ -132,6 +133,7 @@ class LearningController extends Controller
             $learningVideosModel->cover_image = $cover_image;
             $learningVideosModel->description = $description;
             $learningVideosModel->slug = $slug;
+            $learningVideosModel->duration = $duration;
             $learningVideosModel->youtube_video_id = $link;
             $learningVideosModel->created_on = date('Y-m-d H:i:s');
             $learningVideosModel->created_by = $created_by;

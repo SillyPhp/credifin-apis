@@ -15,6 +15,7 @@ use Yii;
  * @property string $cover_image Cover Image of Video
  * @property string $description Video Description
  * @property string $slug Video Slug
+ * @property string $duration Video Duration
  * @property string $youtube_video_id Youtube Video ID
  * @property int $view_count Total Views of Video
  * @property int $is_sponsored Is Video Sponsored (0 as No, 1 as Yes)
@@ -50,10 +51,10 @@ class LearningVideos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['video_enc_id', 'assigned_category_enc_id', 'type', 'title', 'cover_image', 'description', 'slug', 'youtube_video_id', 'created_by'], 'required'],
+            [['video_enc_id', 'assigned_category_enc_id', 'type', 'title', 'cover_image', 'description', 'slug', 'duration', 'youtube_video_id', 'created_by'], 'required'],
             [['description'], 'string'],
+            [['duration', 'created_on', 'last_updated_on'], 'safe'],
             [['view_count', 'is_sponsored', 'is_featured', 'status', 'is_deleted'], 'integer'],
-            [['created_on', 'last_updated_on'], 'safe'],
             [['video_enc_id', 'assigned_category_enc_id', 'title', 'cover_image', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['type'], 'string', 'max' => 30],
             [['youtube_video_id'], 'string', 'max' => 50],
@@ -65,7 +66,6 @@ class LearningVideos extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery

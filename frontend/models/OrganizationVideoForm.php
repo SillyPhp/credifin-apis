@@ -19,10 +19,11 @@ class OrganizationVideoForm extends Model {
     public $tags;
     public $video_url;
     public $video_id;
+    public $video_duration;
 
     public function rules() {
         return [
-            [['video_id', 'video_title', 'video_type', 'video_url', 'cover_image', 'description', 'tags', 'category', 'sub_category'], 'required'],
+            [['video_id', 'video_title', 'video_type', 'video_url', 'cover_image', 'description', 'tags', 'category', 'sub_category', 'video_duration'], 'required'],
             [['video_title', 'video_type', 'category', 'video_url', 'cover_image', 'sub_category', 'description', 'tags'], 'trim'],
             [['description'], 'string'],
             ['video_id', 'unique', 'targetClass' => SubmittedVideos::className(), 'targetAttribute' => ['video_id' => 'link'], 'message' => 'Video Already added'],
@@ -54,7 +55,14 @@ class OrganizationVideoForm extends Model {
             'description' => Yii::t('frontend', 'Description'),
             'tags' => Yii::t('frontend', 'Tags'),
             'video_id' => Yii::t('frontend', 'Video ID'),
+            'video_duration' => Yii::t('frontend', 'Video Duration'),
         ];
+    }
+
+    private function video_length($youtube_time)
+    {
+        $duration = new \DateInterval($youtube_time);
+        return $duration->h  . ':' . $duration->i  . ':' . $duration->s;
     }
 
     public function save($userID = NULL) {
@@ -66,6 +74,7 @@ class OrganizationVideoForm extends Model {
             $submittedVideosModel->link = $this->video_id;
             $submittedVideosModel->cover_image = $this->cover_image;
             $submittedVideosModel->description = $this->description;
+            $submittedVideosModel->video_duration = $this->video_length($this->video_duration);
 
             if (!empty($this->tags)) {
                 $submittedVideosModel->tags = $this->tags;
