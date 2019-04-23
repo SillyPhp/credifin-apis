@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\BusinessActivities;
 use common\models\Organizations;
+use frontend\models\reviews\RegistrationForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -14,7 +15,19 @@ class ReviewsController extends Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new RegistrationForm();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if ($model->saveVal())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return $this->render('index',['model'=>$model]);
     }
     public function actionSearch($keywords)
     {

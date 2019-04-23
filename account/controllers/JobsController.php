@@ -1022,12 +1022,12 @@ class JobsController extends Controller
         } else {
             $viewed = 1;
         }
-
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Jobs',10),
+            'total_applied' => $userApplied->total_applied($type='Jobs'),
             'viewed' => $viewed,
             'primary_fields' => $this->getCategories()
         ]);

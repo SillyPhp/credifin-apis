@@ -726,7 +726,7 @@ class OrganizationsController extends Controller
 
             $options = Yii::$app->request->post('params');
             $cards = $get->getReviewCards($options);
-            if (count($cards) > 0) {
+            if ($cards['total'] > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
