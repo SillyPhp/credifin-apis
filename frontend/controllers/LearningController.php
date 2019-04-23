@@ -22,16 +22,14 @@ use common\models\Utilities;
 
 class LearningController extends Controller
 {
-    public $enableCsrfValidation = false;
-
+   
     //Approval Requirements
     //Input data in required form
     //Approval of assigned categories
     //Approval of assigned tags
     public function actionAddApproved()
     {
-//        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-        if (Yii::$app->request->isPost) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             $req = Yii::$app->request->post();
