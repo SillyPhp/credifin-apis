@@ -1,6 +1,10 @@
 <?php
 
 namespace account\models\applications;
+use common\models\ApplicationTypes;
+use common\models\AssignedCategories;
+use common\models\EmployerApplications;
+use common\models\Users;
 use Yii;
 use common\models\AppliedApplications;
 
@@ -35,5 +39,20 @@ class UserAppliedApplication
              ->all();
 
         return $u;
+    }
+
+    public function total_applied($type=null)
+    {
+        $total_applications = AppliedApplications::find()
+            ->alias('a')
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = b.application_type_enc_id')
+            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->andWhere(['b.is_deleted' => 0])
+            ->andWhere(['f.name' => $type])
+            ->innerJoin(Users::tableName() . 'as e', 'e.user_enc_id = a.created_by')
+            ->groupBy(['a.applied_application_enc_id'])
+            ->count();
+        return $total_applications;
     }
 }
