@@ -4,7 +4,19 @@
         <div class="com-box">
             <a href="{{slug}}">
                 <div class="com-icon">
-                    <div class="icon"><img src="{{logo}}" /></div>
+                    <div class="icon">
+                        {{#logo}}
+                        <a href="/{{slug}}">
+                            <img src="{{logo}}">
+                        </a>
+                        {{/logo}}
+                        {{^logo}}
+                        <a href="/{{slug}}">
+                            <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                                    color="{{color}}" font="35px"></canvas>
+                        </a>
+                        {{/logo}}
+                    </div>
 <!--                    <div class="follow"><button><i class="fa fa-heart-o"></i> </button></div>-->
                     {{#is_featured}}
                      <div class="featured">Featured</div>
