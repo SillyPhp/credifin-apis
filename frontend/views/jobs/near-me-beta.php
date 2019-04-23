@@ -2,222 +2,227 @@
 $this->params['header_dark'] = true;
 ?>
 <div class="row">
-    <div class="col-md-4 near-me-map pr-0">
+    <div class="col-md-6 near-me-map pr-0">
         <div id="map"></div>
     </div>
-    <div class="col-md-2 near-me-filters">
-        <div class="filter-heading">
-            Search companies by
-        </div>
-        <form>
-            <div class="filters">
-                <div class="filter-search">
-                    <div class="f-search-loc">
-                        <input type="text" id="city_search" placeholder="Location"/>
-                        <i class="fa fa-search"></i>
-                    </div>
-                </div>
-
-                <div class="col-md-12 pr-0 pl-0">
-                    <div class="f-ratings f-rating-box-2">
-                        <div class="overall-box-heading">By Location</div>
-                        <div class="form-group form-md-checkboxes">
-                            <div class="md-checkbox-list">
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Ludhiana</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-11" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-11">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Jalandhar</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-21" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-21">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Chandigarh</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-13" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-13">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Delhi</div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 pr-0 pl-0">
-                    <div class="f-ratings f-rating-box-2">
-                        <div class="overall-box-heading">By Category</div>
-                        <div class="form-group form-md-checkboxes">
-                            <div class="md-checkbox-list">
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-41" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-41">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">IT</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-15" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-15">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Human Resources</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-51" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-51">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Designing</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-61" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-61">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">Military</div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 pr-0 pl-0">
-                    <div class="f-ratings f-rating-box-2">
-                        <div class="overall-box-heading">Business Activities</div>
-                        <div class="form-group form-md-checkboxes">
-                            <div class="md-checkbox-list">
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 pr-0 pl-0">
-                    <div class="f-ratings f-rating-box-2">
-                        <div class="overall-box-heading">Business Activities</div>
-                        <div class="form-group form-md-checkboxes">
-                            <div class="md-checkbox-list">
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"
-                                           name="business[]">
-                                    <label for="checkbox-1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="all-label-2">School</div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+    <div class="col-md-2 near-me-filters pl-0">
+        <?=
+        $this->render('/widgets/sidebar-review', [
+            'type' => 'jobs',
+        ]);
+        ?>
+<!--        <div class="filter-heading">-->
+<!--            Search companies by-->
+<!--        </div>-->
+<!--        <form>-->
+<!--            <div class="filters">-->
+<!--                <div class="filter-search">-->
+<!--                    <div class="f-search-loc">-->
+<!--                        <input type="text" id="city_search" placeholder="Location"/>-->
+<!--                        <i class="fa fa-search"></i>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!---->
+<!--                <div class="col-md-12 pr-0 pl-0">-->
+<!--                    <div class="f-ratings f-rating-box-2">-->
+<!--                        <div class="overall-box-heading">By Location</div>-->
+<!--                        <div class="form-group form-md-checkboxes">-->
+<!--                            <div class="md-checkbox-list">-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Ludhiana</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-11" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-11">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Jalandhar</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-21" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-21">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Chandigarh</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-13" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-13">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Delhi</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-12 pr-0 pl-0">-->
+<!--                    <div class="f-ratings f-rating-box-2">-->
+<!--                        <div class="overall-box-heading">By Category</div>-->
+<!--                        <div class="form-group form-md-checkboxes">-->
+<!--                            <div class="md-checkbox-list">-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-41" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-41">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">IT</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-15" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-15">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Human Resources</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-51" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-51">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Designing</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-61" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-61">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">Military</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-12 pr-0 pl-0">-->
+<!--                    <div class="f-ratings f-rating-box-2">-->
+<!--                        <div class="overall-box-heading">Business Activities</div>-->
+<!--                        <div class="form-group form-md-checkboxes">-->
+<!--                            <div class="md-checkbox-list">-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-12 pr-0 pl-0">-->
+<!--                    <div class="f-ratings f-rating-box-2">-->
+<!--                        <div class="overall-box-heading">Business Activities</div>-->
+<!--                        <div class="form-group form-md-checkboxes">-->
+<!--                            <div class="md-checkbox-list">-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="md-checkbox">-->
+<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
+<!--                                           name="business[]">-->
+<!--                                    <label for="checkbox-1">-->
+<!--                                        <span></span>-->
+<!--                                        <span class="check"></span>-->
+<!--                                        <span class="box"></span>-->
+<!--                                        <div class="all-label-2">School</div>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </form>-->
     </div>
-    <div class="col-md-6 col-md-offset-2">
+    <div class="col-md-4 col-md-offset-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="n-header-bar">
@@ -230,7 +235,7 @@ $this->params['header_dark'] = true;
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -266,81 +271,7 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -378,7 +309,7 @@ $this->params['header_dark'] = true;
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -414,81 +345,7 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -526,7 +383,7 @@ $this->params['header_dark'] = true;
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -562,7 +419,7 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -600,7 +457,7 @@ $this->params['header_dark'] = true;
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -636,7 +493,155 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
+                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
+                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
+                     class="application-card-main ui-draggable ui-draggable-handle">
+            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;Daman
+                </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="/ajayjuneja">
+                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
+                                    hfhetdsh</h4>
+                            </a>
+                            <h5>Negotiable</h5>
+                            <h5>Full Time</h5>
+                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
+                        </div>
+                    </div>
+                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                        Last Date to Apply
+                        <br>
+                        25-04-2019
+                    </h6>
+                    <h4 class="col-md-7 org_name text-right pr-10">
+                        Ajay
+                    </h4>
+                    <div class="application-card-wrapper">
+                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
+                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
+                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
+                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
+                     class="application-card-main ui-draggable ui-draggable-handle">
+            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;Daman
+                </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="/ajayjuneja">
+                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
+                                    hfhetdsh</h4>
+                            </a>
+                            <h5>Negotiable</h5>
+                            <h5>Full Time</h5>
+                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
+                        </div>
+                    </div>
+                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                        Last Date to Apply
+                        <br>
+                        25-04-2019
+                    </h6>
+                    <h4 class="col-md-7 org_name text-right pr-10">
+                        Ajay
+                    </h4>
+                    <div class="application-card-wrapper">
+                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
+                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
+                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
+                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
+                     class="application-card-main ui-draggable ui-draggable-handle">
+            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;Daman
+                </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="/ajayjuneja">
+                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
+                                    hfhetdsh</h4>
+                            </a>
+                            <h5>Negotiable</h5>
+                            <h5>Full Time</h5>
+                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
+                        </div>
+                    </div>
+                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                        Last Date to Apply
+                        <br>
+                        25-04-2019
+                    </h6>
+                    <h4 class="col-md-7 org_name text-right pr-10">
+                        Ajay
+                    </h4>
+                    <div class="application-card-wrapper">
+                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
+                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
+                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
+                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
+                     class="application-card-main ui-draggable ui-draggable-handle">
+            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;Daman
+                </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="/ajayjuneja">
+                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
+                                    hfhetdsh</h4>
+                            </a>
+                            <h5>Negotiable</h5>
+                            <h5>Full Time</h5>
+                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
+                        </div>
+                    </div>
+                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                        Last Date to Apply
+                        <br>
+                        25-04-2019
+                    </h6>
+                    <h4 class="col-md-7 org_name text-right pr-10">
+                        Ajay
+                    </h4>
+                    <div class="application-card-wrapper">
+                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
+                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
                 <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
                      data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
                      class="application-card-main ui-draggable ui-draggable-handle">
@@ -683,6 +688,12 @@ $this->registerCss('
 #map{
     height:100vh;
 }
+.side-menu{
+    width:16%;
+}
+#review-internships{
+    width:auto;
+}
 .near-me-filters{
     position:fixed;
     width: 16%;
@@ -709,82 +720,82 @@ $this->registerCss('
     display: inline;
     font-size: 16px;
 }
-.filter-search{
-    padding-bottom: 20px;
-}
-.f-main-heading{
-    display: flex;
-}
-.show-search{
-    margin-left: 15px;
-    margin-top: 5px;
-}
-.show-search button{
-    background: transparent;
-    border:none;
-    font-size: 15px;
-    color: #666;
-    float:right;
-}
-.show-search button:hover{
-    color:#00a0e3;
-}
-.f-search-loc{
-   border:1px solid #eee; 
-   padding:5px 15px;
-   border-radius:10px;
-   margin-top:15px;
-   position:relative;  
-}
-.f-search-loc input{
-    border:none;
-    font-size: 14px;
-}
-.f-search-loc input::placeholder{
-    color:#999;
-}
-.f-search-loc i{
-    color: #999;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-}
-.md-checkbox label>.box{
-    top:6px;
-    border: 2px solid #ddd;
-}
-.md-checkbox-list .md-checkbox{
-    margin-bottom:-10px;
-}
-.f-ratings{
-    padding:5px 15px;
-    border:1px solid #eee;
-    border-radius:10px;
-}
-.form label{
-    margin-bottom: 0px !important;
-}
-.filter-heading{
-    padding: 4px 0px 10px 10px;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-.overall-box-heading{
-    font-size:13px;
-    padding-top:5px;
-    font-weight:bold;
-}
-.all-label-2{
-    padding-top:7px;
-    font-weight:500;
-    font-size:13px;
-    text-transform: capitalize;;
-}
-.f-rating-box-2{
-    margin-top:20px;
-    position:relative; 
-}
+//.filter-search{
+//    padding-bottom: 20px;
+//}
+//.f-main-heading{
+//    display: flex;
+//}
+//.show-search{
+//    margin-left: 15px;
+//    margin-top: 5px;
+//}
+//.show-search button{
+//    background: transparent;
+//    border:none;
+//    font-size: 15px;
+//    color: #666;
+//    float:right;
+//}
+//.show-search button:hover{
+//    color:#00a0e3;
+//}
+//.f-search-loc{
+//   border:1px solid #eee; 
+//   padding:5px 15px;
+//   border-radius:10px;
+//   margin-top:15px;
+//   position:relative;  
+//}
+//.f-search-loc input{
+//    border:none;
+//    font-size: 14px;
+//}
+//.f-search-loc input::placeholder{
+//    color:#999;
+//}
+//.f-search-loc i{
+//    color: #999;
+//    position: absolute;
+//    right: 10px;
+//    top: 10px;
+//}
+//.md-checkbox label>.box{
+//    top:6px;
+//    border: 2px solid #ddd;
+//}
+//.md-checkbox-list .md-checkbox{
+//    margin-bottom:-10px;
+//}
+//.f-ratings{
+//    padding:5px 15px;
+//    border:1px solid #eee;
+//    border-radius:10px;
+//}
+//.form label{
+//    margin-bottom: 0px !important;
+//}
+//.filter-heading{
+//    padding: 4px 0px 10px 10px;
+//    font-size: 13px;
+//    font-weight: 600;
+//    text-transform: uppercase;
+//}
+//.overall-box-heading{
+//    font-size:13px;
+//    padding-top:5px;
+//    font-weight:bold;
+//}
+//.all-label-2{
+//    padding-top:7px;
+//    font-weight:500;
+//    font-size:13px;
+//    text-transform: capitalize;;
+//}
+//.f-rating-box-2{
+//    margin-top:20px;
+//    position:relative; 
+//}
 ');
 $script = <<< JS
 var data = [$lat_long];
