@@ -294,7 +294,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/sales-officer-29591553927078"
                                                            title="">Sales Officer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/citizenbank"> Citizens Bank</a></div>
+                                                    <div class="wtabs-com-name"><a href="/citizensbank"> Citizens Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Mohali, <a href="/internship/sales-officer-29591553927078">8 More</a></div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -538,6 +538,7 @@ $this->params['seo_tags'] = [
                     <h1 class="heading-style">Companies With Us</h1>
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
+                        <a href="/capitalbank">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>"
                                  alt="Capital Small Finance Bank">
@@ -545,8 +546,10 @@ $this->params['seo_tags'] = [
                         <div class="com-name">
                             Capital Small Finance Bank
                         </div>
+                        </a>
                     </div>
                     <div class="com2 animatable fadeIn">
+                        <a href="/midland">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
                                  alt="Midland MicroFin">
@@ -554,40 +557,50 @@ $this->params['seo_tags'] = [
                         <div class="com-name">
                             Midland MicroFin
                         </div>
+                        </a>
                     </div>
                     <div class="com3 animatable fadeIn">
+                        <a href="/dsb">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group">
                         </div>
                         <div class="com-name">
                             DSB Law Group
                         </div>
+                        </a>
                     </div>
                     <div class="com4 animatable fadeIn">
+                        <a href="/citizensbank">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>" alt="HAG India">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>" alt="Citizens Bank">
                         </div>
                         <div class="com-name">
-                            HAG India
+                            Citizens Bank
                         </div>
+                        </a>
                     </div>
                     <div class="com5 animatable fadeIn">
+                        <a href="/agile">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv">
                         </div>
                         <div class="com-name">
                             Agile Finserv
                         </div>
+                        </a>
                     </div>
                     <div class="com6 animatable fadeIn">
+                        <a href="/becre8v">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>" alt="Olready">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>" alt="Be Cre8v ">
                         </div>
                         <div class="com-name">
-                            Olready
+                            Be Cre8v
                         </div>
+                        </a>
                     </div>
                     <div class="com8 animatable fadeIn">
+                        <a href="/amritmalwa">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
                                  alt="Amrit Malwa Capital Limited">
@@ -595,30 +608,37 @@ $this->params['seo_tags'] = [
                         <div class="com-name">
                             Amrit Malwa Capital Limited
                         </div>
+                        </a>
                     </div>
                     <div class="com9 animatable fadeIn">
+                        <a href="/hamco">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat">
                         </div>
                         <div class="com-name">
                             Hamco Ispat
                         </div>
+                        </a>
                     </div>
                     <div class="com10 animatable fadeIn">
+                        <a href="/upmoney">
                         <div class="com-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd">
                         </div>
                         <div class="com-name">
                             Up Money Ltd
                         </div>
+                        </a>
                     </div>
                     <div class="com11 animatable fadeIn">
+                        <a href="/apurva">
                         <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>" alt="Empower youth">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/codenomad.png') ?>" alt="Code Nomad">
                         </div>
                         <div class="com-name">
-                            Empower youth
+                            Code Nomad
                         </div>
+                        </a>
                     </div>
                 </div>
             </div>
