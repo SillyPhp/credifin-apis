@@ -470,6 +470,7 @@ $script = <<< JS
             contentType: "application/json",
             dataType: "json",
             success: function(data){
+                console.log(data);
                 $("#youtube-title").val(data.items[0].snippet.title);
                 $("#youtube-description").val(data.items[0].snippet.description);
                 $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);

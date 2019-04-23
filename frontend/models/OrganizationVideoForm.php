@@ -22,7 +22,7 @@ class OrganizationVideoForm extends Model {
 
     public function rules() {
         return [
-            [['video_id', 'video_title', 'video_type', 'video_url', 'cover_image', 'description'], 'required'],
+            [['video_id', 'video_title', 'video_type', 'video_url', 'cover_image', 'description', 'tags', 'category', 'sub_category'], 'required'],
             [['video_title', 'video_type', 'category', 'video_url', 'cover_image', 'sub_category', 'description', 'tags'], 'trim'],
             [['description'], 'string'],
             ['video_id', 'unique', 'targetClass' => SubmittedVideos::className(), 'targetAttribute' => ['video_id' => 'link'], 'message' => 'Video Already added'],

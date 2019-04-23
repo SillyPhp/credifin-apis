@@ -476,7 +476,7 @@ class LearningController extends Controller
                     ->alias('a')
                     ->joinWith(['learningVideoTags b'], false)
                     ->where(['in', 'b.tag_enc_id', $tags_id])
-                    ->andWhere(['not', 'b.video_enc_id', $current_video_id['video_enc_id']])
+                    ->andWhere(['!=', 'b.video_enc_id', $current_video_id['video_enc_id']])
                     ->asArray()
                     ->all();
             }
@@ -486,10 +486,14 @@ class LearningController extends Controller
                 ->where(['b.parent_enc_id' => $parent_id])
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
 //                ->orderBy(['view_count' => SORT_DESC])
+                ->where(['status' => 1])
+                ->andWhere(['is_deleted' => 0])
+                ->andWhere(['!=', 'video_enc_id', $current_video_id['video_enc_id']])
                 ->limit(2)
                 ->asArray()
                 ->all();
