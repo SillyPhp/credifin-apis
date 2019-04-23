@@ -13,9 +13,11 @@ use yii\web\Controller;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-class SearchController extends Controller{
+class SearchController extends Controller
+{
 
-    public function actionIndex(){
+    public function actionIndex()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             $s = Yii::$app->request->post('keyword');
@@ -24,12 +26,12 @@ class SearchController extends Controller{
             $organizations = Organizations::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-                ->joinWith(['organizationReviews f' => function($y){
+                ->joinWith(['organizationReviews f' => function ($y) {
                     $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt']);
                     $y->andWhere(['f.status' => 1]);
                     $y->andWhere(['f.is_deleted' => 0]);
                 }])
-                ->joinWith(['employerApplications e' => function($x){
+                ->joinWith(['employerApplications e' => function ($x) {
                     $x->select(['e.organization_enc_id', 'COUNT(e.application_enc_id) applications_cnt']);
                     $x->andWhere(['e.status' => 'Active']);
                     $x->andWhere(['e.is_deleted' => 0]);
@@ -37,9 +39,10 @@ class SearchController extends Controller{
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->joinWith(['businessActivityEnc c'], false)
                 ->joinWith(['industryEnc d'], false)
-                ->where(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active']);
-            $organizations
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'a.name', $s],
@@ -48,16 +51,11 @@ class SearchController extends Controller{
                     ['like', 'b.organization_type', $s],
                     ['like', 'c.business_activity', $s],
                     ['like', 'd.industry', $s]
-                ]);
-
-            $organizations->limit = 8;
-
-            $valid_organization = $organizations
+                ])
                 ->groupBy(['a.organization_enc_id'])
-                ->asArray()
-                ->all();
+                ->limit(8);
 
-            $result['organizations'] = $valid_organization;
+            $result['organizations'] = $organizations->asArray()->all();
 
             $jobs = EmployerApplications::find()
                 ->alias('a')
@@ -105,9 +103,12 @@ class SearchController extends Controller{
                         $x->joinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false);
-
-            $jobs
+                ->joinWith(['applicationOptions l'], false)
+                ->where([
+                    'b.name' => 'Jobs',
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'a.slug', $s],
@@ -129,17 +130,11 @@ class SearchController extends Controller{
                     ['like', 'j.location_name', $s],
                     ['like', 'j.address', $s],
                     ['like', 'k.name', $s],
-                ]);
-
-            $jobs->limit = 6;
-
-            $final_jobs = $jobs
-                ->andWhere(['b.name' => 'Jobs'])
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active'])
+                ])
                 ->groupBy(['a.application_enc_id'])
-                ->asArray()
-                ->all();
+                ->limit(6);
+
+            $final_jobs = $jobs->asArray()->all();
 
             $i = 0;
             foreach ($final_jobs as $val) {
@@ -224,9 +219,12 @@ class SearchController extends Controller{
                         $x->joinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false);
-
-            $internships
+                ->joinWith(['applicationOptions l'], false)
+                ->where([
+                    'b.name' => 'Internships',
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'a.slug', $s],
@@ -244,17 +242,11 @@ class SearchController extends Controller{
                     ['like', 'j.location_name', $s],
                     ['like', 'j.address', $s],
                     ['like', 'k.name', $s],
-                ]);
-
-            $internships->limit = 6;
-
-            $final_internships = $internships
-                ->andWhere(['b.name' => 'Internships'])
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active'])
+                ])
                 ->groupBy(['a.application_enc_id'])
-                ->asArray()
-                ->all();
+                ->limit(6);
+
+            $final_internships = $internships->asArray()->all();
 
             $i = 0;
             foreach ($final_internships as $val) {
@@ -313,23 +305,20 @@ class SearchController extends Controller{
                     'CONCAT("/blog/", slug) link',
                     'excerpt',
                     'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", featured_image_location, "/", featured_image) ELSE NULL END image'
-                ]);
-
-            $posts
+                ])
+                ->where([
+                    'status' => 'Active',
+                    'is_deleted' => 0
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'title', $s],
                     ['like', 'slug', $s],
                     ['like', 'meta_keywords', $s],
-                ]);
+                ])
+                ->limit(3);
 
-            $posts->limit = 3;
-
-            $posts_filter = $posts
-                ->andWhere(['status' => 'Active'])
-                ->andWhere(['is_deleted' => 0])
-                ->asArray()
-                ->all();
+            $posts_filter = $posts->asArray()->all();
 
             $result['posts'] = $posts_filter;
 
