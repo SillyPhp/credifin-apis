@@ -23,15 +23,22 @@ class SearchController extends Controller{
 
             $organizations = Organizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt', 'COUNT(e.application_enc_id) cnt', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-                ->joinWith(['employerApplications e' => function ($x) {
-                    $x->onCondition(['e.is_deleted' => 0]);
-                }], false)
-                ->joinWith(['organizationReviews f'], false)
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+                ->joinWith(['organizationReviews f' => function($y){
+                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt']);
+                    $y->andWhere(['f.status' => 1]);
+                    $y->andWhere(['f.is_deleted' => 0]);
+                }])
+                ->joinWith(['employerApplications e' => function($x){
+                    $x->select(['e.organization_enc_id', 'COUNT(e.application_enc_id) applications_cnt']);
+                    $x->andWhere(['e.status' => 'Active']);
+                    $x->andWhere(['e.is_deleted' => 0]);
+                }])
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->joinWith(['businessActivityEnc c'], false)
-                ->joinWith(['industryEnc d'], false);
-
+                ->joinWith(['industryEnc d'], false)
+                ->where(['a.is_deleted' => 0])
+                ->andWhere(['a.status' => 'Active']);
             $organizations
                 ->andFilterWhere([
                     'or',
@@ -46,8 +53,6 @@ class SearchController extends Controller{
             $organizations->limit = 8;
 
             $valid_organization = $organizations
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active'])
                 ->groupBy(['a.organization_enc_id'])
                 ->asArray()
                 ->all();

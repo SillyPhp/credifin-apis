@@ -641,20 +641,22 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 {{/logo}}
             </div>
             <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
-            <div class="com-loc"><span>{{cnt}}</span> Openings</div>
-            {{#average_rating}}
-            <div class="starr" data-score="{{average_rating}}"></div>
-            <div class="rating">
-                <div class="stars">{{average_rating}}</div>
-                <div class="reviews-rate"> of {{reviews_cnt}} review</div>
-            </div>
-            {{/average_rating}}
-            {{^average_rating}}
-            <div class="starr" data-score="0"></div>
-            <div class="rating">
-                <div class="reviews-rate">No reviews</div>
-            </div>
-            {{/average_rating}}
+            <div class="com-loc"><span>{{#employerApplications}}{{applications_cnt}}</span> Openings</div>{{/employerApplications}}
+            {{#organizationReviews}}
+                {{#average_rating}}
+                    <div class="starr" data-score="{{average_rating}}"></div>
+                    <div class="rating">
+                        <div class="stars">{{average_rating}}</div>
+                        <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
+                    </div>
+                {{/average_rating}}
+                {{^average_rating}}
+                    <div class="starr" data-score="0"></div>
+                    <div class="rating">
+                        <div class="reviews-rate">No reviews</div>
+                    </div>
+                {{/average_rating}}
+            {{/organizationReviews}}
             <div class="row">
                  <div class="cm-btns padd-0">
                     <div class="col-md-6">
