@@ -257,6 +257,8 @@ $this->registerCss('
     padding: 5px 10px 10px 8px;
     border: 1px solid rgba(230, 230, 230, .3);
     border-radius:0 0 5px 5px;
+    position:relative;
+    min-height: 125px;
 }
 .wn-box-cat{
    font-size:14px;
@@ -286,9 +288,16 @@ a.wn-overlay-text {
      border-radius:5px 5px 0 0; 
     position:relative;   
 }
+.wp-btn{
+    position:absolute;
+    bottom:5px;
+}
 .wp-box-des{
     padding-top:15px;
     font-size:13px;
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 .btn-3 {
     background-color: #00a0e3;
@@ -697,7 +706,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">{{excerpt}}</div>
-                <div class="">
+                <div class="wp-btn">
                     <a href="{{link}}" class="button">
                         <span>View Post</span>
                     </a>
