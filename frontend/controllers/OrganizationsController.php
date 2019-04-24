@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\OrganizationProductsForm;
 use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
@@ -92,6 +93,16 @@ class OrganizationsController extends Controller
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
                 ->asArray()
                 ->all();
+            $org_products = \common\models\OrganizationProducts::find()
+                ->alias('a')
+                ->select(['a.product_enc_id','a.description'])
+                ->joinWith(['organizationProductImages b' => function ($b){
+                    $b->select(['b.product_enc_id','b.image_enc_id','b.image','b.image_location','b.title']);
+                }])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
+                ->andWhere(['a.is_deleted' => 0])
+                ->asArray()
+                ->one();
             $our_team = \common\models\OrganizationEmployees::find()
                 ->select(['first_name', 'last_name', 'image', 'image_location', 'designation', 'facebook', 'twitter', 'linkedin', 'employee_enc_id'])
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'is_deleted' => 0])
@@ -145,6 +156,7 @@ class OrganizationsController extends Controller
                     'our_team' => $our_team,
                     'industries' => $industries,
                     'count_opportunities' => $count_opportunities,
+                    'org_products' => $org_products,
                 ]);
             } else {
                 $follow = FollowedOrganizations::find()
@@ -166,6 +178,7 @@ class OrganizationsController extends Controller
                     'our_team' => $our_team,
                     'industry' => $industry,
                     'count_opportunities' => $count_opportunities,
+                    'org_products' => $org_products,
                 ]);
             }
         } else {
@@ -281,6 +294,40 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionAddProductDescription(){
+        if (Yii::$app->request->post()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $productdetail = Yii::$app->request->post();
+            $checkProduct = \common\models\OrganizationProducts::findOne([
+                'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'is_deleted' => 0,
+            ]);
+//            print_r($checkProduct);
+//            exit();
+            if (!empty($checkProduct)) {
+                $field = $productdetail['name'];
+                $checkProduct->$field = $productdetail['value'];
+                if (!$checkProduct->validate() || !$checkProduct->save()) {
+                    return false;
+                }
+                return true;
+            } else{
+                $utilitiesModel = new Utilities();
+                $organizationProducts = new \common\models\OrganizationProducts();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $organizationProducts->product_enc_id = $utilitiesModel->encrypt();
+                $organizationProducts->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
+                $organizationProducts->description = $productdetail['value'];
+                $organizationProducts->created_on = date('Y-m-d H:i:s');
+                $organizationProducts->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$organizationProducts->validate() || !$organizationProducts->save()) {
+                    return false;
+                }
+                return true;
+            }
+        }
+    }
+
     public function actionLocationDelete()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -378,6 +425,34 @@ class OrganizationsController extends Controller
             }
             return $this->renderAjax('image-gallery-form', [
                 'companyImagesForm' => $companyImagesForm,
+            ]);
+        }
+    }
+
+    public function actionAddProducts()
+    {
+        if (Yii::$app->request->isAjax) {
+            $organizationProductsForm = new OrganizationProductsForm();
+            if (Yii::$app->request->post()) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $organizationProductsForm->image = UploadedFile::getInstance($organizationProductsForm, 'image');
+//                return $organizationProductsForm->save();
+                if ($organizationProductsForm->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Image has been Uploaded.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('add-products-form', [
+                'organizationProductsForm' => $organizationProductsForm,
             ]);
         }
     }
@@ -527,7 +602,7 @@ class OrganizationsController extends Controller
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
-            $options['company'] = $org;
+            $options['slug'] = $org;
             if ($type == 'Jobs') {
                 $cards = ApplicationCards::jobs($options);
             } else {

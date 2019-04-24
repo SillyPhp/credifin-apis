@@ -13,16 +13,16 @@ use yii\bootstrap\ActiveForm;
     <div class="col-md-12">
         <div class="office-gallery">
             <div class="g-image-preview">
-                <div id="gImagePreview" style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-profile/office.png') ?>);">
+                <div id="gImagePreview" style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>);">
                 </div>
             </div>
             <div class="g-image-edit">
                 <?php
                     $gform = ActiveForm::begin([
-                        'id' => 'upload-gallary-image',
+                        'id' => 'upload-product-detail',
                     ]);
 
-                    echo $gform->field($companyImagesForm, 'image', [
+                    echo $gform->field($organizationProductsForm, 'image', [
                         'template' => '{input}',
                         'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'gImageUpload', 'accept' => '.png, .jpg, .jpeg']);
                 ?>
@@ -35,6 +35,11 @@ use yii\bootstrap\ActiveForm;
         </div>
     </div>
 </div>
+<!--<div class="row">-->
+<!--    <div class="col-md-12">-->
+<!--        --><?//= $gform->field($organizationProductsForm, 'description')->textarea(['rows' => 6, 'autocomplete' => 'off', 'placeholder' => $organizationProductsForm->getAttributeLabel('description')]); ?>
+<!--    </div>-->
+<!--</div>-->
 <div class="modal-footer">
     <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
 </div>
@@ -111,7 +116,7 @@ $("#gImageUpload").change(function() {
     readGalleryImgURL(this);
 });
 
-$(document).on('submit', '#upload-gallary-image', function(event) {
+$(document).on('submit', '#upload-product-detail', function(event) {
     var btn = $('.sav_benft');
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -122,7 +127,7 @@ $(document).on('submit', '#upload-gallary-image', function(event) {
     btn.data('requestRunning', true);
     
     $.ajax({
-        url: "/organizations/add-gallery-images",
+        url: "/organizations/add-products",
         method: "POST",
         data: new FormData(this),
         contentType: false,
@@ -136,7 +141,7 @@ $(document).on('submit', '#upload-gallary-image', function(event) {
             $('#page-loading').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-                $.pjax.reload({container: '#image_gallery', async: false});
+                $.pjax.reload({container: '#product_images', async: false});
             } else {
                 toastr.error(response.message, response.title);
             }
