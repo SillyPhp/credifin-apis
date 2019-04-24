@@ -1,5 +1,5 @@
-<?php
 
+<?php
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
@@ -7,8 +7,8 @@ use yii\widgets\Pjax;
 <section>
     <div class="row">
         <div class="col-md-5 col-md-offset-7">
-            <div class="col-md-4"> 
-            </div> 
+            <div class="col-md-4">
+            </div>
         </div>
     </div>
     <div class="row">
@@ -17,7 +17,7 @@ use yii\widgets\Pjax;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Reviewed Jobs</span>
+                        <span class="caption-subject font-dark bold uppercase">Reviewed Internships</span>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -29,7 +29,7 @@ use yii\widgets\Pjax;
                             foreach ($reviewlist as $review) {
                                 ?>
                                 <div class="col-md-3 hr-j-box">
-                                    <div class="topic-con"> 
+                                    <div class="topic-con">
                                         <div class="hr-company-box">
                                             <div class="hr-com-icon">
                                                 <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
@@ -41,7 +41,7 @@ use yii\widgets\Pjax;
                                                 <?= $review["positions"]; ?> Openings
                                             </div>
                                             <div class="overlay2">
-                                                <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $review['slug']; ?>">Apply</a></div>
+                                                <div class="text-o"><a class="over-bttn ob2 hover_short" href="/internship/<?= $review['slug']; ?>">Apply</a></div>
                                             </div>
                                             <div class="hr-com-jobs">
                                                 <div class="row ">
@@ -50,31 +50,32 @@ use yii\widgets\Pjax;
                                                             <button class="rmv_list" value="<?= $review['application_enc_id']; ?>">
                                                                 <i class="fa fa-times"></i>
                                                             </button>
-                                                        </div> 
-                                                        <div class=" j-grid"> 
-                                                            <a  href="/job/<?= $review['slug']; ?>" title="">VIEW JOB</a>
+
+                                                        </div>
+                                                        <div class=" j-grid">
+                                                            <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <?php
                             }
                         } else {
                             ?>
                             <div class="col-md-12">
-                                <div class="tab-empty"> 
+                                <div class="tab-empty">
                                     <div class="tab-empty-icon">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">There are no Jobs to show.</div>
-                                        <div class="">You haven't Select any jobs for review.</div>
+                                        <div class="">There are no Internships to show.</div>
+                                        <div class="">You haven't Select any internships  for review.</div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                             <?php
                         }
                         Pjax::end();
@@ -121,7 +122,6 @@ $this->registerCss('
 //.dashboard-button a, .dashboard-button button{    
 //    margin-left:10px !important;
 //}
-
 //.intl-tel-input {
 //    width: 100%;
 //}
@@ -130,7 +130,6 @@ $this->registerCss('
     top: 0;
     left: 20px;
 }
-
 //.thumbnail{
 //    padding: 0px !important;
 //    margin: 20px auto 25px auto !important;
@@ -423,7 +422,6 @@ $this->registerCssFile('@backendAssets/global/css/plugins.min.css');
 $this->registerCssFile('@backendAssets/global/css/components.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
 function used_for($n) {
     switch ($n) {
         case 1:

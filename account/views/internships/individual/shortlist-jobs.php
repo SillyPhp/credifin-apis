@@ -1,97 +1,96 @@
 <?php
-
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
-<section>
-    
-    <div class="row">
-        <div class="col-md-5 col-md-offset-7">
-            <div class="col-md-4"> 
-            </div> 
+    <div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
+    <section>
+
+        <div class="row">
+            <div class="col-md-5 col-md-offset-7">
+                <div class="col-md-4">
+                </div>
+            </div>
         </div>
-    </div>
         <div class="row">
             <div class="col-lg-12 col-xs-12 col-sm-12">
                 <div class="portlet light">
                     <div class="portlet-title tabbable-line">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase">Shortlisted Jobs</span>
+                            <span class="caption-subject font-dark bold uppercase">Shortlisted Internships</span>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
-                            <?php 
-                                Pjax::begin(['id' => 'pjax_shortlist']);
-                                $total_applications = count($shortlisted);
-                                if(!empty($shortlisted)) {
-                                    foreach ($shortlisted as $shortlist) {
-                            ?>
-                                        <div class="col-md-3 hr-j-box">
-                                            <div class="topic-con"> 
-                                                <div class="hr-company-box">
-                                                    <div class="hr-com-icon">
-                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
-                                                    </div>
-                                                    <div class="hr-com-name">
-                                                        <?= $shortlist['org_name']; ?>
-                                                    </div>
-                                                    <div class="hr-com-field">
-                                                        <?= $shortlist['name']; ?>
-                                                    </div>
-                                                    <div class="opening-txt">
-                                                        <?= $shortlist["positions"]; ?> Openings
-                                                    </div>
-                                                    <div class="overlay2">
-                                                        <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
-                                                    </div>
-                                                    <div class="hr-com-jobs">
-                                                        <div class="row ">
-                                                            <div class="col-md-12 col-sm-12 minus-15-pad">
-                                                                <div class=" j-cross">
-                                                                    <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
-                                                                        <i class="fa fa-times"></i>
-                                                                    </button>
-                                                                </div> 
-                                                                <div class=" j-grid"> 
-                                                                    <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
-                                                                </div>
+                            <?php
+                            Pjax::begin(['id' => 'pjax_shortlist']);
+                            $total_applications = count($shortlisted);
+                            if(!empty($shortlisted)) {
+                                foreach ($shortlisted as $shortlist) {
+                                    ?>
+                                    <div class="col-md-3 hr-j-box">
+                                        <div class="topic-con">
+                                            <div class="hr-company-box">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name">
+                                                    <?= $shortlist['org_name']; ?>
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $shortlist['name']; ?>
+                                                </div>
+                                                <div class="opening-txt">
+                                                    <?= $shortlist["positions"]; ?> Openings
+                                                </div>
+                                                <div class="overlay2">
+                                                    <div class="text-o"><a class="over-bttn ob2 hover_short" href="/internship/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                </div>
+                                                <div class="hr-com-jobs">
+                                                    <div class="row ">
+                                                        <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                            <div class=" j-cross">
+                                                                <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                            </div>
+                                                            <div class=" j-grid">
+                                                                <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> 
-                                        <?php
-                                    }
+                                        </div>
+                                    </div>
+                                    <?php
                                 }
-                                else {
-                                            ?>
-                                                <div class="col-md-12">
-                                                    <div class="tab-empty"> 
-                                                        <div class="tab-empty-icon">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
-                                                        </div>
-                                                        <div class="tab-empty-text">
-                                                            <div class="">There are no Jobs to show.</div>
-                                                            <div class="">You haven't Select any jobs for review.</div>
-                                                        </div>
-                                                    </div>
-                                                </div>  
-                                   <?php
-                                }
-                                Pjax::end();  
+                            }
+                            else {
                                 ?>
+                                <div class="col-md-12">
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">There are no Internships to show.</div>
+                                            <div class="">You haven't Select any internships for review.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            Pjax::end();
+                            ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-  
 
-</section>                       
+
+    </section>
 <?php
 $this->registerCss('
 .loader{
@@ -129,7 +128,6 @@ $this->registerCss('
     margin:15px 0;
     padding: 6px 12px;  
 }
-
 .hr-company-box{text-align:center;border:2px solid #eef1f5; background:#fff; padding:20px 10px;
                     border-radius:14px !important; margin-bottom:20px; text-decoration:none; }
 .hr-company-box:hover{border-color:#fff; box-shadow:0 0 20px rgb(0,0,0,.3); transition:.3s all;
@@ -147,11 +145,9 @@ $this->registerCss('
     margin-top: 10px;
     border-top: 1px solid #eef1f5;
 }       
-
 a:hover{
     text-decoration:none;
 }
-
 .topic-con{
     position:relative;
     width:100%;
@@ -258,7 +254,6 @@ $script = <<<JS
                         $.pjax.reload({container: '#pjax_shortlist', async: false});
                     }
            },
-
            });
         });        
 JS;

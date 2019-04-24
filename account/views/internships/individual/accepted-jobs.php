@@ -17,7 +17,7 @@ use yii\widgets\Pjax;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Accepted Jobs</span>
+                        <span class="caption-subject font-dark bold uppercase">ACCEPTED INTERNSHIPS</span>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -53,7 +53,7 @@ use yii\widgets\Pjax;
                                                             </button>
                                                         </div> 
                                                         <div class=" j-grid"> 
-                                                            <a  href="/job/<?= $accept['slug']; ?>" title="">VIEW JOB</a>
+                                                            <a  href="/internship/<?= $accept['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -71,8 +71,8 @@ use yii\widgets\Pjax;
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">There are no Jobs to show.</div>
-                                        <div class="">You haven't any accepted job.</div>
+                                        <div class="">There are no Internships to show.</div>
+                                        <div class="">You haven't any accepted internship.</div>
                                     </div>
                                 </div>
                             </div>  

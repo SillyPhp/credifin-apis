@@ -2,9 +2,8 @@
 
 namespace account\controllers;
 
-use account\models\applications\ApplicationDataProvider;
-use account\models\applications\UserAppliedApplication;
 use common\models\DropResumeApplications;
+use common\models\InterviewProcessFields;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -29,8 +28,7 @@ use account\models\internships\InternshipApplicationForm;
 use account\models\jobs\JobApplicationForm;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
-use common\models\InterviewProcessFields;
-use account\models\applications\ApplicationForm;
+
 
 class InternshipsController extends Controller
 {
@@ -874,6 +872,7 @@ class InternshipsController extends Controller
         ]);
     }
 
+
     public function actionShortlistedResume(){
 
         $application_id = DropResumeApplications::find()
@@ -936,7 +935,6 @@ class InternshipsController extends Controller
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships',10),
-            'total_applied' => $userApplied->total_applied($type='Internships'),
             'primary_fields' => $this->getCategories(),
             'viewed' => $viewed,
         ]);
