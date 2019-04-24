@@ -95,6 +95,12 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/all-companies-card');
 $this->registerCss('
+.sbar-head{
+    text-align:center;
+    font-size:20px;
+    text-transform:capitalize;
+    padding-bottom:8px;
+}
 .headerbg{
     background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/com-bg.png') . ');
     background-size:cover;
@@ -177,6 +183,11 @@ $this->registerCss('
     color:#00a0e3;
     transition:.2s ease-in;
 }
+.divider{
+   border-top:1px solid #eee;
+   margin:15px 0px 15px 0px;
+}
+/*------*/
 .search-container {
     border:1px solid #eee;
     margin: 0 0px 10px;
@@ -208,13 +219,8 @@ form {
    right: 0;
    border-radius: 0 8px 8px 0;
 }
-
 .search-container button:hover {
  background: #00a0e3;
-}
-.divider{
-   border-top:1px solid #eee;
-   margin:15px 0px 15px 0px;
 }
 ');
 
