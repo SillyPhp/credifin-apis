@@ -19,16 +19,17 @@ use yii\helpers\Url;
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <div class="sbar-head">Search Companies</div>
             <div class="search-container">
-                <form action="">
-                    <input type="text" placeholder="Search Companies" name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
+            <div class="search-con">
+                <input type="text" placeholder="Search...">
+                <div class="search"></div>
+            </div>
             </div>
         </div>
     </div>
 
-    <div class="divider"></div>
+<!--    <div class="divider"></div>-->
 </div>
 </section>
 <section>
@@ -95,6 +96,12 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/all-companies-card');
 $this->registerCss('
+.sbar-head{
+    text-align:center;
+    font-size:20px;
+    text-transform:capitalize;
+    padding-bottom:8px;
+}
 .headerbg{
     background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/com-bg.png') . ');
     background-size:cover;
@@ -178,44 +185,126 @@ $this->registerCss('
     transition:.2s ease-in;
 }
 .search-container {
-    border:1px solid #eee;
-    margin: 0 0px 10px;
+//    margin: 0 0px 10px;
     position:relative;
-    border-radius:10px;
-}
-.search-container input[type=text] {
-   padding: 6px 0px 6px 15px;
-   font-size: 15px;
-   border: none;
-   width: 100%;
-   margin:6px 0;
-}
-.search-container input[type=text]:focus{
-   box-shadow:none;
+    padding:25px 0;
 }
 form {
    margin-bottom: 0px !important;
-}
-.search-container button {
-   position: absolute;
-   padding: 11px 25px;
-   background: #00a0e3;
-   font-size: 17px;
-   border: none;
-   color: #fff;
-   cursor: pointer;
-   top: -1px;
-   right: 0;
-   border-radius: 0 8px 8px 0;
-}
-
-.search-container button:hover {
- background: #00a0e3;
 }
 .divider{
    border-top:1px solid #eee;
    margin:15px 0px 15px 0px;
 }
+/*------*/
+.search-con {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 300px;
+    height: 50px;
+}
+.search-con .search {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    background: #00a0e3;
+    border-radius: 50%;
+    transition: all 1s;
+    z-index: 4;
+}
+.search-con .search:hover {
+  cursor: pointer;
+}
+.search-con .search::before {
+    content: "";
+    position: absolute;
+    margin: auto;
+    top: 16px;
+    right: 0;
+    bottom: 0;
+    left: 18px;
+    width: 9px;
+    height: 2px;
+    background: white;
+    transform: rotate(45deg);
+    transition: all .5s;
+}
+.search-con .search::after {
+    content: "";
+    position: absolute;
+    margin: auto;
+    top: -4px;
+    right: 0;
+    bottom: 0;
+    left: -1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    transition: all .5s;
+}
+.search-con input {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    outline: none;
+    border: 1px solid #00a0e3;
+    background: #fff;
+    color: #999;
+    padding: 0 40px 0 20px;
+    border-radius: 30px;
+    transition: all 1s;
+    opacity: 0;
+    z-index: 5;
+    
+}
+.search-con input:hover {
+  cursor: pointer;
+}
+.search-con input:focus {
+  width: 300px;
+  opacity: 1;
+  cursor: text;
+}
+.search-con input:focus ~ .search {
+  right: -300px;
+  background: #00a0e3;
+  z-index: 6;
+}
+.search-con input:focus ~ .search::before {
+  top: 0;
+  left: 0;
+  width: 25px;
+}
+.search-con input:focus ~ .search::after {
+  top: 0;
+  left: 0;
+  width: 25px;
+  height: 2px;
+  border: none;
+  background: white;
+  border-radius: 0%;
+  transform: rotate(-45deg);
+}
+.search-con input::placeholder {
+  color:#999;
+  opacity: 0.5;
+}
+
 ');
 
 $script = <<<JS
