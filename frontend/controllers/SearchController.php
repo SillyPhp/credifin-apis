@@ -37,7 +37,7 @@ class SearchController extends Controller
                         ]);
                 }])
                 ->joinWith(['organizationReviews f' => function ($y) {
-                    $y->select(['f.organization_enc_id', 'COUNT(f.review_enc_id) reviews_cnt']);
+                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt']);
                 }])
                 ->where([
                     'a.is_deleted' => 0,
