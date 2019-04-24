@@ -248,7 +248,7 @@ textarea::placeholder{
     border-bottom: none;
 }
 .blog-cover-image img{
-    max-height:350px;
+    max-height:400px;
     width:100%;
     object-fit:cover;
     border-radius:10px;
