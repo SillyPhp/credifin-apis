@@ -254,7 +254,7 @@ textarea::placeholder{
     border-radius:10px;
 }
 .blog-division{
-    border:1px solid #eee;
+    border:1px solid #fff;
     border-radius:10px;
 }
 .blog-text{

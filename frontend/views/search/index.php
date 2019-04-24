@@ -292,6 +292,10 @@ a.wn-overlay-text {
     position:absolute;
     bottom:5px;
 }
+.wp-btn a{
+    color:#00a0e3;
+    font-size:14px;
+}
 .wp-box-des{
     padding-top:15px;
     font-size:13px;
