@@ -669,7 +669,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     </div>
                     <div class="col-md-6">
                         <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Review</a>
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
                         </div>
                     </div>
                 </div>
