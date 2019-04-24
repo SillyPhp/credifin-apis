@@ -36,7 +36,7 @@ class ProfileController extends Controller
         }
 
         if ($user->assigned_to === 2 || $user->assigned_to === 3) {
-            if (empty($type) || $user->assigned_to === 2) {
+            if (empty($type) && $user->assigned_to === 2) {
                 return Yii::$app->runAction('organizations/profile', [
                     'slug' => $user->username,
                 ]);
