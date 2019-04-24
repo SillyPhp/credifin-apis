@@ -392,7 +392,7 @@ $industries = Json::encode($industries);
                                 ?>
                                 <div class="office-pics">
                                     <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
-                                        <div class="p-preview-img">
+                                        <div class="p-preview-img" id="<?= $org_products['product_enc_id'] ?>">
                                             <a href="" data-fancybox="images">
                                                 <img src="" alt="company image 1">
                                             </a>
@@ -407,6 +407,20 @@ $industries = Json::encode($industries);
                                                    data-fancybox="images">
                                                     <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
                                                          alt="<?= $p_image['title'] ?>">
+                                                </a>
+                                                <div id="product-confirm" class="hidden-p">
+                                                    <h5>Are you sure want to remove Image?</h5>
+                                                    <button id="confirm_remove_product" type="button" value="<?= $p_image['image_enc_id'] ?>"
+                                                            class="btn-primary btn-sm editable-submit">
+                                                        <i class="glyphicon glyphicon-ok"></i>
+                                                    </button>
+                                                    <button id="cancel_p_remove" type="button"
+                                                            class="btn-default btn-sm editable-cancel">
+                                                        <i class="glyphicon glyphicon-remove"></i>
+                                                    </button>
+                                                </div>
+                                                <a href="#" class="remove_p_image">
+                                                    <i class="fa fa-times-circle"></i>
                                                 </a>
                                             </div>
                                             <?php
@@ -1347,10 +1361,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   background: #f1f1f1;
   border-color: #d6d6d6;
 }
-.hiden button.btn-sm{
+.hiden button.btn-sm, .hidden-p button.btn-sm{
     border:1px solid #ddd;
 }
-.hiden, .hiden2{
+.hiden, .hiden2, .hidden-p{
     display:none;
     position: absolute;
     width: 100%;
@@ -1372,6 +1386,15 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     border-right: 15px solid #f9f9f9;
     border-bottom: 10px solid transparent;
 }
+.hidden-p:before{
+    content: \'\';
+    position: absolute;
+    left: 98px;
+    top: -12px;
+    border-left: 10px solid transparent;
+    border-bottom: 15px solid #f9f9f9;
+    border-right: 10px solid transparent;
+}
 .hiden2{
     top: 12px;
     left: 0px;
@@ -1379,6 +1402,12 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 .hiden2:before{
     right: 36px;
     top: -13px;
+}
+.hidden-p{
+    width: 200%;
+    top: 90px;
+    left: -50px;
+    line-height: normal;
 }
 .full_width{
     width:100%;
@@ -1603,7 +1632,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     right:8px;
 }
 .det .popover .editable-input input{width: 80px !important;}
-.remove_g_image, .remove_t_user{
+.remove_g_image, .remove_t_user, .remove_p_image{
     position: absolute;
     display:none;
     color: red;
@@ -1619,6 +1648,9 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     z-index:9;
 }
 .img1:hover .remove_g_image, .remove_g_image:hover{
+    display:block;
+}
+.p-img-thumbnail:hover .remove_p_image, .remove_p_image:hover{
     display:block;
 }
 .team-container:hover .remove_t_user, .remove_t_user:hover{
@@ -1655,6 +1687,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     line-height: 116px;
     border: 1px solid #eee;
     margin: 2px 5px;
+    position:relative;
 }
 .p-preview-img{
     height: 300px;
@@ -1721,13 +1754,13 @@ $('#enable').click(function() {
        $('.edit-box').css('display', 'none');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image, .write-review').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location, .edit_location').addClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location, .remove_p_image').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image, .write-review').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location, .edit_location').removeClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location, .remove_p_image').removeClass('hide-remove-buttons');
        $(this).text('View Profile');
    }
 }); 
@@ -1887,11 +1920,11 @@ $(document).on('click', '#confirm_remove_benefit', function(event) {
         }
     });
 });
-$(document).on('click', '.remove_g_image', function(e) {
+$(document).on('click', '.remove_g_image, .remove_p_image', function(e) {
     e.preventDefault();
     $(this).prev().fadeIn();
 });
-$(document).on('click', '#cancel_g_image', function() {
+$(document).on('click', '#cancel_g_image, #cancel_p_remove', function() {
     $(this).parent().fadeOut();
 });
 $(document).on('click', '#confirm_g_image', function(event) {
@@ -1940,6 +1973,31 @@ $(document).on('click', '#confirm_t_user', function(event) {
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#our_team', async: false});
+            } else {
+                toastr.error(response.message, response.title);
+            }
+            
+        }
+    });
+});
+$(document).on('click', '#confirm_remove_product', function(event) {
+    event.preventDefault();
+    $('this').parent('.hidden-p').fadeOut(1000);
+    var id = $(this).val();
+    var p_id = $('.p-preview-img').attr('id');
+    $.ajax({
+        url: "/organizations/remove-product",
+        method: "POST",
+        data: {id,p_id},
+        beforeSend:function(){     
+            $('#page-loading').fadeIn(1000);  
+        },
+        success: function (response) {
+        $('#page-loading').fadeOut(1000);
+            if (response.title == 'Success') {
+                toastr.success(response.message, response.title);
+                $.pjax.reload({container: '#product_images', async: false});
+                pImageBox();
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -2044,10 +2102,12 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
         });
     });
 });
-var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
-$('.p-preview-img a').attr('href', first_preview);
-$('.p-preview-img a img').attr('src', first_preview);
-
+function pImageBox() {
+    var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
+    $('.p-preview-img a').attr('href', first_preview);
+    $('.p-preview-img a img').attr('src', first_preview); 
+}
+pImageBox();
 $(document).on('mouseover', '.p-img-thumbnail', function(){
     var path = $(this).find('a').attr('href');
     $('.p-preview-img a').attr('href', path);

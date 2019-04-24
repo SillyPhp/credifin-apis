@@ -13,7 +13,7 @@ use yii\bootstrap\ActiveForm;
     <div class="col-md-12">
         <div class="office-gallery">
             <div class="g-image-preview">
-                <div id="gImagePreview" style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>);">
+                <div id="gImagePreview" style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-profile/product.png') ?>);">
                 </div>
             </div>
             <div class="g-image-edit">
@@ -35,11 +35,6 @@ use yii\bootstrap\ActiveForm;
         </div>
     </div>
 </div>
-<!--<div class="row">-->
-<!--    <div class="col-md-12">-->
-<!--        --><?//= $gform->field($organizationProductsForm, 'description')->textarea(['rows' => 6, 'autocomplete' => 'off', 'placeholder' => $organizationProductsForm->getAttributeLabel('description')]); ?>
-<!--    </div>-->
-<!--</div>-->
 <div class="modal-footer">
     <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
 </div>
@@ -125,7 +120,7 @@ $(document).on('submit', '#upload-product-detail', function(event) {
     }
     
     btn.data('requestRunning', true);
-    
+    var first_previews = $('.p-img-thumbnail:first-child a').attr('href');
     $.ajax({
         url: "/organizations/add-products",
         method: "POST",
@@ -142,6 +137,8 @@ $(document).on('submit', '#upload-product-detail', function(event) {
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#product_images', async: false});
+                $('.p-preview-img a').attr('href', first_previews);
+                $('.p-preview-img a img').attr('src', first_previews);
             } else {
                 toastr.error(response.message, response.title);
             }

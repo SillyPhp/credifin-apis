@@ -227,6 +227,12 @@ class ApplicationCards
                 ($options['company']) ? ['like', 'd.name', $options['company']] : ''
             ]);
         }
+        if (isset($options['slug'])) {
+            $cards->andWhere([
+                'or',
+                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+            ]);
+        }
 
         if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
             $options['for_careers'] = 0;
