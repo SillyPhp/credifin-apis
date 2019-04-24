@@ -642,7 +642,14 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             </div>
             <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
 
-            <div class="com-loc"><span>{{#employerApplications}}{{applications_cnt}}{{/employerApplications}}</span> Openings</div>
+            {{#employerApplications}}
+                {{#applications_cnt}}
+                <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
+                {{/applications_cnt}}
+            {{/employerApplications}}
+            {{^employerApplications}}
+                <div class="com-loc"><span>No</span> Openings</div>
+            {{/employerApplications}}
 
             {{#organizationReviews}}
                 {{#average_rating}}
@@ -652,14 +659,14 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                         <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
                     </div>
                 {{/average_rating}}
-
-                {{^average_rating}}
-                    <div class="starr" data-score="0"></div>
-                    <div class="rating">
-                        <div class="reviews-rate">No reviews</div>
-                    </div>
-                {{/average_rating}}
             {{/organizationReviews}}
+            {{^organizationReviews}}
+                <div class="starr" data-score="0"></div>
+                <div class="rating">
+                    <div class="reviews-rate">No reviews</div>
+                </div>
+            {{/organizationReviews}}
+
             <div class="row">
                  <div class="cm-btns padd-0">
                     <div class="col-md-6">
@@ -669,7 +676,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     </div>
                     <div class="col-md-6">
                         <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Review</a>
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
                         </div>
                     </div>
                 </div>

@@ -373,6 +373,60 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                     <div class="row">
+                        <div class="office-view">
+                            <div class="heading-style">
+                                Products
+                                <div class="button_location pull-right">
+                                    <button type="button" class="i-review-nx modal-load-class"
+                                            value="/organizations/add-products">
+                                            <span class="i-review-button-tx">
+                                                Add New Product <span class="fa fa-long-arrow-right"></span>
+                                            </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <?php
+                            Pjax::begin(['id' => 'product_images']);
+                            if(!empty($org_products['organizationProductImages'])) {
+                                ?>
+                                <div class="office-pics">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                        <div class="p-preview-img">
+                                            <a href="" data-fancybox="images">
+                                                <img src="" alt="company image 1">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
+                                        <?php
+                                        foreach ($org_products['organizationProductImages'] as $p_image) {
+                                            ?>
+                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                   data-fancybox="images">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                         alt="<?= $p_image['title'] ?>">
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            Pjax::end()
+                            ?>
+                            <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fa fa-pencil"></i></span></h4>
+                                <p>
+                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="company-team">
                             <div class="heading-style">
                                 Meet The Team
@@ -1593,6 +1647,28 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     background-color: #00000057;
 }
 #change-cover-image{margin:0px;}
+/*----company products css starts----*/
+.p-img-thumbnail {
+    width: 120px;
+    height: 120px;
+    float: left;
+    line-height: 116px;
+    border: 1px solid #eee;
+    margin: 2px 5px;
+}
+.p-preview-img{
+    height: 300px;
+    text-align: center;
+    line-height: 300px;
+}
+.p-preview-img a img{
+    max-height: 300px;
+}
+.p-img-thumbnail a img{
+    width: 100%;
+    height: 100%;
+}
+/*----company products css ends----*/
 ');
 $script = <<<JS
 $('.model-link').editable({
@@ -1606,6 +1682,11 @@ $('.model-link').editable({
 $('.model').editable({
     placement: 'top',
     url: '/organizations/update-profile',
+    toggle: 'manual',
+});
+$('.model-product').editable({
+    placement: 'top',
+    url: '/organizations/add-product-description',
     toggle: 'manual',
 });
 
@@ -1963,6 +2044,15 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
         });
     });
 });
+var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
+$('.p-preview-img a').attr('href', first_preview);
+$('.p-preview-img a img').attr('src', first_preview);
+
+$(document).on('mouseover', '.p-img-thumbnail', function(){
+    var path = $(this).find('a').attr('href');
+    $('.p-preview-img a').attr('href', path);
+    $('.p-preview-img a img').attr('src', path);
+});
 
 JS;
 $this->registerJs("
@@ -1974,8 +2064,8 @@ $('#industry_enc_id').editable({
     value: '" . $organization['industry_enc_id'] . "',
     source: " . $industries . "
 });
-getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
-getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
