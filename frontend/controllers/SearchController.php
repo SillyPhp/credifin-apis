@@ -34,10 +34,12 @@ class SearchController extends Controller
                         ->andWhere([
                             'e.status' => 'Active',
                             'e.is_deleted' => 0
-                        ]);
+                        ])
+                        ->groupBy(['e.organization_enc_id']);
                 }])
                 ->joinWith(['organizationReviews f' => function ($y) {
-                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt']);
+                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
+                        ->groupBy(['f.organization_enc_id']);
                 }])
                 ->where([
                     'a.is_deleted' => 0,
