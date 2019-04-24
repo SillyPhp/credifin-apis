@@ -24,7 +24,7 @@ class OrganizationEmployeesForm extends Model
         return [
             [['first_name', 'last_name', 'designation'], 'required'],
             [['facebook', 'twitter', 'linkedin'], 'url', 'defaultScheme' => 'http'],
-            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 1],
+            [['image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'mimeTypes' => 'image/jpeg, image/png', 'maxSize' => 1024 * 1024 * 1],
             [['first_name', 'last_name', 'facebook', 'twitter', 'linkedin'], 'trim'],
         ];
     }
