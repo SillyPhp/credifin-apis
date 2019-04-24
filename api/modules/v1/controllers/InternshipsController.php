@@ -205,7 +205,7 @@ class InternshipsController extends ApiBaseController {
             }
             
             if(empty($data['applicationInterviewLocations'])){
-                $data['applicationInterviewLocations'] = [
+                $data['applicationInterviewLocations'][] = [
                     'type' => 'Online'
                 ];;
             }
