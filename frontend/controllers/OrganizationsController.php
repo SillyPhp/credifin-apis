@@ -98,6 +98,7 @@ class OrganizationsController extends Controller
                 ->select(['a.product_enc_id','a.description'])
                 ->joinWith(['organizationProductImages b' => function ($b){
                     $b->select(['b.product_enc_id','b.image_enc_id','b.image','b.image_location','b.title']);
+                    $b->where(['b.is_deleted' => 0]);
                 }])
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
@@ -514,6 +515,30 @@ class OrganizationsController extends Controller
         $id = Yii::$app->request->post('id');
         $update = Yii::$app->db->createCommand()
             ->update(\common\models\OrganizationEmployees::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['employee_enc_id' => $id, 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->execute();
+        if ($update) {
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Image has been Deleted.',
+            ];
+        } else {
+            return $response = [
+                'status' => 201,
+                'title' => 'Error',
+                'message' => 'An error has occurred. Please try again.',
+            ];
+        }
+    }
+
+    public function actionRemoveProduct()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $id = Yii::$app->request->post('id');
+        $p_id = Yii::$app->request->post('p_id');
+        $update = Yii::$app->db->createCommand()
+            ->update(\common\models\OrganizationProductImages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['image_enc_id' => $id, 'product_enc_id' => $p_id])
             ->execute();
         if ($update) {
             return $response = [
