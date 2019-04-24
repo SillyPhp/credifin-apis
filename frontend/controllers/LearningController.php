@@ -23,10 +23,6 @@ use common\models\Utilities;
 class LearningController extends Controller
 {
    
-    //Approval Requirements
-    //Input data in required form
-    //Approval of assigned categories
-    //Approval of assigned tags
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -341,7 +337,7 @@ class LearningController extends Controller
             ->asArray()
             ->all();
         $popular_videos = LearningVideos::find()
-//            ->orderBy(['view_count' => SORT_DESC])
+            ->orderBy(['view_count' => SORT_DESC])
             ->asArray()
             ->all();
         $topics = Tags::find()
@@ -430,6 +426,11 @@ class LearningController extends Controller
 //        return $this->render('slide-share');
 //    }
 
+    private function toMinutes($time){
+        $time = explode(':', $time);
+        return ($time[0]*60) + ($time[1]) + ($time[2]/60);
+    }
+
     public function actionVideoDetail($vidk)
     {
         $video_detail = LearningVideos::find()
@@ -448,6 +449,7 @@ class LearningController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->one();
+        $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
         $likeStatus = LearningVideoLikes::find()
             ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
             ->andWhere(['is_deleted' => 0])
@@ -490,7 +492,7 @@ class LearningController extends Controller
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
-//                ->orderBy(['view_count' => SORT_DESC])
+                ->orderBy(['view_count' => SORT_DESC])
                 ->where(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
                 ->andWhere(['!=', 'video_enc_id', $current_video_id['video_enc_id']])
@@ -656,6 +658,43 @@ class LearningController extends Controller
                 'status' => 200,
                 'result' => $result
             ];
+        }
+    }
+
+    public function actionIncrementViews(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $q = Yii::$app->request->post('param');
+
+            $learning_video = LearningVideos::find()
+                ->where(['slug' => $q])
+                ->andWhere(['status' => 1])
+                ->andWhere(['is_deleted' => 0])
+                ->one();
+
+            $video = LearningVideos::find()
+                ->where(['video_enc_id' => $learning_video['video_enc_id']])
+                ->andWhere(['status' => 1])
+                ->andWhere(['is_deleted' => 0])
+                ->one();
+
+            if(!$video->view_count){
+                $video->view_count = 1;
+            }else{
+                $video->view_count += 1;
+            }
+            if($video->save()) {
+                return [
+                    'status' => 200,
+                    'result' => 'success'
+                ];
+            }else{
+                return [
+                    'status' => 201,
+                    'result' => 'failed'
+                ];
+            }
         }
     }
 

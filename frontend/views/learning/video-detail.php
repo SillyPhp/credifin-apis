@@ -52,12 +52,14 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
 
+            <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
             <div class="col-md-7 white-bg">
                 <div class="row">
-                    <div class="video-frame">
-                        <iframe width="100%" height="480"
-                                src="https://www.youtube.com/embed/<?= $video_detail['youtube_video_id']; ?>"
-                                frameborder="0" allowfullscreen></iframe>
+                    <div class="video-frame" id="ytplayer">
+                        <!--                        <iframe id="yt-video-frame" onclick="iframeClick(this);" width="100%" height="480"-->
+                        <!--                                src="https://www.youtube.com/embed/-->
+                        <? //= $video_detail['youtube_video_id']; ?><!--"-->
+                        <!--                                frameborder="0" allowfullscreen></iframe>-->
                     </div>
                     <div class="video-options">
                         <div class="row">
@@ -65,12 +67,14 @@ $this->params['seo_tags'] = [
                                 <div class="flex-view">
                                     <div class="likebtn">
                                         <button id="like" data-toggle="tooltip" title="Like this">
-                                            <span class="<?= $like_status['status'] == 1 ? 'imageBlue2' : ''; ?> imageGray" id="imageOn"></span>
+                                            <span class="<?= $like_status['status'] == 1 ? 'imageBlue2' : ''; ?> imageGray"
+                                                  id="imageOn"></span>
                                         </button>
                                     </div>
                                     <div class="dislikebtn">
                                         <button id="dislike" data-toggle="tooltip" title="Don't like this">
-                                            <span class="<?= $like_status['status'] == 2 ? 'dislikeBlue2' : ''; ?> dislikeGray" id="imageOff"></span>
+                                            <span class="<?= $like_status['status'] == 2 ? 'dislikeBlue2' : ''; ?> dislikeGray"
+                                                  id="imageOff"></span>
                                         </button>
                                     </div>
 
@@ -81,12 +85,18 @@ $this->params['seo_tags'] = [
                                             </button>
                                         </div>
                                         <?php
-                                            $fb_url = Url::to(Yii::$app->controller->id . '/video-detail?vidk=' . $video_detail['slug'], true);
+                                        $fb_url = Url::to(Yii::$app->controller->id . '/video-detail?vidk=' . $video_detail['slug'], true);
                                         ?>
                                         <ul class="s-list fadeout" id="Fader">
-                                            <li><a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer.php?u=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');"> <i class="fa fa-facebook-f"></i> </a></li>
-                                            <li><a href="javascript:;" onclick="window.open('<?= Url::to('https://www.twitter.com/home?status=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');"> <i class="fa fa-twitter"></i></a></li>
-                                            <li><a href="javascript:;" onclick="window.open('<?= Url::to('https://wa.me?text=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');"> <i class="fa fa-whatsapp"></i></a></li>
+                                            <li><a href="javascript:;"
+                                                   onclick="window.open('<?= Url::to('https://www.facebook.com/sharer.php?u=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                                    <i class="fa fa-facebook-f"></i> </a></li>
+                                            <li><a href="javascript:;"
+                                                   onclick="window.open('<?= Url::to('https://www.twitter.com/home?status=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                                    <i class="fa fa-twitter"></i></a></li>
+                                            <li><a href="javascript:;"
+                                                   onclick="window.open('<?= Url::to('https://wa.me?text=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                                    <i class="fa fa-whatsapp"></i></a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -95,6 +105,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="video-details">
                         <div class="v-title"><?= $video_detail['title']; ?></div>
+                        <input type="hidden" id="video-duration" value="<?= floor($video_detail['duration'] * 0.4); ?>">
                         <div class="v-category">
                             <ul>
                                 <li id="cate" data-id="<?= $video_detail['parent_enc_id']; ?>">Category: <span><a
@@ -108,7 +119,7 @@ $this->params['seo_tags'] = [
                                 <?php
                                 foreach ($video_detail['learningVideoTags'] as $v) {
                                     ?>
-                                        <li id="<?= $v['tag_enc_id']?>"> <?= $v['name']; ?></li>
+                                    <li id="<?= $v['tag_enc_id'] ?>"> <?= $v['name']; ?></li>
                                     <?php
                                 }
                                 ?>
@@ -116,9 +127,12 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-<!--                                <div class="views"><i class="fa fa-eye"></i> <span>1,200</span> Views</div>-->
-                                <div class="likes"><i class="fa fa-thumbs-up"></i> <span><?= $like_count ? $like_count : 'No' ?></span> Likes</div>
-                                <div class="comms"><a href="#comments"> <i class="fa fa-comments-o"></i> <span><?= $comment_count ? $comment_count : 'No' ?></span>
+                                <div class="views"><i class="fa fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
+                                <div class="likes"><i class="fa fa-thumbs-up"></i>
+                                    <span><?= $like_count ? $like_count : 'No' ?></span> Likes
+                                </div>
+                                <div class="comms"><a href="#comments"> <i class="fa fa-comments-o"></i>
+                                        <span><?= $comment_count ? $comment_count : 'No' ?></span>
                                         Comments </a></div>
                             </div>
                         </div>
@@ -959,17 +973,58 @@ left:10px;
 ');
 
 $script = <<<JS
-
+    function getQueryStringValue (key) {  
+      return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+    }
+    var player;
+    var video_id = document.getElementById('video-id').getAttribute('value');
+    var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
+    
+    var dvar;
+    function startTimer(){
+        dvar = setTimeout(
+            function(){
+                $.ajax({
+                    type: 'POST',
+                    url: '/learning/increment-views',
+                    data: {
+                        param: getQueryStringValue('vidk'),
+                    }
+                })
+            }, 
+            incrementTime
+        )
+    }
+    
+    function stopTimer(){
+        clearTimeout(dvar);
+    }
+    
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('ytplayer', {
+          height: '390',
+          width: '640',
+          videoId: video_id,
+          events: {
+            'onStateChange': function(event) {
+              if (event.data == YT.PlayerState.PLAYING) {
+                startTimer();
+              }
+              if (event.data == YT.PlayerState.PAUSED) {
+                stopTimer();
+              }
+            }
+          }
+        });
+    }
+    
+    onYouTubeIframeAPIReady();
     
     var like = document.getElementById('like');
     var imageOn = document.getElementById('imageOn');
 
     var dislike = document.getElementById('dislike');
     var imageOff = document.getElementById('imageOff');
-
-    function getQueryStringValue (key) {  
-      return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
-    }
     
     var already_liked = false;
     if(imageOn.classList.contains('imageBlue2')){
@@ -1117,9 +1172,10 @@ $script = <<<JS
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://www.youtube.com/iframe_api');
 ?>
 <script>
-    function getQueryStringValue (key) {
+    function getQueryStringValue(key) {
         return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     }
 
@@ -1161,11 +1217,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 param: getQueryStringValue('vidk'),
                 comment: comment
             },
-            success: function(response){
+            success: function (response) {
                 result = {};
-                if(response.user_info.logo){
+                if (response.user_info.logo) {
                     result['img'] = response.user_info.path;
-                }else{
+                } else {
                     result['img'] = false;
                 }
 
@@ -1176,7 +1232,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 result['comment_enc_id'] = response.user_info.comment_enc_id;
                 result['username'] = response.user_info.username;
 
-                if(response.status == 200){
+                if (response.status == 200) {
                     var temp1 = document.getElementById("replytemp").innerHTML;
                     var output = Mustache.render(temp1, result);
 
@@ -1202,11 +1258,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         }
 
         var el = t.parentElement;
-        while(el.className != 'blog-comm'){
+        while (el.className != 'blog-comm') {
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
-        if(document.getElementById(parent_id)) {
+        if (document.getElementById(parent_id)) {
             document.getElementById(parent_id).classList.add('hidden');
         }
         if (!hasPushed) {
@@ -1220,7 +1276,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             var output = Mustache.render(temp2, name);
 
             var art = t.closest(".blog-comm");
-            art.querySelectorAll('.reply-comm').forEach(function(d){
+            art.querySelectorAll('.reply-comm').forEach(function (d) {
                 d.remove();
             });
 
@@ -1232,11 +1288,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
     function closeComm(t) {
         var el = t.parentElement;
-        while(el.className != 'blog-comm'){
+        while (el.className != 'blog-comm') {
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
-        if(document.getElementById(parent_id)) {
+        if (document.getElementById(parent_id)) {
             document.getElementById(parent_id).classList.remove('hidden');
         }
 
@@ -1254,7 +1310,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         }
 
         var el = t.parentElement;
-        while(el.className != 'blog-comm'){
+        while (el.className != 'blog-comm') {
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
@@ -1268,12 +1324,12 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 reply: reply,
                 parent_id: parent_id
             },
-            success: function(response){
-                if(response.status == 200){
+            success: function (response) {
+                if (response.status == 200) {
                     result = {};
-                    if(response.user_info.logo){
+                    if (response.user_info.logo) {
                         result['img'] = response.user_info.path;
-                    }else{
+                    } else {
                         result['img'] = false;
                     }
 
@@ -1295,9 +1351,9 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         });
     }
 
-    function viewMoreReplies(t){
+    function viewMoreReplies(t) {
         var el = t.parentElement;
-        while(el.className != 'blog-comm'){
+        while (el.className != 'blog-comm') {
             el = el.parentElement;
         }
         var parent_id = el.getAttribute('data-id');
@@ -1310,8 +1366,8 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 param: getQueryStringValue('vidk'),
             },
             async: false,
-            success: function(response){
-                if(response.status == 200){
+            success: function (response) {
+                if (response.status == 200) {
 
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, response.result);
@@ -1335,7 +1391,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <img src="{{img}}">
                         {{/img}}
                         {{^img}}
-                            <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
+                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
                                 font="40px"></canvas>
                         {{/img}}
                     </div>
@@ -1355,9 +1411,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             </div>
         </div>
         {{#hasChild}}
-            <div class="showReply">
-                <div class="srBtn"><button type="button" id="{{comment_enc_id}}" onclick="viewMoreReplies(this)">View Replies</button></div>
+        <div class="showReply">
+            <div class="srBtn">
+                <button type="button" id="{{comment_enc_id}}" onclick="viewMoreReplies(this)">View Replies</button>
             </div>
+        </div>
         {{/hasChild}}
     </article>
     {{/.}}
@@ -1366,28 +1424,28 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     {{#.}}
     <article class="reply-comm">
         <div class="row">
-                <div class="col-md-10 col-md-offset-2">
-                    <div class="col-md-2 col-xs-3">
-                        <div class="comment-icon">
-                            {{#img}}
-                            <img src="{{img}}">
-                            {{/img}}
-                            {{^img}}
-                            <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
-                                    font="40px"></canvas>
-                            {{/img}}
-                        </div>
+            <div class="col-md-10 col-md-offset-2">
+                <div class="col-md-2 col-xs-3">
+                    <div class="comment-icon">
+                        {{#img}}
+                        <img src="{{img}}">
+                        {{/img}}
+                        {{^img}}
+                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
+                                font="40px"></canvas>
+                        {{/img}}
                     </div>
-                    <div class="col-md-10 col-xs-9">
-                        <div class="comment">
-                            <div class="comment-name" id="{{username}}">{{name}}</div>
-                            <div class="comment-text">
-                                {{reply}}
-                            </div>
+                </div>
+                <div class="col-md-10 col-xs-9">
+                    <div class="comment">
+                        <div class="comment-name" id="{{username}}">{{name}}</div>
+                        <div class="comment-text">
+                            {{reply}}
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </article>
     {{/.}}
 </script>
