@@ -12,11 +12,10 @@ use Yii;
 use yii\base\Model;
 use common\models\Utilities;
 
-class CandidatePreferenceForm extends Model
+class CandidateInternshipPreferenceForm extends Model
 {
     public $key_skills;
     public $location;
-    public $work_experience;
     public $industry;
     public $job_category;
     public $weekdays;
@@ -25,31 +24,23 @@ class CandidatePreferenceForm extends Model
     public $from;
     public $to;
     public $job_type;
-    public $interntype;
-    public $salary_range;
-    public $from_salary;
-    public $to_salary;
 
     public function rules() {
         return [
             [
-                ['location', 'work_experience', 'salary_range', 'job_type', 'interntype', 'industry', 'job_category', 'weekdays', 'from', 'to', 'from_salary', 'to_salary'], 'required'],
+                ['location', 'job_type', 'industry', 'job_category', 'weekdays', 'from', 'to'], 'required'],
                 [['key_skills','weekoptsat','weekoptsund'],'safe']
-        ];
+            ];
     }
 
     public function attributeLabels() {
         return [
             'key_skills' => Yii::t('account', 'Key Skills'),
             'location' => Yii::t('account', 'Location'),
-            'work_experience' => Yii::t('account', 'Work Experience'),
             'industry' => Yii::t('account', 'Industry'),
             'job_category' => Yii::t('account', 'Job Category'),
             'from' => Yii::t('account', 'From'),
             'to' => Yii::t('account', 'To'),
-            'salary_range' => Yii::t('account', 'Salary Range'),
-            'from_salary' => Yii::t('account', 'Salary from'),
-            'to_salary' => Yii::t('account', 'Salary To'),
             'weekoptsat' => Yii::t('account', 'weekoptsat'),
             'weekoptsund' => Yii::t('account', 'weekoptsund'),
         ];
@@ -62,19 +53,15 @@ class CandidatePreferenceForm extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $user_preference->preference_enc_id = $utilitiesModel->encrypt();
         $user_preference->type = $this->job_type;
-        $user_preference->assigned_to = "Jobs";
+        $user_preference->assigned_to = "Internships";
         $user_preference->timings_from = date('H:i:s', strtotime($this->from));
         $user_preference->timings_to = date('H:i:s', strtotime($this->to));
-        $min_max = explode(';', $this->salary_range);
-        $user_preference->min_expected_salary = $min_max[0];
-        $user_preference->max_expected_salary = $min_max[1];
-        $user_preference->experience = $this->work_experience;
         $user_preference->working_days = json_encode($this->weekdays);
         $user_preference->sat_frequency = $this->weekoptsat;
         $user_preference->sun_frequency = $this->weekoptsund;
         $user_preference->created_on = date('Y-m-d h:i:s');
         $user_preference->created_by = Yii::$app->user->identity->user_enc_id;
-        if ($user_preference->save()) {
+        if ($user_preference->save(false)) {
 
             foreach (explode(',',$this->location) as $loc) {
 
@@ -86,7 +73,7 @@ class CandidatePreferenceForm extends Model
                 $userpreferredlocationsModel->created_on = date('Y-m-d h:i:s');
                 $userpreferredlocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if (!$userpreferredlocationsModel->save()) {
-                    print_r($userpreferredlocationsModel->getErrors());
+                    return false;
                 }
             }
             foreach (explode(',',$this->industry) as $indus) {
@@ -98,7 +85,7 @@ class CandidatePreferenceForm extends Model
                 $UserpreferredindustriesModel->created_on = date('Y-m-d h:i:s');
                 $UserpreferredindustriesModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if (!$UserpreferredindustriesModel->save()) {
-                    print_r($UserpreferredindustriesModel->getErrors());
+                    return false;
                 }
             }
             foreach ($this->key_skills as $skill) {
@@ -113,7 +100,7 @@ class CandidatePreferenceForm extends Model
                 $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
                 $userpreferredJobsModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if(!$userpreferredJobsModel->save()){
-                    print_r($userpreferredJobsModel->getErrors());
+                    return false;
                 }
             }
             return true;
@@ -123,20 +110,16 @@ class CandidatePreferenceForm extends Model
     }
 
     public function updateData() {
-        $user_preference = UserPreferences::findOne(['created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>"Jobs"]);
+        $user_preference = UserPreferences::findOne(['created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>"Internships"]);
         $user_preference->type = $this->job_type;
         $user_preference->timings_from = date('H:i:s', strtotime($this->from));
         $user_preference->timings_to = date('H:i:s', strtotime($this->to));
-        $min_max = explode(';', $this->salary_range);
-        $user_preference->min_expected_salary = $min_max[0];
-        $user_preference->max_expected_salary = $min_max[1];
-        $user_preference->experience = $this->work_experience;
         $user_preference->working_days = json_encode($this->weekdays);
         $user_preference->sat_frequency = $this->weekoptsat;
         $user_preference->sun_frequency = $this->weekoptsund;
         $user_preference->last_updated_on = date('Y-m-d H:i:s');
         $user_preference->last_updated_by = Yii::$app->user->identity->user_enc_id;
-        if ($user_preference->update()) {
+        if ($user_preference->update(false)) {
 
             //update Location.
             $already_saved_location = UserPreferredLocations::find()
@@ -203,7 +186,6 @@ class CandidatePreferenceForm extends Model
             $to_be_added_industry = array_diff($new_industry_to_update, $already_saved_industry);
             $to_be_deleted_industry = array_diff($already_saved_industry, $new_industry_to_update);
 
-
             if(count($to_be_deleted_industry) > 0) {
                 foreach ($to_be_deleted_industry as $del) {
                     $to_delete_indus = UserPreferredIndustries::find()
@@ -241,6 +223,11 @@ class CandidatePreferenceForm extends Model
                 ->asArray()
                 ->all();
 
+            $userskill = [];
+            foreach ($user_skill as $skill){
+                array_push($userskill,$skill['skill_enc_id']);
+            }
+
             $s_name = [];
             foreach ($user_skill as $skill_id){
 
@@ -254,12 +241,6 @@ class CandidatePreferenceForm extends Model
             }
 
             $new_userskill_to_update = $this->key_skills;
-
-
-            $userskill = [];
-            foreach ($user_skill as $skill){
-                array_push($userskill,$skill['skill_enc_id']);
-            }
 
             $to_be_added_userskill = array_diff($new_userskill_to_update, $s_name);
             $to_be_deleted_userskill = array_diff($s_name, $new_userskill_to_update);
@@ -307,7 +288,6 @@ class CandidatePreferenceForm extends Model
             if(count($to_be_added_userjob) > 0) {
                 foreach ($to_be_added_userjob as $job) {
                     $userpreferredJobsModel = new UserPreferredJobProfile();
-                    $utilitiesModel = new Utilities();
                     $userpreferredJobsModel->preference_enc_id = $user_preference->preference_enc_id;
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $userpreferredJobsModel->preferred_job_profile_enc_id = $utilitiesModel->encrypt();
@@ -323,22 +303,6 @@ class CandidatePreferenceForm extends Model
         }else {
             return false;
         }
-    }
-
-    private function delSkills($skill,$user_preference){
-        $skill_id = Skills::find()
-            ->select(['skill_enc_id'])
-            ->where(['skill'=>$skill])
-            ->asArray()
-            ->one();
-
-        $to_delete_userskill = UserPreferredSkills::find()
-            ->where(['skill_enc_id' => $skill_id['skill_enc_id'], 'preference_enc_id' => $user_preference])
-            ->andWhere(['is_deleted' => 0])
-            ->one();
-
-        $to_delete_userskill->is_deleted = 1;
-        $to_delete_userskill->update();
     }
 
     private function setSkills($skills,$preference_enc_id){
@@ -391,5 +355,21 @@ class CandidatePreferenceForm extends Model
                 }
             }
         }
+    }
+
+    private function delSkills($skill,$user_preference){
+        $skill_id = Skills::find()
+            ->select(['skill_enc_id'])
+            ->where(['skill'=>$skill])
+            ->asArray()
+            ->one();
+
+        $to_delete_userskill = UserPreferredSkills::find()
+            ->where(['skill_enc_id' => $skill_id['skill_enc_id'], 'preference_enc_id' => $user_preference])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
+
+        $to_delete_userskill->is_deleted = 1;
+        $to_delete_userskill->update();
     }
 }

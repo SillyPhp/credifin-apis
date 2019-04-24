@@ -5,33 +5,29 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Html;
 use kartik\widgets\TimePicker;
+use kartik\select2\Select2;
 
 $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
 ?>
-    <div class="container">
-        <div class="col-md-12">
 
-            <div class="tabbable-line">
+
+    <div class="container">
+        <div class="portlet light">
+            <div class="portlet-title tabbable-line">
+                <div class="tabbable-line">
                 <ul class="nav nav-tabs ">
                     <li class="active">
-                        <a href="#tab_15_1" data-toggle="tab"> Job</a>
+                        <a href="#tab_15_1" data-toggle="tab"> Jobs</a>
                     </li>
                     <li>
-                        <a href="#tab_15_2" data-toggle="tab"> Internship</a>
+                        <a href="#tab_15_2" data-toggle="tab" id="interns"> Internships</a>
                     </li>
                 </ul>
             </div>
-
-            <div class="tab-content">
-                <div class="portlet light tab-pane active" id="tab_15_1">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class=" icon-layers font-red"></i>
-                            <span class="caption-subject font-red bold uppercase">Candidate
-                        <span class="step-title"> Preferences</span>
-                    </span>
-                        </div>
-                    </div>
+            </div>
+            <div class="portlet-body">
+                <div class="tab-content">
+                <div class="tab-pane active" id="tab_15_1">
                     <div class="portlet-body form">
                         <?php
                         $form = ActiveForm::begin([
@@ -45,26 +41,33 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                         ?>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <?= $form->field($applicationpreferenceformModel, 'job_category')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => false, 'id' => job_category])->label(false); ?>
+                            <div class="col-md-6">
+                                <?= $form->field($applicationpreferenceformModel, 'job_category')->widget(Select2::classname(), [
+                                    'name' => 'kv-state-210',
+                                    'data' => $primary_cat,
+                                    'size' => Select2::MEDIUM,
+                                    'options' => ['placeholder' => 'Select Job Profile', 'multiple' => true, 'id' => 'job_category'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                    ],
+                                ])->label(false); ?>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <?= $form->field($applicationpreferenceformModel, 'work_experience')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Relevant Experience', 'id' => 'work_expierence'])->label(false); ?>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <?= $form->field($applicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'])->label(false); ?>
                             </div>
-                            <?=$form->field($applicationpreferenceformModel, 'assigned_too')->hiddenInput(['value'=> 'Jobs'])->label(false);?>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
                                 <?=
-                                $form->field($applicationpreferenceformModel, 'from_salary')->input('number', ['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Salary From')])->label(false);
+                                $form->field($applicationpreferenceformModel, 'from_salary')->textInput(['autocomplete' => 'off', 'placeholder' => 'Min Salary (p.a)', 'maxlength' => '15', 'min' => '1'])->label(false);
                                 ?>
                             </div>
                             <div class="col-md-3">
                                 <?=
-                                $form->field($applicationpreferenceformModel, 'to_salary')->input('number', ['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Salary To')])->label(false);
+                                $form->field($applicationpreferenceformModel, 'to_salary')->textInput(['autocomplete' => 'off', 'placeholder' => 'Max Salary (p.a)', 'maxlength' => '15', 'min' => '1'])->label(false);
                                 ?>
                             </div>
                             <div class="col-md-6">
@@ -74,13 +77,28 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 with-load">
-                                <div class="load-suggestions Typeahead-spinner" style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                            <div class="col-lg-12">
+                                <div class="pf-field no-margin">
+                                    <ul class="tags skill_tag_list">
+                                        <?php if (!empty($juser_skills)) {
+                                            foreach ($juser_skills as $skill) { ?>
+                                                <li class="addedTag"><?= $skill['skill'] ?><span
+                                                            onclick="$(this).parent().remove();"
+                                                            class="tagRemove">x</span><input type="hidden"
+                                                                                             name="skills[]"
+                                                                                             value="<?= $skill['skill'] ?>">
+                                                </li>
+                                            <?php }
+                                        } ?>
+                                        <li class="tagAdd taglist">
+                                            <div class="skill_wrapper">
+                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <?= $form->field($applicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'search-skill', 'class' => "skill-input"])->label(false); ?>
+
+                                            </div>
                                 </div>
-                                <?= $form->field($applicationpreferenceformModel, 'key_skills')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'skill_data'])->label(false); ?>
+                                </li>
+                                </ul>
                             </div>
                         </div>
                         <div class="row">
@@ -127,7 +145,7 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                         ?>
                                         <label>Working Days</label>
                                         <div id="week_options">
-                                            <div class="sat-sun">
+                                            <div class="sat-sun sat-hide">
                                                 <?=
                                                 $form->field($applicationpreferenceformModel, 'weekoptsat')->dropDownList([
                                                     'Always' => 'Always',
@@ -135,9 +153,9 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                                     'Rarely' => 'Rarely',
                                                 ])->label(false);
                                                 ?>
-                                                <span class="sat">Sat</span>
+                                                <span class="sat">Saturday</span>
                                             </div>
-                                            <div class="sat-sun">
+                                            <div class="sat-sun sun-hide">
                                                 <?=
                                                 $form->field($applicationpreferenceformModel, 'weekoptsund')->dropDownList([
                                                     'Always' => 'Always',
@@ -145,17 +163,17 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                                     'Rarely' => 'Rarely',
                                                 ])->label(false);
                                                 ?>
-                                                <span class="sun">Sun</span>
+                                                <span class="sun">Sunday</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($applicationpreferenceformModel, 'from')->widget(TimePicker::classname(), ['options' => ['id' => 'from'], 'pluginOptions' => []])->label('Job Timing From');
+                                    <?= $form->field($applicationpreferenceformModel, 'from')->widget(TimePicker::classname(), ['options' => ['id' => 'from'], 'pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Job Timing From');
                                     ?>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($applicationpreferenceformModel, 'to')->widget(TimePicker::classname(), ['options' => ['id' => 'to'], 'pluginOptions' => []])->label('Upto');
+                                    <?= $form->field($applicationpreferenceformModel, 'to')->widget(TimePicker::classname(), ['options' => ['id' => 'to'], 'pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
                                     ?>
                                 </div>
                             </div>
@@ -165,15 +183,7 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                     </div>
                 </div>
 
-                <div class="portlet light tab-pane" id="tab_15_2">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class=" icon-layers font-red"></i>
-                            <span class="caption-subject font-red bold uppercase">Candidate
-                        <span class="step-title"> Preferences</span>
-                    </span>
-                        </div>
-                    </div>
+                <div class="tab-pane" id="tab_15_2">
                     <div class="portlet-body form">
                         <?php
                         $form = ActiveForm::begin([
@@ -186,43 +196,46 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                         ]);
                         ?>
                         <div class="row">
-                            <div class="col-md-4">
-                                <?= $form->field($applicationpreferenceformModel, 'job_category')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => false, 'id' => 'intern_job_category'])->label(false); ?>
+                            <div class="col-md-6">
+                                <?= $form->field($internapplicationpreferenceformModel, 'job_category')->widget(Select2::classname(), [
+                                    'name' => 'kv-state-210',
+                                    'data' => $primary_cat,
+                                    'size' => Select2::MEDIUM,
+                                    'options' => ['placeholder' => 'Job Profile', 'multiple' => true, 'id' => 'intern_job_category'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                    ],
+                                ])->label(false); ?>
                             </div>
-                            <div class="col-md-4">
-                                <?= $form->field($applicationpreferenceformModel, 'work_experience')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Relevant Experience', 'id' => 'intern_work_expierence'])->label(false); ?>
+                            <div class="col-md-6">
+                                <?= $form->field($internapplicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'], ['id' => 'internship_job_type'])->label(false); ?>
                             </div>
-                            <div class="col-md-4">
-                                <?= $form->field($applicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'],['id'=>'internship_job_type'])->label(false); ?>
-                            </div>
-                            <?=$form->field($applicationpreferenceformModel, 'assigned_too')->hiddenInput(['value'=> 'Internships'])->label(false);?>
 
                         </div>
                         <div class="row">
-                            <div class="col-md-3">
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'from_salary')->input('number', ['id'=>'intern_from_salary','autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Salary From')])->label(false);
-                                ?>
-                            </div>
-                            <div class="col-md-3">
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'to_salary')->input('number', ['id'=>'intern_to_salary','autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Salary To')])->label(false);
-                                ?>
-                            </div>
-                            <div class="col-md-6">
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'salary_range')->textInput(['id'=>'intern_salary_range','autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Minimum Monthly Salary')])->label(false);
-                                ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 with-load">
-                                <div class="load-suggestions Typeahead-spinner" style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                            <div class="col-lg-12">
+                                <div class="pf-field no-margin">
+                                    <ul class="tags intern_skill_tag_list">
+                                        <?php if (!empty($iuser_skills)) {
+                                            foreach ($iuser_skills as $skill) { ?>
+                                                <li class="addedTag"><?= $skill['skill'] ?><span
+                                                            onclick="$(this).parent().remove();"
+                                                            class="tagRemove">x</span><input type="hidden"
+                                                                                             id="intern_skill"
+                                                                                             name="intern_skills[]"
+                                                                                             value="<?= $skill['skill'] ?>">
+                                                </li>
+                                            <?php }
+                                        } ?>
+                                        <li class="tagAdd taglist">
+                                            <div class="skill_wrapper">
+                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                <?= $form->field($internapplicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'intern-search-skill', 'class' => "intern-skill-input"])->label(false); ?>
+
+                                            </div>
                                 </div>
-                                <?= $form->field($applicationpreferenceformModel, 'key_skills')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'intern_skill_data'])->label(false); ?>
+                                </li>
+                                </ul>
                             </div>
                         </div>
                         <div class="row">
@@ -233,7 +246,7 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                     <span></span>
                                 </div>
                                 <?=
-                                $form->field($applicationpreferenceformModel, 'location')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('City'), 'id' => 'intern_city_data'])->label(false);
+                                $form->field($internapplicationpreferenceformModel, 'location')->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('City'), 'id' => 'intern_city_data'])->label(false);
                                 ?>
                             </div>
                             <div class="col-md-6 with-load">
@@ -242,16 +255,16 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <?= $form->field($applicationpreferenceformModel, 'industry')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Industry'), 'id' => 'intern_industry_data'])->label(false); ?>
+                                <?= $form->field($internapplicationpreferenceformModel, 'industry')->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('Industry'), 'id' => 'intern_industry_data'])->label(false); ?>
                             </div>
                         </div>
                         <div class="row">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="weekDays-selector">
-                                        <?php $applicationpreferenceformModel->weekdays = [1, 2, 3, 4, 5]; ?>
+                                        <?php $internapplicationpreferenceformModel->weekdays = [1, 2, 3, 4, 5]; ?>
                                         <?=
-                                        $form->field($applicationpreferenceformModel, 'weekdays')->inline()->checkBoxList([
+                                        $form->field($internapplicationpreferenceformModel, 'weekdays')->inline()->checkBoxList([
                                             '1' => 'M',
                                             '2' => 'T',
                                             '3' => 'W',
@@ -260,7 +273,7 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                             '6' => 'S',
                                             '7' => 'S',
                                         ], [
-                                                'id'=>'intern_weekdays',
+                                            'id' => 'intern_weekdays',
                                             'item' => function ($index, $label, $name, $checked, $value) {
                                                 $return = '<input type="checkbox" name="' . $name . '" value="' . $value . '" id="intern_weekday-' . $index . '" class="weekday" ' . (($checked) ? 'checked' : '') . '/>';
                                                 $return .= '<label for="intern_weekday-' . $index . '">' . $label . '</label>';
@@ -270,35 +283,35 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                         ?>
                                         <label>Working Days</label>
                                         <div id="week_options">
-                                            <div class="sat-sun">
+                                            <div class="sat-sun intern-sat-hide">
                                                 <?=
-                                                $form->field($applicationpreferenceformModel, 'weekoptsat')->dropDownList([
+                                                $form->field($internapplicationpreferenceformModel, 'weekoptsat')->dropDownList([
                                                     'Always' => 'Always',
                                                     'Alternative' => 'Alternative',
                                                     'Rarely' => 'Rarely',
-                                                ],['id'=>'intern_weekoptsat'])->label(false);
+                                                ], ['id' => 'intern_weekoptsat'])->label(false);
                                                 ?>
-                                                <span class="sat">Sat</span>
+                                                <span class="sat">Saturday</span>
                                             </div>
-                                            <div class="sat-sun">
+                                            <div class="sat-sun intern-sun-hide">
                                                 <?=
-                                                $form->field($applicationpreferenceformModel, 'weekoptsund')->dropDownList([
+                                                $form->field($internapplicationpreferenceformModel, 'weekoptsund')->dropDownList([
                                                     'Always' => 'Always',
                                                     'Alternative' => 'Alternative',
                                                     'Rarely' => 'Rarely',
-                                                ],['id'=>'intern_weekoptsun'])->label(false);
+                                                ], ['id' => 'intern_weekoptsun'])->label(false);
                                                 ?>
-                                                <span class="sun">Sun</span>
+                                                <span class="sun">Sunday</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($applicationpreferenceformModel, 'from')->widget(TimePicker::classname(), ['options' => ['id' => 'intern_from'], 'pluginOptions' => []])->label('Job Timing From');
+                                    <?= $form->field($internapplicationpreferenceformModel, 'from')->widget(TimePicker::classname(), ['options' => ['id' => 'intern_from'], 'pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Job Timing From');
                                     ?>
                                 </div>
                                 <div class="col-md-3">
-                                    <?= $form->field($applicationpreferenceformModel, 'to')->widget(TimePicker::classname(), ['options' => ['id' => 'intern_to'], 'pluginOptions' => []])->label('Upto');
+                                    <?= $form->field($internapplicationpreferenceformModel, 'to')->widget(TimePicker::classname(), ['options' => ['id' => 'intern_to'], 'pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
                                     ?>
                                 </div>
                             </div>
@@ -308,10 +321,17 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     </div>
 <?php
 $this->registerCss("
+.irs-disabled{
+    pointer-events: none;
+}
+.s2-togall-button{
+    display:none;
+}
 
 .bootstrap-tagsinput{
     width: 100%;
@@ -399,11 +419,27 @@ $this->registerCss("
     font-size: 25px;
     display: none;
 }
+.Typeahead-spinner{
+    position: absolute;
+    right: 8px;
+    top: 18px;
+    font-size: 22px;
+    display:none;
+    }
+    
+    .skill_wrapper .Typeahead-spinner{
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    z-index: 9;
+    font-size:18px;
+    display:none;
+}
 .bootstrap-tagsinput input{
        box-shadow:none !important;
        border-color: transparent;
    }
-   .bootstrap-tagsinput input:focus{
+   input:focus{
        outline: none;
    }
    #week_options
@@ -545,9 +581,260 @@ input[type=text]:not(.browser-default){
     font-size: 25px;
     display: none;
 }
+.tt-hint, .tt-input{
+    padding-top:8px !important;
+}
+.select2-selection{
+    padding-right:10px !important;
+}
+.twitter-typeahead{
+    height:38px;
+    width:100%;
+}
+
+/*-- skills tags input css starts --*/
+.tags > .addedTag{
+    margin-bottom:5px;
+    margin-top:5px;
+}
+.tags > .addedTag > span{
+    background: #00a0e3;
+}
+//.taglist{
+//    float:left !important;
+//}
+.input_search{
+    position: relative;
+    vertical-align: top;
+    background-color: transparent;
+    padding: 15px 10px !important;
+    font-size: 15px;
+    border-radius: 7px;
+}
+.skill_wrapper{position:relative;width:100%;}
+.no-margin {
+    margin: 0 !important;
+}
+.pf-field {
+    float: left;
+    width: 100%;
+    position: relative;
+}
+.tags {
+    float: left;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    padding: 8px;
+}
+.tags > .addedTag {
+    float: left;
+    background: #f4f5fa;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    font-family: Open Sans;
+    font-size: 13px;
+    padding: 7px 17px;
+    margin-right: 10px;
+    position: relative;
+}
+.tags li {
+    margin: 0;
+}
+.tags > .addedTag > span {
+    position: absolute;
+    right: -6px;
+    top: -5px;
+    width: 16px;
+    height: 16px;
+    font-style: normal;
+    background: #00a0e3;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    color: #ffffff;
+    text-align: center;
+    line-height: 13px;
+    font-size: 10px;
+    font-family: Open Sans;
+    cursor: pointer;
+}
+.tagAdd.taglist input {
+    float: left;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e8ecec !important;
+    height: 32px;
+    margin: 5px 0;
+    padding-left: 8px;
+    padding-top: 2px !important;
+    margin-top: 1px;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: 400;
+}
+.taglist .skill_wrapper .form-group{
+    margin-bottom:0px;
+    margin-top:6px;
+}
+li.tagAdd.taglist{
+    padding-left:15px;
+    width: auto;
+    float: left;
+}
+ul.tags.skill_tag_list {
+    list-style: outside none none;
+    margin: 0 0 30px;
+}
+
+ul.tags.intern_skill_tag_list {
+    list-style: outside none none;
+    margin: 0 0 30px;
+}
+/*-- skills tags input css starts --*/
+.select2-selection.select2-selection--multiple{
+    max-height: 86px;
+    position:relative;
+    overflow-y: scroll;
+}
+.select2-container--krajee .select2-selection--multiple .select2-selection__clear {
+    right: 2rem;
+}
 ");
 
 $script = <<< JS
+
+        $('#candidatepreferenceform-to_salary, #candidatepreferenceform-from_salary').mask("#,#0,#00", {reverse: true});
+        
+        $(document).on('click','#interns',function() {
+          var ps = new PerfectScrollbar('#intern_job_category ~ span > .selection > span');
+        });
+
+        $(document).on('keyup','#search-skill',function(e)
+        {
+            if(e.which==13)
+                {
+                  add_tags($(this),'skill_tag_list','skills');
+                }
+        });
+
+        $(document).on('keyup','#intern-search-skill',function(e)
+                {
+                    if(e.which==13)
+                        {
+                          add_tags($(this),'intern_skill_tag_list','intern_skills');
+                        }
+                });
+
+        $(document).on('keypress','input',function(e)
+        {
+            if(e.which==13)
+                {
+                    return false;
+                }
+        });
+
+        var global = [];
+
+        var skills = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+           remote: {
+            url:'/account/categories-list/skills-data',
+            prepare: function (query, settings) {
+                     settings.url += '?q=' +$('#search-skill').val();
+                     return settings;
+                },   
+            cache: false,    
+            filter: function(list) {
+                     return list;
+                }
+          }
+        });    
+                    
+        $('#search-skill').typeahead(null, {
+          name: 'skill',
+          display: 'value',
+          source: skills,
+           limit: 6,
+        }).on('typeahead:asyncrequest', function() {
+             $('.skill_wrapper .Typeahead-spinner').show();
+          }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+             $('.skill_wrapper .Typeahead-spinner').hide();
+          }).on('typeahead:selected',function(e, datum)
+          {
+              add_tags($(this),'skill_tag_list','skills');
+           }).blur(validateSelection);
+        
+        var intern_skills = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+           remote: {
+            url:'/account/categories-list/skills-data',
+            prepare: function (query, settings) {
+                     settings.url += '?q=' +$('#intern-search-skill').val();
+                     return settings;
+                },   
+            cache: false,    
+            filter: function(list) {
+                     return list;
+                }
+          }
+        });    
+                    
+        $('#intern-search-skill').typeahead(null, {
+          name: 'skill',
+          display: 'value',
+          source: intern_skills,
+           limit: 6,
+        }).on('typeahead:asyncrequest', function() {
+             $('.skill_wrapper .Typeahead-spinner').show();
+          }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+             $('.skill_wrapper .Typeahead-spinner').hide();
+          }).on('typeahead:selected',function(e, datum)
+          {
+              add_tags($(this),'intern_skill_tag_list','intern_skills');
+           }).blur(validateSelection);
+        
+        function validateSelection() {
+          var theIndex = -1;
+          for (var i = 0; i < global.length; i++) {
+          if (global[i].value == $(this).val()) {
+          theIndex = i;
+         break;
+           }
+          }
+          if (theIndex == -1) {
+           $(this).val(""); 
+           global = [];
+          }
+          }
+          
+          function add_tags(thisObj,tag_class,name,duplicates)
+            {
+                var duplicates = [];
+                $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+                                    {
+                                     duplicates.push($.trim($(this).val()).toUpperCase());
+                                    });
+                if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
+                            thisObj.val('');
+                                } else {
+                                 $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+                                 thisObj.val('');
+                            }
+            }
+
+
         function tConv24(time24) {
                 var ts = time24;
                 var H = +ts.substr(0, 2);
@@ -574,6 +861,7 @@ $script = <<< JS
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 prefetch: '',
+                cache: true, 
                 remote: {
                     url: '/cities/city-list?q=%QUERY',
                     wildcard: '%QUERY'
@@ -591,36 +879,17 @@ $script = <<< JS
                     source: city.ttAdapter()
                 }
             });
-            
-            var skill = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                prefetch: '',
-                remote: {
-                    url: '/account/skills/get-skills?q=%QUERY',
-                    wildcard: '%QUERY'
-                }
-            });
-            skill.initialize();
-
-            var skill_name = $('#skill_data,#intern_skill_data');
-            skill_name.materialtags({
-                itemValue: 'id',
-                itemText: 'text',
-                typeaheadjs: {
-                    name: 'skill',
-                    displayKey: 'text',
-                    source: skill.ttAdapter()
-                }
-            });
 
             var industries = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                prefetch: '',
+                cache: true, 
+                prefetch:{
+                    url: '/account/preferences/get-industry?q=com',
+                },
                 remote: {
                     url: '/account/preferences/get-industry?q=%QUERY',
-                    wildcard: '%QUERY'
+                    wildcard: '%QUERY',
                 }
             });
             industries.initialize();
@@ -636,20 +905,34 @@ $script = <<< JS
                 }
             });
             
+            
             $(document).on('submit', '#job_submit_form', function (event) {
                 event.preventDefault();
+                if ($('#weekday-5').is(':not(:checked)')) {
+                    $("#candidatepreferenceform-weekoptsat").val('');    
+                }
+                if ($('#weekday-6').is(':not(:checked)')) {
+                    $("#candidatepreferenceform-weekoptsund").val('');    
+                }
+                
                 var data = $(this).serialize();
+                
                 $.ajax({
-                    url: "/account/preferences/candidate",
+                    url: "/account/preferences/index",
                     method: "POST",
                     data: data,
                     success: function (res) {
-                        
+                        if($("#candidatepreferenceform-weekoptsat").val() == null){
+                            $("#candidatepreferenceform-weekoptsat").val('Always');    
+                        }
+                        if($("#candidatepreferenceform-weekoptsund").val() == null){
+                            $("#candidatepreferenceform-weekoptsund").val('Always');   
+                        }
                         var response = JSON.parse(res);
                         if(response.status == 201){
                             toastr.error(response.message, 'error');   
                         }if(response.status == 200){
-                            toastr.success(response.message, 'success');   
+                            toastr.success(response.message, 'success');
                         }
                     }
                 });
@@ -657,12 +940,24 @@ $script = <<< JS
             
             $(document).on('submit', '#intern_submit_form', function (event) {
                 event.preventDefault();
+                if ($('#intern_weekday-5').is(':not(:checked)')) {
+                    $("#intern_weekoptsat").val('');    
+                }
+                if ($('#intern_weekday-6').is(':not(:checked)')) {
+                    $("#intern_weekoptsun").val('');    
+                }
                 var data = $(this).serialize();
                 $.ajax({
-                    url: "/account/preferences/candidate",
+                    url: "/account/preferences/index",
                     method: "POST",
                     data: data,
                     success: function (res) {
+                        if($("#intern_weekoptsat").val() == null){
+                            $("#intern_weekoptsat").val('Always');    
+                        }
+                        if($("#intern_weekoptsun").val() == null){
+                            $("#intern_weekoptsun").val('Always');   
+                        }
                         var response = JSON.parse(res);
                         if(response.status == 201){
                             toastr.error(response.message, 'error');   
@@ -685,11 +980,7 @@ $script = <<< JS
                         if(response.status == 201){
                             
                         }else{
-                            for ( var j = 0; j < response[0].userPreferredSkills.length; j++)
-                            {
-                                $('#skill_data').materialtags('add', {"id": response[0].userPreferredSkills[j].skill_enc_id, "text": response[0].userPreferredSkills[j]['skillEnc'].skill});
-                            }
-                            
+                                                       
                             for (var i = 0; i < response[0].userPreferredLocations.length; i++)
                             {
                                 $('#city_data').materialtags('add', {"id": response[0].userPreferredLocations[i].city_enc_id, "text": response[0].userPreferredLocations[i]['cityEnc'].name});
@@ -706,12 +997,31 @@ $script = <<< JS
                                 } else{
                                     $(this).prop('checked', false);
                                 }
+                                if ($('#weekday-5').is(':checked')) {
+                                    $('.sat-hide').css('display', 'block');
+                                } else if ($('#weekday-5').is(':not(:checked)')) {
+                                    $('.sat-hide').css('display', 'none');
+                                }
+                                if ($('#weekday-6').is(':checked')) {
+                                    $('.sun-hide').css('display', 'block');
+                                } else if ($('#weekday-6').is(':not(:checked)')) {
+                                    $('.sun-hide').css('display', 'none');
+                                }
                             });
-                            $("#job_category").val(data.job_profile);
+                            
+                            if(data.sat_frequency == null){
+                                $("#candidatepreferenceform-weekoptsat").val('Always');
+                            }else{
+                                $("#candidatepreferenceform-weekoptsat").val(data.sat_frequency);
+                            }
+                            if(data.sun_frequency == null){
+                                $("#candidatepreferenceform-weekoptsund").val('Always');        
+                            }else{
+                                $("#candidatepreferenceform-weekoptsund").val(data.sun_frequency);
+                            }
+                            
                             $("#work_expierence").val(data.experience);
                             $("#candidatepreferenceform-job_type").val(data.type);
-                            $("#candidatepreferenceform-weekoptsat").val(data.sat_frequency);
-                            $("#candidatepreferenceform-weekoptsund").val(data.sun_frequency);
                             $("#from").val(data.timings_from);
                             $("#to").val(data.timings_to);
                             $("#from").val(tConv24($('#from').val()));
@@ -719,16 +1029,15 @@ $script = <<< JS
                             $("#candidatepreferenceform-from_salary").val(data.min_expected_salary);
                             $("#candidatepreferenceform-to_salary").val(data.max_expected_salary);
                             
+                            var fivehun = (500/100)*data.min_expected_salary;
+                            
                             var range = $("#range_3");
                             var rangee = range.data("ionRangeSlider");
                             rangee.update({
-                                min: 5000,
-                                max: 1000000,
+                                min: data.min_expected_salary,
+                                max: fivehun,
                                 from: data.min_expected_salary,
                                 to: data.max_expected_salary,
-                                type: 'double',
-                                grid: true,
-                                grid_num: 5
                             });
                         }
                     }
@@ -747,11 +1056,6 @@ $script = <<< JS
                         if(response.status == 201){
                             
                         }else{
-                            for ( var j = 0; j < response[0].userPreferredSkills.length; j++)
-                            {
-                                $('#intern_skill_data').materialtags('add', {"id": response[0].userPreferredSkills[j].skill_enc_id, "text": response[0].userPreferredSkills[j]['skillEnc'].skill});
-                            }
-                            
                             for (var i = 0; i < response[0].userPreferredLocations.length; i++)
                             {
                                 $('#intern_city_data').materialtags('add', {"id": response[0].userPreferredLocations[i].city_enc_id, "text": response[0].userPreferredLocations[i]['cityEnc'].name});
@@ -768,30 +1072,35 @@ $script = <<< JS
                                 } else{
                                     $(this).prop('checked', false);
                                 }
+                                if ($('#intern_weekday-5').is(':checked')) {
+                                    $('.intern-sat-hide').css('display', 'block');
+                
+                                } else if ($('#intern_weekday-5').is(':not(:checked)')) {
+                                    $('.intern-sat-hide').css('display', 'none');
+                                }
+                                if ($('#intern_weekday-6').is(':checked')) {
+                                    $('.intern-sun-hide').css('display', 'block');
+                                } else if ($('#intern_weekday-6').is(':not(:checked)')) {
+                                    $('.intern-sun-hide').css('display', 'none');
+                                }
                             });
-                            $("#intern_job_category").val(data.job_profile);
-                            $("#intern_work_expierence").val(data.experience);
+                            
+                            if(data.sat_frequency == null){
+                                $("#intern_weekoptsat").val('Always');
+                            }else{
+                                $("#intern_weekoptsat").val(data.sat_frequency);
+                            }
+                            if(data.sun_frequency == null){
+                                $("#intern_weekoptsun").val('Always');        
+                            }else{
+                                $("#intern_weekoptsun").val(data.sun_frequency);
+                            }
+                            
                             $("#internship_job_type").val(data.type);
-                            $("#intern_weekoptsat").val(data.sat_frequency);
-                            $("#intern_weekoptsun").val(data.sun_frequency);
                             $("#intern_from").val(data.timings_from);
                             $("#intern_to").val(data.timings_to);
                             $("#intern_from").val(tConv24($('#intern_from').val()));
                             $("#intern_to").val(tConv24($('#intern_to').val()));
-                            $("#intern_from_salary").val(data.min_expected_salary);
-                            $("#intern_to_salary").val(data.max_expected_salary);
-                            
-                            var range = $("#intern_salary_range");
-                            var rangee = range.data("ionRangeSlider");
-                            rangee.update({
-                                min: 5000,
-                                max: 1000000,
-                                from: data.min_expected_salary,
-                                to: data.max_expected_salary,
-                                type: 'double',
-                                grid: true,
-                                grid_num: 5
-                            });
                         }
                     }
                 });
@@ -815,98 +1124,156 @@ $script = <<< JS
             $('#expected_salary').mask("#,##,##,##,###", {
                 reverse: true
             });
+            
+            $('.sat-hide').css('display', 'none');
+            $('.sun-hide').css('display', 'none');
+            $('.intern-sat-hide').css('display', 'none');
+            $('.intern-sun-hide').css('display', 'none');
 
-            // $(document).on('click', '#applicationpreferenceform-weekdays,#intern_weekdays input', function () {
-            //     if ($('#weekday-5').prop('checked', true)) {
-            //         $('.field-applicationpreferenceform-weekoptsat').css('display', 'block');
-            //         $('.sat').css('display', 'block');
-            //
-            //     } else if ($('#weekday-5').prop('checked', false)) {
-            //         $('.field-applicationpreferenceform-weekoptsat').css('display', 'none');
-            //         $('.sat').css('display', 'none');
-            //     }
-            //     if ($('#weekday-6').is(':checked')) {
-            //         $('.field-applicationpreferenceform-weekoptsund').css('display', 'block');
-            //         $('.sun').css('display', 'block');
-            //     } else if ($('#weekday-6').is(':not(:checked)')) {
-            //         $('.field-applicationpreferenceform-weekoptsund').css('display', 'none');
-            //         $('.sun').css('display', 'none');
-            //     }
-            // });
+            $(document).on('click', '#candidatepreferenceform-weekdays', function () {
+                if ($('#weekday-5').is(':checked')) {
+                    $('.sat-hide').css('display', 'block');
+                } else if ($('#weekday-5').is(':not(:checked)')) {
+                    $('.sat-hide').css('display', 'none');
+                }
+                if ($('#weekday-6').is(':checked')) {
+                    $('.sun-hide').css('display', 'block');
+                } else if ($('#weekday-6').is(':not(:checked)')) {
+                    $('.sun-hide').css('display', 'none');
+                }
+            });
+            
+            $(document).on('click', '#intern_weekdays', function () {
+                if ($('#intern_weekday-5').is(':checked')) {
+                    $('.intern-sat-hide').css('display', 'block');
+
+                } else if ($('#intern_weekday-5').is(':not(:checked)')) {
+                    $('.intern-sat-hide').css('display', 'none');
+                }
+                if ($('#intern_weekday-6').is(':checked')) {
+                    $('.intern-sun-hide').css('display', 'block');
+                } else if ($('#intern_weekday-6').is(':not(:checked)')) {
+                    $('.intern-sun-hide').css('display', 'none');
+                }
+            });
+            
+            function my_prettify (n) {
+                return n.toLocaleString('en-IN');
+            }
             
             //Jobs salary slider
-
             $("#range_3").ionRangeSlider({
-                min: 5000,
-                max: 1000000,
-                from: 40000,
-                to: 70000,
+                skin: "round",
+                min: 0,
+                max: 0,
+                from: 0,
+                to: 0,
                 type: 'double',
                 grid: true,
-                grid_num: 5
+                grid_num: 3,
+                step: 1000,
+                force_edges: true,
+                prettify: my_prettify,
+                prettify_separator:",",
+                postfix: " Rs",
             });
             
             var range = $("#range_3");
             var raangee = range.data("ionRangeSlider");
             
-            $("#candidatepreferenceform-from_salary,#candidatepreferenceform-to_salary").on("change",function() {
+            $(document).on('keyup','#candidatepreferenceform-from_salary',function(e)
+            {
+                if(e.which==13)
+                    {
+                        
+                        $('#candidatepreferenceform-from_salary').unmask();
+                        
+                        if($(this).val() < 0 ){
+                            $(this).val(0);
+                        }
+                       var s_from = $('#candidatepreferenceform-from_salary').prop('value');
+                
+                        var thirtyper = (30/100)*s_from;
+                        thirtyper = parseInt(s_from) + parseInt(thirtyper);
+                        var fivehun = (500/100)*s_from;
+                        
+                        raangee.update({
+                            min: s_from,
+                            max: fivehun,
+                            from: s_from,
+                            to: thirtyper,
+                        });
+                        
+                        $('#candidatepreferenceform-to_salary, #candidatepreferenceform-from_salary').mask("#,#0,#00", {reverse: true});
+                    }
+            });
+            
+            $(document).on('keyup','#candidatepreferenceform-to_salary',function(e){
+                if(e.which==13){
+                    $('#candidatepreferenceform-to_salary,#candidatepreferenceform-from_salary').unmask();
+                    
+                    var s_to = $('#candidatepreferenceform-to_salary').prop('value'); 
+                    var s_from = $('#candidatepreferenceform-from_salary').prop('value');
+                    
+                    if(s_from == null || s_from == 0){
+                        $('#candidatepreferenceform-to_salary').val('0');
+                    }
+                    if(s_to > (500/100)*parseInt(s_from)){
+                        $('#candidatepreferenceform-to_salary').val((500/100)*parseInt(s_from));
+                    }
+                    raangee.update({
+                    to: s_to,
+                });
+                    
+                    $('#candidatepreferenceform-to_salary, #candidatepreferenceform-from_salary').mask("#,#0,#00", {reverse: true});
+                }
+            });
+            
+            $("#candidatepreferenceform-to_salary").on("change",function() {
+                $('#candidatepreferenceform-to_salary').unmask();
+               var s_to = $('#candidatepreferenceform-to_salary').prop('value'); 
+               var s_from = $('#candidatepreferenceform-from_salary').prop('value');
+                    
+               if(s_from == null || s_from == 0){
+                    $('#candidatepreferenceform-to_salary').val('0');
+               }
+               if(s_to > (500/100)*s_from){
+                   $('#candidatepreferenceform-to_salary').val((500/100)*s_from);
+               }
+               
+               raangee.update({
+                    to: s_to,
+                });
+               $('#candidatepreferenceform-to_salary, #candidatepreferenceform-from_salary').mask("#,#0,#00", {reverse: true});
+            });
+            
+            $("#candidatepreferenceform-from_salary").on("change",function() {
+                
+                if($(this).val() < 0 ){
+                    $(this).val(0);
+                }
+                
+                if($(this).val() == ""){
+                    $(this).val('0');
+                }
+                $('#candidatepreferenceform-from_salary').unmask();
+                
                 var s_from = $('#candidatepreferenceform-from_salary').prop('value');
-                var s_to = $('#candidatepreferenceform-to_salary').prop('value');
+                
+                var thirtyper = (30/100)*s_from;
+                thirtyper = parseInt(s_from) + parseInt(thirtyper);
+                var fivehun = (500/100)*s_from;
                 
                 raangee.update({
-                    min: 5000,
-                    max: 1000000,
+                    min: s_from,
+                    max: fivehun,
                     from: s_from,
-                    to: s_to,
-                    type: 'double',
-                    grid: true,
-                    grid_num: 5
+                    to: thirtyper,
                 });
-            });
-
-            range.ionRangeSlider({
-                type: "double",
-                min: 0,
-                max: 100,
-                from: 20,
-                to: 80
-            });
-
-            range.on("change", function () {
-                var value = $(this).prop("value").split(";");
-                $('#candidatepreferenceform-from_salary').val(value[0]);
-                $('#candidatepreferenceform-to_salary').val(value[1]);
-            });
-            
-            //InterShip salary slider
-            
-            $("#intern_salary_range").ionRangeSlider({
-                min: 5000,
-                max: 1000000,
-                from: 40000,
-                to: 70000,
-                type: 'double',
-                grid: true,
-                grid_num: 5
-            });
-            
-            var range = $("#intern_salary_range");
-            var rangee = range.data("ionRangeSlider");
-            
-            $("#intern_from_salary,#intern_to_salary").on("change",function() {
-                var s_from = $('#intern_from_salary').prop('value');
-                var s_to = $('#intern_to_salary').prop('value');
                 
-                rangee.update({
-                    min: 5000,
-                    max: 1000000,
-                    from: s_from,
-                    to: s_to,
-                    type: 'double',
-                    grid: true,
-                    grid_num: 5
-                });
+                $('#candidatepreferenceform-to_salary, #candidatepreferenceform-from_salary').mask("#,#0,#00", {reverse: true});
             });
+            
 
             range.ionRangeSlider({
                 type: "double",
@@ -918,14 +1285,20 @@ $script = <<< JS
 
             range.on("change", function () {
                 var value = $(this).prop("value").split(";");
-                $('#intern_from_salary').val(value[0]);
-                $('#intern_to_salary').val(value[1]);
+                var num = parseInt(value[0]);
+                $('#candidatepreferenceform-from_salary').val(num.toLocaleString("en-IN"));
+                var num2 = parseInt(value[1]);
+                $('#candidatepreferenceform-to_salary').val(num2.toLocaleString("en-IN"));
             });
+            
+$('.field-range_3 div .irs-with-grid').addClass('irs-disabled');
+var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerCssFile('@backendAssets/global/plugins/ion.rangeslider/css/ion.rangeSlider.css');
-$this->registerCssFile('@backendAssets/global/plugins/ion.rangeslider/css/ion.rangeSlider.skinFlat.css');
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
+//$this->registerCssFile('@backendAssets/global/plugins/ion.rangeslider/css/ion.rangeSlider.css');
+//$this->registerCssFile('@backendAssets/global/plugins/ion.rangeslider/css/ion.rangeSlider.skinFlat.css');
 $this->registerCssFile('http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css');
 //$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css');
 $this->registerCssFile('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
@@ -934,5 +1307,9 @@ $this->registerJsFile('http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/materialized/materialize-tags/js/materialize-tags.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/ion.rangeslider/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('@backendAssets/global/plugins/ion.rangeslider/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

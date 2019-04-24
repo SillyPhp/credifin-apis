@@ -3,9 +3,13 @@
 namespace account\controllers;
 
 use account\models\preferences\CandidatePreferenceForm;
+use account\models\preferences\CandidateInternshipPreferenceForm;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Industries;
+use yii\web\HttpException;
+use common\models\Skills;
+use common\models\User;
 use common\models\UserPreferences;
 use Yii;
 use yii\web\Controller;
@@ -13,67 +17,194 @@ use yii\web\Response;
 
 class PreferencesController extends Controller
 {
-    public function actionCandidate()
+    public function actionIndex()
     {
-        $applicationpreferenceformModel = new CandidatePreferenceForm();
+        if(!Yii::$app->user->identity->organization) {
 
-        $primaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
-            ->asArray()
-            ->all();
+            $applicationpreferenceformModel = new CandidatePreferenceForm();
+            $internapplicationpreferenceformModel = new CandidateInternshipPreferenceForm();
 
-        if (Yii::$app->request->isPost) {
+            $primaryfields = Categories::find()
+                ->alias('a')
+                ->select(['a.name', 'a.category_enc_id'])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->where(['b.assigned_to' => 'Jobs'])
+                ->asArray()
+                ->all();
 
-            if ($applicationpreferenceformModel->load(Yii::$app->request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $assigned_to = $applicationpreferenceformModel['assigned_too'];
+            $juser_skills = UserPreferences::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => 'Jobs'])
+                ->joinWith(['userPreferredSkills e' => function ($z) {
+                    $z->onCondition(['e.is_deleted' => 0]);
+                    $z->joinWith(['skillEnc b'], false);
+                }], false)
+                ->asArray()
+                ->all();
 
-                $userdata = UserPreferences::find()
-                    ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-                    ->andWhere(['assigned_to'=>$assigned_to])
-                    ->one();
+            $job_data = UserPreferences::find()
+                ->alias('a')
+                ->select(['c.job_profile_enc_id', 'a.min_expected_salary'])
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => 'Jobs'])
+                ->joinWith(['userPreferredJobProfiles c' => function ($x) {
+                    $x->where(['c.is_deleted' => 0]);
+                }])
+                ->asArray()
+                ->all();
 
-                if ($userdata) {
-                    if($applicationpreferenceformModel->updateData()){
-                        return json_encode([
-                            'status' => 200,
-                            'message' => 'Saved',
-                        ]);
-                    }else{
+
+            $job_profile_id = [];
+
+            foreach ($job_data as $jd) {
+                array_push($job_profile_id, $jd['job_profile_enc_id']);
+            }
+
+            if ($job_profile_id) {
+                $applicationpreferenceformModel->job_category = $job_profile_id;
+            }
+
+            $intern_data = UserPreferences::find()
+                ->alias('a')
+                ->select(['c.job_profile_enc_id'])
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => 'Internships'])
+                ->joinWith(['userPreferredJobProfiles c' => function ($x) {
+                    $x->where(['c.is_deleted' => 0]);
+                }])
+                ->asArray()
+                ->all();
+
+            $iuser_skills = UserPreferences::find()
+                ->alias('a')
+                ->select(['b.skill'])
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => 'Internships'])
+                ->joinWith(['userPreferredSkills e' => function ($z) {
+                    $z->onCondition(['e.is_deleted' => 0]);
+                    $z->joinWith(['skillEnc b'], false);
+                }], false)
+                ->asArray()
+                ->all();
+
+            $intern_profile_id = [];
+
+            foreach ($intern_data as $jd) {
+                array_push($intern_profile_id, $jd['job_profile_enc_id']);
+            }
+
+            if ($intern_profile_id) {
+                $internapplicationpreferenceformModel->job_category = $intern_profile_id;
+            }
+
+            if (Yii::$app->request->isPost) {
+
+                if ($applicationpreferenceformModel->load(Yii::$app->request->post())) {
+
+                    $skill = Yii::$app->request->post('skills');
+
+                    if (empty($skill)) {
                         return json_encode([
                             'status' => 201,
-                            'message' => 'Something went wrong',
+                            'message' => 'Please Enter Skills',
                         ]);
+                    }
+
+                    $applicationpreferenceformModel->key_skills = Yii::$app->request->post('skills');
+
+
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    $userdata = UserPreferences::find()
+                        ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                        ->andWhere(['assigned_to' => "Jobs"])
+                        ->one();
+
+                    if ($userdata) {
+
+                        if ($applicationpreferenceformModel->updateData()) {
+                            return json_encode([
+                                'status' => 200,
+                                'message' => 'Saved',
+                            ]);
+                        } else {
+                            return json_encode([
+                                'status' => 201,
+                                'message' => 'Something went wrong',
+                            ]);
+                        }
+                    } else {
+                        if ($applicationpreferenceformModel->saveData()) {
+
+                            return json_encode([
+                                'status' => 200,
+                                'message' => 'Saved',
+                            ]);
+                        } else {
+                            return json_encode([
+                                'status' => 201,
+                                'message' => 'Something went wrong',
+                            ]);
+                        }
+                    }
+                } elseif ($internapplicationpreferenceformModel->load(Yii::$app->request->post())) {
+
+                    $skill = Yii::$app->request->post('intern_skills');
+
+                    if (empty($skill)) {
+                        return json_encode([
+                            'status' => 201,
+                            'message' => 'Please Enter Skills',
+                        ]);
+                    }
+                    $internapplicationpreferenceformModel->key_skills = Yii::$app->request->post('intern_skills');
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    $userdata = UserPreferences::find()
+                        ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                        ->andWhere(['assigned_to' => 'Internships'])
+                        ->one();
+
+                    if ($userdata) {
+                        if ($internapplicationpreferenceformModel->updateData()) {
+                            return json_encode([
+                                'status' => 200,
+                                'message' => 'Saved',
+                            ]);
+                        } else {
+                            return json_encode([
+                                'status' => 201,
+                                'message' => 'Something went wrong',
+                            ]);
+                        }
+                    } else {
+                        if ($internapplicationpreferenceformModel->saveData()) {
+
+                            return json_encode([
+                                'status' => 200,
+                                'message' => 'Saved',
+                            ]);
+                        } else {
+                            return json_encode([
+                                'status' => 201,
+                                'message' => 'Something went wrong',
+                            ]);
+                        }
                     }
                 } else {
-                    if($applicationpreferenceformModel->saveData()){
-
-                        return json_encode([
-                            'status' => 200,
-                            'message' => 'Saved',
-                        ]);
-                    }else{
-                        return json_encode([
-                            'status' => 201,
-                            'message' => 'Something went wrong',
-                        ]);
-                    }
+                    return json_encode([
+                        'status' => 201,
+                        'message' => 'Something went wrong',
+                    ]);
                 }
-            } else {
-                return json_encode([
-                    'status' => 201,
-                    'message' => 'Something went wrong',
-                ]);
             }
-        }
 
-        return $this->render('candidate', [
-            'applicationpreferenceformModel' => $applicationpreferenceformModel,
-            'primaryfields' => $primaryfields,
-        ]);
+            return $this->render('candidate', [
+                'applicationpreferenceformModel' => $applicationpreferenceformModel,
+                'internapplicationpreferenceformModel' => $internapplicationpreferenceformModel,
+                'primaryfields' => $primaryfields,
+                'juser_skills' => $juser_skills,
+                'iuser_skills' => $iuser_skills
+            ]);
+        }else{
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
     }
 
     public function actionGetIndustry($q = null) {
@@ -83,7 +214,7 @@ class PreferencesController extends Controller
             $industryModel = new Industries();
             $industry = $industryModel->find()
                 ->select(['industry_enc_id AS id', 'industry AS text'])
-                ->where(['like', 'industry', $q])
+                ->where('industry LIKE "%' . $q . '%"')
                 ->orderBy(['industry' => SORT_ASC])
                 ->asArray()
                 ->all();
@@ -100,19 +231,20 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>'Jobs'])
                 ->joinWith(['userPreferredLocations c'=>function($x){
-                    $x->where(['c.is_deleted'=>0]);
+                    $x->onCondition(['c.is_deleted'=>0]);
                     $x->joinWith(['cityEnc']);
                 }])
                 ->joinWith(['userPreferredIndustries d'=>function($y){
-                    $y->where(['d.is_deleted'=>0]);
+                    $y->onCondition(['d.is_deleted'=>0]);
                     $y->joinWith(['industryEnc']);
                 }])
                 ->joinWith(['userPreferredSkills e'=>function($z){
-                    $z->where(['e.is_deleted'=>0]);
+                    $z->onCondition(['e.is_deleted'=>0]);
                     $z->joinWith(['skillEnc']);
                 }])
                 ->asArray()
                 ->all();
+
 
             if(empty($data)){
                 return json_encode(['status'=>201]);
@@ -131,15 +263,15 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>'Internships'])
                 ->joinWith(['userPreferredLocations c'=>function($x){
-                    $x->where(['c.is_deleted'=>0]);
+                    $x->onCondition(['c.is_deleted'=>0]);
                     $x->joinWith(['cityEnc']);
                 }])
                 ->joinWith(['userPreferredIndustries d'=>function($y){
-                    $y->where(['d.is_deleted'=>0]);
+                    $y->onCondition(['d.is_deleted'=>0]);
                     $y->joinWith(['industryEnc']);
                 }])
                 ->joinWith(['userPreferredSkills e'=>function($z){
-                    $z->where(['e.is_deleted'=>0]);
+                    $z->onCondition(['e.is_deleted'=>0]);
                     $z->joinWith(['skillEnc']);
                 }])
                 ->asArray()
