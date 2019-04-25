@@ -747,19 +747,27 @@ class OrganizationsController extends Controller
         return $this->render('review-company', ['review_type'=>$review_type,'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
     }
 
-    public function actionPostReviews($slug)
+    public function actionPostReviews($slug=null,$request_type=null)
     {
         if (Yii::$app->request->isPost) {
             $arr = Yii::$app->request->post('data');
-            $org_id = Organizations::find()
-                ->where(['slug' => $slug])
-                ->asArray()
-                ->one();
+            if ($request_type==1) {
+                $org_id = Organizations::find()
+                    ->where(['slug' => $slug])
+                    ->asArray()
+                    ->one();
+                $companyReview = new OrganizationReviews();
+            } else {
+                $org_id = UnclaimedOrganizations::find()
+                    ->where(['slug' => $slug])
+                    ->asArray()
+                    ->one();
+                $companyReview = new NewOrganizationReviews();
+            }
             $f_time = strtotime($arr['from']);
             $from_time = date('Y-m-d', $f_time);
             $t_time = strtotime($arr['to']);
             $to_time = date('Y-m-d', $t_time);
-            $companyReview = new OrganizationReviews();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $companyReview->review_enc_id = $utilitiesModel->encrypt();
@@ -767,7 +775,11 @@ class OrganizationsController extends Controller
             $companyReview->category_enc_id = $arr['department'];
             $companyReview->organization_enc_id = $org_id['organization_enc_id'];
             $companyReview->average_rating = $arr['average_rating'];
-            $companyReview->is_current_employee = (($arr['current_employee'] == 'current') ? 1 : 0);
+            if ($request_type==1) {
+                $companyReview->is_current_employee = (($arr['current_employee'] == 'current') ? 1 : 0);
+            } else {
+                $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
+            }
             $companyReview->from_date = $from_time;
             $companyReview->to_date = $to_time;
             $companyReview->overall_experience = $arr['overall_experience'];
