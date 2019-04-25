@@ -19,6 +19,11 @@ use yii\bootstrap\ActiveForm;
             <div class="col-md-12">
                 <form id="search-form-submit">
                     <div class="search-bar">
+                        <div class="load-suggestions Typeahead-spinner">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
                         <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input" placeholder="Search Company">
                         <button type="submit" class="s-btn"><i class="fa fa-search"></i> </button>
                     </div>
@@ -920,6 +925,25 @@ width:100%;
 .tt-suggestion p {
   margin: 0;
 }
+.no_result_display{
+    padding:0px 15px;
+}
+.no_result_display .add_org{
+    border-left: 1px solid #ddd;
+    padding: 0px 5px 0px 15px;
+}
+.no_result_display .add_org a{
+    color: #00a0e3;
+    font-size: 13px;
+}
+.no_result_found
+{
+display:inline-block;
+}
+.add_org
+{
+float:right;
+}
 .logo_wrap
 {
     display: inline-block;
@@ -928,6 +952,33 @@ width:100%;
     margin-right: .6rem;
     float:left;
     max-width:50px;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    z-index: 999;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
 }
 /*new modal css ends*/
 ');
@@ -983,10 +1034,15 @@ return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
 },
-}).on('typeahead:asyncreceive', function() {
+}).on('typeahead:asyncrequest', function() {
+    $('.load-suggestions').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     utilities.initials();
+    $('.load-suggestions').hide();
+  }).on('typeahead:selected',function(e,datum) {
+    window.location.replace('/'+datum.slug+'/reviews');
   });
 
 var locations = new Bloodhound({
@@ -1001,7 +1057,10 @@ var locations = new Bloodhound({
         }
   },
 }); 
-
+$(document).on('click','.add_new_org',function(e) {
+  e.preventDefault();
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
+})
 $('#city_search').typeahead(null, {
   name: 'keywords',
   displayKey: "name",

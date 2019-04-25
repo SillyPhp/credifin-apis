@@ -2,6 +2,7 @@
 
 namespace frontend\models\reviews;
 
+use common\models\NewOrganizationReviews;
 use Yii;
 use yii\base\Model;
 use common\models\OrganizationReviews;
@@ -50,13 +51,21 @@ class EditReview extends Model {
         $this->org_id = $edit_review->organization_enc_id;
     }
 
-    public function save()
+    public function save($request_type)
     {
-        $modal = OrganizationReviews::find()
-            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['organization_enc_id'=>$this->org_id])
-            ->one();
-
+        if ($request_type==1) {
+            $modal = OrganizationReviews::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
+                ->one();
+        }
+        elseif ($request_type==2)
+        {
+            $modal = NewOrganizationReviews::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
+                ->one();
+        }
         $modal->likes = $this->likes;
         $modal->dislikes = $this->dislikes;
         $modal->job_security = $this->job_security;

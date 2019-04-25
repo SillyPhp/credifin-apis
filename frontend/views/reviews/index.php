@@ -33,87 +33,6 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
-<!--registration model-->
-    <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content half-bg-color">
-                <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
-                <div class="row margin-0">
-                    <div class="col-md-6 col-sm-6">
-                        <div class=" half-bg half-bg-color">
-                            <div class="top-circle">
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
-                            </div>
-                            <div class="log-icon">
-                                <span></span>
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-image.png') ?>"
-                                     class="centerthis">
-                            </div>
-                            <div class="bottom-circle">
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 padding-0 bg-log">
-                        <div class="log-fom">
-                            <div class="inner-log-fom"></div>
-                            <div class="inner-main-log-fom">
-                                <div class="ey-logo">
-                                    <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>">
-                                </div>
-                                <div class="login-form" id="loginForm">
-                                    <?php
-                                    $form = ActiveForm::begin([
-                                        'id' => 'signup-form',
-                                        'options' => [
-                                            'class' => 'clearfix',
-                                        ],
-                                        'fieldConfig' => [
-                                            'template' => '{input}{error}',
-                                        ],
-                                    ]);
-                                    ?>
-                                    <div class="uname">
-                                        <?=
-                                        $form->field($model, 'name')->textInput([
-                                            'autofocus' => true,
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => 'Enter Organization Name',
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="pass">
-                                        <?=
-                                        $form->field($model, 'email')->textInput([
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => 'Enter Organization Email',
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="pass">
-                                        <?=
-                                        $form->field($model, 'website')->textInput([
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => 'Enter Organization Website',
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="login-btn">
-                                        <?= Html::submitButton('Submit', ['class' => 'lg-form', 'name' => 'login-button']); ?>
-                                    </div>
-                                    <?php ActiveForm::end(); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <section class="review-benifit">
         <div class="container">
             <div class="row">
@@ -190,6 +109,14 @@ $this->registerCss('
     color: #bcbaba;
     font-size: 18px;
     text-transform: capitalize;
+}
+.uname .md-radio label{
+    white-space: normal;
+    font-size: 12px;
+}
+.has-success .md-radio label
+{
+color: initial;
 }
 .rating-stars{
     font-size:20px;
@@ -782,6 +709,10 @@ float:right;
     display: inline-block;
     width:100%;
 }
+.main_head_title h3
+{
+font-family: "lobster";
+}
 .uname{
     padding:10px 0 10px 0;
     
@@ -923,6 +854,10 @@ body.modal-open{
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 $script = <<< JS
+$(document).on('click','.add_new_org',function(e) {
+  e.preventDefault();
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
+})
 fetch_cards(params={'rating':[4,5],'limit':3});  
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -987,7 +922,7 @@ return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" data-toggle="modal" data-target="#org_sign_up_Modal">Add New Organizatons</a></div></div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();
