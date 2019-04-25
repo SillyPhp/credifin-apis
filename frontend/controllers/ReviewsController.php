@@ -44,9 +44,12 @@ class ReviewsController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $query1 = (new \yii\db\Query())
-            ->select(['name','slug','initials_color color','logo','business_activity'])
+            ->select(['name','slug','initials_color color','logo','(CASE
+                WHEN business_activity IS NULL THEN ""
+                ELSE business_activity
+                END) as business_activity'])
             ->from(UnclaimedOrganizations::tableName().'as a')
-            ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
+            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
             ->where('name LIKE "%' . $query . '%"');
 
         $query2 = (new \yii\db\Query())

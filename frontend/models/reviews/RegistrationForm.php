@@ -32,7 +32,7 @@ class RegistrationForm extends Model {
 
     public function types()
     {
-      $data =   BusinessActivities::find()->asArray()->all();
+      $data =   BusinessActivities::find()->where(['in','business_activity',['School','College','Business','Others']])->asArray()->all();
 
       return ArrayHelper::map($data, 'business_activity_enc_id', 'business_activity');
     }
@@ -64,7 +64,7 @@ class RegistrationForm extends Model {
             {
                 return [
                     'status'=>200,
-                    'org_id'=>$model->organizations_enc_id,
+                    'org_id'=>$model->organization_enc_id,
                     'slug'=>$username->username
                 ];
             }

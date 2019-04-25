@@ -72,7 +72,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="uname">
                                         <?= $form->field($model, 'bussiness_activity')->dropDownList(
                                  $type, [
-                                  'prompt' => Yii::t('frontend', 'Select Business Activity'),
+                                  'prompt' => Yii::t('frontend', 'Select Business Activity(Optional)'),
                               ])->label(false); ?>
                                 </div>
                                 <div class="login-btn">
@@ -1341,7 +1341,7 @@ function department_auto_fn(a){
 function review_post_ajax(data) {
     var org_name = $('#organization_name').val();
     var website = $('#website').val();
-    var org_category =  $("input[name='type']:checked"). val();
+    var org_category =  $('#bussiness_activity').val();
 	$.ajax({
        method: 'POST',
        url : '/reviews/post-unclaimed-reviews',

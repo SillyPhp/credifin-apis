@@ -468,6 +468,7 @@ width:100%;
   padding: 3px 20px;
   font-size: 14px;
   line-height: 24px;
+  height:54px;
 }
 .tt-suggestion:hover {
   cursor: pointer;
@@ -917,7 +918,7 @@ $('#search_comp').typeahead(null, {
 suggestion: function(data) {
 return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="35px"></canvas>')
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
