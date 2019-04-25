@@ -55,5 +55,27 @@ class AddQualificationForm extends Model {
         return true;
     }
 
+    public function update($id){
+
+        if (!$this->validate()) {
+            return $this->getErrors();
+        }
+
+        $data = UserEducation::find()
+            ->where(['education_enc_id'=>$id])
+            ->one();
+
+        $data->institute = $this->school;
+        $data->degree = $this->degree;
+        $data->field = $this->field;
+        $data->from_date = $this->qualification_from;
+        $data->to_date = $this->qualification_to;
+
+        if (!$data->validate() || !$data->update()) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

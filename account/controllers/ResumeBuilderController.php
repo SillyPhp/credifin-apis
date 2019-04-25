@@ -33,6 +33,7 @@ use frontend\models\IndividualImageForm;
 use frontend\models\NotesForm;
 use frontend\models\OrganizationSignUpForm;
 use frontend\models\PersonalProfile;
+use TwitterPhp\Connection\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
@@ -139,35 +140,32 @@ class ResumeBuilderController extends Controller
 
         $achievements = UserAchievements::find()
             ->alias('a')
-            ->select(['a.user_achievement_enc_id','a.achievement'])
+            ->select(['a.user_achievement_enc_id', 'a.achievement'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
 
         $hobbies = UserHobbies::find()
             ->alias('a')
-            ->select(['a.user_hobby_enc_id','a.hobby'])
+            ->select(['a.user_hobby_enc_id', 'a.hobby'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
 
         $interests = UserInterests::find()
             ->alias('a')
-            ->select(['a.user_interest_enc_id','a.interest'])
+            ->select(['a.user_interest_enc_id', 'a.interest'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
 
         return $this->render('resume', [
-//                    'ResumeProfilePic' => $ResumeProfilePic,
             'user' => $user,
             'ResumeAboutMe' => $ResumeAboutMe,
             'individualImageFormModel' => $individualImageFormModel,
             'addQualificationForm' => $addQualificationForm,
             'addExperienceForm' => $addExperienceForm,
             'ResumeContactInfo' => $ResumeContactInfo,
-//                    'ResumeEducation' => $ResumeEducation,
-//                    'ResumeWorkExperience' => $ResumeWorkExperience,
             'ResumeCertificates' => $ResumeCertificates,
             'ResumeOtherInfo' => $ResumeOtherInfo,
             'ResumeSkills' => $ResumeSkills,
@@ -177,9 +175,9 @@ class ResumeBuilderController extends Controller
             'experience' => $experience,
             'education' => $education,
             'skills' => $skillist,
-            'achievements'=>$achievements,
-            'hobbies'=>$hobbies,
-            'interests'=>$interests,
+            'achievements' => $achievements,
+            'hobbies' => $hobbies,
+            'interests' => $interests,
             'sociallinks' => $sociallinks
         ]);
     }
@@ -189,10 +187,6 @@ class ResumeBuilderController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $ResumeContactInfo = new ResumeContactInfo();
-//        $data_address = Yii::$app->request->post('info_address');
-//        $data_state = Yii::$app->request->post('info_state');
-//        $data_city = Yii::$app->request->post('info_city');
-//        exit();
         if ($ResumeContactInfo->load(Yii::$app->request->post())) {
             $update = Yii::$app->db->createCommand()
                 ->update(Users::tableName(), ['address' => $ResumeContactInfo->contact_address, 'city_enc_id' => $ResumeContactInfo->city_id, 'last_updated_on' => date('Y-m-d h:i:s')], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
@@ -343,9 +337,10 @@ class ResumeBuilderController extends Controller
 
     }
 
-    public function actionAchievementRemove(){
+    public function actionAchievementRemove()
+    {
 
-        if(Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
 
             $id = Yii::$app->request->post('id');
 
@@ -372,9 +367,10 @@ class ResumeBuilderController extends Controller
         }
     }
 
-    public function actionHobbyRemove(){
+    public function actionHobbyRemove()
+    {
 
-        if(Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
 
             $id = Yii::$app->request->post('id');
 
@@ -401,9 +397,10 @@ class ResumeBuilderController extends Controller
         }
     }
 
-    public function actionSkillRemove(){
+    public function actionSkillRemove()
+    {
 
-        if(Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
 
             $id = Yii::$app->request->post('id');
 
@@ -430,9 +427,10 @@ class ResumeBuilderController extends Controller
         }
     }
 
-    public function actionInterestRemove(){
+    public function actionInterestRemove()
+    {
 
-        if(Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
 
             $id = Yii::$app->request->post('id');
 
@@ -459,7 +457,8 @@ class ResumeBuilderController extends Controller
         }
     }
 
-    public function actionAchievements(){
+    public function actionAchievements()
+    {
 
         if (Yii::$app->request->isAjax) {
 
@@ -467,18 +466,18 @@ class ResumeBuilderController extends Controller
             $achievement_name = Yii::$app->request->post('achievement_name');
             $model = new ResumeAchievments();
             $already_exits = UserAchievements::findOne([
-                'user_enc_id'=>Yii::$app->user->identity->user_enc_id,
-               'achievement'=>$achievement_name,
-               'is_deleted'=>0
+                'user_enc_id' => Yii::$app->user->identity->user_enc_id,
+                'achievement' => $achievement_name,
+                'is_deleted' => 0
             ]);
 
-            if($already_exits){
+            if ($already_exits) {
                 return json_encode($response = [
                     'status' => 203,
                     'title' => 'error',
                     'message' => 'Achievement already exists.',
                 ]);
-            }else {
+            } else {
 
                 $model->achievments = $achievement_name;
 
@@ -500,25 +499,26 @@ class ResumeBuilderController extends Controller
 
     }
 
-    public function actionHobbies(){
+    public function actionHobbies()
+    {
 
         if (Yii::$app->request->isAjax) {
 
             $hobby_name = Yii::$app->request->post('hobby_name');
             $model = new ResumeHobbies();
             $already_exits = UserHobbies::findOne([
-                'user_enc_id'=>Yii::$app->user->identity->user_enc_id,
-                'hobby'=>$hobby_name,
-                'is_deleted'=>0
+                'user_enc_id' => Yii::$app->user->identity->user_enc_id,
+                'hobby' => $hobby_name,
+                'is_deleted' => 0
             ]);
 
-            if($already_exits){
+            if ($already_exits) {
                 return json_encode($response = [
                     'status' => 203,
                     'title' => 'error',
                     'message' => 'Hobby already exists.',
                 ]);
-            }else {
+            } else {
                 $model->hobbies = $hobby_name;
 
                 if (!$model->hobby_add()) {
@@ -539,25 +539,26 @@ class ResumeBuilderController extends Controller
 
     }
 
-    public function actionInterests(){
+    public function actionInterests()
+    {
 
         if (Yii::$app->request->isAjax) {
 
             $interest_name = Yii::$app->request->post('interest_name');
             $model = new ResumeInterests();
             $already_exits = UserInterests::findOne([
-                'user_enc_id'=>Yii::$app->user->identity->user_enc_id,
-                'interest'=>$interest_name,
-                'is_deleted'=>0
+                'user_enc_id' => Yii::$app->user->identity->user_enc_id,
+                'interest' => $interest_name,
+                'is_deleted' => 0
             ]);
 
-            if($already_exits){
+            if ($already_exits) {
                 return json_encode($response = [
                     'status' => 203,
                     'title' => 'error',
                     'message' => 'interest already exists.',
                 ]);
-            }else {
+            } else {
                 $model->interests = $interest_name;
 
                 if (!$model->interest_add()) {
@@ -611,7 +612,7 @@ class ResumeBuilderController extends Controller
         $id = Yii::$app->request->post('id');
         $editexp = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.title','a.company','a.from_date','a.to_date','a.is_current','a.experience_enc_id','a.description','b.name','b.city_enc_id'])
+            ->select(['a.title', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'a.experience_enc_id', 'a.description', 'b.name', 'b.city_enc_id'])
             ->joinWith(['cityEnc b'])
             ->where(['a.experience_enc_id' => $id])
             ->asArray()
@@ -625,7 +626,7 @@ class ResumeBuilderController extends Controller
         $id = Yii::$app->request->post('id');
         $deleteexp = UserWorkExperience::findOne(
             [
-                'experience_enc_id'=>$id,
+                'experience_enc_id' => $id,
             ]
         );
 
@@ -650,7 +651,7 @@ class ResumeBuilderController extends Controller
         $id = Yii::$app->request->post('id');
         $deleteedu = UserEducation::findOne(
             [
-                'education_enc_id'=>$id,
+                'education_enc_id' => $id,
             ]
         );
 
@@ -672,20 +673,21 @@ class ResumeBuilderController extends Controller
 
     public function actionUpdateEducation()
     {
-        $id = Yii::$app->request->post('id');
-        $school = Yii::$app->request->post('school');
-        $degree = Yii::$app->request->post('degree');
-        $field = Yii::$app->request->post('field');
-        $from = Yii::$app->request->post('from');
-        $to = Yii::$app->request->post('to');
-
         if (Yii::$app->request->isAjax) {
-            $update = Yii::$app->db->createCommand()
-                ->update(UserEducation::tableName(), ['institute' => $school, 'degree' => $degree, 'field' => $field, 'from_date' => $from, 'to_date' => $to, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['education_enc_id' => $id])
-                ->execute();
-            if ($update) {
+
+            $id = Yii::$app->request->post('id');
+
+            $model = new AddQualificationForm();
+
+            $model->school = Yii::$app->request->post('school');
+            $model->degree = Yii::$app->request->post('degree');
+            $model->field = Yii::$app->request->post('field');
+            $model->qualification_from = Yii::$app->request->post('from');
+            $model->qualification_to = Yii::$app->request->post('to');
+
+            if($model->update($id)) {
                 return true;
-            } else {
+            }else{
                 return false;
             }
         }
@@ -706,7 +708,6 @@ class ResumeBuilderController extends Controller
 
             $model = UserWorkExperience::find()
                 ->where(['experience_enc_id' => $id])
-//                    ->asArray()
                 ->one();
 
             $model->title = $title;
@@ -723,18 +724,6 @@ class ResumeBuilderController extends Controller
                 return false;
             }
 
-//            $update = Yii::$app->db->createCommand()
-//                ->update(UserWorkExperience::tableName(),['title'=>$title,'company'=>$company,'city_enc_id'=>$city,'from_date'=>$from,'to_date'=>$to,'is_current'=>$check,'description'=>$description,'created_on'=>date('Y-m-d h:i:s'),'created_by'=>Yii::$app->user->identity->user_enc_id],['experience_enc_id'=>$id])
-//                ->execute();
-//              return $update;
-//            if($update)
-//            {
-//                return true;
-//            }
-//            else
-//            {
-//                return false;
-//            }
         }
 
     }
@@ -790,7 +779,7 @@ class ResumeBuilderController extends Controller
             }
         } else {
             $chkk = UserSkills::find()
-                ->where(['skill_enc_id' => $chk['skill_enc_id'],'is_deleted'=>0])
+                ->where(['skill_enc_id' => $chk['skill_enc_id'], 'is_deleted' => 0])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
                 ->asArray()
                 ->one();

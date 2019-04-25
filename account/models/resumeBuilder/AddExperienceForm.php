@@ -45,13 +45,7 @@ class AddExperienceForm extends Model {
         if (!$this->validate()) {
             return $this->getErrors();
         }
-         
-//        if ($this->present) {
-//            return 'checked';
-//        } else {
-//            return 'not checked';
-//        }
-//        exit;
+
         $utilitiesModel = new Utilities();
         $userWorkExperienceModel = new UserWorkExperience();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -62,13 +56,6 @@ class AddExperienceForm extends Model {
         $userWorkExperienceModel->to_date = $this->exp_to;
         $userWorkExperienceModel->description = $this->description;
         $userWorkExperienceModel->city_enc_id = $this->city_id;
-//        if (!$this->present) {
-//            $userWorkExperienceModel->is_current = 0;
-//            $userWorkExperienceModel->to_date = '0000-00-00';
-//        } else {
-//            $userWorkExperienceModel->to_date = $this->exp_to;
-//            $userWorkExperienceModel->is_current = 1;
-//        }
         $userWorkExperienceModel->created_on = date('Y-m-d H:i:s');
         $userWorkExperienceModel->created_by = Yii::$app->user->identity->user_enc_id;
         $userWorkExperienceModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
