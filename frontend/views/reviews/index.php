@@ -154,18 +154,21 @@ use yii\bootstrap\ActiveForm;
             <div class="row">
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-heading">Atract</div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-heading">Attract</div>
                         <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
                         <div class="wu-heading">Convert</div>
                         <div class="wu-text">Drive more qualified women to apply for your key open positions</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
                         <div class="wu-heading">Retain</div>
                         <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
                     </div>
@@ -199,13 +202,21 @@ $this->registerCss('
 }
 .wu-heading{
     text-align:center;
-    padding-top:10px;
+    padding-top:40px;
     text-transform:capitalize;
     font-size:18px;
+    color:#00a0e3;
 }
 .ey-helps{
     background:#f0f4fb;
     padding:20px 0 40px;
+}
+.with-us-block{
+    text-align:center;
+}
+.wu-icon{
+    padding-top:20px;
+    height:150px;
 }
 /*----ey helps block ends-----*/
 
