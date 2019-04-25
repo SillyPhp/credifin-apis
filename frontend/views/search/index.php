@@ -172,6 +172,7 @@ $this->registerCss('
     display:flex;
     justify-content:center;
     font-size:14px;
+    min-height:25px;
 }
 .stars{
     margin-right:5px;
