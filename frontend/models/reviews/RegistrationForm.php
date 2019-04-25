@@ -43,7 +43,7 @@ class RegistrationForm extends Model {
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->organization_enc_id = $utilitiesModel->encrypt();
-        $model->organization_type_enc_id = $org_category;
+        $model->organization_type_enc_id = (($org_category) ? $org_category : null);
         $utilitiesModel->variables['name'] = $org_name.rand(1000, 100000);
         $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
         $utilitiesModel->variables['field_name'] = 'slug';

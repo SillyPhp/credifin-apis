@@ -103,7 +103,7 @@ $this->params['seo_tags'] = [
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
                             <?php if ($review_type=='unclaimed'):?>
-                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim Profile</a>
+                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>
                             <?php else: ?>
                                 <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
                             <?php endif;?>
@@ -298,10 +298,12 @@ $this->params['seo_tags'] = [
             <?php
             if ($review_type=='cliamed') {
                 $url = Url::to(['/organizations/edit-review?request_type=1']);
+                $request_type = 1;
             }
             else
             {
                 $url = Url::to(['/organizations/edit-review?request_type=2']);
+                $request_type = 2;
             }
             $form = ActiveForm::begin([
             'id' => 'edit-review-form',
@@ -1311,7 +1313,7 @@ function department_auto_fn(a){
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
-       url : '/organizations/post-reviews?slug='+slug+'',
+       url : '/organizations/post-reviews?slug='+slug+'&request_type='+$request_type,
 	   data:{data:data},
        success: function(response) {
                if (response==true)
@@ -1341,7 +1343,6 @@ function ajax_fetch_city() {
        }
    });
 }
-
 function ajax_fetch_category() {
   $.ajax({
        method: 'GET',
@@ -1357,9 +1358,29 @@ function ajax_fetch_category() {
        }
    });
 }
+var designations = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/account/categories-list/designations?q=%QUERY',
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
+});
+
+$('.i-review-designation-autocomplete').typeahead(null, {
+  name: 'designations_test',
+  display: 'designation',
+   limit: 20,      
+  source: designations
+});
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
