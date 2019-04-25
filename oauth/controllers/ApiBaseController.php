@@ -48,6 +48,6 @@ class ApiBaseController extends Controller{
         $content_type = "application/json; charset=utf-8";
         header($status_header);
         header('Content-type: ' . $content_type);
-        header('X-Powered-By: ' . "Empower Youth");
+        header('X-Powered-By: ' . "Empower Youth Foundations");
     }
 }
