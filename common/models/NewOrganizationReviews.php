@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%new_organization_reviews}}".
  *
@@ -11,7 +9,7 @@ use Yii;
  * @property string $review_enc_id Review Encrypted ID
  * @property string $organization_enc_id Foreign Key to Organizations Table
  * @property string $average_rating Average Rating
- * @property int $reviewer_type type of the employer (0 as Former Employee, 1 as Current Employee, 2 as student)
+ * @property int $reviewer_type Type of Reviewer (0 as Former Employee, 1 as Current Employee, 2 as Student)
  * @property int $overall_experience Overall Experience
  * @property int $skill_development Skill Development & Learning
  * @property int $work_life Work-Life Balance
@@ -76,10 +74,6 @@ class NewOrganizationReviews extends \yii\db\ActiveRecord
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => UnclaimedOrganizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
 
     /**
      * @return \yii\db\ActiveQuery
