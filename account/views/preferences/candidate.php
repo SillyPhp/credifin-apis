@@ -510,23 +510,34 @@ bottom: auto !important;
 }
 .chip {
     display: inline-block;
+    position: relative;
     height: 32px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(0,0,0,0.6);
-    line-height: 32px;
-    padding: 0 12px;
-    border-radius: 16px;
+    line-height: normal;
+    padding: 7px 17px;
+    border-radius: 8px;
     background-color: #e4e4e4;
-    margin-bottom: 5px;
     margin-right: 5px;
     margin-top: 3px;
     margin-bottom: 3px;
-    background:#585859;
-    color:white;
+    background: #f4f5fa;
+    color: #333;
 }
 .chip i{
     cursor:pointer;
+    position: absolute;
+    background-color: #00a0e3;
+    padding: 1px;
+    border-radius: 100%;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    color: #fff;
+    font-weight: 100;
+    font-size: 11px;
 }
 input[type=text]:not(.browser-default){
     margin: 0px;
