@@ -1,6 +1,6 @@
 <?php
 
-namespace api\modules\v1\controllers;
+namespace oauth\controllers;
 
 use Yii;
 use yii\rest\Controller;
@@ -48,6 +48,6 @@ class ApiBaseController extends Controller{
         $content_type = "application/json; charset=utf-8";
         header($status_header);
         header('Content-type: ' . $content_type);
-        header('X-Powered-By: ' . "Empower Youth Foundation");
+        header('X-Powered-By: ' . "Empower Youth Foundations");
     }
 }

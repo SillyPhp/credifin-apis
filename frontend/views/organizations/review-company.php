@@ -3,11 +3,11 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 $radios_array = [1=>1,2=>2,3=>3,4=>4,5=>5];
-$this->title = $org_details->name.' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
+$this->title = $org_details['name'].' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
 Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats)/count($stats);
 $round_avg = round($overall_avg);
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details->logo_location . DIRECTORY_SEPARATOR . $org_details->logo;
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
@@ -41,24 +41,22 @@ $this->params['seo_tags'] = [
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
                 <div class="logo-box">
-<!--                    <div class="logo">-->
                         <?php
-                        if (!empty($org_details->logo)) {
+                        if (!empty($org_details['logo'])) {
                             ?>
                             <img src="<?= $logo_image; ?>">
                             <?php
                         } else {
                             ?>
-                            <canvas class="user-icon" name="<?= $org_details->name; ?>" width="150" height="150"
+                            <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
                                     color="" font="70px"></canvas>
                             <?php
                         }
                         ?>
-<!--                    </div>-->
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name"><?= $org_details->name; ?></div>
+                <div class="com-name"><?= $org_details['name']; ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
                         <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
@@ -73,13 +71,13 @@ $this->params['seo_tags'] = [
                         <?php if (!empty($follow) && $follow['followed'] == 1) {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details->organization_enc_id; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
                             </div>
                             <?php
                         } else  {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details->organization_enc_id; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
                             </div>
                         <?php }} else { ?>
                             <div class="follow-bttn hvr-icon-pulse">
@@ -104,7 +102,11 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
-                            <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                            <?php if ($review_type=='unclaimed'):?>
+                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>
+                            <?php else: ?>
+                                <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                            <?php endif;?>
                         </div>
                     </div>
                 </div>
@@ -116,7 +118,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= $org_details->name; ?> Reviews </h1>
+                <h1 class="heading-style"><?= $org_details['name']; ?> Reviews </h1>
                 <div id="org-reviews"></div>
             </div>
             <div class="col-md-4">
@@ -294,9 +296,18 @@ $this->params['seo_tags'] = [
             </div>
             <div class="modal-body">
             <?php
+            if ($review_type=='cliamed') {
+                $url = Url::to(['/organizations/edit-review?request_type=1']);
+                $request_type = 1;
+            }
+            else
+            {
+                $url = Url::to(['/organizations/edit-review?request_type=2']);
+                $request_type = 2;
+            }
             $form = ActiveForm::begin([
             'id' => 'edit-review-form',
-            'action'=>Url::to(['/organizations/edit-review']),
+            'action'=>$url,
             'fieldConfig' => [
                 'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
             ]
@@ -516,9 +527,14 @@ $this->params['seo_tags'] = [
     </div>
 </div>
 <?php
-echo $this->render('/widgets/mustache/organization-reviews',[
-    'org_slug' => $organization['slug']
-]);
+if ($review_type=='claimed')
+{
+    echo $this->render('/widgets/mustache/organization-reviews');
+}else
+{
+    echo $this->render('/widgets/mustache/organization-unclaimed-reviews');
+}
+
 $this->registerCss('
 .star-rating1 {
   font-family: "FontAwesome";
@@ -1046,29 +1062,6 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
-$(document).on('click','.follow',function(e){
-    e.preventDefault();
-    var org_id = $(this).val();
-    $.ajax({
-        url:'/organizations/follow',
-        data: {org_id:org_id},                         
-        method: 'post',
-        beforeSend:function(){
-         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-        },
-        success:function(data){  
-            if(data.message == 'Following'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Following');
-                $('.follow').addClass('followed');
-            }
-            else if(data.message == 'Unfollow'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Follow');
-                $('.follow').removeClass('followed');
-            }
-        }
-    });        
-});
-
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({
@@ -1320,7 +1313,7 @@ function department_auto_fn(a){
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
-       url : '/organizations/post-reviews?slug='+slug+'',
+       url : '/organizations/post-reviews?slug='+slug+'&request_type='+$request_type,
 	   data:{data:data},
        success: function(response) {
                if (response==true)
@@ -1350,7 +1343,6 @@ function ajax_fetch_city() {
        }
    });
 }
-
 function ajax_fetch_category() {
   $.ajax({
        method: 'GET',
@@ -1366,9 +1358,29 @@ function ajax_fetch_category() {
        }
    });
 }
+var designations = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  remote: {
+    url: '/account/categories-list/designations?q=%QUERY',
+    wildcard: '%QUERY',
+    cache: true,     
+        filter: function(list) {
+            return list;
+        }
+  }
+});
+
+$('.i-review-designation-autocomplete').typeahead(null, {
+  name: 'designations_test',
+  display: 'designation',
+   limit: 20,      
+  source: designations
+});
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');

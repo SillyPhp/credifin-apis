@@ -1,6 +1,5 @@
 <?php
 use yii\helpers\Url;
-
 $link = Url::to($org_slug.'/reviews', true);
 ?>
 <script id="organization-reviews" type="text/template">
@@ -133,6 +132,28 @@ font-size:18px;
 ");
 
 $script = <<<JS
+$(document).on('click','.follow',function(e){
+    e.preventDefault();
+    var org_id = $(this).val();
+    $.ajax({
+        url:'/organizations/follow',
+        data: {org_id:org_id},                         
+        method: 'post',
+        beforeSend:function(){
+         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        },
+        success:function(data){  
+            if(data.message == 'Following'){
+                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Following');
+                $('.follow').addClass('followed');
+            }
+            else if(data.message == 'Unfollow'){
+                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Follow');
+                $('.follow').removeClass('followed');
+            }
+        }
+    });        
+});
 
 function getReviews() {
     var slug = window.location.pathname.split('/')[1];
