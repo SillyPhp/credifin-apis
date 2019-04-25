@@ -332,12 +332,12 @@ class LearningController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['b.status' => 1])
             ->andWhere(['b.is_deleted' => 0])
-            ->orderBy(['COUNT(a.parent_enc_id)' => SORT_DESC])
+            ->groupBy(['a.assigned_category_enc_id'])
             ->limit(8)
             ->asArray()
             ->all();
         $popular_videos = LearningVideos::find()
-            ->orderBy(['view_count' => SORT_DESC])
+//            ->orderBy(['view_count' => SORT_DESC])
             ->asArray()
             ->all();
         $topics = Tags::find()
