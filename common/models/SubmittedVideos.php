@@ -15,6 +15,7 @@ use Yii;
  * @property string $name Video Name
  * @property string $slug Video Slug
  * @property string $link Video Link
+ * @property string $video_duration Video Duration
  * @property string $cover_image Video Cover Image
  * @property string $description Video Description
  * @property string $tags Video Tags
@@ -24,26 +25,29 @@ use Yii;
  * @property string $last_updated_on On which date Video information was updated
  * @property string $last_updated_by By which User Video information was updated
  *
+ * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class SubmittedVideos extends \yii\db\ActiveRecord {
-
+class SubmittedVideos extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%submitted_videos}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['video_enc_id', 'type', 'name', 'slug', 'link', 'cover_image', 'description', 'created_on', 'created_by'], 'required'],
+            [['video_enc_id', 'type', 'name', 'slug', 'link', 'video_duration', 'cover_image', 'description', 'created_on', 'created_by'], 'required'],
+            [['video_duration', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'status'], 'string'],
-            [['created_on', 'last_updated_on'], 'safe'],
             [['video_enc_id', 'name', 'link', 'cover_image', 'tags', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['type', 'category', 'sub_category'], 'string', 'max' => 30],
             [['slug'], 'string', 'max' => 200],
@@ -57,15 +61,24 @@ class SubmittedVideos extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getLearningCornerResourceDiscussions()
+    {
+        return $this->hasMany(LearningCornerResourceDiscussion::className(), ['resource_enc_id' => 'video_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
-
 }

@@ -357,6 +357,26 @@ class SiteController extends Controller
             'learningCornerFormModel' => $learningCornerFormModel,
         ]);
     }
+//    public function actionLearning() {
+//        $this->layout = 'main-secondary';
+//
+//        $learningCornerFormModel = new OrganizationVideoForm();
+//
+//        if(!Yii::$app->user->isGuest) {
+//            if ($learningCornerFormModel->load(Yii::$app->request->post()) && $learningCornerFormModel->validate()) {
+//                if ($learningCornerFormModel->save()) {
+//                    Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
+//                } else {
+//                    Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
+//                }
+//            }
+//            return $this->render('learning-corner', [
+//                        'learningCornerFormModel' => $learningCornerFormModel,
+//            ]);
+//        }else{
+//            return $this->redirect('/login');
+//        }
+//    }
 
     public function actionUploadCompanyLogo()
     {

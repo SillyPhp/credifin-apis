@@ -148,6 +148,12 @@ namespace common\models;
  * @property LearningVideoTags[] $learningVideoTags0
  * @property LearningVideos[] $learningVideos
  * @property LearningVideos[] $learningVideos0
+ * @property LearningVideoComments[] $learningVideoComments
+ * @property LearningVideoLikes[] $learningVideoLikes
+ * @property LearningVideoTags[] $learningVideoTags
+ * @property LearningVideoTags[] $learningVideoTags0
+ * @property LearningVideos[] $learningVideos
+ * @property LearningVideos[] $learningVideos0
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
@@ -1109,6 +1115,54 @@ class Users extends \yii\db\ActiveRecord
     public function getLearningCornerResourceDiscussions0()
     {
         return $this->hasMany(LearningCornerResourceDiscussion::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideoTags()
+    {
+        return $this->hasMany(LearningVideoTags::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideoTags0()
+    {
+        return $this->hasMany(LearningVideoTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideos()
+    {
+        return $this->hasMany(LearningVideos::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideos0()
+    {
+        return $this->hasMany(LearningVideos::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideoComments()
+    {
+        return $this->hasMany(LearningVildeoComments::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideoLikes()
+    {
+        return $this->hasMany(LearningVideoLikes::className(), ['user_enc_id' => 'user_enc_id']);
     }
 
     /**
