@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use frontend\models\OrganizationVideoForm;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -19,17 +18,12 @@ use frontend\models\FreelancersForm;
 use frontend\models\FreeForm;
 use common\models\Posts;
 use common\models\Organizations;
-use common\models\States;
 use common\models\Utilities;
 use common\models\Categories;
 use common\models\AssignedCategories;
-use frontend\models\CompanyLogoForm;
-use frontend\models\WorkExpierenceForm;
-use frontend\models\QualificationForm;
 use frontend\models\SkillsAndLanguagesForm;
 use frontend\models\PortfolioForm;
 use frontend\models\PersonalProfileForm;
-use frontend\models\ChangePasswordForm;
 use frontend\models\FeedbackForm;
 use frontend\models\PartnerWithUsForm;
 use common\models\OrganizationQuestionnaire;
@@ -47,20 +41,6 @@ use frontend\models\questionnaire\QuestionnaireForm;
  */
 class SiteController extends Controller
 {
-
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
-
 
     public function actionIndex()
     {
@@ -127,7 +107,7 @@ class SiteController extends Controller
     {
         $contactFormModel = new ContactForm();
         if ($contactFormModel->load(Yii::$app->request->post()) && $contactFormModel->validate()) {
-            if ($contactFormModel->contact('jyoti@empoweryouth.in')) {
+            if ($contactFormModel->contact(Yii::$app->params->contact_email)) {
                 Yii::$app->getSession()->setFlash('success', 'Your response has been recorded with us');
                 $contactFormModel = new ContactForm();
             } else {
@@ -316,132 +296,6 @@ class SiteController extends Controller
         }
     }
 
-    public function actionLearning()
-    {
-        $this->layout = 'main-secondary';
-        $learningCornerFormModel = new OrganizationVideoForm();
-        $session = Yii::$app->session;
-        if (!$session->isActive) {
-            $session->open();
-        }
-        if ($session->has('video')) {
-            $session->remove('video');
-        }
-        if ($learningCornerFormModel->load(Yii::$app->request->post())) {
-            if (Yii::$app->user->isGuest) {
-                if ($learningCornerFormModel->validate()) {
-                    $session['video'] = [
-                        'title' => $learningCornerFormModel->video_title,
-                        'type' => $learningCornerFormModel->video_type,
-                        'type_input' => $learningCornerFormModel->type_input,
-                        'category' => $learningCornerFormModel->category,
-                        'sub_category' => $learningCornerFormModel->sub_category,
-                        'description' => $learningCornerFormModel->description,
-                        'tags' => $learningCornerFormModel->tags,
-                        'url' => $learningCornerFormModel->video_url,
-                        'image' => $learningCornerFormModel->cover_image,
-                    ];
-                    if ($session->has('video')) {
-                        $this->redirect('/signup/student');
-                    }
-                }
-            } else {
-                if ($learningCornerFormModel->save()) {
-                    Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
-                } else {
-                    Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
-                }
-            }
-        }
-        return $this->render('learning-corner', [
-            'learningCornerFormModel' => $learningCornerFormModel,
-        ]);
-    }
-//    public function actionLearning() {
-//        $this->layout = 'main-secondary';
-//
-//        $learningCornerFormModel = new OrganizationVideoForm();
-//
-//        if(!Yii::$app->user->isGuest) {
-//            if ($learningCornerFormModel->load(Yii::$app->request->post()) && $learningCornerFormModel->validate()) {
-//                if ($learningCornerFormModel->save()) {
-//                    Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
-//                } else {
-//                    Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
-//                }
-//            }
-//            return $this->render('learning-corner', [
-//                        'learningCornerFormModel' => $learningCornerFormModel,
-//            ]);
-//        }else{
-//            return $this->redirect('/login');
-//        }
-//    }
-
-    public function actionUploadCompanyLogo()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if (Yii::$app->request->isAjax) {
-            $companyLogoFormModel = new CompanyLogoForm();
-            $companyLogoFormModel->logo = UploadedFile::getInstance($companyLogoFormModel, 'logo');
-            if ($companyLogoFormModel->save()) {
-                return [
-                    'status' => 'success',
-                    'title' => 'Success',
-                    'message' => 'Logo successfully changed.',
-                ];
-            } else {
-                return [
-                    'status' => 'error',
-                    'title' => 'Opps!!',
-                    'message' => 'Something went wrong. Please try again.'
-                ];
-            }
-        }
-    }
-
-    public function actionCandidateform()
-    {
-        $statesModel = new States();
-        $organizationLocationFormModel = new OrganizationLocationForm();
-        return $this->render('candidates/candidate_form', [
-            'statesModel' => $statesModel,
-            'organizationLocationFormModel' => $organizationLocationFormModel,
-        ]);
-    }
-
-    public function actionWorkExperience()
-    {
-        $workExperienceFormModel = new WorkExpierenceForm();
-        return $this->renderPartial('candidates/work_experience', [
-            'workExperienceFormModel' => $workExperienceFormModel,
-        ]);
-    }
-
-    public function actionPersonalProfile()
-    {
-        $personalProfileFormModel = new PersonalProfileForm();
-        return $this->renderPartial('candidates/personal_profile', [
-            'personalProfileFormModel' => $personalProfileFormModel,
-        ]);
-    }
-
-    public function actionQualification()
-    {
-        $qualificationFormModel = new QualificationForm();
-        return $this->renderPartial('candidates/qualification_form', [
-            'qualificationFormModel' => $qualificationFormModel,
-        ]);
-    }
-
-    public function actionSkillAndLanguage()
-    {
-        $skillsAndLanguagesFormModel = new SkillsAndLanguagesForm();
-        return $this->renderPartial('candidates/skills_form', [
-            'skillsAndLanguagesFormModel' => $skillsAndLanguagesFormModel,
-        ]);
-    }
-
     public function actionTermsConditions()
     {
         return $this->render('terms-conditions');
@@ -594,39 +448,6 @@ class SiteController extends Controller
                 ]);
             }
         }
-    }
-
-    private function getYouTubeID($URL)
-    {
-        $YouTubeCheck = preg_match('![?&]{1}v=([^&]+)!', $URL . '&', $Data);
-        If ($YouTubeCheck) {
-            $VideoID = $Data[1];
-        }
-        return $VideoID;
-    }
-
-    public function actionChangePassword()
-    {
-        $ChangePasswordForm = new ChangePasswordForm();
-        if ($ChangePasswordForm->load(Yii::$app->request->post())) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($ChangePasswordForm->changePassword()) {
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Password has been changed.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
-            }
-        }
-        return $this->renderAjax('changepassword', [
-            'ChangePasswordForm' => $ChangePasswordForm
-        ]);
     }
 
 }
