@@ -8,8 +8,8 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
 <!--registration model-->
 <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content half-bg-color">
+
+        <div class="modal-conten<!-- Modal content-->t half-bg-color">
 <!--            <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>-->
             <div class="row margin-0">
                 <div class="col-md-6 col-sm-6">

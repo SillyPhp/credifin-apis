@@ -39,16 +39,16 @@ $link = Url::to($org_slug.'/reviews', true);
                         <!--                        </button>-->
                         <!--                    </div>-->
                         <div class="publish-date">{{created_on}}</div>
-                        {{#is_current_employee}}
+                        {{#reviewer_type}}
                         <div class="emp-duration">Current Employee</div>
-                        {{/is_current_employee}}
-                        {{^is_current_employee}}
+                        {{/reviewer_type}}
+                        {{^reviewer_type}}
                         <div class="emp-duration">Formal employee</div>
-                        {{/is_current_employee}}
+                        {{/reviewer_type}}
                     </div>
                     <div class="col-md-12">
                         <div class="utitle">
-                            {{profile}}
+                            {{designation}} in {{profile}}
                         </div>
                     </div>
                     <div class=" col-md-12 user-saying">
