@@ -475,7 +475,7 @@ $this->registerCss("
   
 }
 .weekDays-selector input[type=checkbox]:checked + label {
-  background: #4aa1e3;
+  background: #00a0e3;
   color: #ffffff;
 }    
 .sat{
@@ -598,16 +598,14 @@ input[type=text]:not(.browser-default){
 .select2-selection{
     padding-right:10px !important;
 }
+.skill_wrapper div .twitter-typeahead{
+    width: 100%;
+}
 .twitter-typeahead{
     height:38px;
-    width:100%;
 }
 
 /*-- skills tags input css starts --*/
-.tags > .addedTag{
-    margin-bottom:5px;
-    margin-top:5px;
-}
 .tags > .addedTag > span{
     background: #00a0e3;
 }
@@ -643,21 +641,20 @@ input[type=text]:not(.browser-default){
     padding: 8px;
 }
 .tags > .addedTag {
-    float: left;
-    background: #f4f5fa;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    font-family: Open Sans;
-    font-size: 13px;
-    padding: 7px 17px;
-    margin-right: 10px;
+    display: inline-block;
     position: relative;
-}
-.tags li {
-    margin: 0;
+    height: 32px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: normal;
+    padding: 7px 17px;
+    border-radius: 8px;
+    background-color: #e4e4e4;
+    margin-right: 7px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background: #f4f5fa;
+    color: #333;
 }
 .tags > .addedTag > span {
     position: absolute;
@@ -674,7 +671,8 @@ input[type=text]:not(.browser-default){
     border-radius: 50%;
     color: #ffffff;
     text-align: center;
-    line-height: 13px;
+    font-weight: 700;
+    line-height: 14px;
     font-size: 10px;
     font-family: Open Sans;
     cursor: pointer;
@@ -683,33 +681,44 @@ input[type=text]:not(.browser-default){
     float: left;
     width: 100%;
     background: #ffffff;
-    border: 1px solid #e8ecec !important;
-    height: 32px;
-    margin: 5px 0;
-    padding-left: 8px;
-    padding-top: 2px !important;
-    margin-top: 1px;
+//    border: 1px solid #e8ecec !important;
+    border: 0px;
+    height: 40px;
+    padding-left: 14px;
+    padding-top: 1px !important;
+    margin-top: 0px;
     font-size: 12px;
     border-radius: 5px;
     font-weight: 400;
 }
 .taglist .skill_wrapper .form-group{
     margin-bottom:0px;
-    margin-top:6px;
 }
 li.tagAdd.taglist{
-    padding-left:15px;
-    width: auto;
-    float: left;
+    flex-grow: 1;
+    position: relative;
+    display: inline-block;
 }
-ul.tags.skill_tag_list {
+ul.tags.skill_tag_list, ul.tags.intern_skill_tag_list {
     list-style: outside none none;
     margin: 0 0 30px;
-}
-
-ul.tags.intern_skill_tag_list {
-    list-style: outside none none;
-    margin: 0 0 30px;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 6px;
+    padding-top: 5px;
+    margin-bottom: 10px;
+    color: #444;
+    vertical-align: middle;
+    width: 100%;
+    max-width: 100%;
+    line-height: 22px;
+    cursor: text;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
 }
 /*-- skills tags input css starts --*/
 .select2-selection.select2-selection--multiple{
@@ -719,6 +728,22 @@ ul.tags.intern_skill_tag_list {
 }
 .select2-container--krajee .select2-selection--multiple .select2-selection__clear {
     right: 2rem;
+    top: 0.2rem;
+}
+.irs--round .irs-bar{
+    background-color: #00a0e3;
+}
+.irs--round .irs-handle{
+    border: 4px solid #00a0e3;
+}
+.irs--round .irs-from, .irs--round .irs-to, .irs--round .irs-single{
+    background-color: #00a0e3;
+}
+.bootstrap-timepicker ~ label{
+    color: inherit !important;
+}
+.tabbable-line>.nav-tabs>li.active, .tabbable-line>.nav-tabs>li:hover{
+    border-bottom: 4px solid #00a0e3;
 }
 ");
 
@@ -1181,8 +1206,8 @@ $script = <<< JS
                 to: 0,
                 type: 'double',
                 grid: true,
-                grid_num: 3,
-                step: 1000,
+                grid_num: 5,
+                step: 100,
                 force_edges: true,
                 prettify: my_prettify,
                 prettify_separator:",",
