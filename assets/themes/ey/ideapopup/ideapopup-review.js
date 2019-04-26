@@ -405,8 +405,9 @@ function random_fn(t){
 
 		//answer inputs create
 		var answers = '';
-		if (that.options.data[qno].hasOwnProperty('answerType'))
+		if (that.options.data[qno].hasOwnProperty('answerType')) {
 			answers = createAnswers(qno, that);
+		}
 
 		//description create
 		var desccription = createDescription(qno,that);
@@ -462,8 +463,16 @@ function random_fn(t){
 		var dd = '<div class="i-review-answer"><input type="text" onclick="department_auto_fn(this);" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-department-autocomplete"></div>';
 		//else
 		//	var i = '<div class="i-review-answer"><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		
 		return dd;
+	}
+
+	var designation_autoInputBox = function (qno, that){
+		var ddd = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner">\n' +
+			'                                                <span></span>\n' +
+			'                                                <span></span>\n' +
+			'                                                <span></span>\n' +
+			'                                            </div><input type="text" onclick="designation_auto_fn();" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-designation-autocomplete"></div>';
+		return ddd;
 	}
 	//------------------------------------------------------------
 	// Textarea create method. Using with answerType:'textarea'
@@ -569,10 +578,15 @@ function random_fn(t){
 				showNextButton(qno, that);
 				return location_autoInputBox(qno, that);
 				break;
-                        case 'department_autocomplete':
+           case 'department_autocomplete':
 				that.nextButton.classList.remove("i-next-hide");
 				showNextButton(qno, that);
 				return department_autoInputBox(qno, that);
+				break;
+			case 'designation_autocomplete':
+				that.nextButton.classList.remove("i-next-hide");
+				showNextButton(qno, that);
+					return designation_autoInputBox(qno, that);
 				break;
 			case 'checkbox':
 				that.nextButton.classList.remove("i-next-hide");
@@ -580,13 +594,13 @@ function random_fn(t){
 				return createCheckBox(qno, that);
 				break;
 			case 'selectbox':
-                                that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
-                                if(that.values['current_employee'] == 'current'){
-                                    return createSelectBox(qno, that, 'current');
-                                }else{
-                                    return createSelectBox(qno, that, 'former');
-                                }
+                   that.nextButton.classList.remove("i-next-hide");
+					showNextButton(qno, that);
+                    if(that.values['current_employee'] == 'current'){
+                    return createSelectBox(qno, that, 'current');
+                    }else{
+                    return createSelectBox(qno, that, 'former');
+                    }
 				break;
 			case 'radio':
 				that.nextButton.classList.add("i-next-hide");

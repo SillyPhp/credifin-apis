@@ -846,7 +846,6 @@ class OrganizationsController extends Controller
             }
             $org = $unclaimed_org;
         }
-
         return $this->render('review-company', ['review_type'=>$review_type,'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
     }
 
@@ -901,7 +900,7 @@ class OrganizationsController extends Controller
             $companyReview->status = 1;
             $companyReview->created_on = date('Y-m-d H:i:s');
             if (!$companyReview->save()) {
-                return false;
+               return false;
             } else {
                 return true;
             }
