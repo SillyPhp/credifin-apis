@@ -48,7 +48,7 @@ $link = Url::to($org_slug.'/reviews', true);
                 </div>
                 <div class="col-md-12">
                     <div class="utitle">
-                        {{profile}}
+                        {{designation}} in {{profile}}
                     </div>
                 </div>
                 <div class=" col-md-12 user-saying">
