@@ -48,7 +48,7 @@ $link = Url::to($org_slug.'/reviews', true);
                 </div>
                 <div class="col-md-12">
                     <div class="utitle">
-                        {{profile}}
+                        {{designation}} in {{profile}}
                     </div>
                 </div>
                 <div class=" col-md-12 user-saying">
@@ -67,31 +67,31 @@ $link = Url::to($org_slug.'/reviews', true);
                             <div class="urating">{{overall_experience}}/5</div>
                             <div class="uratingtitle">Overall Experience</div>
                         </div>
-                        <div class="ur-bg padd-lr-5">
+                        <div class="ur-bg padd-lr-5 light-bg">
                             <div class="urating">{{job_security}}/5</div>
                             <div class="uratingtitle">Job Security</div>
                         </div>
-                        <div class="ur-bg light-bg">
+                        <div class="ur-bg ">
                             <div class="urating">{{growth}}/5</div>
                             <div class="uratingtitle">Career Growth</div>
                         </div>
-                        <div class="ur-bg">
+                        <div class="ur-bg light-bg">
                             <div class="urating">{{organization_culture}}/5</div>
                             <div class="uratingtitle">Company Culture</div>
                         </div>
-                        <div class="ur-bg light-bg">
+                        <div class="ur-bg ">
                             <div class="urating">{{compensation}}/5</div>
                             <div class="uratingtitle">Salary & Benefits</div>
                         </div>
-                        <div class="ur-bg">
+                        <div class="ur-bg light-bg">
                             <div class="urating">{{work}}/5</div>
                             <div class="uratingtitle">Work Satisfaction</div>
                         </div>
-                        <div class="ur-bg light-bg">
+                        <div class="ur-bg ">
                             <div class="urating">{{work_life}}/5</div>
                             <div class="uratingtitle">Work-Life Balance</div>
                         </div>
-                        <div class="ur-bg">
+                        <div class="ur-bg light-bg">
                             <div class="urating">{{skill_development}}/5</div>
                             <div class="uratingtitle">Skill Development</div>
                         </div>
