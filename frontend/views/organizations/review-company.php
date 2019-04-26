@@ -525,6 +525,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </div>
+<input type="hidden" name="hidden_designation" id="hidden_designation">
 </div>
 <?php
 if ($review_type=='claimed')
@@ -1376,6 +1377,8 @@ function designation_auto_fn() {
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     
     $('.Typeahead-spinner').hide();
+  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+      $('#hidden_designation').val(datum.designation_enc_id);
   });
 	  flag++;
 }

@@ -111,6 +111,7 @@ namespace common\models;
  * @property CustomForm[] $customForms0
  * @property Designations[] $designations
  * @property Designations[] $designations0
+ * @property DomainNames[] $domainNames
  * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations
  * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations0
  * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations1
@@ -144,10 +145,14 @@ namespace common\models;
  * @property JobDescription[] $jobDescriptions0
  * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
  * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions0
+ * @property LearningVideoComments[] $learningVideoComments
+ * @property LearningVideoLikes[] $learningVideoLikes
  * @property LearningVideoTags[] $learningVideoTags
  * @property LearningVideoTags[] $learningVideoTags0
  * @property LearningVideos[] $learningVideos
  * @property LearningVideos[] $learningVideos0
+ * @property NewOrganizationReviews[] $newOrganizationReviews
+ * @property NewOrganizationReviews[] $newOrganizationReviews0
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
@@ -234,6 +239,11 @@ namespace common\models;
  * @property TrainingProgramBatches[] $trainingProgramBatches1
  * @property TrainingPrograms[] $trainingPrograms
  * @property TrainingPrograms[] $trainingPrograms0
+ * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
+ * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations0
+ * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations1
+ * @property UnclaimedOrganizations[] $organizationEncs0
+ * @property UnclaimedOrganizations[] $unclaimedOrganizations
  * @property UserAccessTokens[] $userAccessTokens
  * @property UserAchievements[] $userAchievements
  * @property UserAchievements[] $userAchievements0
@@ -850,6 +860,14 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getDomainNames()
+    {
+        return $this->hasMany(DomainNames::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getDropResumeApplicationLocations()
     {
         return $this->hasMany(DropResumeApplicationLocations::className(), ['user_enc_id' => 'user_enc_id']);
@@ -1114,6 +1132,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLearningVideoComments()
+    {
+        return $this->hasMany(LearningVideoComments::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideoLikes()
+    {
+        return $this->hasMany(LearningVideoLikes::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLearningVideoTags()
     {
         return $this->hasMany(LearningVideoTags::className(), ['created_by' => 'user_enc_id']);
@@ -1141,6 +1175,22 @@ class Users extends \yii\db\ActiveRecord
     public function getLearningVideos0()
     {
         return $this->hasMany(LearningVideos::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewOrganizationReviews()
+    {
+        return $this->hasMany(NewOrganizationReviews::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewOrganizationReviews0()
+    {
+        return $this->hasMany(NewOrganizationReviews::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1829,6 +1879,46 @@ class Users extends \yii\db\ActiveRecord
     public function getTrainingPrograms0()
     {
         return $this->hasMany(TrainingPrograms::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimedFollowedOrganizations()
+    {
+        return $this->hasMany(UnclaimedFollowedOrganizations::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimedFollowedOrganizations0()
+    {
+        return $this->hasMany(UnclaimedFollowedOrganizations::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimedFollowedOrganizations1()
+    {
+        return $this->hasMany(UnclaimedFollowedOrganizations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEncs0()
+    {
+        return $this->hasMany(UnclaimedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%unclaimed_followed_organizations}}', ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimedOrganizations()
+    {
+        return $this->hasMany(UnclaimedOrganizations::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**

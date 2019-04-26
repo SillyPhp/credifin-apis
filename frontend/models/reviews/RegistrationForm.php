@@ -96,6 +96,7 @@ class RegistrationForm extends Model {
         $companyReview->review_enc_id = $utilitiesModel->encrypt();
         $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
         $companyReview->category_enc_id = $arr['department'];
+        $companyReview->designation_enc_id = $arr['designation'];
         $companyReview->organization_enc_id = $org_id;
         $companyReview->average_rating = $arr['average_rating'];
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);

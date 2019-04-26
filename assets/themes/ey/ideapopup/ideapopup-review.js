@@ -1269,6 +1269,7 @@ function sbt_values(t){
         var sum = average_rating.reduce((a, b) => a+b, 0);
 		t['location'] = getKeyByValue(j, t['location']);
         t['department'] = getKeyByValue(d, t['department']);
+        t['designation'] = $('#hidden_designation').val();
         t['average_rating'] = sum / average_rating.length;
         var tenures = t['tenure'].split(' ');
         t['from'] = tenures[1] + "-" +tenures[0] + "-1"; 

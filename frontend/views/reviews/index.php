@@ -82,7 +82,7 @@ use yii\bootstrap\ActiveForm;
                     <div class="with-us-block">
                         <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
                         <div class="wu-heading">Convert</div>
-                        <div class="wu-text">Drive more qualified women to apply for your key open positions</div>
+                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
                     </div>
                 </div>
                 <div class="col-md-4">

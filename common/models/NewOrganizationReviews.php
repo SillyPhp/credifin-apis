@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%new_organization_reviews}}".
  *
@@ -26,6 +28,7 @@ namespace common\models;
  * @property int $social_life_extracurriculars Social Life/Extracurriculars
  * @property string $city_enc_id Foreign Key to Cities Table
  * @property string $category_enc_id Foreign Key to Categories Table
+ * @property string $designation_enc_id Foreign Key to Designation Table
  * @property string $likes Things you like about the Organization
  * @property string $dislikes Things you dislike about the Organization
  * @property string $from_date From Date
@@ -43,6 +46,7 @@ namespace common\models;
  * @property Categories $categoryEnc
  * @property Users $lastUpdatedBy
  * @property UnclaimedOrganizations $organizationEnc
+ * @property Designations $designationEnc
  */
 class NewOrganizationReviews extends \yii\db\ActiveRecord
 {
@@ -65,15 +69,20 @@ class NewOrganizationReviews extends \yii\db\ActiveRecord
             [['reviewer_type', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'show_user_details', 'status', 'is_deleted'], 'integer'],
             [['likes', 'dislikes'], 'string'],
             [['from_date', 'to_date', 'created_on', 'last_updated_on'], 'safe'],
-            [['review_enc_id', 'organization_enc_id', 'city_enc_id', 'category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['review_enc_id', 'organization_enc_id', 'city_enc_id', 'category_enc_id', 'designation_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['review_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_enc_id' => 'category_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => UnclaimedOrganizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
+            [['designation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Designations::className(), 'targetAttribute' => ['designation_enc_id' => 'designation_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -113,5 +122,13 @@ class NewOrganizationReviews extends \yii\db\ActiveRecord
     public function getOrganizationEnc()
     {
         return $this->hasOne(UnclaimedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDesignationEnc()
+    {
+        return $this->hasOne(Designations::className(), ['designation_enc_id' => 'designation_enc_id']);
     }
 }

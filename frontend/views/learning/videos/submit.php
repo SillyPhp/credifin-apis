@@ -70,8 +70,11 @@ if (Yii::$app->session->hasFlash('success')):
         var width = $('.light-box-outer').width();
         var marginLeft = width / 2;
         $('.light-box-outer').css('margin-left', -marginLeft);
+        $('.fader, .light-box-outer, .light-box-inner').fadeOut(500);
+        $('#careers-form')[0].reset();
+        $('#url').val('');
+        $('#video_type').val('');
         
-        setTimeout(function(){ window.location = '/'; }, 3000);
     ");
 endif;
 ?>
@@ -121,8 +124,12 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
     </div>
 
 <?=
-$form->field($learningCornerFormModel, 'video_url')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
+$form->field($learningCornerFormModel, 'video_url', ['enableAjaxValidation' => true])->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
 ?>
+
+<?= $form->field($learningCornerFormModel, 'video_id', ['enableAjaxValidation' => true])->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
+
+<?= $form->field($learningCornerFormModel, 'video_duration')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_duration'), 'id' => 'video-duration']); ?>
 
 <?=
 $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']);
@@ -131,18 +138,18 @@ $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'of
     <div class="row title">
         <div class="col-md-12">
             <div id="tooltip">
-                You Can Enter Your Own Title.
+                Video Title.
             </div>
-            <?= $form->field($learningCornerFormModel, 'video_title')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_title'), 'id' => 'youtube-title']); ?>
+            <?= $form->field($learningCornerFormModel, 'video_title')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_title'), 'id' => 'youtube-title', 'readonly' => true]); ?>
         </div>
     </div>
 
     <div class="row description">
         <div class="col-md-12">
             <div id="tooltip" class="tooltip1">
-                You Can Enter Your Own Description.
+                Video Description.
             </div>
-            <?= $form->field($learningCornerFormModel, 'description')->textArea(['rows' => 6, 'autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('description'), 'id' => 'youtube-description']); ?>
+            <?= $form->field($learningCornerFormModel, 'description')->textArea(['rows' => 6, 'autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('description'), 'id' => 'youtube-description', 'readonly' => true]); ?>
         </div>
     </div>
 
@@ -152,11 +159,6 @@ $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'of
         </div>
     </div>
 
-    <div class="row ci">
-        <div class="col-md-12">
-            <?= $form->field($learningCornerFormModel, 'video_id')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -466,7 +468,7 @@ $script = <<< JS
         var link = $('#url').val();
         var videoid = link.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
         $.ajax({
-            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+videoid[1]+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
+            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id='+videoid[1]+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
             contentType: "application/json",
             dataType: "json",
             success: function(data){
@@ -474,6 +476,7 @@ $script = <<< JS
                 $("#youtube-description").val(data.items[0].snippet.description);
                 $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);
                 $("#video-id").val(videoid[1]);
+                $("#video-duration").val(data.items[0].contentDetails.duration);
             }
         });
         $(".title").show();
