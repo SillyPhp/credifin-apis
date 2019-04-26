@@ -296,7 +296,7 @@ $this->params['seo_tags'] = [
             </div>
             <div class="modal-body">
             <?php
-            if ($review_type=='cliamed') {
+            if ($review_type=='claimed') {
                 $url = Url::to(['/organizations/edit-review?request_type=1']);
                 $request_type = 1;
             }
@@ -1046,20 +1046,67 @@ border: 2px solid #cadfe8 !important;
         padding-bottom:20px;
     }
 }
-#autocomplete-list{
+.twitter-typeahead,.tt-menu
+{
+width:100%;
+}
+#autocomplete-list,.tt-menu{
     background-color: #fff;
     border-radius: 0px 0px 10px 10px;
     max-height: 350px;
     overflow-y: scroll;
 }
-#autocomplete-list div {
+#autocomplete-list div,.tt-dataset{
     padding: 3px;
     border-bottom: .5px solid #eee;
     font-size: 16px;
 }
-#autocomplete-list div:last-child {
+#autocomplete-list div:last-child,.tt-dataset:last-child {
     border-bottom:0px;
 }
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 50px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #fff;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ');
 $script = <<< JS
 $(document).on('click','.load_reviews',function(e){
@@ -1246,7 +1293,7 @@ var popup = new ideaboxPopup({
 					},
 				
 					{
-						question 	: 'City of Your Office',
+						question 	: 'Select City of Your Office',
 						answerType	: 'location_autocomplete',
 						formName	: 'location',
 						description	: 'Please enter your office location',
@@ -1255,7 +1302,7 @@ var popup = new ideaboxPopup({
 						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
 					},
 					{
-						question 	: 'Your Job Profile',
+						question 	: 'Select Your Job Profile',
 						answerType	: 'department_autocomplete',
 						formName	: 'department',
 						description	: 'Please enter your department or division',
@@ -1264,7 +1311,7 @@ var popup = new ideaboxPopup({
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
 					{
-						question 	: 'Your Designation',
+						question 	: 'Select Your Designation',
 						answerType	: 'designation_autocomplete',
 						formName	: 'designation',
 						description	: 'Please enter your designation',
@@ -1300,6 +1347,38 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
+var flag = 0;
+function designation_auto_fn() {
+  if (flag>0)
+      {
+          return false;
+      }
+  var designations = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/account/categories-list/designations?q=%QUERY',
+			wildcard: '%QUERY',
+			cache: true,
+			filter: function(list) {
+				return list;
+			}
+		}
+	});
+
+	$('.i-review-designation-autocomplete').typeahead(null, {
+		name: 'designations_test',
+		display: 'designation',
+		limit: 8,
+		source: designations
+	}).on('typeahead:asyncrequest', function() {
+    $('.Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.Typeahead-spinner').hide();
+  });
+	  flag++;
+}
 var j = {};
 var d = {};
 var countries = [];
@@ -1358,25 +1437,6 @@ function ajax_fetch_category() {
        }
    });
 }
-var designations = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/designations?q=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
-});
-
-$('.i-review-designation-autocomplete').typeahead(null, {
-  name: 'designations_test',
-  display: 'designation',
-   limit: 20,      
-  source: designations
-});
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
