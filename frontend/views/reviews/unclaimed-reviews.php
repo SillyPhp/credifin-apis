@@ -245,6 +245,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
         </div>
     </div>
 </section>
+<input type="hidden" name="hidden_designation" id="hidden_designation">
 </div>
 <?php
 $this->registerCss('
@@ -1077,6 +1078,67 @@ color: initial;
 {
 font-family: "lobster";
 }
+.twitter-typeahead,.tt-menu
+{
+width:100%;
+}
+#autocomplete-list,.tt-menu{
+    background-color: #fff;
+    border-radius: 0px 0px 10px 10px;
+    max-height: 350px;
+    overflow-y: scroll;
+}
+#autocomplete-list div,.tt-dataset{
+    padding: 3px;
+    border-bottom: .5px solid #eee;
+    font-size: 16px;
+}
+#autocomplete-list div:last-child,.tt-dataset:last-child {
+    border-bottom:0px;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 50px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #fff;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ');
 $script = <<< JS
 $('#org_sign_up_Modal').modal({
@@ -1338,6 +1400,40 @@ function location_auto_fn(a){
 function department_auto_fn(a){
 	autocomplete(a, departments);
 }
+var flag = 0;
+function designation_auto_fn() {
+  if (flag>0)
+      {
+          return false;
+      }
+  var designations = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/account/categories-list/designations?q=%QUERY',
+			wildcard: '%QUERY',
+			cache: true,
+			filter: function(list) {
+				return list;
+			}
+		}
+	});
+
+	$('.i-review-designation-autocomplete').typeahead(null, {
+		name: 'designations_test',
+		display: 'designation',
+		limit: 8,
+		source: designations
+	}).on('typeahead:asyncrequest', function() {
+    $('.Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.Typeahead-spinner').hide();
+  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+      $('#hidden_designation').val(datum.designation_enc_id);
+  });
+	  flag++;
+}
 function review_post_ajax(data) {
     var org_name = $('#organization_name').val();
     var website = $('#website').val();
@@ -1389,6 +1485,7 @@ function ajax_fetch_category() {
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
