@@ -26,11 +26,7 @@ class TestController extends ApiBaseController{
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
 
-        if(Yii::$app->user->login($user, 3600 * 24 * 30)){
-            return  $this->response(200);
-        }else{
-            return $this->response(401);
-        }
+        Yii::$app->user->login($user, 3600 * 24 * 30);
     }
 
 }

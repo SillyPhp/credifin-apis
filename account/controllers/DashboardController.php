@@ -3,14 +3,12 @@
 namespace account\controllers;
 
 use account\models\applications\Applied;
-use account\models\applications\AppliedProcess;
-use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationTypes;
-use common\models\OrganizationInterviewProcess;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
 use Yii;
 use yii\web\Controller;
+use yii\helpers\Url;
 use common\models\EmployerApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -22,15 +20,16 @@ class DashboardController extends Controller
 {
     private $_condition;
 
-    private function hasViewed(){
+    private function hasViewed()
+    {
         $user_viewed = new UserCoachingTutorials();
         $user_v = $user_viewed->find()
-            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id,'is_viewed'=>1])
+            ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_viewed' => 1])
             ->asArray()
             ->one();
-        if(empty($user_v)) {
+        if (empty($user_v)) {
             return 0;
-        }else{
+        } else {
             return 1;
         }
     }
@@ -63,7 +62,7 @@ class DashboardController extends Controller
             $viewed = $this->hasViewed();
 
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
-                $applications = [
+            $applications = [
                 'jobs' => $this->_applications(3),
                 'internships' => $this->_applications(3, 'Internships'),
             ];
@@ -77,8 +76,8 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id','i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
-                ->innerJoin(ApplicationTypes::tableName().'as i','i.application_type_enc_id = a.application_type_enc_id')
+                ->select(['a.application_enc_id application_id', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
                 ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = b.parent_enc_id')
@@ -92,17 +91,16 @@ class DashboardController extends Controller
                 ->all();
 
             $applications_applied = AppliedApplications::find()
-                      ->select(['applied_application_enc_id id','current_round'])
-                      ->where(['created_by'=>Yii::$app->user->identity->user_enc_id])
-                      ->orderBy(['id'=>SORT_DESC])
-                      ->asArray()
-                      ->all();
+                ->select(['applied_application_enc_id id', 'current_round'])
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['id' => SORT_DESC])
+                ->asArray()
+                ->all();
             $object = new Applied();
             $question = [];
             foreach ($applications_applied as $v) {
-                $array = $object->getCurrentQuestions($v['id'],$v['current_round']);
-                if (!empty($array))
-                {
+                $array = $object->getCurrentQuestions($v['id'], $v['current_round']);
+                if (!empty($array)) {
                     $question[] = $array;
                 }
             }
@@ -125,7 +123,7 @@ class DashboardController extends Controller
             'model' => $model,
             'applications' => $applications,
             'question_list' => $question,
-            'viewed'=>$viewed,
+            'viewed' => $viewed,
         ]);
     }
 
@@ -165,6 +163,31 @@ class DashboardController extends Controller
             $coaching->is_viewed = 1;
             $coaching->save();
         }
+    }
+
+    public function actionBusinessActivity()
+    {
+        $model = new \account\models\services\ServiceSelectionForm();
+        $services = \common\models\Services::find()
+            ->select(['service_enc_id', 'name'])
+            ->where(['is_always_visible' => 0])
+            ->orderBy(['sequence' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $business_activities = \common\models\extended\BusinessActivities::find()
+            ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
+            ->where(['!=', 'business_activity', 'Business'])
+            ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
+            ->asArray()
+            ->all();
+
+        return $this->render('organizations/business-activity', [
+            'model' => $model,
+            'services' => $services,
+            'business_activities' => $business_activities,
+
+        ]);
     }
 
 }
