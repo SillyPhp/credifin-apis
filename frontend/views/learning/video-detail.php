@@ -66,13 +66,13 @@ $this->params['seo_tags'] = [
                             <div class="col-md-10">
                                 <div class="flex-view">
                                     <div class="likebtn">
-                                        <button id="like" data-toggle="tooltip" title="Like this">
+                                        <button id="like">
                                             <span class="<?= $like_status['status'] == 1 ? 'imageBlue2' : ''; ?> imageGray"
                                                   id="imageOn"></span>
                                         </button>
                                     </div>
                                     <div class="dislikebtn">
-                                        <button id="dislike" data-toggle="tooltip" title="Don't like this">
+                                        <button id="dislike">
                                             <span class="<?= $like_status['status'] == 2 ? 'dislikeBlue2' : ''; ?> dislikeGray"
                                                   id="imageOff"></span>
                                         </button>
@@ -130,6 +130,9 @@ $this->params['seo_tags'] = [
                                 <div class="views"><i class="fa fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
                                 <div class="likes"><i class="fa fa-thumbs-up"></i>
                                     <span><?= $like_count ? $like_count : 'No' ?></span> Likes
+                                </div>
+                                <div class="likes"><i class="fa fa-thumbs-down"></i>
+                                    <span><?= $dislike_count ? $dislike_count : 'No' ?></span> Dislikes
                                 </div>
                                 <div class="comms"><a href="#comments"> <i class="fa fa-comments-o"></i>
                                         <span><?= $comment_count ? $comment_count : 'No' ?></span>
@@ -219,6 +222,8 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
+<input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 
@@ -1053,7 +1058,6 @@ $script = <<<JS
             url: url,
             type: 'POST',
             data: data,
-            async: async,
             success: function(response) {
                 callback(response);
             }
@@ -1201,7 +1205,11 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
     }
 
     function addComment() {
-
+        var toLogin= $('#user_id').val();
+        if(!toLogin){
+            $('#loginModal').modal('show');
+            return false;
+        }
         var comment = document.getElementById('commentArea').value;
 
         if (comment == "") {
@@ -1256,51 +1264,46 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
         for (var i = 0; i < r.length; i++) {
             r[i].remove();
         }
-
-        var el = t.parentElement;
-        while (el.className != 'blog-comm') {
-            el = el.parentElement;
-        }
-        var parent_id = el.getAttribute('data-id');
-        if (document.getElementById(parent_id)) {
-            document.getElementById(parent_id).classList.add('hidden');
-        }
         if (!hasPushed) {
             hasPushed = !hasPushed;
 
-            var name = {
-                name: t.closest('div').parentNode.querySelector('.comment-name').getAttribute('id')
-            };
-
             var temp2 = document.getElementById("commentbox").innerHTML;
-            var output = Mustache.render(temp2, name);
+            var output = Mustache.render(temp2);
 
             var art = t.closest(".blog-comm");
-            art.querySelectorAll('.reply-comm').forEach(function (d) {
-                d.remove();
-            });
 
-            art.innerHTML += output;
+            if(art.querySelectorAll('.reply-comm')[0]) {
+                var a = document.createElement('div');
+                a.innerHTML = output;
+                art.querySelectorAll('.reply-comm')[0].prepend(a);
+            }else {
+                var a = document.createElement('div');
+                a.innerHTML = output;
+                var el = t.parentElement;
+                while (el.className != 'blog-comm') {
+                    el = el.parentElement;
+                }
+                var parent_id = el.getAttribute('data-id');
+                if (!document.getElementById(parent_id).classList.contains('hidden')) {
+                    document.getElementById(parent_id).parentNode.parentNode.prepend(a);
+                }
+            }
 
             hasPushed = !hasPushed;
         }
     }
 
     function closeComm(t) {
-        var el = t.parentElement;
-        while (el.className != 'blog-comm') {
-            el = el.parentElement;
-        }
-        var parent_id = el.getAttribute('data-id');
-        if (document.getElementById(parent_id)) {
-            document.getElementById(parent_id).classList.remove('hidden');
-        }
-
         var r = document.getElementsByClassName("cboxRemove");
         r[0].remove();
     }
 
     function addDynamicComment(t) {
+        var toLogin= $('#user_id').val();
+        if(!toLogin){
+            $('#loginModal').modal('show');
+            return false;
+        }
 
         var reply = t.closest('div').parentNode.querySelector('textarea').value;
 
@@ -1365,7 +1368,6 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                 parent: parent_id,
                 param: getQueryStringValue('vidk'),
             },
-            async: false,
             success: function (response) {
                 if (response.status == 200) {
 
@@ -1455,7 +1457,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
             <div class="reply-comment">
                 <div class="col-md-12">
                     <form>
-                        <textarea id="commentReply" class="repComment">@{{name}}</textarea>
+                        <textarea id="commentReply" class="repComment"></textarea>
                         <div class="comment-sub1">
                             <button type="button" class="addComment" onclick="addDynamicComment(this)">Comment</button>
                             <button type="button" class="closeComment1" onclick="closeComm(this)">Cancel</button>
@@ -1466,7 +1468,6 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
         </div>
     </div>
 </script>
-
 <script id="top-category-card" type="text/template">
     <div class="tg-widget tg-widgetcategories">
         <div class="tg-widgetcontent">
@@ -1484,7 +1485,6 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
         </div>
     </div>
 </script>
-
 <script id="top-videos-card" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-4">
@@ -1501,7 +1501,6 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
     </div>
     {{/.}}
 </script>
-
 <script id="related-videos" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-4">
