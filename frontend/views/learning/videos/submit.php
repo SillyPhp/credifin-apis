@@ -480,7 +480,6 @@ $script = <<< JS
                 contentType: "application/json",
                 dataType: "json",
                 success: function(data){
-                    $('#tags').val("Amsterdam,Washington,Sydney,Beijing,Cairo");
                     $("#youtube-title").val(data.items[0].snippet.title);
                     $("#youtube-description").val(data.items[0].snippet.description);
                     $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);
@@ -512,6 +511,7 @@ $script = <<< JS
     });
     
     $('#tags').tagsinput({
+        maxTags: 1,
         trimValue: true
     });
 JS;
