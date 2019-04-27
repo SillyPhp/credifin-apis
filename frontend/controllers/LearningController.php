@@ -452,12 +452,18 @@ class LearningController extends Controller
         $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
         $likeStatus = LearningVideoLikes::find()
             ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['video_enc_id' => $video_detail['video_enc_id']])
             ->andWhere(['is_deleted' => 0])
             ->one();
         $likeCount = LearningVideoLikes::find()
             ->where(['video_enc_id' => $video_detail['video_enc_id']])
             ->andWhere(['is_deleted' => 0])
             ->andWhere(['status' => 1])
+            ->count();
+        $dislikeCount = LearningVideoLikes::find()
+            ->where(['video_enc_id' => $video_detail['video_enc_id']])
+            ->andWhere(['is_deleted' => 0])
+            ->andWhere(['status' => 2])
             ->count();
         $commentCount = LearningVideoComments::find()
                         ->where(['video_enc_id' => $video_detail['video_enc_id']])
@@ -534,6 +540,7 @@ class LearningController extends Controller
             'video_detail' => $video_detail,
             'like_status' => $likeStatus,
             'like_count' => $likeCount,
+            'dislike_count' => $dislikeCount,
             'comment_count' => $commentCount,
         ]);
     }
@@ -555,11 +562,13 @@ class LearningController extends Controller
 
             $hasLiked = LearningVideoLikes::find()
                 ->where(['user_enc_id' => $current_user])
+                ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
                 ->exists();
 
             if($hasLiked){
                 $user_row = LearningVideoLikes::find()
                     ->where(['user_enc_id' => $current_user])
+                    ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
                     ->one();
                 if($type == "liked") {
                     if($status === 'true') {
