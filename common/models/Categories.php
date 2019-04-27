@@ -1,5 +1,7 @@
 <?php
+
 namespace common\models;
+
 /**
  * This is the model class for table "{{%categories}}".
  *
@@ -21,11 +23,12 @@ namespace common\models;
  * @property AssignedSkills[] $assignedSkills
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property NewOrganizationReviews[] $newOrganizationReviews
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
  * @property OrganizationReviews[] $organizationReviews
  * @property PostCategories[] $postCategories
- * @property UserPreferences[] $userPreferences
+ * @property UserPreferredJobProfile[] $userPreferredJobProfiles
  * @property Users[] $users
  */
 class Categories extends \yii\db\ActiveRecord
@@ -37,6 +40,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return '{{%categories}}';
     }
+
     /**
      * @inheritdoc
      */
@@ -54,6 +58,7 @@ class Categories extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -61,6 +66,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedCategories::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -68,6 +74,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedCategories::className(), ['parent_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -75,6 +82,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedEducationalRequirements::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -82,6 +90,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedJobDescription::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -89,6 +98,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedSkills::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -96,6 +106,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -103,6 +114,15 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewOrganizationReviews()
+    {
+        return $this->hasMany(NewOrganizationReviews::className(), ['category_enc_id' => 'category_enc_id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -110,6 +130,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(OrganizationAssignedCategories::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -117,6 +138,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(OrganizationAssignedCategories::className(), ['parent_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -124,6 +146,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(OrganizationReviews::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -131,13 +154,15 @@ class Categories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PostCategories::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserPreferences()
+    public function getUserPreferredJobProfiles()
     {
-        return $this->hasMany(UserPreferences::className(), ['job_profile' => 'category_enc_id']);
+        return $this->hasMany(UserPreferredJobProfile::className(), ['job_profile_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
