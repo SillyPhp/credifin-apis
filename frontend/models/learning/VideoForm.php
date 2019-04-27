@@ -21,6 +21,11 @@ class VideoForm extends Model
     public $video_id;
     public $video_duration;
 
+    public function formName()
+    {
+        return '';
+    }
+
     public function rules()
     {
         return [
