@@ -981,49 +981,6 @@ $script = <<<JS
     function getQueryStringValue (key) {  
       return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
     }
-    var player;
-    var video_id = document.getElementById('video-id').getAttribute('value');
-    var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
-    
-    var dvar;
-    function startTimer(){
-        dvar = setTimeout(
-            function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/learning/increment-views',
-                    data: {
-                        param: getQueryStringValue('vidk'),
-                    }
-                })
-            }, 
-            incrementTime
-        )
-    }
-    
-    function stopTimer(){
-        clearTimeout(dvar);
-    }
-    
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('ytplayer', {
-          height: '390',
-          width: '640',
-          videoId: video_id,
-          events: {
-            'onStateChange': function(event) {
-              if (event.data == YT.PlayerState.PLAYING) {
-                startTimer();
-              }
-              if (event.data == YT.PlayerState.PAUSED) {
-                stopTimer();
-              }
-            }
-          }
-        });
-    }
-    
-    onYouTubeIframeAPIReady();
     
     var like = document.getElementById('like');
     var imageOn = document.getElementById('imageOn');
@@ -1176,9 +1133,53 @@ $script = <<<JS
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://www.youtube.com/iframe_api');
 ?>
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
 <script>
+    var player;
+    var video_id = document.getElementById('video-id').getAttribute('value');
+    var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
+
+    var dvar;
+    function startTimer(){
+        dvar = setTimeout(
+            function(){
+                $.ajax({
+                    type: 'POST',
+                    url: '/learning/increment-views',
+                    data: {
+                        param: getQueryStringValue('vidk'),
+                    }
+                })
+            },
+            incrementTime
+        )
+    }
+
+    function stopTimer(){
+        clearTimeout(dvar);
+    }
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('ytplayer', {
+            height: '390',
+            width: '640',
+            videoId: video_id,
+            events: {
+                'onStateChange': function(event) {
+                    if (event.data == YT.PlayerState.PLAYING) {
+                        startTimer();
+                    }
+                    if (event.data == YT.PlayerState.PAUSED) {
+                        stopTimer();
+                    }
+                }
+            }
+        });
+    }
+
+    onYouTubeIframeAPIReady();
+
     function getQueryStringValue(key) {
         return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     }
@@ -1284,8 +1285,12 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                     el = el.parentElement;
                 }
                 var parent_id = el.getAttribute('data-id');
-                if (!document.getElementById(parent_id).classList.contains('hidden')) {
-                    document.getElementById(parent_id).parentNode.parentNode.prepend(a);
+                if(document.getElementById(parent_id)) {
+                    if (!document.getElementById(parent_id).classList.contains('hidden')) {
+                        document.getElementById(parent_id).parentNode.parentNode.prepend(a);
+                    }
+                }else{
+                    art.innerHTML += output;
                 }
             }
 
@@ -1345,7 +1350,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, result);
 
-                    var art = t.closest("article");
+                    var art = t.closest(".blog-comm");
                     art.innerHTML += output;
 
                     document.getElementsByClassName('cboxRemove')[0].remove();
@@ -1370,6 +1375,10 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
             },
             success: function (response) {
                 if (response.status == 200) {
+                    var art = t.closest(".blog-comm");
+                    art.querySelectorAll('.reply-comm').forEach(function (d) {
+                        d.remove();
+                    });
 
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, response.result);
