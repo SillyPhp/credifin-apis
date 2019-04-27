@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%tags}}".
  *
@@ -19,6 +17,7 @@ use Yii;
  * @property AssignedTags[] $assignedTags
  * @property LearningVideoTags[] $learningVideoTags
  * @property LearningVideos[] $videoEncs
+ * @property PostTags[] $postTags
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  */
@@ -71,6 +70,14 @@ class Tags extends \yii\db\ActiveRecord
     public function getVideoEncs()
     {
         return $this->hasMany(LearningVideos::className(), ['video_enc_id' => 'video_enc_id'])->viaTable('{{%learning_video_tags}}', ['tag_enc_id' => 'tag_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPostTags()
+    {
+        return $this->hasMany(PostTags::className(), ['tag_enc_id' => 'tag_enc_id']);
     }
 
     /**

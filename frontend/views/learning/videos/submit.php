@@ -1,7 +1,9 @@
 <?php
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
+
 $this->title = 'Learning Corner';
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/lco.png');
 $keywords = 'learning corner activities, what is learning corner, learning corners, learning online, learning corner ideas, learning corner activities, what is learning corner, empoweryouth learning corner, learning center ideas';
@@ -132,7 +134,7 @@ $form->field($learningCornerFormModel, 'video_url', ['enableAjaxValidation' => t
 <?= $form->field($learningCornerFormModel, 'video_duration')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_duration'), 'id' => 'video-duration']); ?>
 
 <?=
-$form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']);
+$form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'tags', 'data-role' => 'tagsinput']);
 ?>
 
     <div class="row title">
@@ -172,9 +174,12 @@ $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'of
         <h2 class="subscribe-head">Subscribe <span>Us</span></h2>
         <div class="effect jaques">
             <div class="buttons">
-                <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i
+                            class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i
+                            class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank"
+                   title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
             </div>
         </div>
     </div>
@@ -183,9 +188,11 @@ $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'of
         <div class="row row-offcanvas">
             <div class="sidebar-offcanvas sidebar">
                 <h3>Why we are Doing this?</h3>
-                <h5>This is a small form that would help in a very big way we hope all of you can fill this up and also pass it along to your friends and family.</h5>
+                <h5>This is a small form that would help in a very big way we hope all of you can fill this up and also
+                    pass it along to your friends and family.</h5>
             </div>
-            <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Close</span></a>
+            <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i
+                        class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Close</span></a>
         </div>
     </div>
 
@@ -467,18 +474,20 @@ $script = <<< JS
     function geturl(){
         var link = $('#url').val();
         var videoid = link.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-        $.ajax({
-            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id='+videoid[1]+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
-            contentType: "application/json",
-            dataType: "json",
-            success: function(data){
-                $("#youtube-title").val(data.items[0].snippet.title);
-                $("#youtube-description").val(data.items[0].snippet.description);
-                $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);
-                $("#video-id").val(videoid[1]);
-                $("#video-duration").val(data.items[0].contentDetails.duration);
-            }
-        });
+        if(link){
+            $.ajax({
+                url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id='+videoid[1]+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
+                contentType: "application/json",
+                dataType: "json",
+                success: function(data){
+                    $("#youtube-title").val(data.items[0].snippet.title);
+                    $("#youtube-description").val(data.items[0].snippet.description);
+                    $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);
+                    $("#video-id").val(videoid[1]);
+                    $("#video-duration").val(data.items[0].contentDetails.duration);
+                }
+            });
+        }
         $(".title").show();
         $(".description").show();
         $("#tooltip").show();
@@ -500,9 +509,14 @@ $script = <<< JS
         maxTags: 1,
         trimValue: true
     });
+    
+    $('#tags').tagsinput({
+        maxTags: 1,
+        trimValue: true
+    });
 JS;
 $this->registerJs($script);
 $this->registerJsFile('//platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()], 'async' => 'async']);
-$this->registerCssFile('http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css');
+$this->registerCssFile('https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
