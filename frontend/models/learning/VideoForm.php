@@ -9,7 +9,6 @@ use common\models\SubmittedVideos;
 
 class VideoForm extends Model
 {
-
     public $video_title;
     public $video_type;
     public $type_input;
@@ -21,6 +20,11 @@ class VideoForm extends Model
     public $video_url;
     public $video_id;
     public $video_duration;
+
+    public function formName()
+    {
+        return '';
+    }
 
     public function rules()
     {
@@ -71,50 +75,40 @@ class VideoForm extends Model
     public function save($userID = NULL)
     {
         $submittedVideosModel = new SubmittedVideos();
-
         $utilitiesModel = new Utilities();
-
         $submittedVideosModel->name = $this->video_title;
         $submittedVideosModel->link = $this->video_id;
         $submittedVideosModel->cover_image = $this->cover_image;
         $submittedVideosModel->description = $this->description;
         $submittedVideosModel->video_duration = $this->video_length($this->video_duration);
-
         if (!empty($this->tags)) {
             $submittedVideosModel->tags = $this->tags;
         } else {
             $submittedVideosModel->tags = NULL;
         }
-
         if (!empty($this->category)) {
             $submittedVideosModel->category = $this->category;
         } else {
             $submittedVideosModel->category = NULL;
         }
-
         if (!empty($this->sub_category)) {
             $submittedVideosModel->sub_category = $this->sub_category;
         } else {
             $submittedVideosModel->sub_category = NULL;
         }
-
         if ($this->video_type == 'Others') {
             $submittedVideosModel->type = $this->type_input;
         } else {
             $submittedVideosModel->type = $this->video_type;
         }
-
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();
         $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
         $submittedVideosModel->created_on = date('Y-m-d H:i:s');
-
-
         $utilitiesModel->variables['name'] = $this->video_title;
         $utilitiesModel->variables['table_name'] = SubmittedVideos::tableName();
         $utilitiesModel->variables['field_name'] = 'slug';
         $submittedVideosModel->slug = $utilitiesModel->create_slug();
-
         if ($submittedVideosModel->validate() && $submittedVideosModel->save()) {
             return true;
         } else {

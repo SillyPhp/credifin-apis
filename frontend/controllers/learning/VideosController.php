@@ -50,7 +50,6 @@ class VideosController extends Controller
                 Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
             }
         }
-
         return $this->render('submit', [
             'learningCornerFormModel' => $learningCornerFormModel,
         ]);
