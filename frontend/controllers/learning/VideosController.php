@@ -2,20 +2,40 @@
 
 namespace frontend\controllers\learning;
 
-use frontend\models\OrganizationVideoForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use yii\filters\AccessControl;
+use frontend\models\learning\VideoForm;
 
 class VideosController extends Controller
 {
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['submit'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
 
     public function actionSubmit()
     {
         $this->layout = 'main-secondary';
 
-        $learningCornerFormModel = new OrganizationVideoForm();
+        $learningCornerFormModel = new VideoForm();
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -23,20 +43,16 @@ class VideosController extends Controller
             return ActiveForm::validate($learningCornerFormModel);
         }
 
-        if (!Yii::$app->user->isGuest) {
-            if ($learningCornerFormModel->load(Yii::$app->request->post()) && $learningCornerFormModel->validate()) {
-                if ($learningCornerFormModel->save()) {
-                    Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
-                } else {
-                    Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
-                }
+        if ($learningCornerFormModel->load(Yii::$app->request->post()) && $learningCornerFormModel->validate()) {
+            if ($learningCornerFormModel->save()) {
+                Yii::$app->session->setFlash('success', 'Your video is submitted successfully.');
+            } else {
+                Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
             }
-            return $this->render('submit', [
-                'learningCornerFormModel' => $learningCornerFormModel,
-            ]);
-        } else {
-            return $this->redirect('/login');
         }
+        return $this->render('submit', [
+            'learningCornerFormModel' => $learningCornerFormModel,
+        ]);
     }
 
 }
