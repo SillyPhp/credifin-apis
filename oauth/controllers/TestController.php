@@ -27,6 +27,8 @@ class TestController extends ApiBaseController{
         ]);
 
         Yii::$app->user->login($user, 3600 * 24 * 30);
+
+        exit();
     }
 
 }
