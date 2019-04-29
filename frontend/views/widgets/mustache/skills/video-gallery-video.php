@@ -2,7 +2,7 @@
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container2">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="video-icon2">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
@@ -56,14 +56,9 @@ $script = <<<JS
     function getQueryStringValue (key) {  
       return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
     }
-    data = {
-        type: getQueryStringValue('type'),
-        id: getQueryStringValue('id')
-    };
     $.ajax({
         method: "POST",
         url : window.location.href,
-        data: data,
         async: false,
         success: function(response) {
             if(response.status === 200) {

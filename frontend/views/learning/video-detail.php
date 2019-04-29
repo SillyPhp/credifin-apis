@@ -85,7 +85,7 @@ $this->params['seo_tags'] = [
                                             </button>
                                         </div>
                                         <?php
-                                        $fb_url = Url::to(Yii::$app->controller->id . '/video-detail?vidk=' . $video_detail['slug'], true);
+                                        $fb_url = Url::to(Yii::$app->controller->id . '/video/' . $video_detail['slug'], true);
                                         ?>
                                         <ul class="s-list fadeout" id="Fader">
                                             <li><a href="javascript:;"
@@ -108,10 +108,10 @@ $this->params['seo_tags'] = [
                         <input type="hidden" id="video-duration" value="<?= floor($video_detail['duration'] * 0.4); ?>">
                         <div class="v-category">
                             <ul>
-                                <li id="cate" data-id="<?= $video_detail['parent_enc_id']; ?>">Category: <span><a
-                                                href=""> <?= $video_detail['parent_name']; ?> </a></span></li>
-                                <li id="subcate" data-id="<?= $video_detail['category_enc_id']; ?>">Sub Category: <span><a
-                                                href=""> <?= $video_detail['child_name']; ?></a></span></li>
+                                <li id="cate" data-id="<?= $video_detail['parent_enc_id']; ?>">Category: <span>
+                                        <?= $video_detail['parent_name']; ?></span></li>
+                                <li id="subcate" data-id="<?= $video_detail['category_enc_id']; ?>">Sub Category: <span>
+                                        <?= $video_detail['child_name']; ?></span></li>
                             </ul>
                         </div>
                         <div class="v-tags">
@@ -996,7 +996,7 @@ $script = <<<JS
     var likeEvent = {
         type: 'liked',
         status : already_liked,
-        param: getQueryStringValue('vidk')
+        param: window.location.pathname.split('/')[3]
     };
 
     var already_disliked = false;
@@ -1007,7 +1007,7 @@ $script = <<<JS
     var dislikeEvent = {
         type: 'disliked',
         status : already_disliked,
-        param: getQueryStringValue('vidk')
+        param: window.location.pathname.split('/')[3]
     };
 
     function ajaxRequest(url, data = null, async = true, callback){
@@ -1115,7 +1115,7 @@ $script = <<<JS
         url: '/learning/get-parent-comments',
         async: false,
         data: {
-            param: getQueryStringValue('vidk'),
+            param: window.location.pathname.split('/')[3]
         },
         success: function(response){
 
@@ -1134,7 +1134,56 @@ $script = <<<JS
         document.getElementById('smoreBtn').style.display = 'none';
         document.getElementById('show-more-content').classList.remove('hidden');
     })
-   
+
+    $(document).on('click', '#sendComment', function(){
+       var toLogin= $('#user_id').val();
+        if(!toLogin){
+            $('#loginModal').modal('show');
+            return false;
+        }
+        var comment = document.getElementById('commentArea').value;
+
+        if (comment == "") {
+            document.getElementById("commentArea").classList.add("errorClass");
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/learning/parent-comment',
+            async: false,
+            data: {
+                param: window.location.pathname.split('/')[3],
+                comment: comment
+            },
+            success: function (response) {
+                result = {};
+                if (response.user_info.logo) {
+                    result['img'] = response.user_info.path;
+                } else {
+                    result['img'] = false;
+                }
+
+                result['color'] = response.user_info.color;
+                result['name'] = response.user_info.name;
+                result['reply'] = comment;
+                result['hasChild'] = false;
+                result['comment_enc_id'] = response.user_info.comment_enc_id;
+                result['username'] = response.user_info.username;
+
+                if (response.status == 200) {
+                    var temp1 = document.getElementById("replytemp").innerHTML;
+                    var output = Mustache.render(temp1, result);
+
+                    var a = document.getElementById("activecomments");
+                    a.innerHTML += output;
+
+                    document.getElementById("commentArea").classList.remove("errorClass");
+                    document.getElementById("postComm").reset();
+                }
+            }
+        }) 
+    });
 
 JS;
 $this->registerJs($script);
@@ -1154,7 +1203,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     type: 'POST',
                     url: '/learning/increment-views',
                     data: {
-                        param: getQueryStringValue('vidk'),
+                        param: window.location.pathname.split('/')[3],
                     }
                 })
             },
@@ -1200,59 +1249,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             a.classList.add('fadeout');
         }
     }
-
-    function addComment() {
-        var toLogin= $('#user_id').val();
-        if(!toLogin){
-            $('#loginModal').modal('show');
-            return false;
-        }
-        var comment = document.getElementById('commentArea').value;
-
-        if (comment == "") {
-            document.getElementById("commentArea").classList.add("errorClass");
-            return;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/learning/parent-comment',
-            async: false,
-            data: {
-                param: getQueryStringValue('vidk'),
-                comment: comment
-            },
-            success: function (response) {
-                result = {};
-                if (response.user_info.logo) {
-                    result['img'] = response.user_info.path;
-                } else {
-                    result['img'] = false;
-                }
-
-                result['color'] = response.user_info.color;
-                result['name'] = response.user_info.name;
-                result['reply'] = comment;
-                result['hasChild'] = false;
-                result['comment_enc_id'] = response.user_info.comment_enc_id;
-                result['username'] = response.user_info.username;
-
-                if (response.status == 200) {
-                    var temp1 = document.getElementById("replytemp").innerHTML;
-                    var output = Mustache.render(temp1, result);
-
-                    var a = document.getElementById("activecomments");
-                    a.innerHTML += output;
-
-                    document.getElementById("commentArea").classList.remove("errorClass");
-                    document.getElementById("postComm").reset();
-                }
-            }
-        })
-
-    }
-
-    document.getElementById("sendComment").addEventListener('click', addComment);
 
     var hasPushed = false;
 
@@ -1324,7 +1320,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             url: '/learning/child-comment',
             async: false,
             data: {
-                param: getQueryStringValue('vidk'),
+                param: window.location.pathname.split('/')[3],
                 reply: reply,
                 parent_id: parent_id
             },
@@ -1347,7 +1343,24 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     var output = Mustache.render(temp1, result);
 
                     var art = t.closest(".blog-comm");
-                    art.innerHTML += output;
+
+                    if(art.querySelectorAll('.reply-comm')[0]) {
+                        var a = document.createElement('div');
+                        a.innerHTML = output;
+                        art.querySelectorAll('.reply-comm')[0].prepend(a);
+                    }else {
+                        var a = document.createElement('div');
+                        a.innerHTML = output;
+
+                        if(document.getElementById(parent_id)) {
+                            if (!document.getElementById(parent_id).classList.contains('hidden')) {
+
+                                art.querySelector('#dyn-comm').append(a);
+                            }
+                        }else{
+                            art.innerHTML += output;
+                        }
+                    }
 
                     document.getElementsByClassName('cboxRemove')[0].remove();
                 }
@@ -1367,7 +1380,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             url: '/learning/get-child-comments',
             data: {
                 parent: parent_id,
-                param: getQueryStringValue('vidk'),
+                param: window.location.pathname.split('/')[3],
             },
             success: function (response) {
                 if (response.status == 200) {
@@ -1417,6 +1430,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 </div>
             </div>
         </div>
+        <div id="dyn-comm"></div>
         {{#hasChild}}
         <div class="showReply">
             <div class="srBtn">
@@ -1481,7 +1495,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     <ul id="top-categories">
                         {{#.}}
                         <li>
-                            <a href="/learning/video-gallery?type=categories&id={{parent_enc_id}}"><span>{{parent_name}}</span>
+                            <a href="/learning/videos/category/{{slug}}"><span>{{parent_name}}</span>
                                 {{cnt}} </a></li>
                         {{/.}}
                     </ul>
@@ -1494,7 +1508,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="video-container2">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="video-icon2">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
@@ -1510,7 +1524,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="related-video-box">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="row">
                     <div class="col-md-5">
                         <div class="re-v-icon">
@@ -1530,7 +1544,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container">
-            <a href="/skills/video-detail?vidk={{slug}}">
+            <a href="/skills/video/{{slug}}">
                 <div class="video-icon">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
