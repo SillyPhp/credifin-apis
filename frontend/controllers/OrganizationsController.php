@@ -885,7 +885,6 @@ class OrganizationsController extends Controller
             }
             $companyReview->from_date = $from_time;
             $companyReview->to_date = $to_time;
-            $companyReview->overall_experience = $arr['overall_experience'];
             $companyReview->skill_development = $arr['skill_development'];
             $companyReview->work_life = $arr['work_life'];
             $companyReview->compensation = $arr['compensation'];
@@ -907,15 +906,16 @@ class OrganizationsController extends Controller
             }
         }
     }
-    public function actionGetReviews($slug){
+    public function actionGetReviews($slug,$limit=null,$offset=null){
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $reviews = $this->getReviews($slug, 3);
-            if ($reviews) {
+            $reviews = $this->getReviews($slug,$limit,$offset);
+            if ($reviews['total']>0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'reviews' => $reviews
+                    'reviews' => $reviews['reviews'],
+                    'total' => $reviews['total']
                 ];
             } else {
                 $response = [
@@ -926,15 +926,16 @@ class OrganizationsController extends Controller
         }
     }
 
-    public function actionGetUnclaimedReviews($slug){
+    public function actionGetUnclaimedReviews($slug,$limit=null,$offset=null){
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $reviews = $this->getUnclaimedReviews($slug, 3);
-            if ($reviews) {
+            $reviews = $this->getUnclaimedReviews($slug,$limit,$offset);
+            if ($reviews['total']>0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'reviews' => $reviews
+                    'total' => $reviews['total'],
+                    'reviews' => $reviews['reviews']
                 ];
             } else {
                 $response = [
@@ -945,7 +946,7 @@ class OrganizationsController extends Controller
         }
     }
 
-    private function getReviews($slug, $limit){
+    private function getReviews($slug,$limit,$offset){
         $reviews = OrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details','a.review_enc_id','a.status','overall_experience','ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development','designation','a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
@@ -955,16 +956,19 @@ class OrganizationsController extends Controller
             }], false)
             ->joinWith(['createdBy c'], false)
             ->joinWith(['categoryEnc d'], false)
-            ->joinWith(['designationEnc e'],false)
-            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"'.Yii::$app->user->identity->user_enc_id.'") DESC, a.created_on DESC')])
-            ->limit($limit)
-            ->asArray()
-            ->all();
+            ->joinWith(['designationEnc e'],false);
 
-        return $reviews;
+        return [
+            'total'=>$reviews->count(),
+            'reviews'=>$reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"'.Yii::$app->user->identity->user_enc_id.'") DESC, a.created_on DESC')])
+                ->limit($limit)
+                ->offset($offset)
+                ->asArray()
+                ->all()
+        ];
     }
 
-    private function getUnclaimedReviews($slug, $limit){
+    private function getUnclaimedReviews($slug,$limit,$offset){
         $reviews = NewOrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details','designation','a.review_enc_id','a.status','overall_experience','ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
@@ -974,13 +978,15 @@ class OrganizationsController extends Controller
             }], false)
             ->joinWith(['createdBy c'], false)
             ->joinWith(['categoryEnc d'], false)
-            ->joinWith(['designationEnc e'],false)
-            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"'.Yii::$app->user->identity->user_enc_id.'") DESC, a.created_on DESC')])
-            ->limit($limit)
-            ->asArray()
-            ->all();
-
-        return $reviews;
+            ->joinWith(['designationEnc e'],false);
+         return [
+            'total'=>$reviews->count(),
+            'reviews'=>$reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"'.Yii::$app->user->identity->user_enc_id.'") DESC, a.created_on DESC')])
+                ->limit($limit)
+                ->offset($offset)
+                ->asArray()
+                ->all()
+        ];
     }
 
     public function actionFetchReviewCards()

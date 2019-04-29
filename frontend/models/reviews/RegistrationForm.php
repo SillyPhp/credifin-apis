@@ -102,7 +102,6 @@ class RegistrationForm extends Model {
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
         $companyReview->from_date = $from_time;
         $companyReview->to_date = $to_time;
-        $companyReview->overall_experience = $arr['overall_experience'];
         $companyReview->skill_development = $arr['skill_development'];
         $companyReview->work_life = $arr['work_life'];
         $companyReview->compensation = $arr['compensation'];
