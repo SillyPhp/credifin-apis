@@ -49,14 +49,14 @@ $this->params['seo_tags'] = [
                         } else {
                             ?>
                             <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
-                                    color="" font="70px"></canvas>
+                                    color="<?= $org_details['initials_color']?>" font="70px"></canvas>
                             <?php
                         }
                         ?>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name"><?= $org_details['name']; ?></div>
+                <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
                         <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
@@ -118,7 +118,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= $org_details['name']; ?> Reviews </h1>
+                <h1 class="heading-style"><?= ucwords($org_details['name']); ?> Reviews </h1>
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
