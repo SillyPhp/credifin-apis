@@ -11,675 +11,114 @@ $this->params['header_dark'] = true;
             'type' => 'jobs',
         ]);
         ?>
-<!--        <div class="filter-heading">-->
-<!--            Search companies by-->
-<!--        </div>-->
-<!--        <form>-->
-<!--            <div class="filters">-->
-<!--                <div class="filter-search">-->
-<!--                    <div class="f-search-loc">-->
-<!--                        <input type="text" id="city_search" placeholder="Location"/>-->
-<!--                        <i class="fa fa-search"></i>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!---->
-<!--                <div class="col-md-12 pr-0 pl-0">-->
-<!--                    <div class="f-ratings f-rating-box-2">-->
-<!--                        <div class="overall-box-heading">By Location</div>-->
-<!--                        <div class="form-group form-md-checkboxes">-->
-<!--                            <div class="md-checkbox-list">-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Ludhiana</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-11" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-11">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Jalandhar</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-21" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-21">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Chandigarh</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-13" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-13">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Delhi</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-12 pr-0 pl-0">-->
-<!--                    <div class="f-ratings f-rating-box-2">-->
-<!--                        <div class="overall-box-heading">By Category</div>-->
-<!--                        <div class="form-group form-md-checkboxes">-->
-<!--                            <div class="md-checkbox-list">-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-41" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-41">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">IT</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-15" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-15">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Human Resources</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-51" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-51">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Designing</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-61" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-61">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">Military</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-12 pr-0 pl-0">-->
-<!--                    <div class="f-ratings f-rating-box-2">-->
-<!--                        <div class="overall-box-heading">Business Activities</div>-->
-<!--                        <div class="form-group form-md-checkboxes">-->
-<!--                            <div class="md-checkbox-list">-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-12 pr-0 pl-0">-->
-<!--                    <div class="f-ratings f-rating-box-2">-->
-<!--                        <div class="overall-box-heading">Business Activities</div>-->
-<!--                        <div class="form-group form-md-checkboxes">-->
-<!--                            <div class="md-checkbox-list">-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                                <div class="md-checkbox">-->
-<!--                                    <input type="checkbox" name="activities[]" id="checkbox-1" class="md-check"-->
-<!--                                           name="business[]">-->
-<!--                                    <label for="checkbox-1">-->
-<!--                                        <span></span>-->
-<!--                                        <span class="check"></span>-->
-<!--                                        <span class="box"></span>-->
-<!--                                        <div class="all-label-2">School</div>-->
-<!--                                    </label>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </form>-->
     </div>
     <div class="col-md-4 col-md-offset-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="n-header-bar">
-                    <h4>Available Jobs (30)</h4>
-                    <select class="pull-right">
-                        <option>Test 1</option>
-                        <option>Test 2</option>
-                    </select>
+                    <h4 id="total-jobs">Available Jobs()</h4>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
+
+        <div class="row" id="near-me-cards">
+
+        </div>
+        <button id="Load">Load</button>
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p class="modal-title">Please enter your address</p>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
+            <div class="modal-body">
+                <input id="address" type="textbox" value="Ludhiana">
+                <input id="submit" type="button" value="Search">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
+
+    </div>
+</div>
+
+<script id="cards" type="text/template">
+    {{#.}}
+    <div id="card-hover" class="col-md-12 col-sm-12 col-xs-12 pt-5">
+        <div data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}" class="application-card-main ui-draggable ui-draggable-handle">
+            {{#city_name}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;{{city_name}}
                 </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
+            {{/city_name}}
+            {{^city_name}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;All India
+                </span>
+            {{/city_name}}
+            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                <div class="application-card-img">
+                    <a href="/{{organization_slug}}">
+                        {{#logo}}
+                        <img src="{{logo}}">
+                        {{/logo}}
+                        {{^logo}}
+                        <canvas class="user-icon" name="{{name}}" width="80" height="80"
+                                color="{{color}}" font="35px"></canvas>
+                        {{/logo}}
+                    </a>
+                </div>
+                <div class="application-card-description">
+                    <a href="/job/{{slug}}"><h4 class="application-title">
+                            {{job_title}}</h4>
+                    </a>
+                    {{#salary}}
+                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    {{/salary}}
+                    {{^salary}}
+                    <h5>Negotiable</h5>
+                    {{/salary}}
+                    {{#type}}
+                    <h5>{{type}}</h5>
+                    {{/type}}
+                    {{#experience}}
+                    <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    {{/experience}}
                 </div>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
+            {{#last_date}}
+            <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                Last Date to Apply
+                <br>
+                {{last_date}}
+            </h6>
+            <h4 class="col-md-7 org_name text-right pr-10">
+                {{name}}
+            </h4>
+            {{/last_date}}
+            {{^last_date}}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h4 class="org_name text-right">{{name}}</h4>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-                <div data-id="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v"
-                     data-key="e8b1AYDBa7n3JMJOa4YKyqJjLwQp9v-jL9zWvg3wlJxzjODM8WRypoqEG6OB1"
-                     class="application-card-main ui-draggable ui-draggable-handle">
-            <span class="application-card-type location" data-lat="" data-long="" data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;Daman
-                </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="/ajayjuneja">
-                                <img src="/images/organizations/logo/n06X3CGtUPP9UI64ABAK/t9HswuvW19giC3ymSUD5IYhnBeRWPBvL/5WdJRgv0a78wKLo0XkLXl2nPpwbXzK..png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="/job/hfhetdsh-hsedhsetdh-60491554888389"><h4 class="application-title">
-                                    hfhetdsh</h4>
-                            </a>
-                            <h5>Negotiable</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="fa fa-clock-o"></i>&nbsp;Less Than 1 Year Experience</h5>
-                        </div>
-                    </div>
-                    <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                        Last Date to Apply
-                        <br>
-                        25-04-2019
-                    </h6>
-                    <h4 class="col-md-7 org_name text-right pr-10">
-                        Ajay
-                    </h4>
-                    <div class="application-card-wrapper">
-                        <a href="/job/hfhetdsh-hsedhsetdh-60491554888389" class="application-card-open">View Detail</a>
-                        <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
+            {{/last_date}}
+            <div class="application-card-wrapper">
+                <a href="/job/{{slug}}" class="application-card-open">View Detail</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>
-</div>
+    {{/.}}
+</script>
+
 <?php
 $this->registerCss('
 .near-me-map{
@@ -798,111 +237,177 @@ $this->registerCss('
 //}
 ');
 $script = <<< JS
+
 var data = [$lat_long];
 var map;
 var marker;
 var  purple_icon = 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png';
 // var infowindow = null;
-function showCards(){
+function showCards(lat,long){
+    
     var i;
-    // var inprange = {
-    //     rangerval : 10
-    // };
-    var centre = {lat: 30.900965, lng: 75.857277};
+    var inprange = {
+        rangerval : 20
+    };
+    var centre = {lat: lat, lng: long};
     map = new google.maps.Map(document.getElementById('map'),{
         center: centre,
         zoom: 4,
         mapTypeId: 'roadmap'
     });
-    for(i=0;i<data.length;i++){
-        console.log(data[i]);
-        var res = data[i].split(",");
-        console.log(res);
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(Number(res[0]),Number(res[1])),
-            map: map,
-            icon: purple_icon,
-            draggable: true
-        });
-    }
-    // $(document).on("click",".opens",function() {
-    //     if (infowindow) {
-    //         infowindow.close();
-    //     }
-    //     types = $(this).find('#set-types').attr('type');
-    //     lat = $(this).find('#set-types').attr('lat');
-    //     lon = $(this).find('#set-types').attr('long');
-    //     titles = $(this).find('#set-types').attr('title');
-    //     locations =  $(this).find('#set-types').attr('location');
-    //     lastDates = $(this).find('#set-types').attr('lastdate');
-    //     periods = $(this).find('#set-types').attr('period');
-    //     companys =  $(this).find('#set-types').attr('company');
-    //     logos = $(this).find('#set-types').attr('logo');
-    //      var contentString = '<div style="width:400px;" class="product shadow iconbox-border iconbox-theme-colored"><span class="type tag-sale color-o pl-20 pr-20 ">'+types+'</span><div class="row"><div class="col-md-4 col-xs-4 pt-5" ><a href="#" class="icon set_logo"><img class="logo" src="'+logos+'"></a></div><div class="col-md-8 col-xs-8 pt-20"><h4 class="title icon-box-title"><strong>'+titles+'</strong></h4><h5><i class="location fa fa-map-marker" lat="'+lat+'" long="'+lon+'"> '+locations+'</i></h5><h5><i class="period fa fa-clock-o"> '+periods+'</i></h5></div><div class="btn-add-to-cart-wrapper"><a class="btn btn-theme-colored btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color" href="/internships/detail">VIEW DETAILS</a><a style="background-color:#FF4500" class="btn btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color2" href="#"><i class="fa fa-plus"></i></a></div></div><hr class="hr"><h6 class="pull-left pl-20 custom_set2" align="center"><strong>Last Date to Apply</strong><br><div class="lastDate">'+lastDates+'</div></h6><h4 class="company pull-right pr-10 pt-20 custom_set" align="center"><strong>'+companys+'</strong></h4></div>';    
-    //      infowindow = new google.maps.InfoWindow({
-    //       content: contentString
-    //     });
-    //      marker = new google.maps.Marker({
-    //         position: new google.maps.LatLng(Number(lat),Number(lon)),
-    //         map: map,
-    //         icon: purple_icon,
-    //         draggable: true
-    //     });
-    //      var position = new google.maps.LatLng(Number(lat),Number(lon));
-    //      map.setCenter(position);
-    //      map.setZoom(16);
-    //      infowindow.open(map, marker);
-    // });
-    //
-    // $("#mapper").on("input change", function() {
-    //     inprange.rangerval = $(this).val();
-    //     console.log(inprange.rangerval);
-    // });
-    // var myCity = null;
-    // $(document).on('click', ".button__bg", function(){
-    //    
-    //     if(myCity){
-    //         myCity.setMap(null);
-    //     }
-    //     var geocoder = new google.maps.Geocoder();
-    //     var city = $('#form_control_3').val();
-    //     var location = $('#form_control_1').val();
-    //     var address = city + " " + location;
-    //     console.log(address);
-    //     geocoder.geocode({'address': address}, function(results, status) {
-    //       if (status === 'OK') {
-    //        
-    //         console.log(inprange.rangerval);
-    //           myCity = new google.maps.Circle({
-    //             center: results[0].geometry.location,
-    //             radius: inprange.rangerval * 1000,
-    //             strokeColor: "#0000FF",
-    //             strokeOpacity: 0.8,
-    //             strokeWeight: 2,
-    //             fillColor: "#0000FF",
-    //             fillOpacity: 0.4
-    //           });
-    //           var position = results[0].geometry.location;
-    //           map.setCenter(position);
-    //           console.log(position);
-    //           map.setZoom(12);
-    //          
-    //           myCity.setMap(map);
-    //       } else {
-    //         alert("Location does not exist.");
-    //       }
-    //     });
-    // });
+    
+    myCity = new google.maps.Circle({
+                center: centre,
+                radius: inprange.rangerval * 1000,
+                strokeColor: "#0000FF",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#0000FF",
+                fillOpacity: 0.4
+              });
+              
+    
+              var position = {lat: lat, lng: long};
+              map.setCenter(position);
+              map.setZoom(11);
+             
+              myCity.setMap(map);
+              
+              var num = 0;
+              var InforObj = [];
+              
+              function card(){
+              $.ajax({
+                    url: '/jobs/near-me',
+                    type: 'post',
+                    async: false,
+                    cache: false,
+                    data: {lat:lat,long:long,radius:inprange.rangerval * 1000,num:num},
+                    success: function (res) {
+                        var response = JSON.parse(res);
+                        console.log(response);
+                        $('#total-jobs').text("available Jobs("+response.total+")");
+                        // console.log(response[0].latitude);
+                        // console.log(response[0].longitude);
+                        for(i=0;i<response[0].length;i++){
+                            console.log(response[0][i].latitude,' , ',response[0][i].longitude);
+                            var contentString = '<p>'+response[0][i].name+'<\p>';
+                            // console.log(Number(response[i].latitude)," , ",Number(response[i].longitude));
+                           const marker = new google.maps.Marker({
+                                position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
+                                map: map,
+                                draggable: false
+                            });
+                           
+                           const infowindow = new google.maps.InfoWindow({
+                            content: contentString,
+                            maxWidth: 200
+                            });
+                           
+                            marker.addListener('mouseover', function () {
+                                 console.log(marker.position.lat());
+                                 console.log(marker.position.lng());
+                                 closeOtherInfo();
+                                 infowindow.open(marker.get('map'), marker);
+                                 InforObj[0] = infowindow;
+                             });
+                            
+                        }
+                        var template = $('#cards').html();
+                        var rendered = Mustache.render(template,response[0]);
+                        $('#near-me-cards').append(rendered);
+                        num = num+20;
+                    }
+                });
+              }
+              
+              function closeOtherInfo() {
+                    if (InforObj.length > 0) {
+                        /* detach the info-window from the marker ... undocumented in the API docs */
+                        InforObj[0].set("marker", null);
+                        /* and close it */
+                        InforObj[0].close();
+                        /* blank the array */
+                        InforObj.length = 0;
+                    }
+                }
+              
+              $(document).on('click','#Load',function() {
+                card();
+              });
+              
+              card();
     
 }
         
 
 
 function initMap(){
+        
+    if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(successCallback,showError);
+            console.log('Getting the position information....');
+        }else{
+            console.log('Sorry, your browser does not support HTML5 geolocation.');
+        }
+        
+        function successCallback(position){
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            
+            showCards(lat,long);
+        }
     
-    showCards();
+        function showError(error) {
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              $('#myModal').modal();
+              break;
+            case error.POSITION_UNAVAILABLE:
+              x.innerHTML = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              x.innerHTML = "The request to get user location timed out.";
+              break;
+            case error.UNKNOWN_ERROR:
+              x.innerHTML = "An unknown error occurred.";
+              break;
+          }
+        }
+    
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                });
+                
+            var geocoder = new google.maps.Geocoder();
+        
+                document.getElementById('submit').addEventListener('click', function() {
+                    $('#myModal').modal('toggle');
+                  geocodeAddress(geocoder, map);
+                });
+       
+            
+        
+    // showCards();
 }
-          initMap();
+
+function geocodeAddress(geocoder, resultsMap) {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            console.log(results[0].geometry.location.lat());
+            console.log(results[0].geometry.location.lng());
+            var lat = results[0].geometry.location.lat();
+            var long = results[0].geometry.location.lng();
+            resultsMap.setCenter(results[0].geometry.location);
+            showCards(lat,long);
+          } else {
+            console.log('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+
+initMap();
 var ps = new PerfectScrollbar('.near-me-filters');
 JS;
 $this->registerJs($script);
@@ -910,5 +415,6 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>
