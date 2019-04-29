@@ -26,24 +26,23 @@ $this->registerCss("
     position: relative;
     width: 150px;
     height: 150px;
+    line-height: 140px;
     margin: 0 auto 24px;
     border-radius: 50%;
     -webkit-transition: all .2s ease-out;
     transition: all .2s ease-out;
 }
 .grids-image {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    margin-top: 44px;
+    width: 65px;
+    height: 65px;
 }
 .grids::after {
     display: block;
     position: absolute;
     top: 0;
     left: 0;
-    width: 148px;
-    height: 148px;
+    width: 150px;
+    height: 150px;
     border: 2px solid #afafaf;
     border-radius: 50%;
     content: \"\";
@@ -60,6 +59,17 @@ $this->registerCss("
 @media only screen and (max-width: 425px){
     .category{
         min-height: 250px;
+    }
+}
+@media only screen and (max-width: 420px) {
+    .grids{
+        width: 130px;
+        height: 130px;
+        line-height: 120px;
+    }
+    .grids::after{
+        width: 130px;
+        height: 130px;
     }
 }
 ");
