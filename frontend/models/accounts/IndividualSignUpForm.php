@@ -2,6 +2,9 @@
 
 namespace frontend\models\accounts;
 
+use common\models\User;
+use frontend\models\events\SignupEvent;
+use frontend\models\events\UserModel;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -126,8 +129,11 @@ class IndividualSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                $userEmailsModel = new UserEmails();
-                $userEmailsModel->verificationEmail($usersModel->user_enc_id);
+                $event = new SignupEvent();
+                $event->user = $usersModel;
+
+                $userEmailModel = new UserModel();
+                $userEmailModel->trigger(UserModel::USER_REGISTERED, $event);
                 $transaction->commit();
             }
         } catch (Exception $e) {
