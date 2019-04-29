@@ -198,7 +198,7 @@ $(document).on('click','#load_more_btn',function(e) {
   page_name = page_name+3;
   total = total+3;
   getReviews(limit=$limit,offset=page_name);
-})
+});
 getReviews(limit=$limit,offset=page_name);
 JS;
 $this->registerJs($script);

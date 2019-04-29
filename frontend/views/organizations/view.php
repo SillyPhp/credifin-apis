@@ -503,7 +503,8 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
-    'org_slug' => $organization['slug']
+    'org_slug' => $organization['slug'],
+    'limit' => 3,
 ]);
 $this->registerCss('
 .write-review{
