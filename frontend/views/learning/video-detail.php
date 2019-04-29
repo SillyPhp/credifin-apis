@@ -1128,6 +1128,12 @@ $script = <<<JS
             }
         }
     })    
+    
+    $(document).on('click', '#smoreBtn', function(){
+        document.getElementById('less-des').style.display = 'none';
+        document.getElementById('smoreBtn').style.display = 'none';
+        document.getElementById('show-more-content').classList.remove('hidden');
+    })
    
 
 JS;
@@ -1193,16 +1199,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             a.classList.remove('fadein');
             a.classList.add('fadeout');
         }
-    }
-
-    if (document.getElementById('smoreBtn')) {
-        document.getElementById('smoreBtn').addEventListener('click', showContent);
-    }
-
-    function showContent() {
-        document.getElementById('less-des').style.display = 'none';
-        document.getElementById('smoreBtn').style.display = 'none';
-        document.getElementById('show-more-content').classList.remove('hidden');
     }
 
     function addComment() {

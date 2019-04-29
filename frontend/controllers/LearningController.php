@@ -290,9 +290,7 @@ class LearningController extends Controller
                 }], false)
                 ->joinWith(['tagEncs c'], false)
                 ->where(['a.status' => 1])
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['b.status' => 'Approved'])
-                ->andWhere(['b.is_deleted' => 0]);
+                ->andWhere(['a.is_deleted' => 0]);
 
             $result
                 ->andFilterWhere([
