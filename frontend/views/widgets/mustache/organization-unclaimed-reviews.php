@@ -1,6 +1,8 @@
 <?php
+
 use yii\helpers\Url;
-$link = Url::to($org_slug.'/reviews', true);
+
+$link = Url::to($org_slug . '/reviews', true);
 ?>
     <script id="organization-reviews" type="text/template">
         {{#.}}
@@ -13,7 +15,8 @@ $link = Url::to($org_slug.'/reviews', true);
                         <img src="{{image}}">
                         {{/image}}
                         {{^image}}
-                        <canvas class="user-icon" name="{{first_name}} {{last_name}}" color="{{initials_color}}" width="80" height="80" font="35px"></canvas>
+                        <canvas class="user-icon" name="{{first_name}} {{last_name}}" color="{{initials_color}}"
+                                width="80" height="80" font="35px"></canvas>
                         {{/image}}
                     </div>
                     <div class="uname">{{first_name}} {{last_name}}</div>
@@ -96,10 +99,14 @@ $link = Url::to($org_slug.'/reviews', true);
                     <div class="col-md-6 col-sm-6">
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
-                            <i class="fa fa-facebook-square" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u='.$link.''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-twitter-square" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-linkedin-square" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-whatsapp wa_icon_hover" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                            <i class="fa fa-facebook-square"
+                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                            <i class="fa fa-twitter-square"
+                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                            <i class="fa fa-linkedin-square"
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                            <i class="fa fa-whatsapp wa_icon_hover"
+                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
@@ -150,7 +157,7 @@ $(document).on('click','.follow',function(e){
         }
     });        
 });
-var page=0;
+var page_name=0;
 var total=0;
 function getReviews(limit=null,offset=null) {
     var slug = window.location.pathname.split('/')[1];
@@ -188,11 +195,11 @@ function getReviews(limit=null,offset=null) {
 }
 $(document).on('click','#load_more_btn',function(e) {
   e.preventDefault();
-  page = page+3;
+  page_name = page_name+3;
   total = total+3;
-  getReviews(limit=$limit,offset=page);
+  getReviews(limit=$limit,offset=page_name);
 })
-getReviews(limit=$limit,offset=page);
+getReviews(limit=$limit,offset=page_name);
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
