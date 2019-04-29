@@ -12,7 +12,7 @@ class ReviewCards {
     {
         $cards =  Organizations::find()
               ->alias('a')
-              ->select(['a.organization_enc_id','a.name','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
+              ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
               ->where(['a.is_deleted'=>0])
               ->joinWith(['businessActivityEnc b'],false)
               ->joinWith(['organizationReviews c'=>function($b)
@@ -24,7 +24,7 @@ class ReviewCards {
               {
                   $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
                   $x->joinWith(['applicationTypeEnc h'],false);
-                  $x->andWhere(['e.is_deleted'=>0]);
+                  $x->onCondition(['e.is_deleted'=>0]);
                   $x->groupBy(['e.organization_enc_id']);
               }],true)
               ->joinWith(['organizationLocations d'=>function($x)
@@ -34,21 +34,21 @@ class ReviewCards {
               ->groupBy('a.organization_enc_id');
         if (isset($options['business_activity']))
         {
-           $cards->orFilterWhere([
+           $cards->andWhere([
                'or',
                ['in','b.business_activity',$options['business_activity']]
            ]);
         }
         if (isset($options['keywords']))
         {
-           $cards->orFilterWhere([
+           $cards->andWhere([
                'or',
                ['like', 'a.name', $options['keywords']],
            ]);
         }
         if (isset($options['city']))
         {
-           $cards->orFilterWhere([
+           $cards->andWhere([
                'or',
                ['like', 'g.name', $options['city']],
            ]);
@@ -58,7 +58,7 @@ class ReviewCards {
             $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
         }
         $total_cards = $cards->count();
-        $data = $cards->orderBy(['a.id' => SORT_DESC])->limit($options['limit'])->asArray()->all();
+        $data = $cards->limit($options['limit'])->offset($options['offset'])->asArray()->all();
 
         return [
             'total'=>$total_cards,
