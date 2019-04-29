@@ -120,6 +120,9 @@ $this->params['seo_tags'] = [
             <div class="col-md-8">
                 <h1 class="heading-style"><?= $org_details['name']; ?> Reviews </h1>
                 <div id="org-reviews"></div>
+                <div class="col-md-offset-2 load-more-bttn">
+                    <button type="button" id="load_more_btn">Load More</button>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
@@ -530,10 +533,14 @@ $this->params['seo_tags'] = [
 <?php
 if ($review_type=='claimed')
 {
-    echo $this->render('/widgets/mustache/organization-reviews');
+    echo $this->render('/widgets/mustache/organization-reviews',[
+            'limit'=>3
+    ]);
 }else
 {
-    echo $this->render('/widgets/mustache/organization-unclaimed-reviews');
+    echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+            'limit'=>3
+    ]);
 }
 
 $this->registerCss('
@@ -1204,23 +1211,12 @@ var popup = new ideaboxPopup({
 								{ label : 'Novemeber', value : '11' },
 								{ label : 'December', value : '12' },
 							],
-							yearsObj
+							yearsObj 
 						],
 						description	: 'Choose dates of work.',
 						nextLabel	: 'Go to Step 4',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please selecty our tenure</b>'
-					},
-					
-					{
-						question 	: 'Overall Experience',
-						answerType	: 'starrate',
-						starCount	: 5,
-						formName	: 'overall_experience',
-						description	: '',
-						nextLabel	: 'Go to Step 5',
-						required	: true,
-						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
 					{
 						question 	: 'Skill Development & Learning',
@@ -1228,7 +1224,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'skill_development',
 						description	: '',
-						nextLabel	: 'Go to Step 6',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1238,7 +1234,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work_life',
 						description	: '',
-						nextLabel	: 'Go to Step 7',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1248,7 +1244,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'compensation',
 						description	: '',
-						nextLabel	: 'Go to Step 8',
+						nextLabel	: 'Go to Step 7',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1258,7 +1254,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'organization_culture',
 						description	: '',
-						nextLabel	: 'Go to Step 9',
+						nextLabel	: 'Go to Step 8',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1268,7 +1264,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'job_security',
 						description	: '',
-						nextLabel	: 'Go to Step 10',
+						nextLabel	: 'Go to Step 9',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1278,7 +1274,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'growth',
 						description	: '',
-						nextLabel	: 'Go to Step 11',
+						nextLabel	: 'Go to Step 10',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1288,7 +1284,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work',
 						description	: '',
-						nextLabel	: 'Go to Step 12',
+						nextLabel	: 'Go to Step 11',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1298,7 +1294,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'location_autocomplete',
 						formName	: 'location',
 						description	: 'Please enter your office location',
-						nextLabel	: 'Go to Step 13',
+						nextLabel	: 'Go to Step 12',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
 					},
@@ -1307,7 +1303,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'department_autocomplete',
 						formName	: 'department',
 						description	: 'Please enter your department or division',
-						nextLabel	: 'Go to Step 14',
+						nextLabel	: 'Go to Step 13',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
@@ -1316,7 +1312,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'designation_autocomplete',
 						formName	: 'designation',
 						description	: 'Please enter your designation',
-						nextLabel	: 'Go to Step 15',
+						nextLabel	: 'Go to Step 14',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
@@ -1325,7 +1321,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'textarea',
 						formName	: 'likes',
 						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
-						nextLabel	: 'Go to Step 16',
+						nextLabel	: 'Go to Step 15',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please write a review</b>'
 					},
@@ -1338,7 +1334,7 @@ var popup = new ideaboxPopup({
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please share your reviews.</b>'
 					
-					}
+					},
 			]
 			});
 if($("#wr").length>0){
@@ -1378,7 +1374,7 @@ function designation_auto_fn() {
     
     $('.Typeahead-spinner').hide();
   }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-      $('#hidden_designation').val(datum.designation_enc_id);
+      $('#hidden_designation').val(datum.designation_enc_id); 
   });
 	  flag++;
 }

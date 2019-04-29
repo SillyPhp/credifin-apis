@@ -1253,24 +1253,13 @@ var popup = new ideaboxPopup({
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please selecty our tenure</b>'
 					},
-					
-					{
-						question 	: 'Overall Experience',
-						answerType	: 'starrate',
-						starCount	: 5,
-						formName	: 'overall_experience',
-						description	: '',
-						nextLabel	: 'Go to Step 5',
-						required	: true,
-						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
-					},
 					{
 						question 	: 'Skill Development & Learning',
 						answerType	: 'starrate',
 						starCount	: 5,
 						formName	: 'skill_development',
 						description	: '',
-						nextLabel	: 'Go to Step 6',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1280,7 +1269,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work_life',
 						description	: '',
-						nextLabel	: 'Go to Step 7',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1290,7 +1279,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'compensation',
 						description	: '',
-						nextLabel	: 'Go to Step 8',
+						nextLabel	: 'Go to Step 7',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1300,7 +1289,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'organization_culture',
 						description	: '',
-						nextLabel	: 'Go to Step 9',
+						nextLabel	: 'Go to Step 8',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1310,7 +1299,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'job_security',
 						description	: '',
-						nextLabel	: 'Go to Step 10',
+						nextLabel	: 'Go to Step 9',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1320,7 +1309,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'growth',
 						description	: '',
-						nextLabel	: 'Go to Step 11',
+						nextLabel	: 'Go to Step 10',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1330,35 +1319,35 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work',
 						description	: '',
-						nextLabel	: 'Go to Step 12',
+						nextLabel	: 'Go to Step 11',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
 				
 					{
-						question 	: 'City of Your Office',
+						question 	: 'Select City of Your Office',
 						answerType	: 'location_autocomplete',
 						formName	: 'location',
 						description	: 'Please enter your office location',
-						nextLabel	: 'Go to Step 13',
+						nextLabel	: 'Go to Step 12',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
 					},
 					{
-						question 	: 'Your Job Profile',
+						question 	: 'Select Your Job Profile',
 						answerType	: 'department_autocomplete',
 						formName	: 'department',
 						description	: 'Please enter your department or division',
-						nextLabel	: 'Go to Step 14',
+						nextLabel	: 'Go to Step 13',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
 					{
-						question 	: 'Your Designation',
+						question 	: 'Select Your Designation',
 						answerType	: 'designation_autocomplete',
 						formName	: 'designation',
 						description	: 'Please enter your designation',
-						nextLabel	: 'Go to Step 15',
+						nextLabel	: 'Go to Step 14',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
@@ -1367,7 +1356,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'textarea',
 						formName	: 'likes',
 						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
-						nextLabel	: 'Go to Step 16',
+						nextLabel	: 'Go to Step 15',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please write a review</b>'
 					},
