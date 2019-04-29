@@ -2,7 +2,7 @@
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container">
-            <a href="/skills/video-detail?vidk={{slug}}">
+            <a href="/skills/video/{{slug}}">
                 <div class="video-icon">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
