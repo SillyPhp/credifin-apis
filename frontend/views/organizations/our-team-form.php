@@ -13,7 +13,7 @@ use yii\bootstrap\ActiveForm;
 $eform = ActiveForm::begin([
     'id' => 'add_employee',
     'fieldConfig' => [
-        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}{hint}</div>",
+        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
     ]
 ]);
 ?>
@@ -22,7 +22,7 @@ $eform = ActiveForm::begin([
             <div class="office-gallery">
                 <div class="g-image-preview">
                     <div id="employeeImagePreview"
-                         style="background-image: url(<?= Url::to('@eyAssets/images/pages/learning-corner/sub-cat-03.jpg') ?>);">
+                         style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-profile/user_avatar.png') ?>);">
                     </div>
                 </div>
                 <div class="g-image-edit">
@@ -31,6 +31,7 @@ $eform = ActiveForm::begin([
                         'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'employeeImageUpload', 'accept' => '.png, .jpg, .jpeg']);
                     ?>
                     <label for="employeeImageUpload">Select Image</label>
+                    <p class="ot-image help-block help-block-error"></p>
                 </div>
             </div>
         </div>
@@ -45,13 +46,13 @@ $eform = ActiveForm::begin([
                 <?= $eform->field($organizationEmployeesForm, 'designation')->textInput(['class' => 'form-control']); ?>
             </div>
             <div class="col-md-12">
-                <?= $eform->field($organizationEmployeesForm, 'facebook')->textInput(['class' => 'form-control']); ?>
+                <?= $eform->field($organizationEmployeesForm, 'facebook')->textInput(['class' => 'form-control'])->hint('e.g: https://facebook.com/username'); ?>
             </div>
             <div class="col-md-12">
-                <?= $eform->field($organizationEmployeesForm, 'twitter')->textInput(['class' => 'form-control']); ?>
+                <?= $eform->field($organizationEmployeesForm, 'twitter')->textInput(['class' => 'form-control'])->hint('e.g: https://twitter.com/username'); ?>
             </div>
             <div class="col-md-12">
-                <?= $eform->field($organizationEmployeesForm, 'linkedin')->textInput(['class' => 'form-control']); ?>
+                <?= $eform->field($organizationEmployeesForm, 'linkedin')->textInput(['class' => 'form-control'])->hint('e.g: https://www.linkedin.com/in/username');; ?>
             </div>
         </div>
     </div>
@@ -64,10 +65,18 @@ ActiveForm::end();
 ?>
 <?php
 $this->registerCss('
-.has-error .form-group .help-block.help-block-error{
+.has-error .form-group .help-block.help-block-error, .ot-image{
     opacity: 1 !important;
     color: #e73d4a !important;
     filter: alpha(opacity=100);
+}
+.form-group.form-md-line-input .help-block{
+    opacity: 1;
+    margin-top: 0px;
+    color: #36c6d3;
+}
+.help-block ~ .help-block.help-block-error{
+    bottom: -40px;
 }
 .office-gallery {
     position: relative;
@@ -138,8 +147,18 @@ function readGalleryImgURL(input) {
 }
 $("#employeeImageUpload").change(function() {
     readGalleryImgURL(this);
+    validateImage();
 });
-
+$(document).on('click', '.our-team', function() {
+    validateImage();
+});
+function validateImage(){
+    if($('#employeeImageUpload').val() == ''){
+        $('.ot-image').html('Image is Required.');
+    } else{
+        $('.ot-image').html('');
+    }
+}
 $(document).on('submit', '#add_employee', function(event) {
     var btn = $('.our-team');
     event.preventDefault();

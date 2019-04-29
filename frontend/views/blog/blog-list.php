@@ -35,7 +35,7 @@ use yii\helpers\Url;
                                     <div class="wn-box-title"><?= $post['title'] ?></div>
                                 </a>
                                 <div class="wp-box-des"><?= $post['excerpt']?></div>
-                                <div class=""><a href="/blog/<?= $post['slug']?>" class="button"><span>View Post</span></a>
+                                <div class="wp-btn"><a href="/blog/<?= $post['slug']?>" class="button"><span>View Post</span></a>
                                 </div>
                             </div>
                         </div>
@@ -53,7 +53,6 @@ $this->registerCss('
 .whats-new-box{
     border-radius:5px;
     margin-bottom:20px;
-
 }
 .what-popular-box:hover, .whats-new-box:hover{
     box-shadow:0 0 15px rgba(73, 72, 72, 0.28);
@@ -87,6 +86,8 @@ $this->registerCss('
     padding: 5px 10px 10px 8px;
 //    border: 1px solid rgba(230, 230, 230, .3);
     border-radius:0 0 5px 5px;
+    min-height: 125px;
+    position:relative;
 }
 .wn-box-cat{
    font-size:14px;
@@ -124,9 +125,20 @@ a.wn-overlay-text {
 .middle img{
     object-fit:contain;
 }
+.wp-btn{
+    position:absolute;
+    bottom:5px;
+}
 .wp-box-des{
     padding-top:15px;
     font-size:13px;
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+.wp-btn{
+    position:absolute;
+    bottom:0px;
 }
 .button {
   display: inline-block;

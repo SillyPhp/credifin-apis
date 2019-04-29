@@ -172,6 +172,7 @@ $this->registerCss('
     display:flex;
     justify-content:center;
     font-size:14px;
+    min-height:25px;
 }
 .stars{
     margin-right:5px;
@@ -257,6 +258,8 @@ $this->registerCss('
     padding: 5px 10px 10px 8px;
     border: 1px solid rgba(230, 230, 230, .3);
     border-radius:0 0 5px 5px;
+    position:relative;
+    min-height: 125px;
 }
 .wn-box-cat{
    font-size:14px;
@@ -286,9 +289,20 @@ a.wn-overlay-text {
      border-radius:5px 5px 0 0; 
     position:relative;   
 }
+.wp-btn{
+    position:absolute;
+    bottom:5px;
+}
+.wp-btn a{
+    color:#00a0e3;
+    font-size:14px;
+}
 .wp-box-des{
     padding-top:15px;
     font-size:13px;
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 .btn-3 {
     background-color: #00a0e3;
@@ -633,15 +647,24 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                <a href="/{{slug}}"><img src="{{logo}}"></a>
+                    <a href="/{{slug}}"><img src="{{logo}}"></a>
                 {{/logo}}
                 {{^logo}}
-                <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                color="{{color}}" font="55px"></canvas>
+                    <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                        color="{{color}}" font="55px"></canvas>
                 {{/logo}}
             </div>
             <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
-            <div class="com-loc"><span>{{#employerApplications}}{{applications_cnt}}</span> Openings</div>{{/employerApplications}}
+
+            {{#employerApplications}}
+                {{#applications_cnt}}
+                <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
+                {{/applications_cnt}}
+            {{/employerApplications}}
+            {{^employerApplications}}
+                <div class="com-loc"><span>No</span> Openings</div>
+            {{/employerApplications}}
+
             {{#organizationReviews}}
                 {{#average_rating}}
                     <div class="starr" data-score="{{average_rating}}"></div>
@@ -650,13 +673,14 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                         <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
                     </div>
                 {{/average_rating}}
-                {{^average_rating}}
-                    <div class="starr" data-score="0"></div>
-                    <div class="rating">
-                        <div class="reviews-rate">No reviews</div>
-                    </div>
-                {{/average_rating}}
             {{/organizationReviews}}
+            {{^organizationReviews}}
+                <div class="starr" data-score="0"></div>
+                <div class="rating">
+                    <div class="reviews-rate">No reviews</div>
+                </div>
+            {{/organizationReviews}}
+
             <div class="row">
                  <div class="cm-btns padd-0">
                     <div class="col-md-6">
@@ -666,7 +690,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     </div>
                     <div class="col-md-6">
                         <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Review</a>
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
                         </div>
                     </div>
                 </div>
@@ -687,7 +711,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">{{excerpt}}</div>
-                <div class="">
+                <div class="wp-btn">
                     <a href="{{link}}" class="button">
                         <span>View Post</span>
                     </a>

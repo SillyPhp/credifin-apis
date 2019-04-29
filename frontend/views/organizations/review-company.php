@@ -13,7 +13,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -28,7 +28,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -39,7 +39,7 @@ $this->params['seo_tags'] = [
 <section class="rh-header">
     <div class="container">
         <div class="row">
-            <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
+            <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
                         <?php
                         if (!empty($org_details['logo'])) {
@@ -1029,34 +1029,9 @@ border: 2px solid #cadfe8 !important;
 .onestar-box i.active {
     color:#ffd478;
 }
-@media only screen and (max-width: 992px){
-    .cp-bttn button {
-        margin-top: 20px; 
-    }
-    .cp-bttn {
-        padding-left: 0px;
-    }
-    .header-bttns{
-        display: flex;
-        justify-content:center;
-        margin: 20px 0 0 0;
-    }
-    .com-name{
-        margin-top:0px;
-    }
-    .rh-header {
-        padding: 65px 0;
-    }
-    .review-summary{
-        padding-top:40px;
-    }
-    .oa-review{
-        padding-bottom:20px;
-    }
-}
-.twitter-typeahead,.tt-menu
-{
-width:100%;
+
+.twitter-typeahead,.tt-menu{
+    width:100%;
 }
 #autocomplete-list,.tt-menu{
     background-color: #fff;
@@ -1115,6 +1090,58 @@ width:100%;
   }
 }
 /*Load Suggestions loader css ends */
+/*-----*/
+@media only screen and (max-width: 992px){
+    .cp-bttn button {
+        margin-top: 20px; 
+    }
+    .cp-bttn {
+        padding-left: 0px;
+    }
+    .header-bttns{
+        display: inline;
+        justify-content:center;
+        margin: 20px 0 0 0;
+    }
+    .com-name{
+        margin-top:0px;
+    }
+    .rh-header {
+        padding: 65px 0;
+          background-size:100% 400px;
+    }
+    .review-summary{
+        padding-top:40px;
+    }
+    .oa-review{
+        padding-bottom:20px;
+    }
+}
+
+@media only screen and (max-width: 767px){
+    .rh-header{
+        background-size:100% 520px;
+        text-align:center;
+    }
+    .logo-box{
+        margin:0 auto;
+    }
+    .ur-bg {
+        background: #edecec;
+        color: #000;
+        padding: 10px 5px;
+        height: 95px;
+        width: 200px;
+        float: left;
+    }
+    .user-rating {
+        display: inherit;
+        justify-content: center;
+        text-align: center;
+        padding-top: 20px;
+    }
+    
+}
 ');
 $script = <<< JS
 $(document).on('click','.load_reviews',function(e){

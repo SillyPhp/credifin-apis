@@ -11,7 +11,7 @@ $description = $post['excerpt'];
 $image = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image']);
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -26,7 +26,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -248,13 +248,13 @@ textarea::placeholder{
     border-bottom: none;
 }
 .blog-cover-image img{
-    max-height:350px;
+    max-height:400px;
     width:100%;
     object-fit:cover;
     border-radius:10px;
 }
 .blog-division{
-    border:1px solid #eee;
+    border:1px solid #fff;
     border-radius:10px;
 }
 .blog-text{
