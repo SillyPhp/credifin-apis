@@ -435,21 +435,22 @@ width:100%;
   color: #999
 }
 .tt-menu {
-  width: 98%;
-  margin: 12px 0;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          text-align: left;
-//          max-height:158px;
-//          overflow-y:auto;
+    width: 100%;
+    margin: 12px 0;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    text-align: left;
+    max-height:210px;
+    overflow-y:auto;
+    overscroll-behavior: none;
 }
 .tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
     background-color: #eff1f6;
@@ -788,6 +789,17 @@ body.modal-open{
 .rem-input .checkbox label{
     font-size: 14px;
 }
+#form-search .input-group .twitter-typeahead{
+    width: calc(100% + 48px);
+    padding-right: 80px;
+}
+#form-search .input-group .input-group-btn{
+    z-index:99;
+}
+#form-search .input-group .load-suggestions{
+    right: 36px;
+    top: -12px;
+}
 @media screen and (max-width: 992px){
     .half-bg{
         border-radius:5px 5px 0 0;
@@ -916,12 +928,13 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="logo_wrap">'
  +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
+ return result;
 },
 empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
 },

@@ -181,6 +181,7 @@ function getReviews(limit=null,offset=null) {
             } else if(response.status === 201){
                 $("#org-reviews").html('<div class = "heading_style_1">Currenlty No Review Has Been Given To This Company</div>');
                 $('.viewbtn').hide();
+                $('#load_more_btn').hide();
             }
             $('#load_more_btn').html('Load More');
         }
