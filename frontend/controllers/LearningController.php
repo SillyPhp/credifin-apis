@@ -821,4 +821,13 @@ class LearningController extends Controller
         }
     }
 
+
+    public function actionSendMail(){
+
+        if($a = Yii::$app->emailService->registrationEmail('4poVGAw3LZ9YPbkmLYqdZezgN2P8Ej')){
+            print_r($a);
+            die();
+        }
+    }
+
 }

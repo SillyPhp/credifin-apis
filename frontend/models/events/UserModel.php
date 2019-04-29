@@ -3,9 +3,9 @@
 namespace frontend\models\events;
 
 use Yii;
-use common\models\User;
+use common\models\Users;
 
-class UserModel extends User{
+class UserModel extends Users{
 
     const USER_REGISTERED = 'user_registered';
 

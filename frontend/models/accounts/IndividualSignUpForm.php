@@ -129,12 +129,9 @@ class IndividualSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                $event = new SignupEvent();
-                $event->user = $usersModel;
-
-                $userEmailModel = new UserModel();
-                $userEmailModel->trigger(UserModel::USER_REGISTERED, $event);
-                $transaction->commit();
+                if(Yii::$app->emailService->registrationEmail($usersModel->user_enc_id)){
+                    $transaction->commit();
+                }
             }
         } catch (Exception $e) {
             $transaction->rollBack();
