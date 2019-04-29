@@ -9,7 +9,7 @@ $description = 'Empower Youth is a career development platform where the candida
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -1213,7 +1213,7 @@ how-icon{
     text-align:center;
 }
 .content-wrapper .modal-header h2 {
-    font-size: 1.5rem;
+    font-size: 22px;
     font-weight: bold;
 }
 .content-wrapper .content {
@@ -1230,7 +1230,7 @@ how-icon{
     background-color: slategray;
     border-radius: 0.25rem;
     color: white;
-    font-size: 0.87rem;
+    font-size: 15px;
     font-weight: 300;
     overflow: hidden;
     z-index: 1;
@@ -1653,9 +1653,10 @@ textarea {
 
 @media screen and (max-width: 375px){
      .box-border{
-            min-height:310px;
-            margin-left:0px;
-        }
+        min-height:280px;
+        margin-left:0px;
+        padding: 20px 10px;
+     }
 }
 
 .tab-sec {
@@ -2006,10 +2007,23 @@ textarea {
     }
     .job-listing{
         padding:20px 25px !important;
+        padding-bottom: 35px !important;
+    }
+    .job-style-bx{
+        padding: 0px;
     }
     .job-listing.wtabs .job-title-sec {
         float: left;
         width: 100%;
+    }
+}
+@media only screen and (max-width:560px){
+    .content-wrapper{
+        max-width: 80%;
+        margin-left: 8.5% !important;
+    }
+    .content-wrapper .modal-header h2 {
+        font-size: 19px;
     }
 }
 ');
