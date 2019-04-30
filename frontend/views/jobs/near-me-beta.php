@@ -67,7 +67,7 @@ $this->params['header_dark'] = true;
             {{/city_name}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="/{{organization_slug}}">
+                    <a href="/{{organization_slug}}" id="organization-slug" class="{{organization_slug}}">
                         {{#logo}}
                         <img src="{{logo}}" id="{{logo}}" class="company-logo">
                         {{/logo}}
@@ -82,10 +82,10 @@ $this->params['header_dark'] = true;
                             {{job_title}}</h4>
                     </a>
                     {{#salary}}
-                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    <h5 id="salary"><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
-                    <h5>Negotiable</h5>
+                    <h5 id="salary">Negotiable</h5>
                     {{/salary}}
                     {{#type}}
                     <h5 class="type">{{type}}</h5>
@@ -111,13 +111,15 @@ $this->params['header_dark'] = true;
             </div>
             {{/last_date}}
             <div class="application-card-wrapper">
-                <a href="/job/{{slug}}" class="application-card-open">View Detail</a>
+                <a href="/job/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
                 <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>
     {{/.}}
 </script>
+
+
 
 <?php
 $this->registerCss('
@@ -158,6 +160,24 @@ $this->registerCss('
 .n-header-bar h4{
     display: inline;
     font-size: 16px;
+}
+.in-map{
+    margin-bottom:0px;
+}
+.gm-style .gm-style-iw-c{
+    padding:0px;
+    overflow: visible;
+}
+.gm-style .gm-style-iw-d{
+    overflow:hidden !important;
+}
+.gm-ui-hover-effect {
+    opacity: 1;
+    background-color: #fff !important;
+    right: -26px !important;
+    top: 0 !important;
+    z-index: 999;
+    border-radius: 0px 6px 6px 0px;
 }
 //.filter-search{
 //    padding-bottom: 20px;
@@ -326,15 +346,19 @@ $(document).on("mouseenter","#card-hover",function() {
             infowindow.close();
         }
         types = $(this).find('.type').text();
+        salary = $(this).find('#salary').text();
         lat = $(this).find('.location').attr('data-lat');
         lon = $(this).find('.location').attr('data-long');
         titles = $(this).find('.application-title').text();
         locations =  $(this).find('.location').text();
-        lastDates = $(this).find('.last-date').attr('id');
-        periods = $(this).find('.exp').text();
-        companys =  $(this).find('.company-name').text();
+        last_date = $(this).find('.last-date').attr('id');
+        exp = $(this).find('.exp').text();
+        company =  $(this).find('.company-name').text();
         logos = $(this).find('.company-logo').attr('id');
-         var contentString = '<div style="width:400px;" class="product shadow iconbox-border iconbox-theme-colored"><span class="type tag-sale color-o pl-20 pr-20 ">'+types+'</span><div class="row"><div class="col-md-4 col-xs-4 pt-5" ><a href="#" class="icon set_logo"><img class="logo" src="'+logos+'"></a></div><div class="col-md-8 col-xs-8 pt-20"><h4 class="title icon-box-title"><strong>'+titles+'</strong></h4><h5><i class="location fa fa-map-marker" lat="'+lat+'" long="'+lon+'"> '+locations+'</i></h5><h5><i class="period fa fa-clock-o"> '+periods+'</i></h5></div><div class="btn-add-to-cart-wrapper"><a class="btn btn-theme-colored btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color" href="/internships/detail">VIEW DETAILS</a><a style="background-color:#FF4500" class="btn btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color2" href="#"><i class="fa fa-plus"></i></a></div></div><hr class="hr"><h6 class="pull-left pl-20 custom_set2" align="center"><strong>Last Date to Apply</strong><br><div class="lastDate">'+lastDates+'</div></h6><h4 class="company pull-right pr-10 pt-20 custom_set" align="center"><strong>'+companys+'</strong></h4></div>';    
+        slug = $(this).find('.application-card-open').attr('id');
+        org_slug = $(this).find('#organization-slug').attr('class');
+         // var contentString = '<div style="width:400px;" class="product shadow iconbox-border iconbox-theme-colored"><span class="type tag-sale color-o pl-20 pr-20 ">'+types+'</span><div class="row"><div class="col-md-4 col-xs-4 pt-5" ><a href="#" class="icon set_logo"><img class="logo" src="'+logos+'"></a></div><div class="col-md-8 col-xs-8 pt-20"><h4 class="title icon-box-title"><strong>'+titles+'</strong></h4><h5><i class="location fa fa-map-marker" lat="'+lat+'" long="'+lon+'"> '+locations+'</i></h5><h5><i class="period fa fa-clock-o"> '+periods+'</i></h5></div><div class="btn-add-to-cart-wrapper"><a class="btn btn-theme-colored btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color" href="/internships/detail">VIEW DETAILS</a><a style="background-color:#FF4500" class="btn btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color2" href="#"><i class="fa fa-plus"></i></a></div></div><hr class="hr"><h6 class="pull-left pl-20 custom_set2" align="center"><strong>Last Date to Apply</strong><br><div class="lastDate">'+lastDates+'</div></h6><h4 class="company pull-right pr-10 pt-20 custom_set" align="center"><strong>'+companys+'</strong></h4></div>';    
+        var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div class="application-card-main in-map"><span class="application-card-type location"><i class="fa fa-map-marker"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'"><img src="'+logos+'"></a></div><div class="application-card-description"><a href="/job/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fa fa-inr"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;'+exp+'</h5></div></div><h6 class="col-md-5 pl-20 custom_set2 text-center last-date">Last Date to Apply<br>'+last_date+'</h6><h4 class="col-md-7 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/job/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a></div></div></div>';
          infowindow = new google.maps.InfoWindow({
           content: contentString
         });
