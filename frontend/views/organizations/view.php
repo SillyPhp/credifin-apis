@@ -48,13 +48,17 @@ if ($organization['cover_image']) {
                                 <div class="com-details">
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
-                                        <div class="com-establish"><span
-                                                class="detail-title">Tagline:</span> <?= Html::encode($organization['tag_line']); ?>
-                                        </div><?php } ?>
+                                        <div class="com-establish">
+<!--                                        <span class="detail-title">Tagline:</span> -->
+                                        <?= Html::encode($organization['tag_line']); ?>
+                                        </div>
+                                    <?php } ?>
                                     <?php if (!empty($industry['industry'])) { ?>
-                                        <div class="com-establish"><span
-                                                class="detail-title">Industry:</span> <?= Html::encode($industry['industry']); ?>
-                                        </div><?php } ?>
+                                        <div class="com-establish">
+<!--                                        <span class="detail-title">Industry:</span> -->
+                                        <?= Html::encode($industry['industry']); ?>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -389,13 +393,13 @@ if ($organization['cover_image']) {
                             </div>
                             <div class="divider"></div>
                             <div class="row">
-                                <div class="col-md-7">
+                                <div class="col-md-5 col-xs-12 pull-right">
+                                    <div id="map"></div>
+                                </div>
+                                <div class="col-md-7 col-xs-12">
                                     <div class="head-office">
 
                                     </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div id="map"></div>
                                 </div>
                             </div>
                         </div>
@@ -528,235 +532,6 @@ $this->registerCss('
     padding-top:30px;
 }
 /*----jobs and internships ends----*/
-/*----review----*/
-.viewbtn a{
-    border: 1px solid #ebefef;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    -ms-box-shadow: none;
-    -o-box-shadow: none;
-    box-shadow: none;
-    padding: 15px 44px;
-    font-size: 15px;
-    color: #111111;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px
-}
-.viewbtn a:hover{
-    background-color: #00a0e3;
-    color: #fff;
-    border-color: transparent;
-    -o-transition: .3s all;
-    -ms-transition: .3s all;
-    -moz-transition: .3s all;
-    -webkit-transition: .3s all;
-    transition: .3s all;
-}
-.re-box{
-    margin: 60px 0 0 0;
-}
-.refirst{
-   margin:0 0 0 0 !important; 
-}
-.viewbtn{
-    text-align:center;
-    margin:60px 0 0 0 ;
-}
-.uicon{
-    text-align:center;
-}
-.uicon img{
-    max-height:80px;
-    max-width:80px;
-}
-.uname{
-    text-align:center;
-    text-transform:uppercase;
-    font-weight:bold;
-    padding-top:10px;
-    line-height:15px;
-    color:#00a0e3;
-}
-.user-saying{
-    padding-top:20px;
-}
-.user-rating{
-    display:flex;
-    justify-content:center; 
-    text-align:center;
-    padding-top:20px;
-}
-.uheading{
-    font-weight:bold;
-    
-}
-.utext{
-    text-align:justify;
-}
-.publish-date{
-    text-align:right;
-    font-size: 14px;
-}
-.view-detail-btn button{
-    background:transparent;
-    border:none;
-    font-size:14px;
-    padding:0px
-}
-.view-detail-btn button:hover, .re-btns button:hover{
-    color:#00a0e3;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    transition:.3s all;
-}
-.re-btns{
-    text-align:right;
-    padding-top: 5px;
-}
-.re-btns button{
-    background:none;
-    border:none;
-    font-size:19px;
-    color:#ccc;
-}
-.re-btns button:hover{
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-}
-.re-btns button:hover i.fa-flag{
-    color:#d72a2a;
-}
-.re-btns button i.fa-thumbs-down{
-    margin-left:-8px;
-}
-.utitle{
-    font-size:20px;
-    font-weight:bold;
-    padding-top:8px;
-    color:#00a0e3;
-}
-.user-review-main{
-    border-left:2px solid #ccc;
-    margin-bottom:30px;
-}
-.ur-bg{
-   background:#edecec;
-    color: #000;
-    border-radius: 5px;
-    padding: 10px 5px;
-    border-right: 1px solid #fff;
-    height: 95px;
-}
-.uratingtitle{
-    font-size:12px;
-    line-height:15px;
-}
-.urating{
-    font-size:25px;
-}
-.emp-duration{
-    text-align:right;
-}
-.ushare i{
-   font-size:20px;
-    color:#ccc; 
-}
-.ushare i.fa-facebook-square:hover{
-    color:#4267B2; 
-    cursor: pointer;
-}
-.ushare i.fa-twitter-square:hover{
-    color:#38A1F3; 
-    cursor: pointer;
-}
-.ushare i.fa-linkedin-square:hover{
-    color:#0077B5;
-    cursor: pointer; 
-}
-.ushare i.fa-google-plus-square:hover{
-    color:#CC3333;
-    cursor: pointer;
-}
-.ushare-heading{
-    font-size:14px;
-    padding-top:20px;
-    line-height:23px;
-    font-weight:bold;
-}
-.usefull-bttn{
-    padding-top:33px;
-    display:flex;
-}
-.re-bttn{
-    text-align:right
-}
-.use-bttn button, .notuse-bttn button, .re-bttn button{
-    background: transparent !important;
-    border:1px solid #ccc;
-    color:#ccc;
-    padding:5px 15px;
-    margin-left:10px;
-    border-radius:10px;
-    font-size:14px;
-    transition:.2s all;
-    -webkit-transition:.2s all;
-    -moz-transition:.2s all;
-    -o-transition:.2s all;
-}
-.re-bttn{
-    padding-bottom:5px;
-}
-.use-bttn button:hover{
-    color:#00a0e3;
-    border-color:#00a0e3;
-    transition:.2s all;
-    -webkit-transition:.2s all;
-    -moz-transition:.2s all;
-    -o-transition:.2s all;
-}
-.re-bttn button:hover, .notuse-bttn button:hover{
-    color:#d72a2a;
-    border-color:#d72a2a;
-     transition:.2s all;
-    -webkit-transition:.2s all;
-    -moz-transition:.2s all;
-    -o-transition:.2s all;
-}
-.review-summary{
-    text-align:left;
-    padding-left:50px
-}
-.oa-review{
-    font-size:30px;
-    font-family:lobster;
-    padding-bottom:22px;
-}
-.rs1{
-    padding-top:20px;
-}
-.re-heading{
-    font-size: 17px;
-    text-transform: capitalize;
-    font-weight: bold;
-}
-.com-rating i{
-    font-size:16px;
-    background:#ccc;
-    color:#fff;
-    padding:7px 5px;
-    border-radius:5px;
-}
-.com-rating i.active{
-    background:#ff7803;
-    color:#fff;
-}
-/*----review ends----*/
 /*----company benefits----*/
 .company-benefits{
     padding:30px 0 0 0;
@@ -1157,6 +932,13 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     .h-inner{
         display: block;
         min-height:500px;
+        text-align: center;
+    }
+    .com-name {
+        font-size: 32px;
+    }
+    .com-establish {
+        font-size: 14px;
     }
     .follow-btn, .social-btns{
         text-align:center;
@@ -1175,6 +957,21 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         height:100%;
         width:100%;
         padding:50px 0;
+    }
+    .team-text{
+        top: 152px;
+        left: auto;
+        right: 10px;
+        -webkit-transform: none;
+        -ms-transform: none;
+        transform: none;
+    }
+    .know-bet {
+        display: none;
+    }
+    .team-container .team-overlay {
+        height: 100%;
+        background-color: transparent;
     }
     
 }
