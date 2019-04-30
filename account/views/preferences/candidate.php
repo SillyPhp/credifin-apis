@@ -7,7 +7,8 @@ use yii\helpers\Html;
 use kartik\widgets\TimePicker;
 use kartik\select2\Select2;
 
-$primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
+$primary_cat = ArrayHelper::map($jobprimaryfields, 'category_enc_id', 'name');
+$intern_primary_cat = ArrayHelper::map($internprimaryfields, 'category_enc_id', 'name');
 ?>
 
 
@@ -15,113 +16,112 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
         <div class="portlet light">
             <div class="portlet-title tabbable-line">
                 <div class="tabbable-line">
-                <ul class="nav nav-tabs ">
-                    <li class="active">
-                        <a href="#tab_15_1" data-toggle="tab"> Jobs</a>
-                    </li>
-                    <li>
-                        <a href="#tab_15_2" data-toggle="tab" id="interns"> Internships</a>
-                    </li>
-                </ul>
-            </div>
+                    <ul class="nav nav-tabs ">
+                        <li class="active">
+                            <a href="#tab_15_1" data-toggle="tab"> Jobs</a>
+                        </li>
+                        <li>
+                            <a href="#tab_15_2" data-toggle="tab" id="interns"> Internships</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="portlet-body">
                 <div class="tab-content">
-                <div class="tab-pane active" id="tab_15_1">
-                    <div class="portlet-body form">
-                        <?php
-                        $form = ActiveForm::begin([
-                            'id' => 'job_submit_form',
-                            'enableClientValidation' => true,
-                            'validateOnBlur' => false,
-                            'fieldConfig' => [
-                                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
-                            ]
-                        ]);
-                        ?>
+                    <div class="tab-pane active" id="tab_15_1">
+                        <div class="portlet-body form">
+                            <?php
+                            $form = ActiveForm::begin([
+                                'id' => 'job_submit_form',
+                                'enableClientValidation' => true,
+                                'validateOnBlur' => false,
+                                'fieldConfig' => [
+                                    'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+                                ]
+                            ]);
+                            ?>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?= $form->field($applicationpreferenceformModel, 'job_category')->widget(Select2::classname(), [
-                                    'name' => 'kv-state-210',
-                                    'data' => $primary_cat,
-                                    'size' => Select2::MEDIUM,
-                                    'options' => ['placeholder' => 'Select Job Profile', 'multiple' => true, 'id' => 'job_category'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true,
-                                    ],
-                                ])->label(false); ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= $form->field($applicationpreferenceformModel, 'job_category')->widget(Select2::classname(), [
+                                        'name' => 'kv-state-210',
+                                        'data' => $primary_cat,
+                                        'size' => Select2::MEDIUM,
+                                        'options' => ['placeholder' => 'Select Job Profile', 'multiple' => true, 'id' => 'job_category'],
+                                        'pluginOptions' => [
+                                            'allowClear' => true,
+                                        ],
+                                    ])->label(false); ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <?= $form->field($applicationpreferenceformModel, 'work_experience')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Relevant Experience', 'id' => 'work_expierence'])->label(false); ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <?= $form->field($applicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'])->label(false); ?>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <?= $form->field($applicationpreferenceformModel, 'work_experience')->dropDownList(['0' => 'No Experience', '1' => 'Less Than 1', '2' => '1 year', '3' => '2-3 years', '3-5' => '3-5 years', '5-10' => '5-10 years', '10+' => '10+ years'], ['prompt' => 'Relevant Experience', 'id' => 'work_expierence'])->label(false); ?>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <?=
+                                    $form->field($applicationpreferenceformModel, 'from_salary')->textInput(['autocomplete' => 'off', 'placeholder' => 'Min Salary (p.a)', 'maxlength' => '15', 'min' => '1'])->label(false);
+                                    ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <?=
+                                    $form->field($applicationpreferenceformModel, 'to_salary')->textInput(['autocomplete' => 'off', 'placeholder' => 'Max Salary (p.a)', 'maxlength' => '15', 'min' => '1'])->label(false);
+                                    ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?=
+                                    $form->field($applicationpreferenceformModel, 'salary_range')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Minimum Monthly Salary'), 'id' => 'range_3'])->label(false);
+                                    ?>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <?= $form->field($applicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'])->label(false); ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'from_salary')->textInput(['autocomplete' => 'off', 'placeholder' => 'Min Salary (p.a)', 'maxlength' => '15', 'min' => '1'])->label(false);
-                                ?>
-                            </div>
-                            <div class="col-md-3">
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'to_salary')->textInput(['autocomplete' => 'off', 'placeholder' => 'Max Salary (p.a)', 'maxlength' => '15', 'min' => '1'])->label(false);
-                                ?>
-                            </div>
-                            <div class="col-md-6">
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'salary_range')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Minimum Monthly Salary'), 'id' => 'range_3'])->label(false);
-                                ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="pf-field no-margin">
-                                    <ul class="tags skill_tag_list">
-                                        <?php if (!empty($juser_skills)) {
-                                            foreach ($juser_skills as $skill) { ?>
-                                                <li class="addedTag"><?= $skill['skill'] ?><span
-                                                            onclick="$(this).parent().remove();"
-                                                            class="tagRemove">x</span><input type="hidden"
-                                                                                             name="skills[]"
-                                                                                             value="<?= $skill['skill'] ?>">
-                                                </li>
-                                            <?php }
-                                        } ?>
-                                        <li class="tagAdd taglist">
-                                            <div class="skill_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                <?= $form->field($applicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'search-skill', 'class' => "skill-input"])->label(false); ?>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="pf-field no-margin">
+                                        <ul class="tags skill_tag_list">
+                                            <?php if (!empty($juser_skills)) {
+                                                foreach ($juser_skills as $skill) { ?>
+                                                    <li class="addedTag"><?= $skill['skill'] ?><span
+                                                                onclick="$(this).parent().remove();"
+                                                                class="tagRemove">x</span><input type="hidden"
+                                                                                                 name="skills[]"
+                                                                                                 value="<?= $skill['skill'] ?>">
+                                                    </li>
+                                                <?php }
+                                            } ?>
+                                            <li class="tagAdd taglist">
+                                                <div class="skill_wrapper">
+                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <?= $form->field($applicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'search-skill', 'class' => "skill-input"])->label(false); ?>
 
-                                            </div>
+                                                </div>
+                                    </div>
+                                    </li>
+                                    </ul>
                                 </div>
-                                </li>
-                                </ul>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 with-load">
-                                <div class="load-suggestions Typeahead-spinner" style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                            <div class="row">
+                                <div class="col-md-6 with-load">
+                                    <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <?=
+                                    $form->field($applicationpreferenceformModel, 'location')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('City'), 'id' => 'city_data'])->label(false);
+                                    ?>
                                 </div>
-                                <?=
-                                $form->field($applicationpreferenceformModel, 'location')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('City'), 'id' => 'city_data'])->label(false);
-                                ?>
-                            </div>
-                            <div class="col-md-6 with-load">
-                                <div class="load-suggestions Typeahead-spinner" style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                                <div class="col-md-6 with-load">
+                                    <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <?= $form->field($applicationpreferenceformModel, 'industry')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Industry'), 'id' => 'industry_data'])->label(false); ?>
                                 </div>
-                                <?= $form->field($applicationpreferenceformModel, 'industry')->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Industry'), 'id' => 'industry_data'])->label(false); ?>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="weekDays-selector">
@@ -177,88 +177,90 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                     ?>
                                 </div>
                             </div>
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle save_job_preference']); ?>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle save_job_preference']); ?>
+                                </div>
+                            </div>
                             <?php ActiveForm::end(); ?>
                         </div>
                     </div>
-                </div>
 
-                <div class="tab-pane" id="tab_15_2">
-                    <div class="portlet-body form">
-                        <?php
-                        $form = ActiveForm::begin([
-                            'id' => 'intern_submit_form',
-                            'enableClientValidation' => true,
-                            'validateOnBlur' => false,
-                            'fieldConfig' => [
-                                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
-                            ]
-                        ]);
-                        ?>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?= $form->field($internapplicationpreferenceformModel, 'job_category')->widget(Select2::classname(), [
-                                    'name' => 'kv-state-210',
-                                    'data' => $primary_cat,
-                                    'size' => Select2::MEDIUM,
-                                    'options' => ['placeholder' => 'Job Profile', 'multiple' => true, 'id' => 'intern_job_category'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true,
-                                    ],
-                                ])->label(false); ?>
-                            </div>
-                            <div class="col-md-6">
-                                <?= $form->field($internapplicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'], ['id' => 'internship_job_type'])->label(false); ?>
-                            </div>
+                    <div class="tab-pane" id="tab_15_2">
+                        <div class="portlet-body form">
+                            <?php
+                            $form = ActiveForm::begin([
+                                'id' => 'intern_submit_form',
+                                'enableClientValidation' => true,
+                                'validateOnBlur' => false,
+                                'fieldConfig' => [
+                                    'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+                                ]
+                            ]);
+                            ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= $form->field($internapplicationpreferenceformModel, 'job_category')->widget(Select2::classname(), [
+                                        'name' => 'kv-state-210',
+                                        'data' => $intern_primary_cat,
+                                        'size' => Select2::MEDIUM,
+                                        'options' => ['placeholder' => 'Select Internships Job Profile', 'multiple' => true, 'id' => 'intern_job_category'],
+                                        'pluginOptions' => [
+                                            'allowClear' => true,
+                                        ],
+                                    ])->label(false); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= $form->field($internapplicationpreferenceformModel, 'job_type')->dropDownList(['Full Time' => 'Full Time', 'Part Time' => 'Part Time', 'Work from Home' => 'Work From Home'], ['id' => 'internship_job_type'])->label(false); ?>
+                                </div>
 
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="pf-field no-margin">
-                                    <ul class="tags intern_skill_tag_list">
-                                        <?php if (!empty($iuser_skills)) {
-                                            foreach ($iuser_skills as $skill) { ?>
-                                                <li class="addedTag"><?= $skill['skill'] ?><span
-                                                            onclick="$(this).parent().remove();"
-                                                            class="tagRemove">x</span><input type="hidden"
-                                                                                             id="intern_skill"
-                                                                                             name="intern_skills[]"
-                                                                                             value="<?= $skill['skill'] ?>">
-                                                </li>
-                                            <?php }
-                                        } ?>
-                                        <li class="tagAdd taglist">
-                                            <div class="skill_wrapper">
-                                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                                                <?= $form->field($internapplicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'intern-search-skill', 'class' => "intern-skill-input"])->label(false); ?>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="pf-field no-margin">
+                                        <ul class="tags intern_skill_tag_list">
+                                            <?php if (!empty($iuser_skills)) {
+                                                foreach ($iuser_skills as $skill) { ?>
+                                                    <li class="addedTag"><?= $skill['skill'] ?><span
+                                                                onclick="$(this).parent().remove();"
+                                                                class="tagRemove">x</span><input type="hidden"
+                                                                                                 id="intern_skill"
+                                                                                                 name="intern_skills[]"
+                                                                                                 value="<?= $skill['skill'] ?>">
+                                                    </li>
+                                                <?php }
+                                            } ?>
+                                            <li class="tagAdd taglist">
+                                                <div class="skill_wrapper">
+                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <?= $form->field($internapplicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'intern-search-skill', 'class' => "intern-skill-input"])->label(false); ?>
 
-                                            </div>
+                                                </div>
+                                    </div>
+                                    </li>
+                                    </ul>
                                 </div>
-                                </li>
-                                </ul>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 with-load">
-                                <div class="load-suggestions Typeahead-spinner" style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                            <div class="row">
+                                <div class="col-md-6 with-load">
+                                    <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <?=
+                                    $form->field($internapplicationpreferenceformModel, 'location')->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('City'), 'id' => 'intern_city_data'])->label(false);
+                                    ?>
                                 </div>
-                                <?=
-                                $form->field($internapplicationpreferenceformModel, 'location')->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('City'), 'id' => 'intern_city_data'])->label(false);
-                                ?>
-                            </div>
-                            <div class="col-md-6 with-load">
-                                <div class="load-suggestions Typeahead-spinner" style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                                <div class="col-md-6 with-load">
+                                    <div class="load-suggestions Typeahead-spinner" style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <?= $form->field($internapplicationpreferenceformModel, 'industry')->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('Industry'), 'id' => 'intern_industry_data'])->label(false); ?>
                                 </div>
-                                <?= $form->field($internapplicationpreferenceformModel, 'industry')->textInput(['autocomplete' => 'off', 'placeholder' => $internapplicationpreferenceformModel->getAttributeLabel('Industry'), 'id' => 'intern_industry_data'])->label(false); ?>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="weekDays-selector">
@@ -315,12 +317,15 @@ $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
                                     ?>
                                 </div>
                             </div>
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle save_intern_preference']); ?>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-circle save_intern_preference']); ?>
+                                </div>
+                            </div>
                             <?php ActiveForm::end(); ?>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
@@ -745,15 +750,16 @@ ul.tags.skill_tag_list, ul.tags.intern_skill_tag_list {
 .tabbable-line>.nav-tabs>li.active, .tabbable-line>.nav-tabs>li:hover{
     border-bottom: 4px solid #00a0e3;
 }
+.save_job_preference, .save_intern_preference{
+    margin-top:40px;
+}
 ");
 
 $script = <<< JS
 
         $('#candidatepreferenceform-to_salary, #candidatepreferenceform-from_salary').mask("#,#0,#00", {reverse: true});
         
-        $(document).on('click','#interns',function() {
           var ps = new PerfectScrollbar('#intern_job_category ~ span > .selection > span');
-        });
 
         $(document).on('keyup','#search-skill',function(e)
         {
@@ -1332,13 +1338,12 @@ $script = <<< JS
             });
             
 $('.field-range_3 div .irs-with-grid').addClass('irs-disabled');
+$('.select2-search__field').css('width',$(".select2-selection__rendered").width());
 var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
-//$this->registerCssFile('@backendAssets/global/plugins/ion.rangeslider/css/ion.rangeSlider.css');
-//$this->registerCssFile('@backendAssets/global/plugins/ion.rangeslider/css/ion.rangeSlider.skinFlat.css');
 $this->registerCssFile('http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css');
 //$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css');
 $this->registerCssFile('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css');
@@ -1348,7 +1353,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4
 $this->registerJsFile('@eyAssets/materialized/materialize-tags/js/materialize-tags.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('@backendAssets/global/plugins/ion.rangeslider/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');

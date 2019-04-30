@@ -24,11 +24,19 @@ class PreferencesController extends Controller
             $applicationpreferenceformModel = new CandidatePreferenceForm();
             $internapplicationpreferenceformModel = new CandidateInternshipPreferenceForm();
 
-            $primaryfields = Categories::find()
+            $jobprimaryfields = Categories::find()
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Jobs'])
+                ->where(['b.assigned_to' => 'Jobs','b.status'=>'Approved'])
+                ->asArray()
+                ->all();
+
+            $internprimaryfields = Categories::find()
+                ->alias('a')
+                ->select(['a.name', 'a.category_enc_id'])
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->where(['b.assigned_to' => 'Internships','b.status'=>'Approved'])
                 ->asArray()
                 ->all();
 
@@ -198,7 +206,8 @@ class PreferencesController extends Controller
             return $this->render('candidate', [
                 'applicationpreferenceformModel' => $applicationpreferenceformModel,
                 'internapplicationpreferenceformModel' => $internapplicationpreferenceformModel,
-                'primaryfields' => $primaryfields,
+                'jobprimaryfields' => $jobprimaryfields,
+                'internprimaryfields'=>$internprimaryfields,
                 'juser_skills' => $juser_skills,
                 'iuser_skills' => $iuser_skills
             ]);
