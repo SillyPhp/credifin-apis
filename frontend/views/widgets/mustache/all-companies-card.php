@@ -23,7 +23,7 @@
                     {{/is_featured}}
                 </div>
                 <div class="com-det">
-                    <div class="com-name">{{name}}</div>
+                    <div class="com-name"><a href="{{slug}}">{{name}}</a></div>
                     <div class="com-cate">{{business_activity}} </div>
                 </div>
             </a>

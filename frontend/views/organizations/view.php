@@ -218,30 +218,78 @@ if ($organization['cover_image']) {
                         </div>
                     <?php }
                     if (!empty($gallery)) {
+                    ?>
+                    <div class="row">
+                        <div class="office-view">
+                            <div class="heading-style">
+                                Inside <?= Html::encode($organization['name']) ?>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="office-pics">
+                                <?php
+                                foreach ($gallery as $g_image) {
+                                    ?>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
+                                        <div class="img1">
+                                            <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                               data-fancybox="image">
+                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                     alt="company image 1">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    }
+                    if(!empty($org_products['organizationProductImages']) || !empty($org_products['description'])){
                         ?>
                         <div class="row">
                             <div class="office-view">
                                 <div class="heading-style">
-                                    Inside <?= Html::encode($organization['name']) ?>
+                                    Products
                                 </div>
                                 <div class="divider"></div>
+                                <?php if(!empty($org_products['organizationProductImages'])){ ?>
                                 <div class="office-pics">
-                                    <?php
-                                    foreach ($gallery as $g_image) {
-                                        ?>
-                                        <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
-                                            <div class="img1">
-                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                   data-fancybox="image">
-                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                         alt="company image 1">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                        <div class="p-preview-img">
+                                            <a href="" data-fancybox="images">
+                                                <img src="" alt="company image 1">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
+                                        <?php
+                                        foreach ($org_products['organizationProductImages'] as $p_image) {
+                                            ?>
+                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                   data-fancybox="images">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                         alt="<?= $p_image['title'] ?>">
                                                 </a>
                                             </div>
-                                        </div>
-                                        <?php
-                                    }
-                                    ?>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
+                                <?php
+                                }
+                                if(!empty($org_products['description'])){
+                                ?>
+                                <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                    <h4>Brief Desciption</h4>
+                                    <p>
+                                        <?= $org_products['description']; ?>
+                                    </p>
+                                </div>
+                                    <?php } ?>
                             </div>
                         </div>
                     <?php }
@@ -455,7 +503,8 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
-    'org_slug' => $organization['slug']
+    'org_slug' => $organization['slug'],
+    'limit' => 3,
 ]);
 $this->registerCss('
 .write-review{
@@ -994,6 +1043,28 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     border:none;
 }
 /*----tabs end----*/
+/*----company products css starts----*/
+.p-img-thumbnail {
+    width: 120px;
+    height: 120px;
+    float: left;
+    line-height: 116px;
+    border: 1px solid #eee;
+    margin: 2px 5px;
+}
+.p-preview-img{
+    height: 300px;
+    text-align: center;
+    line-height: 300px;
+}
+.p-preview-img a img{
+    max-height: 300px;
+}
+.p-img-thumbnail a img{
+    width: 100%;
+    height: 100%;
+}
+/*----company products css ends----*/
 .header-bg{
     background-repeat: no-repeat !important;
     background-size: 100% 100% !important;
@@ -1152,10 +1223,20 @@ $.ajax({
         $('#dropcv').val(response.message);
     }
 });
+
+var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
+$('.p-preview-img a').attr('href', first_preview);
+$('.p-preview-img a img').attr('src', first_preview);
+
+$(document).on('mouseover', '.p-img-thumbnail', function(){
+    var path = $(this).find('a').attr('href');
+    $('.p-preview-img a').attr('href', path);
+    $('.p-preview-img a img').attr('src', path);
+});
 JS;
 $this->registerJs("
-getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
-getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);

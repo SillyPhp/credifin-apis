@@ -33,93 +33,12 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
-<!--registration model-->
-    <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content half-bg-color">
-                <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
-                <div class="row margin-0">
-                    <div class="col-md-6 col-sm-6">
-                        <div class=" half-bg half-bg-color">
-                            <div class="top-circle">
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
-                            </div>
-                            <div class="log-icon">
-                                <span></span>
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-image.png') ?>"
-                                     class="centerthis">
-                            </div>
-                            <div class="bottom-circle">
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 padding-0 bg-log">
-                        <div class="log-fom">
-                            <div class="inner-log-fom"></div>
-                            <div class="inner-main-log-fom">
-                                <div class="ey-logo">
-                                    <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>">
-                                </div>
-                                <div class="login-form" id="loginForm">
-                                    <?php
-                                    $form = ActiveForm::begin([
-                                        'id' => 'signup-form',
-                                        'options' => [
-                                            'class' => 'clearfix',
-                                        ],
-                                        'fieldConfig' => [
-                                            'template' => '{input}{error}',
-                                        ],
-                                    ]);
-                                    ?>
-                                    <div class="uname">
-                                        <?=
-                                        $form->field($model, 'name')->textInput([
-                                            'autofocus' => true,
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => 'Enter Organization Name',
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="pass">
-                                        <?=
-                                        $form->field($model, 'email')->textInput([
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => 'Enter Organization Email',
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="pass">
-                                        <?=
-                                        $form->field($model, 'website')->textInput([
-                                            'autocomplete' => 'off',
-                                            'class' => 'uname-in',
-                                            'placeholder' => 'Enter Organization Website',
-                                        ]);
-                                        ?>
-                                    </div>
-                                    <div class="login-btn">
-                                        <?= Html::submitButton('Submit', ['class' => 'lg-form', 'name' => 'login-button']); ?>
-                                    </div>
-                                    <?php ActiveForm::end(); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <section class="review-benifit">
         <div class="container">
             <div class="row">
                 <div class="review-benifits">
                     <div class="col-md-8 col-sm-8 ">
-                        <div class="benifit-heading">Unquestionable <span>Reputation</span> </div>
+                        <div class="benifit-heading">Unquestionable Reputation</div>
                         <div class=""> Consumers share their experiences, unveiling the working atmosphere.
                             Know more by going through and make a right choice.</div>
                         <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
@@ -135,10 +54,42 @@ use yii\bootstrap\ActiveForm;
                         <div class="benifits-icon bi-right"><img src="<?= Url::to('@eyAssets/images/pages/review/overview.png') ?>"></div>
                     </div>
                     <div class="col-md-8 col-sm-8">
-                        <div class="benifit-heading">Perception <span>overview</span></div>
+                        <div class="benifit-heading">Perception overview</div>
                         <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
                             Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
                         <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ey-helps">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="wu-m-heading"><span class="blue">Empower</span> <span class="orange">Youth</span> Helps Employers</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-heading">Attract</div>
+                        <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
+                        <div class="wu-heading">Convert</div>
+                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
+                        <div class="wu-heading">Retain</div>
+                        <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
                     </div>
                 </div>
             </div>
@@ -156,9 +107,42 @@ use yii\bootstrap\ActiveForm;
     </section>
 <?php
 $this->registerCss('
+/*----ey helps block-----*/
+.wu-m-heading{
+    font-size: 25px;
+    text-transform: capitalize;
+    text-align: center;
+}
+.blue{
+    color:#00a0e3;
+}
+.orange{
+    color:#ff7803;
+}
+.wu-heading{
+    text-align:center;
+    padding-top:40px;
+    text-transform:capitalize;
+    font-size:18px;
+    color:#00a0e3;
+}
+.ey-helps{
+    background:#f0f4fb;
+    padding:20px 0 40px;
+}
+.with-us-block{
+    text-align:center;
+}
+.wu-icon{
+    padding-top:20px;
+    height:150px;
+}
+/*----ey helps block ends-----*/
+
 .review-benifit{
-//    background:#ecf5fe;
-    padding-bottom:50px;    
+    position: relative;
+    padding-bottom: 50px;
+    z-index: -1;
 }    
 .com-review-box{
     text-align:center;
@@ -191,6 +175,14 @@ $this->registerCss('
     font-size: 18px;
     text-transform: capitalize;
 }
+.uname .md-radio label{
+    white-space: normal;
+    font-size: 12px;
+}
+.has-success .md-radio label
+{
+color: initial;
+}
 .rating-stars{
     font-size:20px;
 }
@@ -198,6 +190,7 @@ $this->registerCss('
     display:flex;
     justify-content:center;
     font-size:14px;
+    min-height:25px;
 }
 .stars{
     margin-right:5px;
@@ -418,11 +411,12 @@ $this->registerCss('
 }
 .benifit-heading{
     font-size:25px;
-    text-transform:uppercase;
+    text-transform:capitalize;
     text-align:center;
     padding-top:20px;
-    font-weight:bold;
     color:#00a0e3;
+    position:relative;
+    z-index:-1;
 }
 .benifit-heading span{
     color:#ff7803;
@@ -541,6 +535,7 @@ width:100%;
   padding: 3px 20px;
   font-size: 14px;
   line-height: 24px;
+  height:54px;
 }
 .tt-suggestion:hover {
   cursor: pointer;
@@ -782,6 +777,10 @@ float:right;
     display: inline-block;
     width:100%;
 }
+.main_head_title h3
+{
+font-family: "lobster";
+}
 .uname{
     padding:10px 0 10px 0;
     
@@ -923,6 +922,10 @@ body.modal-open{
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 $script = <<< JS
+$(document).on('click','.add_new_org',function(e) {
+  e.preventDefault();
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
+})
 fetch_cards(params={'rating':[4,5],'limit':3});  
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -982,12 +985,12 @@ $('#search_comp').typeahead(null, {
 suggestion: function(data) {
 return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="35px"></canvas>')
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" data-toggle="modal" data-target="#org_sign_up_Modal">Add New Organizatons</a></div></div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();

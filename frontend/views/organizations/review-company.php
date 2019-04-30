@@ -3,17 +3,17 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 $radios_array = [1=>1,2=>2,3=>3,4=>4,5=>5];
-$this->title = $org_details->name.' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
+$this->title = $org_details['name'].' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
 Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats)/count($stats);
 $round_avg = round($overall_avg);
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details->logo_location . DIRECTORY_SEPARATOR . $org_details->logo;
+$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -28,7 +28,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -39,26 +39,24 @@ $this->params['seo_tags'] = [
 <section class="rh-header">
     <div class="container">
         <div class="row">
-            <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
+            <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
-<!--                    <div class="logo">-->
                         <?php
-                        if (!empty($org_details->logo)) {
+                        if (!empty($org_details['logo'])) {
                             ?>
                             <img src="<?= $logo_image; ?>">
                             <?php
                         } else {
                             ?>
-                            <canvas class="user-icon" name="<?= $org_details->name; ?>" width="150" height="150"
+                            <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
                                     color="" font="70px"></canvas>
                             <?php
                         }
                         ?>
-<!--                    </div>-->
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name"><?= $org_details->name; ?></div>
+                <div class="com-name"><?= $org_details['name']; ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
                         <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
@@ -73,13 +71,13 @@ $this->params['seo_tags'] = [
                         <?php if (!empty($follow) && $follow['followed'] == 1) {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details->organization_enc_id; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
                             </div>
                             <?php
                         } else  {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details->organization_enc_id; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
                             </div>
                         <?php }} else { ?>
                             <div class="follow-bttn hvr-icon-pulse">
@@ -104,7 +102,11 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
-                            <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                            <?php if ($review_type=='unclaimed'):?>
+                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>
+                            <?php else: ?>
+                                <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                            <?php endif;?>
                         </div>
                     </div>
                 </div>
@@ -116,8 +118,11 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= $org_details->name; ?> Reviews </h1>
+                <h1 class="heading-style"><?= $org_details['name']; ?> Reviews </h1>
                 <div id="org-reviews"></div>
+                <div class="col-md-offset-2 load-more-bttn">
+                    <button type="button" id="load_more_btn">Load More</button>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
@@ -294,9 +299,18 @@ $this->params['seo_tags'] = [
             </div>
             <div class="modal-body">
             <?php
+            if ($review_type=='claimed') {
+                $url = Url::to(['/organizations/edit-review?request_type=1']);
+                $request_type = 1;
+            }
+            else
+            {
+                $url = Url::to(['/organizations/edit-review?request_type=2']);
+                $request_type = 2;
+            }
             $form = ActiveForm::begin([
             'id' => 'edit-review-form',
-            'action'=>Url::to(['/organizations/edit-review']),
+            'action'=>$url,
             'fieldConfig' => [
                 'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
             ]
@@ -514,11 +528,21 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </div>
+<input type="hidden" name="hidden_designation" id="hidden_designation">
 </div>
 <?php
-echo $this->render('/widgets/mustache/organization-reviews',[
-    'org_slug' => $organization['slug']
-]);
+if ($review_type=='claimed')
+{
+    echo $this->render('/widgets/mustache/organization-reviews',[
+            'limit'=>3
+    ]);
+}else
+{
+    echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+            'limit'=>3
+    ]);
+}
+
 $this->registerCss('
 .star-rating1 {
   font-family: "FontAwesome";
@@ -1005,6 +1029,68 @@ border: 2px solid #cadfe8 !important;
 .onestar-box i.active {
     color:#ffd478;
 }
+
+.twitter-typeahead,.tt-menu{
+    width:100%;
+}
+#autocomplete-list,.tt-menu{
+    background-color: #fff;
+    border-radius: 0px 0px 10px 10px;
+    max-height: 350px;
+    overflow-y: scroll;
+}
+#autocomplete-list div,.tt-dataset{
+    padding: 3px;
+    border-bottom: .5px solid #eee;
+    font-size: 16px;
+}
+#autocomplete-list div:last-child,.tt-dataset:last-child {
+    border-bottom:0px;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 50px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #fff;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
+/*-----*/
 @media only screen and (max-width: 992px){
     .cp-bttn button {
         margin-top: 20px; 
@@ -1013,7 +1099,7 @@ border: 2px solid #cadfe8 !important;
         padding-left: 0px;
     }
     .header-bttns{
-        display: flex;
+        display: inline;
         justify-content:center;
         margin: 20px 0 0 0;
     }
@@ -1022,6 +1108,7 @@ border: 2px solid #cadfe8 !important;
     }
     .rh-header {
         padding: 65px 0;
+          background-size:100% 400px;
     }
     .review-summary{
         padding-top:40px;
@@ -1030,45 +1117,33 @@ border: 2px solid #cadfe8 !important;
         padding-bottom:20px;
     }
 }
-#autocomplete-list{
-    background-color: #fff;
-    border-radius: 0px 0px 10px 10px;
-    max-height: 350px;
-    overflow-y: scroll;
-}
-#autocomplete-list div {
-    padding: 3px;
-    border-bottom: .5px solid #eee;
-    font-size: 16px;
-}
-#autocomplete-list div:last-child {
-    border-bottom:0px;
+
+@media only screen and (max-width: 767px){
+    .rh-header{
+        background-size:100% 520px;
+        text-align:center;
+    }
+    .logo-box{
+        margin:0 auto;
+    }
+    .ur-bg {
+        background: #edecec;
+        color: #000;
+        padding: 10px 5px;
+        height: 95px;
+        width: 200px;
+        float: left;
+    }
+    .user-rating {
+        display: inherit;
+        justify-content: center;
+        text-align: center;
+        padding-top: 20px;
+    }
+    
 }
 ');
 $script = <<< JS
-$(document).on('click','.follow',function(e){
-    e.preventDefault();
-    var org_id = $(this).val();
-    $.ajax({
-        url:'/organizations/follow',
-        data: {org_id:org_id},                         
-        method: 'post',
-        beforeSend:function(){
-         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-        },
-        success:function(data){  
-            if(data.message == 'Following'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Following');
-                $('.follow').addClass('followed');
-            }
-            else if(data.message == 'Unfollow'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Follow');
-                $('.follow').removeClass('followed');
-            }
-        }
-    });        
-});
-
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({
@@ -1163,23 +1238,12 @@ var popup = new ideaboxPopup({
 								{ label : 'Novemeber', value : '11' },
 								{ label : 'December', value : '12' },
 							],
-							yearsObj
+							yearsObj 
 						],
 						description	: 'Choose dates of work.',
 						nextLabel	: 'Go to Step 4',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please selecty our tenure</b>'
-					},
-					
-					{
-						question 	: 'Overall Experience',
-						answerType	: 'starrate',
-						starCount	: 5,
-						formName	: 'overall_experience',
-						description	: '',
-						nextLabel	: 'Go to Step 5',
-						required	: true,
-						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
 					{
 						question 	: 'Skill Development & Learning',
@@ -1187,7 +1251,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'skill_development',
 						description	: '',
-						nextLabel	: 'Go to Step 6',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1197,7 +1261,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work_life',
 						description	: '',
-						nextLabel	: 'Go to Step 7',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1207,7 +1271,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'compensation',
 						description	: '',
-						nextLabel	: 'Go to Step 8',
+						nextLabel	: 'Go to Step 7',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1217,7 +1281,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'organization_culture',
 						description	: '',
-						nextLabel	: 'Go to Step 9',
+						nextLabel	: 'Go to Step 8',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1227,7 +1291,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'job_security',
 						description	: '',
-						nextLabel	: 'Go to Step 10',
+						nextLabel	: 'Go to Step 9',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1237,7 +1301,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'growth',
 						description	: '',
-						nextLabel	: 'Go to Step 11',
+						nextLabel	: 'Go to Step 10',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1247,35 +1311,35 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work',
 						description	: '',
-						nextLabel	: 'Go to Step 12',
+						nextLabel	: 'Go to Step 11',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
 				
 					{
-						question 	: 'City of Your Office',
+						question 	: 'Select City of Your Office',
 						answerType	: 'location_autocomplete',
 						formName	: 'location',
 						description	: 'Please enter your office location',
-						nextLabel	: 'Go to Step 13',
+						nextLabel	: 'Go to Step 12',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
 					},
 					{
-						question 	: 'Your Job Profile',
+						question 	: 'Select Your Job Profile',
 						answerType	: 'department_autocomplete',
 						formName	: 'department',
 						description	: 'Please enter your department or division',
-						nextLabel	: 'Go to Step 14',
+						nextLabel	: 'Go to Step 13',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
 					{
-						question 	: 'Your Designation',
+						question 	: 'Select Your Designation',
 						answerType	: 'designation_autocomplete',
 						formName	: 'designation',
 						description	: 'Please enter your designation',
-						nextLabel	: 'Go to Step 15',
+						nextLabel	: 'Go to Step 14',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
@@ -1284,7 +1348,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'textarea',
 						formName	: 'likes',
 						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
-						nextLabel	: 'Go to Step 16',
+						nextLabel	: 'Go to Step 15',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please write a review</b>'
 					},
@@ -1297,7 +1361,7 @@ var popup = new ideaboxPopup({
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please share your reviews.</b>'
 					
-					}
+					},
 			]
 			});
 if($("#wr").length>0){
@@ -1307,6 +1371,40 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
+var flag = 0;
+function designation_auto_fn() {
+  if (flag>0)
+      {
+          return false;
+      }
+  var designations = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/account/categories-list/designations?q=%QUERY',
+			wildcard: '%QUERY',
+			cache: true,
+			filter: function(list) {
+				return list;
+			}
+		}
+	});
+
+	$('.i-review-designation-autocomplete').typeahead(null, {
+		name: 'designations_test',
+		display: 'designation',
+		limit: 8,
+		source: designations
+	}).on('typeahead:asyncrequest', function() {
+    $('.Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.Typeahead-spinner').hide();
+  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+      $('#hidden_designation').val(datum.designation_enc_id); 
+  });
+	  flag++;
+}
 var j = {};
 var d = {};
 var countries = [];
@@ -1320,7 +1418,7 @@ function department_auto_fn(a){
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
-       url : '/organizations/post-reviews?slug='+slug+'',
+       url : '/organizations/post-reviews?slug='+slug+'&request_type='+$request_type,
 	   data:{data:data},
        success: function(response) {
                if (response==true)
@@ -1350,7 +1448,6 @@ function ajax_fetch_city() {
        }
    });
 }
-
 function ajax_fetch_category() {
   $.ajax({
        method: 'GET',
@@ -1369,6 +1466,7 @@ function ajax_fetch_category() {
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');

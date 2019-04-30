@@ -216,9 +216,14 @@ class JobsController extends ApiBaseController
             }
             
             if(empty($data['applicationInterviewLocations'])){
-                $data['applicationInterviewLocations'] = '';    
+                $data['applicationInterviewLocations'][] = [
+                       "location_enc_id" => "kdmvkdkv",
+                       "application_enc_id" => "kdmklvadkv",
+                       "city_enc_id" => "",
+                       "name" => "Online"
+                ];
             }
-            
+
             if(!$data["vacancies"]){
                 $data["vacancies"] = 0;
             }
