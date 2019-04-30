@@ -1066,11 +1066,13 @@ $script = <<< JS
                             $("#candidatepreferenceform-to_salary").val(data.max_expected_salary);
                             
                             var fivehun = (500/100)*data.min_expected_salary;
+                            var thirtyper = (30/100)*data.min_expected_salary;
+                            var min_val =  parseInt(data.min_expected_salary) - parseInt(thirtyper);
                             
                             var range = $("#range_3");
                             var rangee = range.data("ionRangeSlider");
                             rangee.update({
-                                min: data.min_expected_salary,
+                                min: min_val,
                                 max: fivehun,
                                 from: data.min_expected_salary,
                                 to: data.max_expected_salary,
