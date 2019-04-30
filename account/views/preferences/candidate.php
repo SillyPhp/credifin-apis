@@ -1230,11 +1230,12 @@ $script = <<< JS
                        var s_from = $('#candidatepreferenceform-from_salary').prop('value');
                 
                         var thirtyper = (30/100)*s_from;
+                        var min_val =  parseInt(s_from) - parseInt(thirtyper);
                         thirtyper = parseInt(s_from) + parseInt(thirtyper);
                         var fivehun = (500/100)*s_from;
                         
                         raangee.update({
-                            min: s_from,
+                            min: min_val,
                             max: fivehun,
                             from: s_from,
                             to: thirtyper,
@@ -1297,11 +1298,12 @@ $script = <<< JS
                 var s_from = $('#candidatepreferenceform-from_salary').prop('value');
                 
                 var thirtyper = (30/100)*s_from;
+                var min_val =  parseInt(s_from) - parseInt(thirtyper);
                 thirtyper = parseInt(s_from) + parseInt(thirtyper);
                 var fivehun = (500/100)*s_from;
                 
                 raangee.update({
-                    min: s_from,
+                    min: min_val,
                     max: fivehun,
                     from: s_from,
                     to: thirtyper,
