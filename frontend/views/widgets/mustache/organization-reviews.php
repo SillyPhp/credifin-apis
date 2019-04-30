@@ -36,11 +36,11 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <!--                    <div class="re-bttn">-->
-                        <!--                        <button type="button" data-toggle="modal" data-target="#report">-->
-                        <!--                            <i class="fa fa-flag"></i> Report-->
-                        <!--                        </button>-->
-                        <!--                    </div>-->
+                                            <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
+                                                <button type="button"  data-toggle="modal" data-target="#report">
+                                                    <i class="fa fa-flag"></i> Report
+                                                </button>
+                                            </div>
                         <div class="publish-date">{{created_on}}</div>
                         {{#is_current_employee}}
                         <div class="emp-duration">Current Employee</div>
@@ -110,27 +110,90 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <!--                    <div class="usefull-bttn pull-right">-->
-                        <!--                        <div class="use-bttn">-->
-                        <!--                            <button type="button"><i class="fa fa-thumbs-up"></i> Usefull-->
-                        <!--                            </button>-->
-                        <!--                        </div>-->
-                        <!--                        <div class="notuse-bttn">-->
-                        <!--                            <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull-->
-                        <!--                            </button>-->
-                        <!--                        </div>-->
-                        <!--                    </div>-->
+                                  <div class="usefull-bttn pull-right">
+                                  <div class="use-bttn">
+                                  <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i class="fa fa-thumbs-up"></i> Usefull
+                                 </button>
+                                 </div>
+                                 <div class="notuse-bttn">
+                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i class="fa fa-thumbs-down"></i> Not Usefull
+                                </button>
+                               </div>
+                       </div>
                     </div>
                 </div>
             </div>
         </div>
         {{/.}}
     </script>
+  <input type="hidden" name="review_enc_id" id="review_enc_id">
+    <div id="report" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Reason for reporting?</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group form-md-radios">
+                        <label></label>
+                        <div class="md-radio-list">
+                            <div class="md-radio">
+                                <input type="radio" id="radio1" name="reporting_radio" value="1" class="md-radiobtn">
+                                <label for="radio1">
+                                    <span class="inc"></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span>
+                                    This post contains hateful, violent, or inappropriate content </label>
+                            </div>
+                            <div class="md-radio">
+                                <input type="radio" id="radio2" name="reporting_radio" value="2" class="md-radiobtn">
+                                <label for="radio2">
+                                    <span class="inc"></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span>
+                                    This post contains advertising or spam</label>
+                            </div>
+                            <div class="md-radio">
+                                <input type="radio" id="radio3" name="reporting_radio" value="3" class="md-radiobtn">
+                                <label for="radio3">
+                                    <span class="inc"></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> Off-topic </label>
+                            </div>
+                            <div class="md-radio">
+                                <input type="radio" id="radio4" name="reporting_radio" value="4" class="md-radiobtn">
+                                <label for="radio4">
+                                    <span class="inc"></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span>
+                                    This post contains conflicts of interest </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $this->registerCss("
 .heading_style_1
 {
 font-size:18px;
+}
+.usefull_btn_color
+{
+color: #00a0e3 !important;
+border-color: #00a0e3 !important;
+}
+.notusefull_btn_color
+{
+    color: #d72a2a !important;;
+    border-color: #d72a2a !important;;
 }
 ");
 
@@ -198,11 +261,62 @@ $(document).on('click','#load_more_btn',function(e) {
   e.preventDefault();
   page_name = page_name+3;
   total = total+3;
-  getReviews(limit=$limit,offset=page_name);
+  getReviews(limit=3,offset=page_name);
 })
-getReviews(limit=$limit,offset=page_name);
+getReviews(limit=3,offset=page_name);
+$(document).on('click','input[name="reporting_radio"]',function() {
+  var r_id = $('#review_enc_id').val();
+  var id = $(this).val();
+    $.ajax({
+        url:'/organizations/review-feedback',
+        data:{r_id:r_id,id:id},                         
+        method: 'post',
+        success:function(response){  
+           if (response.status==200)
+               {
+                   toastr.success(response.message, response.title);
+               }
+           else 
+               {
+                   toastr.error(response.message, response.title);
+               }
+        }
+    });
+})
+$(document).on('click','#report_btn',function() {
+  $('#review_enc_id').val($(this).attr('data-key'));
+})
+$(document).on('click','.btn_usefull',function() {
+  var id = $(this).attr('value');
+  var r_id = $(this).attr('data-key');
+  if (id==1)
+      {
+          $(this).addClass('usefull_btn_color');
+      }
+  else
+      {
+          $(this).addClass('notusefull_btn_color');
+      }
+  $.ajax({
+        url:'/organizations/review-like-dislike',
+        data:{r_id:r_id,id:id},                         
+        method: 'post',
+        success:function(response){  
+           if (response.status==200)
+               {
+                   toastr.success(response.title, response.title);
+               }
+           else 
+               {
+                   toastr.error(response.title, response.title);
+               }
+        }
+    });
+})
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
