@@ -7,7 +7,7 @@ $this->params['header_dark'] = false;
 ?>
     <section class="inner-header-page">
         <div class="container">
-            <div class="col-md-8">
+            <div class="col-md-8 col-sm-8">
                 <div class="left-side-container">
                     <div class="freelance-image">
                         <?php
@@ -51,7 +51,7 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 bl-1 br-gary">
+            <div class="col-md-4 col-sm-4 bl-1 br-gary">
                 <div class="right-side-detail">
                     <ul>
                         <li><span class="detail-info">Availability</span><?= $user['availability'] ?>
@@ -671,5 +671,19 @@ ul.status-detail li>strong {
     -moz-transition: .3s all;
     -webkit-transition: .3s all;
     transition: .3s all;
+}
+@media screen and (max-width: 525px){
+    .header-details {
+        margin-top: 0px;
+        display: inherit;
+    }
+}
+@media screen and (max-width: 991px) and (min-width: 768px) {
+    .right-side-detail ul.social-info li {
+        margin: 2px;
+    }
+    .edit-profile-btn {
+        padding: 5px 20px;
+    }
 }
 ');
