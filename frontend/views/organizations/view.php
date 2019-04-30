@@ -508,7 +508,6 @@ echo $this->render('/widgets/drop_resume', [
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
-    'limit' => 3,
 ]);
 $this->registerCss('
 .write-review{

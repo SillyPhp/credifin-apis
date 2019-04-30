@@ -951,43 +951,6 @@ var companies = new Bloodhound({
         }
   },
 });
-function fetch_cards(params)
-{
-    $.ajax({
-        url : '/organizations/fetch-review-cards',
-        method: "POST",
-        data: {params:params},
-        beforeSend: function(){
-          $('#loading_img').addClass('show');
-          $('.fader').css('display','block');
-        },
-        success: function(response) {
-            if (response.status==200){
-            $('#loading_img').removeClass('show');
-            $('.fader').css('display','none');
-            $('#review_container').html('');
-            $('#load_review_card_btn').show();
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards.cards));
-            utilities.initials();
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-                $('.average-star').raty({
-                   readOnly: true, 
-                   hints:['','','','',''],
-                  score: function() {
-                    return $(this).attr('data-score');
-                  }
-                });
-            }
-            else 
-                {
-            $('#loading_img').removeClass('show');
-            $('#load_review_card_btn').hide();
-            $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
-                }
-        }
-    });
-}
 $('#search_comp').typeahead(null, {
   name: 'search_companies',
   displayKey: "name",
@@ -1015,8 +978,6 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
   });
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
-$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

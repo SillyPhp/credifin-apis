@@ -198,9 +198,9 @@ $(document).on('click','#load_more_btn',function(e) {
   e.preventDefault();
   page_name = page_name+3;
   total = total+3;
-  getReviews(limit=$limit,offset=page_name);
+  getReviews(limit=3,offset=page_name);
 });
-getReviews(limit=$limit,offset=page_name);
+getReviews(limit=3,offset=page_name);
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
