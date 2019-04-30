@@ -26,6 +26,8 @@ class RegistrationForm extends Model {
     {
         return [
             [['organization_name'],'required'],
+            [['organization_name'],'string','max'=>50],
+            [['website'], 'url', 'defaultScheme' => 'http'],
             [['website','bussiness_activity'],'safe'],
         ];
     }

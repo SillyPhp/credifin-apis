@@ -761,7 +761,7 @@ class OrganizationsController extends Controller
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
         $org = Organizations::find()
-            ->select(['organization_enc_id', 'slug', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'slug','initials_color','name', 'website', 'email', 'logo', 'logo_location'])
             ->where([
                 'slug' => $slug,
                 'is_deleted' => 0
@@ -769,7 +769,7 @@ class OrganizationsController extends Controller
             ->asArray()
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
-            ->select(['organization_enc_id', 'slug', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'slug','initials_color','name', 'website', 'email', 'logo', 'logo_location'])
             ->where([
                 'slug' => $slug,
                 'status' => 1
@@ -950,7 +950,7 @@ class OrganizationsController extends Controller
         $reviews = OrganizationReviews::find()
             ->alias('a')
             ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details','a.review_enc_id','a.status','overall_experience','ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development','designation','a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
-            ->where(['a.status' => 1])
+            ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b'=> function ($b) use ($slug){
                 $b->andWhere(['b.slug' => $slug]);
             }], false)
@@ -988,20 +988,19 @@ class OrganizationsController extends Controller
                 ->all()
         ];
     }
-
     public function actionFetchReviewCards()
     {
         $get = new ReviewCards();
         if (Yii::$app->request->isPost){
             Yii::$app->response->format = Response::FORMAT_JSON;
-
             $options = Yii::$app->request->post('params');
             $cards = $get->getReviewCards($options);
             if ($cards['total'] > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'cards' => $cards,
+                    'total' => $cards['total'],
+                    'cards' => $cards['cards'],
                 ];
             } else {
                 $response = [
