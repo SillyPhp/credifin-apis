@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\NewOrganizationReviews;
+use common\models\OrganizationReviewFeedback;
+use common\models\OrganizationReviewLikeDislike;
 use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
@@ -949,7 +951,7 @@ class OrganizationsController extends Controller
     private function getReviews($slug,$limit,$offset){
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details','a.review_enc_id','a.status','overall_experience','ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development','designation','a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['review_enc_id','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details','a.review_enc_id','a.status','overall_experience','ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development','designation','a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
             ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b'=> function ($b) use ($slug){
                 $b->andWhere(['b.slug' => $slug]);
@@ -987,6 +989,104 @@ class OrganizationsController extends Controller
                 ->asArray()
                 ->all()
         ];
+    }
+    public function actionReviewLikeDislike()
+    {
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $r_id = Yii::$app->request->post('r_id');
+            $id = Yii::$app->request->post('id');
+            $chkuser = OrganizationReviewLikeDislike::find()
+                ->select(['feedback_type'])
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'review_enc_id' => $r_id])
+                ->asArray()
+                ->one();
+            if (empty($chkuser)){
+                $model = new OrganizationReviewLikeDislike();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->feedback_enc_id = $utilitiesModel->encrypt();
+                $model->feedback_type = $id;
+                $model->review_enc_id = $r_id;
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                $model->created_on = date('Y-m-d H:i:s');
+                if ($model->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                    ];
+                }
+            }
+            else
+            {
+                $update = Yii::$app->db->createCommand()
+                    ->update(OrganizationReviewLikeDislike::tableName(), ['feedback_type' => $id,'last_updated_on'=>date('Y-m-d H:i:s'),'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'review_enc_id' => $r_id])
+                    ->execute();
+                if ($update == 1) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                    ];
+                }
+            }
+
+        }
+    }
+    public function actionReviewFeedback()
+    {
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $r_id = Yii::$app->request->post('r_id');
+            $id = Yii::$app->request->post('id');
+            $chkuser = OrganizationReviewFeedback::find()
+                ->select(['feedback_type'])
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'review_enc_id' => $r_id])
+                ->asArray()
+                ->one();
+            if (empty($chkuser)){
+                $model = new OrganizationReviewFeedback();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->feedback_enc_id = $utilitiesModel->encrypt();
+                $model->user_enc_id = Yii::$app->user->identity->user_enc_id;
+                $model->feedback_type = 1;
+                $model->review_enc_id = $r_id;
+                $model->feedback = $id;
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($model->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Reported',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'Error',
+                    ];
+                }
+            }
+            else
+            {
+                $update = Yii::$app->db->createCommand()
+                    ->update(OrganizationReviewFeedback::tableName(), ['feedback' => $id,'last_updated_on'=>date('Y-m-d H:i:s'),'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'review_enc_id' => $r_id])
+                    ->execute();
+                if ($update == 1) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Reported',
+                    ];
+                }
+            }
+
+        }
     }
     public function actionFetchReviewCards()
     {

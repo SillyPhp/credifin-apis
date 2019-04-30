@@ -237,59 +237,6 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
-<div id="report" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
-                <h4 class="modal-title">Reason for reporting?</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group form-md-radios">
-                    <label></label>
-                    <div class="md-radio-list">
-                        <div class="md-radio">
-                            <input type="radio" id="radio1" name="radio1" class="md-radiobtn">
-                            <label for="radio1">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                                This post contains hateful, violent, or inappropriate content </label>
-                        </div>
-                        <div class="md-radio">
-                            <input type="radio" id="radio2" name="radio1" class="md-radiobtn">
-                            <label for="radio2">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                                This post contains advertising or spam</label>
-                        </div>
-                        <div class="md-radio">
-                            <input type="radio" id="radio3" name="radio1" class="md-radiobtn">
-                            <label for="radio3">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span> Off-topic </label>
-                        </div>
-                        <div class="md-radio">
-                            <input type="radio" id="radio4" name="radio1" class="md-radiobtn">
-                            <label for="radio4">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                                This post contains conflicts of interest </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
 <div id="edit_review" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -534,12 +481,10 @@ $this->params['seo_tags'] = [
 if ($review_type=='claimed')
 {
     echo $this->render('/widgets/mustache/organization-reviews',[
-            'limit'=>3
     ]);
 }else
 {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
-            'limit'=>3
     ]);
 }
 
