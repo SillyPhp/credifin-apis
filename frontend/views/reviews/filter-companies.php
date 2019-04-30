@@ -1073,6 +1073,7 @@ $('#city_search').typeahead(null, {
   {
      fetch_cards(params={'city':datum.text,'limit':9},is_clear=true);   
   });
+fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},is_clear=true);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
