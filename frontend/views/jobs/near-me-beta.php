@@ -69,7 +69,7 @@ $this->params['header_dark'] = true;
                 <div class="application-card-img">
                     <a href="/{{organization_slug}}">
                         {{#logo}}
-                        <img src="{{logo}}">
+                        <img src="{{logo}}" id="{{logo}}" class="company-logo">
                         {{/logo}}
                         {{^logo}}
                         <canvas class="user-icon" name="{{name}}" width="80" height="80"
@@ -88,20 +88,20 @@ $this->params['header_dark'] = true;
                     <h5>Negotiable</h5>
                     {{/salary}}
                     {{#type}}
-                    <h5>{{type}}</h5>
+                    <h5 class="type">{{type}}</h5>
                     {{/type}}
                     {{#experience}}
-                    <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    <h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
                 </div>
             </div>
             {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center">
+            <h6 class="col-md-5 pl-20 custom_set2 text-center last-date" id="{{last_date}}">
                 Last Date to Apply
                 <br>
                 {{last_date}}
             </h6>
-            <h4 class="col-md-7 org_name text-right pr-10">
+            <h4 class="col-md-7 org_name text-right pr-10 company-name">
                 {{name}}
             </h4>
             {{/last_date}}
@@ -274,7 +274,6 @@ function showCards(lat,long){
               myCity.setMap(map);
               
               var num = 0;
-              var InforObj = [];
               
               function card(){
               $.ajax({
@@ -290,27 +289,20 @@ function showCards(lat,long){
                         // console.log(response[0].latitude);
                         // console.log(response[0].longitude);
                         for(i=0;i<response[0].length;i++){
-                            console.log(response[0][i].latitude,' , ',response[0][i].longitude);
+                            // console.log(response[0][i].latitude,' , ',response[0][i].longitude);
                             var contentString = '<p>'+response[0][i].name+'<\p>';
                             // console.log(Number(response[i].latitude)," , ",Number(response[i].longitude));
-                           const marker = new google.maps.Marker({
+                                marker = new google.maps.Marker({
                                 position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
                                 map: map,
                                 draggable: false
                             });
                            
-                           const infowindow = new google.maps.InfoWindow({
+                            infowindow = new google.maps.InfoWindow({
                             content: contentString,
                             maxWidth: 200
                             });
-                           
-                            marker.addListener('mouseover', function () {
-                                 console.log(marker.position.lat());
-                                 console.log(marker.position.lng());
-                                 closeOtherInfo();
-                                 infowindow.open(marker.get('map'), marker);
-                                 InforObj[0] = infowindow;
-                             });
+                            
                             
                         }
                         var template = $('#cards').html();
@@ -321,17 +313,6 @@ function showCards(lat,long){
                 });
               }
               
-              function closeOtherInfo() {
-                    if (InforObj.length > 0) {
-                        /* detach the info-window from the marker ... undocumented in the API docs */
-                        InforObj[0].set("marker", null);
-                        /* and close it */
-                        InforObj[0].close();
-                        /* blank the array */
-                        InforObj.length = 0;
-                    }
-                }
-              
               $(document).on('click','#Load',function() {
                 card();
               });
@@ -339,6 +320,35 @@ function showCards(lat,long){
               card();
     
 }
+
+$(document).on("mouseenter","#card-hover",function() {
+        if (infowindow) {
+            infowindow.close();
+        }
+        types = $(this).find('.type').text();
+        lat = $(this).find('.location').attr('data-lat');
+        lon = $(this).find('.location').attr('data-long');
+        titles = $(this).find('.application-title').text();
+        locations =  $(this).find('.location').text();
+        lastDates = $(this).find('.last-date').attr('id');
+        periods = $(this).find('.exp').text();
+        companys =  $(this).find('.company-name').text();
+        logos = $(this).find('.company-logo').attr('id');
+         var contentString = '<div style="width:400px;" class="product shadow iconbox-border iconbox-theme-colored"><span class="type tag-sale color-o pl-20 pr-20 ">'+types+'</span><div class="row"><div class="col-md-4 col-xs-4 pt-5" ><a href="#" class="icon set_logo"><img class="logo" src="'+logos+'"></a></div><div class="col-md-8 col-xs-8 pt-20"><h4 class="title icon-box-title"><strong>'+titles+'</strong></h4><h5><i class="location fa fa-map-marker" lat="'+lat+'" long="'+lon+'"> '+locations+'</i></h5><h5><i class="period fa fa-clock-o"> '+periods+'</i></h5></div><div class="btn-add-to-cart-wrapper"><a class="btn btn-theme-colored btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color" href="/internships/detail">VIEW DETAILS</a><a style="background-color:#FF4500" class="btn btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color2" href="#"><i class="fa fa-plus"></i></a></div></div><hr class="hr"><h6 class="pull-left pl-20 custom_set2" align="center"><strong>Last Date to Apply</strong><br><div class="lastDate">'+lastDates+'</div></h6><h4 class="company pull-right pr-10 pt-20 custom_set" align="center"><strong>'+companys+'</strong></h4></div>';    
+         infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+         marker = new google.maps.Marker({
+            position: new google.maps.LatLng(Number(lat),Number(lon)),
+            map: map,
+            // icon: purple_icon,
+            draggable: true
+        });
+         // var position = new google.maps.LatLng(Number(lat),Number(lon));
+         // map.setCenter(position);
+         // map.setZoom(16);
+          infowindow.open(map, marker);
+    });
         
 
 
@@ -346,7 +356,7 @@ function initMap(){
         
     if(navigator.geolocation){
             navigator.geolocation.getCurrentPosition(successCallback,showError);
-            console.log('Getting the position information....');
+            // console.log('Getting the position information....');
         }else{
             console.log('Sorry, your browser does not support HTML5 geolocation.');
         }
@@ -374,32 +384,24 @@ function initMap(){
               break;
           }
         }
-    
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 8,
-                });
                 
             var geocoder = new google.maps.Geocoder();
         
                 document.getElementById('submit').addEventListener('click', function() {
                     $('#myModal').modal('toggle');
-                  geocodeAddress(geocoder, map);
+                  geocodeAddress(geocoder);
                 });
-       
-            
-        
-    // showCards();
 }
 
-function geocodeAddress(geocoder, resultsMap) {
+function geocodeAddress(geocoder) {
         var address = document.getElementById('address').value;
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === 'OK') {
-            console.log(results[0].geometry.location.lat());
-            console.log(results[0].geometry.location.lng());
+            // console.log(results[0].geometry.location.lat());
+            // console.log(results[0].geometry.location.lng());
             var lat = results[0].geometry.location.lat();
             var long = results[0].geometry.location.lng();
-            resultsMap.setCenter(results[0].geometry.location);
+            // resultsMap.setCenter(results[0].geometry.location);
             showCards(lat,long);
           } else {
             console.log('Geocode was not successful for the following reason: ' + status);
