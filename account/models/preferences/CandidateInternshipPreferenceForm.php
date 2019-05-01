@@ -53,6 +53,9 @@ class CandidateInternshipPreferenceForm extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $user_preference->preference_enc_id = $utilitiesModel->encrypt();
         $user_preference->type = $this->job_type;
+        $user_preference->experience = '0';
+        $user_preference->min_expected_salary = 0;
+        $user_preference->max_expected_salary = 0;
         $user_preference->assigned_to = "Internships";
         $user_preference->timings_from = date('H:i:s', strtotime($this->from));
         $user_preference->timings_to = date('H:i:s', strtotime($this->to));
@@ -61,7 +64,7 @@ class CandidateInternshipPreferenceForm extends Model
         $user_preference->sun_frequency = $this->weekoptsund;
         $user_preference->created_on = date('Y-m-d h:i:s');
         $user_preference->created_by = Yii::$app->user->identity->user_enc_id;
-        if ($user_preference->save(false)) {
+        if ($user_preference->save()) {
 
             foreach (explode(',',$this->location) as $loc) {
 
@@ -112,6 +115,9 @@ class CandidateInternshipPreferenceForm extends Model
     public function updateData() {
         $user_preference = UserPreferences::findOne(['created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>"Internships"]);
         $user_preference->type = $this->job_type;
+        $user_preference->experience = '0';
+        $user_preference->min_expected_salary = 0;
+        $user_preference->max_expected_salary = 0;
         $user_preference->timings_from = date('H:i:s', strtotime($this->from));
         $user_preference->timings_to = date('H:i:s', strtotime($this->to));
         $user_preference->working_days = json_encode($this->weekdays);
@@ -119,7 +125,7 @@ class CandidateInternshipPreferenceForm extends Model
         $user_preference->sun_frequency = $this->weekoptsund;
         $user_preference->last_updated_on = date('Y-m-d H:i:s');
         $user_preference->last_updated_by = Yii::$app->user->identity->user_enc_id;
-        if ($user_preference->update(false)) {
+        if ($user_preference->update()) {
 
             //update Location.
             $already_saved_location = UserPreferredLocations::find()
