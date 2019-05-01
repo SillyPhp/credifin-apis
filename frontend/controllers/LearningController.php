@@ -10,14 +10,10 @@ use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
 use common\models\LearningVideoTags;
 use common\models\Tags;
-use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
-use common\models\SubmittedVideos;
-use frontend\models\VideoDetailForm;
-use frontend\models\VideoRangeForm;
 use common\models\Utilities;
 
 class LearningController extends Controller
@@ -362,19 +358,10 @@ class LearningController extends Controller
         ]);
     }
 
-//    public function actionCategory()
-//    {
-//        return $this->render('category-list');
-//    }
-
-//    public function actionSlideShare()
-//    {
-//        return $this->render('slide-share');
-//    }
-
-    private function toMinutes($time){
+    private function toMinutes($time)
+    {
         $time = explode(':', $time);
-        return ($time[0]*60) + ($time[1]) + ($time[2]/60);
+        return ($time[0] * 60) + ($time[1]) + ($time[2] / 60);
     }
 
     public function actionVideo($slug)
@@ -382,11 +369,11 @@ class LearningController extends Controller
         $video_detail = LearningVideos::find()
             ->alias('a')
             ->select(['a.*', 'c.category_enc_id', 'c.parent_enc_id', 'd.name child_name', 'e.name parent_name'])
-            ->joinWith(['learningVideoTags b' => function($y){
-                $y->select(['b.video_enc_id','b.tag_enc_id', 'f.name']);
+            ->joinWith(['learningVideoTags b' => function ($y) {
+                $y->select(['b.video_enc_id', 'b.tag_enc_id', 'f.name']);
                 $y->joinWith(['tagEnc f'], false);
             }])
-            ->joinWith(['assignedCategoryEnc c' => function($x){
+            ->joinWith(['assignedCategoryEnc c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
                 $x->joinWith(['parentEnc e'], false);
             }], false)
@@ -412,20 +399,20 @@ class LearningController extends Controller
             ->andWhere(['status' => 2])
             ->count();
         $commentCount = LearningVideoComments::find()
-                        ->where(['video_enc_id' => $video_detail['video_enc_id']])
-                        ->andWhere(['is_deleted' => 0])
-                        ->count();
+            ->where(['video_enc_id' => $video_detail['video_enc_id']])
+            ->andWhere(['is_deleted' => 0])
+            ->count();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parent_id = Yii::$app->request->post('video_id');
             $tags_id = Yii::$app->request->post('tags_id');
             $current_video_id = LearningVideos::find()
-                        ->where(['slug' => $slug])
-                        ->andWhere(['status' => 1])
-                        ->andWhere(['is_deleted' => 0])
-                        ->one();
+                ->where(['slug' => $slug])
+                ->andWhere(['status' => 1])
+                ->andWhere(['is_deleted' => 0])
+                ->one();
             $interested_videos = [];
-            if(count($tags_id) > 0 ) {
+            if (count($tags_id) > 0) {
                 $interested_videos = LearningVideos::find()
                     ->alias('a')
                     ->joinWith(['learningVideoTags b'], false)
@@ -492,7 +479,8 @@ class LearningController extends Controller
         ]);
     }
 
-    public function actionVideoLiked(){
+    public function actionVideoLiked()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -512,59 +500,59 @@ class LearningController extends Controller
                 ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
                 ->exists();
 
-            if($hasLiked){
+            if ($hasLiked) {
                 $user_row = LearningVideoLikes::find()
                     ->where(['user_enc_id' => $current_user])
                     ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
                     ->one();
-                if($type == "liked") {
-                    if($status === 'true') {
+                if ($type == "liked") {
+                    if ($status === 'true') {
                         $user_row->status = 1;
-                    }else{
+                    } else {
                         $user_row->status = 0;
                     }
-                }elseif ($type == "disliked"){
-                    if($status === 'true') {
+                } elseif ($type == "disliked") {
+                    if ($status === 'true') {
                         $user_row->status = 2;
-                    }else{
+                    } else {
                         $user_row->status = 0;
                     }
                 }
-                if($user_row->save()){
+                if ($user_row->save()) {
                     return [
-                        'status' =>200,
+                        'status' => 200,
                     ];
-                }else{
+                } else {
                     return [
                         'status' => 201,
                     ];
                 }
-            }else {
+            } else {
                 $learning_video_likes = new LearningVideoLikes();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $learning_video_likes->like_enc_id = $utilitiesModel->encrypt();
                 $learning_video_likes->video_enc_id = $learning_video['video_enc_id'];
                 $learning_video_likes->user_enc_id = $current_user;
-                if($type == "liked") {
-                    if($status === 'true') {
+                if ($type == "liked") {
+                    if ($status === 'true') {
                         $learning_video_likes->status = 1;
-                    }else{
+                    } else {
                         $learning_video_likes->status = 0;
                     }
-                }elseif ($type == "disliked"){
-                    if($status === 'true') {
+                } elseif ($type == "disliked") {
+                    if ($status === 'true') {
                         $learning_video_likes->status = 2;
-                    }else{
+                    } else {
                         $learning_video_likes->status = 0;
                     }
                 }
                 $learning_video_likes->created_on = date('Y-m-d H:i:s');
-                if($learning_video_likes->save()){
+                if ($learning_video_likes->save()) {
                     return [
-                        'status' =>200,
+                        'status' => 200,
                     ];
-                }else{
+                } else {
                     return [
                         'status' => 201,
                     ];
@@ -573,7 +561,8 @@ class LearningController extends Controller
         }
     }
 
-    public function actionGetParentComments(){
+    public function actionGetParentComments()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -596,15 +585,15 @@ class LearningController extends Controller
                 ->all();
 
             $i = 0;
-            foreach($result as $r){
+            foreach ($result as $r) {
                 $a = LearningVideoComments::find()
                     ->where(['reply_to' => $r['comment_enc_id']])
                     ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
                     ->andWhere(['is_deleted' => 0])
                     ->exists();
-                if($a){
+                if ($a) {
                     $result[$i]['hasChild'] = true;
-                }else{
+                } else {
                     $result[$i]['hasChild'] = false;
                 }
                 $i++;
@@ -617,7 +606,8 @@ class LearningController extends Controller
         }
     }
 
-    public function actionIncrementViews(){
+    public function actionIncrementViews()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -635,17 +625,17 @@ class LearningController extends Controller
                 ->andWhere(['is_deleted' => 0])
                 ->one();
 
-            if(!$video->view_count){
+            if (!$video->view_count) {
                 $video->view_count = 1;
-            }else{
+            } else {
                 $video->view_count += 1;
             }
-            if($video->save()) {
+            if ($video->save()) {
                 return [
                     'status' => 200,
                     'result' => 'success'
                 ];
-            }else{
+            } else {
                 return [
                     'status' => 201,
                     'result' => 'failed'
@@ -654,7 +644,8 @@ class LearningController extends Controller
         }
     }
 
-    public function actionGetChildComments(){
+    public function actionGetChildComments()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -701,7 +692,7 @@ class LearningController extends Controller
 
             $current_user = Yii::$app->user->identity->user_enc_id;
 
-            if($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, NULL)){
+            if ($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, NULL)) {
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
@@ -714,7 +705,7 @@ class LearningController extends Controller
                     'status' => 200,
                     'user_info' => $user_info
                 ];
-            }else{
+            } else {
                 return [
                     'status' => 201,
                 ];
@@ -724,7 +715,8 @@ class LearningController extends Controller
 
     }
 
-    public function actionChildComment(){
+    public function actionChildComment()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -740,7 +732,7 @@ class LearningController extends Controller
 
             $current_user = Yii::$app->user->identity->user_enc_id;
 
-            if($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, $reply_id)){
+            if ($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, $reply_id)) {
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
@@ -753,7 +745,7 @@ class LearningController extends Controller
                     'status' => 200,
                     'user_info' => $user_info
                 ];
-            }else{
+            } else {
                 return [
                     'status' => 201,
                 ];
@@ -761,7 +753,8 @@ class LearningController extends Controller
         }
     }
 
-    private function saveComment($comment, $video_id, $current_user, $reply_id = NULL){
+    private function saveComment($comment, $video_id, $current_user, $reply_id = NULL)
+    {
         $commentModel = new LearningVideoComments();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
