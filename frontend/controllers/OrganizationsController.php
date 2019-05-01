@@ -962,7 +962,6 @@ class OrganizationsController extends Controller
             }], false)
             ->joinWith(['createdBy c'], false)
             ->joinWith(['categoryEnc d'], false)
-            ->joinWith(['designationEnc e'], false);
             ->joinWith(['designationEnc e'],false)
             ->joinWith(['organizationReviewLikeDislikes f'=>function($b)
             {
