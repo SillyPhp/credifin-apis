@@ -53,7 +53,7 @@ class ExploreController extends ApiBaseController
 
     public function actionFeaturedEmployers(){
         $organizations = Organizations::find()
-            ->select(['initials_color color', 'CONCAT("' . Url::to(['/slug'],true) . '") link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,true) . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['initials_color color','name','organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,true) . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['is_sponsored' => 1])
             ->asArray()
             ->all();
