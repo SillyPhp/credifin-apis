@@ -270,7 +270,7 @@ $script = <<<JS
                     var template = $('#users').html();
                     var rendered = Mustache.render(template, response);
                     $('#users-list').html(rendered);
-                    utilities.initials();
+                    // utilities.initials();
                 }
         });
     }
@@ -304,7 +304,7 @@ $script = <<<JS
                     var template = $('#users').html();
                     var rendered = Mustache.render(template, resultant);
                     $('#users-list').prepend(rendered);
-                    utilities.initials();
+                    // utilities.initials();
                 }
             }
         });
@@ -431,7 +431,7 @@ $script = <<<JS
                           var template = $('#users').html();
                           var rendered = Mustache.render(template, response);
                           $('#users-list').html(rendered);
-                          utilities.initials();
+                          // utilities.initials();
                         }
                         else{
                           var template = $('#no-user').html();
@@ -681,7 +681,7 @@ $script = <<<JS
             var redbtn = '<span id="red-btn"></span>';
             document.getElementById('trigger').innerHTML += redbtn; 
         }
-        utilities.initials();
+        // utilities.initials();
     })
     
  function chats() {
@@ -753,8 +753,9 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
                             <div class="c-icon"><img src="{{image}}"></div>
                         {{/image}}
                         {{^image}}
-                            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"
-                                color="{{initials_color}}" font="18px"></canvas>
+                        <div class="c-icon"><img src="https://ui-avatars.com/api/?name={{first_name}}+{{last_name}}&background={{initials_color}}&color=fff&size=30&font-size=0.55"></div>
+<!--                            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"-->
+<!--                                color="{{initials_color}}" font="18px"></canvas>-->
                         {{/image}}
                         <div class="c-name">{{first_name}} {{last_name}}</div>
                 </div>
