@@ -280,6 +280,9 @@ $this->beginPage();
                     float: right;
                     margin: 7px 15px 10px 8px;
                 }
+                .page-header .nav-collapse .navbar-nav li>a:after{
+                    display:none;
+                }
             }
         ');
     $script = <<<JS
