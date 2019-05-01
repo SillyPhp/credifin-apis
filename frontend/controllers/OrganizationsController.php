@@ -997,6 +997,10 @@ class OrganizationsController extends Controller
     public function actionReviewLikeDislike()
     {
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->user->isGuest)
+            {
+                $this->redirect('/login');
+            }
             Yii::$app->response->format = Response::FORMAT_JSON;
             $r_id = Yii::$app->request->post('r_id');
             $id = Yii::$app->request->post('id');
@@ -1044,6 +1048,10 @@ class OrganizationsController extends Controller
     public function actionReviewFeedback()
     {
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->user->isGuest)
+            {
+                $this->redirect('/login');
+            }
             Yii::$app->response->format = Response::FORMAT_JSON;
             $r_id = Yii::$app->request->post('r_id');
             $id = Yii::$app->request->post('id');
