@@ -955,14 +955,18 @@ class OrganizationsController extends Controller
     {
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['review_enc_id', '(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['a.review_enc_id','f.feedback_type','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details','a.review_enc_id','a.status','overall_experience','ROUND(average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development','designation','a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
             ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
             }], false)
             ->joinWith(['createdBy c'], false)
             ->joinWith(['categoryEnc d'], false)
-            ->joinWith(['designationEnc e'], false);
+            ->joinWith(['designationEnc e'],false)
+            ->joinWith(['organizationReviewLikeDislikes f'=>function($b)
+            {
+                $b->onCondition(['f.created_by'=>Yii::$app->user->identity->user_enc_id]);
+            }],false);
 
         return [
             'total' => $reviews->count(),
@@ -999,6 +1003,10 @@ class OrganizationsController extends Controller
     public function actionReviewLikeDislike()
     {
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->user->isGuest)
+            {
+                $this->redirect('/login');
+            }
             Yii::$app->response->format = Response::FORMAT_JSON;
             $r_id = Yii::$app->request->post('r_id');
             $id = Yii::$app->request->post('id');
@@ -1045,6 +1053,10 @@ class OrganizationsController extends Controller
     public function actionReviewFeedback()
     {
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->user->isGuest)
+            {
+                $this->redirect('/login');
+            }
             Yii::$app->response->format = Response::FORMAT_JSON;
             $r_id = Yii::$app->request->post('r_id');
             $id = Yii::$app->request->post('id');
