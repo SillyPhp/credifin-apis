@@ -43,11 +43,10 @@ class ForgotPasswordForm extends Model
             return false;
         }
 
-        $userEmailsModel = new UserEmails();
-        if ($userEmailsModel->resetPasswordEmail($this->email)) {
+        if (Yii::$app->forgotPassword->reset($this->email)) {
             return true;
         } else {
-            return 'error';
+            return false;
         }
     }
 

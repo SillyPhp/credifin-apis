@@ -22,7 +22,6 @@ use common\models\Utilities;
 
 class LearningController extends Controller
 {
-   
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
