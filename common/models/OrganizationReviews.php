@@ -37,6 +37,7 @@ use Yii;
  *
  * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks
  * @property Users[] $userEncs
+ * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes
  * @property Cities $cityEnc
  * @property Categories $categoryEnc
  * @property Organizations $organizationEnc
@@ -60,7 +61,7 @@ class OrganizationReviews extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['review_enc_id', 'organization_enc_id', 'average_rating', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'city_enc_id', 'category_enc_id', 'likes', 'dislikes', 'from_date', 'created_by'], 'required'],
+            [['review_enc_id', 'organization_enc_id', 'average_rating', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'city_enc_id', 'category_enc_id', 'likes', 'dislikes', 'from_date', 'created_by'], 'required'],
             [['average_rating'], 'number'],
             [['is_current_employee', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'show_user_details', 'status', 'is_deleted'], 'integer'],
             [['likes', 'dislikes'], 'string'],
@@ -80,6 +81,7 @@ class OrganizationReviews extends \yii\db\ActiveRecord
      * @inheritdoc
      */
 
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -94,6 +96,14 @@ class OrganizationReviews extends \yii\db\ActiveRecord
     public function getUserEncs()
     {
         return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%organization_review_feedback}}', ['review_enc_id' => 'review_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationReviewLikeDislikes()
+    {
+        return $this->hasMany(OrganizationReviewLikeDislike::className(), ['review_enc_id' => 'review_enc_id']);
     }
 
     /**
