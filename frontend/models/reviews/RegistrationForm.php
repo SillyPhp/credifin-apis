@@ -25,16 +25,16 @@ class RegistrationForm extends Model {
     public function rules()
     {
         return [
-            [['organization_name'],'required'],
+            [['organization_name','bussiness_activity'],'required'],
             [['organization_name'],'string','max'=>50],
             [['website'], 'url', 'defaultScheme' => 'http'],
-            [['website','bussiness_activity'],'safe'],
+            [['website'],'safe'],
         ];
     }
 
     public function types()
     {
-      $data =   BusinessActivities::find()->where(['in','business_activity',['School','College','Business','Others']])->asArray()->all();
+      $data =   BusinessActivities::find()->select(['business_activity_enc_id','business_activity'])->where(['in','business_activity',['School','College','Business','Educational Institute','Others']])->asArray()->all();
 
       return ArrayHelper::map($data, 'business_activity_enc_id', 'business_activity');
     }

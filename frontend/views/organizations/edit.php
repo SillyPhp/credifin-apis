@@ -929,7 +929,7 @@ a.web{
     color:#ff7803; 
 }
 .web:hover{
-    background:#ff7803;
+    background:#ff7803 !important;
     color:#fff;
 }
 #enable{
@@ -1528,6 +1528,12 @@ $('.model-product').editable({
 $('.model-link').click(function(e){
     e.preventDefault();
     e.stopPropagation();
+    if($(this).hasClass("editable-disabled")){
+        var go_to_url = $(this).attr('href');
+        if(go_to_url != ''){
+            window.open(go_to_url, '_blank');
+        }
+    }
     $(this).editable('toggle');
 });
 $('.edit-box').click(function(e){

@@ -138,6 +138,7 @@ $link = Url::to($org_slug . '/reviews', true);
                 <div class="modal-body">
                     <div class="form-group form-md-radios">
                         <label></label>
+                        <form id="report_form">
                         <div class="md-radio-list">
                             <div class="md-radio">
                                 <input type="radio" id="radio1" name="reporting_radio" value="1" class="md-radiobtn">
@@ -171,6 +172,7 @@ $link = Url::to($org_slug . '/reviews', true);
                                     This post contains conflicts of interest </label>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -523,6 +525,8 @@ $(document).on('click','input[name="reporting_radio"]',function() {
                {
                    toastr.error(response.message, response.title);
                }
+            $('#report').modal('toggle');
+           $("#report_form").trigger("reset");
         }
     });
 })
@@ -534,11 +538,21 @@ $(document).on('click','.btn_usefull',function() {
   var r_id = $(this).attr('data-key');
   if (id==1)
       {
+          if ($(this).hasClass('usefull_btn_color'))
+              {
+                  return false;
+              }
           $(this).addClass('usefull_btn_color');
+          $(this).closest('.usefull-bttn').find('.notuse-bttn button').removeClass('notusefull_btn_color');
       }
-  else
+  else if(id==0) 
       {
+          if ($(this).hasClass('notusefull_btn_color'))
+              {
+                  return false;
+              }
           $(this).addClass('notusefull_btn_color');
+          $(this).closest('.usefull-bttn').find('.use-bttn button').removeClass('usefull_btn_color');
       }
   $.ajax({
         url:'/organizations/review-like-dislike',
