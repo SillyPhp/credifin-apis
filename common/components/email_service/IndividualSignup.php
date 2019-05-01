@@ -1,14 +1,16 @@
 <?php
 
-namespace common\components;
+namespace common\components\email_service;
 
 use common\models\Users;
 use common\models\UserVerificationTokens;
 use yii\base\Component;
+use yii\base\InvalidParamException;
 use common\models\Utilities;
 use Yii;
 
-class EmailService extends Component{
+class IndividualSignup extends Component{
+
     public function registrationEmail($id){
         $condition = ['created_by' => $id];
 
@@ -22,6 +24,10 @@ class EmailService extends Component{
             ])
             ->asArray()
             ->one();
+
+        if(!data){
+            return false;
+        }
 
         UserVerificationTokens::updateAll([
             'last_updated_on' => date('Y-m-d H:i:s'),
@@ -39,7 +45,7 @@ class EmailService extends Component{
         $utilitesModel->variables['string'] = time() . rand(100, 100000);
         $userVerificationTokensModel->token_enc_id = $utilitesModel->encrypt();
         $userVerificationTokensModel->token = Yii::$app->security->generateRandomString();
-        $userVerificationTokensModel->verification_type = 'email verification';
+        $userVerificationTokensModel->verification_type = 2;
         $userVerificationTokensModel->created_on = $userVerificationTokensModel->last_updated_on = date('Y-m-d H:i:s');
         $userVerificationTokensModel->created_by = $userVerificationTokensModel->last_updated_by = $data['user_id'];
 
@@ -63,6 +69,6 @@ class EmailService extends Component{
         }else{
             return false;
         }
-
     }
+
 }

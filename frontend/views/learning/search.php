@@ -226,7 +226,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container2">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="video-icon2">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>

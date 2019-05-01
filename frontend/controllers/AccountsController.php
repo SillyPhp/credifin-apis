@@ -212,12 +212,12 @@ class AccountsController extends Controller
     public function actionVerify($token)
     {
         try {
-            $verifyEmailModel = new \frontend\models\accounts\VerifyEmail($token);
+            $verifyEmailModel = Yii::$app->verifyEmail->registerVerification($token);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($verifyEmailModel->emailVerification()) {
+        if ($verifyEmailModel) {
             return $this->render('/site/message', [
                 'status' => 'success',
                 'title' => 'Congratulations',
@@ -240,7 +240,6 @@ class AccountsController extends Controller
         $model = new ForgotPasswordForm();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->forgotPassword()) {
-                $model = new ForgotPasswordForm();
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
@@ -262,13 +261,14 @@ class AccountsController extends Controller
         }
 
         try {
-            $model = new ResetPasswordForm($token);
+            $user_id = Yii::$app->forgotPassword->verify($token);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->resetPassword()) {
+        $model = new ResetPasswordForm();
+        if (Yii::$app->request->isPost) {
+            if (Yii::$app->forgotPassword->change($user_id, Yii::$app->request->post('new_password'))) {
                 return $this->render('/site/message', [
                     'status' => 'success',
                     'title' => 'Congratulations',

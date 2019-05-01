@@ -129,7 +129,7 @@ class IndividualSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                if(Yii::$app->emailService->registrationEmail($usersModel->user_enc_id)){
+                if(Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id)){
                     $transaction->commit();
                 }
             }

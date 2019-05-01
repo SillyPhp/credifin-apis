@@ -22,7 +22,6 @@ use common\models\Utilities;
 
 class LearningController extends Controller
 {
-   
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -818,15 +817,6 @@ class LearningController extends Controller
             return $commentModel->comment_enc_id;
         } else {
             return false;
-        }
-    }
-
-
-    public function actionSendMail(){
-
-        if($a = Yii::$app->emailService->registrationEmail('4poVGAw3LZ9YPbkmLYqdZezgN2P8Ej')){
-            print_r($a);
-            die();
         }
     }
 
