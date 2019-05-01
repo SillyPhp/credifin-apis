@@ -78,7 +78,7 @@ class ApplicationCards
         if (isset($options['company'])) {
             $cards->andWhere([
                 'or',
-                ($options['company']) ? ['like', 'd.name', $options['company']] : ''
+                ['like', 'd.name', $options['company']]
             ]);
         }
         if (isset($options['slug'])) {
@@ -122,6 +122,7 @@ class ApplicationCards
                 ['like', 'c.name', $options['keyword']],
                 ['like', 'h.industry', $options['keyword']],
                 ['like', 'i.name', $options['keyword']],
+                ['like', 'd.name', $options['keyword']]
             ]);
         }
         if (isset($options['limit'])) {
@@ -224,7 +225,7 @@ class ApplicationCards
         if (isset($options['company'])) {
             $cards->andWhere([
                 'or',
-                ($options['company']) ? ['like', 'd.name', $options['company']] : ''
+                ['like', 'd.name', $options['company']]
             ]);
         }
         if (isset($options['slug'])) {
@@ -264,6 +265,7 @@ class ApplicationCards
                 ['like', 'a.type', $options['keyword']],
                 ['like', 'c.name', $options['keyword']],
                 ['like', 'i.name', $options['keyword']],
+                ['like', 'd.name', $options['keyword']]
             ]);
         }
         if (isset($options['limit'])) {
