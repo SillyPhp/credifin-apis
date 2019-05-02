@@ -447,6 +447,29 @@ a:hover{
 .steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2 .fa {
     font-size: 18px; 
 }
+@media only screen and (max-width: 675px){
+    .steps-form-2, .steps-form-2 .steps-row-2, .steps-form-2 .steps-row-2 .steps-step-2 {
+        display: block;
+    }
+    .steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2{
+        margin-top: 18px;
+    }
+    .steps-form-2 .steps-row-2 .steps-step-2:before, .steps-form-2 .steps-row-2 .steps-step-2.active:before{
+        top: 33px;
+        left: 49.9%;
+        width: 2px;
+        height: 57px;
+    }
+     .vj-btn{
+        margin-top: 0px;
+        right: 0px;
+    }
+    .vj-btn a{
+        display: inline-block;
+        border-radius: 4px !important;
+        margin: 5px;
+    }
+}
 ');
 $script = <<<JS
 $('[data-toggle="tooltip"]').tooltip();
