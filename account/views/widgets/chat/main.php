@@ -225,6 +225,10 @@ element.style {
     border-radius: 20px;
 }
 .name span{color:#666;font-size:11px;}
+#chat-box.low-device{
+    bottom: 108px;
+    right: 45px;
+}
 ");
 $script = <<<JS
     
@@ -721,7 +725,25 @@ $script = <<<JS
  }
         
  chats();
- 
+if ($(window).width() < 720) {
+   $('#chat-list').addClass('low-device');
+   $('#chat-box').addClass('low-device');
+}
+$(document).on('click','#chat-list.low-device #users-list li button', function(){
+    $('#chat-list').addClass('hidden');
+});
+$(document).on('click','#chat-icon', function(){
+    if($('#chat-list').hasClass('hidden')){
+        $('#chat-list').removeClass('hidden');
+    }
+});
+$(document).on('click','.closeBtn', function(){
+    if($('#chat-list').hasClass('hidden')){
+        $('#chat-list').removeClass('hidden');
+        $('#chat-list').removeClass('fadein');
+        $('#chat-list').addClass('fadeout');
+    }
+});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
