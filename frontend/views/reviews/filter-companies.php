@@ -1008,8 +1008,8 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6}),is_clear=true;
-});
+    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},is_clear=true);
+ });   
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
