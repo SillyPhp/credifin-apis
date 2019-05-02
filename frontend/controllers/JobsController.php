@@ -322,6 +322,7 @@ class JobsController extends Controller
             $long = Yii::$app->request->post('long');
             $radius = Yii::$app->request->post('radius');
             $num = Yii::$app->request->post('num');
+            $keyword = Yii::$app->request->post('keyword');
 
 
             $radius = $radius / 1000;
@@ -359,6 +360,7 @@ class JobsController extends Controller
                     'f.max_wage as max_salary',
                     'f.min_wage as min_salary',
                     'f.wage_duration as salary_duration',
+                    'i.initials_color as color',
                     'CASE WHEN i.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", i.logo_location, "/", i.logo) ELSE NULL END logo',
                     "( 6371 * acos( cos( radians('$lat') ) * cos( radians( c.latitude ) ) * cos( radians( c.longitude ) - radians('$long') ) + sin( radians('$lat') ) * sin( radians( c.latitude ) ) ) )  distance",
                     ])
@@ -370,11 +372,24 @@ class JobsController extends Controller
                 ->joinWith(['applicationOptions as f'],false)
                 ->joinWith(['title g'=>function($z){
                     $z->joinWith(['categoryEnc as h'],false);
+                    $z->joinWith(['parentEnc p'], false);
                 }],false)
                 ->joinWith(['organizationEnc as i'])
                 ->joinWith(['applicationTypeEnc as j'])
+                ->joinWith(['designationEnc l'], false)
+                ->joinWith(['preferredIndustry o'], false)
                 ->having(['<', 'distance', $radius])
                 ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
+                if (!empty($keyword)) {
+                    $data->andWhere([
+                        'or',
+                        ['like', 'l.designation',$keyword],
+                        ['like', 'a.type', $keyword],
+                        ['like', 'h.name', $keyword],
+                        ['like', 'o.industry', $keyword],
+                        ['like', 'p.name', $keyword],
+                    ]);
+                }
                $result = $data->limit(20)->offset($num)->asArray()
                 ->all();
 
@@ -434,13 +449,28 @@ class JobsController extends Controller
                     "( 6371 * acos( cos( radians('$lat') ) * cos( radians( c.latitude ) ) * cos( radians( c.longitude ) - radians('$long') ) + sin( radians('$lat') ) * sin( radians( c.latitude ) ) ) )  distance",
                 ])
                 ->joinWith(['applicationTypeEnc as j'])
+                ->joinWith(['title g'=>function($z){
+                    $z->joinWith(['categoryEnc as h'],false);
+                    $z->joinWith(['parentEnc p'], false);
+                }],false)
                 ->joinWith(['applicationPlacementLocations as b'=>function($x){
                     $x->joinWith(['locationEnc as c'],false);
                 }],false)
+                ->joinWith(['designationEnc l'], false)
+                ->joinWith(['preferredIndustry o'], false)
                 ->having(['<', 'distance', $radius])
-                ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->asArray()
-                ->all();
+                ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
+                if (!empty($keyword)) {
+                    $total->andWhere([
+                        'or',
+                        ['like', 'l.designation',$keyword],
+                        ['like', 'a.type', $keyword],
+                        ['like', 'h.name', $keyword],
+                        ['like', 'o.industry', $keyword],
+                        ['like', 'p.name', $keyword],
+                    ]);
+                }
+                $total = $total->asArray()->all();
 
             $data = [];
             array_push($data,$result);

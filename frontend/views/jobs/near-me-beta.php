@@ -3,6 +3,26 @@ $this->params['header_dark'] = true;
 
 use yii\web\JqueryAsset; ?>
 <div class="row">
+    <div class="col-md-10 col-md-offset-2">
+         <div class="col-md-3">
+             <div class="form-group form-md-line-input form-md-floating-label">
+                 <input type="text" class="form-control" id="job_keyword" placeholder="Job Title or Keywords"/>
+             </div>
+         </div>
+         <div class="col-md-3">
+             <div class="form-group form-md-line-input">
+                 <input type="text" class="form-control" id="city_location" placeholder="Enter Address or city"/>
+             </div>
+         </div>
+         <div class="col-md-3">
+             <input type="text" autocomplete="off" id="range_3">
+         </div>
+         <div class="col-md-3">
+             <button type="submit" id="search_jobs">Search</button>
+         </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-6 near-me-map pr-0">
         <div id="map"></div>
     </div>
@@ -25,35 +45,18 @@ use yii\web\JqueryAsset; ?>
         <div class="row" id="near-me-cards">
 
         </div>
-        <button id="Load">Load</button>
-    </div>
-</div>
-
-<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <p class="modal-title">Please enter your address</p>
-            </div>
-            <div class="modal-body">
-                <input id="address" type="textbox" value="Ludhiana">
-                <input id="submit" type="button" value="Search">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+        <div id="loading">
+            <button id="Load">Load</button>
         </div>
 
     </div>
 </div>
 
+
 <script id="cards" type="text/template">
     {{#.}}
-    <div id="card-hover" class="col-md-12 col-sm-12 col-xs-12 pt-5">
-        <div data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}"
+    <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
+        <div id="card-hover"  data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}"
              class="application-card-main ui-draggable ui-draggable-handle">
             {{#city_name}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
@@ -148,9 +151,10 @@ $this->registerCss('
 }
 .near-me-map{
     position:fixed;
-    top: 52px;
+//    top: 52px;
+    top: 170px;
     right: 0;
-    height: calc(100vh - 52px);
+    height: calc(100vh - 170px);
 }
 .n-header-bar{
     padding: 20px;
@@ -260,22 +264,21 @@ $this->registerCss('
 $script = <<< JS
 
 
-var data = [$lat_long]
 var map;
 var marker;
 var  purple_icon = 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png';
 var infowindow = new google.maps.InfoWindow();
-function showCards(lat,long){
+function showCards(lat,long,range,keyword){
     
     var i;
     var inprange = {
-        rangerval : 20
+        rangerval : range
     };
     var centre = {lat: lat, lng: long};
     map = new google.maps.Map(document.getElementById('map'),{
         center: centre,
         zoom: 4,
-        mapTypeId: 'roadmap'
+        mapTypeId: 'roadmap',
     });
     
     myCity = new google.maps.Circle({
@@ -298,29 +301,39 @@ function showCards(lat,long){
               var num = 0;
               
               function card(){
+                  $('#Load').remove();
               $.ajax({
                     url: '/jobs/near-me',
                     type: 'post',
-                    async: false,
-                    cache: false,
-                    data: {lat:lat,long:long,radius:inprange.rangerval * 1000,num:num},
+                    data: {lat:lat,long:long,radius:inprange.rangerval * 1000,num:num,keyword:keyword},
                     success: function (res) {
                         var response = JSON.parse(res);
-                        console.log(response);
-                        $('#total-jobs').text("available Jobs("+response.total+")");
-                        for(i=0;i<response[0].length;i++){
-                                marker = new google.maps.Marker({
-                                position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
-                                map: map,
-                                draggable: false
-                            });                          
+                        if(!response['total']){
+                            $('#Load').remove();
+                            $('#total-jobs').text("available Jobs("+response.total+")");
+                            $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+                        }else{
+                            $('#total-jobs').text("available Jobs("+response.total+")");
+                            for(i=0;i<response[0].length;i++){
+                                    marker = new google.maps.Marker({
+                                    position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
+                                    map: map,
+                                    draggable: false
+                                });                          
+                                
+                            }
+                            $('#loading').append('<button id="Load">Load</button>');
+                            var template = $('#cards').html();
+                            var rendered = Mustache.render(template,response[0]);
+                            $('#near-me-cards').append(rendered);
+                            utilities.initials();
+                            num = num+20;
                             
+                            if(response[0].length < 20){
+                                $('#Load').remove();
+                            }
                         }
-                        var template = $('#cards').html();
-                        var rendered = Mustache.render(template,response[0]);
-                        $('#near-me-cards').append(rendered);
-                        num = num+20;
-                    }
+                  }
                 });
               }
               
@@ -331,6 +344,10 @@ function showCards(lat,long){
               card();
               
               map.addListener('click', function(e) {
+                  infowindow.close();
+              });
+              
+              myCity.addListener('click', function(e) {
                   infowindow.close();
               });
     
@@ -355,7 +372,7 @@ $(document).on("mouseenter","#card-hover",function() {
         slug = $(this).find('.application-card-open').attr('id');
         org_slug = $(this).find('#organization-slug').attr('class');
         if(!logo){
-           logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+            logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
         }else{
             logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
         }
@@ -370,6 +387,7 @@ $(document).on("mouseenter","#card-hover",function() {
             draggable: false
         });
           infowindow.open(map, marker);
+          utilities.initials();
     });
 
 function initMap(){
@@ -382,33 +400,42 @@ function initMap(){
         function successCallback(position){
             var lat = position.coords.latitude;
             var long = position.coords.longitude;
-            
-            showCards(lat,long);
+            var range = $('#range_3').prop("value");
+            geocodeLatLng(lat,long);
+            showCards(lat,long,range);
         }
     
         function showError(error) {
           switch(error.code) {
             case error.PERMISSION_DENIED:
-              $('#myModal').modal();
               break;
           }
         }
-                
-            var geocoder = new google.maps.Geocoder();
-        
-                document.getElementById('submit').addEventListener('click', function() {
-                    $('#myModal').modal('toggle');
-                  geocodeAddress(geocoder);
-                });
 }
 
-function geocodeAddress(geocoder) {
-        var address = document.getElementById('address').value;
-        geocoder.geocode({'address': address}, function(results, status) {
+function geocodeLatLng(lat,long) {
+     var geocoder = new google.maps.Geocoder();
+        var latlng = {lat: lat, lng: long};
+        geocoder.geocode({'location': latlng}, function(results, status) {
+          if (status === 'OK') {
+            if (results[0]) {
+                $('#city_location').val(results[0].formatted_address);
+            } else {
+              console.log('No results found');
+            }
+          } else {
+            console.log('Geocoder failed due to: ' + status);
+          }
+        });
+      }
+
+function geocodeAddress(city,range,keyword) {
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({'address': city}, function(results, status) {
           if (status === 'OK') {
             var lat = results[0].geometry.location.lat();
             var long = results[0].geometry.location.lng();
-            showCards(lat,long);
+            showCards(lat,long,range,keyword);
           } else {
             console.log('Geocode was not successful for the following reason: ' + status);
           }
@@ -416,13 +443,38 @@ function geocodeAddress(geocoder) {
       }
 
 initMap();
+
+$("#range_3").ionRangeSlider({
+                skin: "round",
+                min: 5,
+                max: 50,
+                from: 50,
+                grid: true,
+                grid_num: 9,
+                step: 1,
+                force_edges: true,
+                postfix: " km",
+            });
+ 
+ $(document).on('click','#search_jobs',function(e) {
+     e.preventDefault();
+     $('#near-me-cards').html('');
+   var city = $('#city_location').val();
+   var range = $('#range_3').prop("value");
+   var keyword = $('#job_keyword').val();
+    geocodeAddress(city,range,keyword);
+ });
+
 var ps = new PerfectScrollbar('.near-me-filters');
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 ?>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>
