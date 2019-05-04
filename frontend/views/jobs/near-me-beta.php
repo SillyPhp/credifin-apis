@@ -4,26 +4,28 @@ $this->params['header_dark'] = true;
 use yii\web\JqueryAsset; ?>
 <div class="row">
     <div class="col-md-10 col-md-offset-2">
-         <div class="col-md-3">
-             <div class="form-group form-md-line-input form-md-floating-label">
-                 <input type="text" class="form-control" id="job_keyword" placeholder="Job Title or Keywords"/>
-             </div>
-         </div>
-         <div class="col-md-3">
-             <div class="form-group form-md-line-input">
-                 <input type="text" class="form-control" id="city_location" placeholder="Enter Address or city"/>
-             </div>
-         </div>
-         <div class="col-md-3">
-             <input type="text" autocomplete="off" id="range_3">
-         </div>
-         <div class="col-md-3">
-             <button type="submit" id="search_jobs">Search</button>
-         </div>
+        <div class="near-me-search row">
+            <div class="col-md-3">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                    <input type="text" class="form-control" id="job_keyword" placeholder="Job Title or Keywords"/>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group form-md-line-input">
+                    <input type="text" class="form-control" id="city_location" placeholder="Enter Address or city"/>
+                </div>
+            </div>
+            <div class="col-md-4 pt-20">
+                <input type="text" autocomplete="off" id="range_3">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" id="search_jobs" class="btn near-me-btn">Search</button>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6 near-me-map pr-0">
+    <div class="col-md-6 near-me-map" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
     </div>
     <div class="col-md-2 near-me-filters pl-0">
@@ -43,7 +45,9 @@ use yii\web\JqueryAsset; ?>
         </div>
 
         <div class="row" id="near-me-cards">
-
+            <?= $this->render('/widgets/preloader-application-card',[
+                    'size' => 'col-md-12'
+            ]); ?>
         </div>
         <div id="loading">
             <button id="Load">Load</button>
@@ -56,8 +60,8 @@ use yii\web\JqueryAsset; ?>
 <script id="cards" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-        <div id="card-hover"  data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}"
-             class="application-card-main ui-draggable ui-draggable-handle">
+        <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}"
+             class="application-card-main">
             {{#city_name}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
@@ -131,7 +135,7 @@ $this->registerCss('
     float:right !important;
 }
 #map{
-    height:100vh;
+    height: calc(100vh - 50px);
 }
 .side-menu{
     width:16%;
@@ -150,17 +154,22 @@ $this->registerCss('
     box-shadow: 0px 0px 10px 1px #e6e6e6;
 }
 .near-me-map{
-    position:fixed;
-//    top: 52px;
-    top: 170px;
+    height: calc(100vh - 52px);
+    margin-top: 15px;
+}
+.near-me-map.affix{
+//    position:fixed;
+    top: 52px;
     right: 0;
-    height: calc(100vh - 170px);
+    padding-right:0px;
+    margin-top: 0px;
 }
 .n-header-bar{
     padding: 20px;
     box-shadow: 0px 0px 12px 2px #e6e6e6;
     margin: 15px 0px;
     border-radius: 4px;
+    background-color: #fff;
 }
 .n-header-bar h4{
     display: inline;
@@ -175,6 +184,7 @@ $this->registerCss('
 }
 .gm-style .gm-style-iw-d{
     overflow:hidden !important;
+    max-width:400px !important;
 }
 .gm-ui-hover-effect {
     opacity: 1;
@@ -184,6 +194,34 @@ $this->registerCss('
     z-index: 999;
     border-radius: 0px 6px 6px 0px;
 }
+.irs--round .irs-bar, .irs--round .irs-from, .irs--round .irs-to, .irs--round .irs-single{
+    background-color: #00a0e3;
+}
+.irs--round .irs-handle{
+    border: 4px solid #00a0e3;
+}
+.near-me-search{
+    background-color: #fff;
+    margin: 0;
+    margin-top: 10px;
+    padding: 2px 10px;
+    border-radius: 5px;
+}
+.near-me-btn{
+    margin: 20px 0px;
+    display: inline-block;
+    width: 100%;
+    padding: 15px !Important;
+    background-color: #00a0e3;
+    color: #fff;
+}
+.loader-main{
+    padding: 0px 15px;
+}
+#sticky {
+    top: 0px !important;
+}
+#footer{display:none;}
 //.filter-search{
 //    padding-bottom: 20px;
 //}
@@ -307,12 +345,15 @@ function showCards(lat,long,range,keyword){
                     type: 'post',
                     data: {lat:lat,long:long,radius:inprange.rangerval * 1000,num:num,keyword:keyword},
                     success: function (res) {
+                        $('.loader-main').remove();
                         var response = JSON.parse(res);
                         if(!response['total']){
                             $('#total-jobs').text("available Jobs("+response.total+")");
+                            $('#Load').remove();
+                            $('#total-jobs').text("Available Jobs("+response.total+")");
                             $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                         }else{
-                            $('#total-jobs').text("available Jobs("+response.total+")");
+                            $('#total-jobs').text("Available Jobs("+response.total+")");
                             for(i=0;i<response[0].length;i++){
                                     marker = new google.maps.Marker({
                                     position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
@@ -372,7 +413,7 @@ $(document).on("mouseenter","#card-hover",function() {
         slug = $(this).find('.application-card-open').attr('id');
         org_slug = $(this).find('#organization-slug').attr('class');
         if(!logo){
-            logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+            logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="80" height="80" font="24px"></canvas>';
         }else{
             logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
         }
@@ -380,6 +421,7 @@ $(document).on("mouseenter","#card-hover",function() {
          infowindow = new google.maps.InfoWindow({
           content: contentString
         });
+            utilities.initials();
          marker = new google.maps.Marker({
             position: new google.maps.LatLng(Number(lat),Number(lon)),
             map: map,
@@ -387,7 +429,6 @@ $(document).on("mouseenter","#card-hover",function() {
             draggable: false
         });
           infowindow.open(map, marker);
-          utilities.initials();
     });
 
 function initMap(){
