@@ -35,6 +35,13 @@ if(Yii::$app->user->identity->type->user_type == 'Individual') {
     array_push($result, $preferences);
 }
 
+$settings = [
+    'label' => '<i class=""></i>' . Yii::t('account', 'Settings'),
+    'url' => Url::to('/account/settings'),
+    'template' => '<a href="{url}" target="_blank">{label}</a>',
+];
+array_push($result, $settings);
+
 echo Menu::widget([
     'activateItems' => true,
     'activateParents' => true,
