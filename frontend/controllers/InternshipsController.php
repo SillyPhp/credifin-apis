@@ -224,4 +224,24 @@ class InternshipsController extends Controller
         }
     }
 
+    public function actionNearMe(){
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $lat = Yii::$app->request->post('lat');
+            $long = Yii::$app->request->post('long');
+            $radius = Yii::$app->request->post('inprange');
+            $num = Yii::$app->request->post('num');
+            $keyword = Yii::$app->request->post('keyword');
+            $type = 'Internships';
+            $walkin = 0;
+
+            $radius = $radius / 1000;
+
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+
+            return $cards;
+        }
+        return $this->render('near-me-beta');
+    }
+
 }

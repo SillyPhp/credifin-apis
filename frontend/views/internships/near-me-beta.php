@@ -7,7 +7,7 @@ use yii\web\JqueryAsset; ?>
         <div class="near-me-search row">
             <div class="col-md-3">
                 <div class="form-group form-md-line-input form-md-floating-label">
-                    <input type="text" class="form-control" id="job_keyword" placeholder="Job Title or Keywords"/>
+                    <input type="text" class="form-control" id="job_keyword" placeholder="Internship Title or Keywords"/>
                 </div>
             </div>
             <div class="col-md-3">
@@ -39,7 +39,7 @@ use yii\web\JqueryAsset; ?>
         <div class="row">
             <div class="col-md-12">
                 <div class="n-header-bar">
-                    <h4 id="total-jobs">Available Jobs()</h4>
+                    <h4 id="total-jobs">Available Internships()</h4>
                 </div>
             </div>
         </div>
@@ -403,7 +403,7 @@ function showCards(){
 function card(){
     
     $.ajax({
-            url: '/jobs/near-me',
+            url: '/internships/near-me',
             type: 'post',
             data: vals,
             success: function (res) {
@@ -413,12 +413,12 @@ function card(){
                 
                 if(!response['total']){
                     $('#load').remove();
-                    $('#total-jobs').text("available Jobs("+response.total+")");
+                    $('#total-jobs').text("available Internships("+response.total+")");
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                 }else{
                     
                     $('#load').text('Load');
-                    $('#total-jobs').text("available Jobs("+response.total+")");
+                    $('#total-jobs').text("available Internships("+response.total+")");
                     for(i=0;i<response[0].length;i++){
                             marker = new google.maps.Marker({
                             position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
@@ -549,7 +549,7 @@ $("#range_3").ionRangeSlider({
 draggable = true;
 function getReviewList(sidebarpage){
     if(draggable === true){
-        var type = 'Jobs';
+        var type = 'Internships';
         $.ajax({
             method: "POST",
             url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,
