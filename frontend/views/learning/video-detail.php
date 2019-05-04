@@ -12,7 +12,7 @@ $description = $video_detail['description'];
 $image = $video_detail['cover_image'];
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -27,7 +27,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -66,13 +66,13 @@ $this->params['seo_tags'] = [
                             <div class="col-md-10">
                                 <div class="flex-view">
                                     <div class="likebtn">
-                                        <button id="like" data-toggle="tooltip" title="Like this">
+                                        <button id="like">
                                             <span class="<?= $like_status['status'] == 1 ? 'imageBlue2' : ''; ?> imageGray"
                                                   id="imageOn"></span>
                                         </button>
                                     </div>
                                     <div class="dislikebtn">
-                                        <button id="dislike" data-toggle="tooltip" title="Don't like this">
+                                        <button id="dislike">
                                             <span class="<?= $like_status['status'] == 2 ? 'dislikeBlue2' : ''; ?> dislikeGray"
                                                   id="imageOff"></span>
                                         </button>
@@ -85,7 +85,7 @@ $this->params['seo_tags'] = [
                                             </button>
                                         </div>
                                         <?php
-                                        $fb_url = Url::to(Yii::$app->controller->id . '/video-detail?vidk=' . $video_detail['slug'], true);
+                                        $fb_url = Url::to(Yii::$app->controller->id . '/video/' . $video_detail['slug'], true);
                                         ?>
                                         <ul class="s-list fadeout" id="Fader">
                                             <li><a href="javascript:;"
@@ -108,10 +108,10 @@ $this->params['seo_tags'] = [
                         <input type="hidden" id="video-duration" value="<?= floor($video_detail['duration'] * 0.4); ?>">
                         <div class="v-category">
                             <ul>
-                                <li id="cate" data-id="<?= $video_detail['parent_enc_id']; ?>">Category: <span><a
-                                                href=""> <?= $video_detail['parent_name']; ?> </a></span></li>
-                                <li id="subcate" data-id="<?= $video_detail['category_enc_id']; ?>">Sub Category: <span><a
-                                                href=""> <?= $video_detail['child_name']; ?></a></span></li>
+                                <li id="cate" data-id="<?= $video_detail['parent_enc_id']; ?>">Category: <span>
+                                        <?= $video_detail['parent_name']; ?></span></li>
+                                <li id="subcate" data-id="<?= $video_detail['category_enc_id']; ?>">Sub Category: <span>
+                                        <?= $video_detail['child_name']; ?></span></li>
                             </ul>
                         </div>
                         <div class="v-tags">
@@ -130,6 +130,9 @@ $this->params['seo_tags'] = [
                                 <div class="views"><i class="fa fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
                                 <div class="likes"><i class="fa fa-thumbs-up"></i>
                                     <span><?= $like_count ? $like_count : 'No' ?></span> Likes
+                                </div>
+                                <div class="likes"><i class="fa fa-thumbs-down"></i>
+                                    <span><?= $dislike_count ? $dislike_count : 'No' ?></span> Dislikes
                                 </div>
                                 <div class="comms"><a href="#comments"> <i class="fa fa-comments-o"></i>
                                         <span><?= $comment_count ? $comment_count : 'No' ?></span>
@@ -219,6 +222,8 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
+<input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 
@@ -976,49 +981,6 @@ $script = <<<JS
     function getQueryStringValue (key) {  
       return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
     }
-    var player;
-    var video_id = document.getElementById('video-id').getAttribute('value');
-    var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
-    
-    var dvar;
-    function startTimer(){
-        dvar = setTimeout(
-            function(){
-                $.ajax({
-                    type: 'POST',
-                    url: '/learning/increment-views',
-                    data: {
-                        param: getQueryStringValue('vidk'),
-                    }
-                })
-            }, 
-            incrementTime
-        )
-    }
-    
-    function stopTimer(){
-        clearTimeout(dvar);
-    }
-    
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('ytplayer', {
-          height: '390',
-          width: '640',
-          videoId: video_id,
-          events: {
-            'onStateChange': function(event) {
-              if (event.data == YT.PlayerState.PLAYING) {
-                startTimer();
-              }
-              if (event.data == YT.PlayerState.PAUSED) {
-                stopTimer();
-              }
-            }
-          }
-        });
-    }
-    
-    onYouTubeIframeAPIReady();
     
     var like = document.getElementById('like');
     var imageOn = document.getElementById('imageOn');
@@ -1034,7 +996,7 @@ $script = <<<JS
     var likeEvent = {
         type: 'liked',
         status : already_liked,
-        param: getQueryStringValue('vidk')
+        param: window.location.pathname.split('/')[3]
     };
 
     var already_disliked = false;
@@ -1045,7 +1007,7 @@ $script = <<<JS
     var dislikeEvent = {
         type: 'disliked',
         status : already_disliked,
-        param: getQueryStringValue('vidk')
+        param: window.location.pathname.split('/')[3]
     };
 
     function ajaxRequest(url, data = null, async = true, callback){
@@ -1053,7 +1015,6 @@ $script = <<<JS
             url: url,
             type: 'POST',
             data: data,
-            async: async,
             success: function(response) {
                 callback(response);
             }
@@ -1154,7 +1115,7 @@ $script = <<<JS
         url: '/learning/get-parent-comments',
         async: false,
         data: {
-            param: getQueryStringValue('vidk'),
+            param: window.location.pathname.split('/')[3]
         },
         success: function(response){
 
@@ -1167,41 +1128,19 @@ $script = <<<JS
             }
         }
     })    
-   
-
-JS;
-$this->registerJs($script);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://www.youtube.com/iframe_api');
-?>
-<script>
-    function getQueryStringValue(key) {
-        return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
-    }
-
-    function showShare() {
-        var a = document.getElementById('Fader');
-        if (a.classList.contains('fadeout')) {
-            a.classList.remove('fadeout');
-            a.classList.add('fadein');
-        } else {
-            a.classList.remove('fadein');
-            a.classList.add('fadeout');
-        }
-    }
-
-    if (document.getElementById('smoreBtn')) {
-        document.getElementById('smoreBtn').addEventListener('click', showContent);
-    }
-
-    function showContent() {
+    
+    $(document).on('click', '#smoreBtn', function(){
         document.getElementById('less-des').style.display = 'none';
         document.getElementById('smoreBtn').style.display = 'none';
         document.getElementById('show-more-content').classList.remove('hidden');
-    }
+    })
 
-    function addComment() {
-
+    $(document).on('click', '#sendComment', function(){
+       var toLogin= $('#user_id').val();
+        if(!toLogin){
+            $('#loginModal').modal('show');
+            return false;
+        }
         var comment = document.getElementById('commentArea').value;
 
         if (comment == "") {
@@ -1214,7 +1153,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
             url: '/learning/parent-comment',
             async: false,
             data: {
-                param: getQueryStringValue('vidk'),
+                param: window.location.pathname.split('/')[3],
                 comment: comment
             },
             success: function (response) {
@@ -1243,11 +1182,73 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                     document.getElementById("postComm").reset();
                 }
             }
-        })
+        }) 
+    });
 
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+<script>
+    var player;
+    var video_id = document.getElementById('video-id').getAttribute('value');
+    var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
+
+    var dvar;
+    function startTimer(){
+        dvar = setTimeout(
+            function(){
+                $.ajax({
+                    type: 'POST',
+                    url: '/learning/increment-views',
+                    data: {
+                        param: window.location.pathname.split('/')[3],
+                    }
+                })
+            },
+            incrementTime
+        )
     }
 
-    document.getElementById("sendComment").addEventListener('click', addComment);
+    function stopTimer(){
+        clearTimeout(dvar);
+    }
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('ytplayer', {
+            height: '390',
+            width: '640',
+            videoId: video_id,
+            events: {
+                'onStateChange': function(event) {
+                    if (event.data == YT.PlayerState.PLAYING) {
+                        startTimer();
+                    }
+                    if (event.data == YT.PlayerState.PAUSED) {
+                        stopTimer();
+                    }
+                }
+            }
+        });
+    }
+
+    onYouTubeIframeAPIReady();
+
+    function getQueryStringValue(key) {
+        return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+    }
+
+    function showShare() {
+        var a = document.getElementById('Fader');
+        if (a.classList.contains('fadeout')) {
+            a.classList.remove('fadeout');
+            a.classList.add('fadein');
+        } else {
+            a.classList.remove('fadein');
+            a.classList.add('fadeout');
+        }
+    }
 
     var hasPushed = false;
 
@@ -1256,51 +1257,50 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
         for (var i = 0; i < r.length; i++) {
             r[i].remove();
         }
-
-        var el = t.parentElement;
-        while (el.className != 'blog-comm') {
-            el = el.parentElement;
-        }
-        var parent_id = el.getAttribute('data-id');
-        if (document.getElementById(parent_id)) {
-            document.getElementById(parent_id).classList.add('hidden');
-        }
         if (!hasPushed) {
             hasPushed = !hasPushed;
 
-            var name = {
-                name: t.closest('div').parentNode.querySelector('.comment-name').getAttribute('id')
-            };
-
             var temp2 = document.getElementById("commentbox").innerHTML;
-            var output = Mustache.render(temp2, name);
+            var output = Mustache.render(temp2);
 
             var art = t.closest(".blog-comm");
-            art.querySelectorAll('.reply-comm').forEach(function (d) {
-                d.remove();
-            });
 
-            art.innerHTML += output;
+            if(art.querySelectorAll('.reply-comm')[0]) {
+                var a = document.createElement('div');
+                a.innerHTML = output;
+                art.querySelectorAll('.reply-comm')[0].prepend(a);
+            }else {
+                var a = document.createElement('div');
+                a.innerHTML = output;
+                var el = t.parentElement;
+                while (el.className != 'blog-comm') {
+                    el = el.parentElement;
+                }
+                var parent_id = el.getAttribute('data-id');
+                if(document.getElementById(parent_id)) {
+                    if (!document.getElementById(parent_id).classList.contains('hidden')) {
+                        document.getElementById(parent_id).parentNode.parentNode.prepend(a);
+                    }
+                }else{
+                    art.innerHTML += output;
+                }
+            }
 
             hasPushed = !hasPushed;
         }
     }
 
     function closeComm(t) {
-        var el = t.parentElement;
-        while (el.className != 'blog-comm') {
-            el = el.parentElement;
-        }
-        var parent_id = el.getAttribute('data-id');
-        if (document.getElementById(parent_id)) {
-            document.getElementById(parent_id).classList.remove('hidden');
-        }
-
         var r = document.getElementsByClassName("cboxRemove");
         r[0].remove();
     }
 
     function addDynamicComment(t) {
+        var toLogin= $('#user_id').val();
+        if(!toLogin){
+            $('#loginModal').modal('show');
+            return false;
+        }
 
         var reply = t.closest('div').parentNode.querySelector('textarea').value;
 
@@ -1320,7 +1320,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
             url: '/learning/child-comment',
             async: false,
             data: {
-                param: getQueryStringValue('vidk'),
+                param: window.location.pathname.split('/')[3],
                 reply: reply,
                 parent_id: parent_id
             },
@@ -1342,8 +1342,25 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, result);
 
-                    var art = t.closest("article");
-                    art.innerHTML += output;
+                    var art = t.closest(".blog-comm");
+
+                    if(art.querySelectorAll('.reply-comm')[0]) {
+                        var a = document.createElement('div');
+                        a.innerHTML = output;
+                        art.querySelectorAll('.reply-comm')[0].prepend(a);
+                    }else {
+                        var a = document.createElement('div');
+                        a.innerHTML = output;
+
+                        if(document.getElementById(parent_id)) {
+                            if (!document.getElementById(parent_id).classList.contains('hidden')) {
+
+                                art.querySelector('#dyn-comm').append(a);
+                            }
+                        }else{
+                            art.innerHTML += output;
+                        }
+                    }
 
                     document.getElementsByClassName('cboxRemove')[0].remove();
                 }
@@ -1363,11 +1380,14 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
             url: '/learning/get-child-comments',
             data: {
                 parent: parent_id,
-                param: getQueryStringValue('vidk'),
+                param: window.location.pathname.split('/')[3],
             },
-            async: false,
             success: function (response) {
                 if (response.status == 200) {
+                    var art = t.closest(".blog-comm");
+                    art.querySelectorAll('.reply-comm').forEach(function (d) {
+                        d.remove();
+                    });
 
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, response.result);
@@ -1410,6 +1430,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                 </div>
             </div>
         </div>
+        <div id="dyn-comm"></div>
         {{#hasChild}}
         <div class="showReply">
             <div class="srBtn">
@@ -1455,7 +1476,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
             <div class="reply-comment">
                 <div class="col-md-12">
                     <form>
-                        <textarea id="commentReply" class="repComment">@{{name}}</textarea>
+                        <textarea id="commentReply" class="repComment"></textarea>
                         <div class="comment-sub1">
                             <button type="button" class="addComment" onclick="addDynamicComment(this)">Comment</button>
                             <button type="button" class="closeComment1" onclick="closeComm(this)">Cancel</button>
@@ -1466,7 +1487,6 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
         </div>
     </div>
 </script>
-
 <script id="top-category-card" type="text/template">
     <div class="tg-widget tg-widgetcategories">
         <div class="tg-widgetcontent">
@@ -1475,7 +1495,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
                     <ul id="top-categories">
                         {{#.}}
                         <li>
-                            <a href="/learning/video-gallery?type=categories&id={{parent_enc_id}}"><span>{{parent_name}}</span>
+                            <a href="/learning/videos/category/{{slug}}"><span>{{parent_name}}</span>
                                 {{cnt}} </a></li>
                         {{/.}}
                     </ul>
@@ -1484,12 +1504,11 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
         </div>
     </div>
 </script>
-
 <script id="top-videos-card" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="video-container2">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="video-icon2">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>
@@ -1501,12 +1520,11 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
     </div>
     {{/.}}
 </script>
-
 <script id="related-videos" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="related-video-box">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="row">
                     <div class="col-md-5">
                         <div class="re-v-icon">
@@ -1526,7 +1544,7 @@ $this->registerJsFile('https://www.youtube.com/iframe_api');
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container">
-            <a href="/skills/video-detail?vidk={{slug}}">
+            <a href="/skills/video/{{slug}}">
                 <div class="video-icon">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>

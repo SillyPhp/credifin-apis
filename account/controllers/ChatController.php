@@ -38,7 +38,7 @@ class ChatController extends Controller{
                     array_push($applied_ids, $a['created_by']);
                 }
                 $applicable_users = Users::find()
-                    ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                    ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                     ->where(['in', 'user_enc_id', $applied_ids])
                     ->andWhere([
                         'or',
@@ -70,7 +70,7 @@ class ChatController extends Controller{
                     array_push($organization_ids, $a['organization_enc_id']);
                 }
                 $applicable_organizations = Organizations::find()
-                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                     ->where(['in', 'organization_enc_id', $organization_ids])
                     ->andWhere([
                         'or',
@@ -98,13 +98,13 @@ class ChatController extends Controller{
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $id =  Yii::$app->request->post('id');
             $result = Users::find()
-                ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                 ->where(['user_enc_id' => $id])
                 ->asArray()
                 ->all();
             if(count($result) == 0){
                 $r = Organizations::find()
-                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                     ->where(['organization_enc_id' => $id])
                     ->asArray()
                     ->all();
@@ -146,7 +146,7 @@ class ChatController extends Controller{
                     }
 
                     $result = Users::find()
-                        ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                        ->select(['user_enc_id', 'first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                         ->where(['in', 'user_enc_id', $r])
                         ->limit(10)
                         ->asArray()
@@ -191,7 +191,7 @@ class ChatController extends Controller{
                     }
 
                     $result = Organizations::find()
-                        ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                        ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                         ->where(['in', 'organization_enc_id', $r])
                         ->limit(10)
                         ->asArray()
@@ -232,7 +232,7 @@ class ChatController extends Controller{
                 array_push($applied_ids, $a['created_by']);
             }
             $applicable_users = Users::find()
-              ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+              ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
               ->where(['in', 'user_enc_id', $applied_ids])
               ->asArray()
               ->all();
@@ -260,7 +260,7 @@ class ChatController extends Controller{
               array_push($organization_ids, $a['organization_enc_id']);
           }
           $applicable_organizations = Organizations::find()
-              ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+              ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
               ->where(['in', 'organization_enc_id', $organization_ids])
               ->asArray()
               ->all();
@@ -287,7 +287,7 @@ class ChatController extends Controller{
                     array_push($applied_ids, $a['created_by']);
                 }
                 $applicable_users = Users::find()
-                    ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                    ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                     ->where(['in', 'user_enc_id', $applied_ids])
                     ->asArray()
                     ->all();
@@ -316,7 +316,7 @@ class ChatController extends Controller{
                     array_push($organization_ids, $a['organization_enc_id']);
                 }
                 $applicable_organizations = Organizations::find()
-                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                     ->where(['in', 'organization_enc_id', $organization_ids])
                     ->asArray()
                     ->all();

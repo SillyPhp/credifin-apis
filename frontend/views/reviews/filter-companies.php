@@ -32,7 +32,7 @@ use yii\bootstrap\ActiveForm;
         </div>
     </div>
 </section>
-<section>
+<div>
     <div class="container">
         <div class="row">
             <div class="col-md-3">
@@ -306,35 +306,36 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </div>
-</section>
+</div>
 <div class="fader"></div>
 <?php
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 ?>
-<div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="wr-modal-header">
-            <span class="close">&times;</span>
-            <p>Enter Company Name</p>
-        </div>
-        <div class="wr-modal-body">
-            <form>
-                <div class="com-name-modal">
-                    <input type="text">
-                </div>
-                <div class="wr-modal-bttn">
-                    <button href="" class="i-review-next">
-                        <span class="i-review-button-text"> Search Company</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 </div>
+<!--<div id="myModal" class="modal">-->
+<!---->
+<!--    <!-- Modal content -->-->
+<!--    <div class="modal-content">-->
+<!--        <div class="wr-modal-header">-->
+<!--            <span class="close">&times;</span>-->
+<!--            <p>Enter Company Name</p>-->
+<!--        </div>-->
+<!--        <div class="wr-modal-body">-->
+<!--            <form>-->
+<!--                <div class="com-name-modal">-->
+<!--                    <input type="text">-->
+<!--                </div>-->
+<!--                <div class="wr-modal-bttn">-->
+<!--                    <button href="" class="i-review-next">-->
+<!--                        <span class="i-review-button-text"> Search Company</span>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!---->
+<!--</div>-->
 <?php
 $this->registerCss('
 .search-bar{
@@ -802,31 +803,31 @@ form input[type="text"]:focus{
     padding-top:20px;
 }
 /*new modal css*/
-.modal {
-  display: none;
-  position: fixed; 
-  z-index: 9; 
-  left: 0;
-  top: 0;
-  width: 100% important;
-  height: 100% !important;
-  overflow: auto; 
-  background-color: rgb(0,0,0) !important;
-  background-color: rgba(0,0,0,0.4) !important;
-}
+//.modal {
+//  display: none;
+//  position: fixed; 
+//  z-index: 9; 
+//  left: 0;
+//  top: 0;
+//  width: 100% important;
+//  height: 100% !important;
+//  overflow: auto; 
+//  background-color: rgb(0,0,0) !important;
+//  background-color: rgba(0,0,0,0.4) !important;
+//}
 
 .modal-content {
-  padding:50px 50px !important;
+//  padding:50px 50px !important;
   background-color: #2995c2; 
   margin: auto;
-  padding: 20px;
+//  padding: 20px;
   border: 1px solid #888;
   width: 80%;
   top: 50%;
   position:relative; 
-  transform: translateY(-50%);
-   -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
+//  -ms-transform: translateY(-50%);
+//   -webkit-transform: translateY(-50%);
+//  transform: translateY(-50%);
 }
 .wr-modal-header p{
    color:#333333 !important;
@@ -991,7 +992,7 @@ $(document).on('click','input[name="avg_rating[]"]',function()
             $.each($("input[name='avg_rating[]']:checked"), function(){            
                 avg_rating.push($(this).val());
             });
-     fetch_cards(params={'rating':avg_rating,'limit':null});       
+     fetch_cards(params={'rating':avg_rating,'limit':null},is_clear=true);       
 });
 $(document).on('click','input[name="activities[]"]',function()
 {
@@ -999,7 +1000,7 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
-     fetch_cards(params={'business_activity':activities,'limit':null});       
+     fetch_cards(params={'business_activity':activities,'limit':null},is_clear=true);       
 });
 var ps = new PerfectScrollbar('#industry-scroll'); 
     // var ps = new PerfectScrollbar('#work-scroll'); 
@@ -1007,8 +1008,8 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6});
-});
+    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},is_clear=true);
+ });   
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -1051,7 +1052,7 @@ var locations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
-    url: '/account/cities/cities?q=%QUERY',
+    url: '/cities/city-list?q=%QUERY',
     wildcard: '%QUERY',
     cache: true,     
         filter: function(list) {
@@ -1065,56 +1066,14 @@ $(document).on('click','.add_new_org',function(e) {
 })
 $('#city_search').typeahead(null, {
   name: 'keywords',
-  displayKey: "name",
+  displayKey: "text",
   limit: 5,      
   source: locations,
 }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
   {
-     fetch_cards(params={'city':datum.name,'limit':9});   
-  }); 
-
-fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9});
-function fetch_cards(params)
-{
-    $.ajax({
-        url : '/organizations/fetch-review-cards',
-        method: "POST",
-        data: {params:params},
-        beforeSend: function(){
-          $('#loading_img').addClass('show');
-          $('.fader').css('display','block');
-        },
-        success: function(response) {
-            if (response.status==200){
-            $('#loading_img').removeClass('show');
-            $('.fader').css('display','none');
-            $('#review_container').html('');
-            $('#load_review_card_btn').show();
-            if (response.cards.total<9)
-                {
-                    $('.load-more-bttn').hide();
-                }
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards.cards));
-            utilities.initials();
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-                $('.average-star').raty({
-                   readOnly: true, 
-                   hints:['','','','',''],
-                  score: function() {
-                    return $(this).attr('data-score');
-                  }
-                });
-            }
-            else 
-                {
-            $('#loading_img').removeClass('show');
-            $('#load_review_card_btn').hide();
-            $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
-                }
-        }
-    });
-}
+     fetch_cards(params={'city':datum.text,'limit':9},is_clear=true);   
+  });
+fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},is_clear=true);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

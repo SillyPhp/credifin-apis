@@ -211,14 +211,20 @@ a:hover{
     -ms-border-radius: 20px !important;
     -o-border-radius: 20px !important;
     border-radius: 4px !important;
-    margin:10px 0;
-    padding: 6px 12px;  
+    padding: 6px 12px;
+    display: inline-block;
+    margin-top: -4px;
 }
 .j-grid > a:hover {
     background: #00a0e3 !important;
     color: #ffffff;
     transition: all 0.4s ease 0s;
     text-decoration:none;
+}
+@media screen and (max-width: 991px){
+    .j-grid > a {
+        margin-top: 5px;
+    }
 }
 /*Organization application cards css ends*/
 

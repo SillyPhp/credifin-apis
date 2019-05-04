@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%submitted_videos}}".
  *
@@ -45,7 +43,7 @@ class SubmittedVideos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['video_enc_id', 'type', 'name', 'slug', 'link', 'video_duration', 'cover_image', 'description', 'created_on', 'created_by'], 'required'],
+            [['video_enc_id', 'type', 'name', 'slug', 'link', 'video_duration', 'cover_image', 'description', 'created_by'], 'required'],
             [['video_duration', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'status'], 'string'],
             [['video_enc_id', 'name', 'link', 'cover_image', 'tags', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

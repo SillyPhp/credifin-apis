@@ -40,9 +40,35 @@ $this->registerCss('
     background-color:#49a1e3 !important;
     color:#fff !important;
 }
+.menuzord.orange .menuzord-menu > li.active > a, .menuzord.orange .menuzord-menu > li:hover > a, .menuzord.orange .menuzord-menu ul.dropdown li:hover > a {
+    /*    background: url("../../../asset/images/hover1.png");
+        background-size: 100%;*/
+    color:#f08440;
+}
+@media only screen and (max-width: 901px) and (min-width: 451px) {
+    .menuzord.orange .menuzord-menu > li.active > a, .menuzord.orange .menuzord-menu > li:hover > a, .menuzord.orange .menuzord-menu ul.dropdown li:hover > a {
+        background: none !important;
+        color:#000;
+    }
+}
 @media only screen and (max-width: 900px) {
     .menuzord .showhide{
         padding: 19px 0 0 !important;
+    }
+}
+@media only screen and (max-width: 450px) {
+    .menuzord .showhide{
+        width: 50px;
+    }
+    .menuzord-menu li{
+        padding: 0px !important;
+    }
+    .menuzord-menu {
+        border-radius: 10px;
+    }
+    .menuzord-menu li:hover a, .menuzord-menu li:focus a{
+        background-color: #00a0e3;
+        color: #fff !important;
     }
 }
 ');

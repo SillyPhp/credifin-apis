@@ -26,12 +26,14 @@ $profile = [
     'template' => '<a href="{url}" target="_blank">{label}</a>',
 ];
 array_push($result, $profile);
-
-$learning = [
-    'label' => '<i class=""></i>' . Yii::t('account', 'Learning'),
-    'url' => Url::toRoute('learning/dashboard'),
-];
-array_push($result, $learning);
+if(Yii::$app->user->identity->type->user_type == 'Individual') {
+    $preferences = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'My Preferences'),
+        'url' => Url::to('/account/preferences'),
+        'template' => '<a href="{url}">{label}</a>',
+    ];
+    array_push($result, $preferences);
+}
 
 echo Menu::widget([
     'activateItems' => true,

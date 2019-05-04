@@ -47,7 +47,7 @@ use yii\helpers\Url;
                     <?php foreach($categories as $c) { ?>
                         <div class="f-box col-md-3 col-sm-6">
                             <div class="flipbox ">
-                                <a href="/learning/video-gallery?type=categories&id=<?= $c['parent_enc_id'] ?>" class="lc-link">
+                                <a href="/learning/videos/category/<?= $c['slug'] ?>" class="lc-link">
                                     <div class="back">
                                         <div class="b-icon">
                                             <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"  alt=""/>
@@ -123,7 +123,7 @@ use yii\helpers\Url;
                         <?php foreach($topics as $t) { ?>
                             <div class="col-md-3 col-sm-4">
                                 <div class="topic-con">
-                                    <a href="/learning/video-gallery?type=topics&id=<?= $t['tag_enc_id']?>">
+                                    <a href="/learning/videos/topic/<?= $t['slug']?>">
                                         <div class="hr-company-box">
                                             <div class="hr-company-box-center">
                                                 <div class="hr-com-icon">
@@ -164,13 +164,13 @@ use yii\helpers\Url;
                     <?php foreach ($popular_videos as $p) { ?>
                         <div class="item">
                             <div class="imgTitle">
-                                <a href="<?= Url::to('learning/video-detail/?vidk=' . $p['slug']); ?>">
+                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
                                     <img src="<?= Url::to($p['cover_image']); ?>" alt=""/>
                                 </a>
                             </div>
                             <div class="clearfix"></div>
                             <div class="blogTitle">
-                                <a href="<?= Url::to('learning/video-detail/?vidk=' . $p['slug']); ?>">
+                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
                                     <?= Yii::t('frontend', $p['title']); ?>
                                 </a>
                             </div>

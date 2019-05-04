@@ -13,7 +13,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -28,7 +28,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -49,14 +49,14 @@ $this->params['seo_tags'] = [
                         } else {
                             ?>
                             <canvas class="user-icon" name="<?= $org_details['name']; ?>" width="150" height="150"
-                                    color="" font="70px"></canvas>
+                                    color="<?= $org_details['initials_color']?>" font="70px"></canvas>
                             <?php
                         }
                         ?>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="com-name"><?= $org_details['name']; ?></div>
+                <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
                         <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
@@ -118,8 +118,11 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= $org_details['name']; ?> Reviews </h1>
+                <h1 class="heading-style"><?= ucwords($org_details['name']); ?> Reviews </h1>
                 <div id="org-reviews"></div>
+                <div class="col-md-offset-2 load-more-bttn">
+                    <button type="button" id="load_more_btn">Load More</button>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
@@ -234,59 +237,6 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
-<div id="report" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
-                <h4 class="modal-title">Reason for reporting?</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group form-md-radios">
-                    <label></label>
-                    <div class="md-radio-list">
-                        <div class="md-radio">
-                            <input type="radio" id="radio1" name="radio1" class="md-radiobtn">
-                            <label for="radio1">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                                This post contains hateful, violent, or inappropriate content </label>
-                        </div>
-                        <div class="md-radio">
-                            <input type="radio" id="radio2" name="radio1" class="md-radiobtn">
-                            <label for="radio2">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                                This post contains advertising or spam</label>
-                        </div>
-                        <div class="md-radio">
-                            <input type="radio" id="radio3" name="radio1" class="md-radiobtn">
-                            <label for="radio3">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span> Off-topic </label>
-                        </div>
-                        <div class="md-radio">
-                            <input type="radio" id="radio4" name="radio1" class="md-radiobtn">
-                            <label for="radio4">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                                This post contains conflicts of interest </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
 <div id="edit_review" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -530,10 +480,12 @@ $this->params['seo_tags'] = [
 <?php
 if ($review_type=='claimed')
 {
-    echo $this->render('/widgets/mustache/organization-reviews');
+    echo $this->render('/widgets/mustache/organization-reviews',[
+    ]);
 }else
 {
-    echo $this->render('/widgets/mustache/organization-unclaimed-reviews');
+    echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+    ]);
 }
 
 $this->registerCss('
@@ -1231,23 +1183,12 @@ var popup = new ideaboxPopup({
 								{ label : 'Novemeber', value : '11' },
 								{ label : 'December', value : '12' },
 							],
-							yearsObj
+							yearsObj 
 						],
 						description	: 'Choose dates of work.',
 						nextLabel	: 'Go to Step 4',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please selecty our tenure</b>'
-					},
-					
-					{
-						question 	: 'Overall Experience',
-						answerType	: 'starrate',
-						starCount	: 5,
-						formName	: 'overall_experience',
-						description	: '',
-						nextLabel	: 'Go to Step 5',
-						required	: true,
-						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
 					{
 						question 	: 'Skill Development & Learning',
@@ -1255,7 +1196,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'skill_development',
 						description	: '',
-						nextLabel	: 'Go to Step 6',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1265,7 +1206,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work_life',
 						description	: '',
-						nextLabel	: 'Go to Step 7',
+						nextLabel	: 'Go to Step 5',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1275,7 +1216,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'compensation',
 						description	: '',
-						nextLabel	: 'Go to Step 8',
+						nextLabel	: 'Go to Step 7',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1285,7 +1226,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'organization_culture',
 						description	: '',
-						nextLabel	: 'Go to Step 9',
+						nextLabel	: 'Go to Step 8',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1295,7 +1236,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'job_security',
 						description	: '',
-						nextLabel	: 'Go to Step 10',
+						nextLabel	: 'Go to Step 9',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1305,7 +1246,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'growth',
 						description	: '',
-						nextLabel	: 'Go to Step 11',
+						nextLabel	: 'Go to Step 10',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1315,7 +1256,7 @@ var popup = new ideaboxPopup({
 						starCount	: 5,
 						formName	: 'work',
 						description	: '',
-						nextLabel	: 'Go to Step 12',
+						nextLabel	: 'Go to Step 11',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Rate to proceed</b>'
 					},
@@ -1325,7 +1266,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'location_autocomplete',
 						formName	: 'location',
 						description	: 'Please enter your office location',
-						nextLabel	: 'Go to Step 13',
+						nextLabel	: 'Go to Step 12',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a location.</b>'
 					},
@@ -1334,7 +1275,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'department_autocomplete',
 						formName	: 'department',
 						description	: 'Please enter your department or division',
-						nextLabel	: 'Go to Step 14',
+						nextLabel	: 'Go to Step 13',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
@@ -1343,7 +1284,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'designation_autocomplete',
 						formName	: 'designation',
 						description	: 'Please enter your designation',
-						nextLabel	: 'Go to Step 15',
+						nextLabel	: 'Go to Step 14',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please select a department</b>'
 					},
@@ -1352,7 +1293,7 @@ var popup = new ideaboxPopup({
 						answerType	: 'textarea',
 						formName	: 'likes',
 						description	: 'For eg :- Talk about teammates, training, job security, career growth, salary appraisal, travel, politics, learning, work environment, innovation, work-life balance, etc.',
-						nextLabel	: 'Go to Step 16',
+						nextLabel	: 'Go to Step 15',
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please write a review</b>'
 					},
@@ -1365,7 +1306,7 @@ var popup = new ideaboxPopup({
 						required	: true,
 						errorMsg	: '<b style="color:#900;">Please share your reviews.</b>'
 					
-					}
+					},
 			]
 			});
 if($("#wr").length>0){
@@ -1405,7 +1346,7 @@ function designation_auto_fn() {
     
     $('.Typeahead-spinner').hide();
   }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-      $('#hidden_designation').val(datum.designation_enc_id);
+      $('#hidden_designation').val(datum.designation_enc_id); 
   });
 	  flag++;
 }

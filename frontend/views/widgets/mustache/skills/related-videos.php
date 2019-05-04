@@ -2,7 +2,7 @@
     {{#.}}
     <div class="col-md-12 col-sm-4">
         <div class="related-video-box">
-            <a href="/learning/video-detail?vidk={{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="row">
                     <div class="col-md-5">
                         <div class="re-v-icon">
