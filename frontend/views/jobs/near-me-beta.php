@@ -266,7 +266,7 @@ $script = <<< JS
 
 var map;
 var marker;
-var  purple_icon = 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png';
+var  purple_icon = 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
 var infowindow = new google.maps.InfoWindow();
 function showCards(lat,long,range,keyword){
     
@@ -301,7 +301,7 @@ function showCards(lat,long,range,keyword){
               var num = 0;
               
               function card(){
-                  $('#Load').remove();
+                  // $('#Load').remove();
               $.ajax({
                     url: '/jobs/near-me',
                     type: 'post',
@@ -309,7 +309,6 @@ function showCards(lat,long,range,keyword){
                     success: function (res) {
                         var response = JSON.parse(res);
                         if(!response['total']){
-                            $('#Load').remove();
                             $('#total-jobs').text("available Jobs("+response.total+")");
                             $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                         }else{
@@ -322,7 +321,7 @@ function showCards(lat,long,range,keyword){
                                 });                          
                                 
                             }
-                            $('#loading').append('<button id="Load">Load</button>');
+                            // $('#loading').append('<button id="Load">Load</button>');
                             var template = $('#cards').html();
                             var rendered = Mustache.render(template,response[0]);
                             $('#near-me-cards').append(rendered);
@@ -337,8 +336,9 @@ function showCards(lat,long,range,keyword){
                 });
               }
               
-              $(document).on('click','#Load',function() {
-                card();
+              $(document).on('click','#Load',function(e) {
+                  e.preventDefault();
+                  card();
               });
               
               card();
@@ -458,10 +458,17 @@ $("#range_3").ionRangeSlider({
  
  $(document).on('click','#search_jobs',function(e) {
      e.preventDefault();
-     $('#near-me-cards').html('');
-   var city = $('#city_location').val();
-   var range = $('#range_3').prop("value");
-   var keyword = $('#job_keyword').val();
+         var city = $('#city_location').val();
+           if(!city){
+               toastr.error('Please Enter city', 'error');
+               return false;
+           }
+       $('#near-me-cards').html('');
+       $('#Load').remove();
+       $('#loading').append('<button id="Load">Load</button>');
+       $('#total-jobs').text("available Jobs(0)");
+       var range = $('#range_3').prop("value");
+       var keyword = $('#job_keyword').val();
     geocodeAddress(city,range,keyword);
  });
 
