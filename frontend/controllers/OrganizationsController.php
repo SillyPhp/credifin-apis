@@ -1127,4 +1127,97 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionTest(){
+        $slug = 'ajayjuneja';
+        $editReviewForm = new EditReview;
+        $model = new ApplicationForm();
+        $primary_cat = $model->getPrimaryFields();
+        $org = Organizations::find()
+            ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->where([
+                'slug' => $slug,
+                'is_deleted' => 0
+            ])
+            ->asArray()
+            ->one();
+        $unclaimed_org = UnclaimedOrganizations::find()
+            ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->where([
+                'slug' => $slug,
+                'status' => 1
+            ])
+            ->asArray()
+            ->one();
+
+        if (!empty($org)) {
+            $review_type = 'claimed';
+            $reviews = OrganizationReviews::find()
+                ->alias('a')
+                ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND(average_rating) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
+                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
+                ->joinWith(['createdBy b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
+                ->asArray()
+                ->all();
+            $follow = FollowedOrganizations::find()
+                ->select('followed')
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org['organization_enc_id']])
+                ->asArray()
+                ->one();
+
+            $edit_review = OrganizationReviews::find()
+                ->alias('a')
+                ->select(['a.review_enc_id', 'a.organization_enc_id', 'a.category_enc_id', 'a.created_by', 'a.likes', 'a.dislikes', 'a.organization_enc_id', 'show_user_details', 'job_security', 'growth', 'organization_culture', 'compensation', 'work_life', 'work', 'skill_development', 'c.name profile'])
+                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->joinWith(['createdBy b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->one();
+            if (!empty($edit_review)) {
+                $editReviewForm->setValues($edit_review, $slug);
+            }
+            $stats = OrganizationReviews::find()
+                ->select(['ROUND(AVG(job_security)) job_avg', 'ROUND(AVG(growth)) growth_avg', 'ROUND(AVG(organization_culture)) avg_cult', 'ROUND(AVG(compensation)) avg_compensation', 'ROUND(AVG(work)) avg_work', 'ROUND(AVG(work_life)) avg_work_life', 'ROUND(AVG(skill_development)) avg_skill'])
+                ->where(['organization_enc_id' => $org['organization_enc_id'], 'status' => 1])
+                ->asArray()
+                ->one();
+        }
+        if (!empty($unclaimed_org)) {
+            $review_type = 'unclaimed';
+            $reviews = NewOrganizationReviews::find()
+                ->alias('a')
+                ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND(average_rating) average', 'c.name profile', 'a.created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
+                ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
+                ->joinWith(['createdBy b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
+                ->asArray()
+                ->all();
+            $stats = NewOrganizationReviews::find()
+                ->select(['ROUND(AVG(job_security)) job_avg', 'ROUND(AVG(growth)) growth_avg', 'ROUND(AVG(organization_culture)) avg_cult', 'ROUND(AVG(compensation)) avg_compensation', 'ROUND(AVG(work)) avg_work', 'ROUND(AVG(work_life)) avg_work_life', 'ROUND(AVG(skill_development)) avg_skill'])
+                ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
+                ->asArray()
+                ->one();
+            $follow = UnclaimedFollowedOrganizations::find()
+                ->select('followed')
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $unclaimed_org['organization_enc_id']])
+                ->asArray()
+                ->one();
+            $edit_review = NewOrganizationReviews::find()
+                ->alias('a')
+                ->select(['a.review_enc_id', 'a.organization_enc_id', 'a.category_enc_id', 'a.created_by', 'a.likes', 'a.dislikes', 'a.organization_enc_id', 'show_user_details', 'job_security', 'growth', 'organization_culture', 'compensation', 'work_life', 'work', 'skill_development', 'c.name profile'])
+                ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->joinWith(['createdBy b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->one();
+            if (!empty($edit_review)) {
+                $editReviewForm->setValues($edit_review, $slug);
+            }
+            $org = $unclaimed_org;
+        }
+        return $this->render('review-company-test', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
+    }
+
 }
