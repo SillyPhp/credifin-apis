@@ -170,9 +170,9 @@ class OrganizationSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                $userEmailsModel = new UserEmails();
-                $userEmailsModel->verificationEmail($organizationsModel->organization_enc_id, true);
-                $transaction->commit();
+                if(Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id)){
+                    $transaction->commit();
+                }
             }
         } catch (Exception $e) {
             $transaction->rollBack();

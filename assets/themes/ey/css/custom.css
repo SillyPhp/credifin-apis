@@ -1354,12 +1354,14 @@ hr .flare :after {
     margin: 20px 0px 0px 20px;
     width: calc(100% - 100px);
 }
+.application-card-description h4{
+    text-transform: capitalize;
+}
 .application-card-description h4, .application-card-description h5{
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize;
 }
 .application-card-description h5:last-child{
     font-weight: normal;
