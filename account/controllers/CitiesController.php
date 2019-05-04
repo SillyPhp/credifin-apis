@@ -56,12 +56,13 @@ class CitiesController extends Controller
         $data = Cities::find()
                 ->alias('a')
                 ->select(['a.name','a.city_enc_id'])
-                ->where('a.name LIKE "%' . $q . '%"')
+                ->where('a.name LIKE "' . $q . '%"')
                 ->joinWith(['stateEnc b'=>function($b)
                 {
                     $b->joinWith(['countryEnc c']);
                     $b->andWhere(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09']);
                 }],false)
+                ->limit(20)
                 ->asArray()
                 ->all();
         return $data;

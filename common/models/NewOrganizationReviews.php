@@ -26,7 +26,9 @@ use Yii;
  * @property int $accomodation_food Accomodation & Food
  * @property int $placements_internships Placements/Internships
  * @property int $social_life_extracurriculars Social Life/Extracurriculars
+ * @property int $culture_diversity Culture
  * @property string $city_enc_id Foreign Key to Cities Table
+ * @property string $educational_stream_enc_id Foreign Key to education requirements
  * @property string $category_enc_id Foreign Key to Categories Table
  * @property string $designation_enc_id Foreign Key to Designation Table
  * @property string $likes Things you like about the Organization
@@ -41,6 +43,7 @@ use Yii;
  * @property int $status Organization Review Status (0 as Pending, 1 as Approved)
  * @property int $is_deleted Is Organization Review Deleted (0 as False, 1 as True)
  *
+ * @property Qualifications $educationalStreamEnc
  * @property Users $createdBy
  * @property Cities $cityEnc
  * @property Categories $categoryEnc
@@ -64,13 +67,14 @@ class NewOrganizationReviews extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['review_enc_id', 'organization_enc_id', 'average_rating', 'city_enc_id', 'category_enc_id', 'likes', 'dislikes', 'from_date', 'created_by'], 'required'],
+            [['review_enc_id', 'organization_enc_id', 'average_rating', 'city_enc_id', 'likes', 'dislikes', 'from_date', 'created_by'], 'required'],
             [['average_rating'], 'number'],
-            [['reviewer_type', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'show_user_details', 'status', 'is_deleted'], 'integer'],
+            [['reviewer_type', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'show_user_details', 'status', 'is_deleted'], 'integer'],
             [['likes', 'dislikes'], 'string'],
             [['from_date', 'to_date', 'created_on', 'last_updated_on'], 'safe'],
-            [['review_enc_id', 'organization_enc_id', 'city_enc_id', 'category_enc_id', 'designation_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['review_enc_id', 'organization_enc_id', 'city_enc_id', 'educational_stream_enc_id', 'category_enc_id', 'designation_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['review_enc_id'], 'unique'],
+            [['educational_stream_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Qualifications::className(), 'targetAttribute' => ['educational_stream_enc_id' => 'qualification_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_enc_id' => 'category_enc_id']],
@@ -83,6 +87,14 @@ class NewOrganizationReviews extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEducationalStreamEnc()
+    {
+        return $this->hasOne(Qualifications::className(), ['qualification_enc_id' => 'educational_stream_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
