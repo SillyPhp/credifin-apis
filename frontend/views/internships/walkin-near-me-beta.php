@@ -7,7 +7,7 @@ use yii\web\JqueryAsset; ?>
         <div class="near-me-search row">
             <div class="col-md-3">
                 <div class="form-group form-md-line-input form-md-floating-label">
-                    <input type="text" class="form-control" id="job_keyword" placeholder="Job Title or Keywords"/>
+                    <input type="text" class="form-control" id="job_keyword" placeholder="Internship Title or Keywords"/>
                 </div>
             </div>
             <div class="col-md-3">
@@ -333,7 +333,7 @@ function showError(error) {
   switch(error.code) {
     case error.PERMISSION_DENIED:
         $.ajax({
-          url:'/jobs/user-location',
+          url:'/internships/user-location',
           method:'POST',
           success: function (res) {
             var response = JSON.parse(res);
@@ -345,7 +345,7 @@ function showError(error) {
             geocodeAddress(address);
           }  
         });
-        break;
+      break;
   }
 }
 
@@ -409,13 +409,14 @@ function showCards(){
 function card(){
     
     $.ajax({
-            url: '/jobs/near-me',
+            url: '/internships/walk-in-interview',
             type: 'post',
             data: vals,
             success: function (res) {
                 $('.loader-main').hide();
                 
                 var response = JSON.parse(res);
+                
                 if(response.length == 0){
                     $('#load').remove();
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
@@ -441,7 +442,7 @@ function card(){
                     }
                 }
             }
-    });
+     });
          
     map.addListener('click', function(e) {
         infowindow.close();
@@ -455,7 +456,6 @@ function card(){
 //load more click
 $(document).on('click','#load',function(e) {
     e.preventDefault();
-    $('.loader-main').show();
     $('#load').text('Loading...');
     card();
 });
@@ -548,10 +548,11 @@ $("#range_3").ionRangeSlider({
     postfix: " km",
 });
 
+
 draggable = true;
 function getReviewList(sidebarpage){
     if(draggable === true){
-        var type = 'Jobs';
+        var type = 'Internships';
         $.ajax({
             method: "POST",
             url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,

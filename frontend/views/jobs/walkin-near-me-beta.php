@@ -319,7 +319,7 @@ if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(successCallback,showError);
 }
 
-//successful locatin permission
+//successful location permission
 function successCallback(position){
     vals.lat = position.coords.latitude;
     vals.long = position.coords.longitude;
@@ -409,7 +409,7 @@ function showCards(){
 function card(){
     
     $.ajax({
-            url: '/jobs/near-me',
+            url: '/jobs/walk-in-interview',
             type: 'post',
             data: vals,
             success: function (res) {
@@ -455,7 +455,6 @@ function card(){
 //load more click
 $(document).on('click','#load',function(e) {
     e.preventDefault();
-    $('.loader-main').show();
     $('#load').text('Loading...');
     card();
 });

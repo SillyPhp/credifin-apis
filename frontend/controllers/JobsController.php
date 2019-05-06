@@ -342,7 +342,7 @@ class JobsController extends Controller
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
-            $radius = Yii::$app->request->post('radius');
+            $radius = Yii::$app->request->post('inprange');
             $num = Yii::$app->request->post('num');
             $keyword = Yii::$app->request->post('keyword');
             $type = 'Jobs';
@@ -354,7 +354,7 @@ class JobsController extends Controller
 
             return $cards;
         }
-        return $this->render('near-me-beta');
+        return $this->render('walkin-near-me-beta');
     }
 
     public function actionUserLocation(){

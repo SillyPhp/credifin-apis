@@ -218,7 +218,7 @@ $this->registerCss('
 #footer{display:none;}
 .near-me-content{
     min-height:105vh;
-    padding-top:5px;
+    padding-top:10px;
 }
 //.filter-search{
 //    padding-bottom: 20px;
