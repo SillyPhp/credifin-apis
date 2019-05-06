@@ -43,10 +43,24 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get notifications for Job Applications</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch os-email" id="job-application"
+                                                       data-size="small">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get notifications for Internship Applications</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch os-email" id="internship-application"
+                                                       data-size="small">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label class="control-label col-md-6 text-left">Get Notification for Applied
                                                 Applications</label>
                                             <div class="col-md-6 text-right">
-                                                <input type="checkbox" checked class="make-switch"
+                                                <input type="checkbox" checked class="make-switch os-email"
                                                        id="applied-application" data-size="small">
                                             </div>
                                         </div>
@@ -54,7 +68,7 @@
                                             <label class="control-label col-md-6 text-left">Get Notifications for
                                                 Dropped Resume</label>
                                             <div class="col-md-6 text-right">
-                                                <input type="checkbox" checked class="make-switch" id="drop-resume"
+                                                <input type="checkbox" checked class="make-switch os-email" id="drop-resume"
                                                        data-size="small">
                                             </div>
                                         </div>
@@ -62,7 +76,7 @@
                                             <label class="control-label col-md-6 text-left">Get Notifications for
                                                 Reviews</label>
                                             <div class="col-md-6 text-right">
-                                                <input type="checkbox" checked class="make-switch" id="reviews"
+                                                <input type="checkbox" checked class="make-switch os-email" id="reviews"
                                                        data-size="small">
                                             </div>
                                         </div>
@@ -203,21 +217,55 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-function frequency(){
-  var frequency = $('input[name="frequency"]');
-  frequency.each(function() {
-      if($(this).is(':checked')){
-          console.log($(this).val());
+function os_emails(){
+    var  os_email = $('.bootstrap-switch');
+    os_email.each(function() {
+      if($(this).hasClass('bootstrap-switch-on')){
+          $(this).children('.bootstrap-switch-container').children('.os-email').attr('value','1');
+      } else{
+          $(this).children('.bootstrap-switch-container').children('.os-email').attr('value','0');
       }
-  });  
+    });
 }
 $(document).on('click', '#email-submit', function() {
-    frequency();
-    var applied = $('#applied-application').val();
-    var resume = $('#drop-resume').val();
-    var reviews = $('#reviews').val();
-  // var f_email = frequency();
-  // console.log(frequency());
+    var btn = $(this);
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    btn.data('requestRunning', true);
+    os_emails();
+    var frequency_email;
+    var frequency = $('input[name="frequency"]');
+    frequency.each(function() {
+      if($(this).is(':checked')){
+          frequency_email = $(this).val();
+      }
+    });
+    // var fs_email = $('#applied-application').val();
+    var j_application = $('#job-application').attr('value');
+    var i_application = $('#internship-application').attr('value');
+    var applied = $('#applied-application').attr('value');
+    var resume = $('#drop-resume').attr('value');
+    var reviews = $('#reviews').attr('value');
+    $.ajax({
+        url: "/account/settings/email-settings",
+        method: "POST",
+        data: {frequency_email,j_application,i_application,applied,resume,reviews},
+        beforeSend:function(){
+            $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        },
+        success: function (response) {
+            $(this).html('<i class="fa fa-check"></i> Submit');
+            if (response.title == 'Success') {
+                toastr.success(response.message, response.title);
+            } else {
+                toastr.error(response.message, response.title);
+            }
+        },
+        complete: function() {
+            btn.data('requestRunning', false);
+        }
+    });
 })
 JS;
 $this->registerJs($script);
