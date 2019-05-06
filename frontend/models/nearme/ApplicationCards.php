@@ -142,49 +142,49 @@ class ApplicationCards
             $i++;
         }
 
-        $total = EmployerApplications::find()
-            ->alias('a')
-            ->select([
-                'a.application_enc_id',
-                "( 6371 * acos( cos( radians('$lat') ) * cos( radians( c.latitude ) ) * cos( radians( c.longitude ) - radians('$long') ) + sin( radians('$lat') ) * sin( radians( c.latitude ) ) ) )  distance",
-            ])
-            ->joinWith(['applicationTypeEnc as j'])
-            ->joinWith(['title g'=>function($z){
-                $z->joinWith(['categoryEnc as h'],false);
-                $z->joinWith(['parentEnc p'], false);
-            }],false);
-            if($walkin){
-                $total->joinWith(['applicationInterviewLocations as b'=>function($x){
-                    $x->joinWith(['locationEnc as c'=>function($y){
-                        $y->joinWith(['cityEnc as e']);
-                    }],false);
-                }],false, 'INNER JOIN');
-            }else{
-                $total->joinWith(['applicationPlacementLocations as b'=>function($x){
-                    $x->joinWith(['locationEnc as c'=>function($y){
-                        $y->joinWith(['cityEnc as e']);
-                    }],false);
-                }],false, 'INNER JOIN');
-            }
-        $total->joinWith(['designationEnc l'], false)
-            ->joinWith(['preferredIndustry o'], false)
-            ->having(['<', 'distance', $radius])
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0]);
-        if (!empty($keyword)) {
-            $total->andWhere([
-                'or',
-                ['like', 'l.designation',$keyword],
-                ['like', 'a.type', $keyword],
-                ['like', 'h.name', $keyword],
-                ['like', 'o.industry', $keyword],
-                ['like', 'p.name', $keyword],
-            ]);
-        }
-        $total = $total->asArray()->all();
-
-        $data = [];
-        array_push($data,$result);
-        $data['total'] = count($total);
-        return json_encode($data);
+//        $total = EmployerApplications::find()
+//            ->alias('a')
+//            ->select([
+//                'a.application_enc_id',
+//                "( 6371 * acos( cos( radians('$lat') ) * cos( radians( c.latitude ) ) * cos( radians( c.longitude ) - radians('$long') ) + sin( radians('$lat') ) * sin( radians( c.latitude ) ) ) )  distance",
+//            ])
+//            ->joinWith(['applicationTypeEnc as j'])
+//            ->joinWith(['title g'=>function($z){
+//                $z->joinWith(['categoryEnc as h'],false);
+//                $z->joinWith(['parentEnc p'], false);
+//            }],false);
+//            if($walkin){
+//                $total->joinWith(['applicationInterviewLocations as b'=>function($x){
+//                    $x->joinWith(['locationEnc as c'=>function($y){
+//                        $y->joinWith(['cityEnc as e']);
+//                    }],false);
+//                }],false, 'INNER JOIN');
+//            }else{
+//                $total->joinWith(['applicationPlacementLocations as b'=>function($x){
+//                    $x->joinWith(['locationEnc as c'=>function($y){
+//                        $y->joinWith(['cityEnc as e']);
+//                    }],false);
+//                }],false, 'INNER JOIN');
+//            }
+//        $total->joinWith(['designationEnc l'], false)
+//            ->joinWith(['preferredIndustry o'], false)
+//            ->having(['<', 'distance', $radius])
+//            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0]);
+//        if (!empty($keyword)) {
+//            $total->andWhere([
+//                'or',
+//                ['like', 'l.designation',$keyword],
+//                ['like', 'a.type', $keyword],
+//                ['like', 'h.name', $keyword],
+//                ['like', 'o.industry', $keyword],
+//                ['like', 'p.name', $keyword],
+//            ]);
+//        }
+//        $total = $total->asArray()->all();
+//
+//        $data = [];
+//        array_push($data,$result);
+//        $data['total'] = count($total);
+        return json_encode($result);
     }
 }

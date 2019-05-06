@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -242,6 +243,24 @@ class InternshipsController extends Controller
             return $cards;
         }
         return $this->render('near-me-beta');
+    }
+
+    public function actionUserLocation(){
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+
+            $location = Users::find()
+                ->alias('a')
+                ->select(['b.name','c.name as state_name'])
+                ->where(['a.user_enc_id'=>Yii::$app->user->identity->user_enc_id])
+                ->joinWith(['cityEnc as b'=>function($x){
+                    $x->joinWith(['stateEnc as c']);
+                }],false)
+                ->asArray()
+                ->one();
+
+            return json_encode($location);
+        }
     }
 
 }

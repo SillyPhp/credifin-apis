@@ -36,13 +36,6 @@ use yii\web\JqueryAsset; ?>
         ?>
     </div>
     <div class="col-md-4 col-md-offset-2 near-me-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="n-header-bar">
-                    <h4 id="total-jobs">Available Jobs()</h4>
-                </div>
-            </div>
-        </div>
 
         <div class="row">
             <?= $this->render('/widgets/preloader-application-card', [
@@ -338,8 +331,20 @@ function successCallback(position){
 function showError(error) {
   switch(error.code) {
     case error.PERMISSION_DENIED:
-        alert('Please enter city name to get results.');
-      break;
+        $.ajax({
+          url:'/jobs/user-location',
+          method:'POST',
+          success: function (res) {
+            var response = JSON.parse(res);
+            var city = response.name;
+            var state = response.state_name;
+            var address = city+','+state;
+            $('#city_location').val(address);
+            vals.inprange = parseInt($('#range_3').prop("value") * 1000);
+            geocodeAddress(address);
+          }  
+        });
+        break;
   }
 }
 
@@ -410,35 +415,32 @@ function card(){
                 $('.loader-main').hide();
                 
                 var response = JSON.parse(res);
-                
-                if(!response['total']){
+                if(response.length == 0){
                     $('#load').remove();
-                    $('#total-jobs').text("available Jobs("+response.total+")");
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                 }else{
                     
                     $('#load').text('Load');
-                    $('#total-jobs').text("available Jobs("+response.total+")");
-                    for(i=0;i<response[0].length;i++){
+                    for(i=0;i<response.length;i++){
                             marker = new google.maps.Marker({
-                            position: {lat: Number(response[0][i].latitude), lng: Number(response[0][i].longitude)},
+                            position: {lat: Number(response[i].latitude), lng: Number(response[i].longitude)},
                             map: map,
                             draggable: false
                         });                          
                         
                     }
                     var template = $('#cards').html();
-                    var rendered = Mustache.render(template,response[0]);
+                    var rendered = Mustache.render(template,response);
                     $('#near-me-cards').append(rendered);
                     utilities.initials();
                     vals.num += 20;
                     
-                    if(response[0].length < 20){
+                    if(response.length < 20){
                         $('#load').remove();
                     }
                 }
             }
-     });
+    });
          
     map.addListener('click', function(e) {
         infowindow.close();
@@ -512,7 +514,6 @@ $(document).on('click','#search_jobs',function(e) {
      }
        
      $('#near-me-cards').html('');
-     $('#total-jobs').text("available Jobs(0)");
      $('.loader-main').show();
      $('#load').remove();
      $('#loading').append('<button id="load" class="btn near-me-btn">Load</button>');     
@@ -535,7 +536,7 @@ function geocodeAddress(city) {
       
 $("#range_3").ionRangeSlider({
     skin: "round",
-    min: 5,
+    min: 1,
     max: 50,
     from: 50,
     grid: true,
@@ -544,7 +545,6 @@ $("#range_3").ionRangeSlider({
     force_edges: true,
     postfix: " km",
 });
-
 
 draggable = true;
 function getReviewList(sidebarpage){
