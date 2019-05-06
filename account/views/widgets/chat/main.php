@@ -391,7 +391,7 @@ $this->registerJs("
                 if (!hyperlink.match('^https?:\/\/')) {
                     hyperlink = 'http://' + hyperlink;
                 }
-                return space + '<a href='' + hyperlink + '' target='_blank'>' + url + '</a>';
+                return space + '<a href='" + hyperlink + "' target='_blank'>'" + url + "'</a>';
             }
         );
      };
