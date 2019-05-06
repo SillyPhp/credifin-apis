@@ -1,19 +1,28 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
 
-<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->user_enc_id : null ?>" id="current-organization-user">
-<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->organization_enc_id : Yii::$app->user->identity->user_enc_id ?>" id="current-user">
-<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->name : Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>" id="current-name">
+<input type="hidden"
+       value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->user_enc_id : null ?>"
+       id="current-organization-user">
+<input type="hidden"
+       value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->organization_enc_id : Yii::$app->user->identity->user_enc_id ?>"
+       id="current-user">
+<input type="hidden"
+       value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->name : Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>"
+       id="current-name">
 
 <div id="chat-icon">
-    <button type="button" id="trigger"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png')?>"></button>
+    <button type="button" id="trigger"><img
+                src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"></button>
 </div>
 
 <div class="fadeout" id="chat-list">
     <div id="chat-list-heading">Conversations</div>
     <div class="srch-form">
-            <input type="text" id="search-user" placeholder="Search">
+        <input type="text" id="search-user" placeholder="Search">
     </div>
     <ul id="users-list">
 
@@ -230,9 +239,8 @@ element.style {
     right: 45px;
 }
 ");
-$script = <<<JS
-    
-    //all variables defined
+$this->registerJs("
+//all variables defined
     var current_user = $('#current-user').val(); //id of current user   
     var current_organization_user = $('#current-organization-user').val(); //id of current organization user   
     var current_user_name = $('#current-name').val(); // name of current user
@@ -297,7 +305,7 @@ $script = <<<JS
                     }
                     
                     for(var o = 0; o < recent_active_users.length; o++){
-                        if(listed_users_id.includes(recent_active_users[o]["user_enc_id"])){
+                        if(listed_users_id.includes(recent_active_users[o]['user_enc_id'])){
                             delete recent_active_users[o];
                         }
                     }
@@ -334,8 +342,8 @@ $script = <<<JS
          if(msginput && msginput.length < 1500){
              var converseRef = db.ref(specialKey + '/conversations/' + unique_id );
              var currentDate = new Date();
-             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()];
-             var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
+             var senddate = currentDate.getDate() + ' ' + monthDict[currentDate.getMonth()];
+             var sendtime = currentDate.getHours() + ':' + currentDate.getMinutes();
              var data = {
                 sender : current_user,
                 sender_organization_id : current_organization_user,
@@ -358,7 +366,7 @@ $script = <<<JS
              
              $.ajax({
                 type: 'GET',
-                url: 'https://us-central1-empoweryouth-49c18.cloudfunctions.net/sendMessages',
+                url: '" . Yii::$app->params->fireabse->realtimeChat->config->functions->sendMessages . "',
              });
     
             var messagetypeinp = t.closest('.msginput');
@@ -376,14 +384,14 @@ $script = <<<JS
      }
      
      function createTextLinks_(text) {
-        return (text || "").replace(
+        return (text || '').replace(
             /([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi,
             function(match, space, url){
                 var hyperlink = url;
                 if (!hyperlink.match('^https?:\/\/')) {
                     hyperlink = 'http://' + hyperlink;
                 }
-                return space + '<a href="' + hyperlink + '" target="_blank">' + url + '</a>';
+                return space + '<a href='' + hyperlink + '' target='_blank'>' + url + '</a>';
             }
         );
      };
@@ -421,8 +429,8 @@ $script = <<<JS
     $(document).on('keyup', '#search-user', function(e){
             var user = $(this).val();
             var data = {};
-            data["user"] = user;
-            if(data["user"]){
+            data['user'] = user;
+            if(data['user']){
                 $.ajax({
                     type: 'POST',
                     url: '/account/chat/search-user',
@@ -512,11 +520,11 @@ $script = <<<JS
                     var msgtime = res['time'];
                     var msgfinal = createTextLinks_(res['message']);
                     
-                    var messageli = '<li class="out">'+
-                                        '<div class="message">'+
-                                            '<span class="arrow"> </span>'+
-                                            '<a href="#" class="name">You <span>'+msgtime+'</span></a>'+
-                                            '<span class="body">'+msgfinal+'</span>'+
+                    var messageli = '<li class='out'>'+
+                                        '<div class='message'>'+
+                                            '<span class='arrow'> </span>'+
+                                            '<a href='#' class='name'>You <span>'+msgtime+'</span></a>'+
+                                            '<span class='body'>'+msgfinal+'</span>'+
                                         '</div>'+
                                      '</li>';
                     
@@ -546,11 +554,11 @@ $script = <<<JS
                     }
                     
                     
-                    var messageli = '<li class="in">'+
-                                        '<div class="message">'+
-                                            '<span class="arrow"> </span>'+
-                                            '<a href="#" class="name">'+msgreceiver+' <span>'+msgtime+'</span></a>'+
-                                            '<span class="body">'+msgfinal+'</span>'+
+                    var messageli = '<li class='in'>'+
+                                        '<div class='message'>'+
+                                            '<span class='arrow'> </span>'+
+                                            '<a href='#' class='name'>'+msgreceiver+' <span>'+msgtime+'</span></a>'+
+                                            '<span class='body'>'+msgfinal+'</span>'+
                                         '</div>'+
                                      '</li>';
                     
@@ -605,7 +613,7 @@ $script = <<<JS
          var t = $(this);
          sendMessage(t);    
      });
-     $(document).on("keypress", ".msginput",function(event){
+     $(document).on('keypress', '.msginput',function(event){
         if(event.which == '13'){
             var t = $(this);
             sendMessage(t);
@@ -660,9 +668,9 @@ $script = <<<JS
         var userslist = document.querySelector('#users-list');
         
         //check if chat box is already opened
-        var m = document.getElementById("dynamic-chat");
+        var m = document.getElementById('dynamic-chat');
         if(m){
-            var boxid = m.getAttribute("data-id");
+            var boxid = m.getAttribute('data-id');
             if(boxid == sender['id']){
                 chat_icon.classList.remove('chat-bounce');
                 
@@ -682,43 +690,43 @@ $script = <<<JS
             sp.className = 'badge';
             sp.innerHTML = 'New';
             userslist.children[0].querySelector('.chat-person').appendChild(sp);
-            var redbtn = '<span id="red-btn"></span>';
+            var redbtn = '<span id='red-btn'></span>';
             document.getElementById('trigger').innerHTML += redbtn; 
         }
         // utilities.initials();
     })
     
  function chats() {
-    var e = $(".chats-main"),
-        t = $(".chats", e),
-        a = $(".chat-form", e),
-        i = $("input", a),
-        l = $(".btn", a),
+    var e = $('.chats-main'),
+        t = $('.chats', e),
+        a = $('.chat-form', e),
+        i = $('input', a),
+        l = $('.btn', a),
         o = function(a) {
             a.preventDefault();
             var l = i.val();
             if (0 != l.length) {
                 var o = new Date,
-                    n = o.getHours() + ":" + o.getMinutes(),
-                    r = "";
-                r += '<li class="out">', r += '<img class="avatar" alt="" src="/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg"/>', r += '<div class="message">', r += '<span class="arrow"></span>', r += '<a href="#" class="name">Bob Nilson</a>&nbsp;', r += '<span class="datetime">at ' + n + "</span>", r += '<span class="body">', r += l, r += "</span>", r += "</div>", r += "</li>";
+                    n = o.getHours() + ':' + o.getMinutes(),
+                    r = '';
+                r += '<li class='out'>', r += '<img class='avatar' alt='' src='/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg'/>', r += '<div class='message'>', r += '<span class='arrow'></span>', r += '<a href='#' class='name'>Bob Nilson</a>&nbsp;', r += '<span class='datetime'>at ' + n + '</span>', r += '<span class='body'>', r += l, r += '</span>', r += '</div>', r += '</li>';
                 t.append(r);
-                i.val("");
+                i.val('');
                 var s = function() {
                     var t = 0;
-                    return e.find("li.out, li.in").each(function() {
+                    return e.find('li.out, li.in').each(function() {
                         t += $(this).outerHeight()
                     }), t
                 };
-                e.find(".scroller").slimScroll({
+                e.find('.scroller').slimScroll({
                     scrollTo: s()
                 })
             }
         };
-    $("body").on("click", ".message .name", function(e) {
+    $('body').on('click', '.message .name', function(e) {
         e.preventDefault();
         var t = $(this).text();
-        i.val("@" + t + ":"), App.scrollTo(i)
+        i.val('@' + t + ':'), App.scrollTo(i)
     }), l.click(o), i.keypress(function(e) {
         if (13 == e.which) return o(e), !1
     })
@@ -744,23 +752,21 @@ $(document).on('click','.closeBtn', function(){
         $('#chat-list').addClass('fadeout');
     }
 });
-JS;
-$this->registerJs($script);
+
+// Initialize Firebase
+var config = {
+    apiKey: '" . Yii::$app->params->fireabse->realtimeChat->config->apiKey . "',
+    authDomain: '" . Yii::$app->params->fireabse->realtimeChat->config->authDomain . "',
+    databaseURL: '" . Yii::$app->params->fireabse->realtimeChat->config->databaseURL . "',
+    projectId: '" . Yii::$app->params->fireabse->realtimeChat->config->projectId . "',
+    storageBucket: '" . Yii::$app->params->fireabse->realtimeChat->config->storageBucket . "',
+    messagingSenderId: '" . Yii::$app->params->fireabse->realtimeChat->config->messagingSenderId . "',
+};
+firebase.initializeApp(config);
+");
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
 <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
-<script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyDRQXJJP1rOOh8omclQ7146ME-oL9tNDAg",
-        authDomain: "empoweryouth-49c18.firebaseapp.com",
-        databaseURL: "https://empoweryouth-49c18.firebaseio.com",
-        projectId: "empoweryouth-49c18",
-        storageBucket: "empoweryouth-49c18.appspot.com",
-        messagingSenderId: "173074095977"
-    };
-    firebase.initializeApp(config);
-</script>
 <script id="no-user" type="text/template">
     <li>
         No User Found
@@ -768,21 +774,23 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
 </script>
 <script id="users" type="text/template">
     {{#.}}
-        <li>
-            <button class="single-user" type="button" id="{{user_enc_id}}">
-                <div class="chat-person">
-                        {{#image}}
-                            <div class="c-icon"><img src="{{image}}"></div>
-                        {{/image}}
-                        {{^image}}
-                        <div class="c-icon"><img src="https://ui-avatars.com/api/?name={{first_name}}+{{last_name}}&background={{initials_color}}&color=fff&size=30&font-size=0.55"></div>
-<!--                            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"-->
-<!--                                color="{{initials_color}}" font="18px"></canvas>-->
-                        {{/image}}
-                        <div class="c-name">{{first_name}} {{last_name}}</div>
+    <li>
+        <button class="single-user" type="button" id="{{user_enc_id}}">
+            <div class="chat-person">
+                {{#image}}
+                <div class="c-icon"><img src="{{image}}"></div>
+                {{/image}}
+                {{^image}}
+                <div class="c-icon"><img
+                            src="https://ui-avatars.com/api/?name={{first_name}}+{{last_name}}&background={{initials_color}}&color=fff&size=30&font-size=0.55">
                 </div>
-            </button>
-        </li>
+                <!--                            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"-->
+                <!--                                color="{{initials_color}}" font="18px"></canvas>-->
+                {{/image}}
+                <div class="c-name">{{first_name}} {{last_name}}</div>
+            </div>
+        </button>
+    </li>
     {{/.}}
 </script>
 <script id="date-badge" type="text/template">
