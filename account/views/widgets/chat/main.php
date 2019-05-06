@@ -752,17 +752,6 @@ $(document).on('click','.closeBtn', function(){
         $('#chat-list').addClass('fadeout');
     }
 });
-
-// Initialize Firebase
-var config = {
-    apiKey: '" . Yii::$app->params->fireabse->realtimeChat->config->apiKey . "',
-    authDomain: '" . Yii::$app->params->fireabse->realtimeChat->config->authDomain . "',
-    databaseURL: '" . Yii::$app->params->fireabse->realtimeChat->config->databaseURL . "',
-    projectId: '" . Yii::$app->params->fireabse->realtimeChat->config->projectId . "',
-    storageBucket: '" . Yii::$app->params->fireabse->realtimeChat->config->storageBucket . "',
-    messagingSenderId: '" . Yii::$app->params->fireabse->realtimeChat->config->messagingSenderId . "',
-};
-firebase.initializeApp(config);
 ");
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
@@ -771,6 +760,18 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
     <li>
         No User Found
     </li>
+</script>
+<script type="text/javascript">
+    // Initialize Firebase
+    var config = {
+        apiKey: '<?= Yii::$app->params->fireabse->realtimeChat->config->apiKey; ?>',
+        authDomain: '<?= Yii::$app->params->fireabse->realtimeChat->config->authDomain; ?>',
+        databaseURL: '<?= Yii::$app->params->fireabse->realtimeChat->config->databaseURL; ?>',
+        projectId: '<?= Yii::$app->params->fireabse->realtimeChat->config->projectId; ?>',
+        storageBucket: '<?= Yii::$app->params->fireabse->realtimeChat->config->storageBucket; ?>',
+        messagingSenderId: '<?= Yii::$app->params->fireabse->realtimeChat->config->messagingSenderId; ?>',
+    };
+    firebase.initializeApp(config);
 </script>
 <script id="users" type="text/template">
     {{#.}}
