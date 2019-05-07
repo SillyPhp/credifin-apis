@@ -38,7 +38,14 @@ class RegistrationForm extends Model {
 
     public function types()
     {
-      $data =   BusinessActivities::find()->select(['business_activity_enc_id','business_activity'])->where(['in','business_activity',['College','Educational Institute','Others']])->asArray()->all();
+      $data =   BusinessActivities::find()->select(['business_activity_enc_id',
+          '(CASE
+                WHEN business_activity = "College" THEN "Colege/Universities"
+                WHEN business_activity = "Educational Institute" THEN "Educational Institute/Tution Centers"
+                WHEN business_activity = "Others" THEN "Others"
+                ELSE "Others"
+                END) as business_activity'
+          ])->where(['in','business_activity',['College','Educational Institute','Others']])->asArray()->all();
 
       return ArrayHelper::map($data, 'business_activity_enc_id', 'business_activity');
     }
@@ -168,7 +175,7 @@ class RegistrationForm extends Model {
         }
         $companyReview->organization_enc_id = $org_id;
         $companyReview->average_rating = $arr['average_rating'];
-        $companyReview->reviewer_type = 3;
+        $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
         $companyReview->from_date = $from_time;
         $companyReview->to_date = $to_time;
         $companyReview->skill_development = $arr['skill_development'];
@@ -201,6 +208,7 @@ class RegistrationForm extends Model {
         $t_time = strtotime($arr['to']);
         $to_time = date('Y-m-d', $t_time);
         $companyReview = new NewOrganizationReviews();
+        $companyReview->reviewer_type = 3;
         $data = Qualifications::find()
             ->where(['name'=>$arr['stream']])
             ->asArray()
