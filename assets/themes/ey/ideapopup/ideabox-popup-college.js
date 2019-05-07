@@ -1,9 +1,9 @@
-function random_fn(t){
-	document.querySelector('.i-review-next').click();
+function change_next_btn(t){
+	document.querySelector('.i-review-next-btn').click();
 }
 (function(window){
 	'use strict';
-  	window.ideaboxPopup = function() {
+  	window.ideaboxPopupCollege = function() {
   		// ---------------------------------
 	    // # Define Constants
 	    // ---------------------------------
@@ -14,7 +14,7 @@ function random_fn(t){
 	    this.nextButton = null;
 		this.overlayButton = null;
 		this.active = 0;
-                this.validate = true;
+		this.validate = true;
 		this.values = {};
 
 	    var defaults = {
@@ -45,11 +45,18 @@ function random_fn(t){
 	    	this.open();
 
 	}
+	function sbt_values(t){
+		var academic_year = t['academic_year'].split(' ');
+		t['from'] = academic_year[1] + "-" +academic_year[0] + "-1";
+		t['to'] = academic_year[4] + "-" +academic_year[3] + "-1";
+
+	}
+
 	//////////////////////////////////////////////////////////////
 	///////Public methods/////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
 	// Global popup close method.
-	ideaboxPopup.prototype.close = function() {
+	ideaboxPopupCollege.prototype.close = function() {
 		var that = this;
   		that.reviewModal.classList.remove('i-opened');
   		that.reviewModal.classList.add('i-close-animation');
@@ -68,7 +75,7 @@ function random_fn(t){
   	}
   	//------------------------------------------------------------
   	// Global popup open method.
-  	ideaboxPopup.prototype.open = function() {
+  	ideaboxPopupCollege.prototype.open = function() {
 		var that = this;
 
 		that.reviewModal.style.cssText = 'display:block;';
@@ -92,7 +99,7 @@ function random_fn(t){
   	}
   	//------------------------------------------------------------
   	// Global popup next method.
-  	ideaboxPopup.prototype.next = function(typex) {
+  	ideaboxPopupCollege.prototype.next = function(typex) {
 		var total = 0;
 		if (this.options.hasOwnProperty('data') && this.options.data != null)
 			total = this.options.data.length;
@@ -100,7 +107,6 @@ function random_fn(t){
 		if (typex != 'start')
 		{
 			this.validate = true;
-			
 			checkValidations(this.active,this);
 			if (this.validate)
 			{
@@ -115,16 +121,14 @@ function random_fn(t){
 			if (this.validate)
 			{
 				clearErrorMessage.call(this);
-				showThisQuestion(this.active, this);
-				
+				showThisQuestion(this.active,this);
 			}
 		}
 		else
 		{
 			clearErrorMessage.call(this);
 			if(this.active === total){
-                                sbt_values(this.values);
-				call_result(this.values);
+				sbt_values(this.values);
 			}
 			if (endPageControl(this))
 				showEndPage.call(this);
@@ -370,44 +374,15 @@ function random_fn(t){
 		showNavigate(qno,that);
 
 		//show continue button
-		// switch(qno){
-		// 	case 0:
-		// 		break;
-		// 	case 1:
-		// 		showNextButton(qno, that);
-		// 		break;
-		// 	default:
-		// 		break;
-		// }
-		// if(qno === 1){
-		// if(qno === 0 || qno === 3){
-		// 	that.nextButton.classList.add("i-next-hide");
-		// }else if(qno === 1|| qno === 2 || qno === 4 || qno ===5){
-		// 	that.nextButton.classList.remove("i-next-hide");
-		// 	showNextButton(qno, that);
-		// }
-
-		// }else if(qno === 2){
-		// 	showNextButton(qno, that);
-		// }else if(qno === 5){
-		// 	showNextButton(qno, that);
-		// }
-		// if(qno === 1 || qno === 4){	
-		// 	console.log(this.active);	
-		// 	showNextButton(qno, that);
-		// }else if(qno === 0 || qno === 2 || qno === 3){
-		// 	//console.log(this.active);
-		// 	showThisQuestion(this.active,this);
-		// }
+		showNextButton(qno, that);
 
 		//question create
 		var question = createQuestion(qno,that);
 
 		//answer inputs create
 		var answers = '';
-		if (that.options.data[qno].hasOwnProperty('answerType')) {
+		if (that.options.data[qno].hasOwnProperty('answerType'))
 			answers = createAnswers(qno, that);
-		}
 
 		//description create
 		var desccription = createDescription(qno,that);
@@ -442,85 +417,8 @@ function random_fn(t){
 	//------------------------------------------------------------
 	// inputbox create method. Using with answerType:'inputbox'
 	var createInputBox = function (qno, that){
-		//if(qno == 4)
-		//	var i = '<div class="i-review-answer"><input type="text" onclick="auto_fn(this);" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		//else
-		var i = '<div class="i-review-answer"><input type="text" autocomplete="off" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		
+		var i = '<div class="i-review-answer"><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
 		return i;
-	}
-
-	var location_autoInputBox = function (qno, that){
-		//if(qno == 4)
-		var d = '<div class="i-review-answer"><input type="text" onclick="location_auto_fn(this);" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-location-autocomplete"></div>';
-		//else
-		//	var i = '<div class="i-review-answer"><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		
-		return d;
-	}
-	var department_autoInputBox = function (qno, that){
-		setTimeout(make_department,100);
-		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-department_autocomplete"></div>';
-		return i;
-	}
-	function make_department() {
-		var department = new Bloodhound({
-			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			remote: {
-				url: '/account/categories-list/job-profiles?q=%QUERY',
-				wildcard: '%QUERY',
-				cache: true,
-				filter: function(list) {
-					return list;
-				}
-			}
-		});
-
-		$('.i-review-department_autocomplete').typeahead(null, {
-			name: 'cities_test',
-			display: 'value',
-			limit: 8,
-			source: department
-		}).on('typeahead:asyncrequest', function() {
-			$('.Typeahead-spinner').show();
-		}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-
-			$('.Typeahead-spinner').hide();
-		}).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-		})
-	}
-	var designation_autoInputBox = function (qno, that){
-		setTimeout(make_designation,100);
-		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-designation_autocomplete"></div>';
-		return i;
-	}
-	function make_designation() {
-		var designation = new Bloodhound({
-			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			remote: {
-				url: '/account/categories-list/job-profiles?q=%QUERY',
-				wildcard: '%QUERY',
-				cache: true,
-				filter: function(list) {
-					return list;
-				}
-			}
-		});
-
-		$('.i-review-designation_autocomplete').typeahead(null, {
-			name: 'cities_test',
-			display: 'value',
-			limit: 8,
-			source: designation
-		}).on('typeahead:asyncrequest', function() {
-			$('.Typeahead-spinner').show();
-		}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-
-			$('.Typeahead-spinner').hide();
-		}).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-		})
 	}
 	//------------------------------------------------------------
 	// Textarea create method. Using with answerType:'textarea'
@@ -528,13 +426,60 @@ function random_fn(t){
 		var t = '<div class="i-review-answer"><textarea placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-textarea"></textarea></div>';
 		return t;
 	}
+	//------------------------------------------------------------
+	// Checkbox create method. Using with answerType:'checkbox'
+	var createCheckBox = function (qno, that){
+		var checks = '';
+		if (that.options.data[qno].hasOwnProperty('choices'))
+		{
+			for (var i = 0; i < that.options.data[qno].choices.length; i++ )
+			{
+				var randomId = createUniqueId();
+				checks += '<div class="i-review-input-group" for="cb1"><input name="'+that.options.data[qno].formName+'" class="i-review-input-checkbox" type="checkbox" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
+			}
+		}
+		else
+			console.log('"checkbox" form type must have -choices- parameters!');
+
+		var inlineClass = '';
+		if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
+			inlineClass = ' i-inline-answer-list'
+		var c = '<div class="i-review-answer'+inlineClass+'">'+checks+'</div>';
+		return c;
+	}
+	//------------------------------------------------------------
+	// Selectbox create method. Using with answerType:'selectbox'
+	var createSelectBox = function (qno, that){
+		var months = '';
+		var years = '';
+		if (that.options.data[qno].hasOwnProperty('choices'))
+		{
+			for (var i = 0; i < that.options.data[qno].choices[0].length; i++ )
+			{
+				months += '<option value="'+that.options.data[qno].choices[0][i].value+'">'+that.options.data[qno].choices[0][i].label+'</option>';
+			}
+			for (var i = 0; i < that.options.data[qno].choices[1].length; i++ )
+			{
+				years += '<option value="'+that.options.data[qno].choices[1][i].value+'">'+that.options.data[qno].choices[1][i].label+'</option>';
+			}
+		}
+		else
+			console.log('"selectbox" form type must have -choices- parameters!');
+		var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
+		return s;
+	}
+
 	var createCollegeCity = function (qno,that) {
 		setTimeout(make_city,100);
 		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-college_city_autocomplete"></div>';
 		return i;
 	}
-
-	var global = [];
+	var createStream = function (qno,that) {
+		setTimeout(make_streams,100);
+		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-streams_autocomplete"></div>';
+		return i;
+	}
+    var global = [];
 	function make_city() {
 		var cities = new Bloodhound({
 			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -564,6 +509,34 @@ function random_fn(t){
 			$('.hidden_city_location').val((datum.city_enc_id));
 		}).blur(validateSelection);
 	}
+
+	function make_streams() {
+		var streams = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				url: '/account/categories-list/load-streams?q=%QUERY',
+				wildcard: '%QUERY',
+				cache: true,
+				filter: function(list) {
+					return list;
+				}
+			}
+		});
+
+		$('.i-review-streams_autocomplete').typeahead(null, {
+			name: 'streams',
+			display: 'name',
+			limit: 8,
+			source: streams
+		}).on('typeahead:asyncrequest', function() {
+			$('.Typeahead-spinner').show();
+		}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+
+			$('.Typeahead-spinner').hide();
+		}).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+		});
+	}
 	function validateSelection() {
 		var theIndex = -1;
 		for (var i = 0; i < global.length; i++) {
@@ -578,54 +551,6 @@ function random_fn(t){
 
 	}
 	//------------------------------------------------------------
-	// Checkbox create method. Using with answerType:'checkbox'
-	var createCheckBox = function (qno, that){
-		var checks = '';
-		if (that.options.data[qno].hasOwnProperty('choices'))
-		{
-			for (var i = 0; i < that.options.data[qno].choices.length; i++ )
-			{
-				var randomId = createUniqueId();
-				checks += '<div class="i-review-input-group" for="cb1"><input name="'+that.options.data[qno].formName+'" class="i-review-input-checkbox" type="checkbox" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
-			}
-		}
-		else
-			console.log('"checkbox" form type must have -choices- parameters!');
-
-		var inlineClass = '';
-		if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
-			inlineClass = ' i-inline-answer-list'
-		var c = '<div class="i-review-answer'+inlineClass+'">'+checks+'</div>';
-		return c;
-	}
-	//------------------------------------------------------------
-	// Selectbox create method. Using with answerType:'selectbox'
-	var createSelectBox = function (qno, that, e_type){
-		var months = '';
-		var years = '';
-		if (that.options.data[qno].hasOwnProperty('choices'))
-		{
-			for (var i = 0; i < that.options.data[qno].choices[0].length; i++ )
-			{
-				months += '<option value="'+that.options.data[qno].choices[0][i].value+'">'+that.options.data[qno].choices[0][i].label+'</option>';
-			}
-                        for (var i = 0; i < that.options.data[qno].choices[1].length; i++ )
-			{
-				years += '<option value="'+that.options.data[qno].choices[1][i].value+'">'+that.options.data[qno].choices[1][i].label+'</option>';
-			}
-		}
-		else
-			console.log('"selectbox" form type must have -choices- parameters!');
-
-                if(e_type=='former'){
-                    var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
-                    return s;
-                }else{
-                    var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label></div>';
-                    return s;
-                }
-	}
-	//------------------------------------------------------------
 	// Radiobox create method. Using with answerType:'radio'
 	var createRadioBox = function (qno, that){
 		var radios = '';
@@ -634,7 +559,7 @@ function random_fn(t){
 			for (var i = 0; i < that.options.data[qno].choices.length; i++ )
 			{
 				var randomId = createUniqueId();
-				radios += '<div class="i-review-input-group" for="cb1"><input onchange="random_fn();" name="'+that.options.data[qno].formName+'" class="i-review-input-radio" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
+				radios += '<div class="i-review-input-group" for="cb1"><input name="'+that.options.data[qno].formName+'" class="i-review-input-radio" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
 			}
 		}
 		else
@@ -656,7 +581,7 @@ function random_fn(t){
 
 		for (var i = 0; i < starTotal; i++ )
 		{
-			stars += '<label class="i-review-star"><input onClick="starRateSetter(this);" type="radio" onchange="random_fn();" name="'+that.options.data[qno].formName+'" value="'+(starTotal-i)+'"/></label>';
+			stars += '<label class="i-review-star"><input onClick="starRateSetter(this);" type="radio" onchange="change_next_btn(this);" name="'+that.options.data[qno].formName+'" value="'+(starTotal-i)+'"/></label>';
 		}
 
 		var s = '<div class="i-review-answer i-review-answer-center"><div class="i-review-rate-stars" data-last-val="">'+stars+'</div></div>';
@@ -666,50 +591,27 @@ function random_fn(t){
 	var createAnswers = function(qno, that){
 		switch (that.options.data[qno].answerType){
 			case 'inputbox':
-				that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
 				return createInputBox(qno, that);
 				break;
-			case 'location_autocomplete':
-				that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
-				return createCollegeCity(qno, that);
-				break;
-           case 'department_autocomplete':
-				that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
-				return department_autoInputBox(qno, that);
-				break;
-			case 'designation_autocomplete':
-				that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
-					return designation_autoInputBox(qno, that);
-				break;
 			case 'checkbox':
-				that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
 				return createCheckBox(qno, that);
 				break;
 			case 'selectbox':
-                   that.nextButton.classList.remove("i-next-hide");
-					showNextButton(qno, that);
-                    if(that.values['current_employee'] == 'current'){
-                    return createSelectBox(qno, that, 'current');
-                    }else{
-                    return createSelectBox(qno, that, 'former');
-                    }
+				return createSelectBox(qno, that);
+				break;
+			case 'colleg_city_autocomplete':
+				return createCollegeCity(qno, that);
+				break;
+			case 'stream_autocomplete':
+				return createStream(qno, that);
 				break;
 			case 'radio':
-				that.nextButton.classList.add("i-next-hide");
 				return createRadioBox(qno, that);
 				break;
 			case 'starrate':
-				that.nextButton.classList.add("i-next-hide");
 				return createStarRate(qno, that);
 				break;
 			case 'textarea':
-				that.nextButton.classList.remove("i-next-hide");
-				showNextButton(qno, that);
 				return createTextarea(qno, that);
 				break;
 			default:
@@ -770,7 +672,7 @@ function random_fn(t){
 	// Creating cancel button on start page.
 	var createCancelButton = function(){
 		this.cancelButton = document.createElement('button');
-		this.cancelButton.className = 'i-review-next';
+		this.cancelButton.className = 'i-review-next-btn';
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
 		if (this.options.startPage.hasOwnProperty('cancelBtnText'))
@@ -785,7 +687,7 @@ function random_fn(t){
 	// Creating close button on finish page
 	var createEndCloseButton = function(){
 		this.endCloseButton = document.createElement('button');
-		this.endCloseButton.className = 'i-review-next';
+		this.endCloseButton.className = 'i-review-next-btn';
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
 		if (this.options.endPage.hasOwnProperty('closeBtnText'))
@@ -800,7 +702,7 @@ function random_fn(t){
 	// Creating start button only start page.
 	var createStartButton = function(){
 		this.startButton = document.createElement('button');
-		this.startButton.className = 'i-review-next';
+		this.startButton.className = 'i-review-next-btn';
 
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
@@ -813,7 +715,7 @@ function random_fn(t){
 		}
 
 		var el2 = document.createElement('span');
-		el2.className = 'i-review-next-icon';		
+		el2.className = 'i-review-next-btn-icon';		
 		this.startButton.appendChild(el2);
 		//add click listener to start button
 		this.startButton.addEventListener('click', this.next.bind(this,'start'));
@@ -845,9 +747,9 @@ function random_fn(t){
 	var createNextButton = function(){
 		this.nextButton = document.createElement('button');
 		if (startPageControl(this))
-			this.nextButton.className = 'i-review-next i-review-hide';
+			this.nextButton.className = 'i-review-next-btn i-review-hide';
 		else
-			this.nextButton.className = 'i-review-next';
+			this.nextButton.className = 'i-review-next-btn';
 
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
@@ -855,7 +757,7 @@ function random_fn(t){
 		this.nextButton.appendChild(el1);
 
 		var el2 = document.createElement('span');
-		el2.className = 'i-review-next-icon';
+		el2.className = 'i-review-next-btn-icon';
 		this.nextButton.appendChild(el2);
 		//add click listener to next button
 		this.nextButton.addEventListener('click', this.next.bind(this));
@@ -903,17 +805,6 @@ function random_fn(t){
 			return true;
 		else
 			return false;
-	}
-	var college_city_validate = function (qno,that) {
-
-		var val = document.getElementsByClassName("hidden_city_location")[0].value;
-		var val2 = that.reviewModal.getElementsByClassName('i-review-input')[0].value;
-		that.values[that.options.data[qno].formName] = val;
-		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-		{
-			if (val == ''&&val2=='')
-				that.validate = false;
-		}
 	}
 	//------------------------------------------------------------
 	// Finish page checker method.
@@ -973,25 +864,17 @@ function random_fn(t){
 			case 'inputbox':
 				inputValidate(qno, that);
 				break;
-			case 'location_autocomplete':
-				college_city_validate(qno, that);
-				break;
-             case 'department_autocomplete':
-				 departmentValidate(qno, that);
-				break;
-			case 'designation_autocomplete':
-				designationValidate(qno, that);
-				break;
 			case 'textarea':
 				textareaValidate(qno, that);
 				break;
+			case 'colleg_city_autocomplete':
+				college_city_validate(qno, that);
+				break;
+			case 'stream_autocomplete':
+				stream_validate(qno, that);
+				break;
 			case 'selectbox':
-                                if(that.values['current_employee'] == 'current'){
-                                    return selectValidate(qno, that, 'current');
-                                }else{
-                                    return selectValidate(qno, that, 'former');
-                                }
-				
+				selectValidate(qno, that);
 				break;
 			case 'checkbox':
 				checkValidate(qno, that);
@@ -1028,120 +911,46 @@ function random_fn(t){
 			}
 		}
 	}
-	var designationValidate = function(qno,that){
-		var val = that.reviewModal.getElementsByClassName('i-review-input')[1].value;
-		that.values[that.options.data[qno].formName] = val;
+	
+	var college_city_validate = function (qno,that) {
 
+		var val = document.getElementsByClassName("hidden_city_location")[0].value;
+		var val2 = that.reviewModal.getElementsByClassName('i-review-input')[0].value;
+		that.values[that.options.data[qno].formName] = val;
 		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
 		{
-			if (that.options.data[qno].hasOwnProperty('validate'))
-			{
-				if (that.options.data[qno].validate == 'email')
-					that.validate = emailValidate(val);
-				else if (that.options.data[qno].validate == 'number')
-					that.validate = numericValidate(val);
-			}
-			else
-			{
-				if (val == '')
+				if (val == ''&&val2=='')
 					that.validate = false;
-			}
 		}
 	}
-
-	var departmentValidate = function(qno,that){
-		var val = that.reviewModal.getElementsByClassName('i-review-input')[1].value;
+	var stream_validate = function (qno,that) {
+		var val = that.reviewModal.getElementsByClassName("i-review-input")[1].value;
 		that.values[that.options.data[qno].formName] = val;
-
 		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
 		{
-			if (that.options.data[qno].hasOwnProperty('validate'))
-			{
-				if (that.options.data[qno].validate == 'email')
-					that.validate = emailValidate(val);
-				else if (that.options.data[qno].validate == 'number')
-					that.validate = numericValidate(val);
-			}
-			else
-			{
-				if (val == '')
-					that.validate = false;
-			}
+			if (val=='')
+				that.validate = false;
 		}
 	}
-
-	var location_autocompleteValidate = function(qno, that){
-		var val = that.reviewModal.getElementsByClassName('i-review-location-autocomplete')[0].value;
-		that.values[that.options.data[qno].formName] = val;
-		
-		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-		{
-			if (that.options.data[qno].hasOwnProperty('validate'))
-			{
-				if (that.options.data[qno].validate == 'email')
-					that.validate = emailValidate(val);
-				else if (that.options.data[qno].validate == 'number')
-					that.validate = numericValidate(val);
-			}
-			else
-			{
-				if (val == '' || !countries.includes(val))
-					that.validate = false;
-			}
-		}
-	}
-        var department_autocompleteValidate = function(qno, that){
-		var val = that.reviewModal.getElementsByClassName('i-review-department-autocomplete')[0].value;
-		that.values[that.options.data[qno].formName] = val;
-		
-		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-		{
-			if (that.options.data[qno].hasOwnProperty('validate'))
-			{
-				if (that.options.data[qno].validate == 'email')
-					that.validate = emailValidate(val);
-				else if (that.options.data[qno].validate == 'number')
-					that.validate = numericValidate(val);
-			}
-			else
-			{
-				if (val == '' || !departments.includes(val))
-					that.validate = false;
-                               
-			}
-		}
-	}
- 	//------------------------------------------------------------
+	//------------------------------------------------------------
 	// Selectbox validate checker
-	var selectValidate = function(qno,that, e_type){
-            if(e_type == 'former'){
+	var selectValidate = function(qno,that){
 		var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
-                var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
-                var val3 = that.reviewModal.getElementsByClassName('i-review-to-m')[0].value;
-                var val4 = that.reviewModal.getElementsByClassName('i-review-to-y')[0].value;
+		var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
+		var val3 = that.reviewModal.getElementsByClassName('i-review-to-m')[0].value;
+		var val4 = that.reviewModal.getElementsByClassName('i-review-to-y')[0].value;
 		that.values[that.options.data[qno].formName] = val1 + " "+ val2 + " - "+ val3 + " " + val4;
-		
+
 		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
 		{
 			if (val1 == '' || val2 == '' || val3 == '' || val4 == '') {
-                that.validate = false;
-            }
-			if (val2>val4)
-            {
-                that.validate = false;
-            }
-		}
-            }else{
-                var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
-                var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
-                that.values[that.options.data[qno].formName] = val1 + " "+ val2;
-		
-		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-		{
-			if (val1 == '' || val2 == '')
 				that.validate = false;
+			}
+			if (val2>val4)
+			{
+				that.validate = false;
+			}
 		}
-            }
 	}
 	//------------------------------------------------------------
 	// Textarea validate checker
@@ -1210,15 +1019,13 @@ function random_fn(t){
 	// Starrate validate checker
 	var starrateValidate = function(qno,that){
 		var val = '';
-                
+		
 		try {
     		val = that.reviewModal.querySelector('input[name="'+that.options.data[qno].formName+'"]:checked').value;
     		that.values[that.options.data[qno].formName] = val;
-                    calculate_avg(val);
-                }
+		}
 		catch(err) {
 			that.values[that.options.data[qno].formName] = val;
-                        calculate_avg(val);
 		}
 
 		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
@@ -1303,134 +1110,4 @@ function starRateSetter(that){
 	   	that.parentElement.parentElement.setAttribute('data-last-val',val);
 	}
 
-}
-
-function autocomplete(inp, arr) {
-	/*the autocomplete function takes two arguments,
-	the text field element and an array of possible autocompleted values:*/
-	var currentFocus;
-	/*execute a function when someone writes in the text field:*/
-	inp.addEventListener("input", function(e) {
-		var a, b, i, val = this.value;
-		/*close any already open lists of autocompleted values*/
-		closeAllLists();
-		if (!val) { return false;}
-		currentFocus = -1;
-		/*create a DIV element that will contain the items (values):*/
-		a = document.createElement("DIV");
-		a.setAttribute("id", this.id + "autocomplete-list");
-		a.setAttribute("class", "autocomplete-items");
-		/*append the DIV element as a child of the autocomplete container:*/
-		this.parentNode.appendChild(a);
-		/*for each item in the array...*/
-		for (i = 0; i < arr.length; i++) {
-		  /*check if the item starts with the same letters as the text field value:*/
-		  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-			/*create a DIV element for each matching element:*/
-			b = document.createElement("DIV");
-			/*make the matching letters bold:*/
-			b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-			b.innerHTML += arr[i].substr(val.length);
-			/*insert a input field that will hold the current array item's value:*/
-			b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-			/*execute a function when someone clicks on the item value (DIV element):*/
-				b.addEventListener("click", function(e) {
-				/*insert the value for the autocomplete text field:*/
-				inp.value = this.getElementsByTagName("input")[0].value;
-				/*close the list of autocompleted values,
-				(or any other open lists of autocompleted values:*/
-				closeAllLists();
-			});
-			a.appendChild(b);
-		  }
-		}
-	});
-	/*execute a function presses a key on the keyboard:*/
-	inp.addEventListener("keydown", function(e) {
-		var x = document.getElementById(this.id + "autocomplete-list");
-		if (x) x = x.getElementsByTagName("div");
-		if (e.keyCode == 40) {
-		  /*If the arrow DOWN key is pressed,
-		  increase the currentFocus variable:*/
-		  currentFocus++;
-		  /*and and make the current item more visible:*/
-		  addActive(x);
-		} else if (e.keyCode == 38) { //up
-		  /*If the arrow UP key is pressed,
-		  decrease the currentFocus variable:*/
-		  currentFocus--;
-		  /*and and make the current item more visible:*/
-		  addActive(x);
-		} else if (e.keyCode == 13) {
-		  /*If the ENTER key is pressed, prevent the form from being submitted,*/
-		  e.preventDefault();
-		  if (currentFocus > -1) {
-			/*and simulate a click on the "active" item:*/
-			if (x) x[currentFocus].click();
-		  }
-		}
-	});
-	function addActive(x) {
-	  /*a function to classify an item as "active":*/
-	  if (!x) return false;
-	  /*start by removing the "active" class on all items:*/
-	  removeActive(x);
-	  if (currentFocus >= x.length) currentFocus = 0;
-	  if (currentFocus < 0) currentFocus = (x.length - 1);
-	  /*add class "autocomplete-active":*/
-	  x[currentFocus].classList.add("autocomplete-active");
-	}
-	function removeActive(x) {
-	  /*a function to remove the "active" class from all autocomplete items:*/
-	  for (var i = 0; i < x.length; i++) {
-		x[i].classList.remove("autocomplete-active");
-	  }
-	}
-	function closeAllLists(elmnt) {
-	  /*close all autocomplete lists in the document,
-	  except the one passed as an argument:*/
-	  var x = document.getElementsByClassName("autocomplete-items");
-	  for (var i = 0; i < x.length; i++) {
-		if (elmnt != x[i] && elmnt != inp) {
-		x[i].parentNode.removeChild(x[i]);
-	  }
-	}
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-	  closeAllLists(e.target);
-  });
-  }
-
-function getKeyByValue(obj, value){
-	for (var key in obj) {
-		if(obj[key] === value){
-			return key;
-		}
-	}
-	// const key = Object.keys(obj).find(key => obj[key] === value);
-}
-
-var res;
-var average_rating = [];
-
-function calculate_avg(k){
-    average_rating.push(Number(k));
-}
-function sbt_values(t){
-        var sum = average_rating.reduce((a, b) => a+b, 0);
-        t['average_rating'] = sum / average_rating.length;
-        var tenures = t['tenure'].split(' ');
-        t['from'] = tenures[1] + "-" +tenures[0] + "-1"; 
-        if(!tenures[3]){
-            t['to'] = '';
-        }else{
-            t['to'] = tenures[4] + "-" +tenures[3] + "-1";
-        }
-        var y  = window.location.href;
-        res = t;
-}
-
-function call_result(t){
-	review_post_ajax(t);
 }

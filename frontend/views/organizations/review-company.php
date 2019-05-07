@@ -264,11 +264,8 @@ $this->params['seo_tags'] = [
             ]);
             ?>
              <div class="row">
-                 <div class="col-md-6">
+                 <div class="col-md-6 col-md-offset-1">
                      <?= $form->field($editReviewForm, 'identity')->dropDownList([0=>Anonymous,1=>Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name])->label('Post As'); ?>
-                 </div>
-                 <div class="col-md-6">
-                     <?= $form->field($editReviewForm, 'dept')->dropDownList($primary_cat)->label('Department'); ?>
                  </div>
              </div>
              <div class="row">
@@ -475,7 +472,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </div>
-<input type="hidden" name="hidden_designation" id="hidden_designation">
+<input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
 if ($review_type=='claimed')
@@ -489,6 +486,10 @@ if ($review_type=='claimed')
 }
 
 $this->registerCss('
+.i-review-navigation
+{
+display:none;
+}
 .star-rating1 {
   font-family: "FontAwesome";
 }
@@ -1316,50 +1317,6 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
-var flag = 0;
-function designation_auto_fn() {
-  if (flag>0)
-      {
-          return false;
-      }
-  var designations = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: {
-			url: '/account/categories-list/designations?q=%QUERY',
-			wildcard: '%QUERY',
-			cache: true,
-			filter: function(list) {
-				return list;
-			}
-		}
-	});
-
-	$('.i-review-designation-autocomplete').typeahead(null, {
-		name: 'designations_test',
-		display: 'designation',
-		limit: 8,
-		source: designations
-	}).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
-  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-      $('#hidden_designation').val(datum.designation_enc_id); 
-  });
-	  flag++;
-}
-var j = {};
-var d = {};
-var countries = [];
-var departments = [];
-function location_auto_fn(a){
-	autocomplete(a, countries);
-}
-function department_auto_fn(a){
-	autocomplete(a, departments);
-}
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
@@ -1374,39 +1331,8 @@ function review_post_ajax(data) {
                    {
                        window.location = window.location.pathname;
                    }
-          }});
-}
-ajax_fetch_city();
-ajax_fetch_category();
-function ajax_fetch_city() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/cities/cities',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      j[response[i].city_enc_id] = response[i].name;
-                  }
-              for (var key in j) {
-	            countries.push(j[key]);
-            }
-       }
-   });
-}
-function ajax_fetch_category() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/categories-list/profiles',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      d[response[i].category_enc_id] = response[i].name;
-                  }
-              for(var key in d){
-	            departments.push(d[key]);
-            }
-       }
-   });
+          }
+	});
 }
 JS;
 $this->registerJs($script);

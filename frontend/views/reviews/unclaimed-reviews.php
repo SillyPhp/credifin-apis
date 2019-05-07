@@ -10,7 +10,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
     <div class="modal-dialog">
 
         <div class="modal-conten<!-- Modal content-->t half-bg-color">
-<!--            <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>-->
+            <!--            <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>-->
             <div class="row margin-0">
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
@@ -70,13 +70,14 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     ?>
                                 </div>
                                 <div class="uname">
-                                        <?= $form->field($model, 'bussiness_activity')->dropDownList(
-                                 $type, [
-                                  'prompt' => Yii::t('frontend', 'Select Business Activity(Optional)'),
-                              ])->label(false); ?>
+                                    <?= $form->field($model, 'bussiness_activity')->dropDownList(
+                                        $type, [
+                                        'prompt' => Yii::t('frontend', 'Select Business Activity'),
+                                    ])->label(false); ?>
                                 </div>
                                 <div class="login-btn">
-                                    <?= Html::submitButton('Write Review', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Employee Review', ['class' => 'lg-form', 'id'=>'company_review_btn1','formaction'=>'p1','name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Review As Student', ['class' => 'lg-form','id'=>'company_review_btn2','formaction'=>'p2','name' => 'login-button']); ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
                             </div>
@@ -93,8 +94,8 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2">
                 <div class="logo-box">
-                        <canvas class="user-icon" name="<?= $name; ?>" width="150" height="150"
-                                color="" font="70px"></canvas>
+                    <canvas class="user-icon" name="<?= $name; ?>" width="150" height="150"
+                            color="" font="70px"></canvas>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -110,11 +111,11 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                 <div class="header-bttns">
                     <div class="header-bttns-flex">
                         <?php if (!Yii::$app->user->isGuest){
-                                if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
-                                    <div class="wr-bttn hvr-icon-pulse">
-                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
-                                    </div>
-                                <?php } } else { ?>
+                            if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
+                                <div class="wr-bttn hvr-icon-pulse">
+                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                                </div>
+                            <?php } } else { ?>
                             <div class="wr-bttn hvr-icon-pulse">
                                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
                             </div>
@@ -246,6 +247,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
     </div>
 </section>
 <input type="hidden" name="hidden_designation" id="hidden_designation">
+<input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
 $this->registerCss('
@@ -1088,6 +1090,10 @@ width:100%;
     max-height: 350px;
     overflow-y: scroll;
 }
+.tt-suggestion
+{
+    cursor: pointer;
+}
 #autocomplete-list div,.tt-dataset{
     padding: 3px;
     border-bottom: .5px solid #eee;
@@ -1139,6 +1145,11 @@ width:100%;
   }
 }
 /*Load Suggestions loader css ends */
+.i-review-navigation
+{
+display:none;
+}
+
 ');
 $script = <<< JS
 $('#org_sign_up_Modal').modal({
@@ -1150,7 +1161,14 @@ $(document).on('submit','#signup-form',function(e)
 {
    e.preventDefault();
    $('#org_sign_up_Modal').modal('toggle');
-   popup.open();
+   if($(this).attr('action')=='p1')
+       {
+       popup.open();
+       }
+   else if($(this).attr('action')=='p2')
+   {
+      popup2.open(); 
+   }
 });
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
@@ -1372,6 +1390,191 @@ var popup = new ideaboxPopup({
 					}
 			]
 			});
+var popup2 = new ideaboxPopupCollege({
+            background	: '#2995c2',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_college(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the College/University on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the College/University',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of College/University',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The College/University..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+					question 	: 'Acedemic Year:',
+					answerType	: 'selectbox',
+					formName	: 'academic_year',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Academics',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'academics',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Faculity & Teaching Quality',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculity',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accomodation & Food',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accomodation_food',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Placements/Internships',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'placement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Social Life/Extracurriculars',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'social_life',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Culture & Diversity',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'culture',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
+$('#company_review_btn1').hide();
+$('#company_review_btn2').hide();
+$(document).on('change','#bussiness_activity',function(e)
+{
+    if($('#bussiness_activity :selected').text() =='College'||$('#bussiness_activity :selected').text()=='Educational Institute')
+        {
+            $('#company_review_btn1').show();
+            $('#company_review_btn2').show();
+        }
+    else if ($('#bussiness_activity :selected').text() =='Others') 
+        {
+            $('#company_review_btn1').show();
+            $('#company_review_btn2').hide();
+        }
+    else {
+        $('#company_review_btn1').hide();
+$('#company_review_btn2').hide();
+    }
+    
+});
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
@@ -1379,58 +1582,15 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
-var j = {};
-var d = {};
-var countries = [];
-var departments = [];
-function location_auto_fn(a){
-	autocomplete(a, countries);
-}
-function department_auto_fn(a){
-	autocomplete(a, departments);
-}
-var flag = 0;
-function designation_auto_fn() {
-  if (flag>0)
-      {
-          return false;
-      }
-  var designations = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: {
-			url: '/account/categories-list/designations?q=%QUERY',
-			wildcard: '%QUERY',
-			cache: true,
-			filter: function(list) {
-				return list;
-			}
-		}
-	});
-
-	$('.i-review-designation-autocomplete').typeahead(null, {
-		name: 'designations_test',
-		display: 'designation',
-		limit: 8,
-		source: designations
-	}).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
-  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-      $('#hidden_designation').val(datum.designation_enc_id);
-  });
-	  flag++;
-}
 function review_post_ajax(data) {
     var org_name = $('#organization_name').val();
     var website = $('#website').val();
     var org_category =  $('#bussiness_activity').val();
+    var type = 'company';
 	$.ajax({
        method: 'POST',
        url : '/reviews/post-unclaimed-reviews',
-	   data:{data:data,org_name:org_name,website:website,org_category:org_category},
+	   data:{data:data,org_name:org_name,website:website,org_category:org_category,type:type},
        success: function(response) {
                if (response==false)
                    {
@@ -1438,48 +1598,34 @@ function review_post_ajax(data) {
                    }
           }});
 }
-ajax_fetch_city();
-ajax_fetch_category();
-function ajax_fetch_city() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/cities/cities',
+function ajax_college(data) {
+  var org_name = $('#organization_name').val();
+    var website = $('#website').val();
+    var org_category =  $('#bussiness_activity').val();
+    var type =  'college';
+	$.ajax({
+       method: 'POST',
+       url : '/reviews/post-unclaimed-reviews',
+	   data:{data:data,org_name:org_name,website:website,org_category:org_category,type:type},
        success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      j[response[i].city_enc_id] = response[i].name;
-                  }
-              for (var key in j) {
-	            countries.push(j[key]);
-            }
-       }
-   });
-}
-
-function ajax_fetch_category() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/categories-list/profiles',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      d[response[i].category_enc_id] = response[i].name;
-                  }
-              for(var key in d){
-	            departments.push(d[key]);
-            }
-       }
-   });
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+          }});
 }
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 
