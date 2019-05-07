@@ -168,7 +168,7 @@ class RegistrationForm extends Model {
         }
         $companyReview->organization_enc_id = $org_id;
         $companyReview->average_rating = $arr['average_rating'];
-        $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
+        $companyReview->reviewer_type = 3;
         $companyReview->from_date = $from_time;
         $companyReview->to_date = $to_time;
         $companyReview->skill_development = $arr['skill_development'];
