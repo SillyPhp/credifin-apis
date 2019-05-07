@@ -1,5 +1,8 @@
 <?php
 
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 use yii\helpers\Html;
 use account\assets\AppAssets;
 use yii\helpers\Url;

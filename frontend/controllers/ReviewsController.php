@@ -76,12 +76,19 @@ class ReviewsController extends Controller
             $org_name = Yii::$app->request->post('org_name');
             $website = Yii::$app->request->post('website');
             $org_category = Yii::$app->request->post('org_category');
-            $response = $model->saveVal($org_name,$website,$org_category);
+            $type = Yii::$app->request->post('type');
+            $response = $model->saveVal($org_name, $website, $org_category);
             if ($response['status'] == 200) {
-                    if ($model->postReviews($response['org_id']))
-                    {
-                        return $this->redirect('/'.$response['slug'] . '/reviews');
+                if ($type=='company') {
+                    if ($model->postReviews($response['org_id'])) {
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
+                }
+                else if($type=='college'){
+                    if ($model->postCollegeReviews($response['org_id'])) {
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
+                    }
+                }
             }
             else
             {
