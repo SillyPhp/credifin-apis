@@ -62,7 +62,6 @@ class CitiesController extends Controller
                     $b->joinWith(['countryEnc c']);
                     $b->andWhere(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09']);
                 }],false)
-                ->limit(20)
                 ->asArray()
                 ->all();
         return $data;

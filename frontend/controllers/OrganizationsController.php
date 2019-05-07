@@ -2,12 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Designations;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
 use common\models\OrganizationReviewLikeDislike;
 use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
+use frontend\models\reviews\RegistrationForm;
 use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
@@ -772,7 +776,9 @@ class OrganizationsController extends Controller
             ->asArray()
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
-            ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->alias('a')
+            ->select(['organization_enc_id','b.business_activity','slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->joinWith(['organizationTypeEnc b'],false)
             ->where([
                 'slug' => $slug,
                 'status' => 1
@@ -818,7 +824,7 @@ class OrganizationsController extends Controller
             $review_type = 'unclaimed';
             $reviews = NewOrganizationReviews::find()
                 ->alias('a')
-                ->select(['show_user_details', 'a.review_enc_id', 'a.status', 'ROUND(average_rating) average', 'c.name profile', 'a.created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
+                ->select(['show_user_details','a.review_enc_id', 'a.status', 'ROUND(average_rating) average', 'c.name profile', 'a.created_on', 'a.reviewer_type', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
                 ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
@@ -847,6 +853,10 @@ class OrganizationsController extends Controller
                 $editReviewForm->setValues($edit_review, $slug);
             }
             $org = $unclaimed_org;
+            if ($org['business_activity']=='College')
+            {
+                return $this->render('review-college-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
+            }
         }
         return $this->render('review-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
     }
@@ -876,8 +886,71 @@ class OrganizationsController extends Controller
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $companyReview->review_enc_id = $utilitiesModel->encrypt();
             $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
-            $companyReview->category_enc_id = $arr['department'];
-            $companyReview->designation_enc_id = $arr['designation'];
+            $category_execute = Categories::find()
+                ->alias('a')
+                ->where(['name' => $arr['department']]);
+            $chk_cat = $category_execute->asArray()->one();
+            if (empty($chk_cat)) {
+                $categoriesModel = new Categories();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                $categoriesModel->name = $arr['department'];
+                $utilitiesModel->variables['name'] = $arr['department'];
+                $utilitiesModel->variables['table_name'] = Categories::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $categoriesModel->slug = $utilitiesModel->create_slug();
+                $categoriesModel->created_on = date('Y-m-d H:i:s');
+                $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($categoriesModel->save()) {
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id,$companyReview,$type='Reviews');
+                } else {
+                    return false;
+                }
+            }
+            else {
+                $cat_id = $chk_cat['category_enc_id'];
+                $chk_assigned = $category_execute
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                    ->andWhere(['b.parent_enc_id'=>null])
+                    ->andWhere(['b.assigned_to'=>'Reviews'])
+                    ->asArray()
+                    ->one();
+                if (empty($chk_assigned))
+                {
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'],$companyReview,$type='Reviews');
+                }
+                else{
+                    $companyReview->category_enc_id = $chk_cat['category_enc_id'];
+                }
+            }
+            $data = Designations::find()
+                ->where(['designation'=>$arr['designation']])
+                ->asArray()
+                ->one();
+            if (!empty($data))
+            {
+                $companyReview->designation_enc_id = $data['designation_enc_id'];
+            }
+            else{
+                $desigModel = new Designations();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $desigModel->designation_enc_id = $utilitiesModel->encrypt();
+                $utilitiesModel->variables['name'] = $arr['designation'];
+                $utilitiesModel->variables['table_name'] = Designations::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $desigModel->slug = $utilitiesModel->create_slug();
+                $desigModel->designation = $arr['designation'];
+                $desigModel->created_on = date('Y-m-d H:i:s');
+                $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($desigModel->save()) {
+                    $companyReview->designation_enc_id = $desigModel->designation_enc_id;
+                } else {
+                    return false;
+                }
+            }
             $companyReview->organization_enc_id = $org_id['organization_enc_id'];
             $companyReview->average_rating = $arr['average_rating'];
             if ($request_type == 1) {
@@ -902,9 +975,51 @@ class OrganizationsController extends Controller
             $companyReview->status = 1;
             $companyReview->created_on = date('Y-m-d H:i:s');
             if (!$companyReview->save()) {
-                return false;
+                return true;
             } else {
                 return true;
+            }
+        }
+    }
+    private function addNewAssignedCategory($category_id,$companyReview,$type)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = NULL;
+        $assignedCategoryModel->assigned_to = $type;
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $companyReview->category_enc_id = $category_id;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function actionPostCollegeCompanyReviews()
+    {
+        $model = new RegistrationForm();
+        if (Yii::$app->request->isPost) {
+            $arr = Yii::$app->request->post('data');
+            $type = Yii::$app->request->post('type');
+            $slug = Yii::$app->request->post('slug');
+            $org_id = UnclaimedOrganizations::find()
+                ->where(['slug' => $slug])
+                ->asArray()
+                ->one();
+            if ($type=='company') {
+                if ($model->postReviews($org_id['organization_enc_id'])) {
+                    return true;
+                }
+            }
+            else if($type=='college'){
+                if ($model->postCollegeReviews($org_id['organization_enc_id'])) {
+                    return true;
+                }
             }
         }
     }
@@ -935,6 +1050,27 @@ class OrganizationsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $reviews = $this->getUnclaimedReviews($slug, $limit, $offset);
+            if ($reviews['total'] > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'total' => $reviews['total'],
+                    'reviews' => $reviews['reviews']
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
+
+    public function actionGetUnclaimedStudentReviews($slug, $limit = null, $offset = null)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $reviews = $this->getUnclaimedStudentReviews($slug, $limit, $offset);
             if ($reviews['total'] > 0) {
                 $response = [
                     'status' => 200,
@@ -987,9 +1123,33 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
             }], false)
+            ->andWhere(['in','a.reviewer_type',[0,1]])
             ->joinWith(['createdBy c'], false)
             ->joinWith(['categoryEnc d'], false)
             ->joinWith(['designationEnc e'], false);
+        return [
+            'total' => $reviews->count(),
+            'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
+                ->limit($limit)
+                ->offset($offset)
+                ->asArray()
+                ->all()
+        ];
+    }
+
+    private function getUnclaimedStudentReviews($slug, $limit, $offset)
+    {
+        $reviews = NewOrganizationReviews::find()
+            ->alias('a')
+            ->select(['(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'e.name stream','educational_stream_enc_id', 'ROUND(average_rating) average','a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.reviewer_type', 'a.academics', 'a.faculty_teaching_quality', 'a.infrastructure', 'a.accomodation_food', 'a.placements_internships', 'a.social_life_extracurriculars', 'a.culture_diversity','a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->where(['a.status' => 1])
+            ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
+                $b->andWhere(['b.slug' => $slug]);
+            }], false)
+            ->andWhere(['in','a.reviewer_type',[2,3]])
+            ->joinWith(['createdBy c'], false)
+            ->joinWith(['categoryEnc d'], false)
+            ->joinWith(['educationalStreamEnc e'],false);
         return [
             'total' => $reviews->count(),
             'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
@@ -1128,7 +1288,7 @@ class OrganizationsController extends Controller
     }
 
     public function actionTest(){
-        $slug = 'ajayjuneja';
+        $slug = 'shashank';
         $editReviewForm = new EditReview;
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
@@ -1194,11 +1354,12 @@ class OrganizationsController extends Controller
                 ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
                 ->asArray()
                 ->all();
-            $stats = NewOrganizationReviews::find()
-                ->select(['ROUND(AVG(job_security)) job_avg', 'ROUND(AVG(growth)) growth_avg', 'ROUND(AVG(organization_culture)) avg_cult', 'ROUND(AVG(compensation)) avg_compensation', 'ROUND(AVG(work)) avg_work', 'ROUND(AVG(work_life)) avg_work_life', 'ROUND(AVG(skill_development)) avg_skill'])
-                ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
-                ->asArray()
-                ->one();
+//            $stats = NewOrganizationReviews::find()
+//                ->select(['ROUND(AVG(job_security)) job_avg', 'ROUND(AVG(growth)) growth_avg', 'ROUND(AVG(organization_culture)) avg_cult', 'ROUND(AVG(compensation)) avg_compensation', 'ROUND(AVG(work)) avg_work', 'ROUND(AVG(work_life)) avg_work_life', 'ROUND(AVG(skill_development)) avg_skill'])
+//                ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
+//                ->asArray()
+//                ->one();
+            $stats = 5;
             $follow = UnclaimedFollowedOrganizations::find()
                 ->select('followed')
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $unclaimed_org['organization_enc_id']])

@@ -76,10 +76,8 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     ])->label(false); ?>
                                 </div>
                                 <div class="login-btn">
-                                    <?= Html::submitButton('Write Employee Review', ['class' => 'lg-form', 'id'=>'company_review','formaction'=>'p1','name' => 'login-button']); ?>
-                                </div>
-                                <div class="login-btn">
-                                    <?= Html::submitButton('Write Review As Student', ['class' => 'lg-form','id'=>'company_review','formaction'=>'p2','name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Employee Review', ['class' => 'lg-form', 'id'=>'company_review_btn1','formaction'=>'p1','name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Review As Student', ['class' => 'lg-form','id'=>'company_review_btn2','formaction'=>'p2','name' => 'login-button']); ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
                             </div>
@@ -1557,7 +1555,26 @@ var popup2 = new ideaboxPopupCollege({
 				
 			]
 		});
-
+$('#company_review_btn1').hide();
+$('#company_review_btn2').hide();
+$(document).on('change','#bussiness_activity',function(e)
+{
+    if($('#bussiness_activity :selected').text() =='College'||$('#bussiness_activity :selected').text()=='Educational Institute')
+        {
+            $('#company_review_btn1').show();
+            $('#company_review_btn2').show();
+        }
+    else if ($('#bussiness_activity :selected').text() =='Others') 
+        {
+            $('#company_review_btn1').show();
+            $('#company_review_btn2').hide();
+        }
+    else {
+        $('#company_review_btn1').hide();
+$('#company_review_btn2').hide();
+    }
+    
+});
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
@@ -1565,50 +1582,6 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
-var j = {};
-var d = {};
-var countries = [];
-var departments = [];
-function location_auto_fn(a){
-	autocomplete(a, countries);
-}
-function department_auto_fn(a){
-	autocomplete(a, departments);
-}
-var flag = 0;
-function designation_auto_fn() {
-  if (flag>0)
-      {
-          return false;
-      }
-  var designations = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: {
-			url: '/account/categories-list/designations?q=%QUERY',
-			wildcard: '%QUERY',
-			cache: true,
-			filter: function(list) {
-				return list;
-			}
-		}
-	});
-
-	$('.i-review-designation-autocomplete').typeahead(null, {
-		name: 'designations_test',
-		display: 'designation',
-		limit: 8,
-		source: designations
-	}).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
-  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-      $('#hidden_designation').val(datum.designation_enc_id);
-  });
-	  flag++;
-}
 function review_post_ajax(data) {
     var org_name = $('#organization_name').val();
     var website = $('#website').val();
@@ -1625,23 +1598,6 @@ function review_post_ajax(data) {
                    }
           }});
 }
-ajax_fetch_city();
-ajax_fetch_category();
-function ajax_fetch_city() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/cities/cities',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      j[response[i].city_enc_id] = response[i].name;
-                  }
-              for (var key in j) {
-	            countries.push(j[key]);
-            }
-       }
-   });
-}
 function ajax_college(data) {
   var org_name = $('#organization_name').val();
     var website = $('#website').val();
@@ -1657,21 +1613,6 @@ function ajax_college(data) {
                        alert('there is some server error');
                    }
           }});
-}
-function ajax_fetch_category() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/categories-list/profiles',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      d[response[i].category_enc_id] = response[i].name;
-                  }
-              for(var key in d){
-	            departments.push(d[key]);
-            }
-       }
-   });
 }
 JS;
 $this->registerJs($script);

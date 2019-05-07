@@ -1,7 +1,10 @@
 <?php
 namespace frontend\models\reviews;
 
+use common\models\AssignedCategories;
 use common\models\BusinessActivities;
+use common\models\Categories;
+use common\models\Designations;
 use common\models\NewOrganizationReviews;
 use common\models\Qualifications;
 use common\models\UnclaimedOrganizations;
@@ -35,7 +38,7 @@ class RegistrationForm extends Model {
 
     public function types()
     {
-      $data =   BusinessActivities::find()->select(['business_activity_enc_id','business_activity'])->where(['in','business_activity',['School','College','Business','Educational Institute','Others']])->asArray()->all();
+      $data =   BusinessActivities::find()->select(['business_activity_enc_id','business_activity'])->where(['in','business_activity',['College','Educational Institute','Others']])->asArray()->all();
 
       return ArrayHelper::map($data, 'business_activity_enc_id', 'business_activity');
     }
@@ -98,8 +101,71 @@ class RegistrationForm extends Model {
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $companyReview->review_enc_id = $utilitiesModel->encrypt();
         $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
-        $companyReview->category_enc_id = $arr['department'];
-        $companyReview->designation_enc_id = $arr['designation'];
+        $category_execute = Categories::find()
+            ->alias('a')
+            ->where(['name' => $arr['department']]);
+        $chk_cat = $category_execute->asArray()->one();
+        if (empty($chk_cat)) {
+            $categoriesModel = new Categories;
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+            $categoriesModel->name = $arr['department'];
+            $utilitiesModel->variables['name'] = $arr['department'];
+            $utilitiesModel->variables['table_name'] = Categories::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $categoriesModel->slug = $utilitiesModel->create_slug();
+            $categoriesModel->created_on = date('Y-m-d H:i:s');
+            $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if ($categoriesModel->save()) {
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id,$companyReview,$type='Reviews');
+            } else {
+                return false;
+            }
+        }
+        else {
+            $cat_id = $chk_cat['category_enc_id'];
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
+                ->andWhere(['b.parent_enc_id'=>null])
+                ->andWhere(['b.assigned_to'=>'Reviews'])
+                ->asArray()
+                ->one();
+            if (empty($chk_assigned))
+            {
+              $this->addNewAssignedCategory($chk_cat['category_enc_id'],$companyReview,$type='Reviews');
+            }
+            else{
+                $companyReview->category_enc_id = $chk_cat['category_enc_id'];
+            }
+        }
+        $data = Designations::find()
+            ->where(['designation'=>$arr['designation']])
+            ->asArray()
+            ->one();
+        if (!empty($data))
+        {
+            $companyReview->designation_enc_id = $data['designation_enc_id'];
+        }
+        else{
+            $desigModel = new Designations;
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $desigModel->designation_enc_id = $utilitiesModel->encrypt();
+            $utilitiesModel->variables['name'] = $arr['designation'];
+            $utilitiesModel->variables['table_name'] = Designations::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $desigModel->slug = $utilitiesModel->create_slug();
+            $desigModel->designation = $arr['designation'];
+            $desigModel->created_on = date('Y-m-d H:i:s');
+            $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if ($desigModel->save()) {
+                $companyReview->designation_enc_id = $desigModel->designation_enc_id;
+            } else {
+                return false;
+            }
+        }
         $companyReview->organization_enc_id = $org_id;
         $companyReview->average_rating = $arr['average_rating'];
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
@@ -188,6 +254,25 @@ class RegistrationForm extends Model {
             return true;
         } else {
             return false;
+        }
+    }
+    private function addNewAssignedCategory($category_id,$companyReview,$type)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = NULL;
+        $assignedCategoryModel->assigned_to = $type;
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $companyReview->category_enc_id = $category_id;
+        }
+        else
+        {
+           return false;
         }
     }
 }
