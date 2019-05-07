@@ -239,14 +239,22 @@ element.style {
     right: 45px;
 }
 ");
-$this->registerJs("
-//all variables defined
+?>
+
+<script type="text/javascript">
+    var sendMessagesUrl = '' + <?php echo Yii::$app->params->fireabase->modules->realtimeChat->config->functions->sendMessages; ?> +'';
+    var specialKey = '' + <?php echo Yii::$app->params->fireabase->modules->realtimeChat->config->specialKey; ?> +'';
+</script>
+
+<?php
+$script = <<<JS
+    
+    //all variables defined
     var current_user = $('#current-user').val(); //id of current user   
     var current_organization_user = $('#current-organization-user').val(); //id of current organization user   
     var current_user_name = $('#current-name').val(); // name of current user
     var chat_icon = document.getElementById('chat-icon'); // chat icon
     var chat_list = document.getElementById('chat-list');// main id of conversations list
-    var specialKey = 'BnE3860mWdnBEZMLXlwkdjw9A2K5DJ';
     var search_user = document.getElementById('search-user'); // search user input id
     var users_list = document.getElementById('users-list'); // id of ul in conversations list
     var chat_icon_button = document.getElementById('trigger');
@@ -305,7 +313,7 @@ $this->registerJs("
                     }
                     
                     for(var o = 0; o < recent_active_users.length; o++){
-                        if(listed_users_id.includes(recent_active_users[o]['user_enc_id'])){
+                        if(listed_users_id.includes(recent_active_users[o]["user_enc_id"])){
                             delete recent_active_users[o];
                         }
                     }
@@ -342,8 +350,8 @@ $this->registerJs("
          if(msginput && msginput.length < 1500){
              var converseRef = db.ref(specialKey + '/conversations/' + unique_id );
              var currentDate = new Date();
-             var senddate = currentDate.getDate() + ' ' + monthDict[currentDate.getMonth()];
-             var sendtime = currentDate.getHours() + ':' + currentDate.getMinutes();
+             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()];
+             var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
              var data = {
                 sender : current_user,
                 sender_organization_id : current_organization_user,
@@ -354,7 +362,6 @@ $this->registerJs("
                 time: sendtime
              };
              var key = converseRef.push(data).key;
-
              data['uniqueid'] = unique_id;
              data['key'] = key;
              
@@ -366,7 +373,7 @@ $this->registerJs("
              
              $.ajax({
                 type: 'GET',
-                url: '" . Yii::$app->params->fireabse->realtimeChat->config->functions->sendMessages . "',
+                url: sendMessagesUrl,
              });
     
             var messagetypeinp = t.closest('.msginput');
@@ -384,17 +391,17 @@ $this->registerJs("
      }
      
      function createTextLinks_(text) {
-        return (text || '').replace(
+        return (text || "").replace(
             /([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi,
             function(match, space, url){
                 var hyperlink = url;
                 if (!hyperlink.match('^https?:\/\/')) {
                     hyperlink = 'http://' + hyperlink;
                 }
-                return space + '<a href=\" + hyperlink + \" target=\"_blank\">' + url + '</a>';
+                return space + '<a href="' + hyperlink + '" target="_blank">' + url + '</a>';
             }
         );
-     }
+     };
     
     //event for chat icon click
     chat_icon_button.addEventListener('click', function(){
@@ -419,7 +426,7 @@ $this->registerJs("
                         chat_icon.classList.remove('chat-bounce');
                     }
              }
-    })
+    });
     
     //list users on chat icon
     random_users();
@@ -429,8 +436,8 @@ $this->registerJs("
     $(document).on('keyup', '#search-user', function(e){
             var user = $(this).val();
             var data = {};
-            data['user'] = user;
-            if(data['user']){
+            data["user"] = user;
+            if(data["user"]){
                 $.ajax({
                     type: 'POST',
                     url: '/account/chat/search-user',
@@ -492,7 +499,6 @@ $this->registerJs("
             db
             .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
             .off();
-
             var existingDates = {};
             
             db
@@ -520,11 +526,11 @@ $this->registerJs("
                     var msgtime = res['time'];
                     var msgfinal = createTextLinks_(res['message']);
                     
-                    var messageli = '<li class='out'>'+
-                                        '<div class='message'>'+
-                                            '<span class='arrow'> </span>'+
-                                            '<a href='#' class='name'>You <span>'+msgtime+'</span></a>'+
-                                            '<span class='body'>'+msgfinal+'</span>'+
+                    var messageli = '<li class="out">'+
+                                        '<div class="message">'+
+                                            '<span class="arrow"> </span>'+
+                                            '<a href="#" class="name">You <span>'+msgtime+'</span></a>'+
+                                            '<span class="body">'+msgfinal+'</span>'+
                                         '</div>'+
                                      '</li>';
                     
@@ -554,11 +560,11 @@ $this->registerJs("
                     }
                     
                     
-                    var messageli = '<li class='in'>'+
-                                        '<div class='message'>'+
-                                            '<span class='arrow'> </span>'+
-                                            '<a href='#' class='name'>'+msgreceiver+' <span>'+msgtime+'</span></a>'+
-                                            '<span class='body'>'+msgfinal+'</span>'+
+                    var messageli = '<li class="in">'+
+                                        '<div class="message">'+
+                                            '<span class="arrow"> </span>'+
+                                            '<a href="#" class="name">'+msgreceiver+' <span>'+msgtime+'</span></a>'+
+                                            '<span class="body">'+msgfinal+'</span>'+
                                         '</div>'+
                                      '</li>';
                     
@@ -613,7 +619,7 @@ $this->registerJs("
          var t = $(this);
          sendMessage(t);    
      });
-     $(document).on('keypress', '.msginput',function(event){
+     $(document).on("keypress", ".msginput",function(event){
         if(event.which == '13'){
             var t = $(this);
             sendMessage(t);
@@ -668,9 +674,9 @@ $this->registerJs("
         var userslist = document.querySelector('#users-list');
         
         //check if chat box is already opened
-        var m = document.getElementById('dynamic-chat');
+        var m = document.getElementById("dynamic-chat");
         if(m){
-            var boxid = m.getAttribute('data-id');
+            var boxid = m.getAttribute("data-id");
             if(boxid == sender['id']){
                 chat_icon.classList.remove('chat-bounce');
                 
@@ -690,43 +696,43 @@ $this->registerJs("
             sp.className = 'badge';
             sp.innerHTML = 'New';
             userslist.children[0].querySelector('.chat-person').appendChild(sp);
-            var redbtn = '<span id='red-btn'></span>';
+            var redbtn = '<span id="red-btn"></span>';
             document.getElementById('trigger').innerHTML += redbtn; 
         }
         // utilities.initials();
-    })
+    });
     
  function chats() {
-    var e = $('.chats-main'),
-        t = $('.chats', e),
-        a = $('.chat-form', e),
-        i = $('input', a),
-        l = $('.btn', a),
+    var e = $(".chats-main"),
+        t = $(".chats", e),
+        a = $(".chat-form", e),
+        i = $("input", a),
+        l = $(".btn", a),
         o = function(a) {
             a.preventDefault();
             var l = i.val();
             if (0 != l.length) {
                 var o = new Date,
-                    n = o.getHours() + ':' + o.getMinutes(),
-                    r = '';
-                r += '<li class='out'>', r += '<img class='avatar' alt='' src='/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg'/>', r += '<div class='message'>', r += '<span class='arrow'></span>', r += '<a href='#' class='name'>Bob Nilson</a>&nbsp;', r += '<span class='datetime'>at ' + n + '</span>', r += '<span class='body'>', r += l, r += '</span>', r += '</div>', r += '</li>';
+                    n = o.getHours() + ":" + o.getMinutes(),
+                    r = "";
+                r += '<li class="out">', r += '<img class="avatar" alt="" src="/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg"/>', r += '<div class="message">', r += '<span class="arrow"></span>', r += '<a href="#" class="name">Bob Nilson</a>&nbsp;', r += '<span class="datetime">at ' + n + "</span>", r += '<span class="body">', r += l, r += "</span>", r += "</div>", r += "</li>";
                 t.append(r);
-                i.val('');
+                i.val("");
                 var s = function() {
                     var t = 0;
-                    return e.find('li.out, li.in').each(function() {
+                    return e.find("li.out, li.in").each(function() {
                         t += $(this).outerHeight()
                     }), t
                 };
-                e.find('.scroller').slimScroll({
+                e.find(".scroller").slimScroll({
                     scrollTo: s()
                 })
             }
         };
-    $('body').on('click', '.message .name', function(e) {
+    $("body").on("click", ".message .name", function(e) {
         e.preventDefault();
         var t = $(this).text();
-        i.val('@' + t + ':'), App.scrollTo(i)
+        i.val("@" + t + ":"), App.scrollTo(i)
     }), l.click(o), i.keypress(function(e) {
         if (13 == e.which) return o(e), !1
     })
@@ -752,26 +758,30 @@ $(document).on('click','.closeBtn', function(){
         $('#chat-list').addClass('fadeout');
     }
 });
-");
+JS;
+$this->registerJs($script);
+
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
 <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+
+<script type="text/javascript">
+    // Initialize Firebase
+    var config = {
+        apiKey: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->apiKey; ?>',
+        authDomain: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->authDomain; ?>',
+        databaseURL: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->databaseURL; ?>',
+        projectId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->projectId; ?>',
+        storageBucket: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->storageBucket; ?>',
+        messagingSenderId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->messagingSenderId; ?>',
+    };
+    firebase.initializeApp(config);
+</script>
+
 <script id="no-user" type="text/template">
     <li>
         No User Found
     </li>
-</script>
-<script type="text/javascript">
-    // Initialize Firebase
-    var config = {
-        apiKey: '<?= Yii::$app->params->fireabse->realtimeChat->config->apiKey; ?>',
-        authDomain: '<?= Yii::$app->params->fireabse->realtimeChat->config->authDomain; ?>',
-        databaseURL: '<?= Yii::$app->params->fireabse->realtimeChat->config->databaseURL; ?>',
-        projectId: '<?= Yii::$app->params->fireabse->realtimeChat->config->projectId; ?>',
-        storageBucket: '<?= Yii::$app->params->fireabse->realtimeChat->config->storageBucket; ?>',
-        messagingSenderId: '<?= Yii::$app->params->fireabse->realtimeChat->config->messagingSenderId; ?>',
-    };
-    firebase.initializeApp(config);
 </script>
 <script id="users" type="text/template">
     {{#.}}
