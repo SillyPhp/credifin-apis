@@ -244,6 +244,7 @@ $this->registerJs('
 ');
 
 $script = <<<JS
+    
     //all variables defined
     var current_user = $('#current-user').val(); //id of current user   
     var current_organization_user = $('#current-organization-user').val(); //id of current organization user   
@@ -309,7 +310,7 @@ $script = <<<JS
                     }
                     
                     for(var o = 0; o < recent_active_users.length; o++){
-                        if(listed_users_id.includes(recent_active_users[o][user_enc_id])){
+                        if(listed_users_id.includes(recent_active_users[o][\"user_enc_id\"])){
                             delete recent_active_users[o];
                         }
                     }
@@ -346,8 +347,8 @@ $script = <<<JS
          if(msginput && msginput.length < 1500){
              var converseRef = db.ref(specialKey + '/conversations/' + unique_id );
              var currentDate = new Date();
-             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()];
-             var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
+             var senddate = currentDate.getDate() + \" \" + monthDict[currentDate.getMonth()];
+             var sendtime = currentDate.getHours() + \":\" + currentDate.getMinutes();
              var data = {
                 sender : current_user,
                 sender_organization_id : current_organization_user,
@@ -369,7 +370,7 @@ $script = <<<JS
              
              $.ajax({
                 type: 'GET',
-                url: '',
+                url: sendMessagesUrl,
              });
     
             var messagetypeinp = t.closest('.msginput');
@@ -387,14 +388,14 @@ $script = <<<JS
      }
      
      function createTextLinks_(text) {
-        return (text || "").replace(
+        return (text || \"\").replace(
             /([^\S]|^)(((https?\:\/\/)|(www\.))(\S+))/gi,
             function(match, space, url){
                 var hyperlink = url;
                 if (!hyperlink.match('^https?:\/\/')) {
                     hyperlink = 'http://' + hyperlink;
                 }
-                return space + '<a href="' + hyperlink + '" target="_blank">' + url + '</a>';
+                return space + '<a href=\"' + hyperlink + '\" target=\"_blank\">' + url + '</a>';
             }
         );
      };
@@ -432,8 +433,8 @@ $script = <<<JS
     $(document).on('keyup', '#search-user', function(e){
             var user = $(this).val();
             var data = {};
-            data["user"] = user;
-            if(data["user"]){
+            data[\"user\"] = user;
+            if(data[\"user\"]){
                 $.ajax({
                     type: 'POST',
                     url: '/account/chat/search-user',
@@ -522,11 +523,11 @@ $script = <<<JS
                     var msgtime = res['time'];
                     var msgfinal = createTextLinks_(res['message']);
                     
-                    var messageli = '<li class="out">'+
-                                        '<div class="message">'+
-                                            '<span class="arrow"> </span>'+
-                                            '<a href="#" class="name">You <span>'+msgtime+'</span></a>'+
-                                            '<span class="body">'+msgfinal+'</span>'+
+                    var messageli = '<li class=\"out\">'+
+                                        '<div class=\"message\">'+
+                                            '<span class=\"arrow\"> </span>'+
+                                            '<a href=\"#\" class=\"name\">You <span>'+msgtime+'</span></a>'+
+                                            '<span class=\"body\">'+msgfinal+'</span>'+
                                         '</div>'+
                                      '</li>';
                     
@@ -556,11 +557,11 @@ $script = <<<JS
                     }
                     
                     
-                    var messageli = '<li class="in">'+
-                                        '<div class="message">'+
-                                            '<span class="arrow"> </span>'+
-                                            '<a href="#" class="name">'+msgreceiver+' <span>'+msgtime+'</span></a>'+
-                                            '<span class="body">'+msgfinal+'</span>'+
+                    var messageli = '<li class=\"in\">'+
+                                        '<div class=\"message\">'+
+                                            '<span class=\"arrow\"> </span>'+
+                                            '<a href=\"#\" class=\"name\">'+msgreceiver+' <span>'+msgtime+'</span></a>'+
+                                            '<span class=\"body\">'+msgfinal+'</span>'+
                                         '</div>'+
                                      '</li>';
                     
@@ -615,7 +616,7 @@ $script = <<<JS
          var t = $(this);
          sendMessage(t);    
      });
-     $(document).on("keypress", ".msginput",function(event){
+     $(document).on(\"keypress\", \".msginput\",function(event){
         if(event.which == '13'){
             var t = $(this);
             sendMessage(t);
@@ -670,9 +671,9 @@ $script = <<<JS
         var userslist = document.querySelector('#users-list');
         
         //check if chat box is already opened
-        var m = document.getElementById("dynamic-chat");
+        var m = document.getElementById(\"dynamic-chat\");
         if(m){
-            var boxid = m.getAttribute("data-id");
+            var boxid = m.getAttribute(\"data-id\");
             if(boxid == sender['id']){
                 chat_icon.classList.remove('chat-bounce');
                 
@@ -692,43 +693,43 @@ $script = <<<JS
             sp.className = 'badge';
             sp.innerHTML = 'New';
             userslist.children[0].querySelector('.chat-person').appendChild(sp);
-            var redbtn = '<span id="red-btn"></span>';
+            var redbtn = '<span id=\"red-btn\"></span>';
             document.getElementById('trigger').innerHTML += redbtn; 
         }
         // utilities.initials();
     })
     
  function chats() {
-    var e = $(".chats-main"),
-        t = $(".chats", e),
-        a = $(".chat-form", e),
-        i = $("input", a),
-        l = $(".btn", a),
+    var e = $(\".chats-main\"),
+        t = $(\".chats\", e),
+        a = $(\".chat-form\", e),
+        i = $(\"input\", a),
+        l = $(\".btn\", a),
         o = function(a) {
             a.preventDefault();
             var l = i.val();
             if (0 != l.length) {
                 var o = new Date,
-                    n = o.getHours() + ":" + o.getMinutes(),
-                    r = "";
-                r += '<li class="out">', r += '<img class="avatar" alt="" src="/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg"/>', r += '<div class="message">', r += '<span class="arrow"></span>', r += '<a href="#" class="name">Bob Nilson</a>&nbsp;', r += '<span class="datetime">at ' + n + "</span>", r += '<span class="body">', r += l, r += "</span>", r += "</div>", r += "</li>";
+                    n = o.getHours() + \":\" + o.getMinutes(),
+                    r = \"\";
+                r += '<li class=\"out\">', r += '<img class=\"avatar\" alt=\"\" src=\"/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg\"/>', r += '<div class=\"message\">', r += '<span class=\"arrow\"></span>', r += '<a href=\"#\" class=\"name\">Bob Nilson</a>&nbsp;', r += '<span class=\"datetime\">at ' + n + \"</span>\", r += '<span class=\"body\">', r += l, r += \"</span>\", r += \"</div>\", r += \"</li>\";
                 t.append(r);
-                i.val("");
+                i.val(\"\");
                 var s = function() {
                     var t = 0;
-                    return e.find("li.out, li.in").each(function() {
+                    return e.find(\"li.out, li.in\").each(function() {
                         t += $(this).outerHeight()
                     }), t
                 };
-                e.find(".scroller").slimScroll({
+                e.find(\".scroller\").slimScroll({
                     scrollTo: s()
                 })
             }
         };
-    $("body").on("click", ".message .name", function(e) {
+    $(\"body\").on(\"click\", \".message .name\", function(e) {
         e.preventDefault();
         var t = $(this).text();
-        i.val("@" + t + ":"), App.scrollTo(i)
+        i.val(\"@\" + t + \":\"), App.scrollTo(i)
     }), l.click(o), i.keypress(function(e) {
         if (13 == e.which) return o(e), !1
     })
@@ -756,6 +757,7 @@ $(document).on('click','.closeBtn', function(){
 });
 JS;
 $this->registerJs($script);
+
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
 <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
