@@ -42,10 +42,11 @@ class RegistrationForm extends Model {
           '(CASE
                 WHEN business_activity = "College" THEN "Colege/Universities"
                 WHEN business_activity = "Educational Institute" THEN "Educational Institute/Tution Centers"
+                WHEN business_activity = "School" THEN "School"
                 WHEN business_activity = "Others" THEN "Others"
                 ELSE "Others"
                 END) as business_activity'
-          ])->where(['in','business_activity',['College','Educational Institute','Others']])->asArray()->all();
+          ])->where(['in','business_activity',['College','School','Educational Institute','Others']])->asArray()->all();
 
       return ArrayHelper::map($data, 'business_activity_enc_id', 'business_activity');
     }
