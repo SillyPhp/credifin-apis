@@ -52,6 +52,7 @@ class JobsController extends Controller
 
     public function actionIndex()
     {
+
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
