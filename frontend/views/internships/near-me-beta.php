@@ -13,6 +13,7 @@ use yii\web\JqueryAsset; ?>
             <div class="col-md-3">
                 <div class="form-group form-md-line-input">
                     <input type="text" class="form-control" id="city_location" placeholder="Enter Address or city"/>
+                    <p class="error" style="color: red"></p>
                 </div>
             </div>
             <div class="col-md-4 pt-20">
@@ -38,13 +39,46 @@ use yii\web\JqueryAsset; ?>
     <div class="col-md-4 col-md-offset-2 near-me-content">
 
         <div class="row">
+            <div id="near-me-cards"></div>
+        </div>
+
+        <div class="row">
             <?= $this->render('/widgets/preloader-application-card', [
                 'size' => 'col-md-12'
             ]); ?>
-            <div id="near-me-cards"></div>
         </div>
         <div id="loading">
-            <button id="load" class="btn near-me-btn">Load</button>
+            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
+                <span class="load-more-text">Load More</span>
+                <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
+                     stroke="currentColor">
+                    <g fill="none" fill-rule="evenodd">
+                        <g transform="translate(1 1)" stroke-width="2">
+                            <circle cx="8.90684" cy="50" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" values="50;5;50;50"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                            </circle>
+                            <circle cx="25.0466" cy="8.99563" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
+                                         values="5;50;50;5" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" begin="0s" dur="2.2s" from="27" to="27"
+                                         values="27;49;5;27" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                            </circle>
+                            <circle cx="47.0466" cy="46.0044" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" values="50;50;5;50"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
+                                         values="49;5;27;49" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                            </circle>
+                        </g>
+                    </g>
+                </svg>
+            </a>
         </div>
 
     </div>
@@ -220,6 +254,9 @@ $this->registerCss('
     min-height:105vh;
     padding-top:10px;
 }
+.btn--primary.btn-border{
+    border-radius:50px !important;
+}
 //.filter-search{
 //    padding-bottom: 20px;
 //}
@@ -337,6 +374,11 @@ function showError(error) {
           method:'POST',
           success: function (res) {
             var response = JSON.parse(res);
+            if(response == null){
+                $('#city_location').focus();
+                $('.error').text('address or city must not be empty');
+                return false;
+            }
             var city = response.name;
             var state = response.state_name;
             var address = city+','+state;
@@ -348,6 +390,10 @@ function showError(error) {
       break;
   }
 }
+
+$('#city_location').on('keyup',function(e) {
+  $('.error').text('');
+});
 
 //address from lat and long
 function geocodeLatLng(lat,long) {
@@ -414,15 +460,15 @@ function card(){
             data: vals,
             success: function (res) {
                 $('.loader-main').hide();
+                $('.load-more-text').css('visibility', 'visible');
+                $('.load-more-spinner').css('visibility', 'hidden');
                 
                 var response = JSON.parse(res);
                 
                 if(response.length == 0){
-                    $('#load').remove();
+                    $('#loadMore').hide();
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                 }else{
-                    
-                    $('#load').text('Load');
                     for(i=0;i<response.length;i++){
                             marker = new google.maps.Marker({
                             position: {lat: Number(response[i].latitude), lng: Number(response[i].longitude)},
@@ -438,7 +484,7 @@ function card(){
                     vals.num += 20;
                     
                     if(response.length < 20){
-                        $('#load').remove();
+                        $('#loadMore').remove();
                     }
                 }
             }
@@ -454,9 +500,11 @@ function card(){
 }
 
 //load more click
-$(document).on('click','#load',function(e) {
+$(document).on('click','#loadMore',function(e) {
     e.preventDefault();
-    $('#load').text('Loading...');
+    $('.load-more-text').css('visibility', 'hidden');
+    $('.load-more-spinner').css('visibility', 'visible');
+    $('.loader-main').show();
     card();
 });
 
@@ -517,8 +565,8 @@ $(document).on('click','#search_jobs',function(e) {
        
      $('#near-me-cards').html('');
      $('.loader-main').show();
-     $('#load').remove();
-     $('#loading').append('<button id="load" class="btn near-me-btn">Load</button>');     
+     $('#loadMore').hide();
+     $('#loadMore').show();
      
      geocodeAddress(city);
  });
