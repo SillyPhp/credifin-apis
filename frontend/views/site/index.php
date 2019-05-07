@@ -413,18 +413,18 @@ $this->params['seo_tags'] = [
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
-                                            <a href="/internship/full-stack-developer-1902011549002251">
+                                            <a href="/internship/digital-marketing-22371553238862">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/empoweryouth">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
-                                                                 alt="Empower Youth"/>
+                                                        <a href="/insta">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
+                                                                 alt="Insta Apphanced"/>
                                                         </a>
                                                     </div>
                                                     <h3>
-                                                        <a href="/internship/full-stack-developer-1902011549002251"
-                                                           title="">Full Stack Developer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/empoweryouth"> Empower Youth</a></div>
+                                                        <a href="/internship/digital-marketing-22371553238862"
+                                                           title="">Digital Marketing</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/insta"> Insta Apphanced</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
                                                     </div>
                                                 </div>
