@@ -256,6 +256,7 @@ $this->registerCss('
 }
 .btn--primary.btn-border{
     border-radius:50px !important;
+    margin-bottom: 10px;
 }
 //.filter-search{
 //    padding-bottom: 20px;
@@ -376,7 +377,7 @@ function showError(error) {
             var response = JSON.parse(res);
             if(response == null){
                 $('#city_location').focus();
-                $('.error').text('address or city must not be empty');
+                $('.error').text('Please enter city');
                 return false;
             }
             var city = response.name;
@@ -559,7 +560,8 @@ $(document).on('click','#search_jobs',function(e) {
      vals.keyword = $('#job_keyword').val();
      
      if(!city){
-           toastr.error('Please Enter city', 'error');
+           $('#city_location').focus();
+           $('.error').text('Please enter city');
            return false;
      }
        

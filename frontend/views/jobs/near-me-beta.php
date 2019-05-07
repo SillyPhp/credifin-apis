@@ -257,83 +257,8 @@ $this->registerCss('
 }
 .btn--primary.btn-border{
     border-radius:50px !important;
+    margin-bottom: 10px;
 }
-//.filter-search{
-//    padding-bottom: 20px;
-//}
-//.f-main-heading{
-//    display: flex;
-//}
-//.show-search{
-//    margin-left: 15px;
-//    margin-top: 5px;
-//}
-//.show-search button{
-//    background: transparent;
-//    border:none;
-//    font-size: 15px;
-//    color: #666;
-//    float:right;
-//}
-//.show-search button:hover{
-//    color:#00a0e3;
-//}
-//.f-search-loc{
-//   border:1px solid #eee; 
-//   padding:5px 15px;
-//   border-radius:10px;
-//   margin-top:15px;
-//   position:relative;  
-//}
-//.f-search-loc input{
-//    border:none;
-//    font-size: 14px;
-//}
-//.f-search-loc input::placeholder{
-//    color:#999;
-//}
-//.f-search-loc i{
-//    color: #999;
-//    position: absolute;
-//    right: 10px;
-//    top: 10px;
-//}
-//.md-checkbox label>.box{
-//    top:6px;
-//    border: 2px solid #ddd;
-//}
-//.md-checkbox-list .md-checkbox{
-//    margin-bottom:-10px;
-//}
-//.f-ratings{
-//    padding:5px 15px;
-//    border:1px solid #eee;
-//    border-radius:10px;
-//}
-//.form label{
-//    margin-bottom: 0px !important;
-//}
-//.filter-heading{
-//    padding: 4px 0px 10px 10px;
-//    font-size: 13px;
-//    font-weight: 600;
-//    text-transform: uppercase;
-//}
-//.overall-box-heading{
-//    font-size:13px;
-//    padding-top:5px;
-//    font-weight:bold;
-//}
-//.all-label-2{
-//    padding-top:7px;
-//    font-weight:500;
-//    font-size:13px;
-//    text-transform: capitalize;;
-//}
-//.f-rating-box-2{
-//    margin-top:20px;
-//    position:relative; 
-//}
 ');
 $script = <<< JS
 
@@ -377,7 +302,7 @@ function showError(error) {
             var response = JSON.parse(res);
             if(response == null){
                 $('#city_location').focus();
-                $('.error').text('address or city must not be empty');
+                $('.error').text('Please enter city');
                 return false;
             }
             var city = response.name;
@@ -559,7 +484,8 @@ $(document).on('click','#search_jobs',function(e) {
      vals.keyword = $('#job_keyword').val();
      
      if(!city){
-           toastr.error('Please Enter city', 'error');
+           $('#city_location').focus();
+           $('.error').text('Please enter city');
            return false;
      }
        
