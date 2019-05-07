@@ -1,5 +1,5 @@
 <?php
-$this->params['header_dark'] = true;
+$this->params['header_dark'] = false;
 $this->title = $post['title'];
 
 use yii\bootstrap\ActiveForm;
@@ -36,6 +36,18 @@ $this->params['seo_tags'] = [
 //print_r($post);
 //exit();
 ?>
+    <section class="blog-header">
+        <div class="container padd-0">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pos-rel">
+                    <div class="blog-title"><?= $post['title']; ?></div>
+                    <div class="publish-date"><?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
     <section>
         <div class="container">
             <div class="row">
@@ -47,10 +59,12 @@ $this->params['seo_tags'] = [
                             ?>
                             <img src="<?= $feature_image; ?>">
                         </div>
-                        <div class="blog-title"><?= $post['title']; ?></div>
+
                         <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
+
+
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -91,8 +105,8 @@ $this->params['seo_tags'] = [
                                     ?>
                                 </ul>
                             </div>
-                            <div class="blog-pub">
-                                <span>Published:</span> <?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
+<!--                            <div class="blog-pub">-->
+<!--                                <span>Published:</span> --><?//= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
                                 <span>Tags:</span>
                                 <ul>
@@ -141,6 +155,34 @@ $this->params['seo_tags'] = [
 <?php
 $this->registerCss('
 /*----blog section----*/
+.blog-header{
+    min-height:200px;
+    background:#eee;
+}
+.blog-header > .container{
+    padding-top:0px !important;
+}
+.pos-rel{
+    position:relative;
+    height:200px;
+}
+
+.blog-title{
+    font-size: 25px;
+    color:#000;
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+}
+.publish-date{
+    position: absolute;
+    left: 50%;
+    bottom:10px;
+    transform:translateX(-50%);
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0 auto;
+}
 .load-more-btn{
     text-align:center;
     padding-top:20px;
@@ -230,14 +272,7 @@ textarea::placeholder{
     padding:20px 20px 10px;
     margin-top:20px;
 }
-.blog-title{
-    font-size: 25px;
-    padding-bottom: 20px;
-    padding-left: 10px;
-    padding-top: 20px;
-    border-bottom: 1px solid #eee;
-    color:#000;
-}
+
 .blog-comm, .reply-comm{
     border-bottom: 1px dotted #eee;
     padding:25px 5px 20px; 
@@ -250,7 +285,7 @@ textarea::placeholder{
 .blog-cover-image img{
     max-height:400px;
     width:100%;
-    object-fit:cover;
+    object-fit:contain;
     border-radius:10px;
 }
 .blog-division{
