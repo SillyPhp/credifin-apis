@@ -1,7 +1,10 @@
 <?php
 
 namespace account\controllers;
+use common\models\EducationalStreams;
+use common\models\Qualifications;
 use common\models\SpokenLanguages;
+use common\models\Users;
 use common\models\Utilities;
 use Yii;
 use common\models\CategoriesList;
@@ -37,6 +40,31 @@ class CategoriesListController extends Controller
             ->all();
 
         return $categories;
+    }
+
+    public function actionLoadStreams($q=null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Qualifications::find()
+            ->select(['qualification_enc_id id','name'])
+            ->where('name LIKE "' . $q . '%"')
+            ->limit(20)
+            ->asArray()
+            ->all();
+    }
+    public function actionLoadCandidate($q=null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Users::find()
+            ->select(['first_name','last_name'])
+            ->andWhere([
+                'or',
+                ['like', 'first_name', $q],
+                ['like', 'last_name', $q],
+            ])
+            ->limit(20)
+            ->asArray()
+            ->all();
     }
     public function actionCategories($q = null, $id = null)
     {
