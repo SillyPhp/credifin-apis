@@ -242,8 +242,9 @@ element.style {
 ?>
 
 <script type="text/javascript">
-    var sendMessagesUrl = '' + <?php echo Yii::$app->params->fireabase->modules->realtimeChat->config->functions->sendMessages; ?> +'';
-    var specialKey = '' + <?php echo Yii::$app->params->fireabase->modules->realtimeChat->config->specialKey; ?> +'';
+    // Variables defined
+    var sendMessagesUrl = '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->functions->sendMessages; ?>';
+    var specialKey = '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->specialKey; ?>';
 </script>
 
 <?php

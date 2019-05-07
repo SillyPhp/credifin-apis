@@ -956,7 +956,7 @@ class OrganizationsController extends Controller
             if ($request_type == 1) {
                 $companyReview->is_current_employee = (($arr['current_employee'] == 'current') ? 1 : 0);
             } else {
-                $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
+                $companyReview->reviewer_type = 3;
             }
             $companyReview->from_date = $from_time;
             $companyReview->to_date = $to_time;
