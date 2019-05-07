@@ -240,7 +240,7 @@ element.style {
 }
 ");
 $this->registerJs('
-    var sendMessagesUrl = " . Yii::$app->params->fireabase->modules->realtimeChat->config->functions->sendMessages .';
+    var sendMessagesUrl = "' . Yii::$app->params->fireabase->modules->realtimeChat->config->functions->sendMessages . "';
 ');
 
 $script = <<<JS
@@ -768,11 +768,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
     // Initialize Firebase
     var config = {
         apiKey: '<?= ""; ?>',
-        authDomain: '<?= Yii::$app->params->fireabse->realtimeChat->config->authDomain; ?>',
-        databaseURL: '<?= Yii::$app->params->fireabse->realtimeChat->config->databaseURL; ?>',
-        projectId: '<?= Yii::$app->params->fireabse->realtimeChat->config->projectId; ?>',
-        storageBucket: '<?= Yii::$app->params->fireabse->realtimeChat->config->storageBucket; ?>',
-        messagingSenderId: '<?= Yii::$app->params->fireabse->realtimeChat->config->messagingSenderId; ?>',
+        authDomain: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->authDomain; ?>',
+        databaseURL: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->databaseURL; ?>',
+        projectId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->projectId; ?>',
+        storageBucket: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->storageBucket; ?>',
+        messagingSenderId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->messagingSenderId; ?>',
     };
     firebase.initializeApp(config);
 </script>
