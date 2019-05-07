@@ -30,7 +30,7 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-lg-12">
                     <div class="how-heading animatable fadeIn">
-                        <div class="heading-style">How It Works</div>
+                        <h1 class="heading-style">How It Works</h1>
                         <div class="how-sub-text">
                             <span class="how-icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png')?>"></span>
                             <h3>Create an Empower Youth account </h3>
@@ -66,7 +66,7 @@ $this->params['header_dark'] = false;
         <div class="row sol-bg-heading ">
             <div class="container">
                 <div class="col-md-12">
-                    <div class="heading-style">Solutions</div>
+                    <h1 class="heading-style">Solutions</h1>
                 </div>
             </div>
         </div>

@@ -30,10 +30,8 @@ use yii\helpers\Url;
                                   font="60px"></canvas></span>
                 <?php endif; ?>
             </div>
-            <h3><?= $name; ?></h3>
-            <p><i class="fa fa-envelope-o"></i><?= Yii::$app->user->identity->email ?></p>
-            <p><i class="fa fa-clock-o"></i>Member
-                Since, <?= date('Y', strtotime(Yii::$app->user->identity->created_on)); ?></p>
+            <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
+            <p><?= Yii::$app->user->identity->email ?></p>
         </div>
         <div class="tree_widget-sec">
             <ul>
@@ -42,8 +40,13 @@ use yii\helpers\Url;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title="" class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
+
+                    </li>
+                    <li class="inner-child">
+                        <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
+                                    class="fa fa-pencil-square-o"></i>Edit Profile</a>
 
                     </li>
                     <li class="inner-child">
@@ -55,24 +58,10 @@ use yii\helpers\Url;
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
                                     class="fa fa-paper-plane-o"></i>Applied Job</a>
                     </li>
-                    <li>
-                        <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2"
-                           data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
-                        <div class="modal fade" id="myModal2" role="dialog">
-                            <div class="modal-dialog modal-md">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                                             alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                                        <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span></div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/company/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
                     </li>
                     <li class="inner-child">
@@ -91,6 +80,20 @@ use yii\helpers\Url;
                                     class="fa fa-paper-plane-o"></i>Create Internships</a>
                     </li>
                 <?php endif; ?>
+                <li>
+                    <a href="#" url="/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
+                       data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
+                    <div class="modal fade" id="myModal2" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <li class="inner-child">
                     <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
                 </li>

@@ -33,7 +33,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                             foreach ($fields['fields'] as $field) { ?>
                                 <div class="col-md-12">
                                     <?php
-                                    echo $this->render('/widgets/forms/questionnaire/' . $field['field_type'], [
+                                    echo $this->renderAjax('/widgets/forms/questionnaire/' . $field['field_type'], [
                                         'model' => $model,
                                         'form' => $form,
                                         'field' => $field,

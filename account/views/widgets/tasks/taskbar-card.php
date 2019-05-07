@@ -1,6 +1,10 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
+
+
+echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 ?>
 
 <section class="card card-transparent">
@@ -17,21 +21,22 @@ use yii\helpers\Url;
                             }
                             $name = Yii::$app->user->identity->organization->name;
                             $color = Yii::$app->user->identity->organization->initials_color;
-                            $link = Url::to('/company/' . Yii::$app->user->identity->organization->slug);
+                            $link = Url::to('/' . Yii::$app->user->identity->organization->slug);
                         } else {
                             if (Yii::$app->user->identity->image) {
                                 $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                             }
                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                             $color = Yii::$app->user->identity->initials_color;
-                            $link = Url::to('/user/' . Yii::$app->user->identity->username);
+                            $link = Url::to('/' . Yii::$app->user->identity->username . '/edit');
                         }
 
                         if (empty($image)) :
                             ?>
-                            <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100" height="100" font="40px"></canvas>
+                            <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100"
+                                    height="100" font="40px"></canvas>
                         <?php else: ?>
-                            <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>" />
+                            <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/>
                         <?php endif; ?>
                     </div>
                     <div class="profile-info">
@@ -46,14 +51,16 @@ use yii\helpers\Url;
                 <div class="card card-accordion card-accordion-first">
                     <div class="card-header border-bottom-0">
                         <h4 class="card-title">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse1One">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapse1One">
                                 <i class="fa fa-check mr-1"></i> Tasks
                             </a>
                         </h4>
                     </div>
                     <div id="collapse1One" class="accordion-body collapse show">
                         <div class="card-body padding-0" style="text-align:center">
-                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>" class="form-horizontal form-bordered">
+                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>"
+                                  class="form-horizontal form-bordered">
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="input-group mb-3">
@@ -381,7 +388,6 @@ $script = <<< JS
     
     $(document).on('click', '.todo-check', function () {
         var id = $(this).attr('id');
-        //        console.log(id);
        if ($(this).is(':checked')){
             $.ajax({
             url: "/account/tasks/task-complete",
@@ -524,217 +530,35 @@ $script = <<< JS
                 }
             }
         });
+    } 
+    
+    var value = document.getElementById('hidden_input').value;
+    if(value == 0){
+        dashboard_organization_taskbar();
+            $.ajax({
+            type:"POST",
+            url:"/account/dashboard/coaching",
+            data:{dat:'taskbar_card'},
+            });
     }
-
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('https://ciphertrick.com/demo/jquerysession/js/jquerysession.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('@vendorAssets/tutorials/js/intro.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
-
-//$options = [
-//    'where' => ['and',
-//        ['a.name' => 'taskbar_card'],
-//        ['b.is_viewed' => 0],
-//    ],
-//];
-//
-//$tutorials = Yii::$app->Tutorials->getTutorialsByUser($options);
-//echo "Hello";
-//print_r($tutorials);
-
-if (!Yii::$app->session->has("tutorial_organization_tasks")) {
-    echo '<script>dashboard_organization_taskbar()</script>';
-    Yii::$app->session->set("tutorial_organization_tasks", "Yes");
-}
 ?>
-
-<!--<script type="text/javascript">
-
-    var limit = 7;
-        var start = 0;
-        var action = 'inactive';
-        function load_list(start, limit)
-        {
-         $.ajax({
-          url:"/account/dashboard",
-          method:"POST",
-          data:{limit:limit, start:start},
-          cache:false,
-          success:function(data){
-            var a = data.tasks_list;
-            var c = data.task_count;
-            for(var i in a){
-              var name = a[i].name;
-              var id = a[i].task_id;
-              var is_completed = a[i].is_completed;
-              var test = (is_completed == 0)? "todo-check" : "uncheck";
-              $('.widget-todo-list').append('<li class="list"><div class="checkbox-custom checkbox-default" style = "text-align:left;"><input type="checkbox"  id="' + id + '" class="'+test+'" ' + ((a[i].is_completed == 1) ? 'checked' : '') + '><label class="todo-label ' + ((a[i].is_completed == 1) ? 'line-pass' : '') + '" data-type="text">' + name + '</label></div><div class="todo-actions"><a class="todo-remove" href="#"><i class="fa fa-times"></i></a></div></li>');
-                
-              if(data == '')
-              {
-                action = 'active';
-                  }
-              else
-              {
-                action = 'inactive';
-                  }
-        
-            }
-          }
-         });
-        }
-
-
-    $(document).on('click', '.todo-remove', function (e) {
-        e.preventDefault();
-        var id = $(this).parent().prev().children().attr('id');
-        var remove = $(this).closest('li');
-        $.ajax({
-            url: "/account/todo",
-            method: "POST",
-            data: {
-                id: id
-            },
-            success: function (response) {
-                $(remove).remove();
-            }
-        });
-    });
-
-    $(document).on('click', '.todo-check', function () {
-        var id = $(this).attr('id');
-        if ($(this).is(':checked')) {
-            $.ajax({
-                url: "/account/todocomplete",
-                method: "POST",
-                data: {
-                    id: id
-                },
-                success: function (response) {
-
-                }
-            });
-        }
-    });
-
-    // function to complete the task
-    $(document).on('click', '.uncheck', function () {
-        var id = $(this).attr('id');
-        if (id) {
-            $.ajax({
-                url: "/account/todoincomplete",
-                method: "POST",
-                data: {
-                    id: id
-                },
-                success: function (response) {
-
-                }
-            });
-        }
-    });
-
-
-    function load_list(page = 0) {
-        if (page <= 0) {
-            page = 1;
-        }
-        var url = $('.widget-todo-list').attr('data-url');
-        $.ajax({
-            url: url,
-            method: 'POST',
-            dataType: 'JSON',
-            data: {page: page},
-            cache: false,
-            success: function (response) {
-                if (response.status == 200) {
-                    action = 'inactive';
-                } else {
-                    action = 'active';
-                }
-                var a = data.tasks_list;
-                for (var i in a) {
-                    var name = a[i].name;
-                    var id = a[i].task_id;
-                    var is_completed = a[i].is_completed;
-                    var test = (is_completed == 0) ? "todo-check" : "uncheck";
-                    $('.widget-todo-list').append('<li class="list"><div class="checkbox-custom checkbox-default" style = "text-align:left;"><input type="checkbox"  id="' + id + '" class="' + test + '" ' + ((a[i].is_completed == 1) ? 'checked' : '') + '><label class="todo-label ' + ((a[i].is_completed == 1) ? 'line-pass' : '') + '" data-type="text">' + name + '</label></div><div class="todo-actions"><a class="todo-remove" href="#"><i class="fa fa-times"></i></a></div></li>');
-                    if (data == '') {
-                        action = 'active';
-                    } else {
-
-                    }
-
-                }
-            }
-        });
-    }
-
-
-
-    $(function () {
-        var default_val;
-        // make field editable
-        $(document).on('dblclick', '.todo-label', function () {
-            default_val = $(this).text();
-            var name = $(this).text();
-            if ($(this).prev('input:checkbox').prop("checked") != true) {
-                $(this).html('<input type="text" class="edit_task" value="' + name + '" autofocus>');
-                $('.widget-todo-list li').find('input:text:visible').focus();
-            }
-            return default_val;
-        });
-        // update task
-        $(document).on('keypress', '.edit_task', function (a) {
-            if (a.which == 13) {
-                var name = $(this).val();
-                var parent = $(this).parent();
-                var edit_id = $(this).closest('label').prev().attr('id');
-                if ($(this).val() == '') {
-                    $('.edit_task').hide();
-                    parent.text(default_val);
-                } else {
-                    $.ajax({
-                        url: '/account/edittask',
-                        method: 'POST',
-                        data: {
-                            name: name,
-                            edit_id: edit_id
-                        },
-                        success: function (data) {
-                            if (data == true) {
-                                var dattaa = $('.edit_task').val();
-                                $('.edit_task').hide();
-                                parent.text(dattaa);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-        // focus out
-        $(document).on('focusout', '.edit_task', function () {
-            var parent = element.parent();
-            var id = element.attr('id');
-            id.hide();
-            parent.text(default_val);
-        });
-    });
-</script>-->
-
 
 <script type="text/template" id="todo-template">
     {{#.}}
     <li>
         <div class="checkbox-custom checkbox-default text-left">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}} checked {{/is_completed}} />
+            <input type="checkbox" name="task" id="{{task_id}}{{id}}"
+                   class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
+                   {{#is_completed}} checked {{/is_completed}} />
             <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
         </div>
         <div class="todo-actions">
@@ -745,193 +569,3 @@ if (!Yii::$app->session->has("tutorial_organization_tasks")) {
     </li>
     {{/.}}
 </script>
-<!--<li>
-    <div class="checkbox-custom checkbox-default" style="text-align:left;">
-        <input type="checkbox" id="{{id}}" class="" {{#if}} ({{is_completed}} == 1) checked {{/if}} />
-        <label class="todo-label {{#if}} ({{is_completed}} == 1) line-pass {{/if}}" data-type="text">{{name}}</label>
-    </div>
-    <div class="todo-actions">
-        <a class="todo-remove" href="#">
-            <i class="fa fa-times"></i>
-        </a>
-    </div>
-</li>-->
-<!--<script type="text/javascript">
-    $(document).on('keypress', '#task_input', function (e) {
-        if (e.which == 13) {
-            if ($(this).val() == '')
-            {
-                return false;
-            } else
-            {
-                $("#add_task").trigger("click");
-                return false;
-            }
-        }
-    });
-
-
-
-    $(document).on('change', '.list input', function () {
-        if ($(this).hasClass('todo-check')) {
-            $(this).closest('li').find('.todo-label').addClass('line-pass');
-            $(this).removeClass('todo-check');
-            $(this).addClass('uncheck');
-        } else {
-            $(this).closest('li').find('.todo-label').removeClass('line-pass');
-            $(this).removeClass('uncheck');
-            $(this).addClass('todo-check');
-        }
-    });
-
-    //ricky current working end   
-
-    $(document).on('click', '.todo-remove', function (e) {
-        e.preventDefault();
-        var id = $(this).parent().prev().children().attr('id');
-        var remove = $(this).closest('li');
-        $.ajax({
-            url: "/account/todo",
-            method: "POST",
-            data: {id: id},
-            success: function (response) {
-                $(remove).remove();
-            }
-        });
-    });
-
-    $(document).on('click', '.todo-check', function () {
-        var id = $(this).attr('id');
-//        console.log(id);
-        if ($(this).is(':checked')) {
-            $.ajax({
-                url: "/account/todocomplete",
-                method: "POST",
-                data: {id: id},
-                success: function (response) {
-
-                }
-            });
-        }
-    });
-
-    $(document).on('click', '.uncheck', function () {
-        var id = $(this).attr('id');
-        if (id) {
-            $.ajax({
-                url: "/account/todoincomplete",
-                method: "POST",
-                data: {id: id},
-                success: function (response) {
-
-                }
-            });
-        }
-    });
-
-
-
-// onScroll end
-
-//        Working onScrolling start
-
-    var limit = 10;
-    var start = 0;
-    var action = 'inactive';
-    function load_list(start, limit) {
-        $.ajax({
-            url: "/account/dashboard",
-            method: "POST",
-            data: {limit: limit, start: start},
-            cache: false,
-            success: function (data) {
-                var a = data.tasks_list;
-                var c = data.task_count;
-                console.log(c);
-                for (var i in a) {
-                    var name = a[i].name;
-                    var id = a[i].task_id;
-                    var is_completed = a[i].is_completed;
-                    var test = (is_completed === 0) ? "todo-check" : "uncheck";
-                    $('.widget-todo-list').append('<li class="list"><div class="checkbox-custom checkbox-default" style = "text-align:left;"><input type="checkbox"  id="' + id + '" class="' + test + '" ' + ((a[i].is_completed == 1) ? 'checked' : '') + '><label class="todo-label ' + ((a[i].is_completed == 1) ? 'line-pass' : '') + '" data-type="text">' + name + '</label></div><div class="todo-actions"><a class="todo-remove" href="#"><i class="fa fa-times"></i></a></div></li>');
-                    if (data === '') {
-                        action = 1;
-                    } else {
-                        action = 2;
-                    }
-                }
-            }
-        });
-    }
-
-    if (action === 0) {
-        action = 1;
-        load_list();
-        $('#spin-attr').show();
-        $('#spin-attr').delay(1000).hide();
-    }
-
-    $('.widget-todo-list').scroll(function () {
-        var loadedListHeight = $(this)[0].scrollHeight;
-        var listHeight = $('.widget-todo-list').height() + 30;
-        if ($('.widget-todo-list').scrollTop() + listHeight > loadedListHeight && action === 0) {
-            action = 1;
-            setTimeout(function () {
-                load_list();
-                $('#spin-attr').hide(500);
-            }, 100);
-            $('#spin-attr').show();
-        }
-    });
-
-// onScroll end
-
-
-    $(function () {
-        var default_val;
-        $(document).on('dblclick', '.todo-label', function () {
-            default_val = $(this).text();
-            var name = $(this).text();
-
-            if ($(this).prev('input:checkbox').prop("checked") === true) {
-                console.log('Completed task can not be edited or modified');
-            } else {
-                $(this).html('<input type="text" id="ricky" class="edit_task" value="' + name + '" autofocus>');
-                $('.widget-todo-list li').find('input:text:visible').focus();
-            }
-            return default_val;
-        });
-
-        $(document).on('keypress', '.edit_task', function (a) {
-            if (a.which === 13) {
-                var name = $(this).val();
-                var parent = $(this).parent();
-                var edit_id = $(this).closest('label').prev().attr('id');
-                if ($(this).val() === '') {
-                    $('.edit_task').hide();
-                    parent.text(default_val);
-                } else {
-                    $.ajax({
-                        url: '/account/edittask',
-                        method: 'POST',
-                        data: {name: name, edit_id: edit_id},
-                        success: function (data) {
-                            if (data === true) {
-                                var dattaa = $('.edit_task').val();
-                                $('.edit_task').hide();
-                                parent.text(dattaa);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        $(document).on('focusout', '.edit_task', function () {
-            $('#ricky').hide();
-            parent.text(default_val);
-        });
-    });
-
-    var ps = new PerfectScrollbar('.widget-todo-list');
-</script>-->

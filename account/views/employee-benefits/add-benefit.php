@@ -5,6 +5,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $benefit = ArrayHelper::index($benefits, 'benefit_enc_id');
 ?>
     <div class="modal-header modal_title">
@@ -23,7 +24,7 @@ $form = ActiveForm::begin([
     <div class="row">
         <div class="col-md-9">
             <div class="form-group">
-                <input type="text" id="text" placeholder="Search Here.. Or Add New Benefit" class="form-control">
+                <input type="text" id="search_text" placeholder="Search Here.. Or Add New Benefit" class="form-control">
             </div>
         </div>
         <div class="col-md-3">
@@ -32,8 +33,8 @@ $form = ActiveForm::begin([
             </div>
         </div>
     </div>
-  <?php
- if (!empty($benefit)){ ?>
+<?php
+if (!empty($benefit)) { ?>
     <div class="cat-sec fix_height">
         <div class="row no-gape">
             <?php
@@ -42,14 +43,13 @@ $form = ActiveForm::begin([
             <?=
             $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
                 'item' => function ($index, $label, $name, $checked, $value) {
-                    if(empty($label['icon'])){$label['icon'] = 'plus-icon.svg';}
                     $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
                     $return .= '<div class="p-category search_benefits">';
                     $return .= '<input type="checkbox" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
                     $return .= '<div class="checkbox-text">';
                     $return .= '<span class="checkbox-text--title">';
-                    $return .= '<img src="' . Url::to('/assets/icons/').$label["icon_location"].'/'.  $label["icon"] . '">';
+                    $return .= '<img src="' . $label["icon"] . '">';
                     $return .= '</span><br/>';
                     $return .= '<span class="checkbox-text--description2">';
                     $return .= $label['benefit'];
@@ -64,10 +64,10 @@ $form = ActiveForm::begin([
             ?>
         </div>
     </div>
-  <?php } else { ?>
-     <h3>No Benefits To Display</h3>
- <?php }
- ?>
+<?php } else { ?>
+    <h3>No Benefits To Display</h3>
+<?php }
+?>
     <div class="modal-footer">
         <?= Html::submitbutton('Save', ['class' => 'btn btn-primary custom-buttons2 sav_benft']); ?>
         <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
@@ -75,7 +75,8 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end(); ?>
 <?php
 $script = <<< JS
-$("#text").keyup(function () {
+$('#benefits-form').validate().resetForm();
+$("#search_text").keyup(function (e) {
     var re = new RegExp($(this).val(), "i")
     $('.search_benefits').each(function () {
         var text = $(this).text(),
@@ -83,11 +84,34 @@ $("#text").keyup(function () {
         $(this).toggle(matches)
     });
 });
-    $(document).on('submit', '#benefits-form', function (event) {
-        event.stopImmediatePropagation();
+$(document).on('keypress','input',function(e)
+{
+    if(e.which==13)
+        {
+            return false;
+        }
+})
+$(document).on('keyup','#search_text',function(e)
+{
+    if(e.which==13)
+        {
+            if ($(this).val()==''){
+                return false;
+            }
+            else {
+                $('#add_new_btn').trigger('click');
+            }
+        }
+})
+    $(document).on('click', '.sav_benft', function (event) {
+        var me = $(this);
         event.preventDefault();
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+    if ( me.data('requestRunning') ) {
+        return;
+    }
+    me.data('requestRunning', true);
+        var url = '/account/employee-benefits/create-benefit';
+        var data = $('#benefits-form').serialize();
         $.ajax({
             url: url,
             type: 'post',
@@ -104,14 +128,21 @@ $("#text").keyup(function () {
                     toastr.error(response.message, response.title);
                 }
                 $('#modal_benefit').modal('toggle');
-            }
+            },
+            complete: function() {
+            me.data('requestRunning', false);
+          }
         });
     });
     
   $(document).on('click','#add_new_btn',function(event) {
-      event.stopImmediatePropagation();
-      event.preventDefault();
-      var str = $.trim($('#text').val());
+      var me = $(this);
+        event.preventDefault();
+    if ( me.data('requestRunning') ) {
+        return;
+    }
+    me.data('requestRunning', true);
+      var str = $.trim($('#search_text').val());
      if (str != '')
          {
          $.ajax({
@@ -130,8 +161,10 @@ $("#text").keyup(function () {
                 } else {
                     toastr.error(response.message, response.title);
                 }
-                $('#modal_benefit').modal('toggle'); 
-            }
+                $('#modal_benefit').modal('toggle');
+            },complete: function() {
+            me.data('requestRunning', false);
+          }
             })
          }
   }) 

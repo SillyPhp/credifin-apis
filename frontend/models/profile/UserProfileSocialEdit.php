@@ -26,7 +26,7 @@ class UserProfileSocialEdit extends Model {
 
     public function rules() {
         return [
-            [['facebook','twitter','google','linkedin'],'safe']
+            [['facebook','twitter','skype','linkedin'],'safe']
         ];
     }
 

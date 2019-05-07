@@ -2,8 +2,9 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use yii\bootstrap\Modal;
+use frontend\models\applications\CandidateApply;
 ?>
-<!--<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>-->
 <div class="row">
     <?php
         Pjax::begin(['id' => 'widgets']);
@@ -54,7 +55,7 @@ use yii\widgets\Pjax;
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_accepted ?></span> </div>
                     <div class="desc"> Applications Accepted</div>
                 </div>
@@ -66,7 +67,7 @@ use yii\widgets\Pjax;
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_pending; ?></span> </div>
                     <div class="desc">Applications Pending</div>
                 </div>
@@ -78,7 +79,7 @@ use yii\widgets\Pjax;
                     <i class="fa fa-building"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
                     <div class="desc">Companies Shortlisted</div>
                 </div>
@@ -121,11 +122,13 @@ use yii\widgets\Pjax;
                     <ul class="tabs" id="head-tabs">
                         <li data-tab="tab-1" data-url="/account/jobs/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li> 
+                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li>
                         |
                         <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
+                        |
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
 
                     </ul>
                 </div>
@@ -146,7 +149,7 @@ use yii\widgets\Pjax;
                                         foreach ($reviewlist as $review) {
                                             ?>
                                             <div class="col-md-3 col-sm-6 hr-j-box rev_box" id="<?= $review['application_enc_id']; ?>">
-                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>"> 
+                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
@@ -175,7 +178,7 @@ use yii\widgets\Pjax;
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div>
-                                                                    <div class="j-grid"> 
+                                                                    <div class="j-grid">
                                                                         <a  href="/job/<?= $review['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
@@ -183,13 +186,13 @@ use yii\widgets\Pjax;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>  
+                                            </div>
                                             <?php
                                         }
                                     } else {
                                         ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -204,14 +207,14 @@ use yii\widgets\Pjax;
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <div id="tab-2" class="tab-con" > 
+                                <div id="tab-2" class="tab-con" >
                                     <?php
                                     Pjax::begin(['id' => 'pjax_shortlist']);
                                     if ($shortlisted) {
                                         foreach ($shortlisted as $shortlist) {
                                             ?>
                                             <div class="col-md-3 hr-j-box">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
@@ -235,8 +238,8 @@ use yii\widgets\Pjax;
                                                                         <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
-                                                                    </div> 
-                                                                    <div class=" j-grid"> 
+                                                                    </div>
+                                                                    <div class=" j-grid">
                                                                         <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
@@ -244,13 +247,13 @@ use yii\widgets\Pjax;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> 
+                                            </div>
                                             <?php
                                         }
                                     } else {
                                         ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -265,13 +268,13 @@ use yii\widgets\Pjax;
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <div id="tab-3" class="tab-con" > 
+                                <div id="tab-3" class="tab-con" >
                                     <?php
                                     if ($applied) {
                                         foreach ($applied as $apply) {
-                                            ?>  
+                                            ?>
                                             <div class="col-md-3">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
@@ -301,9 +304,9 @@ use yii\widgets\Pjax;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
+                                        ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -315,13 +318,13 @@ use yii\widgets\Pjax;
                                         </div>
                                     <?php } ?>
                                 </div>
-                                <div id="tab-4" class="tab-con" > 
+                                <div id="tab-4" class="tab-con" >
                                     <?php
                                     if ($accepted) {
                                         foreach ($accepted as $accept) {
-                                            ?>  
+                                            ?>
                                             <div class="col-md-3">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('/assets/common/categories/'. $accept['job_icon']) ?>" class="img-responsive ">
@@ -349,9 +352,9 @@ use yii\widgets\Pjax;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
+                                        ?>
                                         <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -362,6 +365,66 @@ use yii\widgets\Pjax;
                                             </div>
                                         </div>
                                     <?php } ?>
+                                </div>
+                                <div id="tab-5" class="tab-con">
+                                    <?php
+                                    if ($shortlist1) {
+                                        foreach ($shortlist1 as $shortlist) {
+                                            ?>
+                                    <div class="col-md-3 hr-j-box">
+                                        <div class="topic-con">
+                                            <div class="hr-company-box">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name">
+                                                    <?= $shortlist['org_name'] ?>
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $shortlist['name']?>
+                                                </div>
+                                                <div class="overlay2">
+                                                    <div class="text-o">
+                                                <?php if($shortlist['appliedApplications']){?>
+                                                        <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                            <i class="fa fa-check"></i>Applied</a>
+                                                <?php }else{?>
+                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                <?php } ?>
+                                                    </div>
+
+                                                </div>
+                                                <div class="hr-com-jobs">
+                                                    <div class="row ">
+                                                        <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                            <div class=" j-grid">
+                                                                <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <div class="col-md-12">
+                                            <div class="tab-empty">
+                                                <div class="tab-empty-icon">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                </div>
+                                                <div class="tab-empty-text">
+                                                    <div class="">There are no Jobs to show.</div>
+                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    } ?>
+
+
                                 </div>
                             </div>
                         </div>
@@ -377,85 +440,26 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Companies shortlisted</span>
+                    <span class="caption-subject font-dark bold uppercase">Shortlisted Companies</span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/shortlist-companies') ?>" title="" class="viewall-jobs">View All</a>
+                    <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_org']);
-                    if ($shortlist_org) {
-                        foreach ($shortlist_org as $shortlist) {
-                            $logo = $shortlist['logo'];
-                            ?>
-                            <div class="col-md-3 hr-j-box">
-                                <div class="topic-con"> 
-                                    <div class="hr-company-box">
-                                        <a href="/company/<?= $shortlist['slug']; ?>"> 
-                                            <div class="hr-com-icon">
-                                                <?php
-                                                if (empty($shortlist['logo_location'])) {
-                                                    ?>
-                                                    <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="80" height="80" font="35px"></canvas>
-                                                    <?php
-                                                } else {
-                                                    $logo_location = $shortlist['logo_location'];
-                                                    $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                    $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                    if (!file_exists($logo_base_path)) {
-                                                        $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
-                                                    }
-                                                    ?>
-                                                    <img src="<?= Url::to($logo_image); ?>" class="img-responsive ">
-                                                    <?php
-                                                }
-                                                ?>
-                                            </div>
-                                            <div class="hr-com-name">
-                                                <?= $shortlist['org_name']; ?>
-                                            </div>
-                                            <div class="hr-com-field">
-                                                <?= $shortlist['industry']; ?>
-                                            </div>
-                                        </a>
-                                        <div class="hr-com-jobs">
-                                            <div class="row">
-                                                <div class="col-md-1 j-cross"><button value="<?= $shortlist['shortlisted_enc_id']; ?>" class="rmv_org"><i class="fa fa-times"></i></button></div> 
-                                                <div class="col-md-offset-3 col-md-6 minus-15-pad j-grid"> 
-                                                    <a  href="/company/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                    } else {
-                        ?>
-                        <div class="col-md-12">
-                            <div class="tab-empty"> 
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">There are no Jobs to show.</div>
-                                    <div class="">You haven't Shortlisted any Company.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                    Pjax::end();
+                    <?=
+                    $this->render('/widgets/organization/card', [
+                        'organization_data' => $shortlist_org,
+                    ]);
                     ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 <?php
 $this->registerCss('
 .tab-empty{
@@ -495,8 +499,11 @@ $this->registerCss('
 //    z-index:99999;
 //}
 .topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
-  height: 80%;
+  height: 78%;
   border-radius:10px 10px 0px 0px !important;
+}
+.topic-con:hover .opening-txt ~ .overlay, .topic-con:hover .opening-txt ~ .overlay1,.topic-con:hover .opening-txt ~ .overlay2 {
+    height:80%;
 }
 button.over-bttn, .ob1, button.over-bttn, .ob2{
     background:#00a0e3 !important; 
@@ -583,8 +590,34 @@ li.current{
 a:hover{
     text-decoration:none;
 }
+
+#new_resume,#use_existing{
+        display:none;
+    }
+    
+#warn{
+        color:#e9465d;
+        display:none;
+    }
+    
+.sub_description_1,sub_description_2{
+        display:none;
+     } 
+     
+.fader{
+      width:100%;
+      height:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      display:none;
+      z-index:99;
+      background-color:#fff;
+      opacity:0.7;
+    }
 ');
 $script = <<<JS
+
 $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
 })
@@ -669,14 +702,6 @@ $(document).on('click','.rmv_review',function(){
       Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
         
-$(document).on('click','.rmv_org',function()
-    {
-      var  url = '/account/jobs/org-delete';
-      var rmv_id = $(this).val();
-      var  pjax_refresh_id = '#pjax_org';
-      Ajax_call(rmv_id,url,pjax_refresh_id);
-   }) 
-        
         
 	$('ul.tabs li').click(function(){
 		var tab_id = $(this).attr('data-tab');
@@ -691,6 +716,12 @@ $(document).on('click','.rmv_org',function()
 $(document).on('click', '#removejob', function(){
     $(this).closest('.hr-j-box').remove();
 });   
+
+$(document).on('click','#close_btn',function()
+ {
+    $('.fader').css('display','none');
+    $(this).parent().removeClass('show');
+})
 
 JS;
 $this->registerJs($script);

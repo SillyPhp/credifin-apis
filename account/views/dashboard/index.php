@@ -17,9 +17,10 @@ if (!$is_email_verified):
     echo $this->render('/widgets/verification/resend-email');
 endif;
 ?>
+
     <div class="row">
         <div class="col-md-3">
-            <?= $this->render('/widgets/tasks/taskbar-card'); ?>
+            <?= $this->render('/widgets/tasks/taskbar-card',['viewed'=>$viewed]); ?>
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
@@ -166,6 +167,24 @@ endif;
     </div>
 <?php
 $this->registerCss("
+.posRel{
+    position:relative;
+}
+.o-icon{
+    text-align:center
+}
+.o-icon img{
+    max-width:220px;
+    margin:0 auto;
+}
+.overlay{
+    background: rgba(255,255,255,.9);
+    width: 100%;
+    height:100%;
+//    min-height: 378px;
+    position: absolute;
+    z-index: 9;
+}
 /*how it works section css starts*/
 .how-icon img{
     height:84px;
@@ -206,137 +225,17 @@ p{
     text-transform:uppercase;
     padding-top:10px;
 }
+.hr-com-jobs2{
+    margin-top:20px;
+}
 /*how it works section css ends*/
 
-/* Application process css starts */
-.m-widget4 .m-widget4__item {
-    display: table;
-    padding-top: 1.15rem;
-    padding-bottom: 1.25rem;
-}
-.m-widget4__item {
-    border-bottom: 0.07rem dashed #ebedf2;
-}
-.m-widget4 .m-widget4__item .m-widget4__img {
-    display: table-cell;
-    vertical-align: middle;
-}
-.m-widget4 .m-widget4__item .m-widget4__img.m-widget4__img--pic img {
-    width: 4rem;
-    border-radius: 50%;
-}
-.m-widget4.m-widget4--progress .m-widget4__info {
-    width: 50%;
-}
-.m-widget4 .m-widget4__item .m-widget4__info {
-    display: table-cell;
-    padding-left: 1.2rem;
-    padding-right: 1.2rem;
-    font-size: 1rem;
-    vertical-align: middle;
-}
-.m-widget4 .m-widget4__item .m-widget4__info .m-widget4__title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #575962;
-}
-.m-widget4 .m-widget4__item .m-widget4__info .m-widget4__sub {
-    font-size: 11px;
-    color: #7b7e8a;
-}
-.m-widget4.m-widget4--progress .m-widget4__progress {
-    display: table-cell;
-    vertical-align: middle;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    width: 50%;
-}
-.m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .m-widget17__progress-number {
-    font-size: 14px;
-    font-weight: 600;
-}
-.m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .m-widget17__progress-label {
-    font-size: 11px;
-    float: right;
-    margin-top: 0.3rem;
-}
-.m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .progress {
-    display: block;
-    margin-top: 0.8rem;
-    height: 0.5rem;
-}
-.progress.m-progress--sm {
-    height: 6px;
-}
-.progress {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    height: 1rem;
-    overflow: hidden;
-    font-size: .75rem;
-    background-color: #e9ecef;
-    border-radius: .25rem;
-}
-.progress-bar {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    background-color: #5867dd;
-    -webkit-transition: width 0.6s ease;
-    transition: width 0.6s ease;
-}
-.progress.m-progress--sm .progress-bar {
-    border-radius: 3px;
-}
-.progress .progress-bar {
-    -webkit-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-}
-.bg-danger {
-    background-color: #f4516c !important;
-}
-.m-widget4 .m-widget4__item .m-widget4__ext {
-    display: table-cell;
-    vertical-align: middle;
-}
-.btn.btn-secondary {
-    background: white !important;
-    border-color: #ebedf2 !important;
-    box-shadow:none !important;
-    color: #212529;
-    -webkit-transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,-webkit-box-shadow 0.15s ease-in-out !important;
-    transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,-webkit-box-shadow 0.15s ease-in-out !important;
-    transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out !important;
-    transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out,-webkit-box-shadow 0.15s ease-in-out !important;
-}
-.btn.m-btn--pill {
-    border-radius: 60px !important;
-}
-.m-portlet__body {
-    color: #575962;
-    padding: 0.0rem 2.2rem;
-}
-.m-widget4__item.m-widget4__item--last, .m-widget4__item:last-child {
-    border-bottom: 0;
-}
-.btn.m-btn--hover-brand:hover, .btn.m-btn--hover-brand.active, .btn.m-btn--hover-brand:active, .btn.m-btn--hover-brand:focus, .show>.btn.m-btn--hover-brand.dropdown-toggle {
-    border-color: #716aca !important;
-    color: #fff !important;
-    background-color: #716aca !important;
-    box-shadow:none !important;
-}
-/* Application process css ends */
+@media screen and (max-width: 992px){
+    .o-icon img{
+        max-width:320px;
+        margin:0 auto;
+    }
+} 
 ");
 $script = <<<JS
 

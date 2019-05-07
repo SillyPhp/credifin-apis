@@ -21,7 +21,7 @@ class QuestionnaireController extends Controller
                 'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
             ],
             'orderBy' => [
-                'id' => SORT_DESC,
+                'created_on' => SORT_DESC,
             ],
         ];
 
@@ -35,6 +35,7 @@ class QuestionnaireController extends Controller
     public function actionCreate()
     {
         $model = new QuestionnaireForm();
+        $type = 'create';
         if ($model->load(Yii::$app->request->post())) {
             if ($model->add()) {
                 return true;
@@ -45,6 +46,7 @@ class QuestionnaireController extends Controller
 
         return $this->render('form', [
             'model' => $model,
+            'type' => $type,
         ]);
     }
 
@@ -52,6 +54,7 @@ class QuestionnaireController extends Controller
     {
         $model = new QuestionnaireForm();
         $fields = $model->getCloneData($qidk);
+        $type = 'clone';
         if (empty($fields)) {
             return 'Questionnaire not found!!';
         }
@@ -62,16 +65,16 @@ class QuestionnaireController extends Controller
                 return false;
             }
         } else {
-            return $this->render('questionnaire-clone', [
+            return $this->render('form', [
                 'model' => $model,
                 'fields' => $fields,
+                'type' => $type,
             ]);
         }
     }
 
     public function actionView($qidk)
     {
-
         $this->layout = 'main-secondary';
         $model = new QuestionnaireViewForm();
         $result = OrganizationQuestionnaire::find()
@@ -79,16 +82,16 @@ class QuestionnaireController extends Controller
             ->where(['questionnaire_enc_id' => $qidk])
             ->asArray()
             ->one();
-        if (empty($result)) {
-            return 'not found';
-        }
+
         $fields = QuestionnaireFields::find()
             ->alias('a')
             ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
             ->where(['a.questionnaire_enc_id' => $result['questionnaire_enc_id']])
             ->asArray()
             ->all();
-
+        if (empty($result) || empty($fields)) {
+            return 'not found';
+        }
         foreach ($fields as $field) {
             $field_option = QuestionnaireFieldOptions::find()
                 ->select(['field_option_enc_id', 'field_option'])
@@ -112,7 +115,7 @@ class QuestionnaireController extends Controller
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
-                ->update(OrganizationQuestionnaire::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['questionnaire_enc_id' => $id])
+                ->update(OrganizationQuestionnaire::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['questionnaire_enc_id' => $id])
                 ->execute();
             if ($update) {
                 return true;

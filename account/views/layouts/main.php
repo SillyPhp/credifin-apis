@@ -1,12 +1,15 @@
 <?php
 
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 use yii\helpers\Html;
 use account\assets\AppAssets;
 use yii\helpers\Url;
 
 AppAssets::register($this);
+$this->beginPage();
 ?>
-<?php $this->beginPage(); ?>
     <!DOCTYPE html>
     <!--[if IE 8]>
     <html lang="en" class="ie8 no-js"> <![endif]-->
@@ -31,15 +34,6 @@ AppAssets::register($this);
             <nav class="navbar mega-menu" role="navigation">
                 <div class="container-fluid">
                     <div class="clearfix navbar-fixed-top">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                                data-target=".navbar-responsive-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="toggle-icon">
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                </span>
-                        </button>
                         <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
                             <div id="menuzord" class="menuzord">
                                 <a style="position:relative;float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
@@ -63,6 +57,15 @@ AppAssets::register($this);
                                     $color = Yii::$app->user->identity->initials_color;
                                 }
                                 ?>
+                                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                        data-target=".navbar-responsive-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                                </button>
                                 <div class="my-profiles-sec">
                                     <?php if ($image): ?>
                                         <span><img src="<?= $image; ?>" title="<?= $name; ?>"
@@ -72,6 +75,7 @@ AppAssets::register($this);
                                                       width="40" height="40" font="20px"></canvas></span>
                                     <?php endif; ?>
                                 </div>
+
                                 <?=
                                 $this->render('/widgets/common/header/top-header', [
                                     'menu_class' => 'menuzord-menu'
@@ -97,12 +101,11 @@ AppAssets::register($this);
             </p>
         </div>
         <?php
-//        if (!Yii::$app->user->identity->organization) {
-            echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
-//        }
+        echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
         ?>
     </div>
     <?php
+    echo $this->render('/widgets/chat/main');
     $this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #fff;}
             .page-loading {
@@ -216,7 +219,6 @@ AppAssets::register($this);
             .page-sidebar .page-sidebar-menu .sub-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a {
                 color: #49a1e3 !important;
             }
-
             .page-sidebar .page-sidebar-menu .sub-menu>li>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a>i {
                 color: #49a1e3;
             }
@@ -273,9 +275,19 @@ AppAssets::register($this);
                 line-height:normal;
                 margin-top:5px;
             }
+            @media screen and (max-width: 768px){
+                #menuzord .showhide{
+                    display:none !important;
+                }
+                #menuzord .navbar-toggle{
+                    float: right;
+                    margin: 7px 15px 10px 8px;
+                }
+                .page-header .nav-collapse .navbar-nav li>a:after{
+                    display:none;
+                }
+            }
         ');
-
-
     $script = <<<JS
         jQuery("#menuzord").menuzord({
             align: "right",

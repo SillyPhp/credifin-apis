@@ -17,7 +17,6 @@ $loc_list = ArrayHelper::index($location_list, 'location_enc_id');
 $int_list = ArrayHelper::index($inter_loc, 'location_enc_id');
 $desc_list = ArrayHelper::index($data['applicationJobDescriptions'], 'job_description_enc_id');
 $edu_list = ArrayHelper::index($data['applicationEducationalRequirements'], 'educational_requirement_enc_id');
-
 foreach ($data['applicationOptions'] as $value) {
     $option[$value['option_name']] = $value['value'];
 }
@@ -118,7 +117,6 @@ foreach ($data['applicationOptions'] as $value) {
                                         <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                                         <?= $form->field($model, 'designations')->textInput(['id' => 'designations', 'placeholder' => 'Designation', 'value' => $data['designation']])->label(false); ?>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="row">
@@ -219,7 +217,6 @@ foreach ($data['applicationOptions'] as $value) {
 
                                                     $return .= '<input type="radio" id="gender' . $index . '" name="' . $name . '" value="' . $value . '" class="gender_radio" ' . (($checked) ? 'checked' : '') . '>';
                                                     $return .= '<label class="gender_label" for="gender' . $index . '">' . $label . '</label>';
-
                                                     return $return;
                                                 }
                                             ])->label(false);
@@ -396,8 +393,6 @@ foreach ($data['applicationOptions'] as $value) {
                                             $return .= '<span class="check"></span>';
                                             $return .= '<span class="box"></span>'.$label['job_description'].'</label>';
                                             $return .= '</div>';
-                                            
-                                            
                                             return $return;
                                         }
                                     ])->label(false);
@@ -606,7 +601,7 @@ foreach ($data['applicationOptions'] as $value) {
                                             </div>
                                             <div class="col-md-6  ">
                                                 <div class="pull-right c-btn-top">
-                                                    <a onclick="window.open('/account/interview-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
+                                                    <a onclick="window.open('/account/hiring-processes/create', '_blank', 'width=1200,height=900,left=200,top=100');">
                                                         <?= Html::button('Create Application Process', ['class' => 'btn btn-md btn-primary custom-buttons2 custom_color-set2', 'id' => 'add2']); ?> 
                                                     </a>
                                                 </div>    
@@ -2257,7 +2252,7 @@ $(document).on('click','.questionnaier_display',function(e) {
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');
-    window.open('/account/interview-processes/view?id='+data+'', "_blank");
+    window.open('/account/hiring-processes/view?id='+data+'', "_blank");
 });
 var session_tok = "";
 function genrate_session_token()

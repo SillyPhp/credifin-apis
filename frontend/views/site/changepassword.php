@@ -46,7 +46,7 @@ $(document).on("submit", "#user-form", function (a) {
     var data = $('#user-form').serialize();
     var method = $(this).attr('method');
     $.ajax({
-      url: "/site/changepass",
+      url: "/site/change-password",
       method: method,
       data: data,
       success: function (response) {

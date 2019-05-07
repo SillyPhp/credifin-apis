@@ -54,11 +54,10 @@ $this->params['header_dark'] = false;
                         <li><span class="detail-info">Age</span><?= $user['age'] ?> Years</li>
                     </ul>
                     <ul class="social-info">
-                        <?php if(!empty($user['facebook'])){ ?><li><a href="<?= $user['facebook'] ?>" target="_blank"><i class="fa fa-facebook"></i></a></li><?php }?>
-                        <?php if(!empty($user['twitter'])){ ?><li><a href="<?= $user['twitter'] ?>" target="_blank"><i class="fa fa-twitter"></i></a></li><?php }?>
-                        <?php if(!empty($user['linkedin'])){ ?><li><a href="<?= $user['linkedin'] ?>" target="_blank"><i class="fa fa-linkedin"></i></a></li><?php }?>
-                        <?php if(!empty($user['instagram'])){ ?><li><a href="<?= $user['instagram'] ?>" target="_blank"><i class="fa fa-instagram"></i></a></li><?php }?>
-                        <?php if(!empty($user['youtube'])){ ?><li><a href="<?= $user['youtube'] ?>" target="_blank"><i class="fa fa-youtube"></i></a></li><?php }?>
+                        <?php if(!empty($user['facebook'])){ ?><li><a href="<?= Html::encode($user['facebook']) ?>" target="_blank"><i class="fa fa-facebook"></i></a></li><?php }?>
+                        <?php if(!empty($user['twitter'])){ ?><li><a href="<?= Html::encode($user['twitter']) ?>" target="_blank"><i class="fa fa-twitter"></i></a></li><?php }?>
+                        <?php if(!empty($user['linkedin'])){ ?><li><a href="<?= Html::encode($user['linkedin']) ?>" target="_blank"><i class="fa fa-linkedin"></i></a></li><?php }?>
+                        <?php if(!empty($user['skype'])){ ?><li><a href="<?= Html::encode($user['skype']) ?>" target="_blank"><i class="fa fa-skype"></i></a></li><?php }?>
                     </ul>
                 </div>
             </div>
@@ -78,7 +77,7 @@ $this->params['header_dark'] = false;
                     </div>
 
                     <div class="apply-job-detail">
-                        <p><?= $user['description'] ?></p>
+                        <p><?= Html::encode($user['description']); ?></p>
                     </div>
 
                     <div class="apply-job-detail">
@@ -143,7 +142,10 @@ $this->params['header_dark'] = false;
                                         ?>
                                     </li>
                                 <?php } ?>
-                                <li class="more-skill bg-primary">+<?= count($skills) - 3 ?></li>
+                                <?php
+                                    if(count($skills) >= 4 ){
+                                ?><li class="more-skill bg-primary">+<?= count($skills) - 3 ?></li>
+                                        <?php } ?>
                             </ul>
                             <ul class="status-detail">
 

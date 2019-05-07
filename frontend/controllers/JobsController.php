@@ -82,6 +82,7 @@ class JobsController extends Controller
             $parameters = Yii::$app->request->post();
 
             $options = [];
+
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -92,6 +93,10 @@ class JobsController extends Controller
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
+            }
+
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
             }
 
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {
@@ -132,28 +137,15 @@ class JobsController extends Controller
         if (!$application_details) {
             return 'Not Found';
         }
-
-        $object = new \account\models\jobs\JobApplicationForm();
+        $type = 'Job';
+        $object = new \account\models\applications\ApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
 
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-                ->exists();
-
-            $resumes = UserResume::find()
-                ->select(['user_enc_id', 'resume_enc_id', 'title'])
-                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()
-                ->all();
-
-            $app_que = ApplicationInterviewQuestionnaire::find()
-                ->alias('a')
-                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => $application_details->application_enc_id])
-                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
+                ->andWhere(['is_deleted'=>0])
                 ->exists();
 
             $shortlist = \common\models\ShortlistedApplications::find()
@@ -163,56 +155,41 @@ class JobsController extends Controller
                 ->one();
         }
         $model = new JobApplied();
-        return $this->render('detail', [
+        return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
-            'data' => $object->getCloneData($application_details->application_enc_id),
+            'data' => $object->getCloneData($application_details->application_enc_id,$application_type='Jobs'),
             'org' => $org_details,
             'applied' => $applied_jobs,
+            'type' => $type,
             'model' => $model,
-            'resume' => $resumes,
-            'que' => $app_que,
             'shortlist' => $shortlist,
         ]);
     }
 
-    public function actionJobPreview()
+    public function actionJobPreview($eipdk)
     {
-        if ($_GET['data']) {
-            $var = $_GET['data'];
+        if (!empty($eipdk)) {
+            $type = 'Job';
+            $var = $eipdk;
             $session = Yii::$app->session;
             $object = $session->get($var);
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
-            $int_loc = '';
-            if (!empty($object->interviewcity)) {
-                foreach ($object->interviewcity as $id) {
-                    $int_arr = OrganizationLocations::find()
-                        ->alias('a')
-                        ->select(['b.name AS city_name'])
-                        ->where(['a.location_enc_id' => $id])
-                        ->leftJoin(Cities::tableName() . ' as b', 'b.city_enc_id = a.city_enc_id')
-                        ->asArray()
-                        ->one();
-
-                    $int_loc .= $int_arr['city_name'] . ',';
-                }
-            }
-            $indstry = Industries::find()
-                ->where(['industry_enc_id' => $object->pref_inds])
+            $industry = Industries::find()
+                ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
                 ->asArray()
                 ->one();
-
             $primary_cat = Categories::find()
-                ->select(['name'])
+                ->select(['name','icon_png'])
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
-                        ->select(['benefit'])
+                        ->select(['benefit','icon','icon_location'])
                         ->where(['benefit_enc_id' => $benefit])
                         ->asArray()
                         ->one();
@@ -220,13 +197,14 @@ class JobsController extends Controller
             } else {
                 $benefits = null;
             }
+            if (!empty($object->interviewcity))
 
-            return $this->render('job-preview', [
+            return $this->render('/employer-applications/preview', [
                 'object' => $object,
-                'interview' => $int_loc,
-                'indst' => $indstry,
+                'industry' => $industry,
                 'primary_cat' => $primary_cat,
-                'benefits' => $benefits
+                'benefits' => $benefits,
+                'type' => $type
             ]);
         } else {
             return false;
@@ -281,7 +259,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 1) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
 
                     if ($update) {
@@ -293,7 +271,7 @@ class JobsController extends Controller
                     }
                 } else if ($status == 0) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+                        ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
 
                     if ($update) {
@@ -305,6 +283,34 @@ class JobsController extends Controller
                     }
                 }
             }
+
+        }
+    }
+
+    public function actionJobDetail($eaidk, $type)
+    {
+        if (Yii::$app->request->isAjax) {
+            $application_details = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.*', 'b.name org_name', 'b.tag_line', 'b.initials_color color', 'b.slug as org_slug', 'b.email', 'b.website', 'b.logo', 'b.logo_location', 'b.cover_image', 'b.cover_image_location'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where([
+                    'a.slug' => $eaidk,
+                    'a.is_deleted' => 0
+                ])
+                ->asArray()
+                ->one();
+
+            if (!$application_details) {
+                return 'Not Found';
+            }
+            $object = new \account\models\applications\ApplicationForm();
+
+            return $this->render('pop_up_detail', [
+                'application_details' => $application_details,
+                'type' => $type,
+                'data' => $object->getCloneData($application_details['application_enc_id'], $type),
+            ]);
 
         }
     }

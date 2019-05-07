@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'ScheduleInterview',
 ]);
@@ -27,7 +26,7 @@ echo $this->render('/widgets/schedule_interview/main');
                 <div class="portlet-title tabbable-line">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h3>Process Applications of <?= $application['name']; ?></h3>
+                            <h3>Process Applications of <?= $application_name['job_title']; ?></h3>
                         </div>
                     </div>
                 </div>
@@ -45,7 +44,7 @@ echo $this->render('/widgets/schedule_interview/main');
                                                     <div class="cd-box-border" id="cd-box-border">
                                                         <div class="row">
                                                             <div class=" cd-user-icon col-md-6">
-                                                                <a href="<?= '/user/' . $arr['username'] ?>"
+                                                                <a href="<?= '/' . $arr['username'] ?>"
                                                                    target="_blank">
                                                                     <?php if ($arr['image']): ?>
                                                                         <img src="<?= $arr['image'] ?>"
@@ -58,14 +57,19 @@ echo $this->render('/widgets/schedule_interview/main');
                                                                 </a>
                                                             </div>
                                                             <div class="vj-btn col-md-6">
-                                                                <a href="<?= '/user/' . $arr['username'] ?>">View
+                                                                <?php
+                                                                $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
+                                                                ?>
+                                                                <a href="<?= $cv ?>">Download
+                                                                    Resume</a>
+                                                                <a href="<?= '/' . $arr['username'] ?>">View
                                                                     Profile</a>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="cd-user-detail col-md-2">
                                                                 <div class="cd-u-name">
-                                                                    <a href="<?= '/user/' . $arr['username'] ?>"
+                                                                    <a href="<?= '/' . $arr['username'] ?>"
                                                                        target="_blank">
                                                                         <?= $arr['name'] ?>
                                                                     </a>
@@ -443,6 +447,29 @@ a:hover{
 }
 .steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2 .fa {
     font-size: 18px; 
+}
+@media only screen and (max-width: 675px){
+    .steps-form-2, .steps-form-2 .steps-row-2, .steps-form-2 .steps-row-2 .steps-step-2 {
+        display: block;
+    }
+    .steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2{
+        margin-top: 18px;
+    }
+    .steps-form-2 .steps-row-2 .steps-step-2:before, .steps-form-2 .steps-row-2 .steps-step-2.active:before{
+        top: 33px;
+        left: 49.9%;
+        width: 2px;
+        height: 57px;
+    }
+     .vj-btn{
+        margin-top: 0px;
+        right: 0px;
+    }
+    .vj-btn a{
+        display: inline-block;
+        border-radius: 4px !important;
+        margin: 5px;
+    }
 }
 ');
 $script = <<<JS

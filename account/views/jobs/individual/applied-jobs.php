@@ -42,7 +42,7 @@ use yii\helpers\Url;
                                                                         <?= $user['title'] ?>
                                                                     </a>
                                                                 </div>
-                                                                <div class="cd-u-p-company"><a href="<?= '/company/' . $user['org_slug'] ?>" ><?= $user['org_name'] ?></a></div>
+                                                                <div class="cd-u-p-company"><a href="<?= '/' . $user['org_slug'] ?>" ><?= $user['org_name'] ?></a></div>
                                                             </div>
                                                             <div class="col-md-8">
                                                                 <div class="row"> 
@@ -273,15 +273,6 @@ a:hover{
     content:"";
     display:none;
 }
-//.steps-form-2 .steps-row-2 .steps-step-2.active:after{
-//   top: 33px;
-//    bottom: 0;
-//    position: absolute;
-//    content: " ";
-//    width: 100%;
-//    height: 2px;
-//    background-color:#00a0e3 !important; 
-//}
 .steps-form-2 .steps-row-2 .steps-step-2 {
     display: table-cell;
     text-align: center;
@@ -318,104 +309,29 @@ a:hover{
 .steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2 .fa {
     font-size: 18px; 
 }
-//.multiselect {
-//  width: 200px;
-//}
-//
-//.selectBox {
-//  position: relative;
-//}
-//
-//.selectBox select {
-//  width: 100%;
-//  font-weight: bold;
-//}
-
-//.overSelect {
-//  position: absolute;
-//  left: 0;
-//  right: 0;
-//  top: 0;
-//  bottom: 0;
-//}
-//
-//#checkboxes {
-//  display: none;
-//  border: 1px #dadada solid;
-//}
-//
-//#checkboxes label {
-//  display: block;
-//}
-//
-//#checkboxes label:hover {
-//  background-color: #1e90ff;
-//}
-
-//.spin {
-//  width: 5em;
-//  height: 5em;
-//  padding: 0;
-//  border-radius: 100%;
-//  box-shadow: none;
-//}
-//.spin::before, .spin::after {
-//  box-sizing: inherit;
-//  content: "";
-//  position: absolute;
-//  width: 100%;
-//  height: 100%;
-//  top: 0;
-//  left: 0;
-//  border-radius: 100%;
-//}
-//.spin::before {
-//  border: 2px solid transparent;
-//
-//  border-top-color: #0eb7da;
-//  border-right-color: #0eb7da;
-//  border-bottom-color: #0eb7da;
-//  transition: border-top-color 0.75s linear, border-right-color 0.75s linear 0.5s, border-bottom-color 0.75s linear 0.95s;
-//}
-//.spin::after {
-//  border: 0 solid transparent;
-//
-//  border-top: 2px solid #0eb7da;
-//  border-left-width: 2px;
-//  border-right-width: 2px;
-//  -webkit-transform: rotate(270deg);
-//          transform: rotate(270deg);
-//  transition: border-left-width 0s linear 1.75s, -webkit-transform 2.0s linear 0s;
-//  transition: transform 2.0s linear 0s, border-left-width 0s linear 1.75s;
-//  transition: transform 2.0s linear 0s, border-left-width 0s linear 1.75s, -webkit-transform 2.0s linear 0s;
-//}
-
-/* Top Radio filter css starts */
-//.filters{
-//    height: auto;
-//    width: auto;
-//    font-size:14px;
-//    margin: 0px 1px;
-//    background-color:#eee;
-//    padding:10px 15px;
-//    border-radius:8px !important;
-//    cursor: pointer;
-//    position:relative;
-//    display:inline-block;
-//    -webkit-transition: all 0.5s;
-//    transition: all 0.5s;
-//}
-//.super-happy{
-//    position: absolute;
-//    opacity: 0;
-//}
-//input[class="super-happy"]:hover + span,
-//input[class="super-happy"]:checked + span,
-//input[class="super-happy"]:focus + span {
-//    color: #fff;
-//    background-color:#00a0e3;
-//    border-radius:8px;
-//}
+@media only screen and (max-width: 675px){
+    .steps-form-2, .steps-form-2 .steps-row-2, .steps-form-2 .steps-row-2 .steps-step-2 {
+        display: block;
+    }
+    .steps-form-2 .steps-row-2 .steps-step-2 .btn-circle-2{
+        margin-top: 18px;
+    }
+    .steps-form-2 .steps-row-2 .steps-step-2:before, .steps-form-2 .steps-row-2 .steps-step-2.active:before{
+        top: 33px;
+        left: 49.9%;
+        width: 2px;
+        height: 57px;
+    }
+    .vj-btn{
+        margin-top: 0px;
+        right: 0px;
+    }
+    .vj-btn a{
+        display: inline-block;
+        border-radius: 4px !important;
+        margin: 5px;
+    }
+}
 /* Top Radio filter css ends */
 ');
 $script = <<<JS

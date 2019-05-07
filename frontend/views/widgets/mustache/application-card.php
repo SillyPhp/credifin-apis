@@ -3,7 +3,18 @@
     <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main">
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations=""><i class="fa fa-map-marker"></i>&nbsp;{{city}}</span>
+            {{#city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;{{city}}
+                </span>
+            {{/city}}
+            {{^city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fa fa-map-marker"></i>&nbsp;All India
+                </span>
+            {{/city}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
                     <a href="{{organization_link}}">
@@ -20,6 +31,9 @@
                     <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
                     <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    {{/salary}}
+                    {{^salary}}
+                    <h5>Negotiable</h5>
                     {{/salary}}
                     {{#type}}
                     <h5>{{type}}</h5>
@@ -53,11 +67,12 @@
     {{/.}}
 </script>
 <?php
+$c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<<JS
 let loader = false;
 let draggable = false;
 let page = 0;
-function renderCards(cards){
+function renderCards(cards, container){
     var card = $('#application-card').html();
     var cardsLength = cards.length;
     if(cardsLength%3 !==0 && loader === true) {
@@ -66,12 +81,12 @@ function renderCards(cards){
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
     for(var i = 1; i <= noRows; i++){
-        $(".blogbox").append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
 }
 
-function getCards(type = 'Jobs') {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -87,7 +102,7 @@ function getCards(type = 'Jobs') {
     data['type'] = type;
     $.ajax({
         method: "POST",
-        url : window.location.pathname,
+        url : url,
         data: data,
         beforeSend: function(){
            $('.loader-main').show();
@@ -99,12 +114,12 @@ function getCards(type = 'Jobs') {
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
             if(response.status === 200) {
-                renderCards(response.cards);
+                renderCards(response.cards, container);
                 utilities.initials();
             } else {
                 if(loader === true) {
                     if(page === 1) {
-                        $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Jobs not found.</h2>');
+                        $(container).append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                     }
                     $('#loadMore').hide();
                 }
@@ -115,6 +130,14 @@ function getCards(type = 'Jobs') {
             $.each($('.application-card-main'), function(){
                 $(this).draggable({
                     helper: "clone",
+                    drag: function() { 
+                        $('#sticky').addClass('drag-on');
+                        $('#review-internships').addClass('drop-on');
+                     },
+                     stop: function() { 
+                        $('#sticky').removeClass('drag-on');
+                        $('#review-internships').removeClass('drop-on');
+                     },
                 });
             });
         }
@@ -124,7 +147,12 @@ function getCards(type = 'Jobs') {
 function addToReviewList(){
     if(loader === false){
         $(document).on('click','.application-card-add', function(event){
-             event.preventDefault();
+            event.preventDefault();
+            var c_user = "$c_user"
+            if(c_user == ""){
+                $('#loginModal').modal('show');
+                return false;
+            }
             var itemid = $(this).closest('.application-card-main').attr('data-id');
             $.ajax({
                 url: "/jobs/item-id",
@@ -134,10 +162,9 @@ function addToReviewList(){
         //            $('.loader-aj-main').fadeIn(1000);  
                 },
                 success: function (response) {
-        //        $('.loader-aj-main').fadeOut(1000);
-                    if (response.status == '200' || response == 'short') {
+                    if (response.status == '200' || response.status == 'short') {
                         toastr.success('Added to your Review list', 'Success');
-                    } else if (response == 'unshort') {
+                    } else if (response.status == 'unshort') {
                         toastr.success('Delete from your Review list', 'Success');
                     } else {
                         toastr.error('Please try again Later', 'Error');
@@ -167,7 +194,7 @@ JS;
 $this->registerJs($script);
 $this->registerCss('
 .not-found{
-    width: 300px;
+    max-width: 400px;
     margin: auto;
     display: block;
 }

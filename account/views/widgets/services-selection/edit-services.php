@@ -26,8 +26,8 @@ use yii\helpers\ArrayHelper;
             <?php
             foreach ($services as $service) {
                 ?>
-                <div class="col-md-8 ac-text"><?= $service['name']; ?></div>
-                <div class="col-md-4 ac-text-2"
+                <div class="col-md-8 col-sm-6 col-xs-6 ac-text"><?= $service['name']; ?></div>
+                <div class="col-md-4 col-sm-6 col-xs-6 ac-text-2"
                      id="jstatus"><?= ($service['is_selected'] == 1) ? 'Active' : 'Inactive'; ?></div>
                 <?php
             }
@@ -40,8 +40,8 @@ use yii\helpers\ArrayHelper;
                 echo $form->field($model, 'services')->inline()->checkBoxList($mapped_services, [
                     'item' => function ($index, $label, $name) {
                         $return = '<div class="activity-row">';
-                        $return .= '<div class="col-md-8 ac-text">' . $label['name'] . '</div>';
-                        $return .= '<div class="ch-box col-md-4">';
+                        $return .= '<div class="col-md-8 col-sm-6 col-xs-6 ac-text">' . $label['name'] . '</div>';
+                        $return .= '<div class="ch-box col-md-4  col-sm-6 col-xs-6">';
                         $return .= '<div class="md-checkbox">';
                         $return .= '<label class="switch">';
                         $return .= '<input type="checkbox" value="' . $label['service_enc_id'] . '" name="' . $name . '" id="' . $index . '" ' . (($label['is_selected']) ? 'checked' : '') . '>';

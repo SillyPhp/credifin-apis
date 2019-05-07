@@ -3,30 +3,31 @@
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Internships');
-$keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,internships near me';
-$description = '';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_youth_plus.svg');
+$keywords = 'Internship, Internships, Summer Internship 2019, Summer Internships, Paid Internships, Internships in Ludhiana, Online Internships, Internships in India, Summer Internships, Summer Internships 2019';
+$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
         'description' => $description,
-        'twitter:card' => 'summary',
+        'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth2',
-        'twitter:creator' => '@EmpowerYouth2',
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
         'twitter:image' => $image,
     ],
     'property' => [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
+        'fb:app_id' => '973766889447403'
     ],
 ];
 ?>
@@ -37,25 +38,26 @@ $this->params['seo_tags'] = [
 
                 </div>
                 <div class="col-md-offset-1 col-md-5 col-sm-6 text-center">
-                    <h2 class="text-white"><i><?= Yii::t('frontend', 'Intern with the best...'); ?></i></h2>
-                    <div class="search-by-type">
+                    <h2 class="text-white intern-banner-heading">
+                        <i><?= Yii::t('frontend', 'Intern with the best...'); ?></i></h2>
+                    <div class="search-by-type row">
                         <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
-                            <div class="input-group mb-10 set-col-2">
+                            <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <input type="text" name="keyword" class="form-control"
                                        placeholder="Job Title or Skill"/>
                             </div>
-                            <div class="input-group mb-10 set-col-2">
+                            <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                                 <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
                                 <input type="text" name="company" class="form-control" placeholder="Company"/>
                             </div>
-                            <div class="input-group mb-10 set-col-2">
+                            <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                                 <span class="input-group-addon"><i class="fa fa-map-marker fa-lg"></i></span>
                                 <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                        placeholder="City or State"/>
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
-                            <div class="form-group mb-10 set-col-2">
+                            <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                                 <input type="submit" class="form-control submit-next hvr-float" id="form_control_1"
                                        value="Search">
                             </div>
@@ -67,13 +69,15 @@ $this->params['seo_tags'] = [
     </section>
     <section>
         <div class="container">
-            <center>
-                <h2>
-                    <b>
-                        <?= Yii::t('frontend', 'Ever wondered why are internships so important?'); ?>
-                    </b>
-                </h2>
-            </center>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2>
+                        <b>
+                            <?= Yii::t('frontend', 'Ever wondered why are internships so important?'); ?>
+                        </b>
+                    </h2>
+                </div>
+            </div>
             <hr class="hr2"/>
             <div class="row">
                 <div class="col-md-6 col-sm-6">
@@ -92,7 +96,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row mt-20">
                 <div class="col-md-12 col-sm-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h2>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
                 </div>
             </div>
             <div class="col-md-12">
@@ -104,7 +108,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h3>
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Internships'); ?></h1>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
@@ -134,7 +138,7 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/employers-landing-page-floating-widget');
+//echo $this->render('/widgets/employers-landing-page-floating-widget');
 //echo $this->render('/widgets/blog-slider', [
 //    'posts' => $posts,
 //]);
@@ -433,7 +437,7 @@ $this->registerCss('
 .search-by-type {
     width: 88%;
     background-color: #14141459;
-    padding: 2px 20px;
+    padding: 10px 20px;
     color: #fff;
     margin: auto;
     border-radius: 10px;
@@ -463,6 +467,7 @@ $this->registerCss('
 }
 .set-col-2{
     width:49%;
+    float: left !important;
 }
 /* animated menu css starts */
 .nav1{
@@ -561,6 +566,12 @@ $this->registerCss('
     }
 }
 /* animated menu css ends */
+@media only screen and (max-width: 768px){
+    .intern-banner-heading{
+        font-size: 24px;
+        font-weight: 700;
+    }
+}
 ');
 $script = <<<JS
 var city = new Bloodhound({

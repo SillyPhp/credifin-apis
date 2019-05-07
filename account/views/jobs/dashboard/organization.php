@@ -13,7 +13,8 @@ echo $this->render('/widgets/header/secondary-header', [
             'questionnaire' => $questionnaire,
             'applications' => $applications,
             'interview_processes' => $interview_processes,
-            'applied_applications' => $applied_applications,
+            'total_applied' => $total_applied,
+            'viewed'=>$viewed,
         ]);
         ?>
     </div>
@@ -86,8 +87,6 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6 col-xs-12 col-sm-12">
             <div class="portlet light">
                 <div class="portlet-title">
                     <div class="caption">
@@ -95,10 +94,10 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/interview-processes/create'); ?>"
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/interview-processes'); ?>"
+                            <a href="<?= Url::toRoute('/hiring-processes'); ?>"
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
@@ -123,18 +122,22 @@ echo $this->render('/widgets/header/secondary-header', [
                 </div>
             </div>
         </div>
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?php
+            echo $this->render('/widgets/applied-applications/users-card', [
+                'applied_applications' => $applied_applications,
+            ]); ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?= $this->render('/widgets/drop-resume/jobs_drop_resume', [
+                'data' => $primary_fields
+            ]); ?>
+        </div>
     </div>
 <?php
 $this->registerCss('
-.loader
-{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
 .mt-action-author a{
     color: #000;
 }

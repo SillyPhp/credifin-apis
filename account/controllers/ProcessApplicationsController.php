@@ -29,8 +29,9 @@ class ProcessApplicationsController extends Controller
                 ->distinct()
                 ->alias('a')
                 ->where(['a.application_enc_id' => $application_id])
-                ->select(['a.applied_application_enc_id,a.status, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
+                ->select(['e.resume','e.resume_location','a.applied_application_enc_id,a.status, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
                 ->joinWith(['createdBy b'], false)
+                ->joinWith(['resumeEnc e'], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($b) {
                     $b->joinWith(['fieldEnc d'], false);
                     $b->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
@@ -38,6 +39,16 @@ class ProcessApplicationsController extends Controller
                 ->groupBy(['a.applied_application_enc_id'])
                 ->asArray()
                 ->all();
+            $application_name = EmployerApplications::find()
+                                ->alias('a')
+                                ->select(['c.name job_title'])
+                                ->where(['a.application_enc_id'=>$aidk])
+                                ->joinWith(['title b'=>function($b)
+                                {
+                                  $b->joinWith(['categoryEnc c'],false,'INNER JOIN');
+                                }],false,'INNER JOIN')
+                                ->asArray()
+                                ->one();
             $question = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->distinct()
@@ -52,6 +63,7 @@ class ProcessApplicationsController extends Controller
             return $this->render('index', [
                 'fields' => $applied_users,
                 'que' => $question,
+                'application_name' => $application_name,
             ]);
         } else {
             $applied_user = AppliedApplications::find()

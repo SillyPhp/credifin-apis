@@ -18,16 +18,16 @@ $this->registerCss('
 ');
 ?>
 
-    <section>
+    <section class="applications-cards-list">
         <div class="row">
-            <div class="col-md-2 col-sm-3">
+            <div class="col-md-2 col-sm-3 sidebar-review-bar">
                 <?=
                 $this->render('/widgets/sidebar-review', [
                     'type' => 'jobs',
                 ]);
                 ?>
             </div>
-            <div class="col-md-10 col-sm-9">
+            <div class="col-md-10 col-sm-9 col-xs-12">
                 <?=
                 $this->render('/widgets/search-bar1');
                 ?>
@@ -71,20 +71,33 @@ $this->registerCss('
             </div>
         </div>
     </section>
+
+
 <?php
+
 echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
 ]);
+
+
 $script = <<<JS
+
 $('#loadMore').on('click', function(e){
     e.preventDefault();
     getCards();
 });
+
+
 loader = true;
 draggable = true;
+
+
 getCards();
+
+
 var sidebarpage = 1;
 getReviewList(sidebarpage);
+
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

@@ -10,7 +10,7 @@ use Yii;
  * @property int $id Primary Key
  * @property string $questionnaire_enc_id Questionnaire Encrypted ID
  * @property string $questionnaire_name Questionnaire Name
- * @property string $questionnaire_for Questionnaire For (Jobs, internships, Trainings)
+ * @property string $questionnaire_for Questionnaire For (Jobs, Internships, Trainings)
  * @property string $organization_enc_id Foreign Key to Organizations Table
  * @property string $created_on On which date Questionnaire information was added to database
  * @property string $created_by By which User Questionnaire information was added

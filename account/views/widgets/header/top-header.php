@@ -13,13 +13,27 @@ foreach ($services['menu_items'] as $service) {
     ];
     array_push($result, $new);
 }
-
+if (!empty(Yii::$app->user->identity->organization)) {
+    $template = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Templates'),
+        'url' => Url::toRoute('/templates'),
+    ];
+    array_push($result, $template);
+}
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
-    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/company/' . Yii::$app->user->identity->organization->slug : '/user/' . Yii::$app->user->identity->username),
+    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username),
     'template' => '<a href="{url}" target="_blank">{label}</a>',
 ];
 array_push($result, $profile);
+if(Yii::$app->user->identity->type->user_type == 'Individual') {
+    $preferences = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'My Preferences'),
+        'url' => Url::to('/account/preferences'),
+        'template' => '<a href="{url}">{label}</a>',
+    ];
+    array_push($result, $preferences);
+}
 
 echo Menu::widget([
     'activateItems' => true,
