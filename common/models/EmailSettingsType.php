@@ -11,7 +11,7 @@ use Yii;
  * @property string $email_settings_type_enc_id
  * @property string $email_settings_enc_id
  * @property string $email_type_enc_id
- * @property int $email_category 0 as Jobs, 1 as Internships
+ * @property int $status 0 as Using, 1 as Deleted
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -33,8 +33,8 @@ class EmailSettingsType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['email_settings_type_enc_id', 'email_settings_enc_id', 'email_type_enc_id', 'created_by'], 'required'],
-            [['email_category'], 'integer'],
+            [['email_settings_type_enc_id', 'email_settings_enc_id', 'email_type_enc_id', 'status', 'created_by'], 'required'],
+            [['status'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['email_settings_type_enc_id', 'email_settings_enc_id', 'email_type_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
         ];

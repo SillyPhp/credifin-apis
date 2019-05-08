@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%email_settings}}".
  *
@@ -11,6 +9,7 @@ use Yii;
  * @property string $email_settings_enc_id
  * @property string $user_enc_id
  * @property string $organization_enc_id
+ * @property int $email_category 0 as Jobs, 1 as Internships, 2 as Both
  * @property int $frequency 0 as daily, 1 as weekly, 2 as off
  * @property string $created_on
  * @property string $created_by
@@ -33,11 +32,10 @@ class EmailSettings extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['email_settings_enc_id', 'user_enc_id', 'organization_enc_id', 'frequency', 'created_by'], 'required'],
-            [['frequency'], 'integer'],
+            [['email_settings_enc_id', 'user_enc_id', 'email_category', 'frequency', 'created_by'], 'required'],
+            [['email_category', 'frequency'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['email_settings_enc_id', 'user_enc_id', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
         ];
     }
-
 }

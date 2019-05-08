@@ -25,14 +25,7 @@
                                 <form action="#" class="form-horizontal form-bordered">
                                     <div class="form-body">
                                         <div class="form-group">
-                                            <label class="control-label col-md-6 text-left">Default Sizes</label>
-                                            <div class="col-md-6 text-right">
-                                                <input type="checkbox" checked class="make-switch" id="test"
-                                                       data-size="small">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-6 text-left">Radio Group</label>
+                                            <label class="control-label col-md-6 text-left">How Frequently you want to receive notifications via messages and emails</label>
                                             <div class="col-md-6 text-right">
                                                 <div id="gender" class="s-radios" aria-required="true"
                                                      aria-invalid="false">
@@ -46,6 +39,48 @@
                                                            class="gender_radio"/>
                                                     <label class="gender_label" for="gender3">Weekly</label>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get notifications for Job Applications</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch" id="test"
+                                                       data-size="small">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get notifications for Internship Applications</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch" id="test"
+                                                       data-size="small">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get Applied Application Updates and Status</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch" id="test"
+                                                       data-size="small">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get New Application Alerts</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch" id="test"
+                                                       data-size="small">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Get Prefered Jobs, Industries and Skills Notification</label>
+                                                <div class="col-md-6 text-right">
+                                                    <input type="checkbox" checked class="make-switch" id="test"
+                                                           data-size="small">
+                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-6 text-left">Recieve Notifications from Followed Companies</label>
+                                            <div class="col-md-6 text-right">
+                                                <input type="checkbox" checked class="make-switch" id="test"
+                                                       data-size="small">
                                             </div>
                                         </div>
                                         <div class="form-actions">
