@@ -63,14 +63,17 @@ $this->params['seo_tags'] = [
                 <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($round_avg)){
-                        ?>
-                        <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
-                    <?php } else { ?>
+                        if (!empty($round_avg)) {
+                            ?>
+                            <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                        <?php } else { ?>
                             <i class="fa fa-star <?= (($round_college_avg < $i) ? '' : 'active') ?>"></i>
-                   <?php } } ?>
+                        <?php }
+                    } ?>
                 </div>
-                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_college_avg) ?>/5 - based on <?= $reviews+$reviews_college; ?> reviews</div>
+                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_college_avg) ?>/5 - based
+                    on <?= $reviews + $reviews_college; ?> reviews
+                </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -110,10 +113,14 @@ $this->params['seo_tags'] = [
                             <?php } else {
                                 if (empty(Yii::$app->user->identity->organization_enc_id)) { ?>
                                     <div class="wr-bttn hvr-icon-pulse">
-                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Employee
+                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write
+                                            Employee
                                             Review
                                         </button>
-                                        <button type="button" id="wr1"><i class="fa fa-comments-o hvr-icon"></i> Write Student
+                                    </div>
+                                    <div class="wr-bttn hvr-icon-pulse">
+                                        <button type="button" id="wr1"><i class="fa fa-comments-o hvr-icon"></i> Write
+                                            Student
                                             Review
                                         </button>
                                     </div>
@@ -132,10 +139,12 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 <section>
-    <ul class="nav nav-tabs nav-padd-20">
-        <li class="active"><a data-toggle="tab" href="#home">Employee Review</a></li>
-        <li><a data-toggle="tab" href="#menu1">Students Review</a></li>
-    </ul>
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Employee Review</a></li>
+            <li><a data-toggle="tab" href="#menu1">Students Review</a></li>
+        </ul>
+    </div>
 </section>
 <section class="rh-body">
     <div class="container">
@@ -276,7 +285,7 @@ $this->params['seo_tags'] = [
                                 <div class="review-summary">
                                     <h1 class="heading-style">Overall Reviews</h1>
                                     <div class="row">
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs-main <?= (($reviews_college) ? '' : 'fade_background') ?>">
                                                 <div class="rating-large"><?= $round_college_avg ?>/5</div>
                                                 <div class="com-rating-1">
@@ -288,7 +297,7 @@ $this->params['seo_tags'] = [
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Academics</div>
                                                 <div class="summary-box">
@@ -301,7 +310,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Faculity & Teaching Quality</div>
                                                 <div class="summary-box">
@@ -314,7 +323,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Infrastructure</div>
                                                 <div class="summary-box">
@@ -327,7 +336,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Accomodation & Food</div>
                                                 <div class="summary-box">
@@ -340,7 +349,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Placements/Internships</div>
                                                 <div class="summary-box">
@@ -353,7 +362,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Social Life/Extracurriculars</div>
                                                 <div class="summary-box">
@@ -366,7 +375,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-sm-4">
+                                        <div class="col-md-12 col-sm-6">
                                             <div class="rs1">
                                                 <div class="re-heading">Culture & Diversity</div>
                                                 <div class="summary-box">
@@ -415,18 +424,17 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
                 <div id="widget_bar_stats">
-                    <?php if ($editReviewForm->type=='org'){
-                    echo $this->render('/widgets/review/review-org-stats-edit', [
-                            'form'=>$form,
-                             'editReviewForm'=>$editReviewForm
-                    ]); }
-                     elseif ($editReviewForm->type=='college')
-                     {
-                         echo $this->render('/widgets/review/review-college-stats-edit', [
-                             'form'=>$form,
-                             'editReviewForm'=>$editReviewForm
-                         ]);
-                     }
+                    <?php if ($editReviewForm->type == 'org') {
+                        echo $this->render('/widgets/review/review-org-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    } elseif ($editReviewForm->type == 'college') {
+                        echo $this->render('/widgets/review/review-college-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    }
                     ?>
 
                 </div>
@@ -532,9 +540,10 @@ $this->registerCss('
     padding-top:20px;
 }
 .header-bttns-flex{
-    display:flex;
-    padding: 20px 0 0 0;
-    justify-content:center;
+//    display:flex;
+//    padding: 20px 0 0 0;
+//    justify-content:center;
+    text-align:center;
 }
 .padding_top
 {
@@ -548,6 +557,8 @@ padding:16px 0px;
     font-size:14px;
     border-radius:5px;
     text-transform:uppercase;
+    min-width: 16.9em;
+    margin-bottom: 4px;
 }
 .cp-center{
     text-align:center;
@@ -575,6 +586,7 @@ border: 2px solid #cadfe8 !important;
     line-height:150px; 
     text-align:center;
     border-radius:6px;
+    margin-bottom: 20px;
 }  
 .logo-box img, .logo-box canvas{
     border-radius:6px;
@@ -636,12 +648,6 @@ border: 2px solid #cadfe8 !important;
 .user-saying{
     padding-top:20px;
 }
-.user-rating{
-    display:flex;
-    justify-content:center; 
-    text-align:center;
-    padding-top:20px;
-}
 .uheading{
     font-weight:bold;
     
@@ -700,14 +706,6 @@ border: 2px solid #cadfe8 !important;
 }
 .user-review-main{
     border-left:2px solid #ccc;
-}
-.ur-bg{
-   background:#edecec;
-    color: #000;
-    border-radius: 5px;
-    padding: 10px 5px;
-    border-right: 1px solid #fff;
-    height: 95px;
 }
 .uratingtitle{
     font-size:12px;
@@ -875,7 +873,7 @@ border: 2px solid #cadfe8 !important;
     -webkit-transform: perspective(1px) translateZ(0);
     transform: perspective(1px) translateZ(0);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-    padding-right:1.2em;
+    padding-right:0px;
 }
 .hvr-icon-pulse .hvr-icon {
     -webkit-transform: translateZ(0);
@@ -902,6 +900,8 @@ border: 2px solid #cadfe8 !important;
     font-size: 14px;
     border-radius: 5px;
     display:block;
+    min-width: 16.9em;
+    margin-bottom: 4px;
     text-transform: uppercase;
 }
 .hvr-icon-pulse:before{
@@ -1051,21 +1051,6 @@ border: 2px solid #cadfe8 !important;
     .logo-box{
         margin:0 auto;
     }
-    .ur-bg {
-        background: #edecec;
-        color: #000;
-        padding: 10px 5px;
-        height: 95px;
-        width: 200px;
-        float: left;
-    }
-    .user-rating {
-        display: inherit;
-        justify-content: center;
-        text-align: center;
-        padding-top: 20px;
-    }
-    
 }
 .i-review-navigation
 {

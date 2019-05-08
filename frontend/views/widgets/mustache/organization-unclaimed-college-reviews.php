@@ -84,7 +84,7 @@ $link = Url::to($org_slug . '/reviews', true);
                             </div>
                             <div class="ur-bg">
                                 <div class="urating">{{placements_internships}}/5</div>
-                                <div class="uratingtitle">Placements/Internships</div>
+                                <div class="uratingtitle">Placements /Internships</div>
                             </div>
                             <div class="ur-bg light-bg">
                                 <div class="urating">{{social_life_extracurriculars}}/5</div>
@@ -128,9 +128,40 @@ $link = Url::to($org_slug . '/reviews', true);
     </script>
 <?php
 $this->registerCss("
+.ur-bg{
+   background:#edecec;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 5px;
+    border-right: 1px solid #fff;
+    min-height: 95px;
+}
+.user-rating{
+    display:flex;
+    justify-content:center; 
+    text-align:center;
+    padding-top:20px;
+}
 .heading_style_1
 {
 font-size:18px;
+}
+@media only screen and (max-width: 767px){
+    .ur-bg {
+        background: #edecec;
+        color: #000;
+        padding: 10px 5px;
+        height: 95px;
+        width: 200px;
+        float: left;
+    }
+    .user-rating {
+        display: inherit;
+        justify-content: center;
+        text-align: center;
+        padding-top: 20px;
+    }
+    
 }
 ");
 
