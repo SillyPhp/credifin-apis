@@ -497,10 +497,10 @@ function random_fn(t){
 	}
 	function make_designation() {
 		var designation = new Bloodhound({
-			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
 			queryTokenizer: Bloodhound.tokenizers.whitespace,
 			remote: {
-				url: '/account/categories-list/job-profiles?q=%QUERY',
+				url: '/account/categories-list/designations?q=%QUERY',
 				wildcard: '%QUERY',
 				cache: true,
 				filter: function(list) {
@@ -511,7 +511,7 @@ function random_fn(t){
 
 		$('.i-review-designation_autocomplete').typeahead(null, {
 			name: 'cities_test',
-			display: 'value',
+			display: 'designation',
 			limit: 8,
 			source: designation
 		}).on('typeahead:asyncrequest', function() {
