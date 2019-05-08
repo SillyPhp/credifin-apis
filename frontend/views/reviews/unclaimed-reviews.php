@@ -1169,6 +1169,10 @@ $(document).on('submit','#signup-form',function(e)
    {
       popup2.open(); 
    }
+   else if($(this).attr('action')=='p3')
+   {
+      popup3.open(); 
+   }
 });
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
@@ -1568,14 +1572,205 @@ var popup2 = new ideaboxPopupCollege({
 				
 			]
 		});
+var popup3 = new ideaboxPopupSchool({
+            background	: '#2995c2',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_school(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the School on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the School',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of School',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The College/University..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Acedemic Year:',
+					answerType	: 'selectbox',
+					formName	: 'tenure',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Student Engagement',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'student_engagement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accessibility of Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accessibility_of_faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Co-curricular Activitie',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'co_curricular_activitie',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Leadership Development',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'leadership_development',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Sports',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'sports',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
 $('#company_review_btn1').hide();
 $('#company_review_btn2').hide();
 $(document).on('change','#bussiness_activity',function(e)
 {
-    if($('#bussiness_activity :selected').text() =='School'||$('#bussiness_activity :selected').text()=='Colege/Universities'||$('#bussiness_activity :selected').text()=='Educational Institute/Tution Centers')
+    if($('#bussiness_activity :selected').text()=='Colege/Universities')
         {
             $('#company_review_btn1').show();
             $('#company_review_btn2').show();
+            $('#company_review_btn2').attr('formaction','p2');
+        }
+    else if($('#bussiness_activity :selected').text() =='School')
+        {
+            $('#company_review_btn1').show();
+            $('#company_review_btn2').show();
+            $('#company_review_btn2').attr('formaction','p3');
+        }
+    else if($('#bussiness_activity :selected').text()=='Educational Institute/Tution Centers')
+        {
+            $('#company_review_btn1').show();
+            $('#company_review_btn2').show();
+            $('#company_review_btn2').attr('formaction','p4');
         }
     else if ($('#bussiness_activity :selected').text() =='Others') 
         {
@@ -1627,6 +1822,23 @@ function ajax_college(data) {
                    }
           }});
 }
+
+function ajax_school(data) {
+  var org_name = $('#organization_name').val();
+    var website = $('#website').val();
+    var org_category =  $('#bussiness_activity').val();
+    var type =  'school';
+	$.ajax({
+       method: 'POST',
+       url : '/reviews/post-unclaimed-reviews',
+	   data:{data:data,org_name:org_name,website:website,org_category:org_category,type:type},
+       success: function(response) {
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+          }});
+}
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
@@ -1634,11 +1846,13 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 

@@ -62,32 +62,32 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="row">
                         <div class="col-md-12 user-rating">
                             <div class="ur-bg padd-lr-5">
-                                <div class="urating">{{academics}}/5</div>
-                                <div class="uratingtitle">Academics</div>
+                                <div class="urating">{{student_engagement}}/5</div>
+                                <div class="uratingtitle">Student Engagement</div>
                             </div>
                             <div class="ur-bg light-bg padding-none">
-                                <div class="urating">{{faculty_teaching_quality}}/5</div>
-                                <div class="uratingtitle">Faculty & Teaching Quality</div>
+                                <div class="urating">{{school_infrastructure}}/5</div>
+                                <div class="uratingtitle">School Infrastructure</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{infrastructure}}/5</div>
-                                <div class="uratingtitle">Infrastructure</div>
+                                <div class="urating">{{faculty}}/5</div>
+                                <div class="uratingtitle">Faculty</div>
                             </div>
                             <div class="ur-bg light-bg">
-                                <div class="urating">{{accomodation_food}}/5</div>
-                                <div class="uratingtitle">Accomodation Food</div>
+                                <div class="urating">{{accessibility_of_faculty}}/5</div>
+                                <div class="uratingtitle">Accessibility Of Faculty</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{placements_internships}}/5</div>
-                                <div class="uratingtitle">Placements/Internships</div>
+                                <div class="urating">{{co_curricular_activities}}/5</div>
+                                <div class="uratingtitle">Co Curricular Activities</div>
                             </div>
                             <div class="ur-bg light-bg">
-                                <div class="urating">{{social_life_extracurriculars}}/5</div>
-                                <div class="uratingtitle">Social Life & Extracurriculars</div>
+                                <div class="urating">{{leadership_development}}/5</div>
+                                <div class="uratingtitle">Leadership Development</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{culture_diversity}}/5</div>
-                                <div class="uratingtitle">Culture Diversity</div>
+                                <div class="urating">{{sports}}/5</div>
+                                <div class="uratingtitle">Sports</div>
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ function getStudentReviews(limit=null,offset=null) {
     var slug = window.location.pathname.split('/')[1];
     $.ajax({
         method: "POST",
-        url : '/organizations/get-unclaimed-student-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
+        url : '/organizations/get-unclaimed-school-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
         beforeSend:function()
         {
             $('#load_more_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');

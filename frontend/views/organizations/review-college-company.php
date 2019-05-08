@@ -1,16 +1,14 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
 $this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
-Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var slug = "' . $slug . '"; var business_type = "'.$org_details['business_activity'].'" ', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
-$overall_college_avg = array_sum($stats_college) / count($stats_college);
+$overall_college_avg = array_sum($stats_students) / count($stats_students);
 $round_avg = round($overall_avg);
-$round_college_avg = round($overall_college_avg);
+$round_students_avg = round($overall_college_avg);
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
@@ -67,10 +65,10 @@ $this->params['seo_tags'] = [
                         ?>
                         <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
                     <?php } else { ?>
-                            <i class="fa fa-star <?= (($round_college_avg < $i) ? '' : 'active') ?>"></i>
+                            <i class="fa fa-star <?= (($round_students_avg < $i) ? '' : 'active') ?>"></i>
                    <?php } } ?>
                 </div>
-                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_college_avg) ?>/5 - based on <?= $reviews+$reviews_college; ?> reviews</div>
+                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_students_avg) ?>/5 - based on <?= $reviews+$reviews_students; ?> reviews</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -273,114 +271,21 @@ $this->params['seo_tags'] = [
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="review-summary">
-                                    <h1 class="heading-style">Overall Reviews</h1>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs-main <?= (($reviews_college) ? '' : 'fade_background') ?>">
-                                                <div class="rating-large"><?= $round_college_avg ?>/5</div>
-                                                <div class="com-rating-1">
-                                                    <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                        <i class="fa fa-star <?= (($round_college_avg < $i) ? '' : 'active') ?>"></i>
-                                                    <?php } ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Academics</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['academics'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Faculity & Teaching Quality</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['faculty_teaching_quality'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Infrastructure</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['infrastructure'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Accomodation & Food</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['accomodation_food'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Placements/Internships</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
-                                                    <div class="threestar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['placements_internships'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Social Life/Extracurriculars</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['social_life_extracurriculars'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Culture & Diversity</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats_college['culture_diversity'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php if ($org_details['business_activity']=='College'){
+                                echo $this->render('/widgets/review/review-college-stats', [
+                             'reviews_students'=>$reviews_students,
+                             'round_students_avg'=>$round_students_avg,
+                             'stats_students'=>$stats_students,
+                            ]); }
+                            elseif ($org_details['business_activity']=='School')
+                            {
+                                echo $this->render('/widgets/review/review-school-stats', [
+                                    'reviews_students'=>$reviews_students,
+                                    'round_students_avg'=>$round_students_avg,
+                                    'stats_students'=>$stats_students,
+                                ]);
+                            }
+                            ?>
                             </div>
                         </div>
                     </div>
@@ -400,6 +305,18 @@ $this->params['seo_tags'] = [
                 <h4 class="modal-title">Edit Your Review</h4>
             </div>
             <div class="modal-body">
+            <?php if ($editReviewForm->type=='org'){
+                     $url = '/organizations/edit-review-unclaimed?request_type=2&type=org';
+                    }
+                     elseif ($editReviewForm->type=='college')
+                     {
+                         $url = '/organizations/edit-review-unclaimed?request_type=2&type=college';
+                     }
+                    elseif ($editReviewForm->type=='school')
+                    {
+                        $url = '/organizations/edit-review-unclaimed?request_type=2&type=school';
+                    }
+                    ?>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'edit-review-form',
@@ -427,6 +344,13 @@ $this->params['seo_tags'] = [
                              'editReviewForm'=>$editReviewForm
                          ]);
                      }
+                    elseif ($editReviewForm->type=='school')
+                    {
+                        echo $this->render('/widgets/review/review-school-stats-edit', [
+                            'form'=>$form,
+                            'editReviewForm'=>$editReviewForm
+                        ]);
+                    }
                     ?>
 
                 </div>
@@ -456,8 +380,13 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
 ]);
-echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews', [
-]);
+ if ($org_details['business_activity']=='College'){
+     echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews');
+                                }
+               elseif ($org_details['business_activity']=='School')
+                            {
+                echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews');
+                            }
 
 $this->registerCss('
 .nav-padd-20 {
@@ -1471,20 +1400,223 @@ var popup2 = new ideaboxPopupCollege({
 				
 			]
 		});
+var popup3 = new ideaboxPopupSchool({
+            background	: '#2995c2',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_school(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the School on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the School',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of School',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The College/University..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Acedemic Year:',
+					answerType	: 'selectbox',
+					formName	: 'tenure',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Student Engagement',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'student_engagement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accessibility of Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accessibility_of_faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Co-curricular Activitie',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'co_curricular_activitie',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Leadership Development',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'leadership_development',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Sports',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'sports',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
 if($("#wr1").length>0){
+    if (business_type=='College'){ 
 document.getElementById("wr1").addEventListener("click", function(e){
             popup2.open();
         });
+}
+    else if (business_type=='School')
+        {
+            document.getElementById("wr1").addEventListener("click", function(e){
+            popup3.open();
+        });
+        }
 }
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
     var type = 'company';
+	$.ajax({
+       method: 'POST',
+       url : '/organizations/post-college-company-reviews',
+	   data:{data:data,type:type,slug:slug},
+       success: function(response) {
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+               else
+                   {
+                       window.location = window.location.pathname;
+                   }
+          }});
+}
+function ajax_school(data) {
+    var type = 'school';
 	$.ajax({
        method: 'POST',
        url : '/organizations/post-college-company-reviews',
@@ -1520,6 +1652,8 @@ function ajax_college(data) {
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
