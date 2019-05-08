@@ -1064,7 +1064,7 @@ li.init {
     border: none;
     padding: 0px; }
   .panel-group .panel-default .panel-collapse .panel-body {
-    border-top: none;
+    border-top: none !important;
     padding: 0px;
     padding-top: 35px; }
 

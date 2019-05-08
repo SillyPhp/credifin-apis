@@ -179,13 +179,12 @@
 <script id="fixed_tab" type="text/template">
     <div class="acc-wizard">
         <div class="panel-group" id="accordion">
-            <div class="panel panel-default active">
+            <div class="panel panel-default">
                 <div class="panel-heading" id="headingOne">
                     <h3>
-                        <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion">Basic infomation</a>
+                        <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" aria-expanded="true">Basic infomation</a>
                     </h3>
                 </div>
-
                 <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
                     <div class="panel-body">
                         <form method="POST">
@@ -264,7 +263,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading" id="headingThree">
                     <h3>
-                        <a href="#collapseThree" data-toggle="panel-collapse" data-parent="#accordion">Specialities</a>
+                        <a href="#collapseThree" data-toggle="collapse" data-parent="#accordion">Specialities</a>
                     </h3>
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse">
@@ -314,7 +313,7 @@
 <script id="flexible_tab" type="text/template">
     <div class="acc-wizard">
         <div class="panel-group" id="accordion_1">
-            <div class="panel panel-default active">
+            <div class="panel panel-default">
                 <div class="panel-heading" id="headingOne">
                     <h3>
                         <a href="#collapseOne_1" data-toggle="collapse" data-parent="#accordion_1">Basic infomation</a>
@@ -453,7 +452,26 @@ input.float_to_left{margin-top: 8.7px !important;}
     -ms-transition: none!important;
     transition: none!important;
 }
+#collapseOne.collapse.in, #collapseOne_1.collapse.in{
+    height:auto !important;
+}
+.panel-group .panel+.panel {
+    margin-top: 18px;
+}
 ');
+$script = <<< JS
+$(document).on('change', '#interview_type_fixed', function(){
+    if($(this).is(':checked')){
+        $('#collapseOne').addClass('in');
+    }
+});
+$(document).on('change', '#interview_type_flexible', function(){
+    if($(this).is(':checked')){
+        $('#collapseOne_1').addClass('in');
+    }
+});
+JS;
+$this->registerJs($script);
 $this->registerCssFile('@backendAssets/plugins/schedular/css/semantic.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css');
