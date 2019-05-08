@@ -3,286 +3,183 @@
 namespace console\controllers;
 
 use common\models\ApplicationTypes;
+use common\models\EmailLogs;
 use common\models\EmployerApplications;
-use common\models\Tags;
+use common\models\UserPreferences;
 use common\models\Users;
 use Yii;
 use yii\console\Controller;
 use yii\helpers\Url;
+use common\models\Utilities;
+use yii\helpers\ArrayHelper;
 
 class DailyEmailsController extends Controller
 {
-
-    public function actionList()
-    {
-        $tags = new Tags();
-        $tags->tag_enc_id = 'ODFrdDVxZGsrdEFBb09HV3pjRDNnQAAA';
-        $tags->name = 'Aditya';
-        $tags->slug = 'aditya';
-        $tags->created_on = date('Y-m-d H:i:s');
-        $tags->created_by = 'e8b1AYDBa7n3MoRMkqNayqJjLwQp9v';
-        $tags->save();
-
-        //fetch user to send email and fetch their application
-
-        //send emails to user with their content
-
-//        $user = Users::find()
-//                ->asArray()
-//                ->one();
-//        $rootyii = realpath(dirname(__FILE__).'/../../');
-//        $filename = date('H:i:s'). '.txt';
-//        $folder = $rootyii . '/cronjob/' . $filename;
-//        $f = fopen($folder, 'w');
-//        $fw = fwrite($f, $user['first_name']);
-//        fclose($f);
-
-//        return Yii::$app->mailer->compose()
-//            ->setFrom(['info@empoweryouth.in' => 'Empower Youth'])
-//            ->setTo(['bansaladitya209@gmail.com' => 'Aditya'])
-//            ->setSubject('adklshjadvn')
-//            ->send();
-
-//        Yii::$app->urlManager->hostInfo = 'http://www.aditya.eygb.me';
-//        Yii::$app->urlManager->scriptUrl = 'http://www.aditya.eygb.me';
-//        $user['name'] = 'Aditya';
-//        $user['link'] = Yii::$app->urlManager->createAbsoluteUrl(['/verify/klnasldvnadv']);
-//
-//        Yii::$app->mailer->htmlLayout = 'layouts/email';
-//
-//         return Yii::$app->mailer->compose(
-//                ['html' => 'verification-email'], ['data' => $user]
-//            )
-//            ->setFrom(['info@empoweryouth.in' => 'Empower Youth'])
-//            ->setTo(['bansaladitya209@gmail.com' => 'aditya'])
-//            ->setSubject('klasvjadnvn')
-//            ->send();
-    }
-
-    //for notification purpose - job alerts
-    public function actionAlertEmails()
-    {
-
-    }
-
-    //for prefered categories
-    public function actionPreferedEmails()
-    {
-
-    }
-
-    private function findJobs($keyword)
-    {
-
-        $result = EmployerApplications::find()
+    public function actionPreferedEmails(){
+        $users = Users::find()
             ->alias('a')
-            ->select([
-                'a.application_enc_id application_id',
-                'e.location_enc_id location_id',
-                'a.last_date',
-                'a.type',
-                'i.name category',
-                'l.designation',
-                'CONCAT("/job/", a.slug) link',
-                'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
-                "g.name as city",
-                'c.name as title',
-                'i.icon',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE
-                WHEN a.experience = "0" THEN "No Experience"
-                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
-                WHEN a.experience = "2" THEN "1 Year Experience"
-                WHEN a.experience = "3" THEN "2-3 Years Experience"
-                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
-                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
-                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
-                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
-                END) as experience',
-                'm.fixed_wage as fixed_salary',
-                'm.wage_type salary_type',
-                'm.max_wage as max_salary',
-                'm.min_wage as min_salary',
-                'm.wage_duration as salary_duration'
+            ->select(['a.user_enc_id'])
+            ->joinWith(['userTypeEnc b'], false)
+            ->where([
+                'a.status' => 'Active',
+                'a.is_deleted' => 0,
+                'b.user_type' => 'Individual'
             ])
-            ->joinWith(['title b' => function ($x) {
-                $x->joinWith(['categoryEnc c'], false);
-                $x->joinWith(['parentEnc i'], false);
-            }], false)
-            ->joinWith(['organizationEnc d'], false)
-            ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g'], false);
-                }], false);
-            }], false)
-            ->joinWith(['preferredIndustry h'], false)
-            ->joinWith(['designationEnc l'], false)
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->joinWith(['applicationOptions m'], false)
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere([
-                'or',
-                ['g.name' => $keyword],
-                ['like', 'l.designation', $keyword],
-                ['like', 'a.type', $keyword],
-                ['like', 'c.name', $keyword],
-                ['like', 'h.industry', $keyword],
-                ['like', 'i.name', $keyword],
-                ['like', 'd.name', $keyword],
-                ['like', 'g.name', $keyword]
-            ])
-            ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+            ->asArray()
+            ->all();
 
-        $i = 0;
-        foreach ($result as $val) {
-            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
-            if ($val['salary_type'] == "Fixed") {
-                if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] * 12 . 'p.a';
-                } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] * 40 * 52 . 'p.a';
-                } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] * 52 . 'p.a';
-                } else {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] . 'p.a';
-                }
-            } elseif ($val['salary_type'] == "Negotiable") {
-                if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = "₹ " . (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . 'p.a';
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . 'p.a';
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . 'p.a';
-                    } else {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . 'p.a';
+        foreach($users as $user){
+            $u = $user['user_enc_id'];
+
+            $user_pref_exists = UserPreferences::find()
+                ->where([
+                    'created_by' => $u,
+                    'is_deleted' => 0
+                ])
+                ->exists();
+
+            $user_keyword = [];
+
+            if($user_pref_exists){
+                $prefs = UserPreferences::find()
+                    ->alias('a')
+                    ->joinWith(['userPreferredSkills b' => function($x){
+                        $x->select(['b.preference_enc_id', 'f.skill_enc_id', 'f.skill']);
+                        $x->andWhere(['b.is_deleted' => 0]);
+                        $x->joinWith(['skillEnc f'], false);
+                    }])
+                    ->joinWith(['userPreferredLocations c'=>function($x){
+                        $x->select(['c.preference_enc_id', 'g.city_enc_id', 'g.name']);
+                        $x->andWhere(['c.is_deleted' => 0]);
+                        $x->joinWith(['cityEnc g'], false);
+                    }])
+                    ->joinWith(['userPreferredJobProfiles d' => function($x){
+                        $x->select(['d.preference_enc_id', 'i.category_enc_id', 'i.name']);
+                        $x->andWhere(['d.is_deleted' => 0]);
+                        $x->joinWith(['jobProfileEnc i'], false);
+                    }])
+                    ->joinWith(['userPreferredIndustries e' => function($x){
+                        $x->select(['e.preference_enc_id', 'h.industry_enc_id', 'h.industry']);
+                        $x->andWhere(['e.is_deleted' => 0]);
+                        $x->joinWith(['industryEnc h'], false);
+                    }])
+                    ->where([
+                        'a.created_by' => $u,
+                        'a.is_deleted' => 0,
+                    ])
+                    ->asArray()
+                    ->all();
+                foreach ($prefs as $pref){
+                    array_push($user_keyword, $pref['type']);
+                    foreach($pref['userPreferredSkills'] as $s){
+                        array_push($user_keyword, $s['skill']);
                     }
-                } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = "₹ " . (string)$val['min_salary'] * 12 . 'p.a';
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 40 * 52) . 'p.a';
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 52) . 'p.a';
-                    } else {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary']) . 'p.a';
+                    foreach($pref['userPreferredLocations'] as $l){
+                        array_push($user_keyword, $l['name']);
                     }
-                } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = "₹ " . (string)$val['max_salary'] * 12 . 'p.a';
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['max_salary'] * 40 * 52) . 'p.a';
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['max_salary'] * 52) . 'p.a';
-                    } else {
-                        $result[$i]['salary'] = "₹ " . (string)($val['max_salary']) . 'p.a';
+                    foreach($pref['userPreferredIndustries'] as $i){
+                        array_push($user_keyword, $i['industry']);
+                    }
+                    foreach($pref['userPreferredJobProfiles'] as $j){
+                        array_push($user_keyword, $j['name']);
                     }
                 }
             }
-            $i++;
-        }
-        return $result;
-    }
-
-    private function findInternships($keyword){
-        $result = EmployerApplications::find()
-            ->alias('a')
-            ->select([
-                'a.application_enc_id application_id',
-                'f.location_enc_id location_id',
-                'a.last_date',
-                'i.name category',
-                'CONCAT("/internship/", a.slug) link',
-                'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
-                "g.name as city",
-                'a.type',
-                'm.fixed_wage as fixed_salary',
-                'm.wage_type salary_type',
-                'm.max_wage as max_salary',
-                'm.min_wage as min_salary',
-                'm.wage_duration as salary_duration',
-                'c.name as title',
-                'i.icon',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
-            ->joinWith(['title b' => function ($x) {
-                $x->joinWith(['categoryEnc c'], false);
-                $x->joinWith(['parentEnc i'], false);
-            }], false)
-            ->joinWith(['organizationEnc d'], false)
-            ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g'], false);
-                }], false);
-            }], false)
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->joinWith(['applicationOptions m'], false)
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere([
-                'or',
-                ['like', 'a.type', $keyword],
-                ['like', 'c.name', $keyword],
-                ['like', 'i.name', $keyword],
-                ['like', 'g.name', $keyword],
-                ['like', 'd.name', $keyword],
-            ])
-            ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
-        $i = 0;
-        foreach ($result as $val) {
-            $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
-            if ($val['salary_type'] == "Fixed") {
-                if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] * 12 . "p.a.";
-                } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] * 40 * 52 . "p.a.";
-                } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] * 52 . "p.a.";
-                } else {
-                    $result[$i]['salary'] = "₹ " . $val['fixed_salary'] . "p.a.";
-                }
-            } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
-                if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = "₹ " . (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . "p.a.";
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . "p.a.";
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . "p.a.";
-                    } else {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . "p.a.";
-                    }
-                } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = "₹ " . (string)$val['min_salary'] * 12 . "p.a.";
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 40 * 52) . "p.a.";
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary'] * 52) . "p.a.";
-                    } else {
-                        $result[$i]['salary'] = "₹ " . (string)($val['min_salary']) . "p.a.";
-                    }
-                } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
-                    if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = "₹ " . (string)$val['max_salary'] * 12 . "p.a.";
-                    } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['max_salary'] * 40 * 52) . "p.a.";
-                    } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = "₹ " . (string)($val['max_salary'] * 52) . "p.a.";
-                    } else {
-                        $result[$i]['salary'] = "₹ " . (string)($val['max_salary']) . "p.a.";
+            else{
+                $user_prefs = Users::find()
+                    ->alias('a')
+                    ->joinWith(['cityEnc b'])
+                    ->joinWith(['userSkills c' => function($x){
+                        $x->select(['c.created_by', 'e.skill_enc_id', 'e.skill']);
+                        $x->andWhere(['c.is_deleted'  => 0]);
+                        $x->joinWith(['skillEnc e'],false);
+                    }])
+                    ->joinWith(['jobFunction d'])
+                    ->where([
+                        'a.status' => 'Active',
+                        'a.user_enc_id' => $u,
+                        'a.is_deleted' => 0,
+                    ])
+                    ->asArray()
+                    ->all();
+                foreach($user_prefs as $u){
+                    array_push($user_keyword, $u['cityEnc']['name']);
+                    array_push($user_keyword, $u['jobFunction']['name']);
+                    foreach($u['userSkills'] as  $user_skill){
+                        array_push($user_keyword, $user_skill['skill']);
                     }
                 }
             }
-            $i++;
+
+            $job_applications = $this->findJobs($user_keyword);
+            $internship_applications = $this->findInternships($user_keyword);
+
+            $random_jobs = array_rand($job_applications, 4);
+            $random_internships = array_rand($internship_applications, 4);
+
+
+            $jobs_apps = [];
+            $internship_apps = [];
+
+            foreach($random_jobs as $rj){
+                array_push($jobs_apps, $job_applications[$rj]);
+            }
+            foreach($random_internships as $ri){
+                array_push($internship_apps, $internship_applications[$ri]);
+            }
+
+            $jobs_cards = [];
+            foreach($jobs_apps as $j){
+                array_push($jobs_cards, $this->applicationDetail($j));
+            }
+
+
+            $internship_cards = [];
+            foreach($internship_apps as $i){
+                array_push($internship_cards, $this->applicationDetail($i));
+            }
+
+            $userDetails = [
+                'name' => $user['first_name'] . " " . $user['last_name'],
+                'email' => $user['email']
+            ];
+
+            if($this->sendMail($userDetails, $jobs_cards, $internship_cards)){
+                $email_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $email_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $email_logs->email_type = 2;
+                $email_logs->user_enc_id = $user['user_enc_id'];
+                $email_logs->subject = 'Empower Youth Updates For You';
+                $email_logs->template = 'applications-list';
+                $email_logs->created_by = $user['user_enc_id'];
+                $email_logs->created_on = date('Y-m-d H:i:s');
+                $email_logs->save();
+            }
         }
-        return $result;
     }
 
-    private function openingDetail($id)
+    private function sendMail($userDetails, $jobs_cards, $internship_cards){
+        $data['jobs'] = $jobs_cards;
+        $data['internships'] = $internship_cards;
+
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'applications-list'], ['data' => $data]
+        )
+            ->setFrom([Yii::$app->params->contact_email => Yii::$app->params->site_name])
+            ->setTo([$userDetails['email'] => $userDetails['name']])
+            ->setSubject('Empower Youth Updates For You');
+
+        if($mail->send()){
+            return true;
+        }
+        return false;
+    }
+
+    private function applicationDetail($id)
     {
         $data = $this->getApplication($id);
 
@@ -323,7 +220,6 @@ class DailyEmailsController extends Controller
                     $data['amount'] = 'Negotiable';
                 }
             }
-            $subject = $data['organization_name'] . ' is hiring for ' . $data['cat_name'] . ' with a ' . $data['amount'] . ' package.';
         }
 
         if ($data['application_type'] == 'Internship') {
@@ -341,7 +237,6 @@ class DailyEmailsController extends Controller
                 setlocale(LC_MONETARY, 'en_IN');
                 $data['amount'] = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
             }
-            $subject = $data['organization_name'] . ' is looking for ' . $data['cat_name'] . ' interns with a stipend ' . $data['amount'];
         }
 
         return $data;
@@ -350,12 +245,20 @@ class DailyEmailsController extends Controller
 
     private function getApplication($id)
     {
-        $this->application = \common\models\EmployerApplications::find()
+        return \common\models\EmployerApplications::find()
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $id])
             ->joinWith(['preferredIndustry x'], false)
-            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'w.name organization_name', 'w.initials_color color', 'w.slug organization_link',
+            ->select([
+                'm.name as cat_name',
+                'l.name',
+                'a.type',
+                'a.slug',
+                'a.last_date',
+                'w.name organization_name',
+                'w.initials_color color',
+                'w.slug organization_link',
                 '(CASE
                 WHEN w.logo IS NULL OR w.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", w.name, "&size=200&rounded=false&background=", REPLACE(w.initials_color, "#", ""), "&color=ffffff") ELSE
@@ -373,31 +276,15 @@ class DailyEmailsController extends Controller
                 ELSE "No Experience"
                 END) as experience', 'b.*, SUBSTRING(r.name, 1, CHAR_LENGTH(r.name) - 1) application_type'])
             ->joinWith(['applicationOptions b'], false)
-            ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
-                $b->onCondition(['c.is_deleted' => 0]);
-                $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'CASE WHEN d.icon IS NULL OR d.icon = "" THEN "' . Url::to('assets/common/employee-benefits/plus-icon.svg') . '" ELSE CONCAT(icon_location, "/", icon) END icon']);
-            }])
-            ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
-                $b->joinWith(['educationalRequirementEnc f'], false);
-                $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
-            }])
-            ->joinWith(['applicationSkills g' => function ($b) {
-                $b->andWhere(['g.is_deleted' => 0]);
-                $b->joinWith(['skillEnc h'], false);
-                $b->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
-            }])
             ->joinWith(['applicationJobDescriptions i' => function ($b) {
                 $b->andWhere(['i.is_deleted' => 0]);
                 $b->joinWith(['jobDescriptionEnc j'], false);
                 $b->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])
-            ->joinwith(['title0 k' => function ($b) {
+            ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
             }], false)
-            ->joinWith(['designationEnc n'], false)
             ->joinWith(['applicationPlacementLocations o' => function ($b) {
                 $b->onCondition(['o.is_deleted' => 0]);
                 $b->joinWith(['locationEnc s' => function ($b) {
@@ -405,23 +292,91 @@ class DailyEmailsController extends Controller
                 }], false);
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
             }])
-            ->joinWith(['applicationInterviewLocations p' => function ($b) {
-                $b->onCondition(['p.is_deleted' => 0]);
-                $b->joinWith(['locationEnc u' => function ($b) {
-                    $b->joinWith(['cityEnc v'], false);
-                }], false);
-                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
-            }])
-            ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
-                $b->onCondition(['q.is_deleted' => 0]);
-                $b->select(['q.field_enc_id', 'q.questionnaire_enc_id', 'q.application_enc_id']);
-            }])
             ->joinwith(['applicationTypeEnc r'], false, 'INNER JOIN')
             ->joinwith(['organizationEnc w' => function ($s) {
                 $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
             }], false)
             ->asArray()
             ->one();
-        return $this->application;
     }
+
+    private function findJobs($keyword){
+        $results = [];
+        foreach($keyword as $k) {
+            $result = EmployerApplications::find()
+                ->alias('a')
+                ->select([
+                    'a.application_enc_id application_id'
+                ])
+                ->joinWith(['title b' => function ($x) {
+                    $x->joinWith(['categoryEnc c'], false);
+                    $x->joinWith(['parentEnc i'], false);
+                }], false)
+                ->joinWith(['organizationEnc d'], false)
+                ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                    $x->joinWith(['locationEnc f' => function ($x) {
+                        $x->joinWith(['cityEnc g'], false);
+                    }], false);
+                }], false)
+                ->joinWith(['preferredIndustry h'], false)
+                ->joinWith(['designationEnc l'], false)
+                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                ->joinWith(['applicationOptions m'], false)
+                ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['like', 'l.designation', $k],
+                    ['like', 'c.name', $k],
+                    ['like', 'g.name', $k],
+                    ['like', 'a.type', $k],
+                    ['like', 'h.industry', $k],
+                    ['like', 'i.name', $k],
+                    ['like', 'd.name', $k],
+                ])
+                ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+            foreach($result as $r){
+                array_push($results, $r['application_id']);
+            }
+        }
+
+        return array_unique($results);
+    }
+
+    private function findInternships($keyword){
+        $results = [];
+        foreach($keyword as $k){
+            $result = EmployerApplications::find()
+                ->alias('a')
+                ->select([
+                    'a.application_enc_id application_id',
+                ])
+                ->joinWith(['title b' => function ($x) {
+                    $x->joinWith(['categoryEnc c'], false);
+                    $x->joinWith(['parentEnc i'], false);
+                }], false)
+                ->joinWith(['organizationEnc d'], false)
+                ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                    $x->joinWith(['locationEnc f' => function ($x) {
+                        $x->joinWith(['cityEnc g'], false);
+                    }], false);
+                }], false)
+                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                ->joinWith(['applicationOptions m'], false)
+                ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['like', 'a.type', $k],
+                    ['like', 'c.name', $k],
+                    ['like', 'i.name', $k],
+                    ['like', 'd.name', $k],
+                    ['like', 'g.name', $k],
+                ])
+                ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+            foreach($result as $r){
+                array_push($results, $r['application_id']);
+            }
+        }
+        return array_unique($results);
+    }
+    
 }
