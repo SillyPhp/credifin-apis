@@ -330,10 +330,8 @@ function geocodeLatLng(lat,long) {
         if (results[0]) {
             $('#city_location').val(results[0].formatted_address);
         } else {
-          console.log('No results found');
+          toastr.error('No results found.', 'error'); 
         }
-      } else {
-        console.log('Geocoder failed due to: ' + status);
       }
     });
 }
