@@ -8,35 +8,37 @@ $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
 $this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
 Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
+$overall_college_avg = array_sum($stats_college) / count($stats_college);
 $round_avg = round($overall_avg);
+$round_college_avg = round($overall_college_avg);
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
-//$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
-//$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-//$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
-//$this->params['seo_tags'] = [
-//    'rel' => [
-//        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-//    ],
-//    'name' => [
-//        'keywords' => $keywords,
-//        'description' => $description,
-//        'twitter:card' => 'summary_large_image',
-//        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-//        'twitter:site' => '@EmpowerYouth__',
-//        'twitter:creator' => '@EmpowerYouth__',
-//        'twitter:image' => $image,
-//    ],
-//    'property' => [
-//        'og:locale' => 'en',
-//        'og:type' => 'website',
-//        'og:site_name' => 'Empower Youth',
-//        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-//        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-//        'og:description' => $description,
-//        'og:image' => $image,
-//        'fb:app_id' => '973766889447403'
-//    ],
-//];
+$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 <section class="rh-header">
     <div class="container">
@@ -60,11 +62,15 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             <div class="col-md-6 col-sm-6">
                 <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
-                    <?php for ($i = 1; $i <= 5; $i++) { ?>
+                    <?php for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($round_avg)){
+                        ?>
                         <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
-                    <?php } ?>
+                    <?php } else { ?>
+                            <i class="fa fa-star <?= (($round_college_avg < $i) ? '' : 'active') ?>"></i>
+                   <?php } } ?>
                 </div>
-                <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
+                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_college_avg) ?>/5 - based on <?= $reviews+$reviews_college; ?> reviews</div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -271,11 +277,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                     <h1 class="heading-style">Overall Reviews</h1>
                                     <div class="row">
                                         <div class="col-md-12 col-sm-4">
-                                            <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
-                                                <div class="rating-large"><?= $round_avg ?>/5</div>
+                                            <div class="rs-main <?= (($reviews_college) ? '' : 'fade_background') ?>">
+                                                <div class="rating-large"><?= $round_college_avg ?>/5</div>
                                                 <div class="com-rating-1">
                                                     <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                        <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                                                        <i class="fa fa-star <?= (($round_college_avg < $i) ? '' : 'active') ?>"></i>
                                                     <?php } ?>
                                                 </div>
                                             </div>
@@ -286,10 +292,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Academics</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
+                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['job_avg'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['academics'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -299,10 +305,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Faculity & Teaching Quality</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
+                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['growth_avg'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['faculty_teaching_quality'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -312,10 +318,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Infrastructure</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
+                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_cult'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['infrastructure'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -325,10 +331,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Accomodation & Food</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
+                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_compensation'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['accomodation_food'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -338,10 +344,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Placements/Internships</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
-                                                    <div class="threestar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
+                                                    <div class="threestar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_work'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['placements_internships'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -351,10 +357,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Social Life/Extracurriculars</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
+                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_work_life'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['social_life_extracurriculars'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -364,10 +370,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                                             <div class="rs1">
                                                 <div class="re-heading">Culture & Diversity</div>
                                                 <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
+                                                    <div class="sr-rating <?= (($reviews_college) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
+                                                    <div class="fourstar-box com-rating-2 <?= (($reviews_college) ? '' : 'fade_border') ?>">
                                                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_skill'] < $i) ? '' : 'active') ?>"></i>
+                                                            <i class="fa fa-star <?= (($stats_college['culture_diversity'] < $i) ? '' : 'active') ?>"></i>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -404,194 +410,25 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 ]);
                 ?>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 col-md-offset-1">
                         <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => Anonymous, 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
                     </div>
-                    <div class="col-md-6">
-                        <?= $form->field($editReviewForm, 'dept')->dropDownList($primary_cat)->label('Department'); ?>
-                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Career Growth</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'career_growth', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="career' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="career' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Company Culture</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'compnay_culture', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="compnay_culture' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="compnay_culture' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Salary Benefits</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'salary_benefits', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="salary_benefits' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="salary_benefits' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Work satisfaction</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'work_satisfaction', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="work_satisfaction' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="work_satisfaction' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Work-Life Balance</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'work_life', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="work_life' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="work_life' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Skill Development</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'skill_devel', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="skill_devel' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="skill_devel' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Job Security</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
+                <div id="widget_bar_stats">
+                    <?php if ($editReviewForm->type=='org'){
+                    echo $this->render('/widgets/review/review-org-stats-edit', [
+                            'form'=>$form,
+                             'editReviewForm'=>$editReviewForm
+                    ]); }
+                     elseif ($editReviewForm->type=='college')
+                     {
+                         echo $this->render('/widgets/review/review-college-stats-edit', [
+                             'form'=>$form,
+                             'editReviewForm'=>$editReviewForm
+                         ]);
+                     }
+                    ?>
+
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -1230,6 +1067,10 @@ border: 2px solid #cadfe8 !important;
     }
     
 }
+.i-review-navigation
+{
+display:none;
+}
 ');
 $script = <<< JS
 $(document).on('click','.load_reviews',function(e){
@@ -1498,9 +1339,22 @@ var popup2 = new ideaboxPopupCollege({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 				},
 				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
 					question 	: 'Acedemic Year:',
 					answerType	: 'selectbox',
-					formName	: 'academic_year',
+					formName	: 'tenure',
 					choices : [
 							[
 								{ label : '-Select-', value : '' },
@@ -1640,6 +1494,10 @@ function review_post_ajax(data) {
                    {
                        alert('there is some server error');
                    }
+               else
+                   {
+                       window.location = window.location.pathname;
+                   }
           }});
 }
 function ajax_college(data) {
@@ -1652,6 +1510,10 @@ function ajax_college(data) {
                if (response==false)
                    {
                        alert('there is some server error');
+                   }
+               else
+                   {
+                       window.location = window.location.pathname;
                    }
           }});
 }

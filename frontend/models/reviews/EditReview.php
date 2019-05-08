@@ -10,17 +10,18 @@ use common\models\OrganizationReviews;
 class EditReview extends Model {
 
     public $identity;
-    public $job_security;
+    public $likes;
+    public $dislikes;
+    public $org_id;
     public $dept;
+    public $job_security;
     public $career_growth;
     public $compnay_culture;
     public $salary_benefits;
     public $work_satisfaction;
     public $work_life;
     public $skill_devel;
-    public $likes;
-    public $dislikes;
-    public $org_id;
+    public $type = 'org';
 
     public function formName()
     {
@@ -30,12 +31,29 @@ class EditReview extends Model {
     public function rules()
     {
         return [
-            [['identity','job_security','org_id','likes','dislikes','dept','career_growth','compnay_culture','salary_benefits',
+            [['identity','type','job_security','org_id','likes','dislikes','career_growth','compnay_culture','salary_benefits',
             'work_satisfaction','work_life','skill_devel'],'required'],
+            ['dept','safe'],
             ];
     }
 
-    public function setValues($edit_review,$slug)
+    public function setValues($edit_review)
+    {
+        $this->identity = $edit_review->show_user_details;
+        $this->dept = $edit_review->category_enc_id;
+        $this->career_growth = $edit_review->growth;
+        $this->compnay_culture = $edit_review->organization_culture;
+        $this->salary_benefits = $edit_review->compensation;
+        $this->work_satisfaction = $edit_review->work;
+        $this->work_life = $edit_review->work_life;
+        $this->skill_devel = $edit_review->skill_development;
+        $this->job_security = $edit_review->job_security;
+        $this->likes = $edit_review->likes;
+        $this->dislikes = $edit_review->dislikes;
+        $this->org_id = $edit_review->organization_enc_id;
+    }
+
+    public function setValues_college($edit_review)
     {
         $this->identity = $edit_review->show_user_details;
         $this->dept = $edit_review->category_enc_id;
@@ -87,5 +105,14 @@ class EditReview extends Model {
          return false;
      }
     }
-
+    public function getEditReview($unclaimed_org)
+    {
+        return NewOrganizationReviews::find()
+            ->alias('a')
+            ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
+            ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['categoryEnc c'], false)
+            ->one();
+    }
 }

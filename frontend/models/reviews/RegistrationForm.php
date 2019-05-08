@@ -209,7 +209,7 @@ class RegistrationForm extends Model {
         $t_time = strtotime($arr['to']);
         $to_time = date('Y-m-d', $t_time);
         $companyReview = new NewOrganizationReviews();
-        $companyReview->reviewer_type = 3;
+        $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 3 : 2);
         $data = Qualifications::find()
             ->where(['name'=>$arr['stream']])
             ->asArray()

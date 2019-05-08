@@ -1436,9 +1436,22 @@ var popup2 = new ideaboxPopupCollege({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 				},
 				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
 					question 	: 'Acedemic Year:',
 					answerType	: 'selectbox',
-					formName	: 'academic_year',
+					formName	: 'tenure',
 					choices : [
 							[
 								{ label : '-Select-', value : '' },
@@ -1559,7 +1572,7 @@ $('#company_review_btn1').hide();
 $('#company_review_btn2').hide();
 $(document).on('change','#bussiness_activity',function(e)
 {
-    if($('#bussiness_activity :selected').text() =='College'||$('#bussiness_activity :selected').text()=='Educational Institute')
+    if($('#bussiness_activity :selected').text() =='School'||$('#bussiness_activity :selected').text()=='Colege/Universities'||$('#bussiness_activity :selected').text()=='Educational Institute/Tution Centers')
         {
             $('#company_review_btn1').show();
             $('#company_review_btn2').show();
