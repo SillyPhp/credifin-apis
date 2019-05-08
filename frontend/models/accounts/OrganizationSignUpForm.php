@@ -59,7 +59,7 @@ class OrganizationSignUpForm extends Model
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
+            [['username'], 'match', 'pattern' => '/^[a-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email', 'organization_email'], 'email'],
             [['organization_website'], 'url', 'defaultScheme' => 'http'],
             [['phone', 'organization_phone'], PhoneInputValidator::className()],

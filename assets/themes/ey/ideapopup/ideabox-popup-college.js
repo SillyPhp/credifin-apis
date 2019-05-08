@@ -46,9 +46,13 @@ function change_next_btn(t){
 
 	}
 	function sbt_values(t){
-		var academic_year = t['academic_year'].split(' ');
-		t['from'] = academic_year[1] + "-" +academic_year[0] + "-1";
-		t['to'] = academic_year[4] + "-" +academic_year[3] + "-1";
+		var tenures = t['tenure'].split(' ');
+		t['from'] = tenures[1] + "-" +tenures[0] + "-1";
+		if(!tenures[3]){
+			t['to'] = '';
+		}else{
+			t['to'] = tenures[4] + "-" +tenures[3] + "-1";
+		}
 
 	}
 
@@ -449,7 +453,7 @@ function change_next_btn(t){
 	}
 	//------------------------------------------------------------
 	// Selectbox create method. Using with answerType:'selectbox'
-	var createSelectBox = function (qno, that){
+	var createSelectBox = function (qno, that, e_type){
 		var months = '';
 		var years = '';
 		if (that.options.data[qno].hasOwnProperty('choices'))
@@ -465,8 +469,14 @@ function change_next_btn(t){
 		}
 		else
 			console.log('"selectbox" form type must have -choices- parameters!');
-		var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
-		return s;
+
+		if(e_type=='former'){
+			var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
+			return s;
+		}else{
+			var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label></div>';
+			return s;
+		}
 	}
 
 	var createCollegeCity = function (qno,that) {
@@ -559,7 +569,7 @@ function change_next_btn(t){
 			for (var i = 0; i < that.options.data[qno].choices.length; i++ )
 			{
 				var randomId = createUniqueId();
-				radios += '<div class="i-review-input-group" for="cb1"><input name="'+that.options.data[qno].formName+'" class="i-review-input-radio" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
+				radios += '<div class="i-review-input-group" for="cb1"><input onchange="change_next_btn(this);" name="'+that.options.data[qno].formName+'" class="i-review-input-radio" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
 			}
 		}
 		else
@@ -568,7 +578,7 @@ function change_next_btn(t){
 		var inlineClass = '';
 		if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
 			inlineClass = ' i-inline-answer-list'
-		
+
 		var r = '<div class="i-review-answer'+inlineClass+'">'+radios+'</div>';
 		return r;
 	}
@@ -597,7 +607,13 @@ function change_next_btn(t){
 				return createCheckBox(qno, that);
 				break;
 			case 'selectbox':
-				return createSelectBox(qno, that);
+				that.nextButton.classList.remove("i-next-hide");
+				showNextButton(qno, that);
+				if(that.values['current_employee'] == 'current'){
+					return createSelectBox(qno, that, 'current');
+				}else{
+					return createSelectBox(qno, that, 'former');
+				}
 				break;
 			case 'colleg_city_autocomplete':
 				return createCollegeCity(qno, that);
@@ -874,8 +890,11 @@ function change_next_btn(t){
 				stream_validate(qno, that);
 				break;
 			case 'selectbox':
-				selectValidate(qno, that);
-				break;
+				if(that.values['current_employee'] == 'current'){
+					return selectValidate(qno, that, 'current');
+				}else{
+					return selectValidate(qno, that, 'former');
+				}
 			case 'checkbox':
 				checkValidate(qno, that);
 				break;
@@ -934,21 +953,33 @@ function change_next_btn(t){
 	}
 	//------------------------------------------------------------
 	// Selectbox validate checker
-	var selectValidate = function(qno,that){
-		var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
-		var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
-		var val3 = that.reviewModal.getElementsByClassName('i-review-to-m')[0].value;
-		var val4 = that.reviewModal.getElementsByClassName('i-review-to-y')[0].value;
-		that.values[that.options.data[qno].formName] = val1 + " "+ val2 + " - "+ val3 + " " + val4;
+	var selectValidate = function(qno,that, e_type){
+		if(e_type == 'former'){
+			var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
+			var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
+			var val3 = that.reviewModal.getElementsByClassName('i-review-to-m')[0].value;
+			var val4 = that.reviewModal.getElementsByClassName('i-review-to-y')[0].value;
+			that.values[that.options.data[qno].formName] = val1 + " "+ val2 + " - "+ val3 + " " + val4;
 
-		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
-		{
-			if (val1 == '' || val2 == '' || val3 == '' || val4 == '') {
-				that.validate = false;
-			}
-			if (val2>val4)
+			if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
 			{
-				that.validate = false;
+				if (val1 == '' || val2 == '' || val3 == '' || val4 == '') {
+					that.validate = false;
+				}
+				if (val2>val4)
+				{
+					that.validate = false;
+				}
+			}
+		}else{
+			var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
+			var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
+			that.values[that.options.data[qno].formName] = val1 + " "+ val2;
+
+			if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
+			{
+				if (val1 == '' || val2 == '')
+					that.validate = false;
 			}
 		}
 	}
