@@ -1399,6 +1399,8 @@ var popup2 = new ideaboxPopupCollege({
 					answerType	: 'textarea',
 					formName	: 'dislikes',
 					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: '<b style="color:#900;">Please share your reviews.</b>'
 					nextLabel	: 'Finish',
 				}
 				
@@ -1577,6 +1579,8 @@ var popup3 = new ideaboxPopupSchool({
 					answerType	: 'textarea',
 					formName	: 'dislikes',
 					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: '<b style="color:#900;">Please share your reviews.</b>'
 					nextLabel	: 'Finish',
 				}
 				
