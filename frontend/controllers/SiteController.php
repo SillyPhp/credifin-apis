@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\Cities;
+use common\models\EmployerApplications;
+use common\models\States;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -448,6 +451,25 @@ class SiteController extends Controller
                 ]);
             }
         }
+    }
+
+
+    public function actionJobsByLocation(){
+        $jobs_by_location = States::find()
+            ->alias('a')
+            ->joinWith(['cities b' => function($x){
+                $x->joinWith(['organizationLocations c' => function($y){
+                    $y->innerJoinWith(['applicationPlacementLocations d'], false);
+                }], false);
+            }])
+            ->asArray()
+            ->all();
+
+
+        return $this->render('jobs-by-location',
+            [
+                'jobs_by_location'=>$jobs_by_location,
+            ]);
     }
 
 }
