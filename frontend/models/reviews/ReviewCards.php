@@ -91,6 +91,18 @@ class ReviewCards {
             ->count();
     }
 
+    public function getSchoolReviewsCount($unclaimed_org)
+    {
+        return  NewOrganizationReviews::find()
+            ->alias('a')
+            ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
+            ->andWhere(['in','reviewer_type',[4,5]])
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['categoryEnc c'], false)
+            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
+            ->count();
+    }
+
     public function getReviewStats($unclaimed_org)
     {
         return NewOrganizationReviews::find()
@@ -107,6 +119,16 @@ class ReviewCards {
             ->select(['ROUND(AVG(academics)) academics', 'ROUND(AVG(faculty_teaching_quality)) faculty_teaching_quality', 'ROUND(AVG(infrastructure)) infrastructure', 'ROUND(AVG(accomodation_food)) accomodation_food', 'ROUND(AVG(placements_internships)) placements_internships', 'ROUND(AVG(social_life_extracurriculars)) social_life_extracurriculars', 'ROUND(AVG(culture_diversity)) culture_diversity'])
             ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
             ->andWhere(['in','reviewer_type',[2,3]])
+            ->asArray()
+            ->one();
+    }
+
+    public function getSchoolReviewStats($unclaimed_org)
+    {
+        return NewOrganizationReviews::find()
+            ->select(['ROUND(AVG(student_engagement)) student_engagement', 'ROUND(AVG(school_infrastructure)) school_infrastructure', 'ROUND(AVG(faculty)) faculty', 'ROUND(AVG(accessibility_of_faculty)) accessibility_of_faculty', 'ROUND(AVG(co_curricular_activities)) co_curricular_activities', 'ROUND(AVG(leadership_development)) leadership_development', 'ROUND(AVG(sports)) sports'])
+            ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
+            ->andWhere(['in','reviewer_type',[4,5]])
             ->asArray()
             ->one();
     }

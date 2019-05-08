@@ -81,7 +81,7 @@ class EditReview extends Model {
         {
             $modal = NewOrganizationReviews::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-                ->andWhere(['organization_enc_id' => $this->org_id])
+               // ->andWhere(['organization_enc_id' => $this->org_id])
                 ->one();
         }
         $modal->likes = $this->likes;
@@ -104,6 +104,73 @@ class EditReview extends Model {
      else{
          return false;
      }
+    }
+
+    public function Collegesave($request_type)
+    {
+        if ($request_type==1) {
+            $modal = OrganizationReviews::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
+                ->one();
+        }
+        elseif ($request_type==2)
+        {
+            $modal = NewOrganizationReviews::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
+                ->one();
+        }
+        $modal->academics = $this->academics;
+        $modal->faculty_teaching_quality = $this->faculty_teaching_quality;
+        $modal->infrastructure = $this->infrastructure;
+        $modal->accomodation_food = $this->accomodation_food;
+        $modal->placements_internships = $this->placements_internships;
+        $modal->social_life_extracurriculars = $this->social_life_extracurriculars;
+        $modal->culture_diversity = $this->culture_diversity;
+        $modal->show_user_details = $this->identity;
+        $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
+
+        if ($modal->update())
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public function Schoolsave($request_type)
+    {
+        if ($request_type==1) {
+            $modal = OrganizationReviews::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
+                ->one();
+        }
+        elseif ($request_type==2)
+        {
+            $modal = NewOrganizationReviews::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
+                ->one();
+        }
+        $modal->student_engagement = $this->student_engagement;
+        $modal->school_infrastructure= $this->school_infrastructure;
+        $modal->faculty= $this->faculty;
+        $modal->accessibility_of_faculty= $this->accessibility_of_faculty;
+        $modal->co_curricular_activities= $this->co_curricular_activities;
+        $modal->leadership_development= $this->leadership_development;
+        $modal->sports = $this->sports;
+        $modal->show_user_details = $this->identity;
+        $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
+
+        if ($modal->update())
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     public function getEditReview($unclaimed_org)
     {
