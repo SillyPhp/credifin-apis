@@ -304,6 +304,10 @@ function showError(error) {
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
+            }else if(response.name == null){
+                $('#city_location').focus();
+                $('.error').text('Please enter city');
+                return false;
             }
             var city = response.name;
             var state = response.state_name;
@@ -316,10 +320,6 @@ function showError(error) {
         break;
   }
 }
-
-$('#city_location').on('keyup',function(e) {
-  $('.error').text('');
-});
 
 //address from lat and long
 function geocodeLatLng(lat,long) {
@@ -477,8 +477,13 @@ $(document).on("click","#card-hover",function() {
 $(document).on('click','#search_jobs',function(e) {
     
      e.preventDefault();
+     searching();
      
-     vals.num = 0;
+ });
+
+//search function
+function searching() {
+  vals.num = 0;
      var city = $('#city_location').val();
      vals.inprange = parseInt($('#range_3').prop("value") * 1000);
      vals.keyword = $('#job_keyword').val();
@@ -495,7 +500,21 @@ $(document).on('click','#search_jobs',function(e) {
      $('#loadMore').show();
      
      geocodeAddress(city);
- });
+}
+
+
+$('#city_location').on('keyup',function(e) {
+  $('.error').text('');
+  if(e.which == 13){
+      searching();
+  }
+});
+
+$('#job_keyword').on('keyup',function(e) {
+  if(e.which == 13){
+      searching();
+  }
+});
 
 //display searched cards
 function geocodeAddress(city) {
