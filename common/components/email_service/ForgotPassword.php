@@ -3,6 +3,7 @@
 namespace common\components\email_service;
 
 use common\models\Users;
+use common\models\Organizations;
 use common\models\UserVerificationTokens;
 use Yii;
 use DateTime;
