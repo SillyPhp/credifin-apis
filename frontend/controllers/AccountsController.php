@@ -185,15 +185,15 @@ class AccountsController extends Controller
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $is_organization = true;
             $id = Yii::$app->user->identity->organization->organization_enc_id;
+            $response = false;
             if (!$id) {
-                $id = Yii::$app->user->identity->user_enc_id;
-                $is_organization = false;
+               $response = Yii::$app->individualSignup->registrationEmail(Yii::$app->user->identity->user_enc_id);
+            } else {
+                $response = Yii::$app->organizationSignup->registrationEmail($id);
             }
 
-            $userEmailsModel = new UserEmails();
-            if ($userEmailsModel->verificationEmail($id, $is_organization)) {
+            if ($response) {
                 return [
                     'status' => 200,
                     'title' => 'Success',
