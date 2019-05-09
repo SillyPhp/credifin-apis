@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\ShortlistedApplications;
+use common\models\States;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -313,6 +314,31 @@ class JobsController extends Controller
             ]);
 
         }
+    }
+
+    public function actionJobsByLocation(){
+        $jobs_by_location = States::find()
+            ->alias('a')
+            ->joinWith(['cities b' => function($x){
+                $x->joinWith(['organizationLocations c' => function($y){
+                    $y->innerJoinWith(['applicationPlacementLocations d' => function($z){
+                        $z->andWhere(['e.is_deleted' => 0]);
+                        $z->innerJoinWith(['applicationEnc e'=>function($a){
+                            $a->andWhere(['f.name'=>'Jobs']);
+                            $a->joinWith(['applicationTypeEnc f']);
+                        }]);
+                    }],false);
+                }],false);
+            }])
+            ->orderBy(['a.name' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+
+        return $this->render('jobs-by-location',
+            [
+                'jobs_by_location'=>$jobs_by_location,
+            ]);
     }
 
 }
