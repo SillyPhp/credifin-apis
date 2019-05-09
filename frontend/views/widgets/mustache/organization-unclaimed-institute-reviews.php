@@ -78,7 +78,7 @@ $link = Url::to($org_slug . '/reviews', true);
                                 <div class="uratingtitle">Value For Money</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{teacing_style}}/5</div>
+                                <div class="urating">{{teaching_style}}/5</div>
                                 <div class="uratingtitle">Teaching Style</div>
                             </div>
                             <div class="ur-bg light-bg">
