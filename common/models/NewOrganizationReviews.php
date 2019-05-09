@@ -31,7 +31,7 @@ use Yii;
  * @property int $school_infrastructure school_infrastructure
  * @property int $faculty faculty
  * @property int $value_for_money value_for_money
- * @property int $teacing_style teacing_style
+ * @property int $teacihng_style teaching_style
  * @property int $coverage_of_subject_matter coverage_of_subject_matter
  * @property int $accessibility_of_faculty accessibility_of_faculty
  * @property int $co_curricular_activities co_curricular_activities
@@ -79,7 +79,7 @@ class NewOrganizationReviews extends \yii\db\ActiveRecord
         return [
             [['review_enc_id', 'organization_enc_id', 'average_rating', 'reviewer_type', 'city_enc_id', 'likes', 'dislikes', 'from_date', 'created_by'], 'required'],
             [['average_rating'], 'number'],
-            [['reviewer_type', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teacing_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'show_user_details', 'status', 'is_deleted'], 'integer'],
+            [['reviewer_type', 'overall_experience', 'skill_development', 'work_life', 'compensation', 'organization_culture', 'job_security', 'growth', 'work', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'show_user_details', 'status', 'is_deleted'], 'integer'],
             [['likes', 'dislikes'], 'string'],
             [['from_date', 'to_date', 'created_on', 'last_updated_on'], 'safe'],
             [['review_enc_id', 'organization_enc_id', 'city_enc_id', 'educational_stream_enc_id', 'category_enc_id', 'designation_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

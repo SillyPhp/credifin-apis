@@ -72,7 +72,7 @@
                     <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
                     <div class="threestar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
-                            <i class="fa fa-star <?= (($stats_students['teacing_style'] < $i) ? '' : 'active') ?>"></i>
+                            <i class="fa fa-star <?= (($stats_students['teaching_style'] < $i) ? '' : 'active') ?>"></i>
                         <?php } ?>
                     </div>
                 </div>
