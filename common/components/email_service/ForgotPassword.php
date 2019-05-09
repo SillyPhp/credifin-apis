@@ -15,24 +15,39 @@ class ForgotPassword extends Component
 
     public function reset($email)
     {
-        $data = Users::find()
-            ->alias('a')
-            ->select(['user_enc_id id', 'CONCAT(first_name," ",last_name) name', 'email'])
-            ->joinWith(['organizationEnc b', function ($b) use($email) {
-                $b->select(['organization_enc_id id', 'name', 'email'])
-                    ->where([
-                        'email' => $email,
-                        'status' => 'Active',
-                        'is_deleted' => 0,
-                    ]);
-            }])
+        $is_user = false;
+        $data = Organizations::find()
+            ->select(['organization_enc_id id', 'name', 'email'])
             ->where([
                 'email' => $email,
                 'status' => 'Active',
                 'is_deleted' => 0,
             ])
-            ->asArray()
+            ->asAarray()
             ->one();
+
+        if (!$data) {
+            $data = Users::find()
+                ->select(['user_enc_id id', 'CONCAT(first_name," ",last_name) name', 'email'])
+                ->where([
+                    'email' => $email,
+                    'status' => 'Active',
+                    'is_deleted' => 0,
+                ])
+                ->andWhere([
+                    'or',
+                    ['!=', 'organization_enc_id', ''],
+                    ['organization_enc_id' => NULL],
+                ])
+                ->asArray()
+                ->one();
+
+            if (!$data) {
+                return false;
+            }
+
+            $is_user = true;
+        }
 
         if (!$data) {
             return false;
@@ -41,14 +56,12 @@ class ForgotPassword extends Component
         $utilitiesModel = new Utilities();
         $userVerificationModel = new UserVerificationTokens();
 
-        if(is_array($data['organizationEnc']) && !empty($data['organizationEnc'])) {
-            $user['name'] = $data['organizationEnc']['name'];
-            $user['email'] = $data['organizationEnc']['email'];
-            $userVerificationModel->organization_enc_id = $data['organizationEnc']['id'];
-        } else {
-            $user['name'] = $data['name'];
-            $user['email'] = $data['email'];
+        if (!$is_user) {
+            $userVerificationModel->organization_enc_id = $data['id'];
         }
+
+        $user['name'] = $data['name'];
+        $user['email'] = $data['email'];
 
         UserVerificationTokens::updateAll([
             'last_updated_on' => date('Y-m-d H:i:s'),
