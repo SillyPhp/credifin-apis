@@ -89,9 +89,15 @@ class ReviewsController extends Controller
                         return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
                 }
-              else if ($type='school')
+              else if ($type=='school')
               {
                   if ($model->postSchoolReviews($response['org_id'])) {
+                      return $this->redirect('/' . $response['slug'] . '/reviews');
+                  }
+              }
+              else if ($type=='institute')
+              {
+                  if ($model->postInstituteReviews($response['org_id'])) {
                       return $this->redirect('/' . $response['slug'] . '/reviews');
                   }
               }

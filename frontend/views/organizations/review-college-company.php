@@ -293,6 +293,14 @@ $this->params['seo_tags'] = [
                                     'stats_students'=>$stats_students,
                                 ]);
                             }
+                                elseif ($org_details['business_activity']=='Educational Institute')
+                                {
+                                    echo $this->render('/widgets/review/review-institute-stats', [
+                                        'reviews_students'=>$reviews_students,
+                                        'round_students_avg'=>$round_students_avg,
+                                        'stats_students'=>$stats_students,
+                                    ]);
+                                }
                             ?>
                             </div>
                         </div>
@@ -395,6 +403,10 @@ echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
                             {
                 echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews');
                             }
+ elseif ($org_details['business_activity']=='Educational Institute')
+ {
+     echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews');
+ }
 
 $this->registerCss('
 .nav-padd-20 {
@@ -1586,6 +1598,186 @@ var popup3 = new ideaboxPopupSchool({
 				
 			]
 		});
+var popup4 = new ideaboxPopupInstitute({
+            background	: '#2995c2',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_institute(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the Institute on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the Institute',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of Institute',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The Institute..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Acedemic Year:',
+					answerType	: 'selectbox',
+					formName	: 'tenure',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Student Engagement',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'student_engagement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Value for Money',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'value_for_money',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Teaching Style',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'teaching_style',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Coverage of Subject Matter',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'coverage_of_subject_matter',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accessibility of Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accessibility_of_faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: 'Write Something.',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
@@ -1668,8 +1860,10 @@ $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-institute.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-institute.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 
