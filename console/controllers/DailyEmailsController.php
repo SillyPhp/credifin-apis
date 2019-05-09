@@ -15,10 +15,10 @@ use yii\helpers\ArrayHelper;
 
 class DailyEmailsController extends Controller
 {
+
     public function actionPreferedEmails(){
         $users = Users::find()
             ->alias('a')
-            ->select(['a.user_enc_id'])
             ->joinWith(['userTypeEnc b'], false)
             ->where([
                 'a.status' => 'Active',
@@ -114,9 +114,20 @@ class DailyEmailsController extends Controller
             $job_applications = $this->findJobs($user_keyword);
             $internship_applications = $this->findInternships($user_keyword);
 
-            $random_jobs = array_rand($job_applications, 4);
-            $random_internships = array_rand($internship_applications, 4);
-
+            if(count($job_applications) > 1 && count($internship_applications) > 1) {
+                if(count($job_applications) > 3) {
+                    $random_jobs = array_rand($job_applications, 4);
+                }else{
+                    $random_jobs = array_rand($job_applications, 2);
+                }
+                if(count($internship_applications) > 3) {
+                    $random_internships = array_rand($internship_applications, 4);
+                }else{
+                    $random_internships = array_rand($internship_applications, 2);
+                }
+            }else{
+                continue;
+            }
 
             $jobs_apps = [];
             $internship_apps = [];
@@ -161,6 +172,11 @@ class DailyEmailsController extends Controller
     }
 
     private function sendMail($userDetails, $jobs_cards, $internship_cards){
+
+
+        Yii::$app->urlManager->hostInfo = 'http://www.aditya.eygb.me';
+        Yii::$app->urlManager->scriptUrl = 'http://www.aditya.eygb.me';
+
         $data['jobs'] = $jobs_cards;
         $data['internships'] = $internship_cards;
 
@@ -303,39 +319,41 @@ class DailyEmailsController extends Controller
     private function findJobs($keyword){
         $results = [];
         foreach($keyword as $k) {
-            $result = EmployerApplications::find()
-                ->alias('a')
-                ->select([
-                    'a.application_enc_id application_id'
-                ])
-                ->joinWith(['title b' => function ($x) {
-                    $x->joinWith(['categoryEnc c'], false);
-                    $x->joinWith(['parentEnc i'], false);
-                }], false)
-                ->joinWith(['organizationEnc d'], false)
-                ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                    $x->joinWith(['locationEnc f' => function ($x) {
-                        $x->joinWith(['cityEnc g'], false);
-                    }], false);
-                }], false)
-                ->joinWith(['preferredIndustry h'], false)
-                ->joinWith(['designationEnc l'], false)
-                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-                ->joinWith(['applicationOptions m'], false)
-                ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    ['like', 'l.designation', $k],
-                    ['like', 'c.name', $k],
-                    ['like', 'g.name', $k],
-                    ['like', 'a.type', $k],
-                    ['like', 'h.industry', $k],
-                    ['like', 'i.name', $k],
-                    ['like', 'd.name', $k],
-                ])
-                ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
-            foreach($result as $r){
-                array_push($results, $r['application_id']);
+            if(!empty($k)) {
+                $result = EmployerApplications::find()
+                    ->alias('a')
+                    ->select([
+                        'a.application_enc_id application_id'
+                    ])
+                    ->joinWith(['title b' => function ($x) {
+                        $x->joinWith(['categoryEnc c'], false);
+                        $x->joinWith(['parentEnc i'], false);
+                    }], false)
+                    ->joinWith(['organizationEnc d'], false)
+                    ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                        $x->joinWith(['locationEnc f' => function ($x) {
+                            $x->joinWith(['cityEnc g'], false);
+                        }], false);
+                    }], false)
+                    ->joinWith(['preferredIndustry h'], false)
+                    ->joinWith(['designationEnc l'], false)
+                    ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                    ->joinWith(['applicationOptions m'], false)
+                    ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.for_careers' => 0])
+                    ->andWhere([
+                        'or',
+                        ['like', 'l.designation', $k],
+                        ['like', 'c.name', $k],
+                        ['like', 'g.name', $k],
+                        ['like', 'a.type', $k],
+                        ['like', 'h.industry', $k],
+                        ['like', 'i.name', $k],
+                        ['like', 'd.name', $k],
+                    ])
+                    ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+                foreach ($result as $r) {
+                    array_push($results, $r['application_id']);
+                }
             }
         }
 
@@ -345,35 +363,37 @@ class DailyEmailsController extends Controller
     private function findInternships($keyword){
         $results = [];
         foreach($keyword as $k){
-            $result = EmployerApplications::find()
-                ->alias('a')
-                ->select([
-                    'a.application_enc_id application_id',
-                ])
-                ->joinWith(['title b' => function ($x) {
-                    $x->joinWith(['categoryEnc c'], false);
-                    $x->joinWith(['parentEnc i'], false);
-                }], false)
-                ->joinWith(['organizationEnc d'], false)
-                ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                    $x->joinWith(['locationEnc f' => function ($x) {
-                        $x->joinWith(['cityEnc g'], false);
-                    }], false);
-                }], false)
-                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-                ->joinWith(['applicationOptions m'], false)
-                ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    ['like', 'a.type', $k],
-                    ['like', 'c.name', $k],
-                    ['like', 'i.name', $k],
-                    ['like', 'd.name', $k],
-                    ['like', 'g.name', $k],
-                ])
-                ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
-            foreach($result as $r){
-                array_push($results, $r['application_id']);
+            if(!empty($k)) {
+                $result = EmployerApplications::find()
+                    ->alias('a')
+                    ->select([
+                        'a.application_enc_id application_id',
+                    ])
+                    ->joinWith(['title b' => function ($x) {
+                        $x->joinWith(['categoryEnc c'], false);
+                        $x->joinWith(['parentEnc i'], false);
+                    }], false)
+                    ->joinWith(['organizationEnc d'], false)
+                    ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                        $x->joinWith(['locationEnc f' => function ($x) {
+                            $x->joinWith(['cityEnc g'], false);
+                        }], false);
+                    }], false)
+                    ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                    ->joinWith(['applicationOptions m'], false)
+                    ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.for_careers' => 0])
+                    ->andWhere([
+                        'or',
+                        ['like', 'a.type', $k],
+                        ['like', 'c.name', $k],
+                        ['like', 'i.name', $k],
+                        ['like', 'd.name', $k],
+                        ['like', 'g.name', $k],
+                    ])
+                    ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+                foreach ($result as $r) {
+                    array_push($results, $r['application_id']);
+                }
             }
         }
         return array_unique($results);
