@@ -39,6 +39,9 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
+
+print_r($org_details['business_activity']);
+//exit();
 ?>
 <section class="rh-header">
     <div class="container">
@@ -460,7 +463,10 @@ $this->registerCss('
     background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
     background-size:100% 300px;
     background-repeat: no-repeat;
-} 
+}
+.purple-rh-header{
+    background-image: linear-gradient(141deg, #7453c6bd 0%, #7453c6 51%, #7453c6 75%);
+}
 .no-padd{
     padding-left:0px !important;
     padding-right:0px !important
@@ -494,6 +500,7 @@ padding:16px 0px;
 }
 .rh-header{
     padding:80px 0;
+    padding-bottom: 30px;
 }
 .fade_background
 {
@@ -969,6 +976,11 @@ border: 2px solid #cadfe8 !important;
         margin:0 auto;
     }
 }
+@media only screen and (max-width: 992px){
+    .rh-header {
+        padding: 45px 0;
+    }
+}
 .i-review-navigation
 {
 display:none;
@@ -1003,6 +1015,17 @@ display:none;
         padding-top: 20px;
     }
     
+}
+.i-review-box *{
+    font-family: "Roboto Slab";
+    font-weight:400;
+}
+.i-review-start-end-title, .i-review-question-title{
+    font-weight:700;
+}
+.i-review-star{
+    width: 45px;
+    height: 45px;
 }
 ');
 $script = <<< JS
@@ -1055,11 +1078,11 @@ var popup = new ideaboxPopup({
 			},
 			data: [
 					{
-						question 	: 'Post your review',
+						question 	: 'Post Your Review As',
 						answerType	: 'radio',
 						formName	: 'user',
 						choices     : [
-								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'Anonymous', value : 'anonymous' },
 								{ label : 'With your Name', value : 'credentials' },
 						],
 						description	: 'Please select anyone choice.',
@@ -1259,11 +1282,11 @@ var popup2 = new ideaboxPopupCollege({
 
 				},
 				{
-						question 	: 'Post your review',
+						question 	: 'Post Your Review As',
 						answerType	: 'radio',
 						formName	: 'user',
 						choices     : [
-								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'Anonymous', value : 'anonymous' },
 								{ label : 'With your Name', value : 'credentials' },
 						],
 						description	: 'Please select anyone choice.',
@@ -1407,7 +1430,7 @@ var popup2 = new ideaboxPopupCollege({
 			]
 		});
 var popup3 = new ideaboxPopupSchool({
-            background	: '#2995c2',
+            background	: 'url("/assets/themes/ey/ideapopup/bg-example-1.jpg") center center / cover no-repeat',
             popupView : 'full',
 			onFinish: function(){
 				ajax_school(this.values);
@@ -1439,11 +1462,11 @@ var popup3 = new ideaboxPopupSchool({
 
 				},
 				{
-						question 	: 'Post your review',
+						question 	: 'Post Your Review As',
 						answerType	: 'radio',
 						formName	: 'user',
 						choices     : [
-								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'Anonymous', value : 'anonymous' },
 								{ label : 'With your Name', value : 'credentials' },
 						],
 						description	: 'Please select anyone choice.',
@@ -1662,6 +1685,7 @@ $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
