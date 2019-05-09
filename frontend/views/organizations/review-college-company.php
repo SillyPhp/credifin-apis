@@ -973,6 +973,37 @@ border: 2px solid #cadfe8 !important;
 {
 display:none;
 }
+.ur-bg{
+   background:#edecec;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 5px;
+    border-right: 1px solid #fff;
+    min-height: 95px;
+}
+.user-rating{
+    display:flex;
+    justify-content:center; 
+    text-align:center;
+    padding-top:20px;
+}
+@media only screen and (max-width: 767px){
+    .ur-bg {
+        background: #edecec;
+        color: #000;
+        padding: 10px 5px;
+        height: 95px;
+        width: 200px;
+        float: left;
+    }
+    .user-rating {
+        display: inherit;
+        justify-content: center;
+        text-align: center;
+        padding-top: 20px;
+    }
+    
+}
 ');
 $script = <<< JS
 $(document).on('click','.load_reviews',function(e){
