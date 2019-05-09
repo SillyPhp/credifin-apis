@@ -77,7 +77,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 </div>
                                 <div class="login-btn">
                                     <?= Html::submitButton('Employee Review', ['class' => 'lg-form', 'id'=>'company_review_btn1','formaction'=>'p1','name' => 'login-button']); ?>
-                                    <?= Html::submitButton('Review As Student', ['class' => 'lg-form','id'=>'company_review_btn2','formaction'=>'p2','name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Student Review', ['class' => 'lg-form','id'=>'company_review_btn2','formaction'=>'p2','name' => 'login-button']); ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
                             </div>
@@ -1173,6 +1173,10 @@ $(document).on('submit','#signup-form',function(e)
    {
       popup3.open(); 
    }
+   else if($(this).attr('action')=='p4')
+   {
+      popup4.open(); 
+   }
 });
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
@@ -1567,6 +1571,8 @@ var popup2 = new ideaboxPopupCollege({
 					answerType	: 'textarea',
 					formName	: 'dislikes',
 					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: 'Write Something.',
 					nextLabel	: 'Finish',
 				}
 				
@@ -1745,6 +1751,188 @@ var popup3 = new ideaboxPopupSchool({
 					answerType	: 'textarea',
 					formName	: 'dislikes',
 					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: 'Write Something.',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
+var popup4 = new ideaboxPopupInstitute({
+            background	: '#2995c2',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_institute(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the Institute on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the Institute',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of Institute',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The Institute..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Acedemic Year:',
+					answerType	: 'selectbox',
+					formName	: 'tenure',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Student Engagement',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'student_engagement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Value for Money',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'value_for_money',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Teaching Style',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'teaching_style',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Coverage of Subject Matter',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'coverage_of_subject_matter',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accessibility of Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accessibility_of_faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: 'Write Something.',
 					nextLabel	: 'Finish',
 				}
 				
@@ -1839,6 +2027,22 @@ function ajax_school(data) {
                    }
           }});
 }
+function ajax_institute(data) {
+  var org_name = $('#organization_name').val();
+    var website = $('#website').val();
+    var org_category =  $('#bussiness_activity').val();
+    var type =  'institute';
+	$.ajax({
+       method: 'POST',
+       url : '/reviews/post-unclaimed-reviews',
+	   data:{data:data,org_name:org_name,website:website,org_category:org_category,type:type},
+       success: function(response) {
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+          }});
+}
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
@@ -1847,12 +2051,14 @@ $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-institute.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-institute.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 
