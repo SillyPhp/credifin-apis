@@ -113,14 +113,5 @@ $this->registerCss('
         <div class="copyright">
             <?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name; ?>
         </div>
-        <div class="last-list">
-            <ul>
-                <li><a href="#">Contact Us</a></li>
-                |
-                <li><a href="#">Terms and Conditions</a></li>
-                |
-                <li><a href="#">Privacy Policies</a></li>
-            </ul>
-        </div>
     </div>
 </div>
