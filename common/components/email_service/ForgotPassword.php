@@ -24,7 +24,7 @@ class ForgotPassword extends Component
                 'status' => 'Active',
                 'is_deleted' => 0,
             ])
-            ->asAarray()
+            ->asArray()
             ->one();
 
         if (!$data) {
