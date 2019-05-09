@@ -380,7 +380,7 @@ class RegistrationForm extends Model {
         $companyReview->school_infrastructure = $arr['infrastructure'];
         $companyReview->faculty = $arr['faculty'];
         $companyReview->value_for_money = $arr['value_for_money'];
-        $companyReview->teacing_style = $arr['teaching_style'];
+        $companyReview->teaching_style = $arr['teaching_style'];
         $companyReview->coverage_of_subject_matter = $arr['coverage_of_subject_matter'];
         $companyReview->accessibility_of_faculty = $arr['accessibility_of_faculty'];
         $companyReview->average_rating = ceil($avg);

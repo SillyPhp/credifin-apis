@@ -12,6 +12,7 @@ use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
 use frontend\models\reviews\EditUnclaimedCollegeOrg;
+use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
 use frontend\models\reviews\RegistrationForm;
 use frontend\models\reviews\ReviewCards;
@@ -792,6 +793,17 @@ class OrganizationsController extends Controller
                     }
                 }
             }
+            elseif ($type=='institute')
+            {
+                $editReviewForm = new EditUnclaimedInstituteOrg();
+                if ($editReviewForm->load(Yii::$app->request->post())) {
+                    if ($editReviewForm->save($request_type)) {
+                        return $this->redirect(Yii::$app->request->referrer);
+                    } else {
+                        return $this->redirect(Yii::$app->request->referrer);
+                    }
+                }
+            }
 
     }
 
@@ -888,6 +900,10 @@ class OrganizationsController extends Controller
                 $editReviewForm = new EditUnclaimedSchoolOrg();
                 $editReviewForm->setValues_school($edit_review);
             }
+                elseif ($edit_review->reviewer_type==6||$edit_review->reviewer_type==7) {
+                    $editReviewForm = new EditUnclaimedInstituteOrg();
+                    $editReviewForm->setValues_institute($edit_review);
+                }
             }
             $org = $unclaimed_org;
             if ($org['business_activity']=='College'||$org['business_activity']=='School'||$org['business_activity']=='Educational Institute')
@@ -1060,6 +1076,11 @@ class OrganizationsController extends Controller
             }
             else if($type=='school'){
                 if ($model->postSchoolReviews($org_id['organization_enc_id'])) {
+                    return true;
+                }
+            }
+            else if($type=='institute'){
+                if ($model->postInstituteReviews($org_id['organization_enc_id'])) {
                     return true;
                 }
             }
@@ -1258,7 +1279,7 @@ class OrganizationsController extends Controller
                 WHEN a.reviewer_type = "7" THEN "Current"
                 ELSE "0"
                 END) as reviewer_type'
-                ,'e.name stream','educational_stream_enc_id', 'ROUND(average_rating) average','a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.student_engagement', 'a.school_infrastructure', 'a.faculty', 'a.value_for_money', 'a.teacing_style', 'a.coverage_of_subject_matter', 'a.accessibility_of_faculty','a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+                ,'e.name stream','educational_stream_enc_id', 'ROUND(average_rating) average','a.review_enc_id', 'a.status', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.student_engagement', 'a.school_infrastructure', 'a.faculty', 'a.value_for_money', 'a.teaching_style', 'a.coverage_of_subject_matter', 'a.accessibility_of_faculty','a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
             ->where(['a.status' => 1])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
