@@ -75,7 +75,6 @@ class EditUnclaimedCollegeOrg extends Model {
         $modal->placements_internships = $this->placements_internships;
         $modal->social_life_extracurriculars = $this->social_life_extracurriculars;
         $modal->culture_diversity = $this->culture_diversity;
-        $modal->category_enc_id = $this->dept;
         $modal->show_user_details = $this->identity;
         $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
 
