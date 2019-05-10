@@ -356,46 +356,43 @@ color:#00a0e3;
 text-decoration:none;
 }
 @media screen and (max-width:670px ){
-.width-30{
-width:100%;
-float:left;
+    .width-30{
+        width:100%;
+        float:left;
+    }
+    .width-70{
+        width:100%;
+        float:left;
+    }
+    .job-box{
+        text-align:center;
+        margin: 15px 10px;
+    }
+    .job-description li{
+        text-align:left;
+    }
+    .logo-box{
+        float:none;
+        margin: 0 auto;
+    }
 }
-.width-70{
-width:100%;
-float:left;
+@media only screen and (max-width:500px ){
+    .skills-list ul li{
+        margin-bottom: 5px;
+    }
+    .last-date{
+        position: relative;
+    }
 }
-.job-box{
-text-align:center;
-margin: 15px 10px;
+@media only screen and (max-width:420px){
+    .applyBtn{
+        display: grid;
+    }
+    .applyBtn a{
+        margin-bottom:5px;
+    }
 }
-.job-description li{
-text-align:left;
-}
-.logo-box{
-float:none;
-margin: 0 auto;
 
-}
-}
-@media screen and (max-width:500px ){
-.skills-list ul li{
-margin-bottom: 5px;
-}
-.last-date{
-position: relative;
-}
-
-}
-@media screen and (max-width:420px){
-.applyBtn{
-display: grid;
-}
-.applyBtn a{
-margin-bottom:5px;
-}
-}
-@media screen and (max-width:380px ){
-}
 ');
 
 ?>
