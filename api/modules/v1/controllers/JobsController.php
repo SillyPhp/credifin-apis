@@ -70,6 +70,10 @@ class JobsController extends ApiBaseController
             $options['company'] = $parameters['company'];
         }
 
+        if ($parameters['careers'] && !empty($parameters['careers'])){
+            $options['for_careers'] = (int)$parameters['careers'];
+        }
+
         $options['type'] = 'Jobs';
 
         $result = Cards::jobs($options);
