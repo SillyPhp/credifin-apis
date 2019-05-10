@@ -210,7 +210,8 @@ class JobsController extends ApiBaseController
             unset($data["last_updated_by"]);
 
             $data['description'] = strip_tags($data['description']);
-            $data['description'] = str_replace("&nbsp;", "", $data['description']);
+            $data['description'] = str_replace("&nbsp;", " ", $data['description']);
+            $data['description'] = str_replace("&amp;", "&", $data['description']);
 
             $data["vacancies"] = 0;
             if (!empty($data['applicationPlacementLocations'])) {
