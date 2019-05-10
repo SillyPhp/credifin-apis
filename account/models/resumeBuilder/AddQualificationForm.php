@@ -50,7 +50,7 @@ class AddQualificationForm extends Model {
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userEducationModel->education_enc_id = $utilitiesModel->encrypt();
         if (!$userEducationModel->validate() || !$userEducationModel->save()) {
-            return $userEducationModel->getErrors();
+            return false;
         }
         return true;
     }

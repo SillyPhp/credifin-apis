@@ -47,54 +47,6 @@ use kartik\mpdf\Pdf;
 class ResumeBuilderController extends Controller
 {
 
-    public function actionMain()
-    {
-
-        $addExperienceForm = new AddExperienceForm();
-        $addQualificationForm = new AddQualificationForm();
-        $ResumeProfilePic = new ResumeProfilePic();
-        $ResumeAboutMe = new ResumeAboutMe();
-        $ResumeContactInfo = new ResumeContactInfo();
-        $ResumeOtherInfo = new ResumeOtherInfo();
-        $ResumeEducation = new ResumeEducation();
-        $ResumeWorkExperience = new ResumeWorkExperience();
-        $ResumeCertificates = new ResumeCertificates();
-        $ResumeSkills = new ResumeSkills();
-        $ResumeProject = new ResumeProject();
-        $ResumeAchievments = new ResumeAchievments();
-        $ResumeHobbies = new ResumeHobbies();
-
-        return $this->render('resume-old', [
-            'addExperienceForm' => $addExperienceForm,
-            'addQualificationForm' => $addQualificationForm,
-            'ResumeProfilePic' => $ResumeProfilePic,
-            'ResumeAboutMe' => $ResumeAboutMe,
-            'ResumeContactInfo' => $ResumeContactInfo,
-            'ResumeEducation' => $ResumeEducation,
-            'ResumeWorkExperience' => $ResumeWorkExperience,
-            'ResumeCertificates' => $ResumeCertificates,
-            'ResumeOtherInfo' => $ResumeOtherInfo,
-            'ResumeSkills' => $ResumeSkills,
-            'ResumeProject' => $ResumeProject,
-            'ResumeAchievments' => $ResumeAchievments,
-            'ResumeHobbies' => $ResumeHobbies
-        ]);
-    }
-
-
-    public function actionAddEducation()
-    {
-        $addQualificationForm = new AddQualificationForm();
-        return $this->renderAjax('add_education', ['addQualificationForm' => $addQualificationForm]);
-    }
-
-
-    public function actionAddExperience()
-    {
-        $addExperienceForm = new AddExperienceForm();
-        return $this->renderAjax('add_experience', ['addExperienceForm' => $addExperienceForm]);
-    }
-
     public function actionResume()
     {
 
@@ -182,103 +134,6 @@ class ResumeBuilderController extends Controller
         ]);
     }
 
-
-    public function actionChangeInformation()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $ResumeContactInfo = new ResumeContactInfo();
-        if ($ResumeContactInfo->load(Yii::$app->request->post())) {
-            $update = Yii::$app->db->createCommand()
-                ->update(Users::tableName(), ['address' => $ResumeContactInfo->contact_address, 'city_enc_id' => $ResumeContactInfo->city_id, 'last_updated_on' => date('Y-m-d h:i:s')], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->execute();
-            if ($update) {
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Description has been Changed.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
-            }
-        }
-    }
-
-    public function actionChangeDescription()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $data = Yii::$app->request->post('des_data');
-        $update = Yii::$app->db->createCommand()
-            ->update(Users::tableName(), ['description' => $data, 'last_updated_on' => date('Y-m-d h:i:s')], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->execute();
-        if ($update) {
-            return $response = [
-                'status' => 200,
-                'title' => 'Success',
-                'message' => 'Description has been Changed.',
-            ];
-        } else {
-            return $response = [
-                'status' => 201,
-                'title' => 'Error',
-                'message' => 'An error has occurred. Please try again.',
-            ];
-        }
-    }
-
-    public function actionResumeProfile()
-    {
-        $ResumeProfilePic = new ResumeProfilePic();
-        return $this->render('resume-profile', ['ResumeProfilePic' => $ResumeProfilePic]);
-    }
-
-    public function actionResumeAboutMe()
-    {
-        $ResumeAboutMe = new ResumeAboutMe();
-
-        if ($ResumeAboutMe->load(Yii::$app->request->post()) && $ResumeAboutMe->validate()) {
-            if ($ResumeAboutMe->save()) {
-                echo '1';
-            } else {
-                echo '0';
-            }
-        } else {
-            return $this->renderAjax('resume-about-me', ['ResumeAboutMe' => $ResumeAboutMe]);
-        }
-    }
-
-    public function actionResumeContactInfo()
-    {
-        $ResumeContactInfo = new ResumeContactInfo();
-        if ($ResumeContactInfo->load(Yii::$app->request->post())) {
-            if ($ResumeContactInfo->save()) {
-                echo '1';
-            } else {
-                echo '0';
-            }
-        } else {
-            return $this->renderAjax('resume-contact-info', ['ResumeContactInfo' => $ResumeContactInfo]);
-        }
-    }
-
-    public function actionResumeOtherInfo()
-    {
-        $ResumeOtherInfo = new ResumeOtherInfo();
-
-        if ($ResumeOtherInfo->load(Yii::$app->request->post())) {
-            if ($ResumeOtherInfo->save()) {
-                echo '1';
-            } else {
-                echo '0';
-            }
-        } else {
-            return $this->renderAjax('resume-other-info', ['ResumeOtherInfo' => $ResumeOtherInfo]);
-        }
-    }
-
     public function actionExperience()
     {
         if (Yii::$app->request->isAjax) {
@@ -307,7 +162,7 @@ class ResumeBuilderController extends Controller
             $obj->description = $description;
 
             if (!$obj->save()) {
-                return json_encode($obj->getErrors());
+                return false;
             } else {
                 return json_encode($response = [
                     'status' => 200,
@@ -317,24 +172,6 @@ class ResumeBuilderController extends Controller
             }
 
         }
-    }
-
-    public function actionSocial()
-    {
-        $sociallinks = new SocialLinks();
-
-        if ($sociallinks->load(Yii::$app->request->post())) {
-            $update = Yii::$app->db->createCommand()
-                ->update(Users::tableName(), ['facebook' => $sociallinks->facebook, 'instagram' => $sociallinks->instagram, 'linkedin' => $sociallinks->linkedin, 'google' => $sociallinks->google, 'twitter' => $sociallinks->twitter, 'youtube' => $sociallinks->youtube, 'skype' => $sociallinks->skype, 'last_updated_on' => date('Y-m-d h:i:s')], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->execute();
-
-            if ($update) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
     }
 
     public function actionAchievementRemove()
@@ -579,7 +416,6 @@ class ResumeBuilderController extends Controller
 
     }
 
-
     public function actionEducation()
     {
         $model = new AddQualificationForm();
@@ -588,7 +424,7 @@ class ResumeBuilderController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
             if (!$model->save()) {
-                print_r($model->getErrors());
+                return false;
             } else {
                 return true;
             }
@@ -752,7 +588,7 @@ class ResumeBuilderController extends Controller
             $obj->created_on = date('Y-m-d h:i:s');
             $obj->created_by = Yii::$app->user->identity->user_enc_id;
             if (!$obj->save()) {
-                print_r($obj->getErrors());
+                return false;
             } else {
 
                 $user_obj = new UserSkills();
@@ -817,168 +653,4 @@ class ResumeBuilderController extends Controller
         }
     }
 
-
-    public function actionCertificate()
-    {
-        if (Yii::$app->request->isAjax) {
-            $certificate = Yii::$app->request->post('certificate');
-            return $certificate;
-
-        }
-
-    }
-
-    public function actionTestLink()
-    {
-        $user_obj = UserSkills::find()->asArray()->all();
-        print_r($user_obj);
-    }
-
-    public function actionResumeEducation()
-    {
-        $ResumeEducation = new ResumeEducation();
-
-        if ($ResumeEducation->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($ResumeEducation->save()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } else {
-            return $this->renderAjax('resume-education', ['ResumeEducation' => $ResumeEducation]);
-        }
-    }
-
-    public function actionResumeWorkExperience()
-    {
-        $ResumeWorkExperience = new ResumeWorkExperience();
-
-        return $this->renderAjax('resume-work-experience', ['ResumeWorkExperience' => $ResumeWorkExperience]);
-    }
-
-    public function actionResumeCertificates()
-    {
-        $ResumeCertificates = new ResumeCertificates();
-        return $this->renderAjax('resume-certificates', ['ResumeCertificates' => $ResumeCertificates]);
-    }
-
-    public function actionResumeSkills()
-    {
-        $ResumeSkills = new ResumeSkills();
-        return $this->renderAjax('resume-skills', ['ResumeSkills' => $ResumeSkills]);
-    }
-
-    public function actionResumeProject()
-    {
-        $ResumeProject = new ResumeProject();
-        return $this->renderAjax('resume-project', ['ResumeProject' => $ResumeProject]);
-    }
-
-    public function actionResumeAchievments()
-    {
-        $ResumeAchievments = new ResumeAchievments();
-        return $this->renderAjax('resume-achievments', ['ResumeAchievments' => $ResumeAchievments]);
-    }
-
-    public function actionResumeHobbies()
-    {
-        $ResumeHobbies = new ResumeHobbies();
-        return $this->renderAjax('resume-hobbies', ['ResumeHobbies' => $ResumeHobbies]);
-    }
-
-    public function actionResumeTestPage()
-    {
-        $ResumeProfilePic = new ResumeProfilePic();
-        return $this->render('resume-test-page', ['ResumeProfilePic' => $ResumeProfilePic]);
-    }
-
-    public function actionTemplate($id)
-    {
-//        Z1diVksxWTVrLzcyVkRaQXA3N2ljUT09//
-        $data = Users::find()
-            ->alias('a')
-            ->joinWith(['userEducations b'])
-            ->joinWith(['userWorkExperiences c'])
-            //->joinWith(['cityEnc d'])
-            ->joinWith(['skills d'])
-            ->where(['a.user_enc_id' => $id])
-            ->asArray()
-            ->all();
-
-        if (empty($data)) {
-            return 'user data not found';
-        }
-        return $this->render('template', ['data' => $data]);
-    }
-
-    /*  public function actionTemplateOne()
-      {
-          return $this->render('templateone');
-      }*/
-    public function actionSecond($id)
-    {
-        $data = Users::find()
-            ->alias('a')
-            ->joinWith(['userEducations b'])
-            ->joinWith(['userWorkExperiences c'])
-            ->joinWith(['skills d'])
-            ->where(['a.user_enc_id' => $id])
-            ->asArray()
-            ->all();
-
-        if (empty($data)) {
-            return 'user data not found';
-        }
-        return $this->render('secondtemplate', ['data' => $data]);
-    }
-
-    public function actionThird($id)
-    {
-        $data = Users::find()
-            ->alias('a')
-            ->joinWith(['userEducations b'])
-            ->joinWith(['userWorkExperiences c'])
-            ->joinWith(['skills d'])
-            ->where(['a.user_enc_id' => $id])
-            ->asArray()
-            ->all();
-        if (empty($data)) {
-            return 'user not found';
-        }
-        return $this->render('thirdtemplate', ['data' => $data]);
-    }
-
-    public function actionFourth($id)
-    {
-        $data = Users::find()
-            ->alias('a')
-            ->joinWith(['userEducations b'])
-            ->joinWith(['userWorkExperiences c'])
-            ->joinWith(['skills d'])
-            ->where(['a.user_enc_id' => $id])
-            ->asArray()
-            ->all();
-        if (empty($data)) {
-            return 'user not found';
-        }
-
-        return $this->render('fourthtemplate', ['data' => $data]);
-    }
-
-    public function actionFifth($id)
-    {
-        $data = Users::find()
-            ->alias('a')
-            ->joinWith(['userEducations b'])
-            ->joinWith(['userWorkExperiences c'])
-            ->joinWith(['skills d'])
-            ->where(['a.user_enc_id' => $id])
-            ->asArray()
-            ->all();
-
-        if (empty($data)) {
-            return 'user not found';
-        }
-        return $this->render('fifthtemplate', ['data' => $data]);
-    }
 }

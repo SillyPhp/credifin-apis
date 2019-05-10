@@ -20,7 +20,7 @@ function random_color()
 }
 
 ?>
-    <div class="row" xmlns="http://www.w3.org/1999/html">
+    <div class="row">
 
         <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
             <div class="col-md-12 col-sm-12">
@@ -179,7 +179,7 @@ function random_color()
                             </div>
                         </div>
 
-                        <button id="addEdu" class="btn btn-primary btn-lg btn-block" data-toggle="modal">
+                        <button id="addEdu" class="btn btn-primary btn-lg btn-block">
                             <icon class="fa fa-plus"></icon>
                             Add Education
                         </button>
@@ -455,7 +455,7 @@ function random_color()
                                 </div>
                             </div>
 
-                            <button id="addExp" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                            <button id="addExp" class="btn btn-primary btn-lg btn-block"
                             <!--data-target="#add-experience-modal-->">
                             <icon class="fa fa-plus"></icon>
                             Add Work Experience
@@ -698,9 +698,7 @@ function random_color()
         </div>
     </div>
     <input type="hidden" id="skill_id">
-    <script>
 
-    </script>
 <?php
 $script = <<< JS
 
@@ -713,6 +711,7 @@ function floatingLabel() {
        }
    });
 }
+
 $(document).on('click','.exp-pen, .edu-pen, #addEdu, #addExp',function(e){
     setTimeout(function(){
       floatingLabel();}
@@ -720,385 +719,124 @@ $(document).on('click','.exp-pen, .edu-pen, #addEdu, #addExp',function(e){
   );
 });
 
-var accountBloodhound = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-
-    remote: {
-        url: '/account/skills/get-skills#%QUERY',
-        wildcard: '%QUERY',
-        transport: function (opts, onSuccess, onError) {
-            var url = opts.url.split("#")[0];
-            var query = opts.url.split("#")[1];
-            $.ajax({
-                url: url,
-                data: "q=" + query,
-                type: "POST",
-                success: onSuccess,
-                error: onError,
-            })
-        }
+$('#exp_present').click(function(){
+    if (this.checked) {
+        $(this).val('1');
+        $('.experience').hide();
+    }else{
+        $(this).val('0');
+        $('.experience').show();
+        $('#addexperienceform-exp_to').val('');
     }
-});
+}) ;
+    
+$('#update_exp_present').click(function(){
+    if (this.checked) {
+        $(this).val('1');
+        $('.update_experience').hide();
+    }else{
+        $(this).val('0');
+        $('.update_experience').show();
+        $('#update_exp_to').val('');
+        $('#update_exp_to').focus();
+    }
+}) ;
 
-$('#skills-input').typeahead(null, {
-    name: 'skills',
-    display: 'skill',
-    source: accountBloodhound 
-}).bind('typeahead:select', function (ev, suggestion) {
-     $('#skill_id').val(suggestion.skill);
-});
+$(document).on('click','#addEdu',function(e){   
+            e.preventDefault();
+            $('#add-education-modal').modal('toggle');
+            $('#addqualificationform-school').val('');
+            $('#addqualificationform-degree').val('');
+            $('#addqualificationform-field').val('');
+            $('#addqualificationform-qualification_from').val('');
+            $('#addqualificationform-qualification_to').val('');
+            setTimeout(function(){
+                $('#addqualificationform-school').focus();
+                }, 500);
+        });
         
-$(document).on('click', '.remove-image', function(a) {
-    a.preventDefault();
-    $('#pop-content1_2').fadeIn(1000);
-});
-
-$(document).on('click', '#cancel_remove', function() {
-    $('#pop-content1_2').fadeOut(1000);
-});
-        
-
-function order(before, req) {
-    before();
-    req();
-}
-
-    $('#exp_present').click(function(){
-        if (this.checked) {
-            $(this).val('1');
-            $('.experience').hide();
-        }else{
-            $(this).val('0');
-            $('.experience').show();
+$(document).on('click','#addExp',function(event){
+            event.preventDefault();
+            $('#add-experience-modal').modal('toggle');
+            
+             $('#addexperienceform-title').val('');
+             $('#addexperienceform-company').val('');
+             $('#city_id_exp').val('');
+             $('#cities').val('');
+             $('#addexperienceform-exp_from').val('');
             $('#addexperienceform-exp_to').val('');
-        }
-    }) ;
-    
-    $('#update_exp_present').click(function(){
-        if (this.checked) {
-            $(this).val('1');
-            $('.update_experience').hide();
-        }else{
-            $(this).val('0');
-            $('.update_experience').show();
-            $('#update_exp_to').val('');
-            $('#update_exp_to').focus();
-        }
-    }) ;
-    
-    $(document).on('submit','#add-experience-form',function(e){
-    e.preventDefault();
-        var title = $('#addexperienceform-title').val();
-        var company = $('#addexperienceform-company').val();
-        var city = $('#city_id_exp').val();
-       
-        var from = $('#addexperienceform-exp_from').val();
-        if($('#exp_present').prop("checked")){
-                var checkbox = 1;
-                $('#addexperienceform-exp_to').val('');
-            }else{
-                var checkbox = 0;
-                if($('#addexperienceform-exp_to').val() == ''){
-                     return false;
-                }else{
-                    var to = $('#addexperienceform-exp_to').val();
-                }
+            if($('#exp_present').prop("checked")){
+                $('#exp_present').prop('checked', false);
+                $('.experience').show();
             }
-        var description = $('#addexperienceform-description').val();
-        $.ajax({
-           url: '/account/resume-builder/experience',
-           method: 'POST',
-           data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description},
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);  
-                },
-           success : function(response){
-               $('.loader-aj-main').fadeOut(1000);
-               var res = JSON.parse(response);
-               if(res.status == 200)
-               {
-                   //toastr.success(res.message, res.title);
-                   $('#add-experience-modal').modal('toggle');
-                   $.pjax.reload({container: '#pjax_experience', async: false});
-               } else {
-                   toastr.error('something went wrong.Try Again', 'error');
-               }
-            }
+             $('#addexperienceform-description').val('');
+            setTimeout(function(){
+                console.log('ff');
+                $('#addexperienceform-title').focus();
+                }, 500);
+            
         });
-    });
-        
-    
-        $(document).on('keyup','#achievement_input',function(e)
-        {   
+
+$(document).on('submit','#add-education-form',function(e){   
         e.preventDefault();
-        if(e.which==13){
-        var achievement_name = $('#achievement_input').val();
-        if(achievement_name == ''){
-            toastr.error('please enter something', 'error');
-        }else {
-        $.ajax({
-            url: '/account/resume-builder/achievements',
-            method : 'POST',
-            data : {achievement_name:achievement_name},
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);  
-                },
-            success : function(response)
-            {
-                $('.loader-aj-main').fadeOut(1000);
-                 var res = JSON.parse(response);
-                 if(res.status == 200){
-                     $('#achievement_input').val('');
-                    $.pjax.reload({container: '#pjax_achievements', async: false});
-                 }
-                 else if(res.status == 201){
-                     toastr.error(res.message, res.title);
-                 }
-                 else if(res.status == 203){
-                     toastr.error(res.message, res.title);
-                 }
-                 
-            } 
-            });
-          }
-        }
-        });
-        
-        
-        $(document).on('click','.achievement_remove', function(e) {
-            e.preventDefault();
-            var tag_main = $(this).parent();
-            tag_main.hide();
-                var id = e.target.id;
-            $.ajax({
-                url: "/account/resume-builder/achievement-remove",
-                method: "POST",
-                data: {id:id},
-               
-                success: function (response) {
-                    var data = JSON.parse(response);
-                    if(data.status == 200){
-                        $.pjax.reload({container: '#pjax_achievements', async: false});
-                    }else{
-                        tag_main.show();
-                        toastr.error(data.message, data.title);
-                    }
-                }
-            });
-        });
-        
-        $(document).on('keyup','#hobby_input',function(e)
-        {   
-        e.preventDefault();
-        if(e.which==13){
-        var hobby_name = $('#hobby_input').val();
-        
-        if(hobby_name == ''){
-            toastr.error('please enter something', 'error');
-        }else {        
-        $.ajax({
-            url: '/account/resume-builder/hobbies',
-            method : 'POST',
-            data : {hobby_name:hobby_name},
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);  
-                },
-            success : function(response)
-            {
-                $('.loader-aj-main').fadeOut(1000);
-                 var res = JSON.parse(response);
-                 if(res.status == 200){
-                     $('#hobby_input').val('');
-                    $.pjax.reload({container: '#pjax_hobby', async: false});
-                 }
-                 else if(res.status == 201){
-                     toastr.error(res.message, res.title);
-                 }
-                 else if(res.status == 203){
-                     toastr.error(res.message, res.title);
-                 }
-                 
-            } 
-            });
-          }
-        }
-        });
-        
-        
-        
-        $(document).on('keyup','#skill_input',function(e)
-        {   
-        e.preventDefault();
-        if(e.which==13){
-        var skill_name = $('#skill_input').val();
-        
-        if(skill_name == ''){
-            toastr.error('please enter something', 'error');
-        }else {        
-        $.ajax({
-            url: '/account/resume-builder/skills',
-            method : 'POST',
-            data : {skill_name:skill_name},
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);  
-                },
-            success : function(response)
-            {
-                $('.loader-aj-main').fadeOut(1000);
-                 var res = JSON.parse(response);
-                 if(res.status == 200){
-                     $('#skill_input').val('');
-                    $.pjax.reload({container: '#pjax_skills', async: false});
-                 }
-                 else if(res.status == 201){
-                     toastr.error(res.message, res.title);
-                 }
-                 else if(res.status == 203){
-                     toastr.error(res.message, res.title);
-                 }
-                 
-            } 
-            });
-          }
-        }
-        });
-        
-        
-        $(document).on('click','.hobby_remove', function(e) {
-            e.preventDefault();
-            var tag_main = $(this).parent();
-            tag_main.hide();
-                var id = e.target.id;
-            $.ajax({
-                url: "/account/resume-builder/hobby-remove",
-                method: "POST",
-                data: {id:id},
-               
-                success: function (response) {
-                    var data = JSON.parse(response);
-                    if(data.status == 200){
-                        $.pjax.reload({container: '#pjax_hobby', async: false});
-                    }else{
-                        tag_main.show();
-                        toastr.error(data.message, data.title);
-                    }
-                }
-            });
-        });
-        
-        $(document).on('click','.skill_remove', function(e) {
-            e.preventDefault();
-            var tag_main = $(this).parent('li');
-            tag_main.hide();
-                var id = e.target.id;
-            $.ajax({
-                url: "/account/resume-builder/skill-remove",
-                method: "POST",
-                data: {id:id},
-                
-                success: function (response) {
-                    var data = JSON.parse(response);
-                    if(data.status == 200){
-                        $.pjax.reload({container: '#pjax_skills', async: false});
-                    }else{
-                        tag_main.show();
-                        toastr.error(data.message, data.title);
-                    }
-                }
-            });
-        });
-        
-        
-        
-        $(document).on('keyup','#interest_input',function(e)
-        {   
-        e.preventDefault();
-        if(e.which==13){
-        var interest_name = $('#interest_input').val();
-        
-        if(interest_name == ''){
-            toastr.error('please enter something', 'error');
-        }else {        
-        $.ajax({
-            url: '/account/resume-builder/interests',
-            method : 'POST',
-            data : {interest_name:interest_name},
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);  
-                },
-            success : function(response)
-            {
-                $('.loader-aj-main').fadeOut(1000);
-                 var res = JSON.parse(response);
-                 if(res.status == 200){
-                     $('#interest_input').val('');
-                    $.pjax.reload({container: '#pjax_interest', async: false});
-                 }
-                 else if(res.status == 201){
-                     toastr.error(res.message, res.title);
-                 }
-                 else if(res.status == 203){
-                     toastr.error(res.message, res.title);
-                 }
-                 
-            } 
-            });
-        }
-        
-        }
-        });
-        
-        
-        $(document).on('click','.interest_remove', function(e) {
-            e.preventDefault();
-            var tag_main = $(this).parent();
-            tag_main.hide();
-                var id = e.target.id;
-            $.ajax({
-                url: "/account/resume-builder/interest-remove",
-                method: "POST",
-                data: {id:id},
-                
-                success: function (response) {
-                    var data = JSON.parse(response);
-                    if(data.status == 200){
-                        $.pjax.reload({container: '#pjax_interest', async: false});
-                    }else{
-                        tag_main.show();
-                        toastr.error(data.message, data.title);
-                    }
-                }
-            });
-        });
-        
-        $(document).on('submit','#add-education-form',function(e)
-        {   
-        e.preventDefault();
+        var school = $('#addqualificationform-school').val();
+        var degree = $('#addqualificationform-degree').val();
+        var field = $('#addqualificationform-field').val();
+        var from = $('#addqualificationform-qualification_from').val();
+        var to = $('#addqualificationform-qualification_to').val();
         var data = $('#add-education-form').serialize();
-        $.ajax({
-            url: '/account/resume-builder/education',
+        if(school == ''  || degree == '' || field == '' || from == '' || to == ''){
+            return false;    
+        }else if(to < from){
+            toastr.error('please enter correct date.', 'error');
+        }else{
+            $.ajax({
+                url: '/account/resume-builder/education',
+                method : 'POST',
+                data : data,
+                beforeSend:function(){     
+                          $('.loader-aj-main').fadeIn(1000);
+                },
+                success : function(res)
+                {
+                    $('.loader-aj-main').fadeOut(1000);
+                     if(res == true){
+                        $('#add-education-modal').modal('toggle');
+                        $.pjax.reload({container: '#pjax_qualification', async: false});
+                    }else{
+                         toastr.error('something went wrong.Try Again', 'error');
+                    }
+                } 
+            });
+        }
+});
+
+$(document).on('click', '.edu-pen', function(a) {
+            a.preventDefault();
+            var id = $(this).attr('id');
+            $.ajax({
+            url: '/account/resume-builder/edit-education',
             method : 'POST',
-            data : data,
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);
-            },
+            data : {id:id},
+            beforeSend:function(){
+                    $('.loader-aj-main').fadeIn(100);
+                 },
             success : function(res)
-            {
-                $('.loader-aj-main').fadeOut(1000);
-                 if(res == true){
-                    $('#add-education-modal').modal('toggle');
-                    $.pjax.reload({container: '#pjax_qualification', async: false});
-                }else{
-                     toastr.error('something went wrong.Try Again', 'error');
-                }
+            {   
+                 $('.loader-aj-main').fadeOut(50);
+                $('#update-education-modal').modal('show');
+                var obj = JSON.parse(res);
+                $('#update_school').val(obj.institute);
+                $('#update_degree').val(obj.degree);
+                $('#update_field').val(obj.field);
+                $('#update_qualification_from').val(obj.from_date);
+                $('#update_qualification_to').val(obj.to_date);
+                $('.eduUpdate').attr('id',obj.education_enc_id);
             } 
             });
-        
         });
         
-        $(document).on('submit','#update-education-form',function(e)
-        {   
+$(document).on('submit','#update-education-form',function(e){   
         e.preventDefault();
         var id = $('.eduUpdate').attr('id');
         var school = $('#update_school').val();
@@ -1108,6 +846,8 @@ function order(before, req) {
         var to = $('#update_qualification_to').val();
         if(school == ''  || degree == '' || field == '' || from == '' || to == ''){
             return false;    
+        }else if(to < from){
+            toastr.error('please enter correct date.', 'error');
         }else{
         $.ajax({
             url: '/account/resume-builder/update-education',
@@ -1131,9 +871,76 @@ function order(before, req) {
             
         }
         });
-        
-        $(document).on('submit','#update-experience-form',function(e)
-        {
+
+$(document).on('click','.edu-del',function(e){
+           e.preventDefault();
+           
+           var  id = $(this).attr('id');
+           
+           $.ajax({
+                url: '/account/resume-builder/delete-education',
+                 method : 'POST',
+                 data : {id:id},
+                 beforeSend:function(){
+                    $('.loader-aj-main').fadeIn(100);
+                 },
+                  success : function(response)
+                  {
+                      $('.loader-aj-main').fadeOut(50);
+                      var res = JSON.parse(response);
+                      
+                      if(res.status == 200){
+                          $.pjax.reload({container: '#pjax_qualification', async: false});
+                      }else if(res.status == 201){
+                          toastr.error(res.message, res.title);
+                      }
+                      
+                  }
+            });
+        });
+    
+$(document).on('submit','#add-experience-form',function(e){
+e.preventDefault();
+    var title = $('#addexperienceform-title').val();
+    var company = $('#addexperienceform-company').val();
+    var city = $('#city_id_exp').val();
+   
+    var from = $('#addexperienceform-exp_from').val();
+    if($('#exp_present').prop("checked")){
+            var checkbox = 1;
+            $('#addexperienceform-exp_to').val('');
+        }else{
+            var checkbox = 0;
+            if($('#addexperienceform-exp_to').val() == ''){
+                 toastr.error('please enter all fields.', 'error');
+                 return false;
+            }else{
+                var to = $('#addexperienceform-exp_to').val();
+            }
+        }
+    var description = $('#addexperienceform-description').val();
+    $.ajax({
+       url: '/account/resume-builder/experience',
+       method: 'POST',
+       data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description},
+        beforeSend:function(){     
+                  $('.loader-aj-main').fadeIn(1000);  
+            },
+       success : function(response){
+           $('.loader-aj-main').fadeOut(1000);
+           var res = JSON.parse(response);
+           if(res.status == 200)
+           {
+               $('#add-experience-modal').modal('toggle');
+               $.pjax.reload({container: '#pjax_experience', async: false});
+           } else {
+               toastr.error('something went wrong.Try Again', 'error');
+           }
+        }
+    });
+});
+
+$(document).on('submit','#update-experience-form',function(e){
             e.preventDefault();
            
             var id = $('.expUpdate').attr('id');
@@ -1178,35 +985,8 @@ function order(before, req) {
             });
              }
         });
-        
-        
-        $(document).on('click', '.edu-pen', function(a) {
-            a.preventDefault();
-            var id = $(this).attr('id');
-            $.ajax({
-            url: '/account/resume-builder/edit-education',
-            method : 'POST',
-            data : {id:id},
-            beforeSend:function(){
-                    $('.loader-aj-main').fadeIn(100);
-                 },
-            success : function(res)
-            {   
-                 $('.loader-aj-main').fadeOut(50);
-                $('#update-education-modal').modal('show');
-                var obj = JSON.parse(res);
-                $('#update_school').val(obj.institute);
-                $('#update_degree').val(obj.degree);
-                $('#update_field').val(obj.field);
-                $('#update_qualification_from').val(obj.from_date);
-                $('#update_qualification_to').val(obj.to_date);
-                $('.eduUpdate').attr('id',obj.education_enc_id);
-            } 
-            });
-        });
-        
-        
-        $(document).on('click','.exp-del',function(e){
+
+$(document).on('click','.exp-del',function(e){
            e.preventDefault();
            
            var  id = $(this).attr('id');
@@ -1233,35 +1013,7 @@ function order(before, req) {
             });
         });
         
-        $(document).on('click','.edu-del',function(e){
-           e.preventDefault();
-           
-           var  id = $(this).attr('id');
-           
-           $.ajax({
-                url: '/account/resume-builder/delete-education',
-                 method : 'POST',
-                 data : {id:id},
-                 beforeSend:function(){
-                    $('.loader-aj-main').fadeIn(100);
-                 },
-                  success : function(response)
-                  {
-                      $('.loader-aj-main').fadeOut(50);
-                      var res = JSON.parse(response);
-                      
-                      if(res.status == 200){
-                          $.pjax.reload({container: '#pjax_qualification', async: false});
-                      }else if(res.status == 201){
-                          toastr.error(res.message, res.title);
-                      }
-                      
-                  }
-            });
-        });
-        
-        $(document).on('click','.exp-pen',function(e)
-        {
+$(document).on('click','.exp-pen',function(e){
             e.preventDefault();
             
             var id = $(this).attr('id');
@@ -1293,65 +1045,238 @@ function order(before, req) {
                   }
             });
         });
+    
+$(document).on('keyup','#achievement_input',function(e){   
+e.preventDefault();
+if(e.which==13){
+var achievement_name = $('#achievement_input').val();
+if(achievement_name == ''){
+    toastr.error('please enter something', 'error');
+}else {
+$.ajax({
+    url: '/account/resume-builder/achievements',
+    method : 'POST',
+    data : {achievement_name:achievement_name},
+    beforeSend:function(){     
+              $('.loader-aj-main').fadeIn(1000);  
+        },
+    success : function(response)
+    {
+        $('.loader-aj-main').fadeOut(1000);
+         var res = JSON.parse(response);
+         if(res.status == 200){
+             $('#achievement_input').val('');
+            $.pjax.reload({container: '#pjax_achievements', async: false});
+         }
+         else if(res.status == 201){
+             toastr.error(res.message, res.title);
+         }
+         else if(res.status == 203){
+             toastr.error(res.message, res.title);
+         }
+         
+    } 
+    });
+  }
+}
+});
         
-        $(document).on('click','#addEdu',function(e)
-        {   
-            e.preventDefault();
-            $('#add-education-modal').modal('toggle');
-            $('#addqualificationform-school').val('');
-            $('#addqualificationform-degree').val('');
-            $('#addqualificationform-field').val('');
-            $('#addqualificationform-qualification_from').val('');
-            $('#addqualificationform-qualification_to').val('');
-        });
-        
-        $(document).on('click','#addExp',function(event)
-        {
-            event.preventDefault();
-            $('#add-experience-modal').modal('toggle');
-            
-             $('#addexperienceform-title').val('');
-             $('#addexperienceform-company').val('');
-             $('#city_id_exp').val('');
-             $('#cities').val('');
-             $('#addexperienceform-exp_from').val('');
-            $('#addexperienceform-exp_to').val('');
-            if($('#exp_present').prop("checked")){
-                $('#exp_present').prop('checked', false);
-                $('.experience').show();
+$(document).on('click','.achievement_remove', function(e) {
+    e.preventDefault();
+    var tag_main = $(this).parent();
+    tag_main.hide();
+        var id = e.target.id;
+    $.ajax({
+        url: "/account/resume-builder/achievement-remove",
+        method: "POST",
+        data: {id:id},
+       
+        success: function (response) {
+            var data = JSON.parse(response);
+            if(data.status == 200){
+                $.pjax.reload({container: '#pjax_achievements', async: false});
+            }else{
+                tag_main.show();
+                toastr.error(data.message, data.title);
             }
-             $('#addexperienceform-description').val('');
-            
-        });
+        }
+    });
+});
         
+$(document).on('keyup','#hobby_input',function(e){   
+e.preventDefault();
+if(e.which==13){
+var hobby_name = $('#hobby_input').val();
+
+if(hobby_name == ''){
+    toastr.error('please enter something', 'error');
+}else {        
+$.ajax({
+    url: '/account/resume-builder/hobbies',
+    method : 'POST',
+    data : {hobby_name:hobby_name},
+    beforeSend:function(){     
+              $('.loader-aj-main').fadeIn(1000);  
+        },
+    success : function(response)
+    {
+        $('.loader-aj-main').fadeOut(1000);
+         var res = JSON.parse(response);
+         if(res.status == 200){
+             $('#hobby_input').val('');
+            $.pjax.reload({container: '#pjax_hobby', async: false});
+         }
+         else if(res.status == 201){
+             toastr.error(res.message, res.title);
+         }
+         else if(res.status == 203){
+             toastr.error(res.message, res.title);
+         }
+         
+    } 
+    });
+  }
+}
+});
+
+$(document).on('click','.hobby_remove', function(e) {
+    e.preventDefault();
+    var tag_main = $(this).parent();
+    tag_main.hide();
+        var id = e.target.id;
+    $.ajax({
+        url: "/account/resume-builder/hobby-remove",
+        method: "POST",
+        data: {id:id},
+       
+        success: function (response) {
+            var data = JSON.parse(response);
+            if(data.status == 200){
+                $.pjax.reload({container: '#pjax_hobby', async: false});
+            }else{
+                tag_main.show();
+                toastr.error(data.message, data.title);
+            }
+        }
+    });
+});
         
+$(document).on('keyup','#skill_input',function(e){   
+e.preventDefault();
+if(e.which==13){
+var skill_name = $('#skill_input').val();
+
+if(skill_name == ''){
+    toastr.error('please enter something', 'error');
+}else {        
+$.ajax({
+    url: '/account/resume-builder/skills',
+    method : 'POST',
+    data : {skill_name:skill_name},
+    beforeSend:function(){     
+              $('.loader-aj-main').fadeIn(1000);  
+        },
+    success : function(response)
+    {
+        $('.loader-aj-main').fadeOut(1000);
+         var res = JSON.parse(response);
+         if(res.status == 200){
+             $('#skill_input').val('');
+            $.pjax.reload({container: '#pjax_skills', async: false});
+         }
+         else if(res.status == 201){
+             toastr.error(res.message, res.title);
+         }
+         else if(res.status == 203){
+             toastr.error(res.message, res.title);
+         }
+         
+    } 
+    });
+  }
+}
+});
         
-        $(document).on('click', '.todo-remove', function(e) {
+$(document).on('click','.skill_remove', function(e) {
+    e.preventDefault();
+    var tag_main = $(this).parent('li');
+    tag_main.hide();
+        var id = e.target.id;
+    $.ajax({
+        url: "/account/resume-builder/skill-remove",
+        method: "POST",
+        data: {id:id},
+        
+        success: function (response) {
+            var data = JSON.parse(response);
+            if(data.status == 200){
+                $.pjax.reload({container: '#pjax_skills', async: false});
+            }else{
+                tag_main.show();
+                toastr.error(data.message, data.title);
+            }
+        }
+    });
+});
+        
+$(document).on('keyup','#interest_input',function(e){   
+e.preventDefault();
+if(e.which==13){
+var interest_name = $('#interest_input').val();
+
+if(interest_name == ''){
+    toastr.error('please enter something', 'error');
+}else {        
+$.ajax({
+    url: '/account/resume-builder/interests',
+    method : 'POST',
+    data : {interest_name:interest_name},
+    beforeSend:function(){     
+              $('.loader-aj-main').fadeIn(1000);  
+        },
+    success : function(response)
+    {
+        $('.loader-aj-main').fadeOut(1000);
+         var res = JSON.parse(response);
+         if(res.status == 200){
+             $('#interest_input').val('');
+            $.pjax.reload({container: '#pjax_interest', async: false});
+         }
+         else if(res.status == 201){
+             toastr.error(res.message, res.title);
+         }
+         else if(res.status == 203){
+             toastr.error(res.message, res.title);
+         }
+         
+    } 
+    });
+}
+
+}
+});
+
+$(document).on('click','.interest_remove', function(e) {
             e.preventDefault();
-                var id = $(this).closest('.todo-actions').attr('id');
-                var remove = $(this).closest('li');
+            var tag_main = $(this).parent();
+            tag_main.hide();
+                var id = e.target.id;
             $.ajax({
-                url: "/account/resume-builder/skillrmv",
+                url: "/account/resume-builder/interest-remove",
                 method: "POST",
                 data: {id:id},
+                
                 success: function (response) {
-                    $(remove).remove();
+                    var data = JSON.parse(response);
+                    if(data.status == 200){
+                        $.pjax.reload({container: '#pjax_interest', async: false});
+                    }else{
+                        tag_main.show();
+                        toastr.error(data.message, data.title);
+                    }
                 }
             });
         });
-        
-        $(document).on('click', '.open-modal', function(){
-            var data;
-            $.ajax({
-                url : '/account/resume-builder/get-social',
-                method : 'POST',
-                data : data ,
-                success : function(res){
-                    console.log(res);
-                } 
-            });
-        });
-        
         
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
