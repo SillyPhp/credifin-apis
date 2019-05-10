@@ -102,6 +102,17 @@ class ReviewCards {
             ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
             ->count();
     }
+    public function getInstituteReviewsCount($unclaimed_org)
+    {
+        return  NewOrganizationReviews::find()
+            ->alias('a')
+            ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
+            ->andWhere(['in','reviewer_type',[6,7]])
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['categoryEnc c'], false)
+            ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
+            ->count();
+    }
 
     public function getReviewStats($unclaimed_org)
     {
@@ -129,6 +140,15 @@ class ReviewCards {
             ->select(['ROUND(AVG(student_engagement)) student_engagement', 'ROUND(AVG(school_infrastructure)) school_infrastructure', 'ROUND(AVG(faculty)) faculty', 'ROUND(AVG(accessibility_of_faculty)) accessibility_of_faculty', 'ROUND(AVG(co_curricular_activities)) co_curricular_activities', 'ROUND(AVG(leadership_development)) leadership_development', 'ROUND(AVG(sports)) sports'])
             ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
             ->andWhere(['in','reviewer_type',[4,5]])
+            ->asArray()
+            ->one();
+    }
+    public function getInstituteReviewStats($unclaimed_org)
+    {
+        return NewOrganizationReviews::find()
+            ->select(['ROUND(AVG(student_engagement)) student_engagement', 'ROUND(AVG(school_infrastructure)) school_infrastructure', 'ROUND(AVG(faculty)) faculty', 'ROUND(AVG(value_for_money)) value_for_money', 'ROUND(AVG(teaching_style)) teaching_style', 'ROUND(AVG(coverage_of_subject_matter)) coverage_of_subject_matter', 'ROUND(AVG(accessibility_of_faculty)) accessibility_of_faculty'])
+            ->where(['organization_enc_id' => $unclaimed_org['organization_enc_id'], 'status' => 1])
+            ->andWhere(['in','reviewer_type',[6,7]])
             ->asArray()
             ->one();
     }

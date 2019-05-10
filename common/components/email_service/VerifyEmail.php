@@ -57,7 +57,7 @@ class VerifyEmail extends Component{
             if ($organization) {
                 $organization->is_email_verified = 1;
                 $organization->last_updated_on = date('Y-m-d H:i:s');
-                $organization->last_updated_by = $user_token->created;
+                $organization->last_updated_by = $user_token->created_by;
                 if (!$organization->update()) {
                     return false;
                 }

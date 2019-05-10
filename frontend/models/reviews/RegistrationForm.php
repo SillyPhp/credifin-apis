@@ -331,6 +331,71 @@ class RegistrationForm extends Model {
             return false;
         }
     }
+    public function postInstituteReviews($org_id)
+    {
+        $arr = Yii::$app->request->post('data');
+        $avg =  ($arr['student_engagement']+$arr['infrastructure']+$arr['faculty']+$arr['value_for_money']+$arr['teaching_style']+$arr['coverage_of_subject_matter']+$arr['accessibility_of_faculty'])/7;
+        $f_time = strtotime($arr['from']);
+        $from_time = date('Y-m-d', $f_time);
+        $t_time = strtotime($arr['to']);
+        $to_time = date('Y-m-d', $t_time);
+        $companyReview = new NewOrganizationReviews();
+        $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 7 : 6);
+        $data = Qualifications::find()
+            ->where(['name'=>$arr['stream']])
+            ->asArray()
+            ->one();
+        if (!empty($data))
+        {
+            $companyReview->educational_stream_enc_id = $data['qualification_enc_id'];
+        }
+        else{
+            $model = new Qualifications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->qualification_enc_id = $utilitiesModel->encrypt();
+            $model->name = $arr['stream'];
+            $utilitiesModel->variables['name'] = $arr['stream'];
+            $utilitiesModel->variables['table_name'] = Qualifications::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $model->slug = $utilitiesModel->create_slug();
+            if ($model->save())
+            {
+                $companyReview->educational_stream_enc_id = $model->qualification_enc_id;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $companyReview->review_enc_id = $utilitiesModel->encrypt();
+        $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
+        $companyReview->organization_enc_id = $org_id;
+        $companyReview->from_date = $from_time;
+        $companyReview->to_date = $to_time;
+        $companyReview->city_enc_id = $arr['college_city'];
+        $companyReview->student_engagement = $arr['student_engagement'];
+        $companyReview->school_infrastructure = $arr['infrastructure'];
+        $companyReview->faculty = $arr['faculty'];
+        $companyReview->value_for_money = $arr['value_for_money'];
+        $companyReview->teaching_style = $arr['teaching_style'];
+        $companyReview->coverage_of_subject_matter = $arr['coverage_of_subject_matter'];
+        $companyReview->accessibility_of_faculty = $arr['accessibility_of_faculty'];
+        $companyReview->average_rating = ceil($avg);
+        $companyReview->likes = $arr['likes'];
+        $companyReview->dislikes = $arr['dislikes'];
+        $companyReview->created_by = Yii::$app->user->identity->user_enc_id;
+        $companyReview->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        $companyReview->status = 1;
+        $companyReview->created_on = date('Y-m-d H:i:s');
+        if ($companyReview->save()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     private function addNewAssignedCategory($category_id,$companyReview,$type)
     {
         $assignedCategoryModel = new AssignedCategories();
