@@ -43,11 +43,13 @@ $this->registerCss('
     padding:10px 0 0 0; 
     font-weight:bold; 
     font-size:28px;
+    color:#000;
   }
   .welcome-text{
     padding:20px 80px 0 80px; 
     font-size:24px; 
     line-height:30px;
+    color:#000;
   }
   .activate-button{
     padding:45px 0 0px 0;
@@ -98,6 +100,11 @@ $this->registerCss('
     }
     .activate-button {
         margin-bottom:20px;
+    }
+    .welcome-text{
+        padding:20px 80px 0 80px; 
+        font-size:20px; 
+        line-height:30px;
     }
 }   
 ');
