@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
 $this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
-Yii::$app->view->registerJs('var slug = "' . $slug . '"; var business_type = "'.$org_details['business_activity'].'" ', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var slug = "' . $slug . '"; var business_type = "' . $org_details['business_activity'] . '" ', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
 $overall_college_avg = array_sum($stats_students) / count($stats_students);
 $round_avg = round($overall_avg);
@@ -39,11 +39,8 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-
-print_r($org_details['business_activity']);
-//exit();
 ?>
-<section class="rh-header">
+<section class="rh-header <?= $org_details['business_activity'] ?>">
     <div class="container">
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
@@ -66,14 +63,17 @@ print_r($org_details['business_activity']);
                 <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($round_avg)){
-                        ?>
-                        <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
-                    <?php } else { ?>
+                        if (!empty($round_avg)) {
+                            ?>
+                            <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                        <?php } else { ?>
                             <i class="fa fa-star <?= (($round_students_avg < $i) ? '' : 'active') ?>"></i>
-                   <?php } } ?>
+                        <?php }
+                    } ?>
                 </div>
-                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_students_avg) ?>/5 - based on <?= $reviews+$reviews_students; ?> reviews</div>
+                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_students_avg) ?>/5 - based
+                    on <?= $reviews + $reviews_students; ?> reviews
+                </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -113,14 +113,12 @@ print_r($org_details['business_activity']);
                             <?php } else {
                                 if (empty(Yii::$app->user->identity->organization_enc_id)) { ?>
                                     <div class="wr-bttn hvr-icon-pulse">
-                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write
-                                            Employee
+                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Employee
                                             Review
                                         </button>
                                     </div>
                                     <div class="wr-bttn hvr-icon-pulse">
-                                        <button type="button" id="wr1"><i class="fa fa-comments-o hvr-icon"></i> Write
-                                            Student
+                                        <button type="button" id="wr1"><i class="fa fa-comments-o hvr-icon"></i> Student
                                             Review
                                         </button>
                                     </div>
@@ -141,18 +139,51 @@ print_r($org_details['business_activity']);
 <section>
     <div class="container">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#home">Employee Review</a></li>
-            <li><a data-toggle="tab" href="#menu1">Students Review</a></li>
+            <li class="active"><a data-toggle="tab" href="#menu1">Students Review</a></li>
+            <li><a data-toggle="tab" href="#home">Employee Review</a></li>
         </ul>
     </div>
 </section>
 <section class="rh-body">
     <div class="container">
         <div class="tab-content">
-            <div id="home" class="tab-pane fade in active">
+            <div id="menu1" class="tab-pane fade in active">
                 <div class="row">
                     <div class="col-md-8">
-                        <h1 class="heading-style"><?= ucwords($org_details['name']); ?>'s Employee Reviews </h1>
+                        <h1 class="heading-style">Students Reviews </h1>
+                        <div id="org-students-reviews"></div>
+                        <div class="col-md-offset-2 load-more-bttn">
+                            <button type="button" id="load_more_btn1">Load More</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <?php if ($org_details['business_activity'] == 'College') {
+                            echo $this->render('/widgets/review/review-college-stats', [
+                                'reviews_students' => $reviews_students,
+                                'round_students_avg' => $round_students_avg,
+                                'stats_students' => $stats_students,
+                            ]);
+                        } elseif ($org_details['business_activity'] == 'School') {
+                            echo $this->render('/widgets/review/review-school-stats', [
+                                'reviews_students' => $reviews_students,
+                                'round_students_avg' => $round_students_avg,
+                                'stats_students' => $stats_students,
+                            ]);
+                        } elseif ($org_details['business_activity'] == 'Educational Institute') {
+                            echo $this->render('/widgets/review/review-institute-stats', [
+                                'reviews_students' => $reviews_students,
+                                'round_students_avg' => $round_students_avg,
+                                'stats_students' => $stats_students,
+                            ]);
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div id="home" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1 class="heading-style">Employee Reviews </h1>
                         <div id="org-reviews"></div>
                         <div class="col-md-offset-2 load-more-bttn">
                             <button type="button" id="load_more_btn">Load More</button>
@@ -270,49 +301,6 @@ print_r($org_details['business_activity']);
                     </div>
                 </div>
             </div>
-            <div id="menu1" class="tab-pane fade">
-                <div class="tab-content">
-                    <div id="home" class="tab-pane fade in active">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h1 class="heading-style"><?= ucwords($org_details['name']); ?>'s Students Reviews </h1>
-                                <div id="org-students-reviews"></div>
-                                <div class="col-md-offset-2 load-more-bttn">
-                                    <button type="button" id="load_more_btn1">Load More</button>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <?php if ($org_details['business_activity']=='College'){
-                                echo $this->render('/widgets/review/review-college-stats', [
-                             'reviews_students'=>$reviews_students,
-                             'round_students_avg'=>$round_students_avg,
-                             'stats_students'=>$stats_students,
-                            ]); }
-                            elseif ($org_details['business_activity']=='School')
-                            {
-                                echo $this->render('/widgets/review/review-school-stats', [
-                                    'reviews_students'=>$reviews_students,
-                                    'round_students_avg'=>$round_students_avg,
-                                    'stats_students'=>$stats_students,
-                                ]);
-                            }
-                                elseif ($org_details['business_activity']=='Educational Institute')
-                                {
-                                    echo $this->render('/widgets/review/review-institute-stats', [
-                                        'reviews_students'=>$reviews_students,
-                                        'round_students_avg'=>$round_students_avg,
-                                        'stats_students'=>$stats_students,
-                                    ]);
-                                }
-                            ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="menu1" class="tab-pane fade">
-                        content
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -324,22 +312,16 @@ print_r($org_details['business_activity']);
                 <h4 class="modal-title">Edit Your Review</h4>
             </div>
             <div class="modal-body">
-            <?php if ($editReviewForm->type=='org'){
-                     $url = '/organizations/edit-review-unclaimed?request_type=2&type=org';
-                    }
-                     elseif ($editReviewForm->type=='college')
-                     {
-                         $url = '/organizations/edit-review-unclaimed?request_type=2&type=college';
-                     }
-                    elseif ($editReviewForm->type=='school')
-                    {
-                        $url = '/organizations/edit-review-unclaimed?request_type=2&type=school';
-                    }
-                    elseif ($editReviewForm->type=='institute')
-                    {
-                        $url = '/organizations/edit-review-unclaimed?request_type=2&type=institute';
-                    }
-                    ?>
+                <?php if ($editReviewForm->type == 'org') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=org';
+                } elseif ($editReviewForm->type == 'college') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=college';
+                } elseif ($editReviewForm->type == 'school') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=school';
+                } elseif ($editReviewForm->type == 'institute') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=institute';
+                }
+                ?>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'edit-review-form',
@@ -355,30 +337,25 @@ print_r($org_details['business_activity']);
                     </div>
                 </div>
                 <div id="widget_bar_stats">
-                    <?php if ($editReviewForm->type=='org'){
-                    echo $this->render('/widgets/review/review-org-stats-edit', [
-                            'form'=>$form,
-                             'editReviewForm'=>$editReviewForm
-                    ]); }
-                     elseif ($editReviewForm->type=='college')
-                     {
-                         echo $this->render('/widgets/review/review-college-stats-edit', [
-                             'form'=>$form,
-                             'editReviewForm'=>$editReviewForm
-                         ]);
-                     }
-                    elseif ($editReviewForm->type=='school')
-                    {
-                        echo $this->render('/widgets/review/review-school-stats-edit', [
-                            'form'=>$form,
-                            'editReviewForm'=>$editReviewForm
+                    <?php if ($editReviewForm->type == 'org') {
+                        echo $this->render('/widgets/review/review-org-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
                         ]);
-                    }
-                    elseif ($editReviewForm->type=='institute')
-                    {
+                    } elseif ($editReviewForm->type == 'college') {
+                        echo $this->render('/widgets/review/review-college-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    } elseif ($editReviewForm->type == 'school') {
+                        echo $this->render('/widgets/review/review-school-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    } elseif ($editReviewForm->type == 'institute') {
                         echo $this->render('/widgets/review/review-institute-stats-edit', [
-                            'form'=>$form,
-                            'editReviewForm'=>$editReviewForm
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
                         ]);
                     }
                     ?>
@@ -410,17 +387,13 @@ print_r($org_details['business_activity']);
 <?php
 echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
 ]);
- if ($org_details['business_activity']=='College'){
-     echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews');
-                                }
-               elseif ($org_details['business_activity']=='School')
-                            {
-                echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews');
-                            }
- elseif ($org_details['business_activity']=='Educational Institute')
- {
-     echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews');
- }
+if ($org_details['business_activity'] == 'College') {
+    echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews');
+} elseif ($org_details['business_activity'] == 'School') {
+    echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews');
+} elseif ($org_details['business_activity'] == 'Educational Institute') {
+    echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews');
+}
 
 $this->registerCss('
 .nav-padd-20 {
@@ -487,9 +460,6 @@ $this->registerCss('
     background-size:100% 300px;
     background-repeat: no-repeat;
 }
-.purple-rh-header{
-    background-image: linear-gradient(141deg, #7453c6bd 0%, #7453c6 51%, #7453c6 75%);
-}
 .no-padd{
     padding-left:0px !important;
     padding-right:0px !important
@@ -499,6 +469,7 @@ $this->registerCss('
 }
 .header-bttns-flex{
     text-align:center;
+    padding: 20px 0 0 0;
 }
 .padding_top
 {
@@ -512,7 +483,6 @@ padding:16px 0px;
     font-size:14px;
     border-radius:5px;
     text-transform:uppercase;
-    min-width: 16.9em;
     margin-bottom: 4px;
 }
 .cp-center{
@@ -776,6 +746,7 @@ border: 2px solid #cadfe8 !important;
 .rating-large{
     font-size:56px;
 }
+
 .com-rating-1 i{ 
     font-size:16px;
     background:#fff;
@@ -847,7 +818,6 @@ border: 2px solid #cadfe8 !important;
     font-size: 14px;
     border-radius: 5px;
     display:block;
-    min-width: 16.9em;
     margin-bottom: 4px;
     text-transform: uppercase;
 }
@@ -1050,6 +1020,89 @@ display:none;
     width: 45px;
     height: 45px;
 }
+/*----- College css starts -----*/
+.rh-header.College{
+    background-image: linear-gradient(141deg, #7453c6bd 0%, #7453c6 51%, #7453c6 75%);
+}
+.rh-header.College div .com-rating-1 i.active, .rh-header.College ~ .rh-body .tab-content .review-summary .rs-main .com-rating-1 i.active{
+    color: #7453c6;
+}
+.rh-header.College .header-bttns button, .rh-header.College .header-bttns a{
+    border: 1px solid #7453c6;
+    color: #7453c6;
+}
+.rh-header.College ~ section .nav-tabs > li.active a, .rh-header.College ~ section .nav-tabs > li.active a:hover, .rh-header.College ~ section .nav-tabs > li.active a:focus{
+    background-color: #7453c6 !important;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs-main, .rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating{
+    background: #7453c6;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2{
+    border-color: #7453c6;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs-main.fade_background, .rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating.fade_background{
+    background: #bbaddc !important;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2.fade_border{
+    border-color: #bbaddc !important;
+}
+/*----- College css ends -----*/
+
+/*----- Educational Institute css starts -----*/
+.rh-header.Educational.Institute{
+    background-image: linear-gradient(141deg, #da4453c7 0%, #da4453eb 51%, #da4453 75%);
+}
+.rh-header.Educational.Institute div .com-rating-1 i.active, .rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs-main .com-rating-1 i.active{
+    color: #da4453;
+}
+.rh-header.Educational.Institute .header-bttns button, .rh-header.Educational.Institute .header-bttns a{
+    border: 1px solid #da4453;
+    color: #da4453;
+}
+.rh-header.Educational.Institute ~ section .nav-tabs > li.active a, .rh-header.Educational.Institute ~ section .nav-tabs > li.active a:hover, .rh-header.Educational.Institute ~ section .nav-tabs > li.active a:focus{
+    background-color: #da4453 !important;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs-main, .rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating{
+    background: #da4453;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2{
+    border-color: #da4453;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs-main.fade_background, .rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating.fade_background{
+    background: #e8b8bd !important;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2.fade_border{
+    border-color: #e8b8bd !important;
+}
+/*----- Educational Institute css ends -----*/
+
+/*----- School css starts -----*/
+.rh-header.School{
+    background-image: linear-gradient(141deg, #0caa41db 0%, #0caa41eb 51%, #0caa41 75%);
+}
+.rh-header.School div .com-rating-1 i.active, .rh-header.School ~ .rh-body .tab-content .review-summary .rs-main .com-rating-1 i.active{
+    color: #0caa41;
+}
+.rh-header.School .header-bttns button, .rh-header.School .header-bttns a{
+    border: 1px solid #0caa41;
+    color: #0caa41;
+}
+.rh-header.School ~ section .nav-tabs > li.active a, .rh-header.School ~ section .nav-tabs > li.active a:hover, .rh-header.School ~ section .nav-tabs > li.active a:focus{
+    background-color: #0caa41 !important;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs-main, .rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating{
+    background: #0caa41;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2{
+    border-color: #0caa41;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs-main.fade_background, .rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating.fade_background{
+    background: #a8e0ba !important;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2.fade_border{
+    border-color: #a8e0ba !important;
+}
+/*----- School css ends -----*/
 ');
 $script = <<< JS
 $(document).on('click','.load_reviews',function(e){
@@ -1911,7 +1964,7 @@ $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Open+Sans:600i');
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');

@@ -197,6 +197,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'org_logo'=>$org['logo'],
                     'org_logo_location'=>$org['logo_location'],
                     'org_name'=>$org['org_name'],
+                    'initial_color'=>$org['color'],
                     'slug'=>$org['slug'],
                     'website'=>$org['website'],
                     'type'=>$type,
