@@ -12,6 +12,7 @@ use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
 use frontend\models\reviews\EditUnclaimedCollegeOrg;
+use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
 use frontend\models\reviews\RegistrationForm;
 use frontend\models\reviews\ReviewCards;
@@ -792,6 +793,17 @@ class OrganizationsController extends Controller
                     }
                 }
             }
+            elseif ($type=='institute')
+            {
+                $editReviewForm = new EditUnclaimedInstituteOrg();
+                if ($editReviewForm->load(Yii::$app->request->post())) {
+                    if ($editReviewForm->save($request_type)) {
+                        return $this->redirect(Yii::$app->request->referrer);
+                    } else {
+                        return $this->redirect(Yii::$app->request->referrer);
+                    }
+                }
+            }
 
     }
 
@@ -888,6 +900,10 @@ class OrganizationsController extends Controller
                 $editReviewForm = new EditUnclaimedSchoolOrg();
                 $editReviewForm->setValues_school($edit_review);
             }
+                elseif ($edit_review->reviewer_type==6||$edit_review->reviewer_type==7) {
+                    $editReviewForm = new EditUnclaimedInstituteOrg();
+                    $editReviewForm->setValues_institute($edit_review);
+                }
             }
             $org = $unclaimed_org;
             if ($org['business_activity']=='College'||$org['business_activity']=='School'||$org['business_activity']=='Educational Institute')
@@ -1060,6 +1076,11 @@ class OrganizationsController extends Controller
             }
             else if($type=='school'){
                 if ($model->postSchoolReviews($org_id['organization_enc_id'])) {
+                    return true;
+                }
+            }
+            else if($type=='institute'){
+                if ($model->postInstituteReviews($org_id['organization_enc_id'])) {
                     return true;
                 }
             }

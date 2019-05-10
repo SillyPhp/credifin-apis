@@ -332,6 +332,10 @@ $this->params['seo_tags'] = [
                     {
                         $url = '/organizations/edit-review-unclaimed?request_type=2&type=school';
                     }
+                    elseif ($editReviewForm->type=='institute')
+                    {
+                        $url = '/organizations/edit-review-unclaimed?request_type=2&type=institute';
+                    }
                     ?>
                 <?php
                 $form = ActiveForm::begin([
@@ -363,6 +367,13 @@ $this->params['seo_tags'] = [
                     elseif ($editReviewForm->type=='school')
                     {
                         echo $this->render('/widgets/review/review-school-stats-edit', [
+                            'form'=>$form,
+                            'editReviewForm'=>$editReviewForm
+                        ]);
+                    }
+                    elseif ($editReviewForm->type=='institute')
+                    {
+                        echo $this->render('/widgets/review/review-institute-stats-edit', [
                             'form'=>$form,
                             'editReviewForm'=>$editReviewForm
                         ]);
@@ -1795,9 +1806,32 @@ document.getElementById("wr1").addEventListener("click", function(e){
             popup3.open();
         });
         }
+     else if (business_type=='Educational Institute')
+        {
+            document.getElementById("wr1").addEventListener("click", function(e){
+            popup4.open();
+        });
+        }
 }
 JS;
 $headScript = <<< JS
+function ajax_institute(data) {
+  var type = 'institute';
+	$.ajax({
+       method: 'POST',
+       url : '/organizations/post-college-company-reviews',
+	   data:{data:data,type:type,slug:slug},
+       success: function(response) {
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+               else
+                   {
+                       window.location = window.location.pathname;
+                   }
+          }});
+}
 function review_post_ajax(data) {
     var type = 'company';
 	$.ajax({
