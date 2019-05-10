@@ -1106,6 +1106,7 @@ $script = <<<JS
                 }else{
                     document.getElementById('interested-cont').remove();
                 }
+                utilities.initials();
             }
         }
     });
@@ -1122,7 +1123,7 @@ $script = <<<JS
             if(response.status == 200){
                 var temp1 = document.getElementById("replytemp").innerHTML;
                 var output = Mustache.render(temp1, response.result);
-
+                utilities.initials();
                 var a = document.getElementById("activecomments");
                 a.innerHTML += output;
             }
@@ -1174,7 +1175,7 @@ $script = <<<JS
                 if (response.status == 200) {
                     var temp1 = document.getElementById("replytemp").innerHTML;
                     var output = Mustache.render(temp1, result);
-
+                    utilities.initials();
                     var a = document.getElementById("activecomments");
                     a.innerHTML += output;
 
@@ -1184,6 +1185,7 @@ $script = <<<JS
             }
         }) 
     });
+    utilities.initials();
 
 JS;
 $this->registerJs($script);
@@ -1262,7 +1264,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
             var temp2 = document.getElementById("commentbox").innerHTML;
             var output = Mustache.render(temp2);
-
+            utilities.initials();
             var art = t.closest(".blog-comm");
 
             if(art.querySelectorAll('.reply-comm')[0]) {
@@ -1341,7 +1343,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, result);
-
+                    utilities.initials();
                     var art = t.closest(".blog-comm");
 
                     if(art.querySelectorAll('.reply-comm')[0]) {
@@ -1391,6 +1393,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
                     var temp1 = document.getElementById("comtemp").innerHTML;
                     var output = Mustache.render(temp1, response.result);
+                    utilities.initials();
 
                     el.innerHTML += output;
                     document.getElementById(parent_id).classList.add('hidden');

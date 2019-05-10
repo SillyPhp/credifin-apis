@@ -355,7 +355,7 @@ if ($organization['cover_image']) {
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View
+                                <a href="/jobs/list?company=<?= Html::encode($organization['name']) ?>" class="write-review">View
                                     All</a>
                             </div>
                         </div>
@@ -372,7 +372,7 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 Available Internships
                                 <div class="pull-right">
-                                    <a href="/internships/list?company=<?= $organization['slug'] ?>"
+                                    <a href="/internships/list?company=<?= Html::encode($organization['name']) ?>"
                                        class="write-review">View All</a>
                                 </div>
                             </div>

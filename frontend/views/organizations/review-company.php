@@ -118,7 +118,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= ucwords($org_details['name']); ?> Reviews </h1>
+                <h1 class="heading-style">Reviews </h1>
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
@@ -1339,6 +1339,7 @@ $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=EB+Garamond:700i');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
