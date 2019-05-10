@@ -86,8 +86,22 @@ $this->registerCss('
         color:#00a0e3; 
         text-decoration:none;
     }
-    @media  (max-width: 500px){
-     .welcome-text{padding:20px 30px 0 30px;}
+    @media only screen and (max-width: 500px){
+        .welcome-text{
+            padding:20px 30px 0 30px;
+        }
+    }
+    @media only screen and (max-width: 380px){
+        .wrapper {
+           padding:30px 10px; 
+        } 
+        .activate-button a{ 
+           padding:15px 15px; 
+           font-size:15px; 
+        }
+        .activate-button{
+            margin-bottom:20px;
+        }
     }
 ');
 ?>

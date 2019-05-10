@@ -31,7 +31,7 @@ class SearchController extends Controller
                 ->joinWith(['industryEnc d'], false)
                 ->joinWith(['employerApplications e' => function ($x) {
                     $x->select(['e.organization_enc_id', 'COUNT(e.application_enc_id) applications_cnt'])
-                        ->andWhere([
+                        ->onCondition([
                             'e.status' => 'Active',
                             'e.is_deleted' => 0
                         ])
