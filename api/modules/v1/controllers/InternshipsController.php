@@ -199,15 +199,16 @@ class InternshipsController extends ApiBaseController {
             unset($data["pre_placement_offer"]);
             
             $data['description'] = strip_tags($data['description']);
-            $data['description'] = str_replace("&nbsp;", "", $data['description']);
-            
+            $data['description'] = str_replace("&nbsp;", " ", $data['description']);
+            $data['description'] = str_replace("&amp;", "&", $data['description']);
+
             $data["vacancies"]= 0;
             if(!empty($data['applicationPlacementLocations'])) {
                 foreach ($data['applicationPlacementLocations'] as $apl) {
                     $data["vacancies"] += $apl['positions'];
                 }
             }
-            
+
             if(empty($data['applicationInterviewLocations'])){
                 $data['applicationInterviewLocations'][] = [
                     "location_enc_id" => "kdmvkdkv",
@@ -216,11 +217,11 @@ class InternshipsController extends ApiBaseController {
                     "name" => "Online"
                 ];;
             }
-            
+
             if(!$data["vacancies"]){
                 $data["vacancies"] = 0;
             }
-            
+
             unset($data["internship_duration_type"]);
             unset($data["internship_duration"]);
             unset($data["has_online_interview"]);
