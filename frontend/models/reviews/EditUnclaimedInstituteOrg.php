@@ -7,20 +7,20 @@ use Yii;
 use yii\base\Model;
 use common\models\OrganizationReviews;
 
-class EditUnclaimedCollegeOrg extends Model {
+class EditUnclaimedInstituteOrg extends Model {
 
     public $identity;
     public $likes;
     public $dislikes;
     public $org_id;
-    public $academics;
-    public $faculty_teaching_quality;
-    public $infrastructure;
-    public $accomodation_food;
-    public $placements_internships;
-    public $social_life_extracurriculars;
-    public $culture_diversity;
-    public $type = 'college';
+    public $student_engagement;
+    public $school_infrastructure;
+    public $faculty;
+    public $value_for_money;
+    public $teaching_style;
+    public $coverage_of_subject_matter;
+    public $accessibility_of_faculty;
+    public $type = 'institute';
 
     public function formName()
     {
@@ -31,22 +31,22 @@ class EditUnclaimedCollegeOrg extends Model {
     {
         return [
             [['identity',
-                'academics','type','faculty_teaching_quality','infrastructure','accomodation_food','placements_internships',
-                'social_life_extracurriculars','culture_diversity','org_id','likes','dislikes'
+                'student_engagement','type','school_infrastructure','faculty','value_for_money',
+                'teaching_style','coverage_of_subject_matter','accessibility_of_faculty','org_id','likes','dislikes'
             ],'safe'],
         ];
     }
 
 
-    public function setValues_college($edit_review)
+    public function setValues_institute($edit_review)
     {
-        $this->academics = $edit_review->academics;
-        $this->faculty_teaching_quality= $edit_review->faculty_teaching_quality;
-        $this->infrastructure= $edit_review->infrastructure;
-        $this->accomodation_food= $edit_review->accomodation_food;
-        $this->placements_internships= $edit_review->placements_internships;
-        $this->social_life_extracurriculars= $edit_review->social_life_extracurriculars;
-        $this->culture_diversity= $edit_review->culture_diversity;
+        $this->student_engagement = $edit_review->student_engagement;
+        $this->school_infrastructure= $edit_review->school_infrastructure;
+        $this->faculty= $edit_review->faculty;
+        $this->value_for_money= $edit_review->value_for_money;
+        $this->teaching_style= $edit_review->teaching_style;
+        $this->coverage_of_subject_matter= $edit_review->coverage_of_subject_matter;
+        $this->accessibility_of_faculty= $edit_review->accessibility_of_faculty;
         $this->identity= $edit_review->show_user_details;
         $this->likes = $edit_review->likes;
         $this->dislikes = $edit_review->dislikes;
@@ -68,16 +68,16 @@ class EditUnclaimedCollegeOrg extends Model {
                 ->andWhere(['organization_enc_id' => $this->org_id])
                 ->one();
         }
-        $modal->academics = $this->academics;
-        $modal->faculty_teaching_quality = $this->faculty_teaching_quality;
-        $modal->infrastructure = $this->infrastructure;
-        $modal->accomodation_food = $this->accomodation_food;
-        $modal->placements_internships = $this->placements_internships;
-        $modal->social_life_extracurriculars = $this->social_life_extracurriculars;
-        $modal->culture_diversity = $this->culture_diversity;
-        $modal->show_user_details = $this->identity;
+        $modal->student_engagement = $this->student_engagement;
+        $modal->school_infrastructure= $this->school_infrastructure;
+        $modal->faculty= $this->faculty;
+        $modal->value_for_money= $this->value_for_money;
+        $modal->teaching_style= $this->teaching_style;
+        $modal->coverage_of_subject_matter= $this->coverage_of_subject_matter;
+        $modal->accessibility_of_faculty = $this->accessibility_of_faculty;
         $modal->likes = $this->likes;
         $modal->dislikes = $this->dislikes;
+        $modal->show_user_details = $this->identity;
         $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
 
         if ($modal->update())

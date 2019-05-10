@@ -81,7 +81,7 @@ class EditReview extends Model {
         {
             $modal = NewOrganizationReviews::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-               // ->andWhere(['organization_enc_id' => $this->org_id])
+                ->andWhere(['organization_enc_id' => $this->org_id])
                 ->one();
         }
         $modal->likes = $this->likes;
