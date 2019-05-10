@@ -135,7 +135,7 @@ class InternshipsController extends ApiBaseController {
 
             $organization_details = $application_details
                 ->getOrganizationEnc()
-                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
+                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
                 ->asArray()
                 ->one();
 
@@ -158,9 +158,9 @@ class InternshipsController extends ApiBaseController {
             $i = 0;
             foreach ($data["applicationEmployeeBenefits"] as $d) {
                 if(!empty($d["icon"])) {
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], true);
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
                 } else{
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', true);
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
                 }
                 $i++;
             }
@@ -225,7 +225,7 @@ class InternshipsController extends ApiBaseController {
             unset($data["internship_duration_type"]);
             unset($data["internship_duration"]);
             unset($data["has_online_interview"]);
-            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], true);
+            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
 
             $result['applicationDetails'] = $data;
@@ -271,7 +271,7 @@ class InternshipsController extends ApiBaseController {
         ]);
 
         $resume = UserResume::find()
-            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("'.Url::to(Yii::$app->params->upload_directories->resume->file, true).'", resume_location, "/", resume) url'])
+            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("'.Url::to(Yii::$app->params->upload_directories->resume->file, 'https').'", resume_location, "/", resume) url'])
             ->where(['user_enc_id' => $user->user_enc_id])
             ->asArray()
             ->all();

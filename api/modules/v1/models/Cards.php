@@ -29,7 +29,7 @@ class Cards
                 "g.city_enc_id as city_id",
                 'c.name as title',
                 'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
@@ -187,7 +187,7 @@ class Cards
                 'm.wage_duration as salary_duration',
                 'c.name as title',
                 'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
             ->joinWith(['title b' => function ($x) {
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
