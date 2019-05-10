@@ -71,6 +71,7 @@ class ExploreController extends ApiBaseController
                     $x->joinWith(['cityEnc d'], false);
                 }], false);
             }], false)
+            ->where(['a.is_deleted'=>0])
             ->orderBy(['total' => SORT_DESC])
             ->groupBy(['c.city_enc_id'])
             ->asArray()
