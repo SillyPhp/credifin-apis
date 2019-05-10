@@ -82,25 +82,22 @@ $this->registerCss('
     color:#00a0e3; 
     text-decoration:none;
   }
-@media  (max-width: 500px){
+@media only screen and (max-width: 500px){
     .welcome-text{
         padding:20px 30px 0 30px;
     }
 } 
-@media (max-width: 320px){
-    .wrapper {
-        max-width:600px; 
-        margin:0 auto; 
-        background:#89cde9; 
+@media only screen and (max-width: 380px){
+    .wrapper { 
         padding:30px 10px; 
     } 
     .activate-button a{ 
-        padding:15px 30px; 
-        color:#fff; 
-        background:#00a0e3; 
-        border-radius:8px; 
+        padding:15px 20px; 
         font-size:15px; 
         text-decoration:none
+    }
+    .activate-button {
+        margin-bottom:20px;
     }
 }
 ');
