@@ -581,6 +581,7 @@ class LearningController extends Controller
                 ->where(['a.reply_to' => NULL])
                 ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
 
