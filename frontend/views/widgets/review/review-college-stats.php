@@ -1,5 +1,5 @@
 <div class="review-summary">
-    <h1 class="heading-style">Overall Reviews</h1>
+    <h1 class="heading-style">Overall Ratings</h1>
     <div class="row">
         <div class="col-md-12 col-sm-4">
             <div class="rs-main <?= (($reviews_students) ? '' : 'fade_background') ?>">

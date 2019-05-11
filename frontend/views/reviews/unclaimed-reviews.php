@@ -130,12 +130,12 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= ucwords($name); ?> Reviews </h1>
+                <h1 class="heading-style">Reviews </h1>
                 <div id="org-reviews"><p class="font_no_review">Currently No Reviews For This Company Be The First To Review This Company</p></div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
-                    <h1 class="heading-style">Overall Reviews</h1>
+                    <h1 class="heading-style">Overall Ratings</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
                             <div class="rs-main fade_background">
@@ -361,14 +361,10 @@ border: 2px solid #cadfe8 !important;
 .logo-box img, .logo-box canvas{
     border-radius:6px;
 }
-//.logo{
-//    display:table-cell;
-//    vertical-align: middle;  
-//    max-width:150px;   
-//}
 .com-name{
-    font-size:40px;
-    font-family:lobster;
+    font-size:38px;
+    font-family: "Lora", serif;
+    font-weight: 700;
     color:#fff;
     margin-top: -16px;
 }
@@ -1149,7 +1145,17 @@ width:100%;
 {
 display:none;
 }
-
+.i-review-box *{
+    font-family: "Roboto Slab";
+    font-weight:400;
+}
+.i-review-start-end-title, .i-review-question-title{
+    font-weight:700;
+}
+.i-review-star{
+    width: 45px;
+    height: 45px;
+}
 ');
 $script = <<< JS
 $('#org_sign_up_Modal').modal({
@@ -1579,7 +1585,7 @@ var popup2 = new ideaboxPopupCollege({
 			]
 		});
 var popup3 = new ideaboxPopupSchool({
-            background	: '#2995c2',
+            background	: 'url("/assets/themes/ey/ideapopup/bg-example-1.jpg") center center / cover no-repeat',
             popupView : 'full',
 			onFinish: function(){
 				ajax_school(this.values);
@@ -2049,6 +2055,7 @@ $this->registerJs($headScript,yii\web\View::POS_HEAD);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-institute.css');
