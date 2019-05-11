@@ -667,6 +667,49 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+<section class="search-lists">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-heading">Popular Searches</div>
+                <ul class="quick-links" id="searches">
+                    <?php foreach($search_words as $sw){ ?>
+                        <li class="hide"><a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>"><?= $sw['name'] ?></a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Jobs</div>
+                <ul class="quick-links" id="jobs">
+                    <?php foreach($job_profiles as $jp){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>"><?= $jp['name']; ?> Jobs</a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Browse by City</div>
+                <ul class="quick-links" id="cities">
+                    <?php foreach($cities as $c){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>">Jobs in <?= $c['name']; ?></a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Internships</div>
+                <ul class="quick-links" id="internships">
+                    <?php foreach($internship_profiles as $ip){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>"><?= $ip['name']; ?> Internships</a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+        </div>
+    </div>
+</section>
+
 <div class="window-popup message-popup">
     <a href="#" class="popup-close">
         <i class="fa fa-times"></i>
@@ -1993,6 +2036,32 @@ textarea {
     -o-border-radius: 0px 23px 23px 0px !important;
     border-radius: 0px 23px 23px 0px !important;
 }
+.list-heading{
+    font-size:16px;
+    font-weight:bold;
+}
+.quick-links li a{
+    line-height:23px;
+    font-size:13px;
+}
+.quick-links li a:hover{
+    color:#00a0e3;
+}
+.search-lists{
+    padding:20px 0 50px;
+    text-transform:capitalize;
+}
+.hide{
+    display:none;
+}
+.showHideBtn{
+    background:none;
+    border:none;
+    color:#00a0e3;
+    padding:0;
+    font-size:14px;
+}
+
 @media only screen and (max-width:500px){
     .c-logo{
         width:100% !important ;
@@ -2151,3 +2220,86 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+
+?>
+<script>
+
+    expandFirst('searches');
+    expandFirst('cities');
+    expandFirst('jobs');
+    expandFirst('internships');
+
+
+    function expandFirst(elem){
+        var i = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k =0;
+        while(k < listElementsLength){
+            if(k < i + 4){
+                if(document.getElementById(elem)) {
+                    document.getElementById(elem).children[k].classList.remove('hide');
+                }
+            }else{
+                break;
+            }
+            k += 1;
+        }
+    }
+
+    $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+
+    function showMoreEvent(){
+        hideMore('searches');
+        hideMore('cities');
+        hideMore('jobs');
+        hideMore('internships');
+    }
+
+    function hideMore(elem){
+        var i = 0;
+        i += 5;
+        var k = 4;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.remove('hide');
+            }
+            k += 1;
+        }
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+    }
+
+    $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
+
+    function showLessEvent(){
+        hideLess('searches');
+        hideLess('cities');
+        hideLess('jobs');
+        hideLess('internships');
+    }
+
+    function hideLess(elem){
+        shrinkFirst(elem);
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
+        document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
+        expandFirst(elem);
+    }
+
+    function shrinkFirst(elem){
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k = 5;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.add('hide');
+            }
+            k += 1;
+        }
+    }
+
+</script>
+
