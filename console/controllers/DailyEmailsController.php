@@ -164,10 +164,10 @@ class DailyEmailsController extends Controller
                 $email_logs->user_enc_id = $user['user_enc_id'];
                 $email_logs->subject = 'Empower Youth Updates For You';
                 $email_logs->template = 'applications-list';
-                $email_logs->created_by = $user['user_enc_id'];
                 $email_logs->created_on = date('Y-m-d H:i:s');
                 $email_logs->save();
             }
+            die();
         }
     }
 

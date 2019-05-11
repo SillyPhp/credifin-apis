@@ -2,14 +2,19 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
 use common\models\AssignedTags;
 use common\models\Categories;
+use common\models\EmailLogs;
+use common\models\EmployerApplications;
 use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
 use common\models\LearningVideoTags;
 use common\models\Tags;
+use common\models\UserPreferences;
+use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -18,6 +23,7 @@ use common\models\Utilities;
 
 class LearningController extends Controller
 {
+
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
