@@ -89,7 +89,7 @@ $script = <<<JS
             return;
         }
 
-        var url = $('#"postComm"').attr('action');
+        var url = $('#postComm').attr('action');
         $.ajax({
             type: 'POST',
             url: url,
