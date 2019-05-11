@@ -139,8 +139,8 @@ $this->params['seo_tags'] = [
 <section>
     <div class="container">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#menu1">Students Review</a></li>
-            <li><a data-toggle="tab" href="#home">Employee Review</a></li>
+            <li class="active"><a data-toggle="tab" href="#menu1">Student Reviews</a></li>
+            <li><a data-toggle="tab" href="#home">Employee Reviews</a></li>
         </ul>
     </div>
 </section>
@@ -150,7 +150,7 @@ $this->params['seo_tags'] = [
             <div id="menu1" class="tab-pane fade in active">
                 <div class="row">
                     <div class="col-md-8">
-                        <h1 class="heading-style">Students Reviews </h1>
+                        <h1 class="heading-style">Student Reviews </h1>
                         <div id="org-students-reviews"></div>
                         <div class="col-md-offset-2 load-more-bttn">
                             <button type="button" id="load_more_btn1">Load More</button>
@@ -191,7 +191,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-4">
                         <div class="review-summary">
-                            <h1 class="heading-style">Overall Reviews</h1>
+                            <h1 class="heading-style">Overall Ratings</h1>
                             <div class="row">
                                 <div class="col-md-12 col-sm-4">
                                     <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
@@ -517,8 +517,9 @@ border: 2px solid #cadfe8 !important;
     border-radius:6px;
 }
 .com-name{
-    font-size:40px;
-    font-family:lobster;
+    font-size:38px;
+    font-family: "Lora", serif;
+    font-weight: 700;
     color:#fff;
     margin-top: -16px;
 }
@@ -1964,7 +1965,8 @@ $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Open+Sans:600i');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+//$this->registerCssFile('https://fonts.googleapis.com/css?family=Quicksand:300,500');
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
