@@ -44,11 +44,13 @@ $this->registerCss('
         padding:10px 0 0 0; 
         font-weight:bold; 
         font-size:28px;
+        color:#000;
     }
     .welcome-text{
         padding:20px 50px 0 50px; 
         font-size:24px; 
         line-height:30px;
+        color:#000;
     }
     .wt2{
         padding-top:50px;
@@ -86,8 +88,27 @@ $this->registerCss('
         color:#00a0e3; 
         text-decoration:none;
     }
-    @media  (max-width: 500px){
-     .welcome-text{padding:20px 30px 0 30px;}
+    @media only screen and (max-width: 500px){
+        .welcome-text{
+            padding:20px 30px 0 30px;
+        }
+    }
+    @media only screen and (max-width: 380px){
+        .wrapper {
+           padding:30px 10px; 
+        } 
+        .activate-button a{ 
+           padding:15px 15px; 
+           font-size:15px; 
+        }
+        .activate-button{
+            margin-bottom:20px;
+        }
+        .welcome-text{
+            padding:20px 50px 0 50px; 
+            font-size:20px; 
+            line-height:30px;
+        }
     }
 ');
 ?>

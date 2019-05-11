@@ -175,7 +175,8 @@ margin-top:20px;
 margin-top:30px;
 }
 .last-date{
-padding-top:15px;
+position: absolute;
+right: 10px;
 font-size: 12px;
 text-align: center;
 color: #999;
@@ -204,10 +205,11 @@ padding:50px 0;
 max-width:300px;
 }
 .width-30{
-width:100%;
+width:22%;
+float:left;
 }
 .width-70{
-width:100%;
+width:75%;
 float:left;
 }
 .com-establish{
@@ -221,10 +223,10 @@ font-weight:bold;
 .com-details{
 padding-top:10px;
 }
-.skills-list > ul{
-padding-inline-start: 0px !important;
+.skills-list ul{
+padding-inline-start: 0px;
 }
-.skills-list > ul > li{
+.skills-list ul li{
 display:inline-block;
 font-size:12px;
 background:#00a0e3;
@@ -353,15 +355,14 @@ padding:15px 5px;
 color:#00a0e3;
 text-decoration:none;
 }
-
-
-
-@media only screen and (max-width: 670px ){
+@media screen and (max-width:670px ){
     .width-30{
         width:100%;
+        float:left;
     }
     .width-70{
         width:100%;
+        float:left;
     }
     .job-box{
         text-align:center;
@@ -372,55 +373,23 @@ text-decoration:none;
     }
     .logo-box{
         float:none;
-        margin: 0 auto;    
+        margin: 0 auto;
     }
 }
-@media only screen and (max-width: 500px ){
+@media only screen and (max-width:500px ){
     .skills-list ul li{
         margin-bottom: 5px;
     }
     .last-date{
         position: relative;
     }
-
 }
-@media only screen and(max-width: 420px){
+@media only screen and (max-width:420px){
     .applyBtn{
         display: grid;
     }
     .applyBtn a{
         margin-bottom:5px;
-    }
-    .wrapper-outer{
-        padding:30px 10px;
-    }
-    .width-30{
-        width:100%;
-    }
-    .width-70{
-        width:100%;
-    }
-}
-@media only screen and (max-width: 380px){
-    .wrapper-outer{
-        padding:30px 10px !important;
-    }
-    .jboxs{
-        padding:0 10px;
-    }
-    .job-box{
-        max-width:270px;
-        text-align:center;
-    }
-    .width-30{
-        width:100% !important;
-      
-    }
-    .width-70{
-        width:100% !important;
-    }
-    .skills-list ul{
-        padding-inline-start: 0px;
     }
 }
 

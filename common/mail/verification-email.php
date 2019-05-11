@@ -43,11 +43,13 @@ $this->registerCss('
     padding:10px 0 0 0; 
     font-weight:bold; 
     font-size:28px;
+    color:#000;
   }
   .welcome-text{
     padding:20px 80px 0 80px; 
     font-size:24px; 
     line-height:30px;
+    color:#000;
   }
   .activate-button{
     padding:45px 0 0px 0;
@@ -82,10 +84,29 @@ $this->registerCss('
     color:#00a0e3; 
     text-decoration:none;
   }
-  @media  (max-width: 500px){
-    .welcome-text{padding:20px 30px 0 30px;
-  }
-}  
+@media only screen and (max-width: 500px){
+    .welcome-text{
+        padding:20px 30px 0 30px;
+    }
+} 
+@media only screen and (max-width: 380px){
+    .wrapper { 
+        padding:30px 10px; 
+    } 
+    .activate-button a{ 
+        padding:15px 20px; 
+        font-size:15px; 
+        text-decoration:none
+    }
+    .activate-button {
+        margin-bottom:20px;
+    }
+    .welcome-text{
+        padding:20px 80px 0 80px; 
+        font-size:20px; 
+        line-height:30px;
+    }
+}   
 ');
 ?>
 
