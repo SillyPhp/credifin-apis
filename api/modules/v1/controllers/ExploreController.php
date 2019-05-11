@@ -10,7 +10,8 @@ use yii\helpers\Url;
 
 class ExploreController extends ApiBaseController
 {
-    public function behaviors(){
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
@@ -30,7 +31,7 @@ class ExploreController extends ApiBaseController
         if (!empty($req['type'])) {
             $options['type'] = $req['type'];
             $activeProfiles = AssignedCategories::find()
-                ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', true) . '", b.icon) icon', 'COUNT(d.id) as total'])
+                ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
                 ->alias('a')
                 ->distinct()
                 ->joinWith(['parentEnc b'], false)
@@ -46,37 +47,40 @@ class ExploreController extends ApiBaseController
                 ->all();
 
             return $this->response(200, $activeProfiles);
-        }else{
+        } else {
             return $this->response(422);
         }
     }
 
-    public function actionFeaturedEmployers(){
+    public function actionFeaturedEmployers()
+    {
         $organizations = Organizations::find()
-            ->select(['initials_color color','name','organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,true) . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['initials_color color', 'name', 'organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['is_sponsored' => 1])
             ->asArray()
             ->all();
 
-        return $this->response(200,$organizations);
+        return $this->response(200, $organizations);
     }
 
-    public function actionTopCities(){
+    public function actionTopCities()
+    {
 
         $cities = EmployerApplications::find()
             ->alias('a')
-            ->select(['d.name','COUNT(c.city_enc_id) as total','c.city_enc_id'])
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
             ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
                 $x->joinWith(['locationEnc c' => function ($x) {
                     $x->joinWith(['cityEnc d'], false);
                 }], false);
             }], false)
+            ->where(['a.is_deleted'=>0])
             ->orderBy(['total' => SORT_DESC])
             ->groupBy(['c.city_enc_id'])
             ->asArray()
             ->all();
 
-        return $this->response(200,$cities);
+        return $this->response(200, $cities);
     }
 
 }

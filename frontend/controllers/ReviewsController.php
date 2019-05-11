@@ -51,7 +51,7 @@ class ReviewsController extends Controller
             ->from(UnclaimedOrganizations::tableName().'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
             ->where('name LIKE "%' . $query . '%"')
-            ->andWhere(['status'=>1]);
+            ->andWhere(['is_deleted'=>0]);
 
         $query2 = (new \yii\db\Query())
             ->select(['name','slug','initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo','business_activity'])
