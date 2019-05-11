@@ -285,7 +285,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
         $.ajax({
             type: 'POST',
-            url: '/learning/get-child-comments',
+            url: '/<?= Yii::$app->controller->id; ?>/get-child-comments',
             data: {
                 parent: parent_id,
                 param: window.location.pathname.split('/')[3],
