@@ -351,8 +351,12 @@ $script = <<<JS
          if(msginput && msginput.length < 1500){
              var converseRef = db.ref(specialKey + '/conversations/' + unique_id );
              var currentDate = new Date();
-             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()];
-             var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
+             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
+             var getMins = currentDate.getMinutes();
+             if (getMins < 10) {
+                getMins = "0" + getMins;
+              }
+             var sendtime = currentDate.getHours() + ":" + getMins;
              var data = {
                 sender : current_user,
                 sender_organization_id : current_organization_user,

@@ -605,7 +605,11 @@ border: 2px solid #cadfe8 !important;
     font-family: "Lora", serif;
     font-weight: 700;
     color:#fff;
+    line-height:50px;
     margin-top: -16px;
+}
+.com-rating-1{
+    padding-top:15px;
 }
 .com-rating i{
     font-size:16px;
