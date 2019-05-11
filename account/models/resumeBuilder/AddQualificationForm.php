@@ -38,11 +38,13 @@ class AddQualificationForm extends Model {
 
         $utilitiesModel = new Utilities();
         $userEducationModel = new UserEducation();
+        $from = Yii::$app->formatter->asDate($this->qualification_from, 'yyyy-MM-dd');
+        $to = Yii::$app->formatter->asDate($this->qualification_to, 'yyyy-MM-dd');
 
         $userEducationModel->institute = $this->school;
         $userEducationModel->degree = $this->degree;
-        $userEducationModel->from_date = $this->qualification_from;
-        $userEducationModel->to_date = $this->qualification_to;
+        $userEducationModel->from_date = $from;
+        $userEducationModel->to_date = $to;
         $userEducationModel->field = $this->field;
         $userEducationModel->created_by = Yii::$app->user->identity->user_enc_id;
         $userEducationModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
@@ -61,6 +63,9 @@ class AddQualificationForm extends Model {
             return $this->getErrors();
         }
 
+        $from = Yii::$app->formatter->asDate($this->qualification_from, 'yyyy-MM-dd');
+        $to = Yii::$app->formatter->asDate($this->qualification_to, 'yyyy-MM-dd');
+
         $data = UserEducation::find()
             ->where(['education_enc_id'=>$id])
             ->one();
@@ -68,8 +73,8 @@ class AddQualificationForm extends Model {
         $data->institute = $this->school;
         $data->degree = $this->degree;
         $data->field = $this->field;
-        $data->from_date = $this->qualification_from;
-        $data->to_date = $this->qualification_to;
+        $data->from_date = $from;
+        $data->to_date = $to;
 
         if (!$data->validate() || !$data->update()) {
             return false;

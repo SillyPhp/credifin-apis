@@ -74,7 +74,7 @@ function random_color()
                                                     'readonly' => true,
                                                     'pluginOptions' => [
                                                         'autoclose' => true,
-                                                        'format' => 'yyyy-mm-dd',
+                                                        'format' => 'M-dd-yyyy',
                                                         'name' => 'qualification_from',
                                                         'todayHighlight' => true,
                                                     ]])->label(false);
@@ -88,7 +88,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'yyyy-mm-dd',
+                                                            'format' => 'M-dd-yyyy',
                                                             'name' => 'qualification_to',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -98,7 +98,7 @@ function random_color()
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <?= Html::submitButton('Submit', ['class' => 'btn btn-success  eduSave']); ?>
+                                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary  eduSave']); ?>
                                         <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                     </div>
                                     <?php ActiveForm::end(); ?>
@@ -147,7 +147,7 @@ function random_color()
                                                     'readonly' => true,
                                                     'pluginOptions' => [
                                                         'autoclose' => true,
-                                                        'format' => 'yyyy-mm-dd',
+                                                        'format' => 'M-dd-yyyy',
                                                         'name' => 'qualification_from',
                                                         'todayHighlight' => true,
                                                     ]])->label(false);
@@ -161,7 +161,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'yyyy-mm-dd',
+                                                            'format' => 'M-dd-yyyy',
                                                             'name' => 'qualification_to',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -171,7 +171,7 @@ function random_color()
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <?= Html::submitButton('Update', ['class' => 'btn btn-success  eduUpdate']); ?>
+                                        <?= Html::submitButton('Update', ['class' => 'btn btn-primary  eduUpdate']); ?>
                                         <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                     </div>
                                     <?php ActiveForm::end(); ?>
@@ -282,7 +282,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'yyyy-mm-dd',
+                                                            'format' => 'M-dd-yyyy',
                                                             'name' => 'exp_from',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -296,7 +296,7 @@ function random_color()
                                                             'readonly' => true,
                                                             'pluginOptions' => [
                                                                 'autoclose' => true,
-                                                                'format' => 'yyyy-mm-dd',
+                                                                'format' => 'M-dd-yyyy',
                                                                 'name' => 'earliestjoiningdate',
                                                                 'todayHighlight' => true,
                                                             ]])->label(false);
@@ -391,7 +391,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'yyyy-mm-dd',
+                                                            'format' => 'M-dd-yyyy',
                                                             'name' => 'exp_from',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -405,7 +405,7 @@ function random_color()
                                                             'readonly' => true,
                                                             'pluginOptions' => [
                                                                 'autoclose' => true,
-                                                                'format' => 'yyyy-mm-dd',
+                                                                'format' => 'M-dd-yyyy',
                                                                 'name' => 'earliestjoiningdate',
                                                                 'todayHighlight' => true,
                                                             ]])->label(false);
@@ -447,7 +447,7 @@ function random_color()
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <?= Html::submitButton('Update', ['class' => 'btn btn-success  expUpdate']); ?>
+                                            <?= Html::submitButton('Update', ['class' => 'btn btn-primary  expUpdate']); ?>
                                             <?= Html::button('Close', ['class' => 'btn default ', 'data-dismiss' => 'modal']); ?>
                                         </div>
                                         <?php ActiveForm::end(); ?>
@@ -474,17 +474,18 @@ function random_color()
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-4 col-xs-12">
                                         <div class="rounded-experience-period">
-                                            <?= $ex['from_date']; ?><br/>
-                                            -<br/>
-                                            <?php if ($ex['is_current']) {
-                                                echo 'I am currently work here';
-                                            } else {
-                                                echo $ex['to_date'];
-                                            } ?>
+
                                         </div>
                                     </div>
                                     <div class="col-md-9 col-sm-8 col-xs-12">
                                         <div class="experience-detail">
+                                            <?=  Yii::$app->formatter->asDate($ex['from_date'], 'long'); ?>
+                                            -
+                                            <?php if ($ex['is_current']) {
+                                                echo 'Present';
+                                            } else {
+                                                echo Yii::$app->formatter->asDate($ex['to_date'], 'long');
+                                            } ?>
                                             <h4><?= $ex['company']; ?></h4>
                                             <h4 class="colored"><?= $ex['title']; ?></h4>
                                             <p><?= $ex['description']; ?></p>
@@ -702,6 +703,12 @@ function random_color()
 <?php
 $script = <<< JS
 
+function compareDates(from,to){
+    var a = new Date(from);
+    var b = new Date(to);
+    return a > b;
+}
+
 function floatingLabel() {
    $('.form-md-floating-label .form-control').each(function(){
        if ($(this).val().length > 0) {
@@ -787,8 +794,8 @@ $(document).on('submit','#add-education-form',function(e){
         var data = $('#add-education-form').serialize();
         if(school == ''  || degree == '' || field == '' || from == '' || to == ''){
             return false;    
-        }else if(to < from){
-            toastr.error('please enter correct date.', 'error');
+        }else if(compareDates(from,to)){
+            toastr.error('please enter correct dates', 'error');
         }else{
             $.ajax({
                 url: '/account/resume-builder/education',
@@ -846,8 +853,8 @@ $(document).on('submit','#update-education-form',function(e){
         var to = $('#update_qualification_to').val();
         if(school == ''  || degree == '' || field == '' || from == '' || to == ''){
             return false;    
-        }else if(to < from){
-            toastr.error('please enter correct date.', 'error');
+        }else if(compareDates(from,to)){
+            toastr.error('please enter correct dates', 'error');
         }else{
         $.ajax({
             url: '/account/resume-builder/update-education',
@@ -919,6 +926,10 @@ e.preventDefault();
             }
         }
     var description = $('#addexperienceform-description').val();
+    if(compareDates(from,to)){
+        toastr.error('please enter correct dates', 'error');
+        return false;
+    }
     $.ajax({
        url: '/account/resume-builder/experience',
        method: 'POST',
@@ -960,6 +971,11 @@ $(document).on('submit','#update-experience-form',function(e){
                 }
             }
             var description = $('#update_description').val();
+            
+            if(compareDates(from,to)){
+                toastr.error('please enter correct dates', 'error');
+                return false;
+            }
             
             if(title == '' || company == '' || city == '' || from == '' || description == ''){
                 return false;
@@ -1057,12 +1073,8 @@ $.ajax({
     url: '/account/resume-builder/achievements',
     method : 'POST',
     data : {achievement_name:achievement_name},
-    beforeSend:function(){     
-              $('.loader-aj-main').fadeIn(1000);  
-        },
     success : function(response)
     {
-        $('.loader-aj-main').fadeOut(1000);
          var res = JSON.parse(response);
          if(res.status == 200){
              $('#achievement_input').val('');
@@ -1115,12 +1127,8 @@ $.ajax({
     url: '/account/resume-builder/hobbies',
     method : 'POST',
     data : {hobby_name:hobby_name},
-    beforeSend:function(){     
-              $('.loader-aj-main').fadeIn(1000);  
-        },
     success : function(response)
     {
-        $('.loader-aj-main').fadeOut(1000);
          var res = JSON.parse(response);
          if(res.status == 200){
              $('#hobby_input').val('');
@@ -1162,39 +1170,34 @@ $(document).on('click','.hobby_remove', function(e) {
 });
         
 $(document).on('keyup','#skill_input',function(e){   
-e.preventDefault();
-if(e.which==13){
-var skill_name = $('#skill_input').val();
-
-if(skill_name == ''){
-    toastr.error('please enter something', 'error');
-}else {        
-$.ajax({
-    url: '/account/resume-builder/skills',
-    method : 'POST',
-    data : {skill_name:skill_name},
-    beforeSend:function(){     
-              $('.loader-aj-main').fadeIn(1000);  
-        },
-    success : function(response)
-    {
-        $('.loader-aj-main').fadeOut(1000);
-         var res = JSON.parse(response);
-         if(res.status == 200){
-             $('#skill_input').val('');
-            $.pjax.reload({container: '#pjax_skills', async: false});
-         }
-         else if(res.status == 201){
-             toastr.error(res.message, res.title);
-         }
-         else if(res.status == 203){
-             toastr.error(res.message, res.title);
-         }
-         
-    } 
-    });
-  }
-}
+    e.preventDefault();
+    if(e.which==13){
+    var skill_name = $('#skill_input').val();
+    if(skill_name == ''){
+        toastr.error('please enter something', 'error');
+    }else {        
+    $.ajax({
+        url: '/account/resume-builder/skills',
+        method : 'POST',
+        data : {skill_name:skill_name},
+        success : function(response)
+        {
+             var res = JSON.parse(response);
+             if(res.status == 200){
+                 $('#skill_input').val('');
+                $.pjax.reload({container: '#pjax_skills', async: false});
+             }
+             else if(res.status == 201){
+                 toastr.error(res.message, res.title);
+             }
+             else if(res.status == 203){
+                 toastr.error(res.message, res.title);
+             }
+             
+        } 
+        });
+      }
+    }
 });
         
 $(document).on('click','.skill_remove', function(e) {
@@ -1231,12 +1234,8 @@ $.ajax({
     url: '/account/resume-builder/interests',
     method : 'POST',
     data : {interest_name:interest_name},
-    beforeSend:function(){     
-              $('.loader-aj-main').fadeIn(1000);  
-        },
     success : function(response)
     {
-        $('.loader-aj-main').fadeOut(1000);
          var res = JSON.parse(response);
          if(res.status == 200){
              $('#interest_input').val('');

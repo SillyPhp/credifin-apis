@@ -113,24 +113,14 @@ class ResumeBuilderController extends Controller
 
         return $this->render('resume', [
             'user' => $user,
-            'ResumeAboutMe' => $ResumeAboutMe,
-            'individualImageFormModel' => $individualImageFormModel,
             'addQualificationForm' => $addQualificationForm,
             'addExperienceForm' => $addExperienceForm,
-            'ResumeContactInfo' => $ResumeContactInfo,
-            'ResumeCertificates' => $ResumeCertificates,
-            'ResumeOtherInfo' => $ResumeOtherInfo,
-            'ResumeSkills' => $ResumeSkills,
-            'ResumeProject' => $ResumeProject,
-            'ResumeAchievments' => $ResumeAchievments,
-            'ResumeHobbies' => $ResumeHobbies,
             'experience' => $experience,
             'education' => $education,
             'skills' => $skillist,
             'achievements' => $achievements,
             'hobbies' => $hobbies,
             'interests' => $interests,
-            'sociallinks' => $sociallinks
         ]);
     }
 
@@ -144,6 +134,8 @@ class ResumeBuilderController extends Controller
             $to = Yii::$app->request->post('to');
             $checkbox = Yii::$app->request->post('checkbox');
             $description = Yii::$app->request->post('description');
+            $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
+            $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
 
 
             $utilitiesModel = new Utilities();
@@ -440,6 +432,11 @@ class ResumeBuilderController extends Controller
             ->where(['education_enc_id' => $id])
             ->asArray()
             ->one();
+        $from_date = date_create($editedu['from_date']);
+        $to_date = date_create($editedu['to_date']);
+        $editedu['from_date'] = date_format($from_date, 'M-d-Y');
+        $editedu['to_date'] = date_format($to_date, 'M-d-Y');
+
         return json_encode($editedu);
     }
 
@@ -453,6 +450,11 @@ class ResumeBuilderController extends Controller
             ->where(['a.experience_enc_id' => $id])
             ->asArray()
             ->one();
+
+        $from_date = date_create($editexp['from_date']);
+        $to_date = date_create($editexp['to_date']);
+        $editexp['from_date'] = date_format($from_date, 'M-d-Y');
+        $editexp['to_date'] = date_format($to_date, 'M-d-Y');
 
         return json_encode($editexp);
     }
@@ -540,6 +542,8 @@ class ResumeBuilderController extends Controller
             $to = Yii::$app->request->post('to');
             $check = Yii::$app->request->post('check');
             $description = Yii::$app->request->post('description');
+            $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
+            $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
 
 
             $model = UserWorkExperience::find()
