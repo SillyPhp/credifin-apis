@@ -478,10 +478,12 @@ $this->params['seo_tags'] = [
 if ($review_type=='claimed')
 {
     echo $this->render('/widgets/mustache/organization-reviews',[
+        'org_slug'=>$slug
     ]);
 }else
 {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+        'org_slug'=>$slug
     ]);
 }
 

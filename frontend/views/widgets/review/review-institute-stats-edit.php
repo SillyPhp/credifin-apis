@@ -156,7 +156,7 @@
 </div>
 <div class="row">
     <div class="col-md-3 col-md-offset-1">
-        <label class="control-label padding_top">Accessibilit of Faculty</label>
+        <label class="control-label padding_top">Accessibility of Faculty</label>
     </div>
     <div class="col-md-8">
         <div class="star-rating1">
