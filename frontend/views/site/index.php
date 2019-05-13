@@ -177,44 +177,44 @@ $this->params['seo_tags'] = [
         <div class="row">
             <div class="tc">
             <div class="col-md-3">
-                <a href="/reviews/companies">
+<!--                <a href="/reviews/companies">-->
                     <div class="review-cat-box">
                         <div class="rcb-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/review-company-icon1.png')?>">
                         </div>
                         <div class="rcb-name">Company</div>
                     </div>
-                </a>
+<!--                </a>-->
             </div>
             <div class="col-md-3">
-                <a href="/reviews/colleges">
+<!--                <a href="/reviews/colleges">-->
                     <div class="review-cat-box">
                         <div class="rcb-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/review-college-icon1.png')?>">
                         </div>
                         <div class="rcb-name">College</div>
                     </div>
-                </a>
+<!--                </a>-->
             </div>
             <div class="col-md-3">
-                <a href="/reviews/schools">
+<!--                <a href="/reviews/schools">-->
                 <div class="review-cat-box">
                     <div class="rcb-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/review-school-icon1.png')?>">
                     </div>
                     <div class="rcb-name">School</div>
                 </div>
-                </a>
+<!--                </a>-->
             </div>
             <div class="col-md-3">
-                <a href="/reviews/educational-institutes">
+<!--                <a href="/reviews/educational-institutes">-->
                 <div class="review-cat-box">
                     <div class="rcb-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/review-educational-icon1.png')?>">
                     </div>
                     <div class="rcb-name">Educational Institute</div>
                 </div>
-                </a>
+<!--                </a>-->
             </div>
             </div>
         </div>
