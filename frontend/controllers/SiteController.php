@@ -202,7 +202,13 @@ class SiteController extends Controller
 
     public function actionEmployers()
     {
-        return $this->render('employers');
+        $feedbackFormModel = new FeedbackForm();
+        $partnerWithUsModel = new PartnerWithUsForm();
+
+        return $this->render('employers', [
+            'feedbackFormModel' => $feedbackFormModel,
+            'partnerWithUsModel' => $partnerWithUsModel,
+        ]);
     }
 
     public function actionAddNewSubscriber()
