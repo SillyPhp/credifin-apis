@@ -1116,6 +1116,11 @@ display:none;
 /*----- School css ends -----*/
 ');
 $script = <<< JS
+$(document).on("click", "#widget_bar_stats label", function(e){
+    e.preventDefault();
+    var id = "#" + $(this).attr("for");
+    $(id).prop("checked", true);
+});
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({

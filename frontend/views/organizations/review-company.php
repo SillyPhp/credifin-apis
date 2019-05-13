@@ -1103,6 +1103,11 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
+$(document).on("click", ".star-rating1 label", function(e){
+    e.preventDefault();
+    var id = "#" + $(this).attr("for");
+    $(id).prop("checked", true);
+});
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({

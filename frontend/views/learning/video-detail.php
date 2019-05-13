@@ -184,6 +184,13 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({
+                        google_ad_client: "ca-pub-9111969809145171",
+                    enable_page_level_ads: true
+                    });
+                </script>
                 <div class="top-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -523,7 +530,7 @@ margin-right:5px;
 .v-tags ul a li{
 margin-bottom:10px;
 }
-.video-container, .video-container2{
+.video-container{
 box-shadow:0 0 10px rgba(0,0,0,0.1);
 border-radius:10px;
 height:250px;
@@ -531,7 +538,7 @@ position:relative;
 margin-bottom:20px;
 }
 .video-container2{
-height:auto;
+//height:auto;
 background:#fff;
 }
 .video-container:hover{
@@ -565,8 +572,13 @@ padding:5px 10px 10px 10px;
 background:#fff;
 }
 .r-v-name{
-font-size:14px;
-font-weight:bold;
+    font-size:14px;
+    font-weight:bold;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .r-ch-name{
 position:absolute;
@@ -628,9 +640,9 @@ color:#999;
 color:#00a0e3;
 }
 .reply-comment{
-//    border-top:1px solid #eee;
-padding:20px 20px 10px;
-margin-top:20px;
+    padding:20px 20px 10px;
+    margin-top:0px;
+    padding-top:5px;
 }
 .closeComment1{
 background:#fff;
@@ -842,26 +854,20 @@ float: left;
 }
 
 .video-container2{
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-border-radius:10px;
-height:300px;
-background:#fff;
-position:relative;
-margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    border-radius:10px;
+//    height:300px;
+    background:#fff;
+    position:relative;
+    margin-bottom:20px;
+    overflow:hidden;
 }
-.video-icon2{
-width:100%;
-height:200px;
-overflow:hidden;
-object-fit:cover;
+.video-container2 a{
+    display:block;
 }
 .r-video2{
 padding:5px 10px 10px 10px;
 background:#fff;
-}
-.r-v-name{
-font-size:14px;
-font-weight:bold;
 }
 .r-ch-name{
 position:absolute;
@@ -869,27 +875,9 @@ bottom:5px;
 left:10px;
 }
 
-.video-container2{
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-border-radius:10px;
-height:300px;
-background:#fff;
-position:relative;
-margin-bottom:20px;
-}
-.video-icon2{
-width:100%;
-height:200px;
-overflow:hidden;
-object-fit:cover;
-}
 .r-video2{
 padding:5px 10px 10px 10px;
 background:#fff;
-}
-.r-v-name{
-font-size:14px;
-font-weight:bold;
 }
 .r-ch-name{
 position:absolute;
@@ -915,10 +903,6 @@ left:10px;
 }
 .r-video{
     padding:5px 10px 10px 10px;
-}
-.r-v-name{
-    font-size:14px;
-    font-weight:bold;
 }
 .r-ch-name{
     position:absolute;
