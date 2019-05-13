@@ -13,7 +13,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             } else {
                 ?>
                 <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
-                        color="" font="55px"></canvas>
+                        color="<?= $initial_color; ?>" font="55px"></canvas>
                 <?php
             }
             ?>
@@ -39,10 +39,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     <?php endif; ?>
     <?php
     if ($type=='Internship'): ?>
-        <a href="<?= Url::to('/internships/list'); ?>" title="" class="viewall-jobs">View all
+        <a href="<?= Url::to('/internships/list?company=' . $org_name); ?>" title="" class="viewall-jobs">View all
         Internships</a>
    <?php elseif($type=='Job'): ?>
-    <a href="<?= Url::to('/jobs/list'); ?>" title="" class="viewall-jobs">View all
+    <a href="<?= Url::to('/jobs/list?company=' . $org_name); ?>" title="" class="viewall-jobs">View all
         Jobs</a>
     <?php endif; ?>
     <div class="share-bar no-border">

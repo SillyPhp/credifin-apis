@@ -3,9 +3,10 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+$this->title = Yii::t('frontend', "India’s No.1 Jobs & Internships Site");
 $this->params['header_dark'] = false;
-$keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,Latest IT Jobs for Freshers,Apply for Internship in India,Jobs near me,Internships near me,Top Career sites,Best Career sites in India';
-$description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
+$keywords = 'Jobs,Jobs in Chandigarh,Jobs in India,MBA Jobs,IT Jobs,Digital Marketing Jobs,Summer Internships 2019,Fresher Jobs,Paid Internships';
+$description = "India's no. 1 free Job Portal her's you can get, Pharma Jobs, Finance Jobs, IT Jobs, Engernering Jobs, Digital Marketing Jobs, Manufacturing Jobs, and many Jobs & Internships.";
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
@@ -164,6 +165,60 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 
+</section>
+<!---->
+<section class="review-categories">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Reviews</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="tc">
+            <div class="col-md-3">
+                <a href="">
+                <div class="review-cat-box">
+                    <div class="rcb-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-school-icon.png')?>">
+                    </div>
+                    <div class="rcb-name">School Reviews</div>
+                </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="">
+                <div class="review-cat-box">
+                    <div class="rcb-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-college-icon.png')?>">
+                    </div>
+                    <div class="rcb-name">College Reviews</div>
+                </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="">
+                <div class="review-cat-box">
+                    <div class="rcb-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-company-icon.png')?>">
+                    </div>
+                    <div class="rcb-name">Company Reviews</div>
+                </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="">
+                <div class="review-cat-box">
+                    <div class="rcb-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-educational-icon.png')?>">
+                    </div>
+                    <div class="rcb-name">Educational Institute Reviews</div>
+                </div>
+                </a>
+            </div>
+            </div>
+        </div>
+    </div>
 </section>
 <!---->
 <section class="fixed-bttn">
@@ -413,18 +468,18 @@ $this->params['seo_tags'] = [
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
-                                            <a href="/internship/full-stack-developer-1902011549002251">
+                                            <a href="/internship/digital-marketing-22371553238862">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/empoweryouth">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
-                                                                 alt="Empower Youth"/>
+                                                        <a href="/insta">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
+                                                                 alt="Insta Apphanced"/>
                                                         </a>
                                                     </div>
                                                     <h3>
-                                                        <a href="/internship/full-stack-developer-1902011549002251"
-                                                           title="">Full Stack Developer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/empoweryouth"> Empower Youth</a></div>
+                                                        <a href="/internship/digital-marketing-22371553238862"
+                                                           title="">Digital Marketing</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/insta"> Insta Apphanced</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
                                                     </div>
                                                 </div>
@@ -666,6 +721,49 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+<section class="search-lists">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-heading">Popular Searches</div>
+                <ul class="quick-links" id="searches">
+                    <?php foreach($search_words as $sw){ ?>
+                        <li class="hide"><a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>"><?= $sw['name'] ?></a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Jobs</div>
+                <ul class="quick-links" id="jobs">
+                    <?php foreach($job_profiles as $jp){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>"><?= $jp['name']; ?> Jobs</a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Browse by City</div>
+                <ul class="quick-links" id="cities">
+                    <?php foreach($cities as $c){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>">Jobs in <?= $c['name']; ?></a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Internships</div>
+                <ul class="quick-links" id="internships">
+                    <?php foreach($internship_profiles as $ip){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>"><?= $ip['name']; ?> Internships</a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+        </div>
+    </div>
+</section>
+
 <div class="window-popup message-popup">
     <a href="#" class="popup-close">
         <i class="fa fa-times"></i>
@@ -732,6 +830,24 @@ $this->params['seo_tags'] = [
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.tc{
+    text-align:center;
+}
+.review-categories{
+    padding:0 0 50px 0; 
+    background:#ecf5fe;
+}
+.rcb-icon{
+    max-height:125px;
+    max-width:125px;
+    margin:0 auto;
+}
+
+.rcb-name{
+    padding-top:15px;
+    font-size:17px;
+    text-transform:uppercase;  
+}
 .intern-tag{
     position:absolute;
     top:0;
@@ -1037,7 +1153,7 @@ $this->registerCss('
 
 /*services section starts*/
 .services{
-    padding: 50px 0 50px 0; 
+    padding: 50px 0 25px 0; 
     text-align:center !important;
 }
 .service-box{ 
@@ -1992,6 +2108,32 @@ textarea {
     -o-border-radius: 0px 23px 23px 0px !important;
     border-radius: 0px 23px 23px 0px !important;
 }
+.list-heading{
+    font-size:16px;
+    font-weight:bold;
+}
+.quick-links li a{
+    line-height:23px;
+    font-size:13px;
+}
+.quick-links li a:hover{
+    color:#00a0e3;
+}
+.search-lists{
+    padding:20px 0 50px;
+    text-transform:capitalize;
+}
+.hide{
+    display:none;
+}
+.showHideBtn{
+    background:none;
+    border:none;
+    color:#00a0e3;
+    padding:0;
+    font-size:14px;
+}
+
 @media only screen and (max-width:500px){
     .c-logo{
         width:100% !important ;
@@ -2150,3 +2292,86 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+
+?>
+<script>
+
+    expandFirst('searches');
+    expandFirst('cities');
+    expandFirst('jobs');
+    expandFirst('internships');
+
+
+    function expandFirst(elem){
+        var i = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k =0;
+        while(k < listElementsLength){
+            if(k < i + 4){
+                if(document.getElementById(elem)) {
+                    document.getElementById(elem).children[k].classList.remove('hide');
+                }
+            }else{
+                break;
+            }
+            k += 1;
+        }
+    }
+
+    $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+
+    function showMoreEvent(){
+        hideMore('searches');
+        hideMore('cities');
+        hideMore('jobs');
+        hideMore('internships');
+    }
+
+    function hideMore(elem){
+        var i = 0;
+        i += 5;
+        var k = 4;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.remove('hide');
+            }
+            k += 1;
+        }
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+    }
+
+    $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
+
+    function showLessEvent(){
+        hideLess('searches');
+        hideLess('cities');
+        hideLess('jobs');
+        hideLess('internships');
+    }
+
+    function hideLess(elem){
+        shrinkFirst(elem);
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
+        document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
+        expandFirst(elem);
+    }
+
+    function shrinkFirst(elem){
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k = 5;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.add('hide');
+            }
+            k += 1;
+        }
+    }
+
+</script>
+

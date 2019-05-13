@@ -28,6 +28,8 @@ class IndividualSignup extends Model{
 
             ['username', 'trim'],
             ['username', 'required'],
+            [['username'], 'string', 'length' => [3, 20]],
+            [['username'], 'match', 'pattern' => '/^[a-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             ['username', 'unique', 'targetClass'=>'api\modules\v1\models\Clients', 'message' => 'username already taken'],
 
             ['email', 'trim'],
@@ -36,7 +38,7 @@ class IndividualSignup extends Model{
             ['email', 'unique', 'targetClass'=>'api\modules\v1\models\Clients', 'message'=> 'email already taken'],
 
             ['password','required'],
-
+            [['password'], 'string', 'length' => [8, 20]],
             ['source', 'required']
         ];
     }

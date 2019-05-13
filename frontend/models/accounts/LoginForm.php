@@ -36,7 +36,7 @@ class LoginForm extends Model
             [['username', 'password'], 'required'],
             [['username'], 'string', 'length' => [3, 20]],
             [['password'], 'string', 'length' => [8, 20]],
-            [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
+            [['username'], 'match', 'pattern' => '/^[a-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['username', 'password', 'rememberMe'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],

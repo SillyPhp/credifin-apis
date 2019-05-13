@@ -3,6 +3,7 @@
 namespace common\components\email_service;
 
 use common\models\Users;
+use common\models\Organizations;
 use common\models\UserVerificationTokens;
 use Yii;
 use DateTime;
@@ -10,43 +11,77 @@ use yii\base\Component;
 use common\models\Utilities;
 use yii\base\InvalidParamException;
 
-class ForgotPassword extends Component{
+class ForgotPassword extends Component
+{
 
-    public function reset($email){
-        $data = Users::find()
-            ->select(['user_enc_id user_id', 'CONCAT(first_name," ",last_name) name', 'email'])
+    public function reset($email)
+    {
+        $is_user = false;
+        $data = Organizations::find()
+            ->select(['organization_enc_id id', 'name', 'email'])
             ->where([
-                'email'=>$email,
-                'status'=>'Active',
-                'is_deleted'=>0,
+                'email' => $email,
+                'status' => 'Active',
+                'is_deleted' => 0,
             ])
             ->asArray()
             ->one();
 
-        if(!$data){
+        if (!$data) {
+            $data = Users::find()
+                ->select(['user_enc_id id', 'CONCAT(first_name," ",last_name) name', 'email'])
+                ->where([
+                    'email' => $email,
+                    'status' => 'Active',
+                    'is_deleted' => 0,
+                ])
+                ->andWhere([
+                    'or',
+                    ['!=', 'organization_enc_id', ''],
+                    ['organization_enc_id' => NULL],
+                ])
+                ->asArray()
+                ->one();
+
+            if (!$data) {
+                return false;
+            }
+
+            $is_user = true;
+        }
+
+        if (!$data) {
             return false;
         }
 
+        $utilitiesModel = new Utilities();
+        $userVerificationModel = new UserVerificationTokens();
+
+        if (!$is_user) {
+            $userVerificationModel->organization_enc_id = $data['id'];
+        }
+
+        $user['name'] = $data['name'];
+        $user['email'] = $data['email'];
+
         UserVerificationTokens::updateAll([
-            'last_updated_on'=> date('Y-m-d H:i:s'),
+            'last_updated_on' => date('Y-m-d H:i:s'),
             'last_updated_by' => $data['user_id'],
             'is_deleted' => 1
-        ],  ['and',
+        ], ['and',
             ['verification_type' => 1],
             ['created_by' => $data['user_id']],
             ['status' => 'Pending'],
             ['is_deleted' => 0]
         ]);
 
-        $utilitiesModel = new Utilities();
-        $userVerificationModel = new UserVerificationTokens();
+
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $userVerificationModel->token_enc_id = $utilitiesModel->encrypt();
         $userVerificationModel->token = Yii::$app->security->generateRandomString();
         $userVerificationModel->verification_type = 1;
-        $userVerificationModel->created_by = $data['user_id'];
-        if($userVerificationModel->validate() && $userVerificationModel->save()){
-            $user['name'] = $data['name'];
+        $userVerificationModel->created_by = $data['id'];
+        if ($userVerificationModel->validate() && $userVerificationModel->save()) {
             $user['link'] = Yii::$app->urlManager->createAbsoluteUrl(['/reset-password/' . $userVerificationModel->token]);
 
             Yii::$app->mailer->htmlLayout = 'layouts/email';
@@ -54,21 +89,22 @@ class ForgotPassword extends Component{
                 ['html' => 'reset-password-email'], ['data' => $user]
             )
                 ->setFrom([Yii::$app->params->contact_email => Yii::$app->params->site_name])
-                ->setTo([$data['email'] => $data['name']])
+                ->setTo([$user['email'] => $user['name']])
                 ->setSubject(Yii::t('frontend', 'Reset Your Password'));
 
-            if($mail->send()){
+            if ($mail->send()) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function verify($token){
-        if(empty($token) || !is_string($token)){
+    public function verify($token)
+    {
+        if (empty($token) || !is_string($token)) {
             throw new InvalidParamException('Password Reset token cannot be blank');
         }
 
@@ -79,7 +115,7 @@ class ForgotPassword extends Component{
             'is_deleted' => 0
         ]);
 
-        if(!$user_token){
+        if (!$user_token) {
             throw new InvalidParamException('Wrong Password Reset token');
         }
 
@@ -101,7 +137,8 @@ class ForgotPassword extends Component{
         return $user_token->created_by;
     }
 
-    public function change($user_id, $new_password){
+    public function change($user_id, $new_password)
+    {
         $utilitiesModel = new Utilities();
         $user = Users::findOne([
             'user_enc_id' => $user_id,
@@ -109,15 +146,15 @@ class ForgotPassword extends Component{
             'is_deleted' => 0
         ]);
 
-        if(!empty($user)){
+        if (!empty($user)) {
             $utilitiesModel->variables['password'] = $new_password;
             $new_password = $utilitiesModel->encrypt_pass();
-        }else{
+        } else {
             return false;
         }
 
         $user->password = $new_password;
-        if(!$user->validate() || !$user->save()){
+        if (!$user->validate() || !$user->save()) {
             return false;
         }
 
@@ -134,7 +171,7 @@ class ForgotPassword extends Component{
         $user_token->status = 'Verified';
         $user_token->last_updated_by = $user_id;
         $user_token->is_deleted = 1;
-        if($user_token->update()){
+        if ($user_token->update()) {
             return true;
         }
         return false;

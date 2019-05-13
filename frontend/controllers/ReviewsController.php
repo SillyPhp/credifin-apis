@@ -51,7 +51,7 @@ class ReviewsController extends Controller
             ->from(UnclaimedOrganizations::tableName().'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
             ->where('name LIKE "%' . $query . '%"')
-            ->andWhere(['status'=>1]);
+            ->andWhere(['is_deleted'=>0]);
 
         $query2 = (new \yii\db\Query())
             ->select(['name','slug','initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo','business_activity'])
@@ -76,12 +76,31 @@ class ReviewsController extends Controller
             $org_name = Yii::$app->request->post('org_name');
             $website = Yii::$app->request->post('website');
             $org_category = Yii::$app->request->post('org_category');
-            $response = $model->saveVal($org_name,$website,$org_category);
+            $type = Yii::$app->request->post('type');
+            $response = $model->saveVal($org_name, $website, $org_category);
             if ($response['status'] == 200) {
-                    if ($model->postReviews($response['org_id']))
-                    {
-                        return $this->redirect('/'.$response['slug'] . '/reviews');
+                if ($type=='company') {
+                    if ($model->postReviews($response['org_id'])) {
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
+                }
+                else if($type=='college'){
+                    if ($model->postCollegeReviews($response['org_id'])) {
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
+                    }
+                }
+              else if ($type=='school')
+              {
+                  if ($model->postSchoolReviews($response['org_id'])) {
+                      return $this->redirect('/' . $response['slug'] . '/reviews');
+                  }
+              }
+              else if ($type=='institute')
+              {
+                  if ($model->postInstituteReviews($response['org_id'])) {
+                      return $this->redirect('/' . $response['slug'] . '/reviews');
+                  }
+              }
             }
             else
             {

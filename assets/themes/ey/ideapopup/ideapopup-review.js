@@ -458,27 +458,124 @@ function random_fn(t){
 		
 		return d;
 	}
-        var department_autoInputBox = function (qno, that){
-		//if(qno == 4)
-		var dd = '<div class="i-review-answer"><input type="text" onclick="department_auto_fn(this);" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-department-autocomplete"></div>';
-		//else
-		//	var i = '<div class="i-review-answer"><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input"></div>';
-		return dd;
+	var department_autoInputBox = function (qno, that){
+		setTimeout(make_department,100);
+		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-department_autocomplete"></div>';
+		return i;
 	}
+	function make_department() {
+		var department = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				url: '/account/categories-list/job-profiles?q=%QUERY',
+				wildcard: '%QUERY',
+				cache: true,
+				filter: function(list) {
+					return list;
+				}
+			}
+		});
 
+		$('.i-review-department_autocomplete').typeahead(null, {
+			name: 'cities_test',
+			display: 'value',
+			limit: 8,
+			source: department
+		}).on('typeahead:asyncrequest', function() {
+			$('.Typeahead-spinner').show();
+		}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+
+			$('.Typeahead-spinner').hide();
+		}).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+		})
+	}
 	var designation_autoInputBox = function (qno, that){
-		var ddd = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner">\n' +
-			'                                                <span></span>\n' +
-			'                                                <span></span>\n' +
-			'                                                <span></span>\n' +
-			'                                            </div><input type="text" onclick="designation_auto_fn();" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-designation-autocomplete"></div>';
-		return ddd;
+		setTimeout(make_designation,100);
+		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-designation_autocomplete"></div>';
+		return i;
+	}
+	function make_designation() {
+		var designation = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				url: '/account/categories-list/designations?q=%QUERY',
+				wildcard: '%QUERY',
+				cache: true,
+				filter: function(list) {
+					return list;
+				}
+			}
+		});
+
+		$('.i-review-designation_autocomplete').typeahead(null, {
+			name: 'cities_test',
+			display: 'designation',
+			limit: 8,
+			source: designation
+		}).on('typeahead:asyncrequest', function() {
+			$('.Typeahead-spinner').show();
+		}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+
+			$('.Typeahead-spinner').hide();
+		}).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+		})
 	}
 	//------------------------------------------------------------
 	// Textarea create method. Using with answerType:'textarea'
 	var createTextarea = function (qno, that){
 		var t = '<div class="i-review-answer"><textarea placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-textarea"></textarea></div>';
 		return t;
+	}
+	var createCollegeCity = function (qno,that) {
+		setTimeout(make_city,100);
+		var i = '<div class="i-review-answer"><div class="load-suggestions Typeahead-spinner"><span></span><span></span><span></span></div><input type="text" placeHolder="'+propertyIsExist(qno,'placeHolder',that)+'" name="'+propertyIsExist(qno,'formName',that)+'" class="i-review-input i-review-college_city_autocomplete"></div>';
+		return i;
+	}
+
+	var global = [];
+	function make_city() {
+		var cities = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				url: '/account/cities/cities?q=%QUERY',
+				wildcard: '%QUERY',
+				cache: true,
+				filter: function(list) {
+					global = list;
+					return list;
+				}
+			}
+		});
+
+		$('.i-review-college_city_autocomplete').typeahead(null, {
+			name: 'cities_test',
+			display: 'name',
+			limit: 8,
+			source: cities
+		}).on('typeahead:asyncrequest', function() {
+			$('.Typeahead-spinner').show();
+		}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+
+			$('.Typeahead-spinner').hide();
+		}).on('typeahead:selected typeahead:autocompleted',function(e,datum){
+			$('.hidden_city_location').val((datum.city_enc_id));
+		}).blur(validateSelection);
+	}
+	function validateSelection() {
+		var theIndex = -1;
+		for (var i = 0; i < global.length; i++) {
+			if (global[i].name == $(this).val()) {
+				theIndex = i;
+				break;
+			}
+		}
+		if ( theIndex == -1) {
+			$(this).val("");
+		}
+
 	}
 	//------------------------------------------------------------
 	// Checkbox create method. Using with answerType:'checkbox'
@@ -576,7 +673,7 @@ function random_fn(t){
 			case 'location_autocomplete':
 				that.nextButton.classList.remove("i-next-hide");
 				showNextButton(qno, that);
-				return location_autoInputBox(qno, that);
+				return createCollegeCity(qno, that);
 				break;
            case 'department_autocomplete':
 				that.nextButton.classList.remove("i-next-hide");
@@ -807,6 +904,17 @@ function random_fn(t){
 		else
 			return false;
 	}
+	var college_city_validate = function (qno,that) {
+
+		var val = document.getElementsByClassName("hidden_city_location")[0].value;
+		var val2 = that.reviewModal.getElementsByClassName('i-review-input')[0].value;
+		that.values[that.options.data[qno].formName] = val;
+		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
+		{
+			if (val == ''&&val2=='')
+				that.validate = false;
+		}
+	}
 	//------------------------------------------------------------
 	// Finish page checker method.
 	var endPageControl = function (that){
@@ -866,10 +974,13 @@ function random_fn(t){
 				inputValidate(qno, that);
 				break;
 			case 'location_autocomplete':
-				location_autocompleteValidate(qno, that);
+				college_city_validate(qno, that);
 				break;
-                        case 'department_autocomplete':
-				department_autocompleteValidate(qno, that);
+             case 'department_autocomplete':
+				 departmentValidate(qno, that);
+				break;
+			case 'designation_autocomplete':
+				designationValidate(qno, that);
 				break;
 			case 'textarea':
 				textareaValidate(qno, that);
@@ -901,6 +1012,47 @@ function random_fn(t){
 		var val = that.reviewModal.getElementsByClassName('i-review-input')[0].value;
 		that.values[that.options.data[qno].formName] = val;
 		
+		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
+		{
+			if (that.options.data[qno].hasOwnProperty('validate'))
+			{
+				if (that.options.data[qno].validate == 'email')
+					that.validate = emailValidate(val);
+				else if (that.options.data[qno].validate == 'number')
+					that.validate = numericValidate(val);
+			}
+			else
+			{
+				if (val == '')
+					that.validate = false;
+			}
+		}
+	}
+	var designationValidate = function(qno,that){
+		var val = that.reviewModal.getElementsByClassName('i-review-input')[1].value;
+		that.values[that.options.data[qno].formName] = val;
+
+		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
+		{
+			if (that.options.data[qno].hasOwnProperty('validate'))
+			{
+				if (that.options.data[qno].validate == 'email')
+					that.validate = emailValidate(val);
+				else if (that.options.data[qno].validate == 'number')
+					that.validate = numericValidate(val);
+			}
+			else
+			{
+				if (val == '')
+					that.validate = false;
+			}
+		}
+	}
+
+	var departmentValidate = function(qno,that){
+		var val = that.reviewModal.getElementsByClassName('i-review-input')[1].value;
+		that.values[that.options.data[qno].formName] = val;
+
 		if (that.options.data[qno].hasOwnProperty('required') && that.options.data[qno].required == true)
 		{
 			if (that.options.data[qno].hasOwnProperty('validate'))
@@ -1267,9 +1419,6 @@ function calculate_avg(k){
 }
 function sbt_values(t){
         var sum = average_rating.reduce((a, b) => a+b, 0);
-		t['location'] = getKeyByValue(j, t['location']);
-        t['department'] = getKeyByValue(d, t['department']);
-        t['designation'] = $('#hidden_designation').val();
         t['average_rating'] = sum / average_rating.length;
         var tenures = t['tenure'].split(' ');
         t['from'] = tenures[1] + "-" +tenures[0] + "-1"; 
@@ -1279,33 +1428,9 @@ function sbt_values(t){
             t['to'] = tenures[4] + "-" +tenures[3] + "-1";
         }
         var y  = window.location.href;
-        var z = y.split('/');
-        t['slug'] = z[4];
         res = t;
 }
 
 function call_result(t){
-	// console.log(t);
 	review_post_ajax(t);
 }
-
-
-
-//function fetch_cards(){
-//$.ajax({
-//        method: "GET",
-//        url : "/companies/detail",
-//        success: function(response) {
-//                console.log(response);
-////            if(response.status == 200) {
-////                var card = $('#review-cards').html();
-////                if(response['is_current_employee']=='0'){
-////                    response['is_current_employee'] = 'former';
-////                }else{
-////                    response['is_current_employee'] = 'current';
-////                }
-////                $(".reviews-list").append(Mustache.render(card, response));
-////            }
-//        }
-//    });
-//    }

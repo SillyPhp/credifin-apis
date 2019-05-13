@@ -118,7 +118,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= ucwords($org_details['name']); ?> Reviews </h1>
+                <h1 class="heading-style">Reviews </h1>
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
@@ -126,7 +126,7 @@ $this->params['seo_tags'] = [
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
-                    <h1 class="heading-style">Overall Reviews</h1>
+                    <h1 class="heading-style">Overall Ratings</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
                             <div class="rs-main <?= (($reviews) ? '': 'fade_background') ?>">
@@ -264,11 +264,8 @@ $this->params['seo_tags'] = [
             ]);
             ?>
              <div class="row">
-                 <div class="col-md-6">
+                 <div class="col-md-6 col-md-offset-1">
                      <?= $form->field($editReviewForm, 'identity')->dropDownList([0=>Anonymous,1=>Yii::$app->user->identity->first_name.' '.Yii::$app->user->identity->last_name])->label('Post As'); ?>
-                 </div>
-                 <div class="col-md-6">
-                     <?= $form->field($editReviewForm, 'dept')->dropDownList($primary_cat)->label('Department'); ?>
                  </div>
              </div>
              <div class="row">
@@ -475,20 +472,26 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </div>
-<input type="hidden" name="hidden_designation" id="hidden_designation">
+<input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
 if ($review_type=='claimed')
 {
     echo $this->render('/widgets/mustache/organization-reviews',[
+        'org_slug'=>$slug
     ]);
 }else
 {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+        'org_slug'=>$slug
     ]);
 }
 
 $this->registerCss('
+.i-review-navigation
+{
+display:none;
+}
 .star-rating1 {
   font-family: "FontAwesome";
 }
@@ -599,16 +602,16 @@ border: 2px solid #cadfe8 !important;
 .logo-box img, .logo-box canvas{
     border-radius:6px;
 }
-//.logo{
-//    display:table-cell;
-//    vertical-align: middle;  
-//    max-width:150px;   
-//}
 .com-name{
-    font-size:40px;
-    font-family:lobster;
+    font-size:38px;
+    font-family: "Lora", serif;
+    font-weight: 700;
     color:#fff;
+    line-height:50px;
     margin-top: -16px;
+}
+.com-rating-1{
+    padding-top:15px;
 }
 .com-rating i{
     font-size:16px;
@@ -1087,6 +1090,17 @@ border: 2px solid #cadfe8 !important;
     }
     
 }
+.i-review-box *{
+    font-family: "Roboto Slab";
+    font-weight:400;
+}
+.i-review-start-end-title, .i-review-question-title{
+    font-weight:700;
+}
+.i-review-star{
+    width: 45px;
+    height: 45px;
+}
 ');
 $script = <<< JS
 $(document).on('click','.load_reviews',function(e){
@@ -1316,50 +1330,6 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 JS;
 $headScript = <<< JS
-var flag = 0;
-function designation_auto_fn() {
-  if (flag>0)
-      {
-          return false;
-      }
-  var designations = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		remote: {
-			url: '/account/categories-list/designations?q=%QUERY',
-			wildcard: '%QUERY',
-			cache: true,
-			filter: function(list) {
-				return list;
-			}
-		}
-	});
-
-	$('.i-review-designation-autocomplete').typeahead(null, {
-		name: 'designations_test',
-		display: 'designation',
-		limit: 8,
-		source: designations
-	}).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
-  }).on('typeahead:selected typeahead:autocompleted',function(e,datum){
-      $('#hidden_designation').val(datum.designation_enc_id); 
-  });
-	  flag++;
-}
-var j = {};
-var d = {};
-var countries = [];
-var departments = [];
-function location_auto_fn(a){
-	autocomplete(a, countries);
-}
-function department_auto_fn(a){
-	autocomplete(a, departments);
-}
 function review_post_ajax(data) {
 	$.ajax({
        method: 'POST',
@@ -1374,45 +1344,15 @@ function review_post_ajax(data) {
                    {
                        window.location = window.location.pathname;
                    }
-          }});
-}
-ajax_fetch_city();
-ajax_fetch_category();
-function ajax_fetch_city() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/cities/cities',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      j[response[i].city_enc_id] = response[i].name;
-                  }
-              for (var key in j) {
-	            countries.push(j[key]);
-            }
-       }
-   });
-}
-function ajax_fetch_category() {
-  $.ajax({
-       method: 'GET',
-       url : '/account/categories-list/profiles',
-       success: function(response) {
-              for (i=0;i<response.length;i++)
-                  {
-                      d[response[i].category_enc_id] = response[i].name;
-                  }
-              for(var key in d){
-	            departments.push(d[key]);
-            }
-       }
-   });
+          }
+	});
 }
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
