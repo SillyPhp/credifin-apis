@@ -81,7 +81,7 @@ $this->registerCss("
     border: none;
     width:100%;
 }
-.chats.message-list{margin-bottom:50px}
+.chats.message-list{margin-bottom:50px;margin-top:0px;}
 #chat-list ul{
     padding-inline-start:0px !important;
 }
