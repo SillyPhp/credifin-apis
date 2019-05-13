@@ -5,20 +5,12 @@ namespace account\controllers;
 
 use account\models\resumeBuilder\AddExperienceForm;
 use account\models\resumeBuilder\AddQualificationForm;
-use account\models\resumeBuilder\ResumeAboutMe;
 use account\models\resumeBuilder\ResumeAchievments;
-use account\models\resumeBuilder\ResumeCertificates;
-use account\models\resumeBuilder\ResumeContactInfo;
-use account\models\resumeBuilder\ResumeEducation;
 use account\models\resumeBuilder\ResumeHobbies;
 use account\models\resumeBuilder\ResumeInterests;
-use account\models\resumeBuilder\ResumeOtherInfo;
-use account\models\resumeBuilder\ResumeProfilePic;
-use account\models\resumeBuilder\ResumeProject;
-use account\models\resumeBuilder\ResumeSkills;
-use account\models\resumeBuilder\ResumeWorkExperience;
-use account\models\resumeBuilder\SocialLinks;
+use common\models\Organizations;
 use common\models\Skills;
+use common\models\UnclaimedOrganizations;
 use common\models\UserAchievements;
 use common\models\UserEducation;
 use common\models\UserHobbies;
@@ -47,21 +39,11 @@ use kartik\mpdf\Pdf;
 class ResumeBuilderController extends Controller
 {
 
-    public function actionResume()
+    public function actionIndex()
     {
 
-        $ResumeAboutMe = new ResumeAboutMe();
         $addQualificationForm = new AddQualificationForm();
         $addExperienceForm = new AddExperienceForm();
-        $ResumeContactInfo = new ResumeContactInfo();
-        $ResumeOtherInfo = new ResumeOtherInfo();
-        $ResumeCertificates = new ResumeCertificates();
-        $ResumeSkills = new ResumeSkills();
-        $ResumeProject = new ResumeProject();
-        $ResumeAchievments = new ResumeAchievments();
-        $individualImageFormModel = new IndividualImageForm();
-        $ResumeHobbies = new ResumeHobbies();
-        $sociallinks = new SocialLinks();
         $user = Users::find()
             ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
             ->asArray()
@@ -154,7 +136,11 @@ class ResumeBuilderController extends Controller
             $obj->description = $description;
 
             if (!$obj->save()) {
-                return false;
+                return json_encode($response = [
+                    'status' => 201,
+                    'title' => 'error',
+                    'message' => 'something went wrong.',
+                ]);
             } else {
                 return json_encode($response = [
                     'status' => 200,
@@ -434,8 +420,8 @@ class ResumeBuilderController extends Controller
             ->one();
         $from_date = date_create($editedu['from_date']);
         $to_date = date_create($editedu['to_date']);
-        $editedu['from_date'] = date_format($from_date, 'M-d-Y');
-        $editedu['to_date'] = date_format($to_date, 'M-d-Y');
+        $editedu['from_date'] = date_format($from_date, 'd-M-Y');
+        $editedu['to_date'] = date_format($to_date, 'd-M-Y');
 
         return json_encode($editedu);
     }
@@ -453,8 +439,8 @@ class ResumeBuilderController extends Controller
 
         $from_date = date_create($editexp['from_date']);
         $to_date = date_create($editexp['to_date']);
-        $editexp['from_date'] = date_format($from_date, 'M-d-Y');
-        $editexp['to_date'] = date_format($to_date, 'M-d-Y');
+        $editexp['from_date'] = date_format($from_date, 'd-M-Y');
+        $editexp['to_date'] = date_format($to_date, 'd-M-Y');
 
         return json_encode($editexp);
     }
@@ -654,6 +640,45 @@ class ResumeBuilderController extends Controller
                 ]);
             }
 
+        }
+    }
+
+    public function actionOrganizations($q = null){
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!is_null($q)) {
+            $org = Organizations::find()
+                ->alias('a')
+                ->select(['a.name AS text'])
+                ->where(['like', 'a.name', $q,'is_deleted'=>0]);
+
+            $unclaimed_org = UnclaimedOrganizations::find()
+                ->alias('a')
+                ->select(['a.name AS text'])
+                ->where(['like', 'a.name', $q,'is_deleted'=>0]);
+
+            return $unclaimed_org->union($org)->asArray()->all();
+        }
+    }
+
+    public function actionSchools($q = null){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!is_null($q)) {
+            $school = Organizations::find()
+                ->alias('a')
+                ->select(['a.name AS text'])
+                ->joinWith(['businessActivityEnc b'],false)
+                ->where(['like', 'a.name', $q, 'a.is_deleted'=>0])
+                ->andWhere([
+                        'or',
+                    ['b.business_activity'=>'School'],
+                    ['b.business_activity'=>'College'],
+                    ['b.business_activity'=>'Educational Institute']
+                    ])
+                ->asArray()
+                ->all();
+
+            return $school;
         }
     }
 

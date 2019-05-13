@@ -53,17 +53,23 @@ function random_color()
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= $fforms->field($addQualificationForm, 'school')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                                                <div class="load-suggestions Typeahead-spinner school-spin"
+                                                     style="display: none;">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                                <?= $fforms->field($addQualificationForm, 'school')->textInput(['id'=>'school','autocomplete' => 'off','placeholder'=>'School/College'])->label(false); ?>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= $fforms->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                                                <?= $fforms->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off'])->label('Class/Degree'); ?>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= $fforms->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                                                <?= $fforms->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off'])->label('Stream'); ?>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -74,7 +80,7 @@ function random_color()
                                                     'readonly' => true,
                                                     'pluginOptions' => [
                                                         'autoclose' => true,
-                                                        'format' => 'M-dd-yyyy',
+                                                        'format' => 'dd-M-yyyy',
                                                         'name' => 'qualification_from',
                                                         'todayHighlight' => true,
                                                     ]])->label(false);
@@ -88,7 +94,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'M-dd-yyyy',
+                                                            'format' => 'dd-M-yyyy',
                                                             'name' => 'qualification_to',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -126,17 +132,23 @@ function random_color()
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= $update_edu_form->field($addQualificationForm, 'school')->textInput(['autocomplete' => 'off', 'id' => 'update_school'])->label(true); ?>
+                                                <div class="load-suggestions Typeahead-spinner school-spin"
+                                                     style="display: none;">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                                <?= $update_edu_form->field($addQualificationForm, 'school')->textInput(['autocomplete' => 'off', 'id' => 'update_school','placeholder'=>'School/College'])->label(false); ?>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= $update_edu_form->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off', 'id' => 'update_degree'])->label(true); ?>
+                                                <?= $update_edu_form->field($addQualificationForm, 'degree')->textInput(['autocomplete' => 'off', 'id' => 'update_degree'])->label('Class/Degree'); ?>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <?= $update_edu_form->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off', 'id' => 'update_field'])->label(true); ?>
+                                                <?= $update_edu_form->field($addQualificationForm, 'field')->textInput(['autocomplete' => 'off', 'id' => 'update_field'])->label('Stream'); ?>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -147,7 +159,7 @@ function random_color()
                                                     'readonly' => true,
                                                     'pluginOptions' => [
                                                         'autoclose' => true,
-                                                        'format' => 'M-dd-yyyy',
+                                                        'format' => 'dd-M-yyyy',
                                                         'name' => 'qualification_from',
                                                         'todayHighlight' => true,
                                                     ]])->label(false);
@@ -161,7 +173,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'M-dd-yyyy',
+                                                            'format' => 'dd-M-yyyy',
                                                             'name' => 'qualification_to',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -260,11 +272,17 @@ function random_color()
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <?= $fform->field($addExperienceForm, 'company')->textInput(['autocomplete' => 'off'])->label(true); ?>
+                                                    <div class="load-suggestions Typeahead-spinner company-spin"
+                                                         style="display: none;">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
+                                                    <?= $fform->field($addExperienceForm, 'company')->textInput(['id'=>'company','autocomplete' => 'off','placeholder'=>'Company'])->label(false); ?>
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <div class="load-suggestions Typeahead-spinner"
+                                                    <div class="load-suggestions Typeahead-spinner city-spin"
                                                          style="display: none;">
                                                         <span></span>
                                                         <span></span>
@@ -282,7 +300,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'M-dd-yyyy',
+                                                            'format' => 'dd-M-yyyy',
                                                             'name' => 'exp_from',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -296,7 +314,7 @@ function random_color()
                                                             'readonly' => true,
                                                             'pluginOptions' => [
                                                                 'autoclose' => true,
-                                                                'format' => 'M-dd-yyyy',
+                                                                'format' => 'dd-M-yyyy',
                                                                 'name' => 'earliestjoiningdate',
                                                                 'todayHighlight' => true,
                                                             ]])->label(false);
@@ -369,11 +387,17 @@ function random_color()
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <?= $fform->field($addExperienceForm, 'company')->textInput(['autocomplete' => 'off', 'id' => 'update_exp_company'])->label(true); ?>
+                                                    <div class="load-suggestions Typeahead-spinner company-spin"
+                                                         style="display: none;">
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </div>
+                                                    <?= $fform->field($addExperienceForm, 'company')->textInput(['autocomplete' => 'off', 'id' => 'update_exp_company','placeholder'=>'Company'])->label(false); ?>
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <div class="load-suggestions Typeahead-spinner"
+                                                    <div class="load-suggestions Typeahead-spinner city-spin"
                                                          style="display: none;">
                                                         <span></span>
                                                         <span></span>
@@ -391,7 +415,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'M-dd-yyyy',
+                                                            'format' => 'dd-M-yyyy',
                                                             'name' => 'exp_from',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -405,7 +429,7 @@ function random_color()
                                                             'readonly' => true,
                                                             'pluginOptions' => [
                                                                 'autoclose' => true,
-                                                                'format' => 'M-dd-yyyy',
+                                                                'format' => 'dd-M-yyyy',
                                                                 'name' => 'earliestjoiningdate',
                                                                 'todayHighlight' => true,
                                                             ]])->label(false);
@@ -474,18 +498,19 @@ function random_color()
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-4 col-xs-12">
                                         <div class="rounded-experience-period">
-
+                                            <canvas class="user-icon company-logo" name="<?= $ex['company']; ?>" width="100" height="100" color="" font="50px"></canvas>
                                         </div>
                                     </div>
                                     <div class="col-md-9 col-sm-8 col-xs-12">
                                         <div class="experience-detail">
-                                            <?=  Yii::$app->formatter->asDate($ex['from_date'], 'long'); ?>
-                                            -
+                                            <span><?=  Yii::$app->formatter->asDate($ex['from_date'], 'long'); ?>
+                                             to <br/>
                                             <?php if ($ex['is_current']) {
                                                 echo 'Present';
                                             } else {
                                                 echo Yii::$app->formatter->asDate($ex['to_date'], 'long');
                                             } ?>
+                                            </span>
                                             <h4><?= $ex['company']; ?></h4>
                                             <h4 class="colored"><?= $ex['title']; ?></h4>
                                             <p><?= $ex['description']; ?></p>
@@ -752,13 +777,13 @@ $('#update_exp_present').click(function(){
 $(document).on('click','#addEdu',function(e){   
             e.preventDefault();
             $('#add-education-modal').modal('toggle');
-            $('#addqualificationform-school').val('');
+            $('#school').val('');
             $('#addqualificationform-degree').val('');
             $('#addqualificationform-field').val('');
             $('#addqualificationform-qualification_from').val('');
             $('#addqualificationform-qualification_to').val('');
             setTimeout(function(){
-                $('#addqualificationform-school').focus();
+                $('#school').focus();
                 }, 500);
         });
         
@@ -767,7 +792,7 @@ $(document).on('click','#addExp',function(event){
             $('#add-experience-modal').modal('toggle');
             
              $('#addexperienceform-title').val('');
-             $('#addexperienceform-company').val('');
+             $('#company').val('');
              $('#city_id_exp').val('');
              $('#cities').val('');
              $('#addexperienceform-exp_from').val('');
@@ -778,7 +803,6 @@ $(document).on('click','#addExp',function(event){
             }
              $('#addexperienceform-description').val('');
             setTimeout(function(){
-                console.log('ff');
                 $('#addexperienceform-title').focus();
                 }, 500);
             
@@ -786,7 +810,7 @@ $(document).on('click','#addExp',function(event){
 
 $(document).on('submit','#add-education-form',function(e){   
         e.preventDefault();
-        var school = $('#addqualificationform-school').val();
+        var school = $('#school').val();
         var degree = $('#addqualificationform-degree').val();
         var field = $('#addqualificationform-field').val();
         var from = $('#addqualificationform-qualification_from').val();
@@ -907,9 +931,9 @@ $(document).on('click','.edu-del',function(e){
         });
     
 $(document).on('submit','#add-experience-form',function(e){
-e.preventDefault();
+    e.preventDefault();
     var title = $('#addexperienceform-title').val();
-    var company = $('#addexperienceform-company').val();
+    var company = $('#company').val();
     var city = $('#city_id_exp').val();
    
     var from = $('#addexperienceform-exp_from').val();
@@ -944,6 +968,7 @@ e.preventDefault();
            {
                $('#add-experience-modal').modal('toggle');
                $.pjax.reload({container: '#pjax_experience', async: false});
+               utilities.initials();
            } else {
                toastr.error('something went wrong.Try Again', 'error');
            }
@@ -952,35 +977,35 @@ e.preventDefault();
 });
 
 $(document).on('submit','#update-experience-form',function(e){
-            e.preventDefault();
-           
-            var id = $('.expUpdate').attr('id');
-            var title = $('#update_exp_title').val();
-            var company = $('#update_exp_company').val();
-            var city = $('#update_city_id_exp').val();
-            var from = $('#update_exp_from').val();
-            if($('#update_exp_present').prop("checked")){
-                var checkbox = 1;
-                $('#update_exp_to').val('');
-            }else{
-                var checkbox = 0;
-                if($('#update_exp_to').val() == ''){
-                     return false;
-                }else{
-                    var to = $('#update_exp_to').val();
-                }
-            }
-            var description = $('#update_description').val();
-            
-            if(compareDates(from,to)){
-                toastr.error('please enter correct dates', 'error');
-                return false;
-            }
-            
-            if(title == '' || company == '' || city == '' || from == '' || description == ''){
-                return false;
-            }else{            
-             $.ajax({
+    e.preventDefault();
+   
+    var id = $('.expUpdate').attr('id');
+    var title = $('#update_exp_title').val();
+    var company = $('#update_exp_company').val();
+    var city = $('#update_city_id_exp').val();
+    var from = $('#update_exp_from').val();
+    if($('#update_exp_present').prop("checked")){
+        var checkbox = 1;
+        $('#update_exp_to').val('');
+    }else{
+        var checkbox = 0;
+        if($('#update_exp_to').val() == ''){
+             return false;
+        }else{
+            var to = $('#update_exp_to').val();
+        }
+    }
+    var description = $('#update_description').val();
+    
+    if(compareDates(from,to)){
+        toastr.error('please enter correct dates', 'error');
+        return false;
+    }
+    
+    if(title == '' || company == '' || city == '' || from == '' || description == ''){
+        return false;
+    }else{            
+        $.ajax({
             url: '/account/resume-builder/update-experience',
             method : 'POST',
             data: {id:id,title:title,company:company,city:city,from:from,to:to,check:checkbox,description:description},
@@ -993,104 +1018,106 @@ $(document).on('submit','#update-experience-form',function(e){
                 if(res==true){
                     $('#update-experience-modal').modal('toggle');
                     $.pjax.reload({container: '#pjax_experience', async: false});
+                    utilities.initials();
                 }else {
                     $('#update-experience-modal').modal('toggle');
                   //toastr.error('An error occured.try again', 'error');  
                 }
             }
-            });
-             }
         });
+    }
+});
 
 $(document).on('click','.exp-del',function(e){
-           e.preventDefault();
-           
-           var  id = $(this).attr('id');
-           
-           $.ajax({
-                url: '/account/resume-builder/delete-experience',
-                 method : 'POST',
-                 data : {id:id},
-                 beforeSend:function(){
-                    $('.loader-aj-main').fadeIn(100);
-                 },
-                  success : function(response)
-                  {
-                      $('.loader-aj-main').fadeOut(50);
-                      var res = JSON.parse(response);
-                      
-                      if(res.status == 200){
-                          $.pjax.reload({container: '#pjax_experience', async: false});
-                      }else if(res.status == 201){
-                          toastr.error(res.message, res.title);
-                      }
-                      
-                  }
-            });
-        });
+   e.preventDefault();
+   
+   var  id = $(this).attr('id');
+   
+   $.ajax({
+        url: '/account/resume-builder/delete-experience',
+         method : 'POST',
+         data : {id:id},
+         beforeSend:function(){
+            $('.loader-aj-main').fadeIn(100);
+         },
+          success : function(response)
+          {
+              $('.loader-aj-main').fadeOut(50);
+              var res = JSON.parse(response);
+              
+              if(res.status == 200){
+                  $.pjax.reload({container: '#pjax_experience', async: false});
+                  utilities.initials();
+              }else if(res.status == 201){
+                  toastr.error(res.message, res.title);
+              }
+              
+          }
+   });
+});
         
 $(document).on('click','.exp-pen',function(e){
-            e.preventDefault();
-            
-            var id = $(this).attr('id');
-            $.ajax({
-                url: '/account/resume-builder/edit-experience',
-                 method : 'POST',
-                 data : {id:id},
-                 beforeSend:function(){
-                    $('.loader-aj-main').fadeIn(100);
-                 },
-                  success : function(res)
-                  {
-                      $('.loader-aj-main').fadeOut(50);
-                      $('#update-experience-modal').modal('show');
-                      var obj = JSON.parse(res);
-                      $('#update_exp_title').val(obj.title);
-                      $('#update_exp_company').val(obj.company);
-                      $('#update_city_id_exp').val(obj.city_enc_id);
-                      $('#update_cities').val(obj.name);
-                      $('#update_exp_from').val(obj.from_date);
-                      $('#update_exp_to').val(obj.to_date);
-                      if(obj.is_current == 1){
-                          $('#update_exp_present').prop('checked', true);
-                          $('#update_exp_to').val(0);
-                          $('.update_experience').hide();
-                      }
-                      $('#update_description').val(obj.description );
-                      $('.expUpdate').attr('id',obj.experience_enc_id);
-                  }
-            });
-        });
+    e.preventDefault();
+    
+    var id = $(this).attr('id');
+    $.ajax({
+        url: '/account/resume-builder/edit-experience',
+         method : 'POST',
+         data : {id:id},
+         beforeSend:function(){
+            $('.loader-aj-main').fadeIn(100);
+         },
+          success : function(res)
+          {
+              $('.loader-aj-main').fadeOut(50);
+              $('#update-experience-modal').modal('show');
+              var obj = JSON.parse(res);
+              $('#update_exp_title').val(obj.title);
+              $('#update_exp_company').val(obj.company);
+              $('#update_city_id_exp').val(obj.city_enc_id);
+              $('#update_cities').val(obj.name);
+              $('#update_exp_from').val(obj.from_date);
+              $('#update_exp_to').val(obj.to_date);
+              if(obj.is_current == 1){
+                  $('#update_exp_present').prop('checked', true);
+                  $('#update_exp_to').val(0);
+                  $('.update_experience').hide();
+              }
+              $('#update_description').val(obj.description );
+              $('.expUpdate').attr('id',obj.experience_enc_id);
+          }
+    });
+});
     
 $(document).on('keyup','#achievement_input',function(e){   
-e.preventDefault();
-if(e.which==13){
-var achievement_name = $('#achievement_input').val();
-if(achievement_name == ''){
-    toastr.error('please enter something', 'error');
-}else {
-$.ajax({
-    url: '/account/resume-builder/achievements',
-    method : 'POST',
-    data : {achievement_name:achievement_name},
-    success : function(response)
-    {
-         var res = JSON.parse(response);
-         if(res.status == 200){
-             $('#achievement_input').val('');
-            $.pjax.reload({container: '#pjax_achievements', async: false});
-         }
-         else if(res.status == 201){
-             toastr.error(res.message, res.title);
-         }
-         else if(res.status == 203){
-             toastr.error(res.message, res.title);
-         }
-         
-    } 
-    });
-  }
-}
+    e.preventDefault();
+    if(e.which==13){
+    var achievement_name = $('#achievement_input').val();
+    if(achievement_name == ''){
+        toastr.error('please enter something', 'error');
+    }else {
+        $.ajax({
+            url: '/account/resume-builder/achievements',
+            method : 'POST',
+            data : {achievement_name:achievement_name},
+            success : function(response)
+            {
+                 var res = JSON.parse(response);
+                 if(res.status == 200){
+                     $('#achievement_input').val('');
+                    $.pjax.reload({container: '#pjax_achievements', async: false});
+                 }
+                 else if(res.status == 201){
+                     toastr.error(res.message, res.title);
+                 }
+                 else if(res.status == 203){
+                     toastr.error(res.message, res.title);
+                 }
+                 
+            } 
+        });
+      }
+    }
 });
         
 $(document).on('click','.achievement_remove', function(e) {
@@ -1116,35 +1143,35 @@ $(document).on('click','.achievement_remove', function(e) {
 });
         
 $(document).on('keyup','#hobby_input',function(e){   
-e.preventDefault();
-if(e.which==13){
-var hobby_name = $('#hobby_input').val();
-
-if(hobby_name == ''){
-    toastr.error('please enter something', 'error');
-}else {        
-$.ajax({
-    url: '/account/resume-builder/hobbies',
-    method : 'POST',
-    data : {hobby_name:hobby_name},
-    success : function(response)
-    {
-         var res = JSON.parse(response);
-         if(res.status == 200){
-             $('#hobby_input').val('');
-            $.pjax.reload({container: '#pjax_hobby', async: false});
-         }
-         else if(res.status == 201){
-             toastr.error(res.message, res.title);
-         }
-         else if(res.status == 203){
-             toastr.error(res.message, res.title);
-         }
-         
-    } 
-    });
-  }
-}
+    e.preventDefault();
+    if(e.which==13){
+    var hobby_name = $('#hobby_input').val();
+    
+    if(hobby_name == ''){
+        toastr.error('please enter something', 'error');
+    }else {        
+        $.ajax({
+            url: '/account/resume-builder/hobbies',
+            method : 'POST',
+            data : {hobby_name:hobby_name},
+            success : function(response)
+            {
+                 var res = JSON.parse(response);
+                 if(res.status == 200){
+                     $('#hobby_input').val('');
+                    $.pjax.reload({container: '#pjax_hobby', async: false});
+                 }
+                 else if(res.status == 201){
+                     toastr.error(res.message, res.title);
+                 }
+                 else if(res.status == 203){
+                     toastr.error(res.message, res.title);
+                 }
+                 
+            } 
+        });
+      }
+    }
 });
 
 $(document).on('click','.hobby_remove', function(e) {
@@ -1223,32 +1250,32 @@ $(document).on('click','.skill_remove', function(e) {
 });
         
 $(document).on('keyup','#interest_input',function(e){   
-e.preventDefault();
-if(e.which==13){
-var interest_name = $('#interest_input').val();
-
-if(interest_name == ''){
-    toastr.error('please enter something', 'error');
-}else {        
-$.ajax({
-    url: '/account/resume-builder/interests',
-    method : 'POST',
-    data : {interest_name:interest_name},
-    success : function(response)
-    {
-         var res = JSON.parse(response);
-         if(res.status == 200){
-             $('#interest_input').val('');
-            $.pjax.reload({container: '#pjax_interest', async: false});
-         }
-         else if(res.status == 201){
-             toastr.error(res.message, res.title);
-         }
-         else if(res.status == 203){
-             toastr.error(res.message, res.title);
-         }
-         
-    } 
+    e.preventDefault();
+    if(e.which==13){
+    var interest_name = $('#interest_input').val();
+    
+    if(interest_name == ''){
+        toastr.error('please enter something', 'error');
+    }else {        
+    $.ajax({
+        url: '/account/resume-builder/interests',
+        method : 'POST',
+        data : {interest_name:interest_name},
+        success : function(response)
+        {
+             var res = JSON.parse(response);
+             if(res.status == 200){
+                 $('#interest_input').val('');
+                $.pjax.reload({container: '#pjax_interest', async: false});
+             }
+             else if(res.status == 201){
+                 toastr.error(res.message, res.title);
+             }
+             else if(res.status == 203){
+                 toastr.error(res.message, res.title);
+             }
+             
+        } 
     });
 }
 
@@ -1277,37 +1304,21 @@ $(document).on('click','.interest_remove', function(e) {
             });
         });
         
+var global = [];
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   prefetch: '',
   remote: {
-    url:'/cities/city-list?q=%QUERY',  
+    url:'/account/cities/city-list?q=%QUERY',  
     wildcard: '%QUERY',
     filter: function(list) {
+            global = list;
              return list;
         }
   }
-});    
-            
-$('#contact_city').typeahead(null, {
-  name: 'cities',
-  highlight: true,       
-  display: 'text',
-  source: city,
-   limit: 15,
-   hint:false,
-}).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
-  }).on('typeahead:selected typeahead:completed',function(e,datum)
-      {
-        
-        $('#city_id').val(datum.id);
-       
-     });
+});
+
         
 $('#cities').typeahead(null, {
   name: 'cities',
@@ -1317,14 +1328,29 @@ $('#cities').typeahead(null, {
    limit: 15,
    hint:false,
 }).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
+    $('.city-spin').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     
-    $('.Typeahead-spinner').hide();
+    $('.city-spin').hide();
   }).on('typeahead:selected typeahead:completed',function(e,datum)
       {
         $('#city_id_exp').val(datum.id);
-     });
+     }).blur(validateSelection);
+
+
+function validateSelection() {
+  var theIndex = -1;
+ for (var i = 0; i < global.length; i++) {
+ if (global[i].text == $(this).val()) {
+ theIndex = i;
+break;
+  }
+}
+  if (theIndex == -1) {
+  $('#cities').val("");
+ }
+
+}
 
 $('#update_cities').typeahead(null, {
   name: 'cities',
@@ -1334,14 +1360,93 @@ $('#update_cities').typeahead(null, {
    limit: 15,
    hint:false,
 }).on('typeahead:asyncrequest', function() {
-    $('.Typeahead-spinner').show();
+    $('.city-spin').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     
-    $('.Typeahead-spinner').hide();
+    $('.city-spin').hide();
   }).on('typeahead:selected typeahead:completed',function(e,datum)
       {
         $('#update_city_id_exp').val(datum.id);
      });
+
+var org = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '',
+  remote: {
+    url:'/account/resume-builder/organizations?q=%QUERY',  
+    wildcard: '%QUERY',
+    filter: function(org) {
+             return org;
+        }
+  }
+});
+
+$('#company').typeahead(null, {
+  name: 'company',
+  highlight: true,       
+  display: 'text',
+  source: org,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.company-spin').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.company-spin').hide();
+  });
+  
+$('#update_exp_company').typeahead(null, {
+name: 'company',
+highlight: true,       
+display: 'text',
+source: org,
+limit: 15,
+hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.company-spin').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.company-spin').hide();
+  });
+
+var school = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '',
+  remote: {
+    url:'/account/resume-builder/schools?q=%QUERY',  
+    wildcard: '%QUERY',
+    filter: function(school) {
+             return school;
+        }
+  }
+});
+
+$('#school').typeahead(null, {
+  name: 'school',
+  highlight: true,       
+  display: 'text',
+  source: school,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.school-spin').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.school-spin').hide();
+  });
+
+$('#update_school').typeahead(null, {
+  name: 'school',
+  highlight: true,       
+  display: 'text',
+  source: school,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.school-spin').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.school-spin').hide();
+  });
+
 
 JS;
 $this->registerJs($script);
@@ -1398,10 +1503,10 @@ ul.widget-todo-list li label.line-through span {
 .working .col-md-8{
      color: black;
 }
-.working .col-md-4 .btn-primary{
-    font-size: 15px ;
-    padding: 12px 15px 10px !important;
-}
+//.working .col-md-4 .btn-primary{
+//    font-size: 15px ;
+//    padding: 12px 15px 10px !important;
+//}
 .round-info-upper{
     border-radius: 10px 10px 0px 0px;
     background: orange;
@@ -1566,21 +1671,11 @@ ul.widget-todo-list li label.line-through span {
 /*Load Suggestions loader css ends */
 
 .rounded-experience-period{
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     border-radius: 100%;
-    background-color: #4aa1e3;
-    text-align: center;
-    color: #fff;
     margin: auto;
-    margin-top: 20px;
-    line-height: 20px;
-    padding: 30px 0px;
-    font-weight: 700;
-    display: table-cell;
-    vertical-align: middle;
-    background: rgba(0,0,0,0) -webkit-linear-gradient(left,#00c6ff,#0072ff);
-    background: rgba(0,0,0,0) linear-gradient(to right,#00c6ff,#0072ff);
+    overflow:hidden;
     box-shadow: 2px 2px 6px #333;
 }
 .experience-title{
@@ -1588,9 +1683,13 @@ ul.widget-todo-list li label.line-through span {
     line-height: 125px;
     padding:0px;
 }
-//.experience-detail{
-//    margin-top:20px;
-//}
+.experience-detail{
+    width:78%;
+}
+.experience-detail span{
+    float: right;
+    display: block;
+}
 .experience-detail h2{
     font-weight: 500;
     margin-top: 20px;
@@ -1599,6 +1698,7 @@ ul.widget-todo-list li label.line-through span {
 }
 .experience-detail h4{
     font-weight:700;
+    max-width: 65%;
 }
 h4.colored{
     color:#4aa1e3;
@@ -1814,12 +1914,6 @@ top:0;
     right:40px;
     top:0;
     }
-}
-
-.expSave
-{
-
-font-size:10px !important;
 }
 /*-- skills tags input css starts --*/
 .tags > .addedTag{

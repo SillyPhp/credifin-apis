@@ -21,6 +21,15 @@ $profile = [
 ];
 array_push($result, $profile);
 
+if(Yii::$app->user->identity->type->user_type == 'Individual') {
+    $resume = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Resume'),
+        'url' => Url::to('/account/resume-builder'),
+        'template' => '<a href="{url}">{label}</a>',
+    ];
+    array_push($result, $resume);
+}
+
 echo Menu::widget([
     'activateItems' => true,
     'activateParents' => true,

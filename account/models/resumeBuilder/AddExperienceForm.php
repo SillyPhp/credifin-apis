@@ -38,6 +38,8 @@ class AddExperienceForm extends Model {
             'title' => Yii::t('account', 'Title'),
             'company' => Yii::t('account', 'Company'),
             'location' => Yii::t('account', 'Location'),
+            'exp_from' => Yii::t('account','Experience From'),
+            'exp_to' => Yii::t('account','Experience To')
         ];
     }
 
