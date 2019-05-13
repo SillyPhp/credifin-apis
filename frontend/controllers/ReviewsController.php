@@ -111,5 +111,20 @@ class ReviewsController extends Controller
         return $this->render('unclaimed-reviews',['name'=>$tempname,'model'=>$model,'type'=>$org_type]);
     }
 
+    public function actionSchoolReviewIndex(){
+        return $this->render('school-review-index');
+    }
+
+    public function actionCompanyReviewIndex(){
+        return $this->render('company-review-index');
+    }
+
+    public function actionCollegeReviewIndex(){
+        return $this->render('college-review-index');
+    }
+
+    public function actionEducationalReviewIndex(){
+        return $this->render('educational-review-index');
+    }
 }
 
