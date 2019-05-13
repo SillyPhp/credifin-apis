@@ -321,8 +321,8 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <img src="{{img}}">
                         {{/img}}
                         {{^img}}
-                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
-                                font="27px"></canvas>
+                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="64" height="64"
+                                font="35px"></canvas>
                         {{/img}}
                     </div>
                 </div>
@@ -362,8 +362,8 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                         <img src="{{img}}">
                         {{/img}}
                         {{^img}}
-                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
-                                font="27px"></canvas>
+                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="64" height="64"
+                                font="35px"></canvas>
                         {{/img}}
                     </div>
                 </div>
