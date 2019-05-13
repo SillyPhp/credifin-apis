@@ -58,7 +58,7 @@ $script = <<<JS
     //page load => get all parent comments
     $.ajax({
         type: 'POST',
-        url: '/learning/get-parent-comments',
+        url: '//<?= Yii::$app->controller->id; ?>/get-parent-comments',
         async: false,
         data: {
             param: window.location.pathname.split('/')[3]
