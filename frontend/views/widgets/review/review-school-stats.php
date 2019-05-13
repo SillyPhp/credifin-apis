@@ -17,7 +17,7 @@
             <div class="rs1">
                 <div class="re-heading">Student Engagement</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['student_engagement']; ?> </div>
                     <div class="fourstar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['student_engagement'] < $i) ? '' : 'active') ?>"></i>
@@ -30,7 +30,7 @@
             <div class="rs1">
                 <div class="re-heading">School Infrastructure</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['school_infrastructure']; ?> </div>
                     <div class="fourstar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['school_infrastructure'] < $i) ? '' : 'active') ?>"></i>
@@ -43,7 +43,7 @@
             <div class="rs1">
                 <div class="re-heading">Faculty</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['faculty']; ?> </div>
                     <div class="fourstar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['faculty'] < $i) ? '' : 'active') ?>"></i>
@@ -56,7 +56,7 @@
             <div class="rs1">
                 <div class="re-heading">Accessibility Of Faculty</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['accessibility_of_faculty']; ?> </div>
                     <div class="fourstar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['accessibility_of_faculty'] < $i) ? '' : 'active') ?>"></i>
@@ -69,7 +69,7 @@
             <div class="rs1">
                 <div class="re-heading">Co Curricular Activities</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['co_curricular_activities']; ?> </div>
                     <div class="threestar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['co_curricular_activities'] < $i) ? '' : 'active') ?>"></i>
@@ -82,7 +82,7 @@
             <div class="rs1">
                 <div class="re-heading">Leadership Development</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['leadership_development']; ?> </div>
                     <div class="fourstar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['leadership_development'] < $i) ? '' : 'active') ?>"></i>
@@ -95,7 +95,7 @@
             <div class="rs1">
                 <div class="re-heading">Sports</div>
                 <div class="summary-box">
-                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
+                    <div class="sr-rating <?= (($reviews_students) ? '' : 'fade_background') ?>"> <?= $stats_students['sports']; ?> </div>
                     <div class="fourstar-box com-rating-2 <?= (($reviews_students) ? '' : 'fade_border') ?>">
                         <?php for ($i = 1; $i <= 5; $i++) { ?>
                             <i class="fa fa-star <?= (($stats_students['sports'] < $i) ? '' : 'active') ?>"></i>

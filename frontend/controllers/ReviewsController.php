@@ -97,8 +97,6 @@ class ReviewsController extends Controller
               }
               else if ($type=='institute')
               {
-                  return 11;
-                  return $model->postInstituteReviews($response['org_id']);
                   if ($model->postInstituteReviews($response['org_id'])) {
                       return $this->redirect('/' . $response['slug'] . '/reviews');
                   }
