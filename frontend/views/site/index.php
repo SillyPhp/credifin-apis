@@ -177,7 +177,7 @@ $this->params['seo_tags'] = [
         <div class="row">
             <div class="tc">
             <div class="col-md-3">
-                <a href="">
+                <a href="/reviews/company-review-index">
                     <div class="review-cat-box">
                         <div class="rcb-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/review-company-icon1.png')?>">
@@ -187,7 +187,7 @@ $this->params['seo_tags'] = [
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="">
+                <a href="/reviews/college-review-index">
                     <div class="review-cat-box">
                         <div class="rcb-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/review-college-icon1.png')?>">
@@ -197,7 +197,7 @@ $this->params['seo_tags'] = [
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="">
+                <a href="/reviews/school-review-index">
                 <div class="review-cat-box">
                     <div class="rcb-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/review-school-icon1.png')?>">
@@ -207,7 +207,7 @@ $this->params['seo_tags'] = [
                 </a>
             </div>
             <div class="col-md-3">
-                <a href="">
+                <a href="/reviews/educational-review-index">
                 <div class="review-cat-box">
                     <div class="rcb-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/review-educational-icon1.png')?>">
