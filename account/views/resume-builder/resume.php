@@ -552,8 +552,8 @@ function random_color()
                                     ]);
                                     ?>
                                     <ul class="tags skill_tag_list">
-                                        <?php
 
+                                        <?php
                                         if (!empty($skills)) {
                                             foreach ($skills as $skill) { ?>
                                                 <li class="addedTag"><?= $skill['skill'] ?>
@@ -1096,6 +1096,10 @@ $(document).on('keyup','#achievement_input',function(e){
     if(achievement_name == ''){
         toastr.error('please enter something', 'error');
     }else {
+        var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+        var new_tag = '<li class="addedTag">'+ achievement_name +'<span class="achievement_remove">x</span></li>';
+        $(new_tag).insertAfter(last_child);
+        $('#achievement_input').val('');
         $.ajax({
             url: '/account/resume-builder/achievements',
             method : 'POST',
@@ -1103,11 +1107,8 @@ $(document).on('keyup','#achievement_input',function(e){
             success : function(response)
             {
                  var res = JSON.parse(response);
-                 if(res.status == 200){
-                     $('#achievement_input').val('');
-                    $.pjax.reload({container: '#pjax_achievements', async: false});
-                 }
-                 else if(res.status == 201){
+                 $.pjax.reload({container: '#pjax_achievements', async: false});
+                 if(res.status == 201){
                      toastr.error(res.message, res.title);
                  }
                  else if(res.status == 203){
@@ -1146,10 +1147,13 @@ $(document).on('keyup','#hobby_input',function(e){
     e.preventDefault();
     if(e.which==13){
     var hobby_name = $('#hobby_input').val();
-    
     if(hobby_name == ''){
         toastr.error('please enter something', 'error');
-    }else {        
+    }else {     
+        var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+        var new_tag = '<li class="addedTag">'+ hobby_name +'<span class="hobby_remove">x</span></li>';
+        $(new_tag).insertAfter(last_child);
+        $('#hobby_input').val('');
         $.ajax({
             url: '/account/resume-builder/hobbies',
             method : 'POST',
@@ -1157,11 +1161,8 @@ $(document).on('keyup','#hobby_input',function(e){
             success : function(response)
             {
                  var res = JSON.parse(response);
-                 if(res.status == 200){
-                     $('#hobby_input').val('');
-                    $.pjax.reload({container: '#pjax_hobby', async: false});
-                 }
-                 else if(res.status == 201){
+                 $.pjax.reload({container: '#pjax_hobby', async: false});
+                 if(res.status == 201){
                      toastr.error(res.message, res.title);
                  }
                  else if(res.status == 203){
@@ -1203,28 +1204,29 @@ $(document).on('keyup','#skill_input',function(e){
     if(skill_name == ''){
         toastr.error('please enter something', 'error');
     }else {        
-    $.ajax({
-        url: '/account/resume-builder/skills',
-        method : 'POST',
-        data : {skill_name:skill_name},
-        success : function(response)
-        {
-             var res = JSON.parse(response);
-             if(res.status == 200){
-                 $('#skill_input').val('');
+        var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+        var new_tag = '<li class="addedTag">'+ skill_name +'<span class="skill_remove">x</span></li>';
+        $(new_tag).insertAfter(last_child);
+        $('#skill_input').val('');
+        $.ajax({
+            url: '/account/resume-builder/skills',
+            method : 'POST',
+            data : {skill_name:skill_name},
+            success : function(response)
+            {
+                 var res = JSON.parse(response);
                 $.pjax.reload({container: '#pjax_skills', async: false});
-             }
-             else if(res.status == 201){
-                 toastr.error(res.message, res.title);
-             }
-             else if(res.status == 203){
-                 toastr.error(res.message, res.title);
-             }
-             
-        } 
-        });
-      }
-    }
+                 if(res.status == 201){
+                     toastr.error(res.message, res.title);
+                 }
+                 else if(res.status == 203){
+                     toastr.error(res.message, res.title);
+                 }
+                 
+            } 
+            });
+          }
+        }
 });
         
 $(document).on('click','.skill_remove', function(e) {
@@ -1256,27 +1258,28 @@ $(document).on('keyup','#interest_input',function(e){
     
     if(interest_name == ''){
         toastr.error('please enter something', 'error');
-    }else {        
-    $.ajax({
-        url: '/account/resume-builder/interests',
-        method : 'POST',
-        data : {interest_name:interest_name},
-        success : function(response)
-        {
-             var res = JSON.parse(response);
-             if(res.status == 200){
-                 $('#interest_input').val('');
-                $.pjax.reload({container: '#pjax_interest', async: false});
-             }
-             else if(res.status == 201){
-                 toastr.error(res.message, res.title);
-             }
-             else if(res.status == 203){
-                 toastr.error(res.message, res.title);
-             }
-             
-        } 
-    });
+    }else {
+        var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+        var new_tag = '<li class="addedTag">'+ interest_name +'<span class="interest_remove">x</span></li>';
+        $(new_tag).insertAfter(last_child);
+        $('#interest_input').val('');
+        $.ajax({
+            url: '/account/resume-builder/interests',
+            method : 'POST',
+            data : {interest_name:interest_name},
+            success : function(response)
+            {
+                 var res = JSON.parse(response);
+                 $.pjax.reload({container: '#pjax_interest', async: false});
+                 if(res.status == 201){
+                     toastr.error(res.message, res.title);
+                 }
+                 else if(res.status == 203){
+                     toastr.error(res.message, res.title);
+                 }
+                 
+            } 
+        });
 }
 
 }
