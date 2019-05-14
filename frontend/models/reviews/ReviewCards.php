@@ -4,6 +4,7 @@ namespace frontend\models\reviews;
 
 use common\models\NewOrganizationReviews;
 use common\models\Organizations;
+use common\models\UnclaimedOrganizations;
 use yii\helpers\Url;
 use Yii;
 
@@ -66,6 +67,52 @@ class ReviewCards {
             'cards'=>$data
         ];
     }
+
+    public function getReviewUncliamedCards($options=[])
+    {
+        $cards =  UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
+            ->where(['a.is_deleted'=>0])
+            ->joinWith(['organizationTypeEnc b'],false)
+            ->joinWith(['newOrganizationReviews c'=>function($b)
+            {
+                $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
+                $b->groupBy(['c.organization_enc_id']);
+            }],true)
+            ->groupBy('a.organization_enc_id');
+        if (isset($options['business_activity']))
+        {
+            $cards->andWhere([
+                'or',
+                ['in','b.business_activity',$options['business_activity']]
+            ]);
+        }
+        if (isset($options['keywords']))
+        {
+            $cards->andWhere([
+                'or',
+                ['like', 'a.name', $options['keywords']],
+            ]);
+        }
+        if (isset($options['rating']))
+        {
+            $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
+        }
+        if (isset($options['sort']))
+        {
+            $cards->orderBy(['c.created_on' => SORT_DESC]);
+
+        }
+        $total_cards = $cards->count();
+        $data = $cards->limit($options['limit'])->offset($options['offset'])->asArray()->all();
+
+        return [
+            'total'=>$total_cards,
+            'cards'=>$data
+        ];
+    }
+
 
     public function getReviewsCount($unclaimed_org)
     {

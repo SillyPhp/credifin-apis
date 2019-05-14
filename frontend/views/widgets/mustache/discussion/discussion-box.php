@@ -6,7 +6,7 @@
         <div class="add-comment">
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                    <form id="postComm" action="/<?= Yii::$app->controller->id; ?>/parent-comment">
+                    <form id="postComm" action="/<?= Yii::$app->controller->id; ?>/comments/parent-comment">
                         <div class="">
                             <textarea id="commentArea"></textarea>
                         </div>
@@ -58,10 +58,10 @@ $this->registerJs('
     
     $.ajax({
         type: "POST",
-        url: "/'. Yii::$app->controller->id . '/get-parent-comments",
+        url: "/'. Yii::$app->controller->id . '/comments/get-parent-comments",
         async: false,
         data: {
-            param: window.location.pathname.split("/")[3]
+            param: window.location.pathname.split("/")[2]
         },
         success: function(response){
             if(response.status == 200){
@@ -97,7 +97,7 @@ $script = <<<JS
             url: url,
             async: false,
             data: {
-                param: window.location.pathname.split('/')[3],
+                param: window.location.pathname.split('/')[2],
                 comment: comment
             },
             success: function (response) {
@@ -230,7 +230,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             url: child_comments_send,
             async: false,
             data: {
-                param: window.location.pathname.split('/')[3],
+                param: window.location.pathname.split('/')[2],
                 reply: reply,
                 parent_id: parent_id
             },
@@ -287,10 +287,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
         $.ajax({
             type: 'POST',
-            url: '/<?= Yii::$app->controller->id; ?>/get-child-comments',
+            url: '/<?= Yii::$app->controller->id; ?>/comments/get-child-comments',
             data: {
                 parent: parent_id,
-                param: window.location.pathname.split('/')[3],
+                param: window.location.pathname.split('/')[2],
             },
             success: function (response) {
                 if (response.status == 200) {
@@ -387,7 +387,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         <div class="col-md-10 col-md-offset-2">
             <div class="reply-comment">
                 <div class="col-md-12">
-                    <form action="/<?= Yii::$app->controller->id; ?>/child-comment" id="child-comment-box">
+                    <form action="/<?= Yii::$app->controller->id; ?>/comments/child-comment" id="child-comment-box">
                         <textarea id="commentReply" class="repComment"></textarea>
                         <div class="comment-sub1">
                             <button type="button" class="addComment" id="reply_comm" onclick="addDynamicComment(this)">
