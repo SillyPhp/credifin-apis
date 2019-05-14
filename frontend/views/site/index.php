@@ -165,59 +165,7 @@ $this->params['seo_tags'] = [
 
 </section>
 <!---->
-<section class="review-categories">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Reviews</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="tc">
-            <div class="col-md-3">
-<!--                <a href="/reviews/companies">-->
-                    <div class="review-cat-box">
-                        <div class="rcb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-company-icon1.png')?>">
-                        </div>
-                        <div class="rcb-name">Company</div>
-                    </div>
-<!--                </a>-->
-            </div>
-            <div class="col-md-3">
-<!--                <a href="/reviews/colleges">-->
-                    <div class="review-cat-box">
-                        <div class="rcb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-college-icon1.png')?>">
-                        </div>
-                        <div class="rcb-name">College</div>
-                    </div>
-<!--                </a>-->
-            </div>
-            <div class="col-md-3">
-<!--                <a href="/reviews/schools">-->
-                <div class="review-cat-box">
-                    <div class="rcb-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-school-icon1.png')?>">
-                    </div>
-                    <div class="rcb-name">School</div>
-                </div>
-<!--                </a>-->
-            </div>
-            <div class="col-md-3">
-<!--                <a href="/reviews/educational-institutes">-->
-                <div class="review-cat-box">
-                    <div class="rcb-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-educational-icon1.png')?>">
-                    </div>
-                    <div class="rcb-name">Educational Institute</div>
-                </div>
-<!--                </a>-->
-            </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 <!---->
 <section class="fixed-bttn">
     <div class="container">
@@ -636,24 +584,7 @@ $this->params['seo_tags'] = [
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-.tc{
-    text-align:center;
-}
-.review-categories{
-    padding:0 0 50px 0; 
-    background:#ecf5fe;
-}
-.rcb-icon{
-    max-height:125px;
-    max-width:125px;
-    margin:0 auto;
-}
 
-.rcb-name{
-    padding-top:15px;
-    font-size:17px;
-    text-transform:uppercase;  
-}
 .intern-tag{
     position:absolute;
     top:0;
