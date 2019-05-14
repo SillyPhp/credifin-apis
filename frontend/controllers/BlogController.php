@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\db\Expression;
 use common\models\Posts;
 use common\models\PostTags;
 use common\models\PostCategories;
@@ -19,11 +20,30 @@ class BlogController extends Controller
     public function actionIndex(){
         $postsModel = new Posts();
         $posts = $postsModel->find()
-            ->where(['status' => 'Active', 'is_deleted' => 'false'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
             ->orderby(['created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
             ->all();
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $popular_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id','a.title','a.slug','a.excerpt', 'c.name','CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->joinWith(['postCategories b' => function ($b){
+                    $b->joinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->orderby(new Expression('rand()'))
+                ->limit(3)
+                ->asArray()
+                ->all();
+            return $response = [
+                'status' => 200,
+                'message' => 'Success',
+                'popular_posts' => $popular_posts,
+            ];
+        }
         return $this->render('blog-main', [
             'posts' => $posts,
         ]);
