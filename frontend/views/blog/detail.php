@@ -52,20 +52,13 @@ $this->params['seo_tags'] = [
                 <div class="col-md-9">
                     <div class="blog-division">
                         <div class="blog-cover-image">
-                            <?php
-                            $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                            ?>
+                            <?php $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image']; ?>
                             <img src="<?= $feature_image; ?>">
                         </div>
-
                         <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
-
-
                     </div>
-                </div>
-                <div class="col-md-9">
                     <div class="divider"></div>
                     <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
                 </div>
