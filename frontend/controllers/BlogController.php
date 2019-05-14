@@ -149,20 +149,6 @@ class BlogController extends Controller
         }
     }
 
-    public function actionBlogList()
-    {
-        $postsModel = new Posts();
-        $posts = $postsModel->find()
-            ->where(['status' => 'Active', 'is_deleted' => 0])
-            ->orderby(['created_on' => SORT_ASC])
-            ->asArray()
-            ->all();
-
-        return $this->render('blog-list', [
-            'posts' => $posts,
-        ]);
-    }
-
     public function actionGetPostsByTag($slug)
     {
         $postsModel = new Posts();
