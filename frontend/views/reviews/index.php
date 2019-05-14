@@ -90,13 +90,13 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
-    <section class="quick-view">
-        <div class="container">
-            <div class="row" id="main-cont">
-
-            </div>
-        </div>
-    </section>
+<!--    <section class="quick-view">-->
+<!--        <div class="container">-->
+<!--            <div class="row" id="main-cont">-->
+<!---->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <!---->
     <section class="top-com">
         <div class="container">
@@ -1077,99 +1077,6 @@ body.modal-open{
 echo $this->render('/widgets/mustache/review-cards');
 $script = <<< JS
 
-var company_list = [
-    {
-        name: 'Company 1',
-        rating: 4
-    },
-    {
-        name: 'Company 2',
-        rating: 3        
-    },
-    {
-        name: 'Company 3',
-        rating: 5       
-    }
-];
-
-var college_list = [
-    {
-        name: 'College 1',
-        rating: 4
-    },
-    {
-        name: 'College 2',
-        rating: 3        
-    },
-    {
-        name: 'College 3',
-        rating: 5       
-    }
-];
-
-var school_list = [
-    {
-        name: 'School 1',
-        rating: 4
-    },
-    {
-        name: 'School 2',
-        rating: 3        
-    },
-    {
-        name: 'School 3',
-        rating: 5       
-    }
-];
-
-var education_list = [
-    {
-        name: 'Institute 1',
-        rating: 4
-    },
-    {
-        name: 'Institute 2',
-        rating: 3        
-    },
-    {
-        name: 'Institute 3',
-        rating: 5       
-    }
-];
-
-renderMainCont(company_list);
-
-function renderMainCont(list){
-    var main_div = $('#review-bar').html();
-    $('#main-cont').html(Mustache.render(main_div, list))
-}
-
-$("#company-cont").hover(function(){
-    renderMainCont(company_list)   
-  }, function(){
-    renderMainCont(company_list);
-});
-
-$("#college-cont").hover(function(){
-    renderMainCont(college_list);
-  }, function(){
-    renderMainCont(company_list);
-});
-
-$("#school-cont").hover(function(){
-    renderMainCont(school_list);
-  }, function(){
-    renderMainCont(company_list)
-});
-
-$("#education-cont").hover(function(){
-    renderMainCont(education_list);
-  }, function(){
-    renderMainCont(company_list);
-});
-
-
-
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
@@ -1214,6 +1121,97 @@ $('#search_comp').typeahead(null, {
   }).on('typeahead:selected',function(e,datum) {
     window.location.replace('/'+datum.slug+'/reviews');
   });
+
+// var company_list = [
+//     {
+//         name: 'Company 1',
+//         rating: 4
+//     },
+//     {
+//         name: 'Company 2',
+//         rating: 3        
+//     },
+//     {
+//         name: 'Company 3',
+//         rating: 5       
+//     }
+// ];
+//
+// var college_list = [
+//     {
+//         name: 'College 1',
+//         rating: 4
+//     },
+//     {
+//         name: 'College 2',
+//         rating: 3        
+//     },
+//     {
+//         name: 'College 3',
+//         rating: 5       
+//     }
+// ];
+//
+// var school_list = [
+//     {
+//         name: 'School 1',
+//         rating: 4
+//     },
+//     {
+//         name: 'School 2',
+//         rating: 3        
+//     },
+//     {
+//         name: 'School 3',
+//         rating: 5       
+//     }
+// ];
+//
+// var education_list = [
+//     {
+//         name: 'Institute 1',
+//         rating: 4
+//     },
+//     {
+//         name: 'Institute 2',
+//         rating: 3        
+//     },
+//     {
+//         name: 'Institute 3',
+//         rating: 5       
+//     }
+// ];
+//
+// renderMainCont(company_list);
+//
+// function renderMainCont(list){
+//     var main_div = $('#review-bar').html();
+//     $('#main-cont').html(Mustache.render(main_div, list))
+// }
+//
+// $("#company-cont").hover(function(){
+//     renderMainCont(company_list)   
+//   }, function(){
+//     renderMainCont(company_list);
+// });
+//
+// $("#college-cont").hover(function(){
+//     renderMainCont(college_list);
+//   }, function(){
+//     renderMainCont(company_list);
+// });
+//
+// $("#school-cont").hover(function(){
+//     renderMainCont(school_list);
+//   }, function(){
+//     renderMainCont(company_list)
+// });
+//
+// $("#education-cont").hover(function(){
+//     renderMainCont(education_list);
+//   }, function(){
+//     renderMainCont(company_list);
+// });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
