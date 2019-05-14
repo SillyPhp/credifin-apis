@@ -3,7 +3,6 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
 $this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
 Yii::$app->view->registerJs('var slug = "' . $slug . '"; var business_type = "' . $org_details['business_activity'] . '" ', \yii\web\View::POS_HEAD);
@@ -386,13 +385,20 @@ $this->params['seo_tags'] = [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 <?php
 echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
+    'org_slug'=>$slug
 ]);
 if ($org_details['business_activity'] == 'College') {
-    echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews');
+    echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews',[
+        'org_slug'=>$slug
+    ]);
 } elseif ($org_details['business_activity'] == 'School') {
-    echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews');
+    echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews',[
+        'org_slug'=>$slug
+    ]);
 } elseif ($org_details['business_activity'] == 'Educational Institute') {
-    echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews');
+    echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews',[
+        'org_slug'=>$slug
+    ]);
 }
 
 $this->registerCss('
@@ -1110,6 +1116,11 @@ display:none;
 /*----- School css ends -----*/
 ');
 $script = <<< JS
+$(document).on("click", "#widget_bar_stats label", function(e){
+    e.preventDefault();
+    var id = "#" + $(this).attr("for");
+    $(id).prop("checked", true);
+});
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({

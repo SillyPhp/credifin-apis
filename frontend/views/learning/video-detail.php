@@ -4,7 +4,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$this->title = Yii::t('frontend', 'Learning Section');
+$this->title = $video_detail['title'];
 $this->params['header_dark'] = true;
 
 $keywords = 'Learning';
@@ -170,30 +170,9 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="divider"></div>
-                    <div class="row" id="comments">
-                        <div class="col-md-12">
-                            <h1 class="chan-heading">Comments</h1>
-                        </div>
-                        <div class="comment-box">
-                            <div class="add-comment">
-                                <div class="row">
-                                    <div class="col-md-10 col-md-offset-1">
-                                        <form id="postComm">
-                                            <div class="">
-                                                <textarea id="commentArea"></textarea>
-                                            </div>
-                                            <div class="comment-sub">
-                                                <button type="button" id="sendComment">Comment</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-md-offset-1">
-                                <div id="activecomments"></div>
-                            </div>
-                        </div>
-                    </div>
+                    <?= $this->render('/widgets/mustache/skills/discussion-box'); ?>
+
+
                     <div class="divider"></div>
                     <div class="row" id="interested-cont">
                         <div class="col-md-12">
@@ -205,6 +184,13 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({
+                        google_ad_client: "ca-pub-9111969809145171",
+                    enable_page_level_ads: true
+                    });
+                </script>
                 <div class="top-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -544,7 +530,7 @@ margin-right:5px;
 .v-tags ul a li{
 margin-bottom:10px;
 }
-.video-container, .video-container2{
+.video-container{
 box-shadow:0 0 10px rgba(0,0,0,0.1);
 border-radius:10px;
 height:250px;
@@ -552,7 +538,7 @@ position:relative;
 margin-bottom:20px;
 }
 .video-container2{
-height:auto;
+//height:auto;
 background:#fff;
 }
 .video-container:hover{
@@ -586,8 +572,13 @@ padding:5px 10px 10px 10px;
 background:#fff;
 }
 .r-v-name{
-font-size:14px;
-font-weight:bold;
+    font-size:14px;
+    font-weight:bold;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .r-ch-name{
 position:absolute;
@@ -648,29 +639,10 @@ color:#999;
 .reply button:hover{
 color:#00a0e3;
 }
-.add-comment{
-padding:10px 20px;
-border-bottom: 1px dotted #eee;
-border-radius:10px;
-}
 .reply-comment{
-//    border-top:1px solid #eee;
-padding:20px 20px 10px;
-margin-top:20px;
-}
-.comment-sub{
-text-align:right;
-}
-.comment-sub1{
-text-align:right;
-}
-.comment-sub button, .comment-sub1 button {
-background:#00a0e3;
-border:1px solid #00a0e3;
-color:#fff;
-border-radius:5px;
-padding:8px 10px;
-font-size:13px;
+    padding:20px 20px 10px;
+    margin-top:0px;
+    padding-top:5px;
 }
 .closeComment1{
 background:#fff;
@@ -882,26 +854,20 @@ float: left;
 }
 
 .video-container2{
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-border-radius:10px;
-height:300px;
-background:#fff;
-position:relative;
-margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    border-radius:10px;
+//    height:300px;
+    background:#fff;
+    position:relative;
+    margin-bottom:20px;
+    overflow:hidden;
 }
-.video-icon2{
-width:100%;
-height:200px;
-overflow:hidden;
-object-fit:cover;
+.video-container2 a{
+    display:block;
 }
 .r-video2{
 padding:5px 10px 10px 10px;
 background:#fff;
-}
-.r-v-name{
-font-size:14px;
-font-weight:bold;
 }
 .r-ch-name{
 position:absolute;
@@ -909,27 +875,9 @@ bottom:5px;
 left:10px;
 }
 
-.video-container2{
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-border-radius:10px;
-height:300px;
-background:#fff;
-position:relative;
-margin-bottom:20px;
-}
-.video-icon2{
-width:100%;
-height:200px;
-overflow:hidden;
-object-fit:cover;
-}
 .r-video2{
 padding:5px 10px 10px 10px;
 background:#fff;
-}
-.r-v-name{
-font-size:14px;
-font-weight:bold;
 }
 .r-ch-name{
 position:absolute;
@@ -955,10 +903,6 @@ left:10px;
 }
 .r-video{
     padding:5px 10px 10px 10px;
-}
-.r-v-name{
-    font-size:14px;
-    font-weight:bold;
 }
 .r-ch-name{
     position:absolute;
@@ -1079,10 +1023,12 @@ $script = <<<JS
     for(var k = 0; k < tags_cont.children.length; k++){
         tags.push(tags_cont.children[k].getAttribute('id'));
     }
+    
     var data = {
         video_id: document.getElementById('cate').getAttribute('data-id'),
         tags_id: tags
     };
+    
     $.ajax({
         method: "POST",
         url : window.location.href,
@@ -1106,29 +1052,10 @@ $script = <<<JS
                 }else{
                     document.getElementById('interested-cont').remove();
                 }
-                utilities.initials();
             }
         }
     });
     
-    $.ajax({
-        type: 'POST',
-        url: '/learning/get-parent-comments',
-        async: false,
-        data: {
-            param: window.location.pathname.split('/')[3]
-        },
-        success: function(response){
-
-            if(response.status == 200){
-                var temp1 = document.getElementById("replytemp").innerHTML;
-                var output = Mustache.render(temp1, response.result);
-                utilities.initials();
-                var a = document.getElementById("activecomments");
-                a.innerHTML += output;
-            }
-        }
-    })    
     
     $(document).on('click', '#smoreBtn', function(){
         document.getElementById('less-des').style.display = 'none';
@@ -1136,62 +1063,13 @@ $script = <<<JS
         document.getElementById('show-more-content').classList.remove('hidden');
     })
 
-    $(document).on('click', '#sendComment', function(){
-       var toLogin= $('#user_id').val();
-        if(!toLogin){
-            $('#loginModal').modal('show');
-            return false;
-        }
-        var comment = document.getElementById('commentArea').value;
-
-        if (comment == "") {
-            document.getElementById("commentArea").classList.add("errorClass");
-            return;
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/learning/parent-comment',
-            async: false,
-            data: {
-                param: window.location.pathname.split('/')[3],
-                comment: comment
-            },
-            success: function (response) {
-                result = {};
-                if (response.user_info.logo) {
-                    result['img'] = response.user_info.path;
-                } else {
-                    result['img'] = false;
-                }
-
-                result['color'] = response.user_info.color;
-                result['name'] = response.user_info.name;
-                result['reply'] = comment;
-                result['hasChild'] = false;
-                result['comment_enc_id'] = response.user_info.comment_enc_id;
-                result['username'] = response.user_info.username;
-
-                if (response.status == 200) {
-                    var temp1 = document.getElementById("replytemp").innerHTML;
-                    var output = Mustache.render(temp1, result);
-                    utilities.initials();
-                    var a = document.getElementById("activecomments");
-                    a.innerHTML += output;
-
-                    document.getElementById("commentArea").classList.remove("errorClass");
-                    document.getElementById("postComm").reset();
-                }
-            }
-        }) 
-    });
-    utilities.initials();
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+
 <script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+
 <script>
     var player;
     var video_id = document.getElementById('video-id').getAttribute('value');
@@ -1251,244 +1129,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             a.classList.add('fadeout');
         }
     }
-
-    var hasPushed = false;
-
-    function addReply(t) {
-        var r = document.getElementsByClassName("cboxRemove");
-        for (var i = 0; i < r.length; i++) {
-            r[i].remove();
-        }
-        if (!hasPushed) {
-            hasPushed = !hasPushed;
-
-            var temp2 = document.getElementById("commentbox").innerHTML;
-            var output = Mustache.render(temp2);
-            utilities.initials();
-            var art = t.closest(".blog-comm");
-
-            if(art.querySelectorAll('.reply-comm')[0]) {
-                var a = document.createElement('div');
-                a.innerHTML = output;
-                art.querySelectorAll('.reply-comm')[0].prepend(a);
-            }else {
-                var a = document.createElement('div');
-                a.innerHTML = output;
-                var el = t.parentElement;
-                while (el.className != 'blog-comm') {
-                    el = el.parentElement;
-                }
-                var parent_id = el.getAttribute('data-id');
-                if(document.getElementById(parent_id)) {
-                    if (!document.getElementById(parent_id).classList.contains('hidden')) {
-                        document.getElementById(parent_id).parentNode.parentNode.prepend(a);
-                    }
-                }else{
-                    art.innerHTML += output;
-                }
-            }
-
-            hasPushed = !hasPushed;
-        }
-    }
-
-    function closeComm(t) {
-        var r = document.getElementsByClassName("cboxRemove");
-        r[0].remove();
-    }
-
-    function addDynamicComment(t) {
-        var toLogin= $('#user_id').val();
-        if(!toLogin){
-            $('#loginModal').modal('show');
-            return false;
-        }
-
-        var reply = t.closest('div').parentNode.querySelector('textarea').value;
-
-        if (reply == "") {
-            document.getElementById("commentReply").classList.add("errorClass");
-            return;
-        }
-
-        var el = t.parentElement;
-        while (el.className != 'blog-comm') {
-            el = el.parentElement;
-        }
-        var parent_id = el.getAttribute('data-id');
-
-        $.ajax({
-            type: 'POST',
-            url: '/learning/child-comment',
-            async: false,
-            data: {
-                param: window.location.pathname.split('/')[3],
-                reply: reply,
-                parent_id: parent_id
-            },
-            success: function (response) {
-                if (response.status == 200) {
-                    result = {};
-                    if (response.user_info.logo) {
-                        result['img'] = response.user_info.path;
-                    } else {
-                        result['img'] = false;
-                    }
-
-                    result['color'] = response.user_info.color;
-                    result['name'] = response.user_info.name;
-                    result['reply'] = reply;
-                    result['comment_enc_id'] = response.user_info.comment_enc_id;
-                    result['username'] = response.user_info.username;
-
-                    var temp1 = document.getElementById("comtemp").innerHTML;
-                    var output = Mustache.render(temp1, result);
-                    utilities.initials();
-                    var art = t.closest(".blog-comm");
-
-                    if(art.querySelectorAll('.reply-comm')[0]) {
-                        var a = document.createElement('div');
-                        a.innerHTML = output;
-                        art.querySelectorAll('.reply-comm')[0].prepend(a);
-                    }else {
-                        var a = document.createElement('div');
-                        a.innerHTML = output;
-
-                        if(document.getElementById(parent_id)) {
-                            if (!document.getElementById(parent_id).classList.contains('hidden')) {
-
-                                art.querySelector('#dyn-comm').append(a);
-                            }
-                        }else{
-                            art.innerHTML += output;
-                        }
-                    }
-
-                    document.getElementsByClassName('cboxRemove')[0].remove();
-                }
-            }
-        });
-    }
-
-    function viewMoreReplies(t) {
-        var el = t.parentElement;
-        while (el.className != 'blog-comm') {
-            el = el.parentElement;
-        }
-        var parent_id = el.getAttribute('data-id');
-
-        $.ajax({
-            type: 'POST',
-            url: '/learning/get-child-comments',
-            data: {
-                parent: parent_id,
-                param: window.location.pathname.split('/')[3],
-            },
-            success: function (response) {
-                if (response.status == 200) {
-                    var art = t.closest(".blog-comm");
-                    art.querySelectorAll('.reply-comm').forEach(function (d) {
-                        d.remove();
-                    });
-
-                    var temp1 = document.getElementById("comtemp").innerHTML;
-                    var output = Mustache.render(temp1, response.result);
-                    utilities.initials();
-
-                    el.innerHTML += output;
-                    document.getElementById(parent_id).classList.add('hidden');
-                }
-            }
-        })
-    }
-
-</script>
-<script id="replytemp" type="text/template">
-    {{#.}}
-    <article class="blog-comm" data-id="{{comment_enc_id}}">
-        <div class="row">
-            <div class="col-md-12 col-xs-12">
-                <div class="col-md-2 col-xs-3">
-                    <div class="comment-icon">
-                        {{#img}}
-                        <img src="{{img}}">
-                        {{/img}}
-                        {{^img}}
-                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
-                                font="40px"></canvas>
-                        {{/img}}
-                    </div>
-                </div>
-                <div class="col-md-10 col-xs-9">
-                    <div class="comment">
-                        <div class="comment-name" id="{{username}}">{{name}}</div>
-                        <div class="comment-text">
-                            {{reply}}
-                        </div>
-                    </div>
-
-                    <div class="reply">
-                        <button class="replyButton" onclick="addReply(this)"><i class="fa fa-reply"></i> Reply</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="dyn-comm"></div>
-        {{#hasChild}}
-        <div class="showReply">
-            <div class="srBtn">
-                <button type="button" id="{{comment_enc_id}}" onclick="viewMoreReplies(this)">View Replies</button>
-            </div>
-        </div>
-        {{/hasChild}}
-    </article>
-    {{/.}}
-</script>
-<script id="comtemp" type="text/template">
-    {{#.}}
-    <article class="reply-comm">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-2">
-                <div class="col-md-2 col-xs-3">
-                    <div class="comment-icon">
-                        {{#img}}
-                        <img src="{{img}}">
-                        {{/img}}
-                        {{^img}}
-                        <canvas class="user-icon" name="{{name}}" color="{{color}}" width="70" height="70"
-                                font="40px"></canvas>
-                        {{/img}}
-                    </div>
-                </div>
-                <div class="col-md-10 col-xs-9">
-                    <div class="comment">
-                        <div class="comment-name" id="{{username}}">{{name}}</div>
-                        <div class="comment-text">
-                            {{reply}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
-    {{/.}}
-</script>
-<script id="commentbox" type="text/template">
-    <div class="row cboxRemove">
-        <div class="col-md-10 col-md-offset-2">
-            <div class="reply-comment">
-                <div class="col-md-12">
-                    <form>
-                        <textarea id="commentReply" class="repComment"></textarea>
-                        <div class="comment-sub1">
-                            <button type="button" class="addComment" onclick="addDynamicComment(this)">Comment</button>
-                            <button type="button" class="closeComment1" onclick="closeComm(this)">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </script>
 <script id="top-category-card" type="text/template">
     <div class="tg-widget tg-widgetcategories">
