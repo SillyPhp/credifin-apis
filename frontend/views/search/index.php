@@ -707,7 +707,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <a href="{{link}}"><img src="{{image}}"></a>
             </div>
             <div class="wn-box-details">
-                <a href="">
+                <a href="{{link}}">
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">{{excerpt}}</div>
