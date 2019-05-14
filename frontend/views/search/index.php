@@ -464,7 +464,7 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
-$('.s-input').val(window.location.search.split('=')[1].split('+').join(' '));
+$('.s-input').val(decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20')));
 
 $(document).on('click', '.s-btn', function(e){
     e.preventDefault();
