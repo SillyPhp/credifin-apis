@@ -65,6 +65,10 @@ $this->params['seo_tags'] = [
 
                     </div>
                 </div>
+                <div class="col-md-9">
+                    <div class="divider"></div>
+                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
                         <div class="channel">
@@ -152,6 +156,11 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.divider{
+border-top:1px solid #eee;
+margin-top:15px;
+}
+
 /*----blog section----*/
 .blog-header{
     min-height:200px;
