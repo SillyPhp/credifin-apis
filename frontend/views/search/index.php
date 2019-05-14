@@ -484,7 +484,7 @@ function fillData(){
         async: false,
         url: window.location.pathname,
         data: {
-            'keyword' : window.location.search.split('=')[1].split('+').join(' ')
+            'keyword' : decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20'))
         },
         success: function(result){
             result = JSON.parse(result);
