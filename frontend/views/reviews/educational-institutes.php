@@ -217,7 +217,7 @@ review-benifit{
     text-transform: capitalize;
 }
 .cri-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/review/review-educational-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/review/educational-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 400px;
@@ -249,7 +249,8 @@ review-benifit{
 .rb-heading{
     padding-top:10px;
     font-weight:bold;
-    font-size:18px;   
+    font-size: 20px;
+    font-family: "Lora", serif;   
 }
 .rb-text{
     padding:5px 20px;

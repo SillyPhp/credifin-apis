@@ -1,69 +1,69 @@
 <?php
 use yii\helpers\Url;
 ?>
-<script id="review-card" type="text/template">
-    {{#.}}
-    <div class="col-md-4">
-        <div class="com-review-box fivestar-box">
-            <div class="com-logo">
-                {{#logo}}
-                <a href="/{{slug}}">
-                <img src="{{logo}}">
-                </a>
-                {{/logo}}
-                {{^logo}}
-                <a href="/{{slug}}">
-                <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                        color="{{color}}" font="35px"></canvas>
-                </a>
-                {{/logo}}
-            </div>
-            <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
-            {{#employerApplications}}
-            <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
-            <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
-            {{/employerApplications}}
-            {{^employerApplications}}
-            <div class="com-loc"><span>0</span> Jobs</div>
-            <div class="com-dep"><span>0</span> Internships</div>
-            {{/employerApplications}}
-            {{#rating}}
-            <div class="com-rating">
-                <div class="average-star" data-score="{{rating}}"></div>
-            </div>
-            <div class="rating">
-                <div class="stars">{{rating}}</div>
-                <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
-            </div>
-            {{/rating}}
-            {{^rating}}
-            <div class="com-rating">
+    <script id="review-card" type="text/template">
+        {{#.}}
+        <div class="col-md-4">
+            <div class="com-review-box fivestar-box">
+                <div class="com-logo">
+                    {{#logo}}
+                    <a href="/{{slug}}">
+                        <img src="{{logo}}">
+                    </a>
+                    {{/logo}}
+                    {{^logo}}
+                    <a href="/{{slug}}">
+                        <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                                color="{{color}}" font="35px"></canvas>
+                    </a>
+                    {{/logo}}
+                </div>
+                <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
+                {{#employerApplications}}
+                <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
+                <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
+                {{/employerApplications}}
+                {{^employerApplications}}
+                <div class="com-loc"><span>0</span> Jobs</div>
+                <div class="com-dep"><span>0</span> Internships</div>
+                {{/employerApplications}}
+                {{#rating}}
+                <div class="com-rating">
+                    <div class="average-star" data-score="{{rating}}"></div>
+                </div>
+                <div class="rating">
+                    <div class="stars">{{rating}}</div>
+                    <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
+                </div>
+                {{/rating}}
+                {{^rating}}
+                <div class="com-rating">
 
-                <div class="average-star" data-score="0"></div>
+                    <div class="average-star" data-score="0"></div>
 
-            </div>
-            <div class="rating">
-                <div class="reviews-rate"> Currenlty No Review</div>
-            </div>
-            {{/rating}}
-            <div class="row">
-                <div class="cm-btns padd-0">
-                    <div class="col-md-6">
-                        <div class="color-blue">
-                            <a href="/{{slug}}">View Profile</a>
+                </div>
+                <div class="rating">
+                    <div class="reviews-rate"> Currenlty No Review</div>
+                </div>
+                {{/rating}}
+                <div class="row">
+                    <div class="cm-btns padd-0">
+                        <div class="col-md-6">
+                            <div class="color-blue">
+                                <a href="/{{slug}}">View Profile</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Reviews</a>
+                        <div class="col-md-6">
+                            <div class="color-orange">
+                                <a href="/{{slug}}/reviews">Read Reviews</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {{/.}}
-</script>
+        {{/.}}
+    </script>
 <?php
 $this->registerCss("
 .com-review-box
