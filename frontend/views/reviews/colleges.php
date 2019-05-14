@@ -86,7 +86,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .cri-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/review/college-review-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/review/college-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 400px;
@@ -117,8 +117,9 @@ $this->registerCss('
 }
 .rb-heading{
     padding-top:10px;
-    font-weight:bold;
-    font-size:18px;   
+    font-weight:bold;  
+    font-size: 20px;
+    font-family: "Lora", serif;
 }
 .rb-text{
     padding:5px 20px;

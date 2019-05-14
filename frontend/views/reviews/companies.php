@@ -75,6 +75,38 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <section class="ey-helps">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="wu-m-heading"><img src="<?= Url::to('@commonAssets/logos/eyfooter.png')?>"> Helps Employers</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-heading">Attract</div>
+                        <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
+                        <div class="wu-heading">Convert</div>
+                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
+                        <div class="wu-heading">Retain</div>
+                        <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section>
         <div class="container">
             <div class="row">
@@ -87,8 +119,42 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.wu-m-heading{
+    font-size: 25px;
+    text-transform: capitalize;
+    text-align: center;
+    font-family: "Lora", serif;
+}
+.wu-m-heading img{
+    max-width:170px;
+}
+.blue{
+    color:#00a0e3;
+}
+.orange{
+    color:#ff7803;
+}
+.wu-heading{
+    text-align:center;
+    padding-top:40px;
+    text-transform:capitalize;
+    font-size:24px;
+    color:#00a0e3;
+    font-family: "Lora", serif;
+}
+.ey-helps{
+    padding:20px 0 40px;
+    background:#ecf5fe;
+}
+.wu-icon{
+    padding-top:20px;
+    height:150px;
+}
+.with-us-block{
+    text-align:center;
+}
 .cri-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/review/company-review-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/review/company-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 400px;
@@ -120,7 +186,8 @@ $this->registerCss('
 .rb-heading{
     padding-top:10px;
     font-weight:bold;
-    font-size:18px;   
+    font-size:20px;  
+    font-family: "Lora", serif; 
 }
 .rb-text span{
     font-weight:bold;
