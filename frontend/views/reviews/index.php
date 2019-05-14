@@ -8,26 +8,26 @@ use yii\bootstrap\ActiveForm;
             <div class="row">
                 <div class="col-md-12">
                     <div class="pos-relative">
-                    <div class="header-bg">
-                        <div class="search-box">
-                            <div class="head-text">
-                                <p>Find your next great place to work</p>
-                            </div>
-                            <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                <div class="input-group search-bar">
-                                    <div class="load-suggestions Typeahead-spinner">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
-                                    <div class="input-group-btn">
-                                        <button class="loader_btn_search"><i class="fa fa-search"></i></button>
-                                    </div>
+                        <div class="header-bg">
+                            <div class="search-box">
+                                <div class="head-text">
+                                    <p>Find your next great place to work</p>
                                 </div>
-                            </form>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                    <div class="input-group search-bar">
+                                        <div class="load-suggestions Typeahead-spinner">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
+                                        <div class="input-group-btn">
+                                            <button class="loader_btn_search"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>

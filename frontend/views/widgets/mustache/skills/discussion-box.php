@@ -53,18 +53,17 @@ $this->registerCss('
 }
 ');
 
-$script = <<<JS
-    
+$this->registerJs('
     //page load => get all parent comments
+    
     $.ajax({
-        type: 'POST',
-        url: '//<?= Yii::$app->controller->id; ?>/get-parent-comments',
+        type: "POST",
+        url: "/'. Yii::$app->controller->id . '/get-parent-comments",
         async: false,
         data: {
-            param: window.location.pathname.split('/')[3]
+            param: window.location.pathname.split("/")[3]
         },
         success: function(response){
-
             if(response.status == 200){
                 var temp1 = document.getElementById("replytemp").innerHTML;
                 var output = Mustache.render(temp1, response.result);
@@ -73,7 +72,10 @@ $script = <<<JS
                 utilities.initials();
             }
         }
-    })
+    });
+');
+
+$script = <<<JS
     
     //main comment
     function doComment(){

@@ -59,8 +59,8 @@ $this->params['seo_tags'] = [
                             <?= $post['description']; ?>
                         </div>
                     </div>
-                    <div class="divider"></div>
-                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+<!--                    <div class="divider"></div>-->
+                    <?php // $this->render('/widgets/mustache/discussion/discussion-box'); ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">

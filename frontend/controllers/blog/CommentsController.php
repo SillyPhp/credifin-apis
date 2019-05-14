@@ -10,7 +10,7 @@ use yii\helpers\Url;
 use common\models\Posts;
 use common\models\PostComments;
 
-class BlogController extends Controller
+class CommentsController extends Controller
 {
 
     public function actionGetParentComments()
@@ -31,7 +31,7 @@ class BlogController extends Controller
                 ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => NULL])
-                ->andWhere(['a.post_enc_d' => $post['post_enc_d']])
+                ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
@@ -41,7 +41,7 @@ class BlogController extends Controller
             foreach ($result as $r) {
                 $a = PostComments::find()
                     ->where(['reply_to' => $r['comment_enc_id']])
-                    ->andWhere(['post_enc_d' => $post['post_enc_d']])
+                    ->andWhere(['post_enc_id' => $r['post_enc_id']])
                     ->andWhere(['is_deleted' => 0])
                     ->exists();
                 if ($a) {
@@ -78,7 +78,7 @@ class BlogController extends Controller
                 ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
-                ->andWhere(['a.post_enc_d' => $post['post_enc_d']])
+                ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
@@ -107,7 +107,7 @@ class BlogController extends Controller
 
             $current_user = Yii::$app->user->identity->user_enc_id;
 
-            if ($a = $this->saveComment($comment, $post['post_enc_d'], $current_user, NULL)) {
+            if ($a = $this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
@@ -147,7 +147,7 @@ class BlogController extends Controller
 
             $current_user = Yii::$app->user->identity->user_enc_id;
 
-            if ($a = $this->saveComment($comment, $post['post_enc_d'], $current_user, $reply_id)) {
+            if ($a = $this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
@@ -168,7 +168,7 @@ class BlogController extends Controller
         }
     }
 
-    private function saveComment($comment, $post_enc_d, $current_user, $reply_id = NULL)
+    private function saveComment($comment, $post_enc_id, $current_user, $reply_id = NULL)
     {
         $commentModel = new PostComments();
         $utilitiesModel = new Utilities();
@@ -176,7 +176,7 @@ class BlogController extends Controller
         $commentModel->comment_enc_id = $utilitiesModel->encrypt();
         $commentModel->comment = $comment;
         $commentModel->reply_to = $reply_id;
-        $commentModel->post_enc_d = $post_enc_d;
+        $commentModel->post_enc_id = $post_enc_id;
         $commentModel->user_enc_id = $current_user;
         $commentModel->created_on = date('Y-m-d H:i:s');
         if ($commentModel->save()) {

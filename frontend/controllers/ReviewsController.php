@@ -40,7 +40,7 @@ class ReviewsController extends Controller
         return $this->render('filter-companies', ['keywords' => $keywords, 'business_activity' => $business_activity]);
     }
 
-    public function actionSearchOrg($query)
+    public function actionSearchOrg($type=null,$query)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $query1 = (new \yii\db\Query())
@@ -50,15 +50,28 @@ class ReviewsController extends Controller
                 END) as business_activity'])
             ->from(UnclaimedOrganizations::tableName() . 'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
-            ->where('name LIKE "%' . $query . '%"')
-            ->andWhere(['is_deleted' => 0]);
+            ->where('name LIKE "%' . $query . '%"');
+        if ($type!=null) {
+            $query1->andWhere(['business_activity' => $type])
+                ->andWhere(['is_deleted' => 0]);
+            }
+        else{
+            $query1->andWhere(['is_deleted' => 0]);
+        }
 
         $query2 = (new \yii\db\Query())
             ->select(['name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where('name LIKE "%' . $query . '%"')
-            ->andWhere(['is_deleted' => 0]);
+            ->andWhere(['business_activity'=>$type]);
+            if ($type!=null) {
+                $query2->andWhere(['business_activity' => $type])
+                    ->andWhere(['is_deleted' => 0]);
+            }
+            else{
+                $query2->andWhere(['is_deleted' => 0]);
+            }
 
         return $query1->union($query2)->all();
 
