@@ -455,6 +455,7 @@ class LearningController extends Controller
                 ->andWhere(['b.status' => 1])
                 ->andWhere(['b.is_deleted' => 0])
                 ->groupBy(['b.assigned_category_enc_id'])
+                ->groupBy(['a.parent_enc_id'])
                 ->limit(15)
                 ->asArray()
                 ->all();
