@@ -61,7 +61,8 @@ $this->registerCss("
     opacity: 1;
 }
 .c-icon img{
-    max-width:30px;
+    width:30px;
+    height:30px;
     border-radius:50%;
 }
 .c-name{
@@ -81,7 +82,7 @@ $this->registerCss("
     border: none;
     width:100%;
 }
-.chats.message-list{margin-bottom:50px}
+.chats.message-list{margin-bottom:50px;margin-top:0px;}
 #chat-list ul{
     padding-inline-start:0px !important;
 }
