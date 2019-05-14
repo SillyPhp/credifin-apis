@@ -73,7 +73,8 @@ if (Yii::$app->session->hasFlash('success')):
         var marginLeft = width / 2;
         $('.light-box-outer').css('margin-left', -marginLeft);
         $('.fader, .light-box-outer, .light-box-inner').fadeOut(500);
-        $('#careers-form')[0].reset();
+        $('#categories, #sub-cat, #tags').tagsinput('removeAll');
+        $('input:not(#careers-form input:first-child)').val('');
         $('#url').val('');
         $('#video_type').val('');
         
@@ -449,8 +450,10 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-  
-    $('[data-toggle=offcanvas]').click(function () {
+    $('span[data-role="remove"]').each(function(){
+        $(this).trigger('click');
+    });
+$('[data-toggle=offcanvas]').click(function () {
         $('.row-offcanvas').toggleClass('active');
     });
         
@@ -465,6 +468,7 @@ $script = <<< JS
           this.text(t1);
       return this;
     };
+    
     $(".title").hide();
     
     $(".description").hide();
