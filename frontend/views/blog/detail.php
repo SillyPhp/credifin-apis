@@ -124,7 +124,7 @@ $this->params['seo_tags'] = [
                         foreach ($similar_posts as $related) {
                             $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
                             $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
-                            if (!empty($related['featured_image'])) {
+                            if (empty($related['featured_image'])) {
                                 $image = '//placehold.it/250x200';
                             }
                             ?>
