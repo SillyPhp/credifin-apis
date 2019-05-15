@@ -315,4 +315,8 @@ class JobsController extends Controller
         }
     }
 
+    public function actionCompare(){
+        return $this->render('compare-jobs');
+    }
+
 }

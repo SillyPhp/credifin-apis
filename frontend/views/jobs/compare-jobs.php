@@ -641,13 +641,44 @@ td{
 .row-offcanvas.active .btn-collapse i {
   transform: rotate(180deg);
 }
-@media only screen  
+.ps-visible{
+    overflow:visible !important;
+    overflow-x:visible !important;
+}
 ');
 $script = <<<JS
      $('[data-toggle=offcanvas]').click(function () {
          $('.row-offcanvas').toggleClass('active');
      });  
-
+$(document).on('click', '#change',function() {
+  $.each($('.draggable-item'), function(){
+        $(this).draggable({
+            helper: "clone",
+            drag: function() { 
+                $('.ps').addClass('ps-visible');
+             },
+             stop: function() { 
+                $('.ps').removeClass('ps-visible');
+             },
+        });
+    });
+});
+$('.empty').droppable({
+    accept: '.draggable-item',
+    over: function(event, ui) {
+        $('.empty').addClass('highlight');
+    },
+    out: function(event, ui) {
+        $('.empty').removeClass('highlight');
+    },
+    drop: function(event, ui) {
+        // $('.empty').append(widget(ui.draggable));
+        var itemid = $.trim(ui.draggable.attr('data-id'));
+        console.log(itemid);
+        // var me = ui.draggable.clone();
+        $('.empty').removeClass('highlight');
+    }
+});
   
     draggable = true;
     var sidebarpage = 1;
