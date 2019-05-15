@@ -5,12 +5,14 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Designations;
+use common\models\EmployerApplications;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
 use common\models\OrganizationReviewLikeDislike;
 use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
+use frontend\models\OrgAutoBlogForm;
 use frontend\models\reviews\EditUnclaimedCollegeOrg;
 use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
@@ -1453,4 +1455,33 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionOrgAutoBlog(){
+        $this->layout = 'main-secondary';
+        $model = new OrgAutoBlogForm();
+        $model->images = \yii\web\UploadedFile::getInstances($model, 'images');
+//        if ($model->upload()) {
+//            return 'ok';
+//        }
+        return $this->render('org-auto-blog', [
+            'model' => $model,
+        ]);
+    }
+    public function actionGetApplications($q = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!is_null($q)) {
+            $tag = EmployerApplications::find()
+                ->alias('a')
+                ->select(['c.name','c.slug'])
+                ->joinWith(['title b' => function($b){
+                    $b->joinWith(['categoryEnc c'],false);
+                }],false)
+                ->where('c.name LIKE "%' . $q . '%"')
+                ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+                ->distinct()
+                ->asArray()
+                ->all();
+            return $tag;
+        }
+    }
 }
