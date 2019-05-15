@@ -940,6 +940,7 @@ $(document).on('submit','#add-experience-form',function(e){
     if($('#exp_present').prop("checked")){
             var checkbox = 1;
             $('#addexperienceform-exp_to').val('');
+            var to = $('#addexperienceform-exp_to').val();
         }else{
             var checkbox = 0;
             if($('#addexperienceform-exp_to').val() == ''){
@@ -987,6 +988,7 @@ $(document).on('submit','#update-experience-form',function(e){
     if($('#update_exp_present').prop("checked")){
         var checkbox = 1;
         $('#update_exp_to').val('');
+        var to = $('#update_exp_to').val();
     }else{
         var checkbox = 0;
         if($('#update_exp_to').val() == ''){
