@@ -5,7 +5,7 @@ use yii\helpers\Url;
 $this->registerCssFile('@eyAssets/css/blog-main.css');
 ?>
 
-    <section class="header">
+    <section class="blog-header">
         <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-cover.png ') ?>" alt=""/>
     </section>
     <section class="background-mirror blog-section-0">
