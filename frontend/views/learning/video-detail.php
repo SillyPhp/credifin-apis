@@ -170,7 +170,7 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="divider"></div>
-                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <?= $this->render('/widgets/mustache/skills/discussion-box'); ?>
 
 
                     <div class="divider"></div>
