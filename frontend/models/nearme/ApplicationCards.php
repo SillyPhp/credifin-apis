@@ -18,6 +18,7 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($lat,$long,$radius,$num,$keyword,$type,$walkin)
     {
+        $date = Date('Y-m-d H:i:s');
         $data = EmployerApplications::find()
             ->alias('a')
             ->select([
@@ -61,6 +62,12 @@ class ApplicationCards
                     $y->joinWith(['cityEnc as e']);
                 }],false);
             }],false, 'INNER JOIN');
+
+            $data->joinWith(['applicationOptions as q'=>function($q) use($date){
+                $q->andWhere(['<=', 'q.interview_start_date', $date]);
+                $q->andWhere(['>=', 'q.interview_end_date', $date]);
+            }],false);
+
         }else{
             $data->joinWith(['applicationPlacementLocations as b'=>function($x){
                 $x->joinWith(['locationEnc as c'=>function($y){

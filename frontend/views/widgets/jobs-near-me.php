@@ -265,11 +265,12 @@ $this->registerCss('
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
-
+$(window).animate({scrollTop:0}, '300');
 console.log('Type: $type');
 console.log('Action: $action');
 
 //variables declaration
+var loadmore = true;
 var vals = {
     lat: null,
     long: null,
@@ -412,6 +413,7 @@ function card(){
                     
                     if(response.length < 20){
                         $('#loadMore').hide();
+                        loadmore = false;
                     }
                 }
             }
@@ -441,13 +443,13 @@ function card(){
 }
 
 //load more click
-$(document).on('click','#loadMore',function(e) {
-    e.preventDefault();
-    $('.load-more-text').css('visibility', 'hidden');
-    $('.load-more-spinner').css('visibility', 'visible');
-    $('.loader-main').show();
-    card();
-});
+// $(document).on('click','#loadMore',function(e) {
+//     e.preventDefault();
+//     $('.load-more-text').css('visibility', 'hidden');
+//     $('.load-more-spinner').css('visibility', 'visible');
+//     $('.loader-main').show();
+//     card();
+// });
 
 //card click
 $(document).on("click","#card-hover",function() {
@@ -570,6 +572,46 @@ function getReviewList(sidebarpage){
     });
 }
 
+
+$(window).scroll(function() { //detact scroll
+			if($(window).scrollTop() + $(window).height() >= $(document).height()){ //scrolled to bottom of the page
+				$('.load-more-text').css('visibility', 'hidden');
+                $('.load-more-spinner').css('visibility', 'visible');
+                if(loadmore){
+				    card();
+                }
+			}
+		});
+
+var global = [];
+var city = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '',
+  remote: {
+    url:'/cities/city-list?q=%QUERY',  
+    wildcard: '%QUERY',
+    filter: function(list) {
+            global = list;
+             return list;
+        }
+  }
+});
+        
+$('#city_location').typeahead(null, {
+  name: 'city_location',
+  highlight: true,       
+  display: 'text',
+  source: city,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.city-spin').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    $('.city-spin').hide();
+  });
+
+
 var sidebarpage = 1;
 getReviewList(sidebarpage);
 
@@ -583,6 +625,6 @@ $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);
-
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [JqueryAsset::className()]]);
 ?>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>
