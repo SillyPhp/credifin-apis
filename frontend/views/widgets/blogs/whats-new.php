@@ -1,9 +1,13 @@
 <?php
 use yii\helpers\Url;
+$col = 'col-md-12 col-sm-4';
+if(!empty($size)){
+    $col = $size;
+}
 ?>
 <script id="whats-new-blog" type="text/template">
     {{#.}}
-    <div class="col-md-12 col-sm-4">
+    <div class="<?= $col; ?>">
         <div class="whats-new-box">
             <div class="wn-box-icon">
                 <a href="/blog/{{slug}}"><img src="{{image}}"></a>
@@ -95,7 +99,7 @@ a.wn-overlay-text {
 $script = <<<JS
 $.ajax({
     method: "POST",
-    url : window.location.href,
+    url : '/blog',
     success: function(response) {
         if(response.status === 200) {
             var wn_data = $('#whats-new-blog').html();
