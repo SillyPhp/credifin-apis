@@ -357,8 +357,8 @@ color: initial;
 }
     
 .head-bg{
-//    background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
-     background: url(../assets/themes/ey/images/pages/review/r-index.png) fixed;
+  background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
+//     background: url(../assets/themes/ey/images/pages/review/r-index.png) fixed;
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
