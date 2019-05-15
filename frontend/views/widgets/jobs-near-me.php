@@ -4,6 +4,12 @@ $this->params['header_dark'] = true;
 
 use yii\web\JqueryAsset;
 
+if($type == 'jobs'){
+    $job_type = 'job';
+}elseif ($type == 'internships'){
+    $job_type = 'internship';
+}
+
 ?>
 <div class="row">
     <div class="col-md-10 col-md-offset-2">
@@ -14,6 +20,12 @@ use yii\web\JqueryAsset;
                 </div>
             </div>
             <div class="col-md-3">
+                <div class="load-suggestions Typeahead-spinner city-spin"
+                     style="display: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <div class="form-group form-md-line-input">
                     <input type="text" class="form-control" id="city_location" placeholder="Enter Address or city"/>
                     <p class="error" style="color: red"></p>
@@ -119,7 +131,7 @@ use yii\web\JqueryAsset;
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="/job/{{slug}}"><h4 class="application-title">
+                    <a href="/<?= $job_type?>/{{slug}}"><h4 class="application-title">
                             {{job_title}}</h4>
                     </a>
                     {{#salary}}
@@ -152,7 +164,7 @@ use yii\web\JqueryAsset;
             </div>
             {{/last_date}}
             <div class="application-card-wrapper">
-                <a href="/job/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
+                <a href="/<?= $job_type?>/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
                 <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
             </div>
         </div>
@@ -262,12 +274,111 @@ $this->registerCss('
     border-radius:50px !important;
     margin-bottom: 10px;
 }
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 100%;
+  margin: 0px 0;
+  text-align:left;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 0px 0px 6px 6px;
+     -moz-border-radius: 0px 0px 6px 6px;
+          border-radius: 0px 0px 6px 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+    padding: 4px 15px;
+    font-size: 12px;
+    line-height: 24px;
+    color: #222;
+    border-bottom: 1px solid #dddddda3;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.Typeahead-spinner{
+    position: absolute;
+    color: #222;
+    z-index: 999;
+    right: 0;
+    top: 10px;
+    font-size: 25px;
+    display: none;
+}
+.twitter-typeahead{
+    float:left;
+    width:100%;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    top:1px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
 $(window).animate({scrollTop:0}, '300');
-console.log('Type: $type');
-console.log('Action: $action');
 
 //variables declaration
 var loadmore = true;
@@ -473,12 +584,13 @@ $(document).on("click","#card-hover",function() {
      var org_slug = $(this).find('#organization-slug').attr('class');
      var application_id = $(this).attr('data-id');
      var application_key = $(this).attr('data-key');
+     var job_type = '$job_type';
      if(!logo){
         logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fa fa-map-marker"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/job/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fa fa-inr"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;'+exp+'</h5></div></div><h6 class="col-md-5 pl-20 custom_set2 text-center last-date">Last Date to Apply<br>'+last_date+'</h6><h4 class="col-md-7 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/job/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fa fa-map-marker"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fa fa-inr"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;'+exp+'</h5></div></div><h6 class="col-md-5 pl-20 custom_set2 text-center last-date">Last Date to Apply<br>'+last_date+'</h6><h4 class="col-md-7 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a></div></div></div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });
@@ -597,7 +709,7 @@ var city = new Bloodhound({
         }
   }
 });
-        
+       
 $('#city_location').typeahead(null, {
   name: 'city_location',
   highlight: true,       

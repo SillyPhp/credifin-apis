@@ -1,6 +1,6 @@
 <?php
 echo $this->render('/widgets/jobs-near-me', [
     'type' => 'internships',
-    'action' => 'walk-in-interview'
+    'action' => 'walk-in-interviews'
 ]);
 ?>

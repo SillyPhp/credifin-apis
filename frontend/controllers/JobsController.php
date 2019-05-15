@@ -337,7 +337,7 @@ class JobsController extends Controller
         return $this->render('near-me-beta');
     }
 
-    public function actionWalkInInterview(){
+    public function actionWalkInInterviews(){
 
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $lat = Yii::$app->request->post('lat');
