@@ -37,7 +37,7 @@ if(Yii::$app->user->identity->type->user_type == 'Individual') {
 
 if(Yii::$app->user->identity->type->user_type == 'Individual') {
     $resume = [
-        'label' => '<i class=""></i>' . Yii::t('account', 'Resume'),
+        'label' => '<i class=""></i>' . Yii::t('account', 'Build Resume'),
         'url' => Url::to('/account/resume-builder'),
         'template' => '<a href="{url}">{label}</a>',
     ];
