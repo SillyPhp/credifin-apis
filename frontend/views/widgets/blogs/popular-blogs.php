@@ -14,7 +14,7 @@ use yii\helpers\Url;
             </div>
             <div class="wn-box-details">
                 <a href="/blog/{{slug}}">
-                    <div class="wn-box-cat">{{name}}</div>
+<!--                    <div class="wn-box-cat">{{name}}</div>-->
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">
