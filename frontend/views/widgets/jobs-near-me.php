@@ -628,6 +628,7 @@ function searching() {
      $('.loader-main').show();
      $('#loadMore').hide();
      $('#loadMore').show();
+     loadmore = true;
      
      geocodeAddress(city);
 }

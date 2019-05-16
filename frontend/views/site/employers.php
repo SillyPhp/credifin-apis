@@ -89,7 +89,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="heading-style">How it works</h1>
+                    <h1 class="heading-style">How It Works</h1>
                 </div>
                 <div class="col-md-4">
                     <div class="">
@@ -136,6 +136,49 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <section class="hwn">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Find Your Star Employee</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="hwn-box">
+                        <div class="hwn-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works11.png')?>">
+                        </div>
+                        <div class="hwn-title">Create a free account</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="hwn-box">
+                        <div class="hwn-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works22.png')?>">
+                        </div>
+                        <div class="hwn-title">Add a position</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="hwn-box">
+                        <div class="hwn-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works33.png')?>">
+                        </div>
+                        <div class="hwn-title">Get applications</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="hwn-box">
+                        <div class="hwn-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works44.png')?>">
+                        </div>
+                        <div class="hwn-title">Hire your star employee</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <?= $this->render('/widgets/companies-with-us'); ?>
 
@@ -146,6 +189,26 @@ $this->params['seo_tags'] = [
 <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.hwn{
+    background:#ecf5fe;
+    text-align:center;
+    padding:30px 0 50px;
+}
+.hwn-icon{
+    max-width:150px;
+    max-height:150px;
+    margin:0 auto;
+}
+.hwn-icon img{
+    width:100%;
+    height:100%;
+}
+.hwn-title{
+    margin-top:20px;
+    font-size:20px;
+    color:#00a0e3;
+}
+
 /*showcase starts*/
 .showcase{
     padding:80px 0 110px;
