@@ -255,7 +255,7 @@ review-benifit{
     padding-top:10px;
     font-weight:bold;  
     font-size: 20px;
-    font-family: "Lora", serif;
+    font-family: "Lora", serif; 
 }
 .rb-text{
     padding:5px 20px;
@@ -515,5 +515,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
   });
 JS;
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 $this->registerJs($script);
 ?>
