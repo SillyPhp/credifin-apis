@@ -73,9 +73,12 @@ if (Yii::$app->session->hasFlash('success')):
         var marginLeft = width / 2;
         $('.light-box-outer').css('margin-left', -marginLeft);
         $('.fader, .light-box-outer, .light-box-inner').fadeOut(500);
-        $('#careers-form')[0].reset();
+        $('#categories, #sub-cat, #tags').tagsinput('removeAll');
+        $('input:not(#careers-form input:first-child)').val('');
         $('#url').val('');
         $('#video_type').val('');
+        $('#video_id').val('');
+        $('#video_duration').val('');
         
     ");
 endif;
@@ -129,9 +132,11 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
 $form->field($learningCornerFormModel, 'video_url', ['enableAjaxValidation' => true])->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
 ?>
 
+<div class="hidden">
 <?= $form->field($learningCornerFormModel, 'video_id', ['enableAjaxValidation' => true])->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
-
 <?= $form->field($learningCornerFormModel, 'video_duration')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_duration'), 'id' => 'video-duration']); ?>
+</div>
+
 
 <?=
 $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'tags', 'data-role' => 'tagsinput']);
@@ -449,8 +454,10 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-  
-    $('[data-toggle=offcanvas]').click(function () {
+    $('span[data-role="remove"]').each(function(){
+        $(this).trigger('click');
+    });
+$('[data-toggle=offcanvas]').click(function () {
         $('.row-offcanvas').toggleClass('active');
     });
         
@@ -465,6 +472,7 @@ $script = <<< JS
           this.text(t1);
       return this;
     };
+    
     $(".title").hide();
     
     $(".description").hide();

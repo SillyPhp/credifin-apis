@@ -1,8 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 $this->title = Yii::t('frontend', "India’s No.1 Jobs & Internships Site");
 $this->params['header_dark'] = false;
 $keywords = 'Jobs,Jobs in Chandigarh,Jobs in India,MBA Jobs,IT Jobs,Digital Marketing Jobs,Summer Internships 2019,Fresher Jobs,Paid Internships';
@@ -141,7 +139,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <h1 class="heading-style ">Our Services</h1>
         <div class="services row">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
@@ -151,7 +149,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
@@ -162,66 +160,26 @@ $this->params['seo_tags'] = [
                     </div>
                 </a>
             </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/reviews'); ?>">
+                    <div class="service-box ser-box-purple">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
+                                 alt="Reviews">
+                        </div>
+                        <div class="ser-heading">Reviews</div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 
 </section>
 <!---->
-<section class="review-categories">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Reviews</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="tc">
-            <div class="col-md-3">
-                <a href="/reviews/companies">
-                    <div class="review-cat-box">
-                        <div class="rcb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-company-icon1.png')?>">
-                        </div>
-                        <div class="rcb-name">Company</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="/reviews/colleges">
-                    <div class="review-cat-box">
-                        <div class="rcb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-college-icon1.png')?>">
-                        </div>
-                        <div class="rcb-name">College</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="/reviews/schools">
-                <div class="review-cat-box">
-                    <div class="rcb-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-school-icon1.png')?>">
-                    </div>
-                    <div class="rcb-name">School</div>
-                </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="/reviews/educational-institutes">
-                <div class="review-cat-box">
-                    <div class="rcb-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/review-educational-icon1.png')?>">
-                    </div>
-                    <div class="rcb-name">Educational Institute</div>
-                </div>
-                </a>
-            </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 <!---->
 <section class="fixed-bttn">
+    <div class="pos-ab">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -235,6 +193,7 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 <!---->
@@ -585,142 +544,13 @@ $this->params['seo_tags'] = [
 </section>
 <!--how it works ends-->
 <!--new section starts-->
-<section class="companies">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="com-grid">
-                    <h1 class="heading-style">Companies With Us</h1>
-                    <div class="">Companies recruiting top talent from our portal.</div>
-                    <div class="com1 animatable fadeIn">
-                        <a href="/capitalbank">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>"
-                                 alt="Capital Small Finance Bank">
-                        </div>
-                        <div class="com-name">
-                            Capital Small Finance Bank
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com2 animatable fadeIn">
-                        <a href="/midland">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
-                                 alt="Midland MicroFin">
-                        </div>
-                        <div class="com-name">
-                            Midland MicroFin
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com3 animatable fadeIn">
-                        <a href="/dsb">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group">
-                        </div>
-                        <div class="com-name">
-                            DSB Law Group
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com4 animatable fadeIn">
-                        <a href="/citizensbank">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>" alt="Citizens Bank">
-                        </div>
-                        <div class="com-name">
-                            Citizens Bank
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com5 animatable fadeIn">
-                        <a href="/agile">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv">
-                        </div>
-                        <div class="com-name">
-                            Agile Finserv
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com6 animatable fadeIn">
-                        <a href="/becre8v">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>" alt="Be Cre8v ">
-                        </div>
-                        <div class="com-name">
-                            Be Cre8v
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com8 animatable fadeIn">
-                        <a href="/amritmalwa">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
-                                 alt="Amrit Malwa Capital Limited">
-                        </div>
-                        <div class="com-name">
-                            Amrit Malwa Capital Limited
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com9 animatable fadeIn">
-                        <a href="/hamco">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat">
-                        </div>
-                        <div class="com-name">
-                            Hamco Ispat
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com10 animatable fadeIn">
-                        <a href="/upmoney">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd">
-                        </div>
-                        <div class="com-name">
-                            Up Money Ltd
-                        </div>
-                        </a>
-                    </div>
-                    <div class="com11 animatable fadeIn">
-                        <a href="/apurva">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/codenomad.png') ?>" alt="Code Nomad">
-                        </div>
-                        <div class="com-name">
-                            Code Nomad
-                        </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
+<?= $this->render('/widgets/partner-with-us-and-feedback-form',[
+        'feedbackFormModel' => $feedbackFormModel,
+        'partnerWithUsModel' => $partnerWithUsModel,
+]);?>
 
-<section class="partner">
-    <div class="container">
-        <h1 class="heading-style ">Join our Community</h1>
-        <div class="row partner-row">
-            <div class="col-md-12">
-                <div class="col-md-6 col-sm-6">
-                    <div class="partner-btn">
-                        <button type='button' class="feed-open2">Partner with Us</button>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="partner-btn">
-                        <button type="button" class="feed-open">Give us Feedback</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -764,90 +594,10 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 
-<div class="window-popup message-popup">
-    <a href="#" class="popup-close">
-        <i class="fa fa-times"></i>
-    </a>
-    <article class="content-wrapper">
-        <header class="modal-header">
-            <h3>Reach us instantly via form below.</h3>
-        </header>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <?php
-                    $form = ActiveForm::begin([
-                        'id' => 'feedback-form',
-                        'action' => '/site/send-feedback',
-                    ]);
-                    ?>
-                    <?= $form->field($feedbackFormModel, 'name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-user"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Your Name', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'email', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-envelope"></i>{error}{hint}</div>'])->textInput(['class' => 'lowercase', 'placeholder' => 'Email Address', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'phone', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-phone"></i>{error}{hint}</div>'])->textInput(['placeholder' => 'Phone Number', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'subject', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-file-text-o"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Subject', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'message', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-pencil"></i>{error}{hint}</div>'])->textarea(['placeholder' => 'Your Message', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= Html::submitButton('Submit', ['class' => 'action']); ?>
-                    <?php ActiveForm::end(); ?>
-                </div>
-            </div>
-        </div>
-    </article>
-
-</div>
-<div class="window-popup2 message-popup">
-    <a href="#" class="popup-close2">
-        <i class="fa fa-times"></i>
-    </a>
-    <article class="content-wrapper">
-        <header class="modal-header">
-            <h2>Partner With Us.</h2>
-            <h5>Want to collaborate with us, fill the form and we will get back to you</h5>
-        </header>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12">
-                        <?php
-                        $formm = ActiveForm::begin([
-                            'id' => 'partner-with-us-form',
-                            'action' => '/site/partner-with-us',
-                        ]);
-                        ?>
-                        <?= $formm->field($partnerWithUsModel, 'name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-user"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Your Name', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'email', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-envelope"></i>{error}{hint}</div>'])->textInput(['class' => 'lowercase', 'placeholder' => 'Email Address', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'phone', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-phone"></i>{error}{hint}</div>'])->textInput(['placeholder' => 'Phone Number', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'subject', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-file-text-o"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Subject', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'company_name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-file-text-o"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Company Name', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'message', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-pencil"></i>{error}{hint}</div>'])->textarea(['placeholder' => 'Your Message', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= Html::submitButton('Submit', ['class' => 'action']); ?>
-                        <?php ActiveForm::end(); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
-</div>
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-.tc{
-    text-align:center;
-}
-.review-categories{
-    padding:0 0 50px 0; 
-    background:#ecf5fe;
-}
-.rcb-icon{
-    max-height:125px;
-    max-width:125px;
-    margin:0 auto;
-}
 
-.rcb-name{
-    padding-top:15px;
-    font-size:17px;
-    text-transform:uppercase;  
-}
 .intern-tag{
     position:absolute;
     top:0;
@@ -920,11 +670,17 @@ $this->registerCss('
 }
 /*try now sec*/
 .fixed-bttn{
-    padding:60px 0 100px;
+    min-height:400px;
     background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
     background-size: cover;
-    background-attachment:fixed;
+    position:relative;
     background-repeat:no-repeat;
+}
+.pos-ab{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 .fx-heading{
   text-transform:capitalize;
@@ -992,98 +748,6 @@ $this->registerCss('
   transform: translateY(5px);
 }
 /*try now ends*/
-
-.animated.fadeIn {
-	-webkit-animation-name: fadeIn;
-	-moz-animation-name: fadeIn;
-	-o-animation-name: fadeIn;
-	animation-name: fadeIn;
-}
-.animatable {
-  
-  /* initially hide animatable objects */
-  visibility: hidden;
-  
-  /* initially pause animatable objects their animations */
-  -webkit-animation-play-state: paused;   
-  -moz-animation-play-state: paused;     
-  -ms-animation-play-state: paused;
-  -o-animation-play-state: paused;   
-  animation-play-state: paused; 
-}
-
-/* show objects being animated */
-.animated {
-  visibility: visible;
-  
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -ms-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-  
-  -webkit-animation-duration: .3s;
-  -moz-animation-duration: .3s;
-  -ms-animation-duration: .3s;
-  -o-animation-duration: .3s;
-  animation-duration: .3s;
-
-  -webkit-animation-play-state: running;
-  -moz-animation-play-state: running;
-  -ms-animation-play-state: running;
-  -o-animation-play-state: running;
-  animation-play-state: running;
-}
-@-webkit-keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@-moz-keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@-o-keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	60% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
 
 .header-boxs{
     max-width:850px;
@@ -1153,7 +817,7 @@ $this->registerCss('
 
 /*services section starts*/
 .services{
-    padding: 50px 0 25px 0; 
+    padding: 25px 0 25px 0; 
     text-align:center !important;
 }
 .service-box{ 
@@ -1167,7 +831,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
-    width: 80%;
+    width: 95%;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
@@ -1182,6 +846,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
+    color:#ff7803;
 }
 .ser-box-orange{
     background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
@@ -1194,7 +859,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
-    width: 80%;
+    width: 95%;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
@@ -1209,13 +874,43 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
+    color:#00a0e3;
 }
+.ser-box-purple{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
+    padding:20px 20px;
+    border-radius:10px;
+    border-width:5px 0px 0px 0px; 
+    border-color:transparent;
+    border-style:solid;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    width: 95%;
+    margin: auto;
+    margin-bottom:20px;
+    box-shadow: 0px 2px 13px 0px #ddddddb8;
+    background-size: 100%;
+    background-position: 0px -8px;
+    background-repeat:no-repeat;
+}
+.ser-box-purple:hover{
+    box-shadow: 0px 2px 13px 3px #ddddddb8;
+    border-top:5px solid #5E4795;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    color:#5E4795;
+}
+
 .ser-icons{
     text-align:center;
 }
 .ser-icons img{
-    max-height: 150px; 
-    max-width: 150px;
+    max-height: 75px; 
+    max-width: 75px;
 }
 .serv-center{
     padding:0 30px;
@@ -1225,6 +920,7 @@ $this->registerCss('
     text-transform: uppercase;
     font-size: 20px;
     text-align:center;
+    font-family:lora;
 }
 /*services section ends*/
 /*how it works section starts*/
@@ -1256,45 +952,6 @@ how-icon{
 
 /*how it works section ends*/
 /*-------------------------------------*/
-/*partner with us*/
-.partner{
-    padding:0px 0 80px 0;
-    text-align:center;
-    background:#ecf5fe;
-}
-.partner-btn button{
-    border: 2px solid #00a0e3;
-    border-width: 2px 12px;
-    padding: 14px 59px;
-    background: #00a0e3 !important;
-    color: #fff;
-    text-transform: uppercase;
-    border-radius: 9px 50px;
-    transition:.6s all;
-    -webkit-transition:.6s all;
-    -o-transition:.6s all;
-    -moz-transition:.6s all;
-    -ms-transition:.6s all;
-}
-.partner-btn button:hover{
-    border:2px solid #00a0e3;
-    border-width: 2px 12px;
-    background: #00a0e3 !important;
-    color: #fff;
-    border-radius: 9px 0px;
-    transition:.6s all;
-    -webkit-transition:.6s all;
-    -moz-transition:.6s all;
-    -o-transition:.6s all;
-    -ms-transition:.6s all;
-}
-.partner-row{
-    padding:30px 0 0 0; 
-}
-.footer{
-    margin-top:0px !important;
-}
-/*partner with us ends*/
 
 @media only screen and (min-width: 1120px){
     .seq .seq-model {
@@ -1306,164 +963,6 @@ how-icon{
         margin-right: 0;
     }
 }
-
-/*Modal css starts */
-.content-wrapper {
-    position: relative;
-    display: block;
-    max-width: 560px;
-    margin: 100px auto;
-    padding: 1.5rem 3.5rem;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px -15px 0px 0px rgba(69, 74, 79, 0.5), 15px -30px 0px 0px rgba(69, 74, 79, 0.5), 30px -45px 0px 0px rgba(69, 74, 79, 0.5), 45px -60px 0px 0px rgba(69, 74, 79, 0.5);
-    transition: transform 0.25s;
-    transition-delay: 0.15s;
-}
-.content-wrapper .modal-header {
-    position: relative;
-    width: 100%;
-    margin: 0;
-    padding: 0 0 0.25rem;
-    margin-bottom: 10px;
-    text-align:center;
-}
-.content-wrapper .modal-header h2 {
-    font-size: 22px;
-    font-weight: bold;
-}
-.content-wrapper .content {
-    position: relative;
-    display: block;
-    text-align:center;
-}
-.action {
-    position: relative;
-    width: 100%;
-    height: 53px;
-    padding: 0.625rem 1.25rem;
-    border: none;
-    background-color: slategray;
-    border-radius: 0.25rem;
-    color: white;
-    font-size: 15px;
-    font-weight: 300;
-    overflow: hidden;
-    z-index: 1;
-    background-color: #e74c3c;
-}
-.action:before {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.2);
-    transition: width 0.25s;
-    z-index: 0;
-}
-.action:hover:before {
-    width: 100%;
-}
-.with-icon {
-    position: relative;
-}
-.has-error .with-icon input, .has-error .with-icon textarea {
-    border: 1px solid #ff00004d !important;
-}
-.has-success .form-control {
-    border-color: transparent !important;
-}
-#feedback-form input, #feedback-form textarea, #partner-with-us-form input, #partner-with-us-form textarea{
-    padding: 13px 40px !important;
-    border: 1px solid transparent !important;
-    transition: all .3s ease !important;
-    font-size: 16px !important;
-    color: #273f5b !important;
-    margin-bottom: 20px !important;
-    border-radius: 50px !important;
-    height:53px !important;
-    background-color: #fff !important;
-    box-shadow: 0 0 30px 0 rgba(18, 25, 33, 0.15) !important;
-    width: 100% !important;
-    outline: none !important;
-    padding-left: 50px !important;
-}
-#feedback-form input:focus, #feedback-form textarea:focus, #partner-with-us-form input:focus, #partner-with-us-form textarea:focus{
-    -webkit-box-shadow: 5px 0 40px 0 rgba(0, 88, 171, 0.25) !important;
-    box-shadow: 5px 0 40px 0 rgba(0, 88, 171, 0.25) !important;
-    color: #0083ff !important;
-    outline: 0 !important;
-}
-.with-icon .utouch-icon {
-    position: absolute !important;
-    left: 12px !important;
-    top: 18px !important;
-    height: 16px !important;
-    border-right: 1px solid #dbe3ec !important;
-    z-index: 1 !important;
-    transition: all .3s ease !important;
-    padding-left: 6px !important;
-    padding-right: 8px !important;
-}
-.utouch-icon {
-    transition: all .3s ease !important;
-    width: 32px !important;
-}
-.with-icon input:focus + .utouch-icon, .with-icon textarea:focus + .utouch-icon, .with-icon select:focus + .utouch-icon {
-    color: #0083ff !important;
-}
-textarea {
-    height: 120px !important;
-    border-radius: 30px !important;
-}
-.window-popup, .window-popup2 {
-    opacity: 0;
-    visibility: hidden;
-    background-color: #66b5ff;
-    position: fixed;
-    top: 0;
-    width: calc(100% + 20px);
-    height: 100%;
-    -webkit-transition: opacity .5s ease, -webkit-transform .5s ease, scale .6s ease;
-    transition: opacity .5s ease, -webkit-transform .5s ease, scale .6s ease;
-    -o-transition: opacity .5s ease, transform .5s ease, scale .6s ease;
-    transition: opacity .0s ease, transform .5s ease, -webkit-transform .5s ease, scale .6s ease;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    transform: scale(0);
-    z-index: 50;
-    right: -17px;
-}
-.window-popup.open, .window-popup2.open2 {
-    opacity: 1;
-    z-index: 999999;
-    visibility: visible;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-    overflow: auto;
-    background-color: #1e242c;
-}
-.popup-close, .popup-close2 {
-    border-radius: 0 0 0 30px;
-    background-color: #131a22;
-    width: 80px;
-    height: 80px;
-    font-size: 40px;
-    text-align: center;
-    line-height: 80px;
-    position: fixed;
-    right: 0;
-    top: 0;
-    z-index: 99999;
-    transition: all .0s ease;
-}
-.sc_remove::-webkit-scrollbar { width: 0 !important }
-.sc_remove { -ms-overflow-style: none; overflow: hidden; overflow: -moz-scrollbars-none; }
-/*Modal css ends */
-
 
 
 /* make keyframes that tell the start state and the end state of our object */
@@ -1512,96 +1011,7 @@ textarea {
 
 /*---make a basic box ---*/
 
-/*companies section css*/
-.companies{
-    margin-top:20px;
-    position:relative;
-    padding:0 0 105px 0;
-}
-.com-grid{
-    text-transform:capitalize;
-    min-height:400px;
-    position:relative;
-}
-.com-logo{
-    width:100px;
-    height:100px;
-    background:#fff;
-    border-radius:50%;
-    box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.3);
-    padding: 18px !important; 
-    line-height: 0px;
-}
-.com-name{ 
-    padding-top:8px;
-    font-size:15px;
-    display:none;
-    line-height:20px;
-    max-width:109px;
-    font-weight:bold;
-    text-align:center;
-    color:#00a0e3;
-}
-.com-logo:hover ~ .com-name{
-    display:block;
-}
-.com-logo img{
-    max-width:100%;
-    max-height:100%;
-    position: relative;
-    top:50%;
-    left:50%;
-    -webkit-transform: translate(-50%, -50%); 
-    transform: translate(-50%, -50%); 
-}
-.com1, .com2, .com3, .com4, .com5, .com6, .com7, .com8, .com9, .com10, .com11{
-      position:absolute;
-}
-.com1{
-   top: -23px;
-    left: 51%;
-}
-.com5{
-    top: 1%;
-    left: 84%;;
-}
-.com2{
-   top: 31%;
-    left: 40%;
-}
-.com3{
-    top:21%;
-    left:65%;
-}
-.com4{
-   top: 42%;
-    left: 81%;
-}
-.com6{
-    top: 55%;
-    left: 18%;
-} 
-.com7{
-    top: 55%;
-    left: 24%;
-}
-.com8{
-   top: 63%;
-   left: 51%;
-}
-.com9{
-    top: 83%;
-    left: 69%;
-}
-.com10{
-    top: 78%;
-    left: 90%;
-}
-.com11{
-    top: 84%;
-    left: 32%;
-}
-/*companies css ends*/
+
 @media screen and (min-width: 993px){
     .box-border{
          min-width: 200px !important;
@@ -1641,56 +1051,6 @@ textarea {
     .job-search-sec{
         min-width:100%;
     }
-  
-    .partner-btn button{
-        margin-bottom:10px;
-    }
-    .com-grid{
-        min-height:480px;
-    }
-    .com1{
-        top: 0%;
-        left: 75%;
-    }
-    .com5{
-        top: 28%;
-        left: 5%;;
-    }
-    .com2{
-       top: 30%;
-        left: 41%;
-    }
-    .com3{
-        top:33%;
-        left:75%;
-    }
-    .com4{
-       top: 59%;
-        left: 30%;
-    }
-    .com6{
-        top: 62%;
-        left: 66%;
-    } 
-    .com7{
-        top: 80%;
-        left: 5%;
-    }
-    .com8{
-       top: 90%;
-       left: 47%;
-    }
-    .com9{
-        top: 93%;
-        left: 77%;
-    }
-    .com10{
-        top: 65%;
-        left: 2%;
-    }
-    .com11{
-       display:none;
-    }
 }
 .job-field select{
     float: left;
@@ -1713,58 +1073,10 @@ textarea {
         border-radius: 25px;
         background:none;
     }
-@media screen and (max-width: 495px){
-    .com-grid{
-        min-height:580px;
-    }
-    
-    .companies{
-        padding: 0px 0 55px 0;
-    }
-    
+@media screen and (max-width: 495px){   
     .header-row{
         margin-top:10px;
     }
-    .com1{
-        top: 22%;
-        left: -2%;
-    }
-    .com5{
-        top: 19%;
-        left: 36%;;
-    }
-    .com2{
-       top: 22%;
-        left: 73%;
-    }
-    .com3{
-        top:50%;
-        left:-2%;
-    }
-    .com4{
-       top: 47%;
-        left: 36%;
-    }
-    .com6{
-        top: 50%;
-        left: 73%;
-    } 
-//    .com7{
-//        top: 78%;
-//        left: 5%;
-//    }
-    .com8{
-       top: 80%;
-       left: -2%;
-    }
-    .com9{
-        top: 77%;
-        left: 36%;
-    }
-    .com10{
-        top: 80%;
-        left: 73%;
-    }   
 }
 
 @media screen and (max-width: 375px){
@@ -2159,15 +1471,7 @@ textarea {
         width: 100%;
     }
 }
-@media only screen and (max-width:560px){
-    .content-wrapper{
-        max-width: 80%;
-        margin-left: 8.5% !important;
-    }
-    .content-wrapper .modal-header h2 {
-        font-size: 19px;
-    }
-}
+
 ');
 $script = <<< JS
  $('.tab-sec li a').on("click", function(){
@@ -2186,93 +1490,8 @@ function scrollFunction() {
     document.getElementById("myBttn").style.display = "none";
   }
 }
-
-$(document).on('click', '.feed-open', function(){
-   $('.window-popup').addClass('open') ;
-   $('body').toggleClass('sc_remove') ;
-});
-$(document).on('click', '.popup-close', function(e){
-    e.preventDefault();
-   $('.window-popup').removeClass('open') ;
-   $('body').toggleClass('sc_remove') ;
-});
-$(document).on('click', '.feed-open2', function(){
-   $('.window-popup2').addClass('open2') ;
-   $('body').toggleClass('sc_remove') ;
-});
-$(document).on('click', '.popup-close2', function(e){
-    e.preventDefault();
-   $('.window-popup2').removeClass('open2') ;
-   $('body').toggleClass('sc_remove') ;
-});
-        
-$(document).on('submit', '#feedback-form', function(event) {
-    event.preventDefault();
-    var form_method = $(this).attr('method');
-    var form_url = $(this).attr('action');
-    var form_data = $(this).serialize();
-    var before = function(){     
-        $('.loader-aj-main').fadeIn(1000);  
-    };
-    var req = function(){
-        var result = ajax(form_method, form_url, form_data);
-        var resp = result["responseJSON"];
-        $('.loader-aj-main').fadeOut(1000);
-        if(resp.status == 200){
-            toastr.success(resp.message, resp.title);
-            $("#feedback-form")[0].reset();
-            $(".popup-close").trigger("click");
-        }else{
-            toastr.error(resp.message, resp.title);
-        }
-    }
-    order(before, req);
-});
-        
-function order(before, req){
-    before();
-    req();
-}
-        
-$(document).on('submit', '#partner-with-us-form', function(event) {
-    event.preventDefault();
-    var form_method = $(this).attr('method');
-    var form_url = $(this).attr('action');
-    var form_data = $(this).serialize();
-    var before = function(){     
-        $('.loader-aj-main').fadeIn(1000);  
-    };
-    var req = function(){
-        var result = ajax(form_method, form_url, form_data);
-        var resp = result["responseJSON"];
-        $('.loader-aj-main').fadeOut(1000);
-        if(resp.status == 200){
-            toastr.success(resp.message, resp.title);
-            $("#partner-with-us-form")[0].reset();
-            $(".popup-close2").trigger("click");
-        }else{
-            toastr.error(resp.message, resp.title);
-        }
-    }
-    order(before, req);
-});
         
   jQuery(function($) {
-  var doAnimations = function() {
-    var offset = $(window).scrollTop() + $(window).height(), animatables = $('.animatable');
-    if (animatables.length == 0) {
-      $(window).off('scroll', doAnimations);
-    }
-		animatables.each(function(i) {
-       var animatable = $(this);
-			if ((animatable.offset().top + animatable.height() - 20) < offset) {
-        animatable.removeClass('animatable').addClass('animated');
-	}
-      });
-    };
-    $(window).on('scroll', doAnimations);
-  $(window).trigger('scroll'); 
- 
   $('.main-slider-sec').slick({
 	  slidesToShow: 1,
 	  slidesToScroll: 1,
@@ -2288,8 +1507,6 @@ $(document).on('submit', '#partner-with-us-form', function(event) {
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 

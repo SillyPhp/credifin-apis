@@ -9,8 +9,11 @@ use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
 use common\models\LearningVideoTags;
+use common\models\Roles;
 use common\models\Tags;
+use common\models\UserPrivileges;
 use Yii;
+use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
@@ -326,6 +329,7 @@ class LearningController extends Controller
             ->andWhere(['b.status' => 1])
             ->andWhere(['b.is_deleted' => 0])
             ->groupBy(['a.assigned_category_enc_id'])
+            ->groupBy(['a.parent_enc_id'])
             ->limit(8)
             ->asArray()
             ->all();
@@ -440,7 +444,7 @@ class LearningController extends Controller
                 ->all();
             $top_category = AssignedCategories::find()
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name', 'COUNT(b.video_enc_id) cnt'])
+                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name', 'COUNT(a.parent_enc_id) cnt'])
                 ->joinWith(['learningVideos b'])
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['parentEnc d'], false)
@@ -451,6 +455,7 @@ class LearningController extends Controller
                 ->andWhere(['b.status' => 1])
                 ->andWhere(['b.is_deleted' => 0])
                 ->groupBy(['b.assigned_category_enc_id'])
+                ->groupBy(['a.parent_enc_id'])
                 ->limit(15)
                 ->asArray()
                 ->all();

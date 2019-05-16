@@ -464,7 +464,7 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
-$('.s-input').val(window.location.search.split('=')[1].split('+').join(' '));
+$('.s-input').val(decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20')));
 
 $(document).on('click', '.s-btn', function(e){
     e.preventDefault();
@@ -484,7 +484,7 @@ function fillData(){
         async: false,
         url: window.location.pathname,
         data: {
-            'keyword' : window.location.search.split('=')[1].split('+').join(' ')
+            'keyword' : decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20'))
         },
         success: function(result){
             result = JSON.parse(result);
@@ -707,7 +707,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <a href="{{link}}"><img src="{{image}}"></a>
             </div>
             <div class="wn-box-details">
-                <a href="">
+                <a href="{{link}}">
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">{{excerpt}}</div>
