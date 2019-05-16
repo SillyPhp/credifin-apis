@@ -2,6 +2,42 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
+$this->title = Yii::t('frontend', 'Reviews page | Latest Reviews');
+
+$keywords = 'Company Reviews, School Reviews, Best Compamies Reviews, Best School Reviews, Top Schools of Mumbai, Best IT Colleges Reviews,
+Best MBA colleges reviews, Best Ielts Institutes Reviews, Best CBSE Schools in Delhi, Artificial Intelligence Course Reviews.';
+
+$description = "Here's you get top listed and top reviews schools, companies, institutes, organisations, colleges of your city. you can easily
+watch the reviews and see the ratings and you can also post your reviews of any sector.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
     <section class="head-bg">
         <div class="container">

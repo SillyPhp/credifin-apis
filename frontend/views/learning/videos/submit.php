@@ -77,6 +77,8 @@ if (Yii::$app->session->hasFlash('success')):
         $('input:not(#careers-form input:first-child)').val('');
         $('#url').val('');
         $('#video_type').val('');
+        $('#video_id').val('');
+        $('#video_duration').val('');
         
     ");
 endif;
@@ -130,9 +132,11 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
 $form->field($learningCornerFormModel, 'video_url', ['enableAjaxValidation' => true])->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
 ?>
 
+<div class="hidden">
 <?= $form->field($learningCornerFormModel, 'video_id', ['enableAjaxValidation' => true])->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
-
 <?= $form->field($learningCornerFormModel, 'video_duration')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_duration'), 'id' => 'video-duration']); ?>
+</div>
+
 
 <?=
 $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'tags', 'data-role' => 'tagsinput']);
