@@ -5,12 +5,14 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Designations;
+use common\models\EmployerApplications;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
 use common\models\OrganizationReviewLikeDislike;
 use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
+use frontend\models\OrgAutoBlogForm;
 use frontend\models\reviews\EditUnclaimedCollegeOrg;
 use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
@@ -1437,29 +1439,6 @@ class OrganizationsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = Yii::$app->request->post('params');
             $cards = $get->getReviewCards($options);
-            if ($cards['total'] > 0) {
-                $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'total' => $cards['total'],
-                    'cards' => $cards['cards'],
-                ];
-            } else {
-                $response = [
-                    'status' => 201,
-                ];
-            }
-            return $response;
-        }
-    }
-
-    public function actionFetchUnclaimedReviewCards()
-    {
-        $get = new ReviewCards();
-        if (Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $options = Yii::$app->request->post('params');
-            $cards = $get->getReviewUncliamedCards($options);
             if ($cards['total'] > 0) {
                 $response = [
                     'status' => 200,

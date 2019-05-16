@@ -119,6 +119,7 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+
 .wu-m-heading{
     font-size: 25px;
     text-transform: capitalize;
@@ -187,7 +188,7 @@ $this->registerCss('
     padding-top:10px;
     font-weight:bold;
     font-size:20px;  
-    font-family: "Lora", serif; 
+    font-family: "Lora", serif;    
 }
 .rb-text span{
     font-weight:bold;

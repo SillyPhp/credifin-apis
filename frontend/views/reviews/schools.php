@@ -252,8 +252,8 @@ review-benifit{
 .rb-heading{
     padding-top:10px;
     font-weight:bold;
-    font-size: 20px;
-    font-family: "Lora", serif;   
+     font-size: 20px;
+    font-family: "Lora", serif;      
 }
 .rb-text{
     padding:5px 20px;
