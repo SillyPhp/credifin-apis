@@ -96,6 +96,7 @@ a.wn-overlay-text {
   text-align: center;
 }
 ');
+if($is_ajax){
 $script = <<<JS
 $.ajax({
     method: "POST",
@@ -109,3 +110,4 @@ $.ajax({
 });
 JS;
 $this->registerJs($script);
+}
