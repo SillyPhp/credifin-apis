@@ -84,10 +84,11 @@ $this->registerCss('
   text-align: center;
 }
 ');
+if($is_ajax){
 $script = <<<JS
 $.ajax({
     method: "POST",
-    url : window.location.href,
+    url : '/blog',
     success: function(response) {
         if(response.status === 200) {
             var pb_data = $('#trending-blog').html();
@@ -97,3 +98,4 @@ $.ajax({
 });
 JS;
 $this->registerJs($script);
+}

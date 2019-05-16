@@ -40,7 +40,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-12">
                 <div class="pos-rel">
                     <div class="blog-title"><?= $post['title']; ?></div>
-                    <div class="publish-date"><?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
+<!--                    <div class="publish-date">--><?//= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                 </div>
             </div>
         </div>
@@ -90,16 +90,16 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="col-md-12">
                             <div class="popular-heading about-heading"> About Blog</div>
-                            <div class="blog-tags">
-                                <span>Category:</span>
-                                <ul>
-                                    <?php
-                                    foreach ($post['postCategories'] as $cat) {
-                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
+<!--                            <div class="blog-tags">-->
+<!--                                <span>Category:</span>-->
+<!--                                <ul>-->
+<!--                                    --><?php
+//                                    foreach ($post['postCategories'] as $cat) {
+//                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+//                                    }
+//                                    ?>
+<!--                                </ul>-->
+<!--                            </div>-->
 <!--                            <div class="blog-pub">-->
 <!--                                <span>Published:</span> --><?//= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
@@ -156,7 +156,7 @@ margin-top:15px;
 
 /*----blog section----*/
 .blog-header{
-    min-height:200px;
+    min-height:250px;
     background:#eee;
 }
 .blog-header > .container{
