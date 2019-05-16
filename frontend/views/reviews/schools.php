@@ -472,7 +472,7 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_school').val());
 })
 var template;
-fetch_cards_top(params={'rating':[3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
+fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_top'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
