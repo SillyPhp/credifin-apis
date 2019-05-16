@@ -85,57 +85,6 @@ $this->params['seo_tags'] = [
 <!--            </div>-->
 <!--        </div>-->
 <!--    </section>-->
-    <section class="how-it-works">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="heading-style">How It Works</h1>
-                </div>
-                <div class="col-md-4">
-                    <div class="">
-                        <div class="step-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/identity.png') ?>">
-                        </div>
-                        <div class="step-heading">Show your true identity</div>
-                        <div class="step-dis">Attract top talent by showing who you really are with a powerful
-                            employer branding campaign.</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="step-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/save-time.png') ?>">
-                    </div>
-                    <div class="step-heading">save time on recruitment</div>
-                    <div class="step-dis">Make the most of our collaboration platform and
-                        interview only qualified, culture-fit candidates.</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="step-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hired.png') ?>">
-                    </div>
-                    <div class="step-heading">Recruit top talent</div>
-                    <div class="step-dis">Get on board fully engaged employees and boost
-                        your retention rates </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="fixed-bttn">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="fx-heading">
-                        its free to hire from empower youth
-                    </div>
-                    <div class="post-job-bttn">
-                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                            Post Now
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -179,6 +128,58 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <section class="fixed-bttn">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="fx-heading">
+                        its free to hire from empower youth
+                    </div>
+                    <div class="post-job-bttn">
+                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
+                            Post Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="how-it-works">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="heading-style">How It Works</h1>
+                </div>
+                <div class="col-md-4">
+                    <div class="">
+                        <div class="step-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/identity.png') ?>">
+                        </div>
+                        <div class="step-heading">Show your true identity</div>
+                        <div class="step-dis">Attract top talent by showing who you really are with a powerful
+                            employer branding campaign.</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/save-time.png') ?>">
+                    </div>
+                    <div class="step-heading">save time on recruitment</div>
+                    <div class="step-dis">Make the most of our collaboration platform and
+                        interview only qualified, culture-fit candidates.</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hired.png') ?>">
+                    </div>
+                    <div class="step-heading">Recruit top talent</div>
+                    <div class="step-dis">Get on board fully engaged employees and boost
+                        your retention rates </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
     <?= $this->render('/widgets/companies-with-us'); ?>
 
@@ -190,7 +191,7 @@ $this->params['seo_tags'] = [
 <?php
 $this->registerCss('
 .hwn{
-    background:#ecf5fe;
+   
     text-align:center;
     padding:30px 0 50px;
 }
@@ -340,6 +341,7 @@ $this->registerCss('
 /**/
 .how-it-works{
     padding:10px 0 30px;
+     background:#ecf5fe;
 }
 
 .footer{

@@ -13,7 +13,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-7 no-padd">
                         <div class="tp-heading">{{title}}</div>
-                        <div class="tp-date">{{name}}</div>
+<!--                        <div class="tp-date">{{name}}</div>-->
                     </div>
                 </a>
             </div>
