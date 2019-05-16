@@ -2,134 +2,138 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
+$this->title = Yii::t('frontend', 'Reviews page | Latest Reviews');
+
+$keywords = 'Company Reviews, School Reviews, Best Compamies Reviews, Best School Reviews, Top Schools of Mumbai, Best IT Colleges Reviews,
+Best MBA colleges reviews, Best Ielts Institutes Reviews, Best CBSE Schools in Delhi, Artificial Intelligence Course Reviews.';
+
+$description = "Here's you get top listed and top reviews schools, companies, institutes, organisations, colleges of your city. you can easily
+watch the reviews and see the ratings and you can also post your reviews of any sector.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
     <section class="head-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="pos-relative">
-                    <div class="header-bg">
-                        <div class="search-box">
-                            <div class="head-text">
-                                <p>Find your next great place to work</p>
-                            </div>
-                            <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                <div class="input-group search-bar">
-                                    <div class="load-suggestions Typeahead-spinner">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <input type="text" id="search_comp" class="form-control" placeholder="Search Companies, Colleges, Schools, Educational Institutes" name="keywords">
-                                    <div class="input-group-btn">
-                                        <button class="loader_btn_search"><i class="fa fa-search"></i></button>
-                                    </div>
+                        <div class="header-bg">
+                            <div class="search-box">
+                                <div class="head-text">
+                                    <p>Find your next great place to work</p>
                                 </div>
-                            </form>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                    <div class="input-group search-bar">
+                                        <div class="load-suggestions Typeahead-spinner">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
+                                        <div class="input-group-btn">
+                                            <button class="loader_btn_search"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="review-categories">
+    <section class="review-benifit">
+        <div class="container">
+            <div class="row">
+                <div class="review-benifits">
+                    <div class="col-md-8 col-sm-8 ">
+                        <div class="benifit-heading">Unquestionable Reputation</div>
+                        <div class=""> Consumers share their experiences, unveiling the working atmosphere.
+                            Know more by going through and make a right choice.</div>
+                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="review-benifits">
+                    <div class="col-md-4 col-sm-4">
+                        <div class="benifits-icon bi-right"><img src="<?= Url::to('@eyAssets/images/pages/review/overview.png') ?>"></div>
+                    </div>
+                    <div class="col-md-8 col-sm-8">
+                        <div class="benifit-heading">Perception overview</div>
+                        <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
+                            Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
+                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ey-helps">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Reviews</div>
+                    <div class="wu-m-heading"><span class="blue">Empower</span> <span class="orange">Youth</span> Helps Employers</div>
                 </div>
             </div>
             <div class="row">
-                <div class="tc">
-                    <div class="col-md-3">
-                        <a href="/reviews/companies">
-                            <div class="review-cat-box com-hover">
-                                <div class="rcb-icon" id="company-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
-                                </div>
-                                <div class="rcb-name">Company</div>
-                            </div>
-                        </a>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-heading">Attract</div>
+                        <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
                     </div>
-                    <div class="col-md-3">
-                        <a href="/reviews/colleges ">
-                            <div class="review-cat-box college-hover">
-                                <div class="rcb-icon" id="college-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
-                                </div>
-                                <div class="rcb-name">College</div>
-                            </div>
-                        </a>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
+                        <div class="wu-heading">Convert</div>
+                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
                     </div>
-                    <div class="col-md-3">
-                        <a href="/reviews/schools">
-                            <div class="review-cat-box sch-hover">
-                                <div class="rcb-icon" id="school-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
-                                </div>
-                                <div class="rcb-name">School</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="/reviews/educational-institutes">
-                            <div class="review-cat-box ei-hover">
-                                <div class="rcb-icon" id="education-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
-                                </div>
-                                <div class="rcb-name">Educational Institute</div>
-                            </div>
-                        </a>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
+                        <div class="wu-heading">Retain</div>
+                        <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="quick-view">
+    <section>
         <div class="container">
-            <div class="row" id="main-cont">
-
-            </div>
-        </div>
-    </section>
-    <section class="top-com">
-        <div class="container">
-            <h1 class="heading-style">Top Companies</h1>
-            <div class="row">
-                <div id="review_container">
-
-                </div>
-            </div>
-        </div>
-    </section>
-    <!---->
-    <section class="top-com">
-        <div class="container">
-            <h1 class="heading-style">Top Colleges</h1>
-            <div class="row">
-                <div id="review_container">
-
-                </div>
-            </div>
-        </div>
-    </section>
-    <!---->
-    <section class="top-com">
-        <div class="container">
-            <h1 class="heading-style">Top Schools</h1>
-            <div class="row">
-                <div id="review_container">
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-     <section>
-        <div class="container">
-            <h1 class="heading-style">Top Educational Institutes</h1>
+            <h1 class="heading-style">Recent Reviews</h1>
             <div class="row">
                 <div id="review_container">
 
@@ -138,62 +142,7 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 <?php
-echo $this->render('/widgets/mustache/recent-review-bar');
-
 $this->registerCss('
-.quick-view{
-//    background:#ecf5fe;
-    padding:20px 15px;
-}
-.com-hover, .college-hover, .sch-hover, .ei-hover{
-    color:#4b4646;
-} 
-.com-hover:hover{
-    color:#00A0E3 !important;
-}
-.college-hover:hover{
-    color:#7453C6 !important;
-}
-.sch-hover:hover{
-    color:#0CAA41 !important;
-}
-.ei-hover:hover{
-    color:#DA4453 !important;
-}
-.rcb-icon{
-    height:125px;
-    width:125px;
-    margin:0 auto;
-}
-.review-cat-box > .rcb-icon img {
-    -webkit-transform: rotate(10deg) scale(1.2);
-    transform: rotate(10deg) scale(1.2);
-    -webkit-transition: .3s ease-in-out;
-    transition: .3s ease-in-out;
-}
-.review-cat-box:hover > .rcb-icon img {
-    -webkit-transform: rotate(0) scale(1);
-    transform: rotate(0) scale(1);
-}
-.tc{
-    text-align:center;
-}
-.review-categories{
-    padding:0 0 50px 0; 
-//    background:#ecf5fe;
-}
-.rcb-icon{
-    max-height:125px;
-    max-width:125px;
-    margin:0 auto;
-}
-.rcb-name{
-    padding-top:40px;
-    font-size:25px;
-    text-transform:capitalize;
-    font-family: lora;
-    line-height: 25px;  
-}
 /*----ey helps block-----*/
 .wu-m-heading{
     font-size: 25px;
@@ -214,6 +163,7 @@ $this->registerCss('
     color:#00a0e3;
 }
 .ey-helps{
+    background:#f0f4fb;
     padding:20px 0 40px;
 }
 .with-us-block{
@@ -232,20 +182,18 @@ $this->registerCss('
 }    
 .com-review-box{
     text-align:center;
-     border:1px solid #e5e5e5;
+    border:1px solid #eee;
     padding:20px 0 3px 0;
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
-    height:285px !important;
 }
 .com-logo{
     width:100px;
     height:100px;
     margin:0 auto;
     border-radius:10px;
-//    border:2px solid rgba(238,238,238,.5);
-     border:1px solid #e5e5e5;
+    border:2px solid rgba(238,238,238,.5);
     position:relative;
 }
 .com-logo img{
@@ -357,14 +305,16 @@ color: initial;
 }
     
 .head-bg{
-  background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
-//     background: url(../assets/themes/ey/images/pages/review/r-index.png) fixed;
+    background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center
 }  
-
+.head-text{
+    font-size:30px;
+    text-transform:uppercase;
+}
 .pos-relative{
     position:relative;
     height:450px
@@ -395,16 +345,13 @@ color: initial;
     border:none;
 }
 .search-bar button{
-     padding:13px 19px 12px 16px;
+    padding:13px 16px 14px 16px;
     border:none;
     background:#fff;
     color:#999;
 }
 .head-text{
     padding-bottom:20px;
-    color:#fff;
-     font-size:30px;
-    text-transform:uppercase;
 }
 .head-text p{
     line-height:20px;
@@ -1023,88 +970,6 @@ body.modal-open{
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 $script = <<< JS
-var company_list = [
-    {
-        name: 'Company Company Company Company Company Company',
-        rating: 4
-    },
-    {
-        name: 'Company 2',
-        rating: 3        
-    },
-    {
-        name: 'Company 3',
-        rating: 5       
-    }
-];
-var college_list = [
-    {
-        name: 'College 1',
-        rating: 4
-    },
-    {
-        name: 'College 2',
-        rating: 3        
-    },
-    {
-        name: 'College 3',
-        rating: 5       
-    }
-];
-var school_list = [
-    {
-        name: 'School 1',
-        rating: 4
-    },
-    {
-        name: 'School 2',
-        rating: 3        
-    },
-    {
-        name: 'School 3',
-        rating: 5       
-    }
-];
-var education_list = [
-    {
-        name: 'Institute 1',
-        rating: 4
-    },
-    {
-        name: 'Institute 2',
-        rating: 3        
-    },
-    {
-        name: 'Institute 3',
-        rating: 5       
-    }
-];
-renderMainCont(company_list);
-function renderMainCont(list){
-    var main_div = $('#review-bar').html();
-    $('#main-cont').html(Mustache.render(main_div, list))
-}
-$("#company-cont").hover(function(){
-    renderMainCont(company_list)   
-  }, function(){
-    renderMainCont(company_list);
-});
-$("#college-cont").hover(function(){
-    renderMainCont(college_list);
-  }, function(){
-    renderMainCont(company_list);
-});
-$("#school-cont").hover(function(){
-    renderMainCont(school_list);
-  }, function(){
-    renderMainCont(company_list)
-});
-$("#education-cont").hover(function(){
-    renderMainCont(education_list);
-  }, function(){
-    renderMainCont(company_list);
-});
-
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
@@ -1152,4 +1017,3 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
