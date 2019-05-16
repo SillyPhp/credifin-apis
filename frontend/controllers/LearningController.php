@@ -17,6 +17,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\HttpException;
 use common\models\Utilities;
 
 class LearningController extends Controller
@@ -390,26 +391,6 @@ class LearningController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->one();
-        $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
-        $likeStatus = LearningVideoLikes::find()
-            ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->one();
-        $likeCount = LearningVideoLikes::find()
-            ->where(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->andWhere(['status' => 1])
-            ->count();
-        $dislikeCount = LearningVideoLikes::find()
-            ->where(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->andWhere(['status' => 2])
-            ->count();
-        $commentCount = LearningVideoComments::find()
-            ->where(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->count();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parent_id = Yii::$app->request->post('video_id');
@@ -479,13 +460,37 @@ class LearningController extends Controller
             }
             return ($response);
         }
-        return $this->render('video-detail', [
-            'video_detail' => $video_detail,
-            'like_status' => $likeStatus,
-            'like_count' => $likeCount,
-            'dislike_count' => $dislikeCount,
-            'comment_count' => $commentCount,
-        ]);
+        if(!empty($video_detail)) {
+            $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
+            $likeStatus = LearningVideoLikes::find()
+                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->one();
+            $likeCount = LearningVideoLikes::find()
+                ->where(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->andWhere(['status' => 1])
+                ->count();
+            $dislikeCount = LearningVideoLikes::find()
+                ->where(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->andWhere(['status' => 2])
+                ->count();
+            $commentCount = LearningVideoComments::find()
+                ->where(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->count();
+            return $this->render('video-detail', [
+                'video_detail' => $video_detail,
+                'like_status' => $likeStatus,
+                'like_count' => $likeCount,
+                'dislike_count' => $dislikeCount,
+                'comment_count' => $commentCount,
+            ]);
+        }else{
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
 
     public function actionVideoLiked()
