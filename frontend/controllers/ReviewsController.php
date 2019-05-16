@@ -131,7 +131,7 @@ class ReviewsController extends Controller
         return $this->render('colleges');
     }
 
-    public function actionEducationalInstitutes()
+    public function actionInstitutes()
     {
         return $this->render('educational-institutes');
     }
