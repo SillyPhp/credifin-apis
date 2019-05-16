@@ -17,7 +17,7 @@ if(!empty($size)){
             </div>
             <div class="wn-box-details">
                 <a href="/blog/{{slug}}">
-                    <div class="wn-box-cat">{{name}}</div>
+<!--                    <div class="wn-box-cat">{{name}}</div>-->
                     <div class="wn-box-title">{{title}}</div>
                 </a>
             </div>
@@ -96,6 +96,7 @@ a.wn-overlay-text {
   text-align: center;
 }
 ');
+if($is_ajax){
 $script = <<<JS
 $.ajax({
     method: "POST",
@@ -109,3 +110,4 @@ $.ajax({
 });
 JS;
 $this->registerJs($script);
+}

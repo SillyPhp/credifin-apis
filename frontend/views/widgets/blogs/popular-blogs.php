@@ -14,7 +14,7 @@ use yii\helpers\Url;
             </div>
             <div class="wn-box-details">
                 <a href="/blog/{{slug}}">
-                    <div class="wn-box-cat">{{name}}</div>
+<!--                    <div class="wn-box-cat">{{name}}</div>-->
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">
@@ -62,10 +62,11 @@ $this->registerCss('
     padding-right:0px !important;
 }
 ');
+if($is_ajax){
 $script = <<<JS
 $.ajax({
     method: "POST",
-    url : window.location.href,
+    url : '/blog',
     success: function(response) {
         if(response.status === 200) {
             var tb_data = $('#popular-blog-post').html();
@@ -75,3 +76,4 @@ $.ajax({
 });
 JS;
 $this->registerJs($script);
+}

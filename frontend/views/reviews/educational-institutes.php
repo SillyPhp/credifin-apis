@@ -249,8 +249,8 @@ review-benifit{
 .rb-heading{
     padding-top:10px;
     font-weight:bold;
-    font-size: 20px;
-    font-family: "Lora", serif;   
+   font-size: 20px;
+    font-family: "Lora", serif;  
 }
 .rb-text{
     padding:5px 20px;
@@ -473,8 +473,8 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_institute').val());
 })
 var template;
-fetch_cards_top(params={'rating':[3,4,5],'sort':1,'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_recent'));
-fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_top'));
+fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_recent'));
+fetch_cards_top(params={'rating':[1,2,3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_top'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,

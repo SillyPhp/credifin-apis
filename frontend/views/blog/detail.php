@@ -1,5 +1,5 @@
 <?php
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 $this->title = $post['title'];
 
 use yii\bootstrap\ActiveForm;
@@ -40,7 +40,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-12">
                 <div class="pos-rel">
                     <div class="blog-title"><?= $post['title']; ?></div>
-                    <div class="publish-date"><?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
+<!--                    <div class="publish-date">--><?//= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                 </div>
             </div>
         </div>
@@ -89,17 +89,17 @@ $this->params['seo_tags'] = [
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="popular-heading about-heading"> About Blog</div>
-                            <div class="blog-tags">
-                                <span>Category:</span>
-                                <ul>
-                                    <?php
-                                    foreach ($post['postCategories'] as $cat) {
-                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
+<!--                            <div class="popular-heading about-heading"> About Blog</div>-->
+<!--                            <div class="blog-tags">-->
+<!--                                <span>Category:</span>-->
+<!--                                <ul>-->
+<!--                                    --><?php
+//                                    foreach ($post['postCategories'] as $cat) {
+//                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+//                                    }
+//                                    ?>
+<!--                                </ul>-->
+<!--                            </div>-->
 <!--                            <div class="blog-pub">-->
 <!--                                <span>Published:</span> --><?//= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
@@ -168,11 +168,13 @@ margin-top:15px;
 }
 
 .blog-title{
-    font-size: 25px;
+    font-size: 35px;
     color:#000;
+    font-weight: bold;
     position:absolute;
     top:50%;
     transform:translateY(-50%);
+    font-family: lora;
 }
 .publish-date{
     position: absolute;
@@ -285,7 +287,7 @@ textarea::placeholder{
 .blog-cover-image img{
     max-height:400px;
     width:100%;
-    object-fit:contain;
+    object-fit:fill;
     border-radius:10px;
 }
 .blog-division{
