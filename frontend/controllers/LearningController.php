@@ -335,6 +335,10 @@ class LearningController extends Controller
             ->all();
         $popular_videos = LearningVideos::find()
 //            ->orderBy(['view_count' => SORT_DESC])
+            ->where([
+                'is_deleted' => 0,
+                'status' => 1
+            ])
             ->asArray()
             ->all();
         $topics = Tags::find()
