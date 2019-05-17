@@ -236,6 +236,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     right:10px;
+    z-index:999;
 }
 .rb-box{
     text-align:center;
@@ -404,6 +405,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {

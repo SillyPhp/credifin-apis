@@ -123,12 +123,12 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <section class="quick-view">
-        <div class="container">
-            <div class="row" id="main-cont">
-            </div>
-        </div>
-    </section>
+<!--    <section class="quick-view">-->
+<!--        <div class="container">-->
+<!--            <div class="row" id="main-cont">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Companies</h1>
@@ -259,7 +259,16 @@ $this->registerCss('
     position: relative;
     padding-bottom: 50px;
     z-index: -1;
-}    
+}
+.cm-btns {
+    margin-top:10px;
+}  
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
 .com-review-box{
     text-align:center;
      border:1px solid #e5e5e5;
@@ -267,7 +276,7 @@ $this->registerCss('
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
-    height:285px !important;
+    height:300px !important;
 }
 .com-logo{
     width:100px;
@@ -1035,6 +1044,19 @@ body.modal-open{
     .head-text p{
         line-height: 35px;
     }
+     .review-cat-box {
+        padding-bottom:50px;
+     
+    }
+    .rcb-name{
+        padding-top:20px;
+    }
+    .review-categories{
+        padding:0 0 0 0;
+    }
+    .com-review-box{
+        height: 320px !important;
+    }
 }
 
 @media only screen and (max-width: 450px) {
@@ -1044,8 +1066,21 @@ body.modal-open{
     }
      .review-benifits{
         padding:30px 15px;
-    {
+    }
+    .review-cat-box {
+        padding-bottom:50px;
+    }
+    .rcb-name{
+        padding-top:20px;
+    }
+    .review-categories{
+        padding:0 0 0 0;
+    }
+    .com-review-box{
+        height: 320px !important;
+    }
 }
+
 ');
 echo $this->render('/widgets/mustache/recent-review-bar');
 echo $this->render('/widgets/mustache/review-cards');
