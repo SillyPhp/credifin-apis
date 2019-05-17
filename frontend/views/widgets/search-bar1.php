@@ -20,18 +20,6 @@ use yii\helpers\Url;
                                         <?php }?>
                             </div>
                         </div>
-<!--                        <div class="col-md-3 col-xs-12 col-sm-6">-->
-<!--                            <div class="input-group">-->
-<!--                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>-->
-<!--                                --><?php
-//                                if(Yii::$app->request->get('company')){
-//                                    ?>
-<!--                                    <input type="text" name="company" value="--><?//=Yii::$app->request->get('company')?><!--" class="form-control">-->
-<!--                                --><?php //}else{ ?>
-<!--                                    <input type="text" name="company" placeholder="Company" class="form-control">-->
-<!--                                --><?php //}?>
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group display-flex">
                                 <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
