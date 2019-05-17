@@ -74,7 +74,7 @@ height:304px;
 $script = <<< JS
 var page_name=0;
 var total=0;
-function fetch_cards(params,is_clear=false)
+function fetch_cards(params,template,is_clear=false)
 {
     $.ajax({
         url : '/organizations/fetch-review-cards',
@@ -93,7 +93,7 @@ function fetch_cards(params,is_clear=false)
                 {
                     $('#review_container').html('');
                 }
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            template.append(Mustache.render($('#review-card').html(),response.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
