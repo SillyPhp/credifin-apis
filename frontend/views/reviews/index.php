@@ -39,6 +39,7 @@ $this->params['seo_tags'] = [
 ];
 
 ?>
+
     <section class="head-bg">
         <div class="container">
             <div class="row">
@@ -56,7 +57,7 @@ $this->params['seo_tags'] = [
                                             <span></span>
                                             <span></span>
                                         </div>
-                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
+                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies, Colleges, Schools, Educational Institutes" name="keywords">
                                         <div class="input-group-btn">
                                             <button class="loader_btn_search"><i class="fa fa-search"></i></button>
                                         </div>
@@ -69,45 +70,72 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <section class="review-benifit">
+    <section class="review-categories">
         <div class="container">
             <div class="row">
-                <div class="review-benifits">
-                    <div class="col-md-8 col-sm-8 ">
-                        <div class="benifit-heading">Unquestionable Reputation</div>
-                        <div class=""> Consumers share their experiences, unveiling the working atmosphere.
-                            Know more by going through and make a right choice.</div>
-                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
-                    </div>
-                    <div class="col-md-4 col-sm-4">
-                        <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
-                    </div>
+                <div class="col-md-12">
+                    <div class="heading-style">Reviews</div>
                 </div>
             </div>
             <div class="row">
-                <div class="review-benifits">
-                    <div class="col-md-4 col-sm-4">
-                        <div class="benifits-icon bi-right"><img src="<?= Url::to('@eyAssets/images/pages/review/overview.png') ?>"></div>
+                <div class="tc">
+                    <div class="col-md-3">
+                        <a href="/reviews/companies">
+                            <div class="review-cat-box com-hover">
+                                <div class="rcb-icon" id="company-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">Company</div>
+                            </div>
+                        </a>
                     </div>
-                    <div class="col-md-8 col-sm-8">
-                        <div class="benifit-heading">Perception overview</div>
-                        <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
-                            Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
-                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
+                    <div class="col-md-3">
+                        <a href="/reviews/colleges ">
+                            <div class="review-cat-box college-hover">
+                                <div class="rcb-icon" id="college-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">College</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/reviews/schools">
+                            <div class="review-cat-box sch-hover">
+                                <div class="rcb-icon" id="school-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">School</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/reviews/educational-institutes">
+                            <div class="review-cat-box ei-hover">
+                                <div class="rcb-icon" id="education-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">Educational Institute</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="ey-helps">
+    <section class="quick-view">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="wu-m-heading"><span class="blue">Empower</span> <span class="orange">Youth</span> Helps Employers</div>
-                </div>
+            <div class="row" id="main-cont">
+
             </div>
+        </div>
+    </section>
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Top Companies</h1>
             <div class="row">
                 <div id="review_container">
+
                 </div>
             </div>
         </div>
@@ -118,6 +146,7 @@ $this->params['seo_tags'] = [
             <h1 class="heading-style">Top Colleges</h1>
             <div class="row">
                 <div id="review_colleges">
+
                 </div>
             </div>
         </div>
@@ -133,6 +162,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+
     <section>
         <div class="container">
             <h1 class="heading-style">Top Educational Institutes</h1>
@@ -144,7 +175,60 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 <?php
+echo $this->render('/widgets/mustache/review-cards');
+
 $this->registerCss('
+.quick-view{
+    padding:20px 15px;
+}
+.com-hover, .college-hover, .sch-hover, .ei-hover{
+    color:#4b4646;
+} 
+.com-hover:hover{
+    color:#00A0E3 !important;
+}
+.college-hover:hover{
+    color:#7453C6 !important;
+}
+.sch-hover:hover{
+    color:#0CAA41 !important;
+}
+.ei-hover:hover{
+    color:#DA4453 !important;
+}
+.rcb-icon{
+    height:125px;
+    width:125px;
+    margin:0 auto;
+}
+.review-cat-box > .rcb-icon img {
+    -webkit-transform: rotate(10deg) scale(1.2);
+    transform: rotate(10deg) scale(1.2);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+}
+.review-cat-box:hover > .rcb-icon img {
+    -webkit-transform: rotate(0) scale(1);
+    transform: rotate(0) scale(1);
+}
+.tc{
+    text-align:center;
+}
+.review-categories{
+    padding:0 0 50px 0;
+}
+.rcb-icon{
+    max-height:125px;
+    max-width:125px;
+    margin:0 auto;
+}
+.rcb-name{
+    padding-top:40px;
+    font-size:25px;
+    text-transform:capitalize;
+    font-family: lora;
+    line-height: 25px;  
+}
 /*----ey helps block-----*/
 .wu-m-heading{
     font-size: 25px;
@@ -165,7 +249,6 @@ $this->registerCss('
     color:#00a0e3;
 }
 .ey-helps{
-    background:#f0f4fb;
     padding:20px 0 40px;
 }
 .with-us-block{
@@ -184,18 +267,19 @@ $this->registerCss('
 }    
 .com-review-box{
     text-align:center;
-    border:1px solid #eee;
+     border:1px solid #e5e5e5;
     padding:20px 0 3px 0;
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    height:285px !important;
 }
 .com-logo{
     width:100px;
     height:100px;
     margin:0 auto;
     border-radius:10px;
-    border:2px solid rgba(238,238,238,.5);
+     border:1px solid #e5e5e5;
     position:relative;
 }
 .com-logo img{
@@ -307,16 +391,13 @@ color: initial;
 }
     
 .head-bg{
-    background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
+  background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center
 }  
-.head-text{
-    font-size:30px;
-    text-transform:uppercase;
-}
+
 .pos-relative{
     position:relative;
     height:450px
@@ -347,13 +428,16 @@ color: initial;
     border:none;
 }
 .search-bar button{
-    padding:13px 16px 14px 16px;
+     padding:13px 19px 12px 16px;
     border:none;
     background:#fff;
     color:#999;
 }
 .head-text{
     padding-bottom:20px;
+    color:#fff;
+     font-size:30px;
+    text-transform:uppercase;
 }
 .head-text p{
     line-height:20px;
@@ -430,7 +514,6 @@ color: initial;
     transition: all .1s ease-out;
 }
 .categories:hover .grids::after {
-    /*opacity: .3;*/
     top: -1px;
     left: -1px;
     border: 2px solid #f08440;
