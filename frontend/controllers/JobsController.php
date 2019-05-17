@@ -305,7 +305,7 @@ class JobsController extends Controller
             }
             $object = new \account\models\applications\ApplicationForm();
 
-            return $this->render('pop_up_detail', [
+            return $this->renderAjax('pop_up_detail', [
                 'application_details' => $application_details,
                 'type' => $type,
                 'data' => $object->getCloneData($application_details['application_enc_id'], $type),

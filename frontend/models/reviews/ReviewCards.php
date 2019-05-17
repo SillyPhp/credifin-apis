@@ -14,7 +14,7 @@ class ReviewCards {
     {
         $cards =  Organizations::find()
               ->alias('a')
-              ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
+              ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
               ->where(['a.is_deleted'=>0])
               ->joinWith(['businessActivityEnc b'],false)
               ->joinWith(['organizationReviews c'=>function($b)
@@ -54,6 +54,11 @@ class ReviewCards {
                'or',
                ['like', 'g.name', $options['city']],
            ]);
+        }
+        if (isset($options['sort']))
+        {
+            $cards->orderBy(['c.created_on' => SORT_DESC]);
+
         }
         if (isset($options['rating']))
         {
