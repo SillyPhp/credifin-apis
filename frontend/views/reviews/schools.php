@@ -250,6 +250,18 @@ review-benifit{
 .rb-icon img{
     max-width:100px;
 }
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
+}
 .rb-heading{
     padding-top:10px;
     font-weight:bold;
