@@ -85,7 +85,7 @@ $this->params['seo_tags'] = [
                                 <div class="rcb-icon" id="company-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
                                 </div>
-                                <div class="rcb-name">Company</div>
+                                <div class="rcb-name">Companies</div>
                             </div>
                         </a>
                     </div>
@@ -95,7 +95,7 @@ $this->params['seo_tags'] = [
                                 <div class="rcb-icon" id="college-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
                                 </div>
-                                <div class="rcb-name">College</div>
+                                <div class="rcb-name">Colleges</div>
                             </div>
                         </a>
                     </div>
@@ -105,17 +105,17 @@ $this->params['seo_tags'] = [
                                 <div class="rcb-icon" id="school-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
                                 </div>
-                                <div class="rcb-name">School</div>
+                                <div class="rcb-name">Schools</div>
                             </div>
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="/reviews/educational-institutes">
+                        <a href="/reviews/institutes">
                             <div class="review-cat-box ei-hover">
                                 <div class="rcb-icon" id="education-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
                                 </div>
-                                <div class="rcb-name">Educational Institute</div>
+                                <div class="rcb-name">Educational Institutes</div>
                             </div>
                         </a>
                     </div>
@@ -126,7 +126,6 @@ $this->params['seo_tags'] = [
     <section class="quick-view">
         <div class="container">
             <div class="row" id="main-cont">
-
             </div>
         </div>
     </section>
@@ -135,7 +134,6 @@ $this->params['seo_tags'] = [
             <h1 class="heading-style">Top Companies</h1>
             <div class="row">
                 <div id="review_container">
-
                 </div>
             </div>
         </div>
@@ -146,7 +144,6 @@ $this->params['seo_tags'] = [
             <h1 class="heading-style">Top Colleges</h1>
             <div class="row">
                 <div id="review_colleges">
-
                 </div>
             </div>
         </div>
@@ -157,7 +154,6 @@ $this->params['seo_tags'] = [
             <h1 class="heading-style">Top Schools</h1>
             <div class="row">
                 <div id="review_school">
-
                 </div>
             </div>
         </div>
@@ -169,7 +165,6 @@ $this->params['seo_tags'] = [
             <h1 class="heading-style">Top Educational Institutes</h1>
             <div class="row">
                 <div id="review_institutes">
-
                 </div>
             </div>
         </div>
