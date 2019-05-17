@@ -1952,7 +1952,7 @@ $('#company_review_btn1').hide();
 $('#company_review_btn2').hide();
 $(document).on('change','#bussiness_activity',function(e)
 {
-    if($('#bussiness_activity :selected').text()=='Colege/Universities')
+    if($('#bussiness_activity :selected').text()=='College/Universities')
         {
             $('#company_review_btn1').show();
             $('#company_review_btn2').show();
