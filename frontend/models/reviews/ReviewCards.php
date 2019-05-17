@@ -70,10 +70,24 @@ class ReviewCards {
 
     public function getReviewUncliamedCards($options=[])
     {
-        $cards =  UnclaimedOrganizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND(AVG(c.average_rating)) rating'])
-            ->where(['a.is_deleted'=>0])
+        $card_query =  UnclaimedOrganizations::find()
+            ->alias('a');
+        if ($options['business_activity']=='Educational Institute') {
+            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((student_engagement+school_infrastructure+faculty+value_for_money+teaching_style+coverage_of_subject_matter+accessibility_of_faculty)/7) rating']);
+        }
+        elseif($options['business_activity']=='School')
+        {
+            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((student_engagement+school_infrastructure+faculty+accessibility_of_faculty+co_curricular_activities+leadership_development+sports)/7) rating']);
+        }
+        elseif ($options['business_activity']=='College')
+        {
+            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((academics+faculty_teaching_quality+infrastructure+accomodation_food+placements_internships+social_life_extracurriculars+culture_diversity)/7) rating']);
+        }
+        else
+        {
+            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating']);
+        }
+        $cards->where(['a.is_deleted'=>0])
             ->joinWith(['organizationTypeEnc b'],false)
             ->joinWith(['newOrganizationReviews c'=>function($b)
             {
