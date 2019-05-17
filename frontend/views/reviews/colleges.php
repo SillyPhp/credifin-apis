@@ -231,6 +231,18 @@ review-benifit{
     position:relative;
     min-height:400px;
 }
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
+}
 .head-bg-black{
     max-width:400px;
     background:rgba(0,0,0,.65);

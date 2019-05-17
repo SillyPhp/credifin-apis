@@ -238,6 +238,18 @@ review-benifit{
     right:10px;
     z-index:999;
 }
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
+}
 .rb-box{
     text-align:center;
 }
