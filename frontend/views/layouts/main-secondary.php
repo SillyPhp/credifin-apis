@@ -46,7 +46,7 @@ $this->beginPage();
         <?php $this->beginBody(); ?>
         <div id="wrapper" class="clearfix">
             <div class="main-content">
-                <section id="home" class="divider parallax fullscreen layer-overlay overlay-white-9" data-bg-img="<?= (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : ''; ?>">
+                <section id="home" class="divider parallax fullscreen layer-overlay overlay-white-9"">
                     <div class="display-table">
                         <div class="display-table-cell">
                             <div class="container">
@@ -67,12 +67,43 @@ $this->beginPage();
             </div>
         </div>
         <?php
-        $this->registerCss("
+        $bg_img = (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : '';;
+        $this->registerCss('
+        body{
+            background-image: url( ' . $bg_img . ' );
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        .layer-overlay::before {
+            background: rgba(17, 17, 17, 0.5) none repeat scroll 0 0;
+            content: " ";
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 0;
+        }
+        .layer-overlay.overlay-white-9::before {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .form-control {
+            border-radius: 0;
+            height: 45px;
+        }
+        .divider .container {
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+//        #home{
+//            min-height:100% !important;
+//        }
         #home {
             min-height:100vh !important;
             height: auto !important;
             margin-bottom:-50px;
-        }");
+        }');
 
         if (!empty(Yii::$app->params->google->analytics->id)) {
             $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
