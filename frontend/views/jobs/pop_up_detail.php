@@ -70,7 +70,7 @@ if ($type == 'Internships') {
         <div class="modal-bg">
             <div class="col-md-12">
                 <div class="row">
-                    <h3 class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
+                    <div class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
                         <a href="javascript:;" title="Close" class="jd-close">✕</a>
                         <div class="row bottom-line">
                             <div class="com-initials col-md-2 col-sm-2">
@@ -267,10 +267,10 @@ if ($type == 'Internships') {
                                     Detail</a>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 <?php
 $this->registerCss('
