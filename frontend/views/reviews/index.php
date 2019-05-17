@@ -108,7 +108,7 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
             <h1 class="heading-style">Top Colleges</h1>
             <div class="row">
-                <div id="review_container">
+                <div id="review_colleges">
 
                 </div>
             </div>
@@ -119,7 +119,7 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
             <h1 class="heading-style">Top Schools</h1>
             <div class="row">
-                <div id="review_container">
+                <div id="review_school">
 
                 </div>
             </div>
@@ -131,15 +131,15 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
             <h1 class="heading-style">Top Educational Institutes</h1>
             <div class="row">
-                <div id="review_container">
+                <div id="review_institutes">
 
                 </div>
             </div>
         </div>
     </section>
 <?php
-echo $this->render('/widgets/mustache/recent-review-bar');
-
+echo $this->render('/widgets/mustache/review-cards', [
+]);
 $this->registerCss('
 .quick-view{
 //    background:#ecf5fe;
@@ -1020,96 +1020,21 @@ body.modal-open{
     {
 }
 ');
-echo $this->render('/widgets/mustache/review-cards', [
-]);
+echo $this->render('/widgets/mustache/recent-review-bar');
+echo $this->render('/widgets/mustache/review-cards');
+echo $this->render('/widgets/mustache/review-cards-unclaimed');
 $script = <<< JS
-var company_list = [
-    {
-        name: 'Company Company Company Company Company Company',
-        rating: 4
-    },
-    {
-        name: 'Company 2',
-        rating: 3        
-    },
-    {
-        name: 'Company 3',
-        rating: 5       
-    }
-];
-var college_list = [
-    {
-        name: 'College 1',
-        rating: 4
-    },
-    {
-        name: 'College 2',
-        rating: 3        
-    },
-    {
-        name: 'College 3',
-        rating: 5       
-    }
-];
-var school_list = [
-    {
-        name: 'School 1',
-        rating: 4
-    },
-    {
-        name: 'School 2',
-        rating: 3        
-    },
-    {
-        name: 'School 3',
-        rating: 5       
-    }
-];
-var education_list = [
-    {
-        name: 'Institute 1',
-        rating: 4
-    },
-    {
-        name: 'Institute 2',
-        rating: 3        
-    },
-    {
-        name: 'Institute 3',
-        rating: 5       
-    }
-];
-renderMainCont(company_list);
-function renderMainCont(list){
-    var main_div = $('#review-bar').html();
-    $('#main-cont').html(Mustache.render(main_div, list))
-}
-$("#company-cont").hover(function(){
-    renderMainCont(company_list)   
-  }, function(){
-    renderMainCont(company_list);
-});
-$("#college-cont").hover(function(){
-    renderMainCont(college_list);
-  }, function(){
-    renderMainCont(company_list);
-});
-$("#school-cont").hover(function(){
-    renderMainCont(school_list);
-  }, function(){
-    renderMainCont(company_list)
-});
-$("#education-cont").hover(function(){
-    renderMainCont(education_list);
-  }, function(){
-    renderMainCont(company_list);
-});
-
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#review_colleges'));
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#review_institutes'));
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
 })
-fetch_cards(params={'rating':[4,5],'limit':3});  
+var array_types = ['School','College','Educational Institute'];
+var get_random_cat = array_types[Math.floor(Math.random()*array_types.length)];
+fetch_cards(params={'rating':[4,5],'limit':3},template=$('#review_container'));
+fetch_cards_slider_card(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:get_random_cat,'offset':0},template=$('#main-cont'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
