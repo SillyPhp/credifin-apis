@@ -85,7 +85,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Schools</div>
+                    <div class="heading-style">Top Rated Schools</div>
                     <div id="uncliamed_top">
 
                     </div>
