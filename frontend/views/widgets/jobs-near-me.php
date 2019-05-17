@@ -11,6 +11,7 @@ if($type == 'jobs'){
 }
 
 ?>
+
 <div class="row">
     <div class="col-md-10 col-md-offset-2">
         <div class="near-me-search row">
@@ -31,7 +32,7 @@ if($type == 'jobs'){
                     <p class="error" style="color: red"></p>
                 </div>
             </div>
-            <div class="col-md-4 pt-20">
+            <div class="col-md-4 pt-10">
                 <input type="text" autocomplete="off" id="range_3">
             </div>
             <div class="col-md-2">
@@ -96,7 +97,6 @@ if($type == 'jobs'){
                 </svg>
             </a>
         </div>
-
     </div>
 </div>
 
@@ -193,6 +193,7 @@ $this->registerCss('
     top: 52px;
     left: 0;
     height: calc(100vh - 52px);
+    z-index:10050;
     overflow-y: scroll;
     overflow-x: hidden;
     box-shadow: 0px 0px 10px 1px #e6e6e6;
@@ -258,6 +259,9 @@ $this->registerCss('
     padding: 15px !Important;
     background-color: #00a0e3;
     color: #fff;
+}
+.near-me-search div .form-group{
+    margin-bottom:15px;
 }
 .loader-main{
     padding: 0px 15px;
@@ -485,7 +489,7 @@ function showCards(){
     });
               
     map.setCenter({lat: lat, lng: long});
-    map.setZoom(11);
+    map.setZoom(9);
     myCity.setMap(map);
     
     //cards setup
