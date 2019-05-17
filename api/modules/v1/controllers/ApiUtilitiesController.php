@@ -10,6 +10,7 @@ use common\models\Countries;
 use common\models\States;
 use yii\helpers\ArrayHelper;
 use Yii;
+use yii\helpers\Url;
 
 class ApiUtilitiesController extends ApiBaseController{
     public function actionStates(){
@@ -72,5 +73,19 @@ class ApiUtilitiesController extends ApiBaseController{
             ->all();
         $categories = ArrayHelper::map($fields, 'name', 'category_enc_id');
         return $this->response(200, $categories);
+    }
+
+    public function actionProfilesIcon()
+    {
+        $fields = Categories::find()
+            ->alias('a')
+            ->select(['a.name', 'a.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", a.icon) icon'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
+            ->where(['b.assigned_to' => 'Profiles', 'b.parent_enc_id' => NULL])
+            ->andWhere(['b.status' => 'Approved'])
+            ->asArray()
+            ->all();
+        return $this->response(200, $fields);
     }
 }

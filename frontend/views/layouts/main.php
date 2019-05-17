@@ -1,6 +1,6 @@
 <?php
-/* @var $this \yii\web\View */
 
+/* @var $this \yii\web\View */
 /* @var $content string */
 
 use yii\helpers\Html;
@@ -175,6 +175,7 @@ AppAssets::register($this);
                                    class="overlink"><i class="fa fa-linkedin"></i></a></li>
                         </ul>
                         <br/><br/>
+                        <a href="/careers">Careers</a>
                         <a class="text-gray mt-10 send_mail" href="mailto:info@empoweryouth.com"><i
                                     class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
                     </div>

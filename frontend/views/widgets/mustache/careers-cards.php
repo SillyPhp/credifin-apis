@@ -40,10 +40,10 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .job-listing{
-    border:1px solid #eee;
-    padding:10px 15px;
-    border-radius:10px;
-    margin-bottom: 10px;
+   border: 1px solid #eee;
+    padding: 10px 15px 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 .job-title-sec{
     text-align:center;
@@ -67,9 +67,15 @@ $this->registerCss('
     top:50%;
     transform: translate(-50%, -50%);
 }
+.job-title{
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   text-transform: capitalize;
+}
 .job-title a{
     font-size:16px;
-    color:#00a0e3;
+    color:#00a0e3;  
 }
 .apply-job-btn{
     padding-top:20px;

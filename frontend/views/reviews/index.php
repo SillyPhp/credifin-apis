@@ -1,98 +1,131 @@
 <?php
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+
+$this->title = Yii::t('frontend', 'Reviews page | Latest Reviews');
+
+$keywords = 'Company Reviews, School Reviews, Best Compamies Reviews, Best School Reviews, Top Schools of Mumbai, Best IT Colleges Reviews,
+Best MBA colleges reviews, Best Ielts Institutes Reviews, Best CBSE Schools in Delhi, Artificial Intelligence Course Reviews.';
+
+$description = "Here's you get top listed and top reviews schools, companies, institutes, organisations, colleges of your city. you can easily
+watch the reviews and see the ratings and you can also post your reviews of any sector.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
     <section class="head-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="header-bg">
-                        <div class="search-box">
-                            <div class="head-text">
-                                <p>Find your next great place to work</p>
-                            </div>
-                            <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                <div class="input-group search-bar">
-                                    <div class="load-suggestions Typeahead-spinner">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
-                                    <div class="input-group-btn">
-                                        <button class="loader_btn_search"><i class="fa fa-search"></i></button>
-                                    </div>
+                    <div class="pos-relative">
+                        <div class="header-bg">
+                            <div class="search-box">
+                                <div class="head-text">
+                                    <p>Find your next great place to work</p>
                                 </div>
-                            </form>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                    <div class="input-group search-bar">
+                                        <div class="load-suggestions Typeahead-spinner">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
+                                        <div class="input-group-btn">
+                                            <button class="loader_btn_search"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-<!--registration model-->
-    <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content half-bg-color">
-                <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
-                <div class="row margin-0">
-                    <div class="col-md-6 col-sm-6">
-                        <div class=" half-bg half-bg-color">
-                            <div class="top-circle">
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
-                            </div>
-                            <div class="log-icon">
-                                <span></span>
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-image.png') ?>"
-                                     class="centerthis">
-                            </div>
-                            <div class="bottom-circle">
-                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 padding-0 bg-log">
-                        <div class="log-fom">
-                            <div class="inner-log-fom"></div>
-                            <div class="inner-main-log-fom">
-                                <div class="ey-logo">
-                                    <img src="<?= Url::to('@commonAssets/logos/logo.svg') ?>">
-                                </div>
-                                <div class="login-form" id="loginForm">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <section class="review-benifit">
         <div class="container">
             <div class="row">
                 <div class="review-benifits">
-                    <div class="col-md-8 ">
-                        <div class="benifit-heading">Unquestionable <span>Reputation</span> </div>
+                    <div class="col-md-8 col-sm-8 ">
+                        <div class="benifit-heading">Unquestionable Reputation</div>
                         <div class=""> Consumers share their experiences, unveiling the working atmosphere.
                             Know more by going through and make a right choice.</div>
                         <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-4">
                         <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="review-benifits">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-4">
                         <div class="benifits-icon bi-right"><img src="<?= Url::to('@eyAssets/images/pages/review/overview.png') ?>"></div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="benifit-heading">Perception <span>overview</span></div>
+                    <div class="col-md-8 col-sm-8">
+                        <div class="benifit-heading">Perception overview</div>
                         <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
                             Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
                         <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="ey-helps">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="wu-m-heading"><span class="blue">Empower</span> <span class="orange">Youth</span> Helps Employers</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-heading">Attract</div>
+                        <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
+                        <div class="wu-heading">Convert</div>
+                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="with-us-block">
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
+                        <div class="wu-heading">Retain</div>
+                        <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
                     </div>
                 </div>
             </div>
@@ -110,9 +143,42 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+/*----ey helps block-----*/
+.wu-m-heading{
+    font-size: 25px;
+    text-transform: capitalize;
+    text-align: center;
+}
+.blue{
+    color:#00a0e3;
+}
+.orange{
+    color:#ff7803;
+}
+.wu-heading{
+    text-align:center;
+    padding-top:40px;
+    text-transform:capitalize;
+    font-size:18px;
+    color:#00a0e3;
+}
+.ey-helps{
+    background:#f0f4fb;
+    padding:20px 0 40px;
+}
+.with-us-block{
+    text-align:center;
+}
+.wu-icon{
+    padding-top:20px;
+    height:150px;
+}
+/*----ey helps block ends-----*/
+
 .review-benifit{
-//    background:#ecf5fe;
-    padding-bottom:50px;    
+    position: relative;
+    padding-bottom: 50px;
+    z-index: -1;
 }    
 .com-review-box{
     text-align:center;
@@ -145,6 +211,14 @@ $this->registerCss('
     font-size: 18px;
     text-transform: capitalize;
 }
+.uname .md-radio label{
+    white-space: normal;
+    font-size: 12px;
+}
+.has-success .md-radio label
+{
+color: initial;
+}
 .rating-stars{
     font-size:20px;
 }
@@ -152,6 +226,7 @@ $this->registerCss('
     display:flex;
     justify-content:center;
     font-size:14px;
+    min-height:25px;
 }
 .stars{
     margin-right:5px;
@@ -231,18 +306,26 @@ $this->registerCss('
     
 .head-bg{
     background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
-    background-size: contain;
+    background-size: cover;
     width: 100%;
-    min-height: 500px; 
+    background-repeat: no-repeat; 
     text-align:center
 }  
 .head-text{
     font-size:30px;
     text-transform:uppercase;
 }
+.pos-relative{
+    position:relative;
+    height:450px
+}
 .header-bg{
-    height:400px;
-    text-align:center
+    text-align:center;
+    width:100%;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
 }  
 .search-box{
     position:relative;
@@ -364,18 +447,18 @@ $this->registerCss('
 }
 .benifit-heading{
     font-size:25px;
-    text-transform:uppercase;
+    text-transform:capitalize;
     text-align:center;
     padding-top:20px;
-    font-weight:bold;
     color:#00a0e3;
+    position:relative;
+    z-index:-1;
 }
 .benifit-heading span{
     color:#ff7803;
 }
 .review-benifits{
-    padding:30px 100px
-    
+    padding:30px 100px;
 }
 .benifit-bttn{
     padding-top:20px;
@@ -455,21 +538,22 @@ width:100%;
   color: #999
 }
 .tt-menu {
-  width: 98%;
-  margin: 12px 0;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          text-align: left;
-//          max-height:158px;
-//          overflow-y:auto;
+    width: 100%;
+    margin: 12px 0;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    text-align: left;
+    max-height:210px;
+    overflow-y:auto;
+    overscroll-behavior: none;
 }
 .tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
     background-color: #eff1f6;
@@ -488,6 +572,7 @@ width:100%;
   padding: 3px 20px;
   font-size: 14px;
   line-height: 24px;
+  height:54px;
 }
 .tt-suggestion:hover {
   cursor: pointer;
@@ -729,6 +814,10 @@ float:right;
     display: inline-block;
     width:100%;
 }
+.main_head_title h3
+{
+font-family: "lobster";
+}
 .uname{
     padding:10px 0 10px 0;
     
@@ -774,47 +863,14 @@ input{
     border-radius:5px;
     font-size:13px;
 }
-@media screen and (max-width: 992px){
-    .half-bg{
-        border-radius:5px 5px 0 0;
-    }
-    .bg-log{
-        border-radius:0px 0px 5px 5px;
-    }
-    .rem-input input{
-        margin-left:0px;
-    }
-}
-@media screen and (max-width: 767px){
-    .rem-input{
-        padding-right:15px !important;
-    }
-    .half-bg{
-        display:none;
-    }
-    .bg-log{
-        min-width:300px;
-    }
-    .f-mail{
-        white-space: normal !important;
-    }
-}
-@media screen and(max-width: 550px){
-    .bg-log{
-        max-width:280px;
-    }
-}
-@media screen and (min-width: 768px){
-    .modal-dialog {
-        width: 750px !important;
-        margin: 30px auto;
-    }
-}
+
 body.modal-open{
     padding-right:0px !important;
     overflow:visible;
 }
-.error-occcur{color:red;}
+.error-occcur{
+    color:red;
+}
 .close-lg-modal{
     position: absolute;
     right: -40px;
@@ -836,16 +892,88 @@ body.modal-open{
 .rem-input .checkbox label{
     font-size: 14px;
 }
+#form-search .input-group .twitter-typeahead{
+    width: calc(100% + 48px);
+    padding-right: 80px;
+}
+#form-search .input-group .input-group-btn{
+    z-index:99;
+}
+#form-search .input-group .load-suggestions{
+    right: 36px;
+    top: -12px;
+}
+@media screen and (max-width: 992px){
+    .half-bg{
+        border-radius:5px 5px 0 0;
+    }
+    .bg-log{
+        border-radius:0px 0px 5px 5px;
+    }
+    .rem-input input{
+        margin-left:0px;
+    }
+    .benifits-icon img{
+        max-width:150px;
+        padding-top:30px;
+    }
+}
+@media only screen and (max-width: 767px){
+    .rem-input{
+        padding-right:15px !important;
+    }
+    .half-bg{
+        display:none;
+    }
+    .bg-log{
+        min-width:300px;
+    }
+    .f-mail{
+        white-space: normal !important;
+    }
+    .benifits-icon{
+       display:none;
+    }
+}
+@media only screen and (min-width: 768px){
+    .modal-dialog {
+        width: 750px !important;
+        margin: 30px auto;
+    }
+}
+@media only screen and (max-width: 550px){
+    .bg-log{
+        max-width:280px;
+    }
+    .review-benifits{
+        padding:30px 15px !important;
+    }
+    .benifits-icon{
+        padding-top:20px;
+        display:none;
+    }
+    .head-text p{
+        line-height: 35px;
+    }
+}
+
 @media only screen and (max-width: 450px) {
     .close-lg-modal{
         right: -5px;
         color: #777;
     }
+     .review-benifits{
+        padding:30px 15px;
+    {
 }
 ');
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 $script = <<< JS
+$(document).on('click','.add_new_org',function(e) {
+  e.preventDefault();
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
+})
 fetch_cards(params={'rating':[4,5],'limit':3});  
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -859,43 +987,6 @@ var companies = new Bloodhound({
         }
   },
 });
-function fetch_cards(params)
-{
-    $.ajax({
-        url : '/organizations/fetch-review-cards',
-        method: "POST",
-        data: {params:params},
-        beforeSend: function(){
-          $('#loading_img').addClass('show');
-          $('.fader').css('display','block');
-        },
-        success: function(response) {
-            if (response.status==200){
-            $('#loading_img').removeClass('show');
-            $('.fader').css('display','none');
-            $('#review_container').html('');
-            $('#load_review_card_btn').show();
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
-            utilities.initials();
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-                $('.average-star').raty({
-                   readOnly: true, 
-                   hints:['','','','',''],
-                  score: function() {
-                    return $(this).attr('data-score');
-                  }
-                });
-            }
-            else 
-                {
-            $('#loading_img').removeClass('show');
-            $('#load_review_card_btn').hide();
-            $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
-                }
-        }
-    });
-}
 $('#search_comp').typeahead(null, {
   name: 'search_companies',
   displayKey: "name",
@@ -903,14 +994,15 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="35px"></canvas>')
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
+ return result;
 },
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div></div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
 },
 }).on('typeahead:asyncrequest', function() {
     $('.load-suggestions').show();
@@ -922,8 +1014,6 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
   });
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@vendorAssets/pop-up/css/ideabox-popup.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
-$this->registerJsFile('@vendorAssets/pop-up/js/ideabox-popup.min.js');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

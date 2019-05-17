@@ -1,16 +1,12 @@
 <?php
-
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
-
 $this->title = 'Learning Corner';
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/lco.png');
 $keywords = 'learning corner activities, what is learning corner, learning corners, learning online, learning corner ideas, learning corner activities, what is learning corner, empoweryouth learning corner, learning center ideas';
 $description = 'Learning corner is a great platform which is provided by Empower Youth to maximize your learning, moreover boost your knowledge and intelligence.';
-
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/ey/images/backgrounds/share-lc.png');
-
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::canonical(),
@@ -50,22 +46,22 @@ $this->params['seo_tags'] = [
     </div>
 
 <?php
-    if (Yii::$app->session->hasFlash('success')):
-?>
+if (Yii::$app->session->hasFlash('success')):
+    ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="fader"></div>
-        <div class="light-box-outer">
-            <div class="light-box-inner">
-                <h2><i class="fa fa-check-circle-o"></i> Thank You!</h2>
-                <p><?= Yii::$app->session->getFlash('success'); ?></p>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="fader"></div>
+            <div class="light-box-outer">
+                <div class="light-box-inner">
+                    <h2><i class="fa fa-check-circle-o"></i> Thank You!</h2>
+                    <p><?= Yii::$app->session->getFlash('success'); ?></p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<?php
+    <?php
     $this->registerJs("
         $('.fader').fadeIn(500);
         $('.light-box-outer').fadeIn(1000);
@@ -77,38 +73,37 @@ $this->params['seo_tags'] = [
         
         setTimeout(function(){ window.location = '/'; }, 3000);
     ");
-
-    endif;
+endif;
 ?>
 
 <?php
-    $form = ActiveForm::begin([
-        'id' => 'careers-form',
-        'options' => [
-            'class' => 'clearfix',
-        ],
-        'fieldConfig' => [
-            'template' => '<div class="row"><div class="col-md-12"><div class="form-group">{input}{error}</div></div></div>',
-            'labelOptions' => ['class' => ''],
-        ],
-    ]);
+$form = ActiveForm::begin([
+    'id' => 'careers-form',
+    'options' => [
+        'class' => 'clearfix',
+    ],
+    'fieldConfig' => [
+        'template' => '<div class="row"><div class="col-md-12"><div class="form-group">{input}{error}</div></div></div>',
+        'labelOptions' => ['class' => ''],
+    ],
+]);
 ?>
 
-    <?=
-        $form->field($learningCornerFormModel, 'video_type')->dropDownList([
-            'Education' => 'Education',
-            'Film & Animation' => 'Film & Animation',
-            'Music' => 'Music',
-            'Nonprofits & Activism' => 'Nonprofits & Activism',
-            'People & Blogs' => 'People & Blogs',
-            'Science & Technology' => 'Science & Technology',
-            'Sports' => 'Sports',
-            'Others' => 'Others',
-        ], [
-            'id' => 'video_type',
-            'prompt' => 'Video Type',
-        ]);
-    ?>
+<?=
+$form->field($learningCornerFormModel, 'video_type')->dropDownList([
+    'Education' => 'Education',
+    'Film & Animation' => 'Film & Animation',
+    'Music' => 'Music',
+    'Nonprofits & Activism' => 'Nonprofits & Activism',
+    'People & Blogs' => 'People & Blogs',
+    'Science & Technology' => 'Science & Technology',
+    'Sports' => 'Sports',
+    'Others' => 'Others',
+], [
+    'id' => 'video_type',
+    'prompt' => 'Video Type',
+]);
+?>
 
     <div id="field-hidden" class="row">
         <div class="col-md-12">
@@ -125,13 +120,13 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 
-    <?=
-        $form->field($learningCornerFormModel, 'video_url')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
-    ?>
+<?=
+$form->field($learningCornerFormModel, 'video_url')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
+?>
 
-    <?=
-        $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']);
-    ?>
+<?=
+$form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'skills', 'data-role' => 'tagsinput']);
+?>
 
     <div class="row title">
         <div class="col-md-12">
@@ -157,6 +152,12 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 
+    <div class="row ci">
+        <div class="col-md-12">
+            <?= $form->field($learningCornerFormModel, 'video_id')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary btn-lg btn-block mt-15', 'name' => 'register-button']); ?>
@@ -165,26 +166,26 @@ $this->params['seo_tags'] = [
 
 <?php ActiveForm::end(); ?>
 
-<div class="col-md-12 text-center">
-    <h2 class="subscribe-head">Subscribe <span>Us</span></h2>
-    <div class="effect jaques">
-        <div class="buttons">
-            <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-            <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-            <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+    <div class="col-md-12 text-center">
+        <h2 class="subscribe-head">Subscribe <span>Us</span></h2>
+        <div class="effect jaques">
+            <div class="buttons">
+                <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+            </div>
         </div>
     </div>
-</div>
 
-<div style="position: fixed;width: 100%;z-index: 9999;top: 20%;right: 0;">
-    <div class="row row-offcanvas">
-        <div class="sidebar-offcanvas sidebar">
-            <h3>Why we are Doing this?</h3>
-            <h5>This is a small form that would help in a very big way we hope all of you can fill this up and also pass it along to your friends and family.</h5>
+    <div style="position: fixed;width: 100%;z-index: 9999;top: 20%;right: 0;">
+        <div class="row row-offcanvas">
+            <div class="sidebar-offcanvas sidebar">
+                <h3>Why we are Doing this?</h3>
+                <h5>This is a small form that would help in a very big way we hope all of you can fill this up and also pass it along to your friends and family.</h5>
+            </div>
+            <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Close</span></a>
         </div>
-        <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Close</span></a>
     </div>
-</div>
 
 <?php
 $this->registerCss('
@@ -229,7 +230,6 @@ $this->registerCss('
 .select2-container--krajee .select2-selection--single .select2-selection__rendered{
     margin-top: 6px;
 }
-
 .subscribe-head {
   font-family: "Roboto", sans-serif;
   font-weight: 900;
@@ -346,7 +346,6 @@ $this->registerCss('
     right: 50%;
     /* 6 columns */
   }
-
   .sidebar-offcanvas {
     position: absolute;
     top: 0;
@@ -360,7 +359,6 @@ $this->registerCss('
 .content {
   position: relative;
 }
-
 .sidebar {
   background: rgba(51, 122, 183, 0.09);
   padding: 10px 15px;
@@ -385,7 +383,6 @@ $this->registerCss('
   -o-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
 }
-
 .row-offcanvas.active .btn-collapse {
   right: 10px;
   -webkit-transition: all 0.3s ease-out;
@@ -442,7 +439,6 @@ $this->registerCss('
     display:none;
 }
 ');
-
 $script = <<< JS
   
     $('[data-toggle=offcanvas]').click(function () {
@@ -460,7 +456,6 @@ $script = <<< JS
           this.text(t1);
       return this;
     };
-
     $(".title").hide();
     
     $(".description").hide();
@@ -478,6 +473,7 @@ $script = <<< JS
                 $("#youtube-title").val(data.items[0].snippet.title);
                 $("#youtube-description").val(data.items[0].snippet.description);
                 $("#cover-image").val(data.items[0].snippet.thumbnails.high.url);
+                $("#video-id").val(videoid[1]);
             }
         });
         $(".title").show();
@@ -488,7 +484,6 @@ $script = <<< JS
         
         
     $("#field-hidden").hide();
-
     $(document).on('change', '#video_type', function () {
         var value = $(this).val();
         if (value == "Others"){
@@ -502,7 +497,6 @@ $script = <<< JS
         maxTags: 1,
         trimValue: true
     });
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('//platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()], 'async' => 'async']);

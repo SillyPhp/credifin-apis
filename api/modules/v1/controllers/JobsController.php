@@ -70,6 +70,10 @@ class JobsController extends ApiBaseController
             $options['company'] = $parameters['company'];
         }
 
+        if ($parameters['careers'] && !empty($parameters['careers'])){
+            $options['for_careers'] = (int)$parameters['careers'];
+        }
+
         $options['type'] = 'Jobs';
 
         $result = Cards::jobs($options);
@@ -140,7 +144,7 @@ class JobsController extends ApiBaseController
 
             $organization_details = $application_details
                 ->getOrganizationEnc()
-                ->select(['organization_enc_id','name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
+                ->select(['organization_enc_id','name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
                 ->asArray()
                 ->one();
 
@@ -163,9 +167,9 @@ class JobsController extends ApiBaseController
             $i = 0;
             foreach ($data["applicationEmployeeBenefits"] as $d) {
                 if(!empty($d["icon"])) {
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], true);
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
                 } else{
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', true);
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
                 }
                 $i++;
             }
@@ -206,7 +210,8 @@ class JobsController extends ApiBaseController
             unset($data["last_updated_by"]);
 
             $data['description'] = strip_tags($data['description']);
-            $data['description'] = str_replace("&nbsp;", "", $data['description']);
+            $data['description'] = str_replace("&nbsp;", " ", $data['description']);
+            $data['description'] = str_replace("&amp;", "&", $data['description']);
 
             $data["vacancies"] = 0;
             if (!empty($data['applicationPlacementLocations'])) {
@@ -216,14 +221,19 @@ class JobsController extends ApiBaseController
             }
             
             if(empty($data['applicationInterviewLocations'])){
-                $data['applicationInterviewLocations'] = '';    
+                $data['applicationInterviewLocations'][] = [
+                       "location_enc_id" => "kdmvkdkv",
+                       "application_enc_id" => "kdmklvadkv",
+                       "city_enc_id" => "",
+                       "name" => "Online"
+                ];
             }
-            
+
             if(!$data["vacancies"]){
                 $data["vacancies"] = 0;
             }
             
-            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], true);
+            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
             $data['preferred_gender'] = $this->prefferedGender($data['preferred_gender']);
 
@@ -263,7 +273,7 @@ class JobsController extends ApiBaseController
         ]);
 
         $resume = UserResume::find()
-            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->resume->file, true) . '", resume_location, "/", resume) url'])
+            ->select(['user_enc_id', 'resume_enc_id', 'title', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->resume->file, 'https') . '", resume_location, "/", resume) url'])
             ->where(['user_enc_id' => $user->user_enc_id])
             ->asArray()
             ->all();

@@ -13,7 +13,7 @@ echo $this->render('/widgets/header/secondary-header', [
             'questionnaire' => $questionnaire,
             'applications' => $applications,
             'interview_processes' => $interview_processes,
-            'applied_applications' => $applied_applications,
+            'total_applied' => $total_applied,
             'viewed'=>$viewed,
         ]);
         ?>

@@ -936,6 +936,7 @@ class InternshipsController extends Controller
             'applications' => $this->__internships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships',10),
+            'total_applied' => $userApplied->total_applied($type='Internships'),
             'primary_fields' => $this->getCategories(),
             'viewed' => $viewed,
         ]);

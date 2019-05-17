@@ -19,6 +19,11 @@ use yii\bootstrap\ActiveForm;
             <div class="col-md-12">
                 <form id="search-form-submit">
                     <div class="search-bar">
+                        <div class="load-suggestions Typeahead-spinner">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
                         <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input" placeholder="Search Company">
                         <button type="submit" class="s-btn"><i class="fa fa-search"></i> </button>
                     </div>
@@ -27,7 +32,7 @@ use yii\bootstrap\ActiveForm;
         </div>
     </div>
 </section>
-<section>
+<div>
     <div class="container">
         <div class="row">
             <div class="col-md-3">
@@ -301,35 +306,36 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </div>
-</section>
+</div>
 <div class="fader"></div>
 <?php
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
 ?>
-<div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="wr-modal-header">
-            <span class="close">&times;</span>
-            <p>Enter Company Name</p>
-        </div>
-        <div class="wr-modal-body">
-            <form>
-                <div class="com-name-modal">
-                    <input type="text">
-                </div>
-                <div class="wr-modal-bttn">
-                    <button href="" class="i-review-next">
-                        <span class="i-review-button-text"> Search Company</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 </div>
+<!--<div id="myModal" class="modal">-->
+<!---->
+<!--    <!-- Modal content -->-->
+<!--    <div class="modal-content">-->
+<!--        <div class="wr-modal-header">-->
+<!--            <span class="close">&times;</span>-->
+<!--            <p>Enter Company Name</p>-->
+<!--        </div>-->
+<!--        <div class="wr-modal-body">-->
+<!--            <form>-->
+<!--                <div class="com-name-modal">-->
+<!--                    <input type="text">-->
+<!--                </div>-->
+<!--                <div class="wr-modal-bttn">-->
+<!--                    <button href="" class="i-review-next">-->
+<!--                        <span class="i-review-button-text"> Search Company</span>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!---->
+<!--</div>-->
 <?php
 $this->registerCss('
 .search-bar{
@@ -576,10 +582,13 @@ form input[type="text"]:focus{
     text-align: center;
 }
 .com-name{
-    padding-top: 10px;
+    padding: 10px 10px 0 10px;
     color: #bcbaba;
     font-size: 18px;
     text-transform: capitalize;
+    white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 .rating-stars{
     font-size:20px;
@@ -588,6 +597,7 @@ form input[type="text"]:focus{
     display:flex;
     justify-content:center;
     font-size:14px;
+    min-height:25px;
 }
 .stars{
     margin-right:5px;
@@ -793,31 +803,31 @@ form input[type="text"]:focus{
     padding-top:20px;
 }
 /*new modal css*/
-.modal {
-  display: none;
-  position: fixed; 
-  z-index: 9; 
-  left: 0;
-  top: 0;
-  width: 100% important;
-  height: 100% !important;
-  overflow: auto; 
-  background-color: rgb(0,0,0) !important;
-  background-color: rgba(0,0,0,0.4) !important;
-}
+//.modal {
+//  display: none;
+//  position: fixed; 
+//  z-index: 9; 
+//  left: 0;
+//  top: 0;
+//  width: 100% important;
+//  height: 100% !important;
+//  overflow: auto; 
+//  background-color: rgb(0,0,0) !important;
+//  background-color: rgba(0,0,0,0.4) !important;
+//}
 
 .modal-content {
-  padding:50px 50px !important;
+//  padding:50px 50px !important;
   background-color: #2995c2; 
   margin: auto;
-  padding: 20px;
+//  padding: 20px;
   border: 1px solid #888;
   width: 80%;
   top: 50%;
   position:relative; 
-  transform: translateY(-50%);
-   -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
+//  -ms-transform: translateY(-50%);
+//   -webkit-transform: translateY(-50%);
+//  transform: translateY(-50%);
 }
 .wr-modal-header p{
    color:#333333 !important;
@@ -900,6 +910,7 @@ width:90%;
   padding: 3px 20px;
   font-size: 14px;
   line-height: 24px;
+  height:54px;
 }
 .tt-suggestion:hover {
   cursor: pointer;
@@ -917,6 +928,25 @@ width:100%;
 .tt-suggestion p {
   margin: 0;
 }
+.no_result_display{
+    padding:0px 15px;
+}
+.no_result_display .add_org{
+    border-left: 1px solid #ddd;
+    padding: 0px 5px 0px 15px;
+}
+.no_result_display .add_org a{
+    color: #00a0e3;
+    font-size: 13px;
+}
+.no_result_found
+{
+display:inline-block;
+}
+.add_org
+{
+float:right;
+}
 .logo_wrap
 {
     display: inline-block;
@@ -925,6 +955,33 @@ width:100%;
     margin-right: .6rem;
     float:left;
     max-width:50px;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    z-index: 999;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
 }
 /*new modal css ends*/
 ');
@@ -935,7 +992,7 @@ $(document).on('click','input[name="avg_rating[]"]',function()
             $.each($("input[name='avg_rating[]']:checked"), function(){            
                 avg_rating.push($(this).val());
             });
-     fetch_cards(params={'rating':avg_rating,'limit':null});       
+     fetch_cards(params={'rating':avg_rating,'limit':null},is_clear=true);       
 });
 $(document).on('click','input[name="activities[]"]',function()
 {
@@ -943,7 +1000,7 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
-     fetch_cards(params={'business_activity':activities,'limit':null});       
+     fetch_cards(params={'business_activity':activities,'limit':null},is_clear=true);       
 });
 var ps = new PerfectScrollbar('#industry-scroll'); 
     // var ps = new PerfectScrollbar('#work-scroll'); 
@@ -951,8 +1008,8 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6});
-});
+    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},is_clear=true);
+ });   
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -975,22 +1032,27 @@ $('#search_comp').typeahead(null, {
 suggestion: function(data) {
 return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
  +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="35px"></canvas>')
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
 },
-empty: ['<div class="tt-suggestion tt-selectable">sorry! No results found</div>'],
+empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
 },
-}).on('typeahead:asyncreceive', function() {
+}).on('typeahead:asyncrequest', function() {
+    $('.load-suggestions').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
     utilities.initials();
+    $('.load-suggestions').hide();
+  }).on('typeahead:selected',function(e,datum) {
+    window.location.replace('/'+datum.slug+'/reviews');
   });
 
 var locations = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
-    url: '/account/cities/cities?q=%QUERY',
+    url: '/cities/city-list?q=%QUERY',
     wildcard: '%QUERY',
     cache: true,     
         filter: function(list) {
@@ -998,55 +1060,20 @@ var locations = new Bloodhound({
         }
   },
 }); 
-
+$(document).on('click','.add_new_org',function(e) {
+  e.preventDefault();
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
+})
 $('#city_search').typeahead(null, {
   name: 'keywords',
-  displayKey: "name",
+  displayKey: "text",
   limit: 5,      
   source: locations,
 }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
   {
-     fetch_cards(params={'city':datum.name,'limit':9});   
-  }); 
-
-fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9});
-function fetch_cards(params)
-{
-    $.ajax({
-        url : '/organizations/fetch-review-cards',
-        method: "POST",
-        data: {params:params},
-        beforeSend: function(){
-          $('#loading_img').addClass('show');
-          $('.fader').css('display','block');
-        },
-        success: function(response) {
-            if (response.status==200){
-            $('#loading_img').removeClass('show');
-            $('.fader').css('display','none');
-            $('#review_container').html('');
-            $('#load_review_card_btn').show();
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
-            utilities.initials();
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-                $('.average-star').raty({
-                   readOnly: true, 
-                   hints:['','','','',''],
-                  score: function() {
-                    return $(this).attr('data-score');
-                  }
-                });
-            }
-            else 
-                {
-            $('#loading_img').removeClass('show');
-            $('#load_review_card_btn').hide();
-            $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
-                }
-        }
-    });
-}
+     fetch_cards(params={'city':datum.text,'limit':9},is_clear=true);   
+  });
+fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},is_clear=true);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

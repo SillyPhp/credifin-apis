@@ -9,32 +9,26 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-12">
                 <div class="main-heading">
-                    <div class="main-text"> Listed Companies</div>
+                    <div class="pos-center">
+                        <div class="main-text">Company Listing</div>
+                        <div class="search-container">
+                        <form action="">
+                            <input type="text" placeholder="Search Companies" name="search">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 <section>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="search-container">
-                <form action="">
-                    <input type="text" placeholder="Search Companies" name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="divider"></div>
-</div>
-</section>
-<section>
     <div class="container">
         <div class="row">
-            <div id="companies-card"></div>
+            <div class="padd-top-20">
+                <div id="companies-card"></div>
+            </div>
 <!--            <div class="col-md-4">-->
 <!--                <div class="com-box">-->
 <!--                    <a href="">-->
@@ -52,49 +46,21 @@ use yii\helpers\Url;
 <!--                    </a>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--                <div class="com-box">-->
-<!--                    <a href="">-->
-<!--                        <div class="com-icon">-->
-<!--                            <div class="icon"><img src="--><?//= Url::to('@eyAssets/images/pages/index2/midland.png') ?><!--">-->
-<!--                            </div>-->
-<!--                            <div class="follow">-->
-<!--                                <button><i class="fa fa-heart-o"></i></button>-->
-<!--                            </div>-->
-<!--                            <div class="featured">Featured</div>-->
-<!--                        </div>-->
-<!--                        <div class="com-det">-->
-<!--                            <div class="com-name">Midland Microfin Ltd</div>-->
-<!--                            <div class="com-cate">Finance</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--                <div class="com-box">-->
-<!--                    <a href="">-->
-<!--                        <div class="com-icon">-->
-<!--                            <div class="icon"><img-->
-<!--                                        src="--><?//= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?><!--">-->
-<!--                            </div>-->
-<!--                            <div class="follow">-->
-<!--                                <button><i class="fa fa-heart-o"></i></button>-->
-<!--                            </div>-->
-<!--                            <div class="featured">Featured</div>-->
-<!--                        </div>-->
-<!--                        <div class="com-det">-->
-<!--                            <div class="com-name">Capital Small Finance Bank</div>-->
-<!--                            <div class="com-cate">Finance</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
         </div>
     </div>
 </section>
 <?php
 echo $this->render('/widgets/mustache/all-companies-card');
 $this->registerCss('
+.sbar-head{
+    text-align:center;
+    font-size:20px;
+    text-transform:capitalize;
+    padding-bottom:8px;
+}
+.padd-top-20{
+    padding-top:20px;
+}
 .headerbg{
     background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/com-bg.png') . ');
     background-size:cover;
@@ -103,16 +69,20 @@ $this->registerCss('
 }
 .main-heading{
     position:relative;
-    height:200px;
+    height:190px;
     text-align:left;
 }
 .main-text{
+     font-size:40px;
+     color:#fff;
+     font-family:lobster;  
+}
+.pos-center{
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-     font-size:40px;
-     color:#fff;
-     font-family:lobster;
+     max-width: 600px;
+    width: 100%;
 }
 .com-box{
     border:1px solid #eee;
@@ -177,11 +147,20 @@ $this->registerCss('
     color:#00a0e3;
     transition:.2s ease-in;
 }
+.divider{
+   border-top:1px solid #eee;
+   margin:15px 0px 15px 0px;
+}
+/*------*/
 .search-container {
-    border:1px solid #eee;
+    max-width:600px;
+    background:#fff;
     margin: 0 0px 10px;
     position:relative;
-    border-radius:10px;
+    border-radius:8px;
+}
+input::placeholder{
+    color:#ddd;
 }
 .search-container input[type=text] {
    padding: 6px 0px 6px 15px;
@@ -198,7 +177,7 @@ form {
 }
 .search-container button {
    position: absolute;
-   padding: 11px 25px;
+   padding: 12px 25px;
    background: #00a0e3;
    font-size: 17px;
    border: none;
@@ -208,13 +187,8 @@ form {
    right: 0;
    border-radius: 0 8px 8px 0;
 }
-
 .search-container button:hover {
  background: #00a0e3;
-}
-.divider{
-   border-top:1px solid #eee;
-   margin:15px 0px 15px 0px;
 }
 ');
 
@@ -227,6 +201,7 @@ function getCompanies() {
                 if(response.status == 200){
                     var get_companies = $('#all-companies-card').html();
                     $("#companies-card").html(Mustache.render(get_companies, response.organization));
+                    utilities.initials();
                 }
             }
         })

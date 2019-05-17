@@ -4,12 +4,12 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
-$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+$keywords = 'Jobs,Find Jobs in Ludhiana,find Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Top 10 Websites for jobs,Fresher Jobs, machine learning jobs, MBA jobs';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -95,6 +95,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
             </div>
+            
             <div class="col-md-12">
                 <div class="blogbox"></div>
             </div>
@@ -109,7 +110,27 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="heading-style">Blogs</div>
+                        </div>
+                    </div>
+                    <div id="whats-new" class="row">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 <?php
+echo $this->render('/widgets/blogs/whats-new',[
+    'size' => 'col-md-3',
+    'is_ajax' => true,
+]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
@@ -117,6 +138,9 @@ echo $this->render('/widgets/mustache/application-card');
 //    'posts' => $posts,
 //]);
 $this->registerCss('
+.wn-box-details{
+    min-height:100px !important;
+}
 .input-group-addon{
     font-size:15px;
     min-width:45px;
@@ -640,6 +664,13 @@ $this->registerCss('
 }
 .twitter-typeahead{
     float:left;
+}
+.wn-box-icon{
+    max-width: 270px !important;
+}
+.wn-box-icon img{
+    height: 200px !important;
+    object-fit: fill;
 }
 ');
 $script = <<<JS

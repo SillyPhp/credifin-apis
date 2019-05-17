@@ -1,5 +1,9 @@
 <?php
+
 namespace common\models;
+
+use Yii;
+
 /**
  * This is the model class for table "{{%assigned_categories}}".
  *
@@ -22,6 +26,8 @@ namespace common\models;
  * @property Categories $categoryEnc
  * @property Categories $parentEnc
  * @property EmployerApplications[] $employerApplications
+ * @property LearningVideos[] $learningVideos
+ * @property Users[] $users
  */
 class AssignedCategories extends \yii\db\ActiveRecord
 {
@@ -32,6 +38,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return '{{%assigned_categories}}';
     }
+
     /**
      * @inheritdoc
      */
@@ -50,6 +57,11 @@ class AssignedCategories extends \yii\db\ActiveRecord
             [['parent_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['parent_enc_id' => 'category_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -57,6 +69,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ApplicationTemplates::className(), ['title' => 'assigned_category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -64,6 +77,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -71,6 +85,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -78,6 +93,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'category_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -85,11 +101,28 @@ class AssignedCategories extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'parent_enc_id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getEmployerApplications()
     {
         return $this->hasMany(EmployerApplications::className(), ['title' => 'assigned_category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLearningVideos()
+    {
+        return $this->hasMany(LearningVideos::className(), ['assigned_category_enc_id' => 'assigned_category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(Users::className(), ['asigned_job_function' => 'assigned_category_enc_id']);
     }
 }

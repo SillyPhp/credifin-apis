@@ -69,41 +69,8 @@ Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\Vie
         </div>
     </div>
 </div>
-<div id="message_img">
-    <span id='close_btn'><i class="fa fa-times"></i></span>
-    <div id="msg">
-        <img src="https://i.ibb.co/TmV51CY/done.png">
-        <h1 class="heading_submit">Submitted!</h1>
-        <p class="sub_description_1">Your Application Has been successfully registerd with the recruiter. keep check
-            your Dashboard Regularly for further confirmation from the recruiter side.</p>
-        <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
-            Questionnaire Pending From Your Side you can fill them now By clicking <a
-                    href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
-            <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
-
-    </div>
-</div>
 <?php
 $this->registerCss("
- #message_img{
-      display:none;
-    }
-    
-    #message_img.show{
-        display : block;
-        position : fixed;
-        z-index: 100;
-        background-color:#33cdbb;
-        opacity : 1;
-        background-repeat : no-repeat;
-        background-position : center;
-        width:60%;
-        height:60%;
-        left : 20%;
-        bottom : 0;
-        right : 0;
-        top : 20%;
-    }
     .inputGroup {
       background-color: #fff;
       display: block;
@@ -190,20 +157,6 @@ $this->registerCss("
         font-size: 16px;
         font-weight: 600;
         margin-bottom: 10px;
-    }
-    #msg{
-        color:#fff;
-        padding: 5px 5px;
-        text-align:center;
-     }  
-     
-    #close_btn {
-        float: right;
-        display: inline-block;
-        padding: 0px 6px;
-        color: #fff;
-        font-size: 28px;
-        cursor: pointer;
     }
 ");
 $script = <<< JS
@@ -343,17 +296,28 @@ $script = <<< JS
             var res = JSON.parse(data);
             if(res.status == true && $('#question_id').val() == 1){
                         applied();
-                        $('.sub_description_2').css('display','block');
-                        $('.sub_description_1').css('display','none');
-                        $('#message_img').addClass('show');
-                        $('.fader').css('display','block');
+                        swal({
+                          title: "Submitted!",
+                          text: "Your Application Has been successfully registered But There Are Some Questionnaire Pending From Your Side you can fill them now By clicking below Fill Questionnaire button!",
+                          type: "success",
+                          showCancelButton: true,
+                          confirmButtonClass: "btn-primary",
+                          confirmButtonText: "Fill Questionnaire!",
+                          cancelButtonText: "Fill Later!",
+                          closeOnConfirm: false,
+                          closeOnCancel: false
+                        },
+                        function(isConfirm) {
+                          if (isConfirm) {
+                            window.location.pathname = "/account/dashboard";
+                          } else {
+                            swal("Please Note!", "Your Application Would not be process further if your don't complete it. To fill it visit your dashboard.", "warning");
+                          }
+                        });
                      }
                     else if(res.status == true)
                       {
-                        $('.sub_description_1').css('display','block');
-                        $('.sub_description_2').css('display','none');
-                        $('#message_img').addClass('show');
-                        $('.fader').css('display','block');
+                          swal("Submitted!", "Your Application Has been successfully registered with the recruiter. keep checking your Dashboard Regularly for further confirmation from the recruiter side.", "success");
                         applied();
                       }
                       else
@@ -372,12 +336,9 @@ $script = <<< JS
                      $('.'+btn_class+'').attr("disabled","true");
             }
 
- $(document).on('click','#close_btn',function()
- {
-    $('.fader').css('display','none');
-    $(this).parent().removeClass('show');
-});
 JS;
 
-$this->registerJs($script)
+$this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

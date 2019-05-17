@@ -13,7 +13,7 @@ use yii\bootstrap\ActiveForm;
     <div class="col-md-12">
         <div class="office-gallery">
             <div class="g-image-preview">
-                <div id="gImagePreview" style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-and-candidate/office-pic-4.jpg') ?>);">
+                <div id="gImagePreview" style="background-image: url(<?= Url::to('@eyAssets/images/pages/company-profile/office.png') ?>);">
                 </div>
             </div>
             <div class="g-image-edit">

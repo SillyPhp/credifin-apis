@@ -18,12 +18,15 @@ class OrganizationVideoForm extends Model {
     public $description;
     public $tags;
     public $video_url;
+    public $video_id;
+    public $video_duration;
 
     public function rules() {
         return [
-            [['video_title', 'video_type', 'video_url', 'cover_image', 'description'], 'required'],
+            [['video_id', 'video_title', 'video_type', 'video_url', 'cover_image', 'description', 'tags', 'category', 'sub_category', 'video_duration'], 'required'],
             [['video_title', 'video_type', 'category', 'video_url', 'cover_image', 'sub_category', 'description', 'tags'], 'trim'],
             [['description'], 'string'],
+            ['video_id', 'unique', 'targetClass' => SubmittedVideos::className(), 'targetAttribute' => ['video_id' => 'link'], 'message' => 'Video Already added'],
             [['video_url', 'cover_image'], 'url', 'defaultScheme' => 'http'],
             [['video_type', 'category', 'sub_category'], 'string', 'max' => 30],
             [['video_title', 'cover_image'], 'string', 'max' => 100],
@@ -51,58 +54,67 @@ class OrganizationVideoForm extends Model {
             'youtube_description' => Yii::t('frontend', 'Youtube Description'),
             'description' => Yii::t('frontend', 'Description'),
             'tags' => Yii::t('frontend', 'Tags'),
+            'video_id' => Yii::t('frontend', 'Video ID'),
+            'video_duration' => Yii::t('frontend', 'Video Duration'),
         ];
     }
 
-    public function save($userID = NULL) {
-        if ($this->validate()) {
+    private function video_length($youtube_time)
+    {
+        $duration = new \DateInterval($youtube_time);
+        return $duration->h  . ':' . $duration->i  . ':' . $duration->s;
+    }
 
+    public function save($userID = NULL) {
             $submittedVideosModel = new SubmittedVideos();
+
             $utilitiesModel = new Utilities();
+
             $submittedVideosModel->name = $this->video_title;
-            $submittedVideosModel->link = $this->video_url;
+            $submittedVideosModel->link = $this->video_id;
             $submittedVideosModel->cover_image = $this->cover_image;
             $submittedVideosModel->description = $this->description;
-
+            $submittedVideosModel->video_duration = $this->video_length($this->video_duration);
 
             if (!empty($this->tags)) {
                 $submittedVideosModel->tags = $this->tags;
             } else {
                 $submittedVideosModel->tags = NULL;
             }
+
             if (!empty($this->category)) {
                 $submittedVideosModel->category = $this->category;
             } else {
                 $submittedVideosModel->category = NULL;
             }
+
             if (!empty($this->sub_category)) {
                 $submittedVideosModel->sub_category = $this->sub_category;
             } else {
                 $submittedVideosModel->sub_category = NULL;
             }
+
             if ($this->video_type == 'Others') {
                 $submittedVideosModel->type = $this->type_input;
             } else {
                 $submittedVideosModel->type = $this->video_type;
             }
+
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();
-            if ($userID) {
-                $submittedVideosModel->created_by = $userID;
-            } else {
-                $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
-            }
-            $submittedVideosModel->created_on = date('Y-m-d h:i:s');
-            $submittedVideosModel->slug = 'temp';
+            $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
+            $submittedVideosModel->created_on = date('Y-m-d H:i:s');
+
+
+            $utilitiesModel->variables['name'] = $this->video_title;
+            $utilitiesModel->variables['table_name'] = SubmittedVideos::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $submittedVideosModel->slug = $utilitiesModel->create_slug();
 
             if ($submittedVideosModel->validate() && $submittedVideosModel->save()) {
                 return true;
             } else {
-                print_r ($submittedVideosModel->getErrors());
+                return false;
             }
-        } else {
-            return false;
-        }
     }
-
 }

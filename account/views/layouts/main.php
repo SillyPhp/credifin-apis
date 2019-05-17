@@ -1,5 +1,8 @@
 <?php
 
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 use yii\helpers\Html;
 use account\assets\AppAssets;
 use yii\helpers\Url;
@@ -31,15 +34,6 @@ $this->beginPage();
             <nav class="navbar mega-menu" role="navigation">
                 <div class="container-fluid">
                     <div class="clearfix navbar-fixed-top">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                                data-target=".navbar-responsive-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="toggle-icon">
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                </span>
-                        </button>
                         <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
                             <div id="menuzord" class="menuzord">
                                 <a style="position:relative;float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
@@ -63,6 +57,15 @@ $this->beginPage();
                                     $color = Yii::$app->user->identity->initials_color;
                                 }
                                 ?>
+                                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                        data-target=".navbar-responsive-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="toggle-icon">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </span>
+                                </button>
                                 <div class="my-profiles-sec">
                                     <?php if ($image): ?>
                                         <span><img src="<?= $image; ?>" title="<?= $name; ?>"
@@ -271,6 +274,18 @@ $this->beginPage();
             .my-profiles-sec span{
                 line-height:normal;
                 margin-top:5px;
+            }
+            @media screen and (max-width: 768px){
+                #menuzord .showhide{
+                    display:none !important;
+                }
+                #menuzord .navbar-toggle{
+                    float: right;
+                    margin: 7px 15px 10px 8px;
+                }
+                .page-header .nav-collapse .navbar-nav li>a:after{
+                    display:none;
+                }
             }
         ');
     $script = <<<JS

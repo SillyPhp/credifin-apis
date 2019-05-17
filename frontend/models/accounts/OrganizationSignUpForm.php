@@ -59,7 +59,7 @@ class OrganizationSignUpForm extends Model
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
+            [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email', 'organization_email'], 'email'],
             [['organization_website'], 'url', 'defaultScheme' => 'http'],
             [['phone', 'organization_phone'], PhoneInputValidator::className()],
@@ -77,15 +77,15 @@ class OrganizationSignUpForm extends Model
     public function attributeLabels()
     {
         return [
-            'username' => Yii::t('frontend', 'Username'),
+            'username' => Yii::t('frontend', 'Organization Username'),
             'email' => Yii::t('frontend', 'Email'),
             'password' => Yii::t('frontend', 'Password'),
             'confirm_password' => Yii::t('frontend', 'Confirm Password'),
             'first_name' => Yii::t('frontend', 'First Name'),
             'last_name' => Yii::t('frontend', 'Last Name'),
             'phone' => Yii::t('frontend', 'Contact Number'),
-            'organization_name' => Yii::t('frontend', 'Name'),
-            'organization_email' => Yii::t('frontend', 'Email'),
+            'organization_name' => Yii::t('frontend', 'Organization Name'),
+            'organization_email' => Yii::t('frontend', 'Organization Email'),
             'organization_website' => Yii::t('frontend', 'Website'),
             'organization_phone' => Yii::t('frontend', 'Phone'),
             'organization_business_activity' => Yii::t('frontend', 'Business Activity'),
@@ -170,9 +170,9 @@ class OrganizationSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                $userEmailsModel = new UserEmails();
-                $userEmailsModel->verificationEmail($organizationsModel->organization_enc_id, true);
-                $transaction->commit();
+                if(Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id)){
+                    $transaction->commit();
+                }
             }
         } catch (Exception $e) {
             $transaction->rollBack();

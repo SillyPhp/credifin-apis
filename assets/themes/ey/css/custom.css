@@ -1157,18 +1157,6 @@ hr .flare :after {
 #clg{
     padding-top: 20px;
 }
-
-.menuzord.orange .menuzord-menu > li.active > a, .menuzord.orange .menuzord-menu > li:hover > a, .menuzord.orange .menuzord-menu ul.dropdown li:hover > a {
-    /*    background: url("../../../asset/images/hover1.png");
-        background-size: 100%;*/
-    color:#f08440;
-}
-@media only screen and (max-width: 901px) and (min-width: 0px) {
-    .menuzord.orange .menuzord-menu > li.active > a, .menuzord.orange .menuzord-menu > li:hover > a, .menuzord.orange .menuzord-menu ul.dropdown li:hover > a {
-        background: none !important;
-        color:#000;
-    }
-}
 .set_container{
     padding:20px 15px 0px 15px !important;    
 }
@@ -1211,6 +1199,11 @@ hr .flare :after {
     border-style: solid;
     border-width: 0 0 5px 52px;
     border-color: #f07706;
+}
+@media screen and (max-width: 400px){
+    .heading-style {
+        font-size: 23pt;
+    }
 }
 /* Headings css ends*/
 .has-success .form-control:focus {
@@ -1361,12 +1354,14 @@ hr .flare :after {
     margin: 20px 0px 0px 20px;
     width: calc(100% - 100px);
 }
+.application-card-description h4{
+    text-transform: capitalize;
+}
 .application-card-description h4, .application-card-description h5{
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize;
 }
 .application-card-description h5:last-child{
     font-weight: normal;

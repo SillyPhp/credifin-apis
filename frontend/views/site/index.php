@@ -1,15 +1,14 @@
 <?php
 
 use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+$this->title = Yii::t('frontend', "India’s No.1 Jobs & Internships Site");
 $this->params['header_dark'] = false;
-$keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,Latest IT Jobs for Freshers,Apply for Internship in India,Jobs near me,Internships near me,Top Career sites,Best Career sites in India';
-$description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
+$keywords = 'Jobs,Jobs in Chandigarh,Jobs in India,MBA Jobs,IT Jobs,Digital Marketing Jobs,Summer Internships 2019,Fresher Jobs,Paid Internships';
+$description = "India's no. 1 free Job Portal her's you can get, Pharma Jobs, Finance Jobs, IT Jobs, Engernering Jobs, Digital Marketing Jobs, Manufacturing Jobs, and many Jobs & Internships.";
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +23,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -140,7 +139,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <h1 class="heading-style ">Our Services</h1>
         <div class="services row">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
@@ -150,7 +149,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
@@ -161,12 +160,26 @@ $this->params['seo_tags'] = [
                     </div>
                 </a>
             </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/reviews'); ?>">
+                    <div class="service-box ser-box-purple">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
+                                 alt="Reviews">
+                        </div>
+                        <div class="ser-heading">Reviews</div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 
 </section>
 <!---->
+
+<!---->
 <section class="fixed-bttn">
+    <div class="pos-ab">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -180,6 +193,7 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 <!---->
@@ -198,7 +212,7 @@ $this->params['seo_tags'] = [
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
                                         <div class="job-listing wtabs">
-                                            <a href="/job/audit-and-risk-mangement-manager-65391554294078">
+                                            <a href="<?= Url::to('/job/audit-and-risk-management-manager-65391554294078')?>">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/midland">
@@ -206,13 +220,13 @@ $this->params['seo_tags'] = [
                                                                  alt="Midland Microfin"/>
                                                         </a>
                                                     </div>
-                                                    <div class="sm-100">
-                                                    <h3><a href="/job/audit-and-risk-mangement-manager-65391554294078"
-                                                           title="">Audit And Risk Mangement</a></h3>
-                                                    <span>Midland Microfin Ltd.</span>
+
+                                                    <h3><a href="/job/audit-and-risk-management-manager-65391554294078"
+                                                           title="">Audit And Risk Management</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/midland"> Midland Microfin Ltd.</a></div>
+
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jodhpur,
-                                                        <a href="/job/audit-and-risk-mangement-manager-65391554294078"> 4 more</a></div>
-                                                    </div>
+                                                        <a href="/job/audit-and-risk-management-manager-65391554294078"> 4 more</a></div>
                                                     </div>
                                                 <div class="job-style-bx">
                                                     <span class="job-is ft fill">Full time</span>
@@ -231,7 +245,7 @@ $this->params['seo_tags'] = [
 
                                                     <h3><a href="/job/business-development-executive-1901271548600570"
                                                            title="">Business Development Executive</a></h3>
-                                                    <span>DSB EduTech</span>
+                                                    <div class="wtabs-com-name"><a href="/dsbedutech"> DSB EduTech</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -250,7 +264,7 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3><a href="/job/credit-officer-credit-development-officer-28891553595039" title="">Credit Officer</a></h3>
-                                                    <span>Capital Small Finance Bank</span>
+                                                    <div class="wtabs-com-name"><a href="/capitalbank"> Capital Small Finance Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar,
                                                         <a href="/job/credit-officer-credit-development-officer-28891553595039">10 More</a>
                                                     </div>
@@ -274,7 +288,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/job/business-development-business-develpment-executive-20931553506890" title="">
                                                             Business Development</a></h3>
-                                                    <span>Hamco</span>
+                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
                                                     </div>
                                                 </div>
@@ -294,7 +308,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/sales-officer-29591553927078"
                                                            title="">Sales Officer</a></h3>
-                                                    <span>Citizens Bank</span>
+                                                    <div class="wtabs-com-name"><a href="/citizensbank"> Citizens Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Mohali, <a href="/internship/sales-officer-29591553927078">8 More</a></div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -314,7 +328,7 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3><a href="/internship/assistant-director-98591554009460" title="">Assistant Director</a></h3>
-                                                    <span>Fame Finders Media </span>
+                                                    <div class="wtabs-com-name"><a href="/manojoshempo"> Fame Finders Media </a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>New Delhi</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -341,7 +355,7 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3><a href="/job/web-developer-front-backend-developer-72621553337524" title="">Web Developer</a></h3>
-                                                    <span>Web Riderz</span>
+                                                    <div class="wtabs-com-name"><a href="/webriderz"> Web Riderz</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -360,7 +374,7 @@ $this->params['seo_tags'] = [
                                                     <h3>
                                                         <a href="/internship/business-development-associate-62841553668575"
                                                            title="">Business Development Associate</a></h3>
-                                                    <span>The SmartTree</span>
+                                                    <div class="wtabs-com-name"><a href="/thesmarttree"> The SmartTree</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Work From Home</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -380,7 +394,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/market-research-analyst-11301553596170"
                                                            title="">Market Research Analyst</a></h3>
-                                                    <span>Hamco</span>
+                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -402,7 +416,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/teaching-electronics-65721553323006"
                                                            title="">Teaching (Electronics)</a></h3>
-                                                    <span>Be Cre8v</span>
+                                                    <div class="wtabs-com-name"><a href="/becre8v"> Be Cre8v</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana, <a href="">3 More</a>
                                                     </div>
                                                 </div>
@@ -413,18 +427,18 @@ $this->params['seo_tags'] = [
                                             </a>
                                         </div><!-- Job -->
                                         <div class="job-listing wtabs">
-                                            <a href="/internship/full-stack-developer-1902011549002251">
+                                            <a href="/internship/digital-marketing-22371553238862">
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
-                                                        <a href="/empoweryouth">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.png') ?>"
-                                                                 alt="Empower Youth"/>
+                                                        <a href="/insta">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
+                                                                 alt="Insta Apphanced"/>
                                                         </a>
                                                     </div>
                                                     <h3>
-                                                        <a href="/internship/full-stack-developer-1902011549002251"
-                                                           title="">Full Stack Developer</a></h3>
-                                                    <span>Empower Youth</span>
+                                                        <a href="/internship/digital-marketing-22371553238862"
+                                                           title="">Digital Marketing</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/insta"> Insta Apphanced</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
                                                     </div>
                                                 </div>
@@ -444,7 +458,7 @@ $this->params['seo_tags'] = [
                                                     </div>
                                                     <h3><a href="/internship/website-designing-internship-in-gurgaon-26131551884452" title="">
                                                             Website Designing</a></h3>
-                                                    <span>Akrolix Innovations</span>
+                                                    <div class="wtabs-com-name"><a href="/akrolixinnovations"> Akrolix Innovations</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Gurgaon</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -530,188 +544,60 @@ $this->params['seo_tags'] = [
 </section>
 <!--how it works ends-->
 <!--new section starts-->
-<section class="companies">
+<?= $this->render('/widgets/companies-with-us'); ?>
+<!--new section ends-->
+<?= $this->render('/widgets/partner-with-us-and-feedback-form',[
+        'feedbackFormModel' => $feedbackFormModel,
+        'partnerWithUsModel' => $partnerWithUsModel,
+]);?>
+
+<section class="search-lists">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <div class="com-grid">
-                    <h1 class="heading-style">Companies With Us</h1>
-                    <div class="">Companies recruiting top talent from our portal.</div>
-                    <div class="com1 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>"
-                                 alt="Capital Small Finance Bank">
-                        </div>
-                        <div class="com-name">
-                            Capital Small Finance Bank
-                        </div>
-                    </div>
-                    <div class="com2 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
-                                 alt="Midland MicroFin">
-                        </div>
-                        <div class="com-name">
-                            Midland MicroFin
-                        </div>
-                    </div>
-                    <div class="com3 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group">
-                        </div>
-                        <div class="com-name">
-                            DSB Law Group
-                        </div>
-                    </div>
-                    <div class="com4 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hag.png') ?>" alt="HAG India">
-                        </div>
-                        <div class="com-name">
-                            HAG India
-                        </div>
-                    </div>
-                    <div class="com5 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv">
-                        </div>
-                        <div class="com-name">
-                            Agile Finserv
-                        </div>
-                    </div>
-                    <div class="com6 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/olready.png') ?>" alt="Olready">
-                        </div>
-                        <div class="com-name">
-                            Olready
-                        </div>
-                    </div>
-                    <div class="com8 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
-                                 alt="Amrit Malwa Capital Limited">
-                        </div>
-                        <div class="com-name">
-                            Amrit Malwa Capital Limited
-                        </div>
-                    </div>
-                    <div class="com9 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat">
-                        </div>
-                        <div class="com-name">
-                            Hamco Ispat
-                        </div>
-                    </div>
-                    <div class="com10 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd">
-                        </div>
-                        <div class="com-name">
-                            Up Money Ltd
-                        </div>
-                    </div>
-                    <div class="com11 animatable fadeIn">
-                        <div class="com-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ey.svg') ?>" alt="Empower youth">
-                        </div>
-                        <div class="com-name">
-                            Empower youth
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-3">
+                <div class="list-heading">Popular Searches</div>
+                <ul class="quick-links" id="searches">
+                    <?php foreach($search_words as $sw){ ?>
+                        <li class="hide"><a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>"><?= $sw['name'] ?></a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Jobs</div>
+                <ul class="quick-links" id="jobs">
+                    <?php foreach($job_profiles as $jp){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>"><?= $jp['name']; ?> Jobs</a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Browse by City</div>
+                <ul class="quick-links" id="cities">
+                    <?php foreach($cities as $c){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>">Jobs in <?= $c['name']; ?></a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-3">
+                <div class="list-heading">Internships</div>
+                <ul class="quick-links" id="internships">
+                    <?php foreach($internship_profiles as $ip){ ?>
+                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>"><?= $ip['name']; ?> Internships</a></li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
     </div>
 </section>
-<!--new section ends-->
 
-<section class="partner">
-    <div class="container">
-        <h1 class="heading-style ">Join our Community</h1>
-        <div class="row partner-row">
-            <div class="col-md-12">
-                <div class="col-md-6 col-sm-6">
-                    <div class="partner-btn">
-                        <button type='button' class="feed-open2">Partner with Us</button>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="partner-btn">
-                        <button type="button" class="feed-open">Give us Feedback</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<div class="window-popup message-popup">
-    <a href="#" class="popup-close">
-        <i class="fa fa-times"></i>
-    </a>
-    <article class="content-wrapper">
-        <header class="modal-header">
-            <h3>Reach us instantly via form below.</h3>
-        </header>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <?php
-                    $form = ActiveForm::begin([
-                        'id' => 'feedback-form',
-                        'action' => '/site/send-feedback',
-                    ]);
-                    ?>
-                    <?= $form->field($feedbackFormModel, 'name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-user"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Your Name', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'email', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-envelope"></i>{error}{hint}</div>'])->textInput(['class' => 'lowercase', 'placeholder' => 'Email Address', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'phone', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-phone"></i>{error}{hint}</div>'])->textInput(['placeholder' => 'Phone Number', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'subject', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-file-text-o"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Subject', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= $form->field($feedbackFormModel, 'message', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-pencil"></i>{error}{hint}</div>'])->textarea(['placeholder' => 'Your Message', 'autocomplete' => 'off'])->label(false); ?>
-                    <?= Html::submitButton('Submit', ['class' => 'action']); ?>
-                    <?php ActiveForm::end(); ?>
-                </div>
-            </div>
-        </div>
-    </article>
-
-</div>
-<div class="window-popup2 message-popup">
-    <a href="#" class="popup-close2">
-        <i class="fa fa-times"></i>
-    </a>
-    <article class="content-wrapper">
-        <header class="modal-header">
-            <h2>Partner With Us.</h2>
-            <h5>Want to collaborate with us, fill the form and we will get back to you</h5>
-        </header>
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12">
-                        <?php
-                        $formm = ActiveForm::begin([
-                            'id' => 'partner-with-us-form',
-                            'action' => '/site/partner-with-us',
-                        ]);
-                        ?>
-                        <?= $formm->field($partnerWithUsModel, 'name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-user"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Your Name', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'email', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-envelope"></i>{error}{hint}</div>'])->textInput(['class' => 'lowercase', 'placeholder' => 'Email Address', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'phone', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-phone"></i>{error}{hint}</div>'])->textInput(['placeholder' => 'Phone Number', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'subject', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-file-text-o"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Subject', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'company_name', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-file-text-o"></i>{error}{hint}</div>'])->textInput(['class' => 'capitalize', 'placeholder' => 'Company Name', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= $formm->field($partnerWithUsModel, 'message', ['template' => '<div class="with-icon">{input}<i class="utouch-icon utouch-icon-user fa fa-pencil"></i>{error}{hint}</div>'])->textarea(['placeholder' => 'Your Message', 'autocomplete' => 'off'])->label(false); ?>
-                        <?= Html::submitButton('Submit', ['class' => 'action']); ?>
-                        <?php ActiveForm::end(); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
-</div>
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+
 .intern-tag{
     position:absolute;
     top:0;
@@ -784,11 +670,17 @@ $this->registerCss('
 }
 /*try now sec*/
 .fixed-bttn{
-    padding:60px 0 100px;
+    min-height:400px;
     background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
     background-size: cover;
-    background-attachment:fixed;
+    position:relative;
     background-repeat:no-repeat;
+}
+.pos-ab{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 .fx-heading{
   text-transform:capitalize;
@@ -856,98 +748,6 @@ $this->registerCss('
   transform: translateY(5px);
 }
 /*try now ends*/
-
-.animated.fadeIn {
-	-webkit-animation-name: fadeIn;
-	-moz-animation-name: fadeIn;
-	-o-animation-name: fadeIn;
-	animation-name: fadeIn;
-}
-.animatable {
-  
-  /* initially hide animatable objects */
-  visibility: hidden;
-  
-  /* initially pause animatable objects their animations */
-  -webkit-animation-play-state: paused;   
-  -moz-animation-play-state: paused;     
-  -ms-animation-play-state: paused;
-  -o-animation-play-state: paused;   
-  animation-play-state: paused; 
-}
-
-/* show objects being animated */
-.animated {
-  visibility: visible;
-  
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -ms-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-  
-  -webkit-animation-duration: .3s;
-  -moz-animation-duration: .3s;
-  -ms-animation-duration: .3s;
-  -o-animation-duration: .3s;
-  animation-duration: .3s;
-
-  -webkit-animation-play-state: running;
-  -moz-animation-play-state: running;
-  -ms-animation-play-state: running;
-  -o-animation-play-state: running;
-  animation-play-state: running;
-}
-@-webkit-keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@-moz-keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@-o-keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	60% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
 
 .header-boxs{
     max-width:850px;
@@ -1017,7 +817,7 @@ $this->registerCss('
 
 /*services section starts*/
 .services{
-    padding: 50px 0 50px 0; 
+    padding: 25px 0 25px 0; 
     text-align:center !important;
 }
 .service-box{ 
@@ -1031,7 +831,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
-    width: 80%;
+    width: 95%;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
@@ -1046,6 +846,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
+    color:#ff7803;
 }
 .ser-box-orange{
     background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
@@ -1058,7 +859,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
-    width: 80%;
+    width: 95%;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
@@ -1073,13 +874,43 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
+    color:#00a0e3;
 }
+.ser-box-purple{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
+    padding:20px 20px;
+    border-radius:10px;
+    border-width:5px 0px 0px 0px; 
+    border-color:transparent;
+    border-style:solid;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    width: 95%;
+    margin: auto;
+    margin-bottom:20px;
+    box-shadow: 0px 2px 13px 0px #ddddddb8;
+    background-size: 100%;
+    background-position: 0px -8px;
+    background-repeat:no-repeat;
+}
+.ser-box-purple:hover{
+    box-shadow: 0px 2px 13px 3px #ddddddb8;
+    border-top:5px solid #5E4795;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    color:#5E4795;
+}
+
 .ser-icons{
     text-align:center;
 }
 .ser-icons img{
-    max-height: 150px; 
-    max-width: 150px;
+    max-height: 75px; 
+    max-width: 75px;
 }
 .serv-center{
     padding:0 30px;
@@ -1089,6 +920,7 @@ $this->registerCss('
     text-transform: uppercase;
     font-size: 20px;
     text-align:center;
+    font-family:lora;
 }
 /*services section ends*/
 /*how it works section starts*/
@@ -1120,45 +952,6 @@ how-icon{
 
 /*how it works section ends*/
 /*-------------------------------------*/
-/*partner with us*/
-.partner{
-    padding:0px 0 80px 0;
-    text-align:center;
-    background:#ecf5fe;
-}
-.partner-btn button{
-    border: 2px solid #00a0e3;
-    border-width: 2px 12px;
-    padding: 14px 59px;
-    background: #00a0e3 !important;
-    color: #fff;
-    text-transform: uppercase;
-    border-radius: 9px 50px;
-    transition:.6s all;
-    -webkit-transition:.6s all;
-    -o-transition:.6s all;
-    -moz-transition:.6s all;
-    -ms-transition:.6s all;
-}
-.partner-btn button:hover{
-    border:2px solid #00a0e3;
-    border-width: 2px 12px;
-    background: #00a0e3 !important;
-    color: #fff;
-    border-radius: 9px 0px;
-    transition:.6s all;
-    -webkit-transition:.6s all;
-    -moz-transition:.6s all;
-    -o-transition:.6s all;
-    -ms-transition:.6s all;
-}
-.partner-row{
-    padding:30px 0 0 0; 
-}
-.footer{
-    margin-top:0px !important;
-}
-/*partner with us ends*/
 
 @media only screen and (min-width: 1120px){
     .seq .seq-model {
@@ -1170,164 +963,6 @@ how-icon{
         margin-right: 0;
     }
 }
-
-/*Modal css starts */
-.content-wrapper {
-    position: relative;
-    display: block;
-    max-width: 560px;
-    margin: 100px auto;
-    padding: 1.5rem 3.5rem;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px -15px 0px 0px rgba(69, 74, 79, 0.5), 15px -30px 0px 0px rgba(69, 74, 79, 0.5), 30px -45px 0px 0px rgba(69, 74, 79, 0.5), 45px -60px 0px 0px rgba(69, 74, 79, 0.5);
-    transition: transform 0.25s;
-    transition-delay: 0.15s;
-}
-.content-wrapper .modal-header {
-    position: relative;
-    width: 100%;
-    margin: 0;
-    padding: 0 0 0.25rem;
-    margin-bottom: 10px;
-    text-align:center;
-}
-.content-wrapper .modal-header h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-.content-wrapper .content {
-    position: relative;
-    display: block;
-    text-align:center;
-}
-.action {
-    position: relative;
-    width: 100%;
-    height: 53px;
-    padding: 0.625rem 1.25rem;
-    border: none;
-    background-color: slategray;
-    border-radius: 0.25rem;
-    color: white;
-    font-size: 0.87rem;
-    font-weight: 300;
-    overflow: hidden;
-    z-index: 1;
-    background-color: #e74c3c;
-}
-.action:before {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.2);
-    transition: width 0.25s;
-    z-index: 0;
-}
-.action:hover:before {
-    width: 100%;
-}
-.with-icon {
-    position: relative;
-}
-.has-error .with-icon input, .has-error .with-icon textarea {
-    border: 1px solid #ff00004d !important;
-}
-.has-success .form-control {
-    border-color: transparent !important;
-}
-#feedback-form input, #feedback-form textarea, #partner-with-us-form input, #partner-with-us-form textarea{
-    padding: 13px 40px !important;
-    border: 1px solid transparent !important;
-    transition: all .3s ease !important;
-    font-size: 16px !important;
-    color: #273f5b !important;
-    margin-bottom: 20px !important;
-    border-radius: 50px !important;
-    height:53px !important;
-    background-color: #fff !important;
-    box-shadow: 0 0 30px 0 rgba(18, 25, 33, 0.15) !important;
-    width: 100% !important;
-    outline: none !important;
-    padding-left: 50px !important;
-}
-#feedback-form input:focus, #feedback-form textarea:focus, #partner-with-us-form input:focus, #partner-with-us-form textarea:focus{
-    -webkit-box-shadow: 5px 0 40px 0 rgba(0, 88, 171, 0.25) !important;
-    box-shadow: 5px 0 40px 0 rgba(0, 88, 171, 0.25) !important;
-    color: #0083ff !important;
-    outline: 0 !important;
-}
-.with-icon .utouch-icon {
-    position: absolute !important;
-    left: 12px !important;
-    top: 18px !important;
-    height: 16px !important;
-    border-right: 1px solid #dbe3ec !important;
-    z-index: 1 !important;
-    transition: all .3s ease !important;
-    padding-left: 6px !important;
-    padding-right: 8px !important;
-}
-.utouch-icon {
-    transition: all .3s ease !important;
-    width: 32px !important;
-}
-.with-icon input:focus + .utouch-icon, .with-icon textarea:focus + .utouch-icon, .with-icon select:focus + .utouch-icon {
-    color: #0083ff !important;
-}
-textarea {
-    height: 120px !important;
-    border-radius: 30px !important;
-}
-.window-popup, .window-popup2 {
-    opacity: 0;
-    visibility: hidden;
-    background-color: #66b5ff;
-    position: fixed;
-    top: 0;
-    width: calc(100% + 20px);
-    height: 100%;
-    -webkit-transition: opacity .5s ease, -webkit-transform .5s ease, scale .6s ease;
-    transition: opacity .5s ease, -webkit-transform .5s ease, scale .6s ease;
-    -o-transition: opacity .5s ease, transform .5s ease, scale .6s ease;
-    transition: opacity .0s ease, transform .5s ease, -webkit-transform .5s ease, scale .6s ease;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    transform: scale(0);
-    z-index: 50;
-    right: -17px;
-}
-.window-popup.open, .window-popup2.open2 {
-    opacity: 1;
-    z-index: 999999;
-    visibility: visible;
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-    overflow: auto;
-    background-color: #1e242c;
-}
-.popup-close, .popup-close2 {
-    border-radius: 0 0 0 30px;
-    background-color: #131a22;
-    width: 80px;
-    height: 80px;
-    font-size: 40px;
-    text-align: center;
-    line-height: 80px;
-    position: fixed;
-    right: 0;
-    top: 0;
-    z-index: 99999;
-    transition: all .0s ease;
-}
-.sc_remove::-webkit-scrollbar { width: 0 !important }
-.sc_remove { -ms-overflow-style: none; overflow: hidden; overflow: -moz-scrollbars-none; }
-/*Modal css ends */
-
 
 
 /* make keyframes that tell the start state and the end state of our object */
@@ -1376,96 +1011,7 @@ textarea {
 
 /*---make a basic box ---*/
 
-/*companies section css*/
-.companies{
-    margin-top:20px;
-    position:relative;
-    padding:0 0 105px 0;
-}
-.com-grid{
-    text-transform:capitalize;
-    min-height:400px;
-    position:relative;
-}
-.com-logo{
-    width:100px;
-    height:100px;
-    background:#fff;
-    border-radius:50%;
-    box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.3);
-    padding: 18px !important; 
-    line-height: 0px;
-}
-.com-name{ 
-    padding-top:8px;
-    font-size:15px;
-    display:none;
-    line-height:20px;
-    max-width:109px;
-    font-weight:bold;
-    text-align:center;
-    color:#00a0e3;
-}
-.com-logo:hover ~ .com-name{
-    display:block;
-}
-.com-logo img{
-    max-width:100%;
-    max-height:100%;
-    position: relative;
-    top:50%;
-    left:50%;
-    -webkit-transform: translate(-50%, -50%); 
-    transform: translate(-50%, -50%); 
-}
-.com1, .com2, .com3, .com4, .com5, .com6, .com7, .com8, .com9, .com10, .com11{
-      position:absolute;
-}
-.com1{
-   top: -23px;
-    left: 51%;
-}
-.com5{
-    top: 1%;
-    left: 84%;;
-}
-.com2{
-   top: 31%;
-    left: 40%;
-}
-.com3{
-    top:21%;
-    left:65%;
-}
-.com4{
-   top: 42%;
-    left: 81%;
-}
-.com6{
-    top: 55%;
-    left: 18%;
-} 
-.com7{
-    top: 55%;
-    left: 24%;
-}
-.com8{
-   top: 63%;
-   left: 51%;
-}
-.com9{
-    top: 83%;
-    left: 69%;
-}
-.com10{
-    top: 78%;
-    left: 90%;
-}
-.com11{
-    top: 84%;
-    left: 32%;
-}
-/*companies css ends*/
+
 @media screen and (min-width: 993px){
     .box-border{
          min-width: 200px !important;
@@ -1505,56 +1051,6 @@ textarea {
     .job-search-sec{
         min-width:100%;
     }
-  
-    .partner-btn button{
-        margin-bottom:10px;
-    }
-    .com-grid{
-        min-height:480px;
-    }
-    .com1{
-        top: 0%;
-        left: 75%;
-    }
-    .com5{
-        top: 28%;
-        left: 5%;;
-    }
-    .com2{
-       top: 30%;
-        left: 41%;
-    }
-    .com3{
-        top:33%;
-        left:75%;
-    }
-    .com4{
-       top: 59%;
-        left: 30%;
-    }
-    .com6{
-        top: 62%;
-        left: 66%;
-    } 
-    .com7{
-        top: 80%;
-        left: 5%;
-    }
-    .com8{
-       top: 90%;
-       left: 47%;
-    }
-    .com9{
-        top: 93%;
-        left: 77%;
-    }
-    .com10{
-        top: 65%;
-        left: 2%;
-    }
-    .com11{
-       display:none;
-    }
 }
 .job-field select{
     float: left;
@@ -1577,65 +1073,18 @@ textarea {
         border-radius: 25px;
         background:none;
     }
-@media screen and (max-width: 495px){
-    .com-grid{
-        min-height:580px;
-    }
-    
-    .companies{
-        padding: 0px 0 55px 0;
-    }
-    
+@media screen and (max-width: 495px){   
     .header-row{
         margin-top:10px;
     }
-    .com1{
-        top: 22%;
-        left: -2%;
-    }
-    .com5{
-        top: 19%;
-        left: 36%;;
-    }
-    .com2{
-       top: 22%;
-        left: 73%;
-    }
-    .com3{
-        top:50%;
-        left:-2%;
-    }
-    .com4{
-       top: 47%;
-        left: 36%;
-    }
-    .com6{
-        top: 50%;
-        left: 73%;
-    } 
-//    .com7{
-//        top: 78%;
-//        left: 5%;
-//    }
-    .com8{
-       top: 80%;
-       left: -2%;
-    }
-    .com9{
-        top: 77%;
-        left: 36%;
-    }
-    .com10{
-        top: 80%;
-        left: 73%;
-    }   
 }
 
 @media screen and (max-width: 375px){
      .box-border{
-            min-height:310px;
-            margin-left:0px;
-        }
+        min-height:280px;
+        margin-left:0px;
+        padding: 20px 10px;
+     }
 }
 
 .tab-sec {
@@ -1701,14 +1150,20 @@ textarea {
     float: left;
     width: 80%;
 }
-.job-listing.wtabs .job-title-sec > span {
-    color: #1e83f0;
+.wtabs-com-name{
+    
     display: table;
     float: none;
+  
+}
+.wtabs-com-name a{
+    color: #1e83f0 !important;
+      font-size:14px;
+      font-weight:normal;
+    width:100%;
 }
 .job-listing.wtabs .job-lctn {
     display: inline;
-    padding-top: 20px;
     width: 100%;
     font-size: 13px;
 }
@@ -1965,6 +1420,32 @@ textarea {
     -o-border-radius: 0px 23px 23px 0px !important;
     border-radius: 0px 23px 23px 0px !important;
 }
+.list-heading{
+    font-size:16px;
+    font-weight:bold;
+}
+.quick-links li a{
+    line-height:23px;
+    font-size:13px;
+}
+.quick-links li a:hover{
+    color:#00a0e3;
+}
+.search-lists{
+    padding:20px 0 50px;
+    text-transform:capitalize;
+}
+.hide{
+    display:none;
+}
+.showHideBtn{
+    background:none;
+    border:none;
+    color:#00a0e3;
+    padding:0;
+    font-size:14px;
+}
+
 @media only screen and (max-width:500px){
     .c-logo{
         width:100% !important ;
@@ -1980,12 +1461,17 @@ textarea {
     }
     .job-listing{
         padding:20px 25px !important;
+        padding-bottom: 35px !important;
+    }
+    .job-style-bx{
+        padding: 0px;
     }
     .job-listing.wtabs .job-title-sec {
         float: left;
         width: 100%;
     }
 }
+
 ');
 $script = <<< JS
  $('.tab-sec li a').on("click", function(){
@@ -2004,93 +1490,8 @@ function scrollFunction() {
     document.getElementById("myBttn").style.display = "none";
   }
 }
-
-$(document).on('click', '.feed-open', function(){
-   $('.window-popup').addClass('open') ;
-   $('body').toggleClass('sc_remove') ;
-});
-$(document).on('click', '.popup-close', function(e){
-    e.preventDefault();
-   $('.window-popup').removeClass('open') ;
-   $('body').toggleClass('sc_remove') ;
-});
-$(document).on('click', '.feed-open2', function(){
-   $('.window-popup2').addClass('open2') ;
-   $('body').toggleClass('sc_remove') ;
-});
-$(document).on('click', '.popup-close2', function(e){
-    e.preventDefault();
-   $('.window-popup2').removeClass('open2') ;
-   $('body').toggleClass('sc_remove') ;
-});
-        
-$(document).on('submit', '#feedback-form', function(event) {
-    event.preventDefault();
-    var form_method = $(this).attr('method');
-    var form_url = $(this).attr('action');
-    var form_data = $(this).serialize();
-    var before = function(){     
-        $('.loader-aj-main').fadeIn(1000);  
-    };
-    var req = function(){
-        var result = ajax(form_method, form_url, form_data);
-        var resp = result["responseJSON"];
-        $('.loader-aj-main').fadeOut(1000);
-        if(resp.status == 200){
-            toastr.success(resp.message, resp.title);
-            $("#feedback-form")[0].reset();
-            $(".popup-close").trigger("click");
-        }else{
-            toastr.error(resp.message, resp.title);
-        }
-    }
-    order(before, req);
-});
-        
-function order(before, req){
-    before();
-    req();
-}
-        
-$(document).on('submit', '#partner-with-us-form', function(event) {
-    event.preventDefault();
-    var form_method = $(this).attr('method');
-    var form_url = $(this).attr('action');
-    var form_data = $(this).serialize();
-    var before = function(){     
-        $('.loader-aj-main').fadeIn(1000);  
-    };
-    var req = function(){
-        var result = ajax(form_method, form_url, form_data);
-        var resp = result["responseJSON"];
-        $('.loader-aj-main').fadeOut(1000);
-        if(resp.status == 200){
-            toastr.success(resp.message, resp.title);
-            $("#partner-with-us-form")[0].reset();
-            $(".popup-close2").trigger("click");
-        }else{
-            toastr.error(resp.message, resp.title);
-        }
-    }
-    order(before, req);
-});
         
   jQuery(function($) {
-  var doAnimations = function() {
-    var offset = $(window).scrollTop() + $(window).height(), animatables = $('.animatable');
-    if (animatables.length == 0) {
-      $(window).off('scroll', doAnimations);
-    }
-		animatables.each(function(i) {
-       var animatable = $(this);
-			if ((animatable.offset().top + animatable.height() - 20) < offset) {
-        animatable.removeClass('animatable').addClass('animated');
-	}
-      });
-    };
-    $(window).on('scroll', doAnimations);
-  $(window).trigger('scroll'); 
- 
   $('.main-slider-sec').slick({
 	  slidesToShow: 1,
 	  slidesToScroll: 1,
@@ -2106,7 +1507,88 @@ $(document).on('submit', '#partner-with-us-form', function(event) {
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+
+?>
+<script>
+
+    expandFirst('searches');
+    expandFirst('cities');
+    expandFirst('jobs');
+    expandFirst('internships');
+
+
+    function expandFirst(elem){
+        var i = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k =0;
+        while(k < listElementsLength){
+            if(k < i + 4){
+                if(document.getElementById(elem)) {
+                    document.getElementById(elem).children[k].classList.remove('hide');
+                }
+            }else{
+                break;
+            }
+            k += 1;
+        }
+    }
+
+    $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+
+    function showMoreEvent(){
+        hideMore('searches');
+        hideMore('cities');
+        hideMore('jobs');
+        hideMore('internships');
+    }
+
+    function hideMore(elem){
+        var i = 0;
+        i += 5;
+        var k = 4;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.remove('hide');
+            }
+            k += 1;
+        }
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+    }
+
+    $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
+
+    function showLessEvent(){
+        hideLess('searches');
+        hideLess('cities');
+        hideLess('jobs');
+        hideLess('internships');
+    }
+
+    function hideLess(elem){
+        shrinkFirst(elem);
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
+        document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
+        expandFirst(elem);
+    }
+
+    function shrinkFirst(elem){
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k = 5;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.add('hide');
+            }
+            k += 1;
+        }
+    }
+
+</script>
+

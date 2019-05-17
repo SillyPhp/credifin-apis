@@ -8,31 +8,19 @@ use yii\helpers\Url;
             <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
-                        <div class="col-md-4 col-xs-12 col-sm-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <span style="width: 40px;" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
-                                <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword')?>" class="form-control">
+                                <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword'); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" name="keyword" placeholder="Job Title or Keywords" class="form-control">
+                                        <input type="text" name="keyword" placeholder="Job Title or Keywords or Company" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
-                        <div class="col-md-3 col-xs-12 col-sm-6">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
-                                <?php
-                                if(Yii::$app->request->get('company')){
-                                    ?>
-                                    <input type="text" name="company" value="<?=Yii::$app->request->get('company')?>" class="form-control">
-                                <?php }else{ ?>
-                                    <input type="text" name="company" placeholder="Company" class="form-control">
-                                <?php }?>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-xs-12 col-sm-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group display-flex">
                                 <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
                                 <?php
@@ -68,6 +56,9 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.twitter-typeahead input{
+    width:100% !important;
+}
 #header-search{height:55px;}
 .input-group{
     width: 100%;

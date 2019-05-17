@@ -2,6 +2,9 @@
 
 namespace frontend\models\accounts;
 
+use common\models\User;
+use frontend\models\events\SignupEvent;
+use frontend\models\events\UserModel;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -51,7 +54,7 @@ class IndividualSignUpForm extends Model
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
+            [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email'], 'email'],
             [['phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
@@ -126,9 +129,9 @@ class IndividualSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                $userEmailsModel = new UserEmails();
-                $userEmailsModel->verificationEmail($usersModel->user_enc_id);
-                $transaction->commit();
+                if(Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id)){
+                    $transaction->commit();
+                }
             }
         } catch (Exception $e) {
             $transaction->rollBack();

@@ -13,9 +13,11 @@ use yii\web\Controller;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-class SearchController extends Controller{
+class SearchController extends Controller
+{
 
-    public function actionIndex(){
+    public function actionIndex()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             $s = Yii::$app->request->post('keyword');
@@ -23,16 +25,26 @@ class SearchController extends Controller{
 
             $organizations = Organizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt', 'COUNT(e.application_enc_id) cnt', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-                ->joinWith(['employerApplications e' => function ($x) {
-                    $x->onCondition(['e.is_deleted' => 0]);
-                }], false)
-                ->joinWith(['organizationReviews f'], false)
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->joinWith(['businessActivityEnc c'], false)
-                ->joinWith(['industryEnc d'], false);
-
-            $organizations
+                ->joinWith(['industryEnc d'], false)
+                ->joinWith(['employerApplications e' => function ($x) {
+                    $x->select(['e.organization_enc_id', 'COUNT(e.application_enc_id) applications_cnt'])
+                        ->onCondition([
+                            'e.status' => 'Active',
+                            'e.is_deleted' => 0
+                        ])
+                        ->groupBy(['e.organization_enc_id']);
+                }])
+                ->joinWith(['organizationReviews f' => function ($y) {
+                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
+                        ->groupBy(['f.organization_enc_id']);
+                }])
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'a.name', $s],
@@ -41,18 +53,11 @@ class SearchController extends Controller{
                     ['like', 'b.organization_type', $s],
                     ['like', 'c.business_activity', $s],
                     ['like', 'd.industry', $s]
-                ]);
-
-            $organizations->limit = 8;
-
-            $valid_organization = $organizations
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active'])
+                ])
                 ->groupBy(['a.organization_enc_id'])
-                ->asArray()
-                ->all();
+                ->limit(8);
 
-            $result['organizations'] = $valid_organization;
+            $result['organizations'] = $organizations->asArray()->all();
 
             $jobs = EmployerApplications::find()
                 ->alias('a')
@@ -100,9 +105,13 @@ class SearchController extends Controller{
                         $x->joinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false);
-
-            $jobs
+                ->joinWith(['applicationOptions l'], false)
+                ->where([
+                    'b.name' => 'Jobs',
+                    'a.for_careers' => 0,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'a.slug', $s],
@@ -124,61 +133,55 @@ class SearchController extends Controller{
                     ['like', 'j.location_name', $s],
                     ['like', 'j.address', $s],
                     ['like', 'k.name', $s],
-                ]);
-
-            $jobs->limit = 6;
-
-            $final_jobs = $jobs
-                ->andWhere(['b.name' => 'Jobs'])
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active'])
+                ])
                 ->groupBy(['a.application_enc_id'])
-                ->asArray()
-                ->all();
+                ->limit(6);
+
+            $final_jobs = $jobs->asArray()->all();
 
             $i = 0;
             foreach ($final_jobs as $val) {
                 $final_jobs[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
                 if ($val['salary_type'] == "Fixed") {
                     if ($val['salary_duration'] == "Monthly") {
-                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 12;
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 40 * 52;
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 52;
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
                     } else {
-                        $final_jobs[$i]['salary'] = $val['fixed_salary'];
+                        $final_jobs[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
                     }
                 } elseif ($val['salary_type'] == "Negotiable") {
                     if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12;
+                            $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
                         } elseif ($val['salary_duration'] == "Hourly") {
-                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52);
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
                         } elseif ($val['salary_duration'] == "Weekly") {
-                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52);
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
                         } else {
-                            $final_jobs[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']);
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
                         }
                     } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12;
+                            $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
                         } elseif ($val['salary_duration'] == "Hourly") {
-                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52);
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
                         } elseif ($val['salary_duration'] == "Weekly") {
-                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52);
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
                         } else {
-                            $final_jobs[$i]['salary'] = (string)($val['min_salary']);
+                            $final_jobs[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
                         }
                     } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_jobs[$i]['salary'] = (string)$val['max_salary'] * 12;
+                            $final_jobs[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
                         } elseif ($val['salary_duration'] == "Hourly") {
-                            $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 40 * 52);
+                            $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
                         } elseif ($val['salary_duration'] == "Weekly") {
-                            $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 52);
+                            $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
                         } else {
-                            $final_jobs[$i]['salary'] = (string)($val['max_salary']);
+                            $final_jobs[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
                         }
                     }
                 }
@@ -219,9 +222,13 @@ class SearchController extends Controller{
                         $x->joinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false);
-
-            $internships
+                ->joinWith(['applicationOptions l'], false)
+                ->where([
+                    'b.name' => 'Internships',
+                    'a.for_careers' => 0,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active'
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'a.slug', $s],
@@ -239,61 +246,55 @@ class SearchController extends Controller{
                     ['like', 'j.location_name', $s],
                     ['like', 'j.address', $s],
                     ['like', 'k.name', $s],
-                ]);
-
-            $internships->limit = 6;
-
-            $final_internships = $internships
-                ->andWhere(['b.name' => 'Internships'])
-                ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['a.status' => 'Active'])
+                ])
                 ->groupBy(['a.application_enc_id'])
-                ->asArray()
-                ->all();
+                ->limit(6);
+
+            $final_internships = $internships->asArray()->all();
 
             $i = 0;
             foreach ($final_internships as $val) {
                 $final_internships[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
                 if ($val['salary_type'] == "Fixed") {
                     if ($val['salary_duration'] == "Monthly") {
-                        $final_internships[$i]['salary'] = $val['fixed_salary'] * 12;
+                        $final_internships[$i]['salary'] = $val['fixed_salary'] . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $final_internships[$i]['salary'] = $val['fixed_salary'] * 40 * 52;
+                        $final_internships[$i]['salary'] = $val['fixed_salary'] * 730 . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $final_internships[$i]['salary'] = $val['fixed_salary'] * 52;
+                        $final_internships[$i]['salary'] = (int)$val['fixed_salary'] / 7 * 30 . ' p.m.';
                     } else {
-                        $final_internships[$i]['salary'] = $val['fixed_salary'];
+                        $final_internships[$i]['salary'] = (int)$val['fixed_salary'] / 12 . ' p.m.';
                     }
                 } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                     if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_internships[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12;
+                            $final_internships[$i]['salary'] = (string)$val['min_salary'] . " - ₹" . (string)$val['max_salary'] . ' p.m.';
                         } elseif ($val['salary_duration'] == "Hourly") {
-                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52);
+                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . " - ₹" . (string)($val['max_salary'] * 730) . ' p.m.';
                         } elseif ($val['salary_duration'] == "Weekly") {
-                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52);
+                            $final_internships[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . " - ₹" . (int)($val['max_salary'] / 7 * 30) . ' p.m.';
                         } else {
-                            $final_internships[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']);
+                            $final_internships[$i]['salary'] = (int)($val['min_salary']) / 12 . " - ₹" . (int)($val['max_salary']) / 12 . ' p.m.';
                         }
                     } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_internships[$i]['salary'] = (string)$val['min_salary'] * 12;
+                            $final_internships[$i]['salary'] = (string)$val['min_salary']  . ' p.m.';
                         } elseif ($val['salary_duration'] == "Hourly") {
-                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 40 * 52);
+                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
                         } elseif ($val['salary_duration'] == "Weekly") {
-                            $final_internships[$i]['salary'] = (string)($val['min_salary'] * 52);
+                            $final_internships[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . ' p.m.';
                         } else {
-                            $final_internships[$i]['salary'] = (string)($val['min_salary']);
+                            $final_internships[$i]['salary'] = (int)($val['min_salary']) / 12 . ' p.m.';
                         }
                     } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_internships[$i]['salary'] = (string)$val['max_salary'] * 12;
+                            $final_internships[$i]['salary'] = (string)$val['max_salary'] . ' p.m.';
                         } elseif ($val['salary_duration'] == "Hourly") {
-                            $final_internships[$i]['salary'] = (string)($val['max_salary'] * 40 * 52);
+                            $final_internships[$i]['salary'] = (string)($val['max_salary'] * 730) . ' p.m.';
                         } elseif ($val['salary_duration'] == "Weekly") {
-                            $final_internships[$i]['salary'] = (string)($val['max_salary'] * 52);
+                            $final_internships[$i]['salary'] = (int)($val['max_salary'] / 7 * 30) . ' p.m.';
                         } else {
-                            $final_internships[$i]['salary'] = (string)($val['max_salary']);
+                            $final_internships[$i]['salary'] = (int)($val['max_salary']) / 12 . ' p.m.';
                         }
                     }
                 }
@@ -308,23 +309,20 @@ class SearchController extends Controller{
                     'CONCAT("/blog/", slug) link',
                     'excerpt',
                     'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", featured_image_location, "/", featured_image) ELSE NULL END image'
-                ]);
-
-            $posts
+                ])
+                ->where([
+                    'status' => 'Active',
+                    'is_deleted' => 0
+                ])
                 ->andFilterWhere([
                     'or',
                     ['like', 'title', $s],
                     ['like', 'slug', $s],
                     ['like', 'meta_keywords', $s],
-                ]);
+                ])
+                ->limit(3);
 
-            $posts->limit = 3;
-
-            $posts_filter = $posts
-                ->andWhere(['status' => 'Active'])
-                ->andWhere(['is_deleted' => 0])
-                ->asArray()
-                ->all();
+            $posts_filter = $posts->asArray()->all();
 
             $result['posts'] = $posts_filter;
 

@@ -156,7 +156,7 @@ $industries = Json::encode($industries);
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
-                        <button id="enable" class="follow">View Profile</button>
+                        <button id="enable">View Profile</button>
                     </div>
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
@@ -373,6 +373,74 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                     <div class="row">
+                        <div class="office-view">
+                            <div class="heading-style">
+                                Products
+                                <div class="button_location pull-right">
+                                    <button type="button" class="i-review-nx modal-load-class"
+                                            value="/organizations/add-products">
+                                            <span class="i-review-button-tx">
+                                                Add New Product <span class="fa fa-long-arrow-right"></span>
+                                            </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <?php
+                            Pjax::begin(['id' => 'product_images']);
+                            if(!empty($org_products['organizationProductImages'])) {
+                                ?>
+                                <div class="office-pics">
+                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                        <div class="p-preview-img" id="<?= $org_products['product_enc_id'] ?>">
+                                            <a href="" data-fancybox="images">
+                                                <img src="" alt="company image 1">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
+                                        <?php
+                                        foreach ($org_products['organizationProductImages'] as $p_image) {
+                                            ?>
+                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                   data-fancybox="images">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                         alt="<?= $p_image['title'] ?>">
+                                                </a>
+                                                <div id="product-confirm" class="hidden-p">
+                                                    <h5>Are you sure want to remove Image?</h5>
+                                                    <button id="confirm_remove_product" type="button" value="<?= $p_image['image_enc_id'] ?>"
+                                                            class="btn-primary btn-sm editable-submit">
+                                                        <i class="glyphicon glyphicon-ok"></i>
+                                                    </button>
+                                                    <button id="cancel_p_remove" type="button"
+                                                            class="btn-default btn-sm editable-cancel">
+                                                        <i class="glyphicon glyphicon-remove"></i>
+                                                    </button>
+                                                </div>
+                                                <a href="#" class="remove_p_image">
+                                                    <i class="fa fa-times-circle"></i>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            Pjax::end()
+                            ?>
+                            <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fa fa-pencil"></i></span></h4>
+                                <p>
+                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="company-team">
                             <div class="heading-style">
                                 Meet The Team
@@ -434,7 +502,7 @@ $industries = Json::encode($industries);
                                                     <?php } ?>
                                                 </div>
                                                 <div class="t-member">
-                                                    <div class="t-name"><?= $team['first_name'] . $team['last_name']; ?></div>
+                                                    <div class="t-name"><?= $team['first_name'] . " " . $team['last_name']; ?></div>
                                                     <div class="t-post"><?= $team['designation'] ?></div>
                                                 </div>
                                             </a>
@@ -499,13 +567,13 @@ $industries = Json::encode($industries);
                             </div>
                             <div class="divider"></div>
                             <div class="row">
-                                <div class="col-md-7">
+                                <div class="col-md-5 col-xs-12 pull-right">
+                                    <div id="map"></div>
+                                </div>
+                                <div class="col-md-7 col-xs-12">
                                     <div class="head-office">
 
                                     </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div id="map"></div>
                                 </div>
                             </div>
                         </div>
@@ -613,240 +681,6 @@ $this->registerCss('
     padding-top:30px;
 }
 /*----jobs and internships ends----*/
-/*----review----*/
-.viewbtn a{
-    border: 1px solid #ebefef;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    -ms-box-shadow: none;
-    -o-box-shadow: none;
-    box-shadow: none;
-    padding: 15px 44px;
-    font-size: 15px;
-    color: #111111;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px
-}
-.viewbtn a:hover{
-    background-color: #00a0e3;
-    color: #fff;
-    border-color: transparent;
-    -o-transition: .3s all;
-    -ms-transition: .3s all;
-    -moz-transition: .3s all;
-    -webkit-transition: .3s all;
-    transition: .3s all;
-}
-.re-box{
-    margin: 60px 0 0 0;
-}
-.refirst{
-   margin:0 0 0 0 !important; 
-}
-.viewbtn{
-    text-align:center;
-    margin:60px 0 0 0 ;
-}
-.uicon{
-    text-align:center;
-}
-.uicon img, .uicon canvas{
-    max-height:80px;
-    max-width:80px;
-}
-.uname{
-    text-align:center;
-    text-transform:uppercase;
-    font-weight:bold;
-    padding-top:10px;
-    line-height:15px;
-    color:#00a0e3;
-}
-.user-saying{
-    padding-top:20px;
-}
-.user-rating{
-    display:flex;
-    justify-content:center; 
-    text-align:center;
-    padding-top:20px;
-}
-.uheading{
-    font-weight:bold;
-    
-}
-.utext{
-    text-align:justify;
-}
-.publish-date{
-    text-align:right;
-//    font-style:italic;
-    font-size: 14px;
-}
-.view-detail-btn button{
-    background:transparent;
-    border:none;
-    font-size:14px;
-    padding:0px
-}
-.view-detail-btn button:hover, .re-btns button:hover{
-    color:#00a0e3;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    transition:.3s all;
-}
-.num-rate{
-    
-}
-.re-btns{
-    text-align:right;
-    padding-top: 5px;
-}
-.re-btns button{
-    background:none;
-    border:none;
-    font-size:19px;
-    color:#ccc;
-}
-.re-btns button:hover{
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-}
-.re-btns button:hover i.fa-flag{
-    color:#d72a2a;
-}
-.re-btns button i.fa-thumbs-down{
-    margin-left:-8px;
-}
-.utitle{
-    font-size:20px;
-    font-weight:bold;
-    padding-top:8px;
-    color:#00a0e3;
-}
-.user-review-main{
-    border-left:2px solid #ccc;
-}
-.ur-bg{
-   background:#edecec;
-    color: #000;
-    border-radius: 5px;
-    padding: 10px 5px;
-    border-right: 1px solid #fff;
-    height: 95px;
-}
-.uratingtitle{
-    font-size:12px;
-    line-height:15px;
-}
-.urating{
-    font-size:25px;
-}
-.emp-duration{
-    text-align:right;
-//    line-height:18px;
-//    padding-top:20px;
-}
-.ushare i{
-   font-size:20px;
-    color:#ccc; 
-}
-.ushare i.fa-facebook-square:hover{
-    color:#4267B2; 
-    cursor: pointer;
-}
-.ushare i.fa-twitter-square:hover{
-    color:#38A1F3; 
-    cursor: pointer;
-}
-.ushare i.fa-linkedin-square:hover{
-    color:#0077B5;
-    cursor: pointer; 
-}
-.ushare i.fa-google-plus-square:hover{
-    color:#CC3333;
-    cursor: pointer;
-}
-.ushare-heading{
-    font-size:14px;
-    padding-top:20px;
-    line-height:23px;
-    font-weight:bold;
-}
-.usefull-bttn{
-    padding-top:33px;
-    display:flex;
-}
-.re-bttn{
-    text-align:right
-}
-.use-bttn button, .notuse-bttn button, .re-bttn button{
-    background: transparent !important;
-    border:1px solid #ccc;
-    color:#ccc;
-    padding:5px 15px;
-    margin-left:10px;
-    border-radius:10px;
-    font-size:14px;
-    transition:.2s all;
-    -webkit-transition:.2s all;
-    -moz-transition:.2s all;
-    -o-transition:.2s all;
-}
-.re-bttn{
-    padding-bottom:5px;
-}
-.use-bttn button:hover{
-    color:#00a0e3;
-    border-color:#00a0e3;
-    transition:.2s all;
-    -webkit-transition:.2s all;
-    -moz-transition:.2s all;
-    -o-transition:.2s all;
-}
-.re-bttn button:hover, .notuse-bttn button:hover{
-    color:#d72a2a;
-    border-color:#d72a2a;
-     transition:.2s all;
-    -webkit-transition:.2s all;
-    -moz-transition:.2s all;
-    -o-transition:.2s all;
-}
-.review-summary{
-    text-align:left;
-    padding-left:50px
-}
-.oa-review{
-    font-size:30px;
-    font-family:lobster;
-    padding-bottom:22px;
-}
-.rs1{
-    padding-top:20px;
-}
-.re-heading{
-    font-size: 17px;
-    text-transform: capitalize;
-    font-weight: bold;
-}
-.com-rating i{
-    font-size:16px;
-    background:#ccc;
-    color:#fff;
-    padding:7px 5px;
-    border-radius:5px;
-}
-.com-rating i.active{
-    background:#ff7803;
-    color:#fff;
-}
-/*----review ends----*/
 /*----company benefits----*/
 .company-benefits{
     padding:30px 0 0 0;
@@ -1095,10 +929,10 @@ a.web{
     color:#ff7803; 
 }
 .web:hover{
-    background:#ff7803;
+    background:#ff7803 !important;
     color:#fff;
 }
-.follow{
+#enable{
     padding:10px 0px;
     width:167px;
      background: transparent;
@@ -1109,11 +943,11 @@ a.web{
     color: #00a0e3;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
 }
-.follow:hover{
+#enable:hover{
     background:#00a0e3;
     color:#fff;
 }
-.follow, .follow:hover, a.facebook, .facebook:hover,
+#enable, #enable:hover, a.facebook, .facebook:hover,
 a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     transition:.3s all;
 }
@@ -1230,6 +1064,13 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     .h-inner{
         display: block;
         min-height:500px;
+        text-align: center;
+    }
+    .com-name {
+        font-size: 32px;
+    }
+    .com-establish {
+        font-size: 14px;
     }
     .follow-btn, .social-btns{
         text-align:center;
@@ -1248,6 +1089,34 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         height:100%;
         width:100%;
         padding:50px 0;
+    }
+    span[data-type="textarea"] ~ .popover .popover-content div .editableform .control-group{
+        white-space: normal;
+    }
+    .remove_g_image, .remove_t_user, .remove_p_image, .remove_location, .edit_location{
+        display:block !important;
+    }
+    .benefit-box:before {
+        border-width: 0 50px 50px 0 !important;
+    }
+    .benefit-box .remove-benefit-item {
+        display: block;
+        opacity: 1;
+    }
+    .team-text{
+        top: 152px;
+        left: auto;
+        right: 10px;
+        -webkit-transform: none;
+        -ms-transform: none;
+        transform: none;
+    }
+    .know-bet {
+        display: none;
+    }
+    .team-container .team-overlay {
+        height: 100%;
+        background-color: transparent;
     }
     
 }
@@ -1293,10 +1162,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   background: #f1f1f1;
   border-color: #d6d6d6;
 }
-.hiden button.btn-sm{
+.hiden button.btn-sm, .hidden-p button.btn-sm{
     border:1px solid #ddd;
 }
-.hiden, .hiden2{
+.hiden, .hiden2, .hidden-p{
     display:none;
     position: absolute;
     width: 100%;
@@ -1318,6 +1187,15 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     border-right: 15px solid #f9f9f9;
     border-bottom: 10px solid transparent;
 }
+.hidden-p:before{
+    content: \'\';
+    position: absolute;
+    left: 98px;
+    top: -12px;
+    border-left: 10px solid transparent;
+    border-bottom: 15px solid #f9f9f9;
+    border-right: 10px solid transparent;
+}
 .hiden2{
     top: 12px;
     left: 0px;
@@ -1325,6 +1203,12 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 .hiden2:before{
     right: 36px;
     top: -13px;
+}
+.hidden-p{
+    width: 200%;
+    top: 90px;
+    left: -50px;
+    line-height: normal;
 }
 .full_width{
     width:100%;
@@ -1549,7 +1433,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     right:8px;
 }
 .det .popover .editable-input input{width: 80px !important;}
-.remove_g_image, .remove_t_user{
+.remove_g_image, .remove_t_user, .remove_p_image{
     position: absolute;
     display:none;
     color: red;
@@ -1567,6 +1451,9 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 .img1:hover .remove_g_image, .remove_g_image:hover{
     display:block;
 }
+.p-img-thumbnail:hover .remove_p_image, .remove_p_image:hover{
+    display:block;
+}
 .team-container:hover .remove_t_user, .remove_t_user:hover{
     display:block;
 } 
@@ -1577,6 +1464,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     right: 0;
     bottom: 0px;
     width:190px;
+    z-index:9;
 }
 .cover-edit .edits{
     position: absolute;
@@ -1593,6 +1481,29 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     background-color: #00000057;
 }
 #change-cover-image{margin:0px;}
+/*----company products css starts----*/
+.p-img-thumbnail {
+    width: 120px;
+    height: 120px;
+    float: left;
+    line-height: 116px;
+    border: 1px solid #eee;
+    margin: 2px 5px;
+    position:relative;
+}
+.p-preview-img{
+    height: 300px;
+    text-align: center;
+    line-height: 300px;
+}
+.p-preview-img a img{
+    max-height: 300px;
+}
+.p-img-thumbnail a img{
+    width: 100%;
+    height: 100%;
+}
+/*----company products css ends----*/
 ');
 $script = <<<JS
 $('.model-link').editable({
@@ -1608,10 +1519,21 @@ $('.model').editable({
     url: '/organizations/update-profile',
     toggle: 'manual',
 });
+$('.model-product').editable({
+    placement: 'top',
+    url: '/organizations/add-product-description',
+    toggle: 'manual',
+});
 
 $('.model-link').click(function(e){
     e.preventDefault();
     e.stopPropagation();
+    if($(this).hasClass("editable-disabled")){
+        var go_to_url = $(this).attr('href');
+        if(go_to_url != ''){
+            window.open(go_to_url, '_blank');
+        }
+    }
     $(this).editable('toggle');
 });
 $('.edit-box').click(function(e){
@@ -1640,13 +1562,13 @@ $('#enable').click(function() {
        $('.edit-box').css('display', 'none');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image, .write-review').hide();
        $('.benefit-box').addClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location, .edit_location').addClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location, .remove_p_image').addClass('hide-remove-buttons');
        $(this).text('Edit Profile');
    } else{
        $('.edit-box').css('display', 'inline-block');
        $('#upload-logo, .modal-load-class, .remove-benefit-item, .remove_t_user, #change-cover-image, .write-review').show();
        $('.benefit-box').removeClass('benefit-box-border-removed');
-       $('.remove_g_image, .remove_location, .edit_location').removeClass('hide-remove-buttons');
+       $('.remove_g_image, .remove_location, .edit_location, .remove_p_image').removeClass('hide-remove-buttons');
        $(this).text('View Profile');
    }
 }); 
@@ -1806,11 +1728,11 @@ $(document).on('click', '#confirm_remove_benefit', function(event) {
         }
     });
 });
-$(document).on('click', '.remove_g_image', function(e) {
+$(document).on('click', '.remove_g_image, .remove_p_image', function(e) {
     e.preventDefault();
     $(this).prev().fadeIn();
 });
-$(document).on('click', '#cancel_g_image', function() {
+$(document).on('click', '#cancel_g_image, #cancel_p_remove', function() {
     $(this).parent().fadeOut();
 });
 $(document).on('click', '#confirm_g_image', function(event) {
@@ -1859,6 +1781,31 @@ $(document).on('click', '#confirm_t_user', function(event) {
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
                 $.pjax.reload({container: '#our_team', async: false});
+            } else {
+                toastr.error(response.message, response.title);
+            }
+            
+        }
+    });
+});
+$(document).on('click', '#confirm_remove_product', function(event) {
+    event.preventDefault();
+    $('this').parent('.hidden-p').fadeOut(1000);
+    var id = $(this).val();
+    var p_id = $('.p-preview-img').attr('id');
+    $.ajax({
+        url: "/organizations/remove-product",
+        method: "POST",
+        data: {id,p_id},
+        beforeSend:function(){     
+            $('#page-loading').fadeIn(1000);  
+        },
+        success: function (response) {
+        $('#page-loading').fadeOut(1000);
+            if (response.title == 'Success') {
+                toastr.success(response.message, response.title);
+                $.pjax.reload({container: '#product_images', async: false});
+                pImageBox();
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1963,19 +1910,30 @@ document.querySelector('.confirm_cover_croping').addEventListener('click', funct
         });
     });
 });
+function pImageBox() {
+    var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
+    $('.p-preview-img a').attr('href', first_preview);
+    $('.p-preview-img a img').attr('src', first_preview); 
+}
+pImageBox();
+$(document).on('mouseover', '.p-img-thumbnail', function(){
+    var path = $(this).find('a').attr('href');
+    $('.p-preview-img a').attr('href', path);
+    $('.p-preview-img a img').attr('src', path);
+});
 
 JS;
 $this->registerJs("
 $('#industry_enc_id').editable({
-    placement: 'bottom',
+    placement: 'top',
     url: '/organizations/update-profile',
     pk: 'industry_enc_id',
     toggle: 'manual',
     value: '" . $organization['industry_enc_id'] . "',
     source: " . $industries . "
 });
-getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
-getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['name'] . "');
+getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
