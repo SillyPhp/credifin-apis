@@ -3,7 +3,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = Yii::t('frontend', 'Reviews page | Latest Reviews');
+$this->title = Yii::t('frontend', 'Reviews | Latest Reviews');
 
 $keywords = 'Company Reviews, School Reviews, Best Compamies Reviews, Best School Reviews, Top Schools of Mumbai, Best IT Colleges Reviews,
 Best MBA colleges reviews, Best Ielts Institutes Reviews, Best CBSE Schools in Delhi, Artificial Intelligence Course Reviews.';
@@ -107,35 +107,37 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
-                        <div class="wu-heading">Attract</div>
-                        <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
-                    </div>
+                <div id="review_container">
                 </div>
-                <div class="col-md-4">
-                    <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
-                        <div class="wu-heading">Convert</div>
-                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
-                    </div>
+            </div>
+        </div>
+    </section>
+    <!---->
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Top Colleges</h1>
+            <div class="row">
+                <div id="review_colleges">
                 </div>
-                <div class="col-md-4">
-                    <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
-                        <div class="wu-heading">Retain</div>
-                        <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
-                    </div>
+            </div>
+        </div>
+    </section>
+    <!---->
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Top Schools</h1>
+            <div class="row">
+                <div id="review_school">
+
                 </div>
             </div>
         </div>
     </section>
     <section>
         <div class="container">
-            <h1 class="heading-style">Recent Reviews</h1>
+            <h1 class="heading-style">Top Educational Institutes</h1>
             <div class="row">
-                <div id="review_container">
+                <div id="review_institutes">
 
                 </div>
             </div>
@@ -967,14 +969,21 @@ body.modal-open{
     {
 }
 ');
-echo $this->render('/widgets/mustache/review-cards', [
-]);
+echo $this->render('/widgets/mustache/recent-review-bar');
+echo $this->render('/widgets/mustache/review-cards');
+echo $this->render('/widgets/mustache/review-cards-unclaimed');
 $script = <<< JS
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#review_colleges'));
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#review_institutes'));
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
 })
-fetch_cards(params={'rating':[4,5],'limit':3});  
+var array_types = ['School','College','Educational Institute'];
+var get_random_cat = array_types[Math.floor(Math.random()*array_types.length)];
+fetch_cards(params={'rating':[4,5],'limit':3},template=$('#review_container'));
+fetch_cards_slider_card(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:get_random_cat,'offset':0},template=$('#main-cont'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -1017,3 +1026,4 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
