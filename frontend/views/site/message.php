@@ -10,12 +10,12 @@ use yii\helpers\Url;
                     <h1>
                         <?php
                         if ($status == 'success') {
-                            echo '<i class="fa fa-check-circle-o"></i>';
+                            echo '<i class="far fa-check-circle"></i>';
                         }
                         ?>
                         <?php
                         if ($status == 'error') {
-                            echo '<i class="fa fa-times-circle-o"></i>';
+                            echo '<i class="far fa-times-circle"></i>';
                         }
                         ?>
                         <?= $title; ?>
@@ -56,3 +56,4 @@ body{
 .alert-box h2{
     margin-top: -15px;
 }');
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
