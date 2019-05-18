@@ -105,7 +105,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
         url : url,
         data: data,
         beforeSend: function(){
-           $('.loader-main').show();
+           // $('.loader-main').show();
            $('.load-more-text').css('visibility', 'hidden');
            $('.load-more-spinner').css('visibility', 'visible');
         },
@@ -122,6 +122,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                         $(container).append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
                     }
                     $('#loadMore').hide();
+                    load_more_cards = false;
                 }
             }
         }

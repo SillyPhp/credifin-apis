@@ -383,6 +383,11 @@ $this->registerCss('
 $controller = Yii::$app->controller->id;
 $script = <<< JS
 $(window).animate({scrollTop:0}, '300');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 1000);
 
 //variables declaration
 var loadmore = true;
