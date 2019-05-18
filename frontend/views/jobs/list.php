@@ -94,7 +94,7 @@ $(window).scroll(function() { //detact scroll
                 loading = true;
             }
             
-			if($(window).scrollTop() + $(window).height() >= $(document).height() - 350){ //scrolled to bottom of the page
+			if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){ //scrolled to bottom of the page
                 if(load_more_cards && loading){
                     loading = false;
                     $('.load-more-text').css('visibility', 'hidden');
