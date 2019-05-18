@@ -515,6 +515,10 @@ function card(){
                 var response = JSON.parse(res);
                 if(response.length == 0){
                     $('#loadMore').hide();
+                    $('.near-me-map').css('display','none');
+                    $('.near-me-content').removeClass('col-md-4');
+                    $('.near-me-content').addClass('col-md-10');
+                    $('.near-me-content').addClass('text-center');
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/$type/not_found.png" class="not-found" alt="Not Found"/>');
                 }else{
                     for(i=0;i<response.length;i++){
@@ -634,6 +638,9 @@ function searching() {
      }
        
      $('#near-me-cards').html('');
+     $('.near-me-map').css('display','block');
+     $('.near-me-content').removeClass('col-md-10');
+     $('.near-me-content').addClass('col-md-4');
      $('.loader-main').show();
      $('#loadMore').hide();
      $('#loadMore').show();
