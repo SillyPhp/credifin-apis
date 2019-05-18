@@ -151,6 +151,13 @@ AppAssets::register($this);
         <div id="page-loading" class="page-loading">
             <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
         </div>
+        <?php
+            if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+                echo $this->render('/widgets/sub-header',[
+                        'data' => $h_data,
+                ]);
+            }
+        ?>?
         <?= $content; ?>
     </div>
     <footer id="footer" class="footer">
