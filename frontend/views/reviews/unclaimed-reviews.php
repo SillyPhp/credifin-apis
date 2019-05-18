@@ -9,8 +9,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
 <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
 
-        <div class="modal-conten<!-- Modal content-->t half-bg-color">
-            <!--            <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>-->
+        <div class="modal-content half-bg-color">
             <div class="row margin-0">
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
@@ -83,6 +82,9 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                             </div>
                         </div>
                     </div>
+                    <div class="back_links">
+                        <a href="/reviews" id="color_blue">Back To Reviews</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,7 +115,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                         <?php if (!Yii::$app->user->isGuest){
                             if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
                                 <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Back To Review</button>
                                 </div>
                             <?php } } else { ?>
                             <div class="wr-bttn hvr-icon-pulse">
@@ -441,6 +443,16 @@ border: 2px solid #cadfe8 !important;
     border:none;
     font-size:14px;
     padding:0px
+}
+.back_links
+{
+text-align:center;
+margin-bottom:12px;
+}
+#color_blue
+{
+color: #3062d4 !important;
+text-decoration: underline !important;
 }
 .view-detail-btn button:hover, .re-btns button:hover{
     color:#00a0e3;
@@ -1983,7 +1995,7 @@ $('#company_review_btn2').hide();
 });
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
-            popup.open();
+            window.location.replace('/reviews');
         });
 }
 JS;
