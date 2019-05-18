@@ -40,7 +40,7 @@ class RegistrationForm extends Model {
     {
       $data =   BusinessActivities::find()->select(['business_activity_enc_id',
           '(CASE
-                WHEN business_activity = "College" THEN "Colege/Universities"
+                WHEN business_activity = "College" THEN "College/Universities"
                 WHEN business_activity = "Educational Institute" THEN "Educational Institute/Tution Centers"
                 WHEN business_activity = "School" THEN "School"
                 WHEN business_activity = "Others" THEN "Others"
