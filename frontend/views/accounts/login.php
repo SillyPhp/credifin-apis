@@ -55,4 +55,15 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
         <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="<?= Url::to('/signup/individual'); ?>" data-bg-color="#ff7803"><?= Yii::t('frontend', 'Individual'); ?></a>
     </div>
 </div>
-<?php ActiveForm::end(); ?>
+<?php ActiveForm::end();
+$this->registerCss('
+.text-theme-colored {
+    color: #202C45 !important;
+}
+.font-12 {
+    font-size: 12px !important;
+}
+.font-weight-600 {
+    font-weight: 600 !important;
+}
+');

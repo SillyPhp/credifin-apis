@@ -129,9 +129,9 @@ $form->field($careerFormModel, 'city')->widget(Select2::classname(), [
     <h2 class="subscribe-head">Subscribe <span>Us</span></h2> 
   <div class="effect jaques">
     <div class="buttons">
-      <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-      <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-      <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+      <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+      <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+      <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
     </div>
   </div>
 </div>
@@ -401,3 +401,4 @@ $(document).on('change', '#job_profile', function () {
 JS;
 $this->registerJs($script);
 $this->registerJsFile('//platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()], 'async' => 'async']);
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
