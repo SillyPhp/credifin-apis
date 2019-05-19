@@ -67,7 +67,7 @@ $this->beginPage();
             </div>
         </div>
         <?php
-        $bg_img = (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : '';;
+        $bg_img = (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : '/assets/themes/ey/images/backgrounds/lco_bg.jpg';
         $this->registerCss('
         body{
             background-image: url( ' . $bg_img . ' );

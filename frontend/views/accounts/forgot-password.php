@@ -1,6 +1,6 @@
 <?php
 $this->title = Yii::t('frontend', 'Forgot Password');
-$this->params['background_image'] = '/assets/images/bg/bg19.jpg';
+$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/bg19.png';
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;

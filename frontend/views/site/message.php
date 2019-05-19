@@ -44,10 +44,12 @@ body{
     width: 100%;
     background-color: #ffffffd9;
     border: 1px solid #cacaca8c;
-    color: #fff !important;
     border-radius: 8px;
     padding: 20px;
     padding-top: 10px;
+}
+.alert-box h4{
+    line-height:28px;
 }
 .alert-box h1{
     font-size:40px;
