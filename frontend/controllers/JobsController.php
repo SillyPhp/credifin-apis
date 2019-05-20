@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\ShortlistedApplications;
+use common\models\User;
+use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -306,12 +308,70 @@ class JobsController extends Controller
             }
             $object = new \account\models\applications\ApplicationForm();
 
-            return $this->render('pop_up_detail', [
+            return $this->renderAjax('pop_up_detail', [
                 'application_details' => $application_details,
                 'type' => $type,
                 'data' => $object->getCloneData($application_details['application_enc_id'], $type),
             ]);
 
+        }
+    }
+
+    public function actionNearMe(){
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $lat = Yii::$app->request->post('lat');
+            $long = Yii::$app->request->post('long');
+            $radius = Yii::$app->request->post('inprange');
+            $num = Yii::$app->request->post('num');
+            $keyword = Yii::$app->request->post('keyword');
+            $type = 'Jobs';
+            $walkin = 0;
+
+            $radius = $radius / 1000;
+
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+
+            return $cards;
+        }
+        return $this->render('near-me-beta');
+    }
+
+    public function actionWalkInInterviews(){
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $lat = Yii::$app->request->post('lat');
+            $long = Yii::$app->request->post('long');
+            $radius = Yii::$app->request->post('inprange');
+            $num = Yii::$app->request->post('num');
+            $keyword = Yii::$app->request->post('keyword');
+            $type = 'Jobs';
+            $walkin = 1;
+
+            $radius = $radius / 1000;
+
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+
+            return $cards;
+        }
+        return $this->render('walkin-near-me-beta');
+    }
+
+    public function actionUserLocation(){
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+
+            $location = Users::find()
+                ->alias('a')
+                ->select(['b.name','c.name as state_name'])
+                ->where(['a.user_enc_id'=>Yii::$app->user->identity->user_enc_id])
+                ->joinWith(['cityEnc as b'=>function($x){
+                    $x->joinWith(['stateEnc as c']);
+                }],false)
+                ->asArray()
+                ->one();
+
+            return json_encode($location);
         }
     }
 

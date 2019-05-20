@@ -43,6 +43,15 @@ use frontend\models\questionnaire\QuestionnaireForm;
 class SiteController extends Controller
 {
 
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $feedbackFormModel = new FeedbackForm();
@@ -50,65 +59,65 @@ class SiteController extends Controller
 
         $job_profiles = AssignedCategories::find()
             ->alias('a')
-            ->select(['a.*','d.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function($z){
+            ->select(['a.*', 'd.category_enc_id', 'd.name'])
+            ->joinWith(['parentEnc d' => function ($z) {
                 $z->groupBy(['d.category_enc_id']);
             }], false)
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
                     'b.is_deleted' => 0,
                     'b.status' => 'Active'
                 ]);
-                $x->joinWith(['applicationTypeEnc c' => function($y){
+                $x->joinWith(['applicationTypeEnc c' => function ($y) {
                     $y->andWhere(['c.name' => 'Jobs']);
                 }], false);
             }], false)
             ->where([
-                'a.status'=>'Approved',
-                'a.is_deleted'=>0,
+                'a.status' => 'Approved',
+                'a.is_deleted' => 0,
             ])->asArray()
             ->all();
         $internship_profiles = AssignedCategories::find()
             ->alias('a')
-            ->select(['a.*','d.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function($z){
+            ->select(['a.*', 'd.category_enc_id', 'd.name'])
+            ->joinWith(['parentEnc d' => function ($z) {
                 $z->groupBy(['d.category_enc_id']);
             }])
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
                     'b.is_deleted' => 0,
                     'b.status' => 'Active'
                 ]);
-                $x->joinWith(['applicationTypeEnc c' => function($y){
+                $x->joinWith(['applicationTypeEnc c' => function ($y) {
                     $y->andWhere(['c.name' => 'Internships']);
                 }], false);
             }], false)
             ->where([
-                'a.status'=>'Approved',
-                'a.is_deleted'=>0,
+                'a.status' => 'Approved',
+                'a.is_deleted' => 0,
             ])->asArray()
             ->all();
         $search_words = AssignedCategories::find()
             ->alias('a')
             ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['categoryEnc d' => function($y){
+            ->joinWith(['categoryEnc d' => function ($y) {
                 $y->groupBy(['d.category_enc_id']);
             }], false)
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
                     'b.is_deleted' => 0,
                     'b.status' => 'Active',
                 ]);
             }], false)
             ->where([
-                'a.status'=>'Approved',
-                'a.is_deleted'=>0,
+                'a.status' => 'Approved',
+                'a.is_deleted' => 0,
             ])
             ->asArray()
             ->all();
         $cities = EmployerApplications::find()
             ->alias('a')
-            ->select(['d.name','COUNT(c.city_enc_id) as total','c.city_enc_id'])
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
             ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
                 $x->joinWith(['locationEnc c' => function ($x) {
                     $x->joinWith(['cityEnc d']);
@@ -202,7 +211,13 @@ class SiteController extends Controller
 
     public function actionEmployers()
     {
-        return $this->render('employers');
+        $feedbackFormModel = new FeedbackForm();
+        $partnerWithUsModel = new PartnerWithUsForm();
+
+        return $this->render('employers', [
+            'feedbackFormModel' => $feedbackFormModel,
+            'partnerWithUsModel' => $partnerWithUsModel,
+        ]);
     }
 
     public function actionAddNewSubscriber()
