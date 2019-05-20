@@ -31,21 +31,6 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-//$s_header_result;
-//$near_me = [
-//    'name' => Yii::t('frontend', 'Jobs Near Me'),
-//    'url' => Url::to('/jobs/near-me')
-//];
-//array_push($s_header_result, $near_me);
-//$walk_in_interview = [
-//    'name' => Yii::t('frontend', 'Walk In Interview'),
-//    'url' => Url::to('/jobs/walk-in-interviews')
-//];
-//$s_header_result['near_me'] = $near_me;
-//$s_header_result['walk_in'] = $walk_in_interview;
-//$this->params['sub_header'] = [
-//    'menu' => $s_header_result
-//];
 ?>
     <section class="backgrounds">
         <div class="container">

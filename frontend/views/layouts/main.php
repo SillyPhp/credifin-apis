@@ -57,7 +57,7 @@ AppAssets::register($this);
         <div id="header-main"
              class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-            if (Yii::$app->user->isGuest) {
+            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
@@ -154,10 +154,10 @@ AppAssets::register($this);
         <?php
             if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
                 echo $this->render('/widgets/sub-header',[
-                        'data' => $h_data,
+                        'data' => $this->params['sub_header'],
                 ]);
             }
-        ?>?
+        ?>
         <?= $content; ?>
     </div>
     <footer id="footer" class="footer">
