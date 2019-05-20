@@ -13,7 +13,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-7 no-padd">
                         <div class="tp-heading">{{title}}</div>
-                        <div class="tp-date">{{name}}</div>
+<!--                        <div class="tp-date">{{name}}</div>-->
                     </div>
                 </a>
             </div>
@@ -84,10 +84,11 @@ $this->registerCss('
   text-align: center;
 }
 ');
+if($is_ajax){
 $script = <<<JS
 $.ajax({
     method: "POST",
-    url : window.location.href,
+    url : '/blog',
     success: function(response) {
         if(response.status === 200) {
             var pb_data = $('#trending-blog').html();
@@ -97,3 +98,4 @@ $.ajax({
 });
 JS;
 $this->registerJs($script);
+}

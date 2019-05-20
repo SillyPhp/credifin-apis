@@ -86,7 +86,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Colleges</div>
+                    <div class="heading-style">Top Rated Colleges</div>
                     <div id="uncliamed_top">
 
                     </div>
@@ -231,6 +231,18 @@ review-benifit{
     position:relative;
     min-height:400px;
 }
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
+}
 .head-bg-black{
     max-width:400px;
     background:rgba(0,0,0,.65);
@@ -241,6 +253,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     right:10px;
+    z-index:999;
 }
 .rb-box{
     text-align:center;
@@ -255,7 +268,7 @@ review-benifit{
     padding-top:10px;
     font-weight:bold;  
     font-size: 20px;
-    font-family: "Lora", serif;
+    font-family: "Lora", serif; 
 }
 .rb-text{
     padding:5px 20px;
@@ -405,6 +418,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {
@@ -474,7 +490,7 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_college').val());
 })
 var template;
-fetch_cards_top(params={'rating':[3,4,5],'sort':1,'limit':3,business_activity:'College','offset':0},template=$('#uncliamed_recent'));
+fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'College','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#uncliamed_top')); 
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -515,5 +531,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
   });
 JS;
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 $this->registerJs($script);
 ?>

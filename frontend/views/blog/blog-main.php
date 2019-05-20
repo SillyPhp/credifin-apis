@@ -5,7 +5,7 @@ use yii\helpers\Url;
 $this->registerCssFile('@eyAssets/css/blog-main.css');
 ?>
 
-    <section class="header">
+    <section class="blog-header">
         <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-cover.png ') ?>" alt=""/>
     </section>
     <section class="background-mirror blog-section-0">
@@ -597,4 +597,21 @@ $this->registerCss('
 //}
 /*blog-section-1-ends*/
 ');
+$script = <<<JS
+$.ajax({
+    method: "POST",
+    url : '/blog/trending-posts',
+    success: function(response) {
+    if(response.status === 200) {
+        var wn_data = $('#whats-new-blog').html();
+        $("#whats-new").html(Mustache.render(wn_data, response.whats_new_posts));
+        var pb_data = $('#trending-blog').html();
+        $("#trending-post").html(Mustache.render(pb_data, response.trending_posts));
+        var tb_data = $('#popular-blog-post').html();
+        $("#popular-blog").html(Mustache.render(tb_data, response.popular_posts));
+    }
+}
+});
+JS;
+$this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

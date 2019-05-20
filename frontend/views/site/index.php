@@ -139,7 +139,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <h1 class="heading-style ">Our Services</h1>
         <div class="services row">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
@@ -149,7 +149,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
@@ -157,6 +157,17 @@ $this->params['seo_tags'] = [
                                  alt="Internships">
                         </div>
                         <div class="ser-heading">Internships</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/reviews'); ?>">
+                    <div class="service-box ser-box-purple">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
+                                 alt="Reviews">
+                        </div>
+                        <div class="ser-heading">Reviews</div>
                     </div>
                 </a>
             </div>
@@ -168,6 +179,7 @@ $this->params['seo_tags'] = [
 
 <!---->
 <section class="fixed-bttn">
+    <div class="pos-ab">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -181,6 +193,7 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 <!---->
@@ -657,11 +670,17 @@ $this->registerCss('
 }
 /*try now sec*/
 .fixed-bttn{
-    padding:60px 0 100px;
+    min-height:400px;
     background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
     background-size: cover;
-    background-attachment:fixed;
+    position:relative;
     background-repeat:no-repeat;
+}
+.pos-ab{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 .fx-heading{
   text-transform:capitalize;
@@ -798,7 +817,7 @@ $this->registerCss('
 
 /*services section starts*/
 .services{
-    padding: 50px 0 25px 0; 
+    padding: 25px 0 25px 0; 
     text-align:center !important;
 }
 .service-box{ 
@@ -812,7 +831,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
-    width: 80%;
+    width: 95%;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
@@ -827,6 +846,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
+    color:#ff7803;
 }
 .ser-box-orange{
     background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
@@ -839,7 +859,7 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
-    width: 80%;
+    width: 95%;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
@@ -854,13 +874,43 @@ $this->registerCss('
     -webkit-transition:.3s all;
     -moz-transition:.3s all;
     -o-transition:.3s all;
+    color:#00a0e3;
 }
+.ser-box-purple{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
+    padding:20px 20px;
+    border-radius:10px;
+    border-width:5px 0px 0px 0px; 
+    border-color:transparent;
+    border-style:solid;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    width: 95%;
+    margin: auto;
+    margin-bottom:20px;
+    box-shadow: 0px 2px 13px 0px #ddddddb8;
+    background-size: 100%;
+    background-position: 0px -8px;
+    background-repeat:no-repeat;
+}
+.ser-box-purple:hover{
+    box-shadow: 0px 2px 13px 3px #ddddddb8;
+    border-top:5px solid #5E4795;
+    transition:.3s all;
+    -webkit-transition:.3s all;
+    -moz-transition:.3s all;
+    -o-transition:.3s all;
+    color:#5E4795;
+}
+
 .ser-icons{
     text-align:center;
 }
 .ser-icons img{
-    max-height: 150px; 
-    max-width: 150px;
+    max-height: 75px; 
+    max-width: 75px;
 }
 .serv-center{
     padding:0 30px;
@@ -870,6 +920,7 @@ $this->registerCss('
     text-transform: uppercase;
     font-size: 20px;
     text-align:center;
+    font-family:lora;
 }
 /*services section ends*/
 /*how it works section starts*/

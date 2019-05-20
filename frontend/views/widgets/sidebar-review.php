@@ -158,7 +158,7 @@ li.draggable-item.ui-sortable-placeholder {
    box-shadow:         inset 0 0 10px #000000;
 }
 .draggable-item{
-    height:58px;
+    height:61px;
 }
 #hidder{
     padding:0px 10px;

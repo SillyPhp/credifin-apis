@@ -65,8 +65,6 @@ $this->registerCss('
                                 </g>
                             </svg>
                         </a>
-                    <hr class="change-hr">
-                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
@@ -81,6 +79,34 @@ echo $this->render('/widgets/mustache/application-card', [
 
 
 $script = <<<JS
+
+var loading = false;
+var load_more_cards = true;
+$(window).animate({scrollTop:0}, '100');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 1000);
+
+$(window).scroll(function() { //detact scroll
+            if($(window).scrollTop() == 0){
+                loading = true;
+            }
+            
+			if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){ //scrolled to bottom of the page
+                if(load_more_cards && loading){
+                    loading = false;
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
+				    getCards();
+                    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 500);
+                }
+			}
+		});
 
 $('#loadMore').on('click', function(e){
     e.preventDefault();

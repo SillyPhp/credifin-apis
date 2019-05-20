@@ -1,10 +1,10 @@
 <?php
 use yii\helpers\Url;
 ?>
-    <script id="review-card" type="text/template">
+    <script id="review-card_main" type="text/template">
         {{#.}}
         <div class="col-md-4">
-            <div class="com-review-box fivestar-box">
+            <div class="com-review-box uncliamed_height fivestar-box">
                 <div class="com-logo">
                     {{#logo}}
                     <a href="/{{slug}}/reviews">
@@ -58,9 +58,9 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss("
-.com-review-box
+.uncliamed_height
 {
-height:304px;
+height:260px !important;
 }
 ");
 $script = <<< JS
@@ -72,7 +72,7 @@ function fetch_cards_top(params,template)
         data: {params:params},
         success: function(response) {
             if (response.status==200){
-            template.append(Mustache.render($('#review-card').html(),response.cards));
+            template.append(Mustache.render($('#review-card_main').html(),response.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({

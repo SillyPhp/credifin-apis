@@ -85,7 +85,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Schools</div>
+                    <div class="heading-style">Top Rated Schools</div>
                     <div id="uncliamed_top">
 
                     </div>
@@ -239,6 +239,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     left:10px;
+    z-index:999;
 }
 .rb-box{
     text-align:center;
@@ -249,11 +250,23 @@ review-benifit{
 .rb-icon img{
     max-width:100px;
 }
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
+}
 .rb-heading{
     padding-top:10px;
     font-weight:bold;
-    font-size: 20px;
-    font-family: "Lora", serif;   
+     font-size: 20px;
+    font-family: "Lora", serif;      
 }
 .rb-text{
     padding:5px 20px;
@@ -403,6 +416,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {
@@ -472,7 +488,7 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_school').val());
 })
 var template;
-fetch_cards_top(params={'rating':[3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
+fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_top'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,

@@ -1,5 +1,7 @@
 <?php
+
 namespace frontend\controllers;
+
 use common\models\ShortlistedApplications;
 use common\models\User;
 use common\models\Users;
@@ -10,9 +12,12 @@ use yii\web\Response;
 use yii\helpers\Url;
 use frontend\models\JobApplied;
 use common\models\EmployerApplications;
+use common\models\ApplicationPlacementLocations;
+use common\models\Organizations;
 use common\models\OrganizationLocations;
 use common\models\Cities;
 use common\models\Categories;
+use common\models\AssignedCategories;
 use common\models\EmployeeBenefits;
 use common\models\AppliedApplications;
 use common\models\UserResume;
@@ -21,8 +26,10 @@ use common\models\Industries;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
 use frontend\models\applications\ApplicationCards;
+
 class JobsController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -42,6 +49,7 @@ class JobsController extends Controller
             ],
         ];
     }
+
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -64,32 +72,43 @@ class JobsController extends Controller
             }
             return $response;
         }
+
         return $this->render('index');
     }
+
+
     public function actionList()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
+
             $options = [];
+
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
                 $options['page'] = 1;
             }
+
             $options['limit'] = 27;
+
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
             }
+
             if ($parameters['category'] && !empty($parameters['category'])) {
                 $options['category'] = $parameters['category'];
             }
+
             if ($parameters['keyword'] && !empty($parameters['keyword'])) {
                 $options['keyword'] = $parameters['keyword'];
             }
+
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
+
             $cards = ApplicationCards::jobs($options);
             if (count($cards) > 0) {
                 $response = [
@@ -104,8 +123,10 @@ class JobsController extends Controller
             }
             return $response;
         }
+
         return $this->render('list');
     }
+
     public function actionDetail($eaidk)
     {
         $application_details = EmployerApplications::find()
@@ -114,18 +135,21 @@ class JobsController extends Controller
                 'is_deleted' => 0
             ])
             ->one();
+
         if (!$application_details) {
             return 'Not Found';
         }
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
         $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
                 ->andWhere(['is_deleted'=>0])
                 ->exists();
+
             $shortlist = \common\models\ShortlistedApplications::find()
                 ->select('shortlisted')
                 ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
@@ -143,6 +167,7 @@ class JobsController extends Controller
             'shortlist' => $shortlist,
         ]);
     }
+
     public function actionJobPreview($eipdk)
     {
         if (!empty($eipdk)) {
@@ -175,17 +200,19 @@ class JobsController extends Controller
                 $benefits = null;
             }
             if (!empty($object->interviewcity))
-                return $this->render('/employer-applications/preview', [
-                    'object' => $object,
-                    'industry' => $industry,
-                    'primary_cat' => $primary_cat,
-                    'benefits' => $benefits,
-                    'type' => $type
-                ]);
+
+            return $this->render('/employer-applications/preview', [
+                'object' => $object,
+                'industry' => $industry,
+                'primary_cat' => $primary_cat,
+                'benefits' => $benefits,
+                'type' => $type
+            ]);
         } else {
             return false;
         }
     }
+
     public function actionItemId()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -236,6 +263,7 @@ class JobsController extends Controller
                     $update = Yii::$app->db->createCommand()
                         ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
+
                     if ($update) {
                         $response = [
                             'status' => 'unshort',
@@ -247,6 +275,7 @@ class JobsController extends Controller
                     $update = Yii::$app->db->createCommand()
                         ->update(ReviewedApplications::tableName(), ['review' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
                         ->execute();
+
                     if ($update) {
                         $response = [
                             'status' => 'short',
@@ -256,8 +285,10 @@ class JobsController extends Controller
                     }
                 }
             }
+
         }
     }
+
     public function actionJobDetail($eaidk, $type)
     {
         if (Yii::$app->request->isAjax) {
@@ -271,18 +302,23 @@ class JobsController extends Controller
                 ])
                 ->asArray()
                 ->one();
+
             if (!$application_details) {
                 return 'Not Found';
             }
             $object = new \account\models\applications\ApplicationForm();
+
             return $this->renderAjax('pop_up_detail', [
                 'application_details' => $application_details,
                 'type' => $type,
                 'data' => $object->getCloneData($application_details['application_enc_id'], $type),
             ]);
+
         }
     }
+
     public function actionNearMe(){
+
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
@@ -291,13 +327,18 @@ class JobsController extends Controller
             $keyword = Yii::$app->request->post('keyword');
             $type = 'Jobs';
             $walkin = 0;
+
             $radius = $radius / 1000;
+
             $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+
             return $cards;
         }
         return $this->render('near-me-beta');
     }
+
     public function actionWalkInInterviews(){
+
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
@@ -306,14 +347,20 @@ class JobsController extends Controller
             $keyword = Yii::$app->request->post('keyword');
             $type = 'Jobs';
             $walkin = 1;
+
             $radius = $radius / 1000;
+
             $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+
             return $cards;
         }
         return $this->render('walkin-near-me-beta');
     }
+
     public function actionUserLocation(){
+
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+
             $location = Users::find()
                 ->alias('a')
                 ->select(['b.name','c.name as state_name'])
@@ -323,7 +370,9 @@ class JobsController extends Controller
                 }],false)
                 ->asArray()
                 ->one();
+
             return json_encode($location);
         }
     }
+
 }
