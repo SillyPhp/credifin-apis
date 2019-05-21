@@ -48,12 +48,11 @@ function change_next_btn_school(t){
 	function sbt_values(t){
 		var tenures = t['tenure'].split(' ');
 		t['from'] = tenures[1] + "-" +tenures[0] + "-1";
-		if(!tenures[3]){
+		if(!tenures[4]){
 			t['to'] = '';
 		}else{
 			t['to'] = tenures[4] + "-" +tenures[3] + "-1";
 		}
-
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -454,14 +453,9 @@ function change_next_btn_school(t){
 	//------------------------------------------------------------
 	// Selectbox create method. Using with answerType:'selectbox'
 	var createSelectBox = function (qno, that, e_type){
-		var months = '';
 		var years = '';
 		if (that.options.data[qno].hasOwnProperty('choices'))
 		{
-			for (var i = 0; i < that.options.data[qno].choices[0].length; i++ )
-			{
-				months += '<option value="'+that.options.data[qno].choices[0][i].value+'">'+that.options.data[qno].choices[0][i].label+'</option>';
-			}
 			for (var i = 0; i < that.options.data[qno].choices[1].length; i++ )
 			{
 				years += '<option value="'+that.options.data[qno].choices[1][i].value+'">'+that.options.data[qno].choices[1][i].label+'</option>';
@@ -471,10 +465,10 @@ function change_next_btn_school(t){
 			console.log('"selectbox" form type must have -choices- parameters!');
 
 		if(e_type=='former'){
-			var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
+			var s = '<div class="i-review-answer"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
 			return s;
 		}else{
-			var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label></div>';
+			var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label></div>';
 			return s;
 		}
 	}
@@ -955,9 +949,9 @@ function change_next_btn_school(t){
 	// Selectbox validate checker
 	var selectValidate = function(qno,that, e_type){
 		if(e_type == 'former'){
-			var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
+			var val1 = "1";
 			var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
-			var val3 = that.reviewModal.getElementsByClassName('i-review-to-m')[0].value;
+			var val3 = "1";
 			var val4 = that.reviewModal.getElementsByClassName('i-review-to-y')[0].value;
 			that.values[that.options.data[qno].formName] = val1 + " "+ val2 + " - "+ val3 + " " + val4;
 
@@ -972,7 +966,7 @@ function change_next_btn_school(t){
 				}
 			}
 		}else{
-			var val1 = that.reviewModal.getElementsByClassName('i-review-from-m')[0].value;
+			var val1 = "1";
 			var val2 = that.reviewModal.getElementsByClassName('i-review-from-y')[0].value;
 			that.values[that.options.data[qno].formName] = val1 + " "+ val2;
 
