@@ -102,8 +102,14 @@ class RegistrationForm extends Model {
         $arr = Yii::$app->request->post('data');
         $f_time = strtotime($arr['from']);
         $from_time = date('Y-m-d', $f_time);
-        $t_time = strtotime($arr['to']);
-        $to_time = date('Y-m-d', $t_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
         $companyReview = new NewOrganizationReviews();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -206,8 +212,14 @@ class RegistrationForm extends Model {
         $avg =  ($arr['academics']+$arr['faculity']+$arr['infrastructure']+$arr['accomodation_food']+$arr['placement']+$arr['social_life']+$arr['culture'])/7;
         $f_time = strtotime($arr['from']);
         $from_time = date('Y-m-d', $f_time);
-        $t_time = strtotime($arr['to']);
-        $to_time = date('Y-m-d', $t_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
         $companyReview = new NewOrganizationReviews();
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 3 : 2);
         $data = Qualifications::find()
@@ -272,8 +284,14 @@ class RegistrationForm extends Model {
         $avg =  ($arr['student_engagement']+$arr['infrastructure']+$arr['faculty']+$arr['accessibility_of_faculty']+$arr['co_curricular_activitie']+$arr['leadership_development']+$arr['sports'])/7;
         $f_time = strtotime($arr['from']);
         $from_time = date('Y-m-d', $f_time);
-        $t_time = strtotime($arr['to']);
-        $to_time = date('Y-m-d', $t_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
         $companyReview = new NewOrganizationReviews();
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 5 : 4);
         $data = Qualifications::find()
@@ -337,8 +355,14 @@ class RegistrationForm extends Model {
         $avg =  ($arr['student_engagement']+$arr['infrastructure']+$arr['faculty']+$arr['value_for_money']+$arr['teaching_style']+$arr['coverage_of_subject_matter']+$arr['accessibility_of_faculty'])/7;
         $f_time = strtotime($arr['from']);
         $from_time = date('Y-m-d', $f_time);
-        $t_time = strtotime($arr['to']);
-        $to_time = date('Y-m-d', $t_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
         $companyReview = new NewOrganizationReviews();
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 7 : 6);
         $data = Qualifications::find()
