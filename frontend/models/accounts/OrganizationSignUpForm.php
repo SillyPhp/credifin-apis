@@ -2,6 +2,7 @@
 
 namespace frontend\models\accounts;
 
+use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -171,6 +172,7 @@ class OrganizationSignUpForm extends Model
 
             if ($this->_flag) {
                 if(Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id)){
+                    Referral::widget(['user_org_id' =>$organizationsModel->organization_enc_id]);
                     $transaction->commit();
                 }
             }
