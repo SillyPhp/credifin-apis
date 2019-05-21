@@ -5,6 +5,7 @@ namespace frontend\models\accounts;
 use common\models\User;
 use frontend\models\events\SignupEvent;
 use frontend\models\events\UserModel;
+use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -130,6 +131,7 @@ class IndividualSignUpForm extends Model
 
             if ($this->_flag) {
                 if(Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id)){
+                    Referral::widget(['user_id' =>$usersModel->user_enc_id]);
                     $transaction->commit();
                 }
             }
