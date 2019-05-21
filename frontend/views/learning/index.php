@@ -18,8 +18,8 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-md-6 sm-hidden">
-                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?>" align="right"
-                         class="responsive"/>
+<!--                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?><!--" align="right"-->
+<!--                         class="responsive"/>-->
                 </div>
             </div>
         </div>
@@ -229,9 +229,12 @@ $this->registerCss('
 }
 .backgrounds{
     background-size: 100% 595px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/learning-corner.png') . ');
-    background-position: left top;
+//    background-image: url(' . Url::to('@eyAssets/images/backgrounds/learning-corner.png') . ');
+    background: url(' . Url::to('@eyAssets/images/pages/learning-corner/lc-bg.png') . ');
+//    background-position: left top;
     background-repeat: no-repeat;
+    background-size:cover;
+    
     min-height: 600px;
     padding-top: 70px;
 }
