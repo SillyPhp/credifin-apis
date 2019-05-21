@@ -118,8 +118,9 @@ function load_script(){
 
     $('.test-multi').dropdown({
         // useLabels: false,
-        // maxSelections: 3
-      });
+        maxSelections: 3,
+        placeholder: 'any'
+    });
 }
 
     // $('#locations').parent().append('<ul id="newlocations" class="select-list" name="locations"></ul>');
@@ -145,7 +146,7 @@ function load_script(){
     
 
     $(document).on('focus', '.timepicker-24', function(){
-        $(this).timepicker(); 
+        $(this).timepicker();
     });
 
     $(document).on('change', '#all-dates', function(){

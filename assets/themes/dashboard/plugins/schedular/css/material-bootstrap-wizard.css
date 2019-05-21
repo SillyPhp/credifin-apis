@@ -12,27 +12,7 @@
  
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  */
-/*body {*/
-  /*background-color: #E5E5E5;*/
-  /*color: #3C4858; }*/
-  /*body.inverse {*/
-    /*background: #333333; }*/
-    /*body.inverse, body.inverse .form-control {*/
-      /*color: #ffffff; }*/
-    /*body.inverse .modal,*/
-    /*body.inverse .modal .form-control,*/
-    /*body.inverse .panel-default,*/
-    /*body.inverse .panel-default .form-control,*/
-    /*body.inverse .card,*/
-    /*body.inverse .card .form-control {*/
-      /*background-color: initial;*/
-      /*color: initial; }*/
 
-/*blockquote p {*/
-  /*font-style: italic; }*/
-
-.life-of-material-kit {
-  background: #FFFFFF; }
 
 body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4 {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
@@ -76,71 +56,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   background-position: center center;
   background-size: cover;
   position: relative; }
-  /*.image-container:before {*/
-    /*content: "";*/
-    /*display: block;*/
-    /*position: absolute;*/
-    /*left: 0;*/
-    /*top: 0;*/
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*background: #000000;*/
-    /*opacity: .3; }*/
-
-.made-with-mk {
-  width: 50px;
-  height: 50px;
-  display: block;
-  position: fixed;
-  z-index: 555;
-  bottom: 40px;
-  right: 40px;
-  border-radius: 30px;
-  background-color: rgba(16, 16, 16, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FFFFFF;
-  cursor: pointer;
-  padding: 10px 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  -webkit-transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1);
-  -moz-transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1);
-  -o-transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1);
-  transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1); }
-  .made-with-mk:hover, .made-with-mk:active, .made-with-mk:focus {
-    width: 218px;
-    color: #FFFFFF;
-    transition-duration: .55s;
-    padding: 10px 19px; }
-    .made-with-mk:hover .made-with, .made-with-mk:active .made-with, .made-with-mk:focus .made-with {
-      opacity: 1; }
-    .made-with-mk:hover .brand, .made-with-mk:active .brand, .made-with-mk:focus .brand {
-      left: 0; }
-  .made-with-mk .brand,
-  .made-with-mk .made-with {
-    float: left; }
-  .made-with-mk .brand {
-    position: relative;
-    top: 4px;
-    left: -1px;
-    letter-spacing: 1px;
-    vertical-align: middle;
-    font-size: 16px;
-    font-weight: 600; }
-  .made-with-mk .made-with {
-    color: rgba(255, 255, 255, 0.6);
-    position: absolute;
-    left: 58px;
-    top: 14px;
-    opacity: 0;
-    margin: 0;
-    -webkit-transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1);
-    -moz-transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1);
-    -o-transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1);
-    transition: 0.55s cubic-bezier(0.6, 0, 0.4, 1); }
-    .made-with-mk .made-with strong {
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.9); }
 
 .wizard-container {
   padding-top: 100px;
@@ -400,11 +315,6 @@ legend {
   margin-bottom: 20px;
   font-size: 21px; }
 
-output {
-  padding-top: 8px;
-  font-size: 14px;
-  line-height: 1.42857; }
-
 .form-control {
   height: 36px;
   padding: 7px 0;
@@ -436,11 +346,6 @@ output {
 .radio label,
 .checkbox label {
   min-height: 20px; }
-
-.form-control-static {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  min-height: 34px; }
 
 .input-sm .input-sm {
   height: 24px;
@@ -1143,21 +1048,6 @@ select.form-control {
   padding: 10px 15px;
   min-width: 130px; }
 
-.footer {
-  position: relative;
-  bottom: 20px;
-  right: 0px;
-  width: 100%;
-  color: #FFFFFF;
-  z-index: 4;
-  text-align: right;
-  margin-top: 60px;
-  text-shadow: 0 0px 1px black; }
-  .footer a {
-    color: #FFFFFF; }
-  .footer .heart {
-    color: #FF3B30; }
-
 .withripple {
   position: relative; }
 
@@ -1173,28 +1063,6 @@ select.form-control {
   pointer-events: none; }
   .disabled .ripple-container {
     display: none; }
-
-.ripple {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  margin-left: -10px;
-  margin-top: -10px;
-  border-radius: 100%;
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.05);
-  transform: scale(1);
-  transform-origin: 50%;
-  opacity: 0;
-  pointer-events: none; }
-
-.ripple.ripple-on {
-  transition: opacity 0.15s ease-in 0s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
-  opacity: 0.1; }
-
-.ripple.ripple-out {
-  transition: opacity 0.1s linear 0s !important;
-  opacity: 0; }
 
 .radio label {
   cursor: pointer;

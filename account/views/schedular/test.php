@@ -487,22 +487,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerJsFile('@backendAssets/plugins/schedular/js/acc-wizard.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/jquery.steps.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@backendAssets/plugins/schedular/js/semantic.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>
-<!--   Core JS Files   -->
-<!--<script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>-->
-<!--<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>-->
-<!--<script src="assets/js/jquery.bootstrap.js" type="text/javascript"></script>-->
 
-<!--<script src="assets/js/material-bootstrap-wizard.js"></script>-->
-<!--<script src="assets/js/jquery.validate.min.js"></script>-->
-<!--<script src="http://ajay.eygb.me/assets/themes/dashboard/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>-->
-<!--<script src="http://ajay.eygb.me/assets/themes/dashboard/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>-->
-<!--<script src="./acc-wizard.min.js"></script>-->
-<!--<script src="./additional-methods.min.js"></script>-->
-<!--<script src="./jquery.steps.min.js"></script>-->
-<!--<script src="./dobpicker.js"></script>-->
-<!--<script src="./semantic.js"></script>-->
-<!--<script src="./main.js"></script>-->
