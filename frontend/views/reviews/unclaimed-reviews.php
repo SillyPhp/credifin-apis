@@ -1479,7 +1479,7 @@ var popup2 = new ideaboxPopupCollege({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 					},
 				{
-					question 	: 'Acedemic Year:',
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
 					formName	: 'tenure',
 					choices : [
@@ -1503,7 +1503,7 @@ var popup2 = new ideaboxPopupCollege({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
@@ -1659,7 +1659,7 @@ var popup3 = new ideaboxPopupSchool({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 					},
 				{
-					question 	: 'Acedemic Year:',
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
 					formName	: 'tenure',
 					choices : [
@@ -1683,7 +1683,7 @@ var popup3 = new ideaboxPopupSchool({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
@@ -1839,7 +1839,7 @@ var popup4 = new ideaboxPopupInstitute({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 					},
 				{
-					question 	: 'Acedemic Year:',
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
 					formName	: 'tenure',
 					choices : [
@@ -1863,7 +1863,7 @@ var popup4 = new ideaboxPopupInstitute({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
