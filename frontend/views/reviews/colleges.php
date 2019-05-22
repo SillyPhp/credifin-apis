@@ -20,8 +20,8 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <div class="btn_add_new_org pull-right">
-                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            <div class="btn_add_new_org">
+                                <a href="#" class="add_new_org btn_add_org">Add New College</a>
                             </div>
                         </div>
                     </div>
@@ -92,6 +92,18 @@ use yii\helpers\Url;
 <?php
 
 $this->registerCss('
+.btn_add_org{
+    color:#fff;
+    position:absolute;
+    right: 25px;
+    bottom: 10px;
+}
+.btn_add_org:hover{
+    color:#7453C6;
+}
+.btn_add_new_org {
+    padding:10px;    
+}
 .rating-stars{
     font-size:20px;
 }
@@ -100,10 +112,6 @@ $this->registerCss('
     justify-content:center;
     font-size:14px;
     min-height:25px;
-}
-.btn_add_org
-{
-padding:5px 17px;
 }
 .stars{
     margin-right:5px;
