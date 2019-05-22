@@ -8,8 +8,8 @@ use yii\helpers\Url;
         <div class="container headsec">
             <div class="row">
                 <div class="col-md-6 col-sm-12 mt-50">
-                    <div class="jumbo-heading">BOOST YOUR SKILLS</div>
-                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
+                    <div class="jumbo-heading">Boost up your skills With a new way of learning/div>
+                    <div class="jumbo-heading"> </div>
                     <div class="search-box1">
                         <form action="<?= Url::to('/learning/search-video') ?>">
                             <input type="text" placeholder="Search" name="keyword">
@@ -230,7 +230,7 @@ $this->registerCss('
 .backgrounds{
     background-size: 100% 595px;
 //    background-image: url(' . Url::to('@eyAssets/images/backgrounds/learning-corner.png') . ');
-    background: url(' . Url::to('@eyAssets/images/pages/learning-corner/lc-bg.png') . ');
+    background: url(' . Url::to('@eyAssets/images/pages/learning-corner/learning-cor.png') . ');
 //    background-position: left top;
     background-repeat: no-repeat;
     background-size:cover;
