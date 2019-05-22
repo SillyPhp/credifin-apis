@@ -225,7 +225,7 @@ review-benifit{
     text-transform: capitalize;
 }
 .cri-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/review/educational-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/review/ic-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 400px;
@@ -243,7 +243,7 @@ review-benifit{
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    right:10px;
+    left:10px;
     z-index:999;
 }
 .com-review-box{
