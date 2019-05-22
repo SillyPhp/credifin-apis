@@ -20,14 +20,9 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <!--                        <div class="hbb-text">Explore colleges on the basis of </div>-->
-                            <!--                        <div class="hbb-sub-text">-->
-                            <!--                            <a href="">College Review</a> |-->
-                            <!--                            <a href="">College Rating</a> |-->
-                            <!--                            <a href="">College Environment</a> |-->
-                            <!--                            <a href="">College Infrastructure</a>-->
-                            <!---->
-                            <!--                        </div>-->
+                            <div class="btn_add_new_org pull-right">
+                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -96,6 +91,10 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.btn_add_org
+{
+padding:5px 17px;
+}
 .rating-stars{
     font-size:20px;
 }
