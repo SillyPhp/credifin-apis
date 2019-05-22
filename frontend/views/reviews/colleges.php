@@ -229,7 +229,7 @@ review-benifit{
     width: 75%;
 }
 .cri-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/review/college-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/review/clg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 400px;
@@ -259,7 +259,7 @@ review-benifit{
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    right:10px;
+    left:10px;
     z-index:999;
 }
 .rb-box{
