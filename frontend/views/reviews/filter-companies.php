@@ -29,6 +29,11 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </form>
             </div>
+            <div class="col-md-12">
+                <div class="btn_add_new_org pull-right">
+                    <a href="#" class="btn btn-default add_new_org">Add New Organizatons</a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
