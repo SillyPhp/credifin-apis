@@ -31,7 +31,7 @@ use yii\bootstrap\ActiveForm;
             </div>
             <div class="col-md-12">
                 <div class="btn_add_new_org pull-right">
-                    <a href="#" class="btn btn-default add_new_org">Add New Organizatons</a>
+                    <a href="#" class="add_new_org1">Add New Organizaton</a>
                 </div>
             </div>
         </div>
@@ -343,6 +343,23 @@ echo $this->render('/widgets/mustache/review-cards', [
 <!--</div>-->
 <?php
 $this->registerCss('
+.btn_add_new_org{
+    margin-top:15px;
+}
+.add_new_org1{
+
+    padding:10px 15px;
+    background:#fff;
+    color:#00a0e3;
+    border: 2px solid #eee;
+    border-radius:10px;
+    font-weight:bold;
+}
+.add_new_org1:hover{
+    color:#00a0e3;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
 .search-bar{
     width:100%;
     background:#fff;
