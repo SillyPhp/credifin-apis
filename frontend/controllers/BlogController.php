@@ -85,7 +85,7 @@ class BlogController extends Controller
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
-                ->limit(4)
+                ->limit(6)
                 ->asArray()
                 ->all();
 
@@ -104,14 +104,10 @@ class BlogController extends Controller
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
-                ->limit(4)
+                ->limit(12)
                 ->asArray()
                 ->all();
 
-//            print_r($popular_posts);
-//            print_r($whats_new_posts);
-//            print_r($trending_posts);
-//            exit();
         return $response = [
             'status' => 200,
             'message' => 'Success',
