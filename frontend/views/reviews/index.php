@@ -48,7 +48,7 @@ $this->params['seo_tags'] = [
                         <div class="header-bg">
                             <div class="search-box">
                                 <div class="head-text">
-                                    <p>Find your next great place to work</p>
+                                    <p>India's first integrated reviews platform for career development</p>
                                 </div>
                                 <form id="form-search" action="<?=Url::to(['search']) ?>">
                                     <div class="input-group search-bar">
@@ -395,11 +395,14 @@ color: initial;
 }
     
 .head-bg{
-  background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
-    background-size: cover;
+//  background: url(../assets/themes/ey/images/pages/review/fgb.png);
+     background: url(../assets/themes/ey/images/pages/review/review-bg2.png);
+//    background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
-    text-align:center
+    text-align:center;
+     background-size: contain;
+    background-position: right;
 }  
 
 .pos-relative{
@@ -407,19 +410,14 @@ color: initial;
     height:450px
 }
 .header-bg{
+    max-width:600px;
     text-align:center;
-    width:100%;
     position:absolute;
     top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
+    transform:translateY(-50%);
 }  
 .search-box{
-    position:relative;
-    top: 50%;
-    left:50%;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
+
 }
 .search-bar{
     border:1px solid #ddd;
@@ -438,13 +436,14 @@ color: initial;
     color:#999;
 }
 .head-text{
-    padding-bottom:20px;
-    color:#fff;
+    padding-bottom:10px;
+    color:#000;
+    font-family:lora;
      font-size:30px;
     text-transform:uppercase;
 }
 .head-text p{
-    line-height:20px;
+    line-height:35px;
 }
 /*top categories css*/
 .cat-box{
