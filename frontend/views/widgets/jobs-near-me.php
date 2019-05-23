@@ -193,7 +193,7 @@ $this->registerCss('
     top: 52px;
     left: 0;
     height: calc(100vh - 52px);
-    z-index:1000;
+    z-index:999;
     overflow-y: scroll;
     overflow-x: hidden;
     box-shadow: 0px 0px 10px 1px #e6e6e6;
@@ -771,7 +771,12 @@ $('#city_location').typeahead(null, {
 
 var sidebarpage = 1;
 getReviewList(sidebarpage);
-
+$(document).on('click','li.draggable-item .opens', function(){
+    $('.near-me-filters').css('z-index','1000');
+});
+$(document).on('click','.jd-close', function(){
+    $('.near-me-filters').css('z-index','999');
+});
 var ps = new PerfectScrollbar('.near-me-filters');
 JS;
 $this->registerJs($script);
