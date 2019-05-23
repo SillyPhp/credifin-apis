@@ -857,7 +857,7 @@ class OrganizationsController extends Controller
                 ->asArray()
                 ->one();
 
-            $edit_review = $editReviewForm->getEditReview($unclaimed_org);
+            $edit_review = $editReviewForm->getEditClaimedReview($org);
             if (!empty($edit_review)) {
                 $editReviewForm->setValues($edit_review, $slug);
             }

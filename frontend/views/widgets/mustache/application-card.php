@@ -43,21 +43,9 @@
                     {{/experience}}
                 </div>
             </div>
-            {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                Last Date to Apply
-                <br>
-                {{last_date}}
-            </h6>
-            <h4 class="col-md-7 org_name text-right pr-10">
-                {{organization_name}}
-            </h4>
-            {{/last_date}}
-            {{^last_date}}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h4 class="org_name text-right">{{organization_name}}</h4>
             </div>
-            {{/last_date}}
             <div class="application-card-wrapper">
                 <a href="{{link}}" class="application-card-open">View Detail</a>
                 <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
