@@ -396,6 +396,7 @@ setTimeout(
 }, 2000);
 
 //variables declaration
+var empty = true;
 var loading = false;
 var loadmore = true;
 var vals = {
@@ -471,6 +472,8 @@ function geocodeLatLng(lat,long) {
     });
 }
 
+
+
 //initiates maps and cards
 function showCards(){
     //local variables
@@ -522,7 +525,7 @@ function card(){
                 $('.load-more-spinner').css('visibility', 'hidden');
                 
                 var response = JSON.parse(res);
-                if(response.length == 0){
+                if(response.length == 0 && empty){
                     $('#loadMore').hide();
                     $('.near-me-map').css('display','none');
                     $('.near-me-content').removeClass('col-md-4');
@@ -530,6 +533,7 @@ function card(){
                     $('.near-me-content').addClass('text-center');
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/$type/not_found.png" class="not-found" alt="Not Found"/>');
                 }else{
+                    empty = false;
                     for(i=0;i<response.length;i++){
                             marker = new google.maps.Marker({
                             position: {lat: Number(response[i].latitude), lng: Number(response[i].longitude)},
@@ -662,6 +666,7 @@ function searching() {
      $('#loadMore').hide();
      $('#loadMore').show();
      loadmore = true;
+     empty = true;
      
      geocodeAddress(city);
 }
@@ -790,4 +795,4 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [JqueryAsset::className()]]);
 ?>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>

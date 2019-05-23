@@ -85,7 +85,6 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
-
             $options = [];
 
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
