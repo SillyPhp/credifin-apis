@@ -193,7 +193,7 @@ $this->registerCss('
     top: 52px;
     left: 0;
     height: calc(100vh - 52px);
-    z-index:10050;
+    z-index:999;
     overflow-y: scroll;
     overflow-x: hidden;
     box-shadow: 0px 0px 10px 1px #e6e6e6;
@@ -222,6 +222,9 @@ $this->registerCss('
 }
 .in-map{
     margin-bottom:0px;
+}
+.modal-backdrop{
+    z-index:99;
 }
 .gm-style .gm-style-iw-c{
     padding:0px;
@@ -379,6 +382,9 @@ $this->registerCss('
   }
 }
 /*Load Suggestions loader css ends */
+body {
+  scroll-behavior: smooth;
+}
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
@@ -387,9 +393,10 @@ $('body').css('overflow','hidden');
 setTimeout(
     function(){
     $('body').css('overflow','inherit');
-}, 1000);
+}, 2000);
 
 //variables declaration
+var loading = false;
 var loadmore = true;
 var vals = {
     lat: null,
@@ -427,10 +434,12 @@ function showError(error) {
           success: function (res) {
             var response = JSON.parse(res);
             if(response == null){
+                $('#city_location').val('');
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
             }else if(response.name == null){
+                $('#city_location').val('');
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
@@ -548,10 +557,14 @@ function card(){
                     drag: function() { 
                         $('#sticky').addClass('drag-on');
                         $('#review-internships').addClass('drop-on');
+                        $('#header-main').css('z-index','1002');
+                        $('.near-me-content').css('z-index','1001');
                      },
                      stop: function() { 
                         $('#sticky').removeClass('drag-on');
                         $('#review-internships').removeClass('drop-on');
+                        $('#header-main').css('z-index','1000');
+                        $('.near-me-content').css('z-index','0');
                      },
                 });
             });
@@ -566,7 +579,7 @@ function card(){
     });
 }
 
-//load more click
+// load more click
 // $(document).on('click','#loadMore',function(e) {
 //     e.preventDefault();
 //     $('.load-more-text').css('visibility', 'hidden');
@@ -577,7 +590,6 @@ function card(){
 
 //card click
 $(document).on("click","#card-hover",function() {
-    
      if (infowindow) {
         infowindow.close();
      }
@@ -599,7 +611,8 @@ $(document).on("click","#card-hover",function() {
      var application_key = $(this).attr('data-key');
      var job_type = '$job_type';
      if(!logo){
-        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+        // logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+        logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
@@ -613,7 +626,11 @@ $(document).on("click","#card-hover",function() {
         draggable: false
      });
      infowindow.open(map, marker);
-     utilities.initials();
+     // utilities.initials();
+     setTimeout(
+                        function(){
+				            utilities.initials();
+				    }, 100);
 });
 
 //search for,
@@ -671,6 +688,8 @@ function geocodeAddress(city) {
         vals.long = results[0].geometry.location.lng();
         
         showCards();
+      }else if(results.length == 0){
+          toastr.error('please enter correct city', 'error');
       } 
     });
 }
@@ -703,11 +722,20 @@ function getReviewList(sidebarpage){
 
 
 $(window).scroll(function() { //detact scroll
+    if($(window).scrollTop() == 0){
+                loading = true;
+            }
 			if($(window).scrollTop() + $(window).height() >= $(document).height()){ //scrolled to bottom of the page
-				$('.load-more-text').css('visibility', 'hidden');
-                $('.load-more-spinner').css('visibility', 'visible');
-                if(loadmore){
+				
+                if(loadmore && loading){
+                    loading = false;
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
 				    card();
+				    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 500);
                 }
 			}
 		});
@@ -743,7 +771,12 @@ $('#city_location').typeahead(null, {
 
 var sidebarpage = 1;
 getReviewList(sidebarpage);
-
+$(document).on('click','li.draggable-item .opens', function(){
+    $('.near-me-filters').css('z-index','1000');
+});
+$(document).on('click','.jd-close', function(){
+    $('.near-me-filters').css('z-index','999');
+});
 var ps = new PerfectScrollbar('.near-me-filters');
 JS;
 $this->registerJs($script);
