@@ -675,6 +675,7 @@ $script = <<<JS
     var dropped = [];
 
     $('#company_2, #company_3, #job_2, #job_3').attr('readonly', true);
+    $('#company_1, #job_1, #company_2, #company_3, #job_2, #job_3').val('');
     
     var company_search = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -885,39 +886,39 @@ $script = <<<JS
                  
                  var assel = assignElems(elem_id);
                  
-                $(assel.jobs_days_elem).html(d);
-                $(assel.jobs_timings_elem).html(data['message']['timings_from'] + "-" + data['message']['timings_to']);
-                $(assel.jobs_plocation_elem).html(plocs);
-                $(assel.jobs_ilocation_elem).html(ilocs);
-                $(assel.jobs_vacancy_elem).html(sum);
-                $(assel.jobs_experience_elem).html(data['message']['experience']);
-                $(assel.jobs_salary_elem).html(data['message']['amount']);
-                $(assel.jobs_type_elem).html(data['message']['type']);
-                $(assel.jobs_designation_elem).html(data['message']['designation']);
-                $(assel.jobs_profile_elem).html(data['message']['cat_name']);
-                $(assel.jobs_title_elem).html(data['message']['name']);
-                $(assel.jobs_image_elem).attr('src', '/assets/common/categories/profile/' + data['message']['icon_png']);
+                document.getElementById(assel.jobs_days_elem).innerHTML = d;
+                document.getElementById(assel.jobs_timings_elem).innerHTML = data['message']['timings_from'] + "-" + data['message']['timings_to'];
+                document.getElementById(assel.jobs_plocation_elem).innerHTML = plocs;
+                document.getElementById(assel.jobs_ilocation_elem).innerHTML = ilocs;
+                document.getElementById(assel.jobs_vacancy_elem).innerHTML = sum;
+                document.getElementById(assel.jobs_experience_elem).innerHTML = data['message']['experience'];
+                document.getElementById(assel.jobs_salary_elem).innerHTML = data['message']['amount'];
+                document.getElementById(assel.jobs_type_elem).innerHTML = data['message']['type'];
+                document.getElementById(assel.jobs_designation_elem).innerHTML = data['message']['designation'];
+                document.getElementById(assel.jobs_profile_elem).innerHTML = data['message']['cat_name'];
+                document.getElementById(assel.jobs_title_elem).innerHTML = data['message']['name'];
+                document.getElementById(assel.jobs_image_elem).setAttribute('src', '/assets/common/categories/profile/' + data['message']['icon_png']);
                 
                 var aer = '';
                 for(var i = 0; i < data.message['applicationEducationalRequirements'].length; i++){
                     var p = "<li>- " + data['message']['applicationEducationalRequirements'][i]['educational_requirement'] + "</li>";    
                     aer += p;
                 }
-                $(assel.jobs_education_elem).html(aer);
+                document.getElementById(assel.jobs_education_elem).innerHTML = aer;
                 
                 var apl = '';
                 for(var i = 0; i < data.message['applicationJobDescriptions'].length; i++){
                     var t = "<li>- " +  data['message']['applicationJobDescriptions'][i]['job_description'] + "</li>";
                     apl += t;
                 }
-                $(assel.jobs_jd_elem).html(apl);
+                document.getElementById(assel.jobs_jd_elem).innerHTML = apl;
                 
                 var as = '';
                 for(var i = 0; i < data.message['applicationSkills'].length; i++){
                     var k = "<li>- "  + data['message']['applicationSkills'][i]['skill'] + "</li>";    
                     as += k;
                 }
-                $(assel.jobs_skills_elem).html(as);
+                document.getElementById(assel.jobs_skills_elem).innerHTML = as;
             }
         })
     }
@@ -994,42 +995,42 @@ $script = <<<JS
     
     function assignElems(elem_id){
         var assigned = {
-             jobs_days_elem : '#' + elem_id + '_days', 
-             jobs_timings_elem : '#' + elem_id + '_timings', 
-             jobs_plocation_elem : '#' + elem_id + '_plocation', 
-             jobs_ilocation_elem : '#' + elem_id + '_ilocation', 
-             jobs_vacancy_elem : '#' + elem_id + '_vacancy',
-             jobs_experience_elem : '#' + elem_id + '_experience', 
-             jobs_salary_elem : '#' + elem_id + '_salary',
-             jobs_type_elem : '#' + elem_id + '_type',
-             jobs_designation_elem : '#' + elem_id + '_designation', 
-             jobs_profile_elem : '#' + elem_id + '_profile',
-             jobs_title_elem : '#' + elem_id + '_title', 
-             jobs_image_elem : '#' + elem_id + '_image', 
-             jobs_education_elem : '#' + elem_id + '_education', 
-             jobs_jd_elem : '#' + elem_id + '_jd', 
-             jobs_skills_elem : '#' + elem_id + '_skills'
+             jobs_days_elem : elem_id + '_days', 
+             jobs_timings_elem : elem_id + '_timings', 
+             jobs_plocation_elem : elem_id + '_plocation', 
+             jobs_ilocation_elem : elem_id + '_ilocation', 
+             jobs_vacancy_elem : elem_id + '_vacancy',
+             jobs_experience_elem : elem_id + '_experience', 
+             jobs_salary_elem : elem_id + '_salary',
+             jobs_type_elem : elem_id + '_type',
+             jobs_designation_elem : elem_id + '_designation', 
+             jobs_profile_elem : elem_id + '_profile',
+             jobs_title_elem : elem_id + '_title', 
+             jobs_image_elem : elem_id + '_image', 
+             jobs_education_elem : elem_id + '_education', 
+             jobs_jd_elem : elem_id + '_jd', 
+             jobs_skills_elem : elem_id + '_skills'
         };
         return assigned;
     }
     
     function removeVals(e){
         var assel = assignElems(e);
-        $(assel.jobs_skills_elem).html('');
-        $(assel.jobs_jd_elem).html('');
-        $(assel.jobs_education_elem).html('');
-        $(assel.jobs_days_elem).html('');
-        $(assel.jobs_timings_elem).html('');
-        $(assel.jobs_plocation_elem).html('');
-        $(assel.jobs_ilocation_elem).html('');
-        $(assel.jobs_vacancy_elem).html('');
-        $(assel.jobs_experience_elem).html('');
-        $(assel.jobs_salary_elem).html('');
-        $(assel.jobs_type_elem).html('');
-        $(assel.jobs_designation_elem).html('');
-        $(assel.jobs_profile_elem).html('');
-        $(assel.jobs_title_elem).html('');
-        $(assel.jobs_image_elem).attr('src', '');
+        document.getElementById(assel.jobs_skills_elem).innerHTML = '';
+        document.getElementById(assel.jobs_jd_elem).innerHTML = '';
+        document.getElementById(assel.jobs_education_elem).innerHTML = '';
+        document.getElementById(assel.jobs_days_elem).innerHTML = '';
+        document.getElementById(assel.jobs_timings_elem).innerHTML = '';
+        document.getElementById(assel.jobs_plocation_elem).innerHTML = '';
+        document.getElementById(assel.jobs_ilocation_elem).innerHTML = '';
+        document.getElementById(assel.jobs_vacancy_elem).innerHTML = '';
+        document.getElementById(assel.jobs_experience_elem).innerHTML = '';
+        document.getElementById(assel.jobs_salary_elem).innerHTML = '';
+        document.getElementById(assel.jobs_type_elem).innerHTML = '';
+        document.getElementById(assel.jobs_designation_elem).innerHTML = '';
+        document.getElementById(assel.jobs_profile_elem).innerHTML = '';
+        document.getElementById(assel.jobs_title_elem).innerHTML = '';
+        document.getElementById(assel.jobs_image_elem).setAttribute('src', '');
     }
 
     function addedToReview(item_id, dropped_elem_id, hasDropped = false){

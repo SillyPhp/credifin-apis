@@ -352,10 +352,10 @@ class InternshipsController extends Controller
 
                 $x->joinWith(['title c' => function($y) use($query){
 
-                    $y->andWhere([
-                        'c.status' => 'Approved',
-                        'c.is_deleted' => 0
-                    ]);
+//                    $y->andWhere([
+//                        'c.status' => 'Approved',
+//                        'c.is_deleted' => 0
+//                    ]);
 
                     $y->andFilterWhere([
                         'or',
