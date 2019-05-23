@@ -40,16 +40,16 @@ $this->params['seo_tags'] = [
                     <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
                     <div class="search-by-type">
                         <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
-                            <div class="input-group mb-10 mr-10">
+                            <div class="input-group mb-10 mr-10 col-md-5">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                 <input type="text" name="keyword" class="form-control"
-                                       placeholder="Job Title or Keywords"/>
+                                       placeholder="Job Title or Keywords or Company"/>
                             </div>
-                            <div class="input-group mb-10 mr-10">
-                                <span class="input-group-addon"><i class="fa fa-building"></i></span>
-                                <input type="text" name="company" class="form-control" placeholder="Company"/>
-                            </div>
-                            <div class="input-group mb-10 mr-10">
+<!--                            <div class="input-group mb-10 mr-10">-->
+<!--                                <span class="input-group-addon"><i class="fa fa-building"></i></span>-->
+<!--                                <input type="text" name="company" class="form-control" placeholder="Company"/>-->
+<!--                            </div>-->
+                            <div class="input-group mb-10 mr-10 col-md-3">
                                 <span class="input-group-addon set-heights"><i
                                             class="fa fa-map-marker"></i></span>
                                 <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
@@ -143,7 +143,7 @@ $this->registerCss('
 }
 .input-group-addon{
     font-size:15px;
-    min-width:45px;
+    width:45px !important;
 }
 .backgrounds{
     background-size: 100% 520px;
@@ -372,7 +372,7 @@ $this->registerCss('
 /*<!---- view-all button css ends --->*/
 
 .search-by-type {
-    width: 88%;
+    width: 84%;
     background-color: #14141459;
     padding: 2px 20px;
     color: #fff;
