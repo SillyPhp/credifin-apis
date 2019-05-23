@@ -397,21 +397,6 @@ function Ajax_call(itemid) {
         }
     });
 }
-$(document).on('click','li.draggable-item .opens', function(){
-    var data_main = $(this).children('span');
-    $('#pop_up_modal').modal('toggle');
-    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type=$a_type');
-    // $('#openModal').addClass('j-open');
-    // $('.com-name').text(data_main.attr('company'));
-    // $('.j-title').text(data_main.attr('title'));
-    // if(data_main.attr('logo') == ""){
-    //    $('.company-logo').html('<canvas class="user-icon" name="'+data_main.attr('company')+'" color="'+data_main.attr('color')+'" width="100" height="100" font="55px"></canvas>');
-    //    utilities.initials();
-    // } else{
-    //     $('.company-logo').html('<img class="img-responsive" src="' + data_main.attr('logo') + '">');
-    // }
-    // console.log(data_main);
-});
 
 $(document).on('click', '.application-card-add', function(event) {
     var c_user = "$c_user"
@@ -475,6 +460,15 @@ $(document).on('click', '.review-list-toggler', function() {
    //});
 
 JS;
+if(!$hide_detail) {
+$this->registerJs("
+$(document).on('click','li.draggable-item .opens', function(){
+    var data_main = $(this).children('span');
+    $('#pop_up_modal').modal('toggle');
+    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type=$a_type');
+});
+");
+}
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

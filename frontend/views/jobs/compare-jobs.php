@@ -5,302 +5,306 @@ use yii\helpers\Url;
 
 ?>
 
-    <div style="position: fixed;width: 100%;z-index: 99;top: 110px;right: 0; border-right:1px solid #ddd;">
-        <div class="row row-offcanvas active">
-            <div class="sidebar-offcanvas sidebar">
-                <?=
-                $this->render('/widgets/sidebar-review', [
-                    'type' => 'jobs',
-                ]);
-                ?>
-            </div>
-            <a type="button" id="change" class="btn btn-collapse btn-" data-toggle="offcanvas"><i
-                        class="glyphicon glyphicon-chevron-down"></i> <span id="change-text">Review List</span></a>
+<section>
+        <div class="row">
+            <div class="col-md-2">
+            <?=
+            $this->render('/widgets/sidebar-review', [
+                'type' => 'jobs',
+                'hide_detail' => true
+            ]);
+            ?>
         </div>
-    </div>
 
-    <section>
-        <div class="container">
 
-            <div class="row">
-                <div class="col-md-12">
-                    <table>
-                        <tr>
-                            <td width="10%" class="boldfont"> Choose Jobs you want to compare</td>
-                            <form>
-                                <td width="30%" class="empty" id="c1">
-                                    <div class='search-box'>
-                                        <div class="load-suggestions Typeahead-spinner company1-spin"
-                                             style="display: none;">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                        <input id="company_1" class='form-control' placeholder='Choose Company'
-                                               type='text'>
-                                        <input id="company_1_id" class='form-control' type='hidden'>
-                                        <button class='btn btn-link search-btn'>
-                                            <i class='fa fa-search'></i>
-                                        </button>
+            <div class="col-md-10">
+                <table>
+                    <tr>
+                        <td width="10%" class="boldfont"> Choose Jobs you want to compare</td>
+                        <form>
+                            <td width="30%" class="empty" id="c1" data-info="">
+                                <div class='search-box'>
+                                    <div class="load-suggestions Typeahead-spinner" id="company_1_spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
                                     </div>
-                                    <div class='search-box'>
-                                        <div class="load-suggestions Typeahead-spinner job1-spin"
-                                             style="display: none;">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                        <input id="job_1" class='form-control' placeholder='Choose Job' type='text'>
-                                        <input id="job_1_id" class='form-control' type='hidden'>
-                                        <button class='btn btn-link search-btn'>
-                                            <i class='fa fa-search'></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                <td width="30%" class="empty" id="c2">
-                                    <div class='search-box'>
-                                        <div class="load-suggestions Typeahead-spinner company2-spin"
-                                             style="display: none;">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                        <input id="company_2" class='form-control' placeholder='Choose Company'
-                                               type='text'>
-                                        <input id="company_2_id" class='form-control' type='hidden'>
-                                        <button class='btn btn-link search-btn'>
-                                            <i class='fa fa-search'></i>
-                                        </button>
-                                    </div>
-                                    <div class='search-box'>
-                                        <div class="load-suggestions Typeahead-spinner job2-spin"
-                                             style="display: none;">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                        <input id="job_2" class='form-control' placeholder='Choose Job' type='text'>
-                                        <input id="job_2_id" class='form-control' type='hidden'>
-                                        <button class='btn btn-link search-btn'>
-                                            <i class='fa fa-search'></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                <td width="30%" class="empty" id="c3">
-                                    <div class='search-box'>
-                                        <div class="load-suggestions Typeahead-spinner company3-spin"
-                                             style="display: none;">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                        <input id="company_3" class='form-control' placeholder='Choose Company'
-                                               type='text'>
-                                        <input id="company_3_id" class='form-control' type='hidden'>
-                                        <button class='btn btn-link search-btn'>
-                                            <i class='fa fa-search'></i>
-                                        </button>
-                                    </div>
-                                    <div class='search-box'>
-                                        <div class="load-suggestions Typeahead-spinner job3-spin"
-                                             style="display: none;">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                        <input id="job_3" class='form-control' placeholder='Choose Job' type='text'>
-                                        <input id="job_3_id" class='form-control' type='hidden'>
-                                        <button class='btn btn-link search-btn'>
-                                            <i class='fa fa-search'></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </form>
-                        </tr>
-                        <tr>
-                            <th>Selected Jobs</th>
-                            <th>
-                                <div class="job-name fill">
-                                    <img id="job1_image" src="">
+                                    <input id="company_1" class='form-control' placeholder='Choose Company'
+                                           type='text'>
+                                    <input id="company_1_id" class='form-control' type='hidden'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fa fa-search'></i>
+                                    </button>
                                 </div>
-                            </th>
-                            <th>
-                                <div class="job-name">
-                                    <img id="job2_image" src="">
+                                <div class='search-box'>
+                                    <div class="load-suggestions Typeahead-spinner" id="job_1_spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <input id="job_1" class='form-control' placeholder='Choose Job' type='text'>
+                                    <input id="job_1_id" class='form-control' type='hidden'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fa fa-search'></i>
+                                    </button>
                                 </div>
-                            </th>
-                            <th>
-                                <div class="job-name">
-                                    <img id="job3_image" src="">
+                            </td>
+                            <td width="30%" class="empty" id="c2" data-info="">
+                                <div class='search-box'>
+                                    <div class="load-suggestions Typeahead-spinner" id="company_2_spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <input id="company_2" class='form-control' placeholder='Choose Company'
+                                           type='text'>
+                                    <input id="company_2_id" class='form-control' type='hidden'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fa fa-search'></i>
+                                    </button>
                                 </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Job Profile
+                                <div class='search-box'>
+                                    <div class="load-suggestions Typeahead-spinner" id="job_2_spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <input id="job_2" class='form-control' placeholder='Choose Job' type='text'>
+                                    <input id="job_2_id" class='form-control' type='hidden'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fa fa-search'></i>
+                                    </button>
+                                </div>
                             </td>
-                            <td id="job1_profile">
+                            <td width="30%" class="empty" id="c3" data-info="">
+                                <div class='search-box'>
+                                    <div class="load-suggestions Typeahead-spinner" id="company_3_spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <input id="company_3" class='form-control' placeholder='Choose Company'
+                                           type='text'>
+                                    <input id="company_3_id" class='form-control' type='hidden'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fa fa-search'></i>
+                                    </button>
+                                </div>
+                                <div class='search-box'>
+                                    <div class="load-suggestions Typeahead-spinner" id="job_3_spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <input id="job_3" class='form-control' placeholder='Choose Job' type='text'>
+                                    <input id="job_3_id" class='form-control' type='hidden'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fa fa-search'></i>
+                                    </button>
+                                </div>
                             </td>
-                            <td id="job2_profile">
-                            </td>
-                            <td id="job3_profile">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Designation
-                            </td>
-                            <td id="job1_designation">
-                            </td>
-                            <td id="job2_designation">
-                            </td>
-                            <td id="job3_designation">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Job Type
-                            </td>
-                            <td id="job1_type">
-                            </td>
-                            <td id="job2_type">
-                            </td>
-                            <td id="job3_type">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Offered Salary
-                            </td>
-                            <td id="job1_salary">
-                            </td>
-                            <td id="job2_salary">
-                            </td>
-                            <td id="job3_salary"`>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Experience
-                            </td>
-                            <td id="job1_experience">
-                            </td>
-                            <td id="job2_experience">
-                            </td>
-                            <td id="job3_experience">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Total Vacancies
-                            </td>
-                            <td id="job1_vacancy">
-                            </td>
-                            <td id="job2_vacancy">
-                            </td>
-                            <td id="job3_vacancy">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Location
-                            </td>
-                            <td id="job1_plocation">
-                            </td>
-                            <td id="job2_plocation">
-                            </td>
-                            <td id="job3_plocation">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Working Days
-                            </td>
-                            <td id="job1_days">
-                            </td>
-                            <td id="job2_days">
-                            </td>
-                            <td id="job3_days">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Work Timing
-                            </td>
-                            <td id="job1_timings">
-                            </td>
-                            <td id="job2_timings">
-                            </td>
-                            <td id="job3_timings">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Required Knowledge, Skills, and Abilities
-                            </td>
-                            <td>
-                                <ul id="job1_skills">
-                                </ul>
-                            </td>
-                            <td>
-                                <ul id="job2_skills">
-                                </ul>
-                            </td>
-                            <td>
-                                <ul id="job3_skills">
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Job Description
-                            </td>
-                            <td>
-                                <ul id="job1_jd">
-                                </ul>
-                            </td>
-                            <td>
-                                <ul id="job2_jd">
-                                </ul>
-                            </td>
-                            <td>
-                                <ul id="job3_jd">
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Education
-                            </td>
-                            <td>
-                                <ul id="job1_education">
-                                </ul>
-                            </td>
-                            <td>
-                                <ul id="job2_education">
-                                </ul>
-                            </td>
-                            <td>
-                                <ul id="job3_education">
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="boldfont">
-                                Interview Locations
-                            </td>
-                            <td id="job1_ilocation">
-                            </td>
-                            <td id="job2_ilocation">
-                            </td>
-                            <td id="job3_ilocation">
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                        </form>
+                    </tr>
+                    <tr>
+                        <th>Selected Jobs</th>
+                        <th>
+                            <div class="job-name fill">
+                                <img id="c1_image" src="">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="job-name">
+                                <img id="c2_image" src="">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="job-name">
+                                <img id="c3_image" src="">
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Job Profile
+                        </td>
+                        <td id="c1_profile">
+                        </td>
+                        <td id="c2_profile">
+                        </td>
+                        <td id="c3_profile">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Job Title
+                        </td>
+                        <td id="c1_title">
+                        </td>
+                        <td id="c2_title">
+                        </td>
+                        <td id="c3_title">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Designation
+                        </td>
+                        <td id="c1_designation">
+                        </td>
+                        <td id="c2_designation">
+                        </td>
+                        <td id="c3_designation">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Job Type
+                        </td>
+                        <td id="c1_type">
+                        </td>
+                        <td id="c2_type">
+                        </td>
+                        <td id="c3_type">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Offered Salary
+                        </td>
+                        <td id="c1_salary">
+                        </td>
+                        <td id="c2_salary">
+                        </td>
+                        <td id="c3_salary"`>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Experience
+                        </td>
+                        <td id="c1_experience">
+                        </td>
+                        <td id="c2_experience">
+                        </td>
+                        <td id="c3_experience">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Total Vacancies
+                        </td>
+                        <td id="c1_vacancy">
+                        </td>
+                        <td id="c2_vacancy">
+                        </td>
+                        <td id="c3_vacancy">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Location
+                        </td>
+                        <td id="c1_plocation">
+                        </td>
+                        <td id="c2_plocation">
+                        </td>
+                        <td id="c3_plocation">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Working Days
+                        </td>
+                        <td id="c1_days">
+                        </td>
+                        <td id="c2_days">
+                        </td>
+                        <td id="c3_days">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Work Timing
+                        </td>
+                        <td id="c1_timings">
+                        </td>
+                        <td id="c2_timings">
+                        </td>
+                        <td id="c3_timings">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Required Knowledge, Skills, and Abilities
+                        </td>
+                        <td>
+                            <ul id="c1_skills">
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="c2_skills">
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="c3_skills">
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Job Description
+                        </td>
+                        <td>
+                            <ul id="c1_jd">
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="c2_jd">
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="c3_jd">
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Education
+                        </td>
+                        <td>
+                            <ul id="c1_education">
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="c2_education">
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="c3_education">
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="boldfont">
+                            Interview Locations
+                        </td>
+                        <td id="c1_ilocation">
+                        </td>
+                        <td id="c2_ilocation">
+                        </td>
+                        <td id="c3_ilocation">
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
-    </section>
+</section>
 
 <?php
 
@@ -309,6 +313,7 @@ echo $this->render('/widgets/mustache/application-card', [
 ]);
 
 $this->registerCss('
+.side-menu{z-index:9999;}
 .invisible{
     display:none;
 }
@@ -537,84 +542,6 @@ td{
 .ps__rail-x{
     display:none !important;
 }
-/*---light box end---*/
-@media screen and (min-width: 768px) {
-  .row-offcanvas {
-    position: relative;
-    left: 235px;
-    -webkit-transition: all 0.3s ease-out;
-    -moz-transition: all 0.3s ease-out;
-    -ms-transition: all 0.3s ease-out;
-    -o-transition: all 0.3s ease-out;
-    transition: all 0.3s ease-out;
-  }
-  .row-offcanvas.active {
-    left: 0;
-    max-width:300px;
-  }
-  .row-offcanvas .sidebar-offcanvas {
-    position: absolute;
-    top: 0;
-    left: -220px;
-    width: 230px;
-  }
-}
-@media screen and (max-width: 767px) {
-  .row-offcanvas {
-    left: 0;
-    position: relative;
-    -webkit-transition: all 0.3s ease-out;
-    -moz-transition: all 0.3s ease-out;
-    -ms-transition: all 0.3s ease-out;
-    -o-transition: all 0.3s ease-out;
-    transition: all 0.3s ease-out;
-  }
-  .row-offcanvas.active {
-    left: 50%;
-  }
-  .sidebar-offcanvas {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    left: -50%;
-  }
-}
-.sidebar {
-  padding: 10px 25px 10px 12px;
-  margin-top: -20px;
-  border-radius: 0px 10px 10px 0px;
-}
-.sidebar h3{
-    margin-top:10px;
-}
-.btn-collapse {
-  position: absolute;
-  padding: 8px 12px;
-  border-radius: 0px 0px 10px 10px;
-  top: 20px;
-  left: 0;
-  margin-left: -26px;
-  background: rgba(51, 122, 183, 0.7);
-  color:#fff;
-  transform: rotate(-90deg);
-  -webkit-transition: all 0.3s ease-out;
-  -moz-transition: all 0.3s ease-out;
-  -ms-transition: all 0.3s ease-out;
-  -o-transition: all 0.3s ease-out;
-  transition: all 0.3s ease-out;
-}
-.row-offcanvas.active .btn-collapse {
-    top:30px;
-  left: 0px;
-  -webkit-transition: all 0.3s ease-out;
-  -moz-transition: all 0.3s ease-out;
-  -ms-transition: all 0.3s ease-out;
-  -o-transition: all 0.3s ease-out;
-  transition: all 0.3s ease-out;
-}
-.row-offcanvas.active .btn-collapse i {
-  transform: rotate(180deg);
-}
 .ps-visible{
     overflow:visible !important;
     overflow-x:visible !important;
@@ -731,18 +658,23 @@ td{
   }
 }
 /*Load Suggestions loader css ends */
+.b-li-card:before{
+    content:"";
+    display:block;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    width:95%;
+    z-index:99;
+    background-color:#ecececba;
+}
 ');
 $script = <<<JS
 
-    var added_classes = [];
+    var dropped = [];
 
-    if(!added_classes.includes('c1')){
-        $('#company_2, #company_3, #job_2, #job_3').attr('readonly', true);
-    }
-    
-    var added = {
-        jobs: []
-    };
+    $('#company_2, #company_3, #job_2, #job_3').attr('readonly', true);
     
     var company_search = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -754,23 +686,30 @@ $script = <<<JS
         },
     });
 
-    $('#company_1, #company_2, #company_3').typeahead(null, {
-	    name: 'company_results',
-	    display: 'name',
-	    source: company_search,
-	    hint: true,
-	    minLength: 1,
-	    maxItem: 5
-	}).on('typeahead:asyncrequest', function() {
-        $('.company1-spin').show();
-    }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-        $('.company1-spin').hide();
-    }).on('typeahead:selected typeahead:completed',function(e,datum){
-        $('#company_1_id').val(datum.id);
-        findJobInfo(datum.id);           
-     });
-
-    function findJobInfo(id){
+    findCompanyInfo('#company_1', company_search);
+    
+    function findCompanyInfo(elem, company_search){
+        var spin_elem = elem + '_spin';
+        var elem_id = elem + '_id';
+        $(elem).typeahead(null, {
+            name: 'company_results',
+            display: 'name',
+            source: company_search,
+            hint: true,
+            minLength: 1,
+            maxItem: 5
+        }).on('typeahead:asyncrequest', function() {
+            $(spin_elem).show();
+        }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+            $(spin_elem).hide();
+        }).on('typeahead:selected typeahead:completed',function(e,datum){
+            $(elem_id).val(datum.id);           
+            findJobInfo(datum.id, elem);           
+         });
+    }
+    
+    function findJobInfo(id, elem){
+        var global = [];
         
         var job_search = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -783,14 +722,30 @@ $script = <<<JS
                   settings.data = {
                       q: query,
                       id: id,
-                      applications: added.jobs
+                      applications: [$('#c1').attr('data-info'), $('#c2').attr('data-info'), $('#c3').attr('data-info')]
                   };
                   return settings;
+                },
+                cache:true,
+                filter: function(list){
+                    global = list;
+                    return list;
                 }
             }
         });
         
-        $('#job_1, #job_2, #job_3').typeahead(null, {
+        var job_elem = null;
+        
+        if(elem === '#company_1'){
+            job_elem = '#job_1';
+        }else if(elem === '#company_2'){
+            job_elem = '#job_2';
+        }else if(elem === '#company_3'){
+            job_elem = '#job_3';
+        }
+        var spin_elen = job_elem + '_spin';
+        
+        $(job_elem).typeahead(null, {
             name: 'job_results',
             display: 'name',
             source: job_search,
@@ -798,33 +753,31 @@ $script = <<<JS
             minLength: 1,
             maxItem: 5
         }).on('typeahead:asyncrequest', function() {
-            $('.job1-spin').show();
+            $(spin_elen).show();
         }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-            $('.job1-spin').hide();
+            $(spin_elen).hide();
         }).on('typeahead:selected typeahead:completed',function(e,datum){
-            $('#job_1_id').val(datum.application_enc_id);
-            addedToReview(datum.application_enc_id, $(this).parent().parent().parent());
-         });
+            addedToReview(datum.application_enc_id, $(this).parent().parent().parent().attr('id'));
+         })
+         .blur(validateSelection);
+        
+        function validateSelection(){
+            var theIndex = -1;
+            if(global){
+                for(var i = 0; i < global.length; i++){
+                    if(global[i].name == $(this).val()){
+                        theIndex = i;
+                        break;
+                    }
+                }
+            }
+            if(theIndex == -1){
+                $(this).val('');
+                global = [];
+            }
+        }
     }
- 
-    $('[data-toggle=offcanvas]').click(function () {
-     $('.row-offcanvas').toggleClass('active');
-    });  
- 
-    $(document).on('click', '#change',function() {
-        $.each($('.draggable-item'), function(){
-            $(this).draggable({
-                helper: "clone",
-                drag: function() { 
-                    $('.ps').addClass('ps-visible');
-                 },
-                 stop: function() { 
-                    $('.ps').removeClass('ps-visible');
-                 },
-            });
-        });
-    });
-
+    
     $('.empty').droppable({
         accept: '.draggable-item',
         over: function(event, ui) {
@@ -836,12 +789,19 @@ $script = <<<JS
         drop: function(event, ui) {
             var item_id = $.trim(ui.draggable.attr('data-id'));
             var dropped_elem_id = $(this).attr('id');
-            addedToReview(item_id, dropped_elem_id);
+            var dropped_elem_data_id = $(this).attr('data-info');
+            if(dropped.includes(dropped_elem_data_id)){
+                $('[data-id='+dropped_elem_data_id+']').draggable({disabled:false});
+                $('[data-id='+dropped_elem_data_id+']').removeClass('b-li-card');
+                var index = dropped.indexOf(dropped_elem_data_id);
+                dropped.splice(index, 1);
+            }
+            addedToReview(item_id, dropped_elem_id, true);
             $('.empty').removeClass('highlight');
         }
     });
 
-    function findJob(id){
+    function findJob(id, elem_id, hasDropped){
         $.ajax({
             type: 'POST',
             url: window.location.href,
@@ -849,7 +809,36 @@ $script = <<<JS
                 id: id
             },
             success: function(data){
-                console.log(data);
+                if(hasDropped){
+                    if(elem_id === "c1"){
+                        $('#company_1').val(data['message']['organization_name']);
+                        $('#job_1').val(data['message']['name'] + " - " + data['message']['cat_name']);
+                    }else if(elem_id === "c2"){
+                        $('#company_2').val(data['message']['organization_name']);
+                        $('#job_2').val(data['message']['name'] + " - " + data['message']['cat_name']);
+                    } else{
+                        $('#company_3').val(data['message']['organization_name']);
+                        $('#job_3').val(data['message']['name'] + " - " + data['message']['cat_name']);
+                    }
+                }
+                
+                if(!dropped.includes(data['message']['application_enc_id'])){
+                    $('[data-id='+data['message']['application_enc_id']+']').draggable({disabled:true});
+                    $('[data-id='+data['message']['application_enc_id']+']').addClass('b-li-card');
+                    dropped.push(data['message']['application_enc_id']);
+                }
+                
+                if(elem_id === 'c1'){
+                    $('#c1').attr('data-info', data['message']['application_enc_id']);
+                    $('#company_2, #job_2').removeAttr('readonly');
+                    findCompanyInfo('#company_2', company_search);
+                }else if (elem_id === 'c2'){
+                    $('#c2').attr('data-info', data['message']['application_enc_id']);
+                    $('#company_3, #job_3').removeAttr('readonly');
+                    findCompanyInfo('#company_3', company_search);
+                }else if(elem_id === 'c3'){
+                    $('#c3').attr('data-info', data['message']['application_enc_id']);
+                }
                 
                  var working_days = JSON.parse(data['message']['working_days']);
                  var days = {
@@ -894,50 +883,165 @@ $script = <<<JS
                      ilocs += f;
                  }
                  
+                 var assel = assignElems(elem_id);
                  
-                $('#job1_days').html(d);
-                $('#job1_timings').html(data['message']['timings_from'] + "-" + data['message']['timings_to']);
-                $('#job1_plocation').html(plocs);
-                $('#job1_ilocation').html(ilocs);
-                $('#job1_vacancy').html(sum);
-                $('#job1_experience').html(data['message']['experience']);
-                $('#job1_salary').html(data['message']['amount']);
-                $('#job1_type').html(data['message']['type']);
-                $('#job1_designation').html(data['message']['designation']);
-                $('#job1_profile').html(data['message']['name']);
-                $('#job1_image').attr('src', '/assets/common/categories/profile/' + data['message']['icon_png']);
+                $(assel.jobs_days_elem).html(d);
+                $(assel.jobs_timings_elem).html(data['message']['timings_from'] + "-" + data['message']['timings_to']);
+                $(assel.jobs_plocation_elem).html(plocs);
+                $(assel.jobs_ilocation_elem).html(ilocs);
+                $(assel.jobs_vacancy_elem).html(sum);
+                $(assel.jobs_experience_elem).html(data['message']['experience']);
+                $(assel.jobs_salary_elem).html(data['message']['amount']);
+                $(assel.jobs_type_elem).html(data['message']['type']);
+                $(assel.jobs_designation_elem).html(data['message']['designation']);
+                $(assel.jobs_profile_elem).html(data['message']['cat_name']);
+                $(assel.jobs_title_elem).html(data['message']['name']);
+                $(assel.jobs_image_elem).attr('src', '/assets/common/categories/profile/' + data['message']['icon_png']);
                 
                 var aer = '';
                 for(var i = 0; i < data.message['applicationEducationalRequirements'].length; i++){
                     var p = "<li>- " + data['message']['applicationEducationalRequirements'][i]['educational_requirement'] + "</li>";    
                     aer += p;
                 }
-                $('#job1_education').html(aer);
+                $(assel.jobs_education_elem).html(aer);
                 
                 var apl = '';
                 for(var i = 0; i < data.message['applicationJobDescriptions'].length; i++){
                     var t = "<li>- " +  data['message']['applicationJobDescriptions'][i]['job_description'] + "</li>";
                     apl += t;
                 }
-                $('#job1_jd').html(apl);
+                $(assel.jobs_jd_elem).html(apl);
                 
                 var as = '';
                 for(var i = 0; i < data.message['applicationSkills'].length; i++){
                     var k = "<li>- "  + data['message']['applicationSkills'][i]['skill'] + "</li>";    
                     as += k;
                 }
-                $('#job1_skills').html(as);
+                $(assel.jobs_skills_elem).html(as);
             }
         })
     }
+    
+    emptyInp('#company_1');
+    emptyInp('#company_2');
+    emptyInp('#company_3');
+    function emptyInp(elem){
+        $(document).on('keyup', elem, function(){
+                if(elem === "#company_1"){
+                    $("#job_1").val("");
+                    removeVals('c1');
+                    var dataid = $('#c1').attr('data-info');
+                    if(dropped.includes(dataid)){
+                        $('[data-id='+dataid+']').draggable({disabled:false});
+                        $('[data-id='+dataid+']').removeClass('b-li-card');
+                        var index = dropped.indexOf(dataid);
+                        dropped.splice(index, 1);
+                    
+                    }
+                    $('#company_2, #company_3, #job_2, #job_3').attr('readonly', true);
+                }
+                if(elem === "#company_2"){
+                    $("#job_2").val("");
+                    removeVals('c2');
+                    var dataid = $('#c2').attr('data-info');
+                    if(dropped.includes(dataid)){
+                        $('[data-id='+dataid+']').draggable({disabled:false});
+                        $('[data-id='+dataid+']').removeClass('b-li-card');
+                        var index = dropped.indexOf(dataid);
+                        dropped.splice(index, 1);
+                    }
+                    $('#company_3, #job_3').attr('readonly', true);
+                }
+                if(elem === "#company_3"){
+                    $("#job_3").val("");
+                    removeVals('c3');
+                    var dataid = $('#c3').attr('data-info');
+                    if(dropped.includes(dataid)){
+                        $('[data-id='+dataid+']').draggable({disabled:false});
+                        $('[data-id='+dataid+']').removeClass('b-li-card');
+                        var index = dropped.indexOf(dataid);
+                        dropped.splice(index, 1);
+                    }
+                }
+        });
+    }
+    
+    emptyJob('#job_1');
+    emptyJob('#job_2');
+    emptyJob('#job_3');
+    function emptyJob(elem){
+        $(document).on('keyup', elem, function(){
+                if(elem === "#job_1"){
+                    if($('#company_1').val()){
+                        findJobInfo($('#company_1_id').val(), $('#company_1'));
+                    }
+                    removeVals('c1');
+                }
+                if(elem === "#company_2"){
+                    if($('#company_2').val()){
+                        findJobInfo($('#company_2_id').val(), $('#company_2'));
+                    }
+                    removeVals('c2');
+                }
+                if(elem === "#company_3"){
+                    if($('#company_1').val()){
+                        findJobInfo($('#company_3_id').val(), $('#company_3'));
+                    }
+                    removeVals('c3');
+                }
+        });
+    }
+    
+    function assignElems(elem_id){
+        var assigned = {
+             jobs_days_elem : '#' + elem_id + '_days', 
+             jobs_timings_elem : '#' + elem_id + '_timings', 
+             jobs_plocation_elem : '#' + elem_id + '_plocation', 
+             jobs_ilocation_elem : '#' + elem_id + '_ilocation', 
+             jobs_vacancy_elem : '#' + elem_id + '_vacancy',
+             jobs_experience_elem : '#' + elem_id + '_experience', 
+             jobs_salary_elem : '#' + elem_id + '_salary',
+             jobs_type_elem : '#' + elem_id + '_type',
+             jobs_designation_elem : '#' + elem_id + '_designation', 
+             jobs_profile_elem : '#' + elem_id + '_profile',
+             jobs_title_elem : '#' + elem_id + '_title', 
+             jobs_image_elem : '#' + elem_id + '_image', 
+             jobs_education_elem : '#' + elem_id + '_education', 
+             jobs_jd_elem : '#' + elem_id + '_jd', 
+             jobs_skills_elem : '#' + elem_id + '_skills'
+        };
+        return assigned;
+    }
+    
+    function removeVals(e){
+        var assel = assignElems(e);
+        $(assel.jobs_skills_elem).html('');
+        $(assel.jobs_jd_elem).html('');
+        $(assel.jobs_education_elem).html('');
+        $(assel.jobs_days_elem).html('');
+        $(assel.jobs_timings_elem).html('');
+        $(assel.jobs_plocation_elem).html('');
+        $(assel.jobs_ilocation_elem).html('');
+        $(assel.jobs_vacancy_elem).html('');
+        $(assel.jobs_experience_elem).html('');
+        $(assel.jobs_salary_elem).html('');
+        $(assel.jobs_type_elem).html('');
+        $(assel.jobs_designation_elem).html('');
+        $(assel.jobs_profile_elem).html('');
+        $(assel.jobs_title_elem).html('');
+        $(assel.jobs_image_elem).attr('src', '');
+    }
 
-    function addedToReview(item_id, dropped_elem_id){
-        $('[data-id='+item_id+']').draggable({disabled:true});
-        console.log(dropped_elem_id);
-        findJob(item_id);
-    }   
-
+    function addedToReview(item_id, dropped_elem_id, hasDropped = false){
+        findJob(item_id, dropped_elem_id, hasDropped);
+    }
+    
+    $(document).on('click', '.search-btn', function(e){
+       e.preventDefault(); 
+    });
+    
     draggable = true;
+    review_list_draggable = true;
     var sidebarpage = 1;
     getReviewList(sidebarpage);
 JS;

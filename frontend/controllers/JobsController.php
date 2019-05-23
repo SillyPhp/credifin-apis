@@ -422,6 +422,7 @@ class JobsController extends Controller
         $jobs = Organizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id'])
+            ->distinct()
             ->innerJoinWith(['employerApplications b' => function($x) use($query, $applications){
                 $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
                 $x->onCondition([
@@ -448,14 +449,19 @@ class JobsController extends Controller
                     $y->joinWith(['parentEnc e']);
                 }], false);
 
+                $x->joinWith(['applicationTypeEnc z' => function($zz){
+                    $zz->andWhere(['z.name' => 'Jobs']);
+                }]);
+
                 $x->groupBy(['b.application_enc_id']);
+
+                $x->limit(10);
             }])
             ->where([
                 'a.status' => 'Active',
                 'a.is_deleted' => 0,
                 'a.organization_enc_id' => $id
             ])
-            ->groupBy(['a.organization_enc_id'])
             ->asArray()
             ->all();
         return json_encode($jobs[0]['employerApplications']);
