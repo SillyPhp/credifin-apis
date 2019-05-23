@@ -12,7 +12,7 @@ if($type == 'jobs'){
 
 ?>
 
-<div class="row">
+<div class="row m-0">
     <div class="col-md-10 col-md-offset-2">
         <div class="near-me-search row">
             <div class="col-md-3">
@@ -41,8 +41,8 @@ if($type == 'jobs'){
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-6 near-me-map" data-spy="affix" data-offset-top="138">
+<div class="row m-0">
+    <div class="col-md-6 near-me-map pr-0" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
     </div>
     <div class="col-md-2 near-me-filters pl-0">
@@ -196,7 +196,7 @@ $this->registerCss('
     z-index:999;
     overflow-y: scroll;
     overflow-x: hidden;
-    box-shadow: 0px 0px 10px 1px #e6e6e6;
+//    box-shadow: 0px 0px 10px 1px #e6e6e6;
 }
 .near-me-map{
     height: calc(100vh - 52px);
