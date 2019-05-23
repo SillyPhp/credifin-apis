@@ -23,6 +23,7 @@ use yii\helpers\Url;
                         <td width="10%" class="boldfont"> Choose Jobs you want to compare</td>
                         <form>
                             <td width="30%" class="empty" id="c1" data-info="">
+                                <div id="company_1_btn">X</div>
                                 <div class='search-box'>
                                     <div class="load-suggestions Typeahead-spinner" id="company_1_spin"
                                          style="display: none;">
@@ -52,6 +53,7 @@ use yii\helpers\Url;
                                 </div>
                             </td>
                             <td width="30%" class="empty" id="c2" data-info="">
+                                <div id="company_2_btn">X</div>
                                 <div class='search-box'>
                                     <div class="load-suggestions Typeahead-spinner" id="company_2_spin"
                                          style="display: none;">
@@ -81,6 +83,7 @@ use yii\helpers\Url;
                                 </div>
                             </td>
                             <td width="30%" class="empty" id="c3" data-info="">
+                                <div id="company_3_btn">X</div>
                                 <div class='search-box'>
                                     <div class="load-suggestions Typeahead-spinner" id="company_3_spin"
                                          style="display: none;">
@@ -674,8 +677,8 @@ $script = <<<JS
 
     var dropped = [];
 
-    $('#company_2, #company_3, #job_2, #job_3').attr('readonly', true);
     $('#company_1, #job_1, #company_2, #company_3, #job_2, #job_3').val('');
+    $('#company_2, #company_3, #job_2, #job_3').prop('disabled', true);
     
     var company_search = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -758,6 +761,8 @@ $script = <<<JS
         }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
             $(spin_elen).hide();
         }).on('typeahead:selected typeahead:completed',function(e,datum){
+            $(elem).prop('disabled', true);
+            $(job_elem).prop('disabled', true);
             addedToReview(datum.application_enc_id, $(this).parent().parent().parent().attr('id'));
          })
          .blur(validateSelection);
@@ -812,12 +817,15 @@ $script = <<<JS
             success: function(data){
                 if(hasDropped){
                     if(elem_id === "c1"){
+                        $("#company_1, #job_1").prop('disabled', true);
                         $('#company_1').val(data['message']['organization_name']);
                         $('#job_1').val(data['message']['name'] + " - " + data['message']['cat_name']);
                     }else if(elem_id === "c2"){
+                        $("#company_2, #job_2").prop('disabled', true);
                         $('#company_2').val(data['message']['organization_name']);
                         $('#job_2').val(data['message']['name'] + " - " + data['message']['cat_name']);
                     } else{
+                        $("#company_3, #job_3").prop('disabled', true);
                         $('#company_3').val(data['message']['organization_name']);
                         $('#job_3').val(data['message']['name'] + " - " + data['message']['cat_name']);
                     }
@@ -831,11 +839,11 @@ $script = <<<JS
                 
                 if(elem_id === 'c1'){
                     $('#c1').attr('data-info', data['message']['application_enc_id']);
-                    $('#company_2, #job_2').removeAttr('readonly');
+                    $('#company_2, #job_2').prop('disabled', false);
                     findCompanyInfo('#company_2', company_search);
                 }else if (elem_id === 'c2'){
                     $('#c2').attr('data-info', data['message']['application_enc_id']);
-                    $('#company_3, #job_3').removeAttr('readonly');
+                    $('#company_3, #job_3').prop('disabled', false);
                     findCompanyInfo('#company_3', company_search);
                 }else if(elem_id === 'c3'){
                     $('#c3').attr('data-info', data['message']['application_enc_id']);
@@ -923,12 +931,13 @@ $script = <<<JS
         })
     }
     
-    emptyInp('#company_1');
-    emptyInp('#company_2');
-    emptyInp('#company_3');
+    
+    $(document).on('click', '#company_1_btn,#company_2_btn,#company_3_btn', function(e){
+        emptyInp(e.target.getAttribute('id'));
+    });
     function emptyInp(elem){
-        $(document).on('keyup', elem, function(){
-                if(elem === "#company_1"){
+                if(elem === "company_1_btn"){
+                    $("#company_1").val("");
                     $("#job_1").val("");
                     removeVals('c1');
                     var dataid = $('#c1').attr('data-info');
@@ -939,9 +948,11 @@ $script = <<<JS
                         dropped.splice(index, 1);
                     
                     }
-                    $('#company_2, #company_3, #job_2, #job_3').attr('readonly', true);
+                    $('#company_2, #company_3, #job_2, #job_3').prop('disabled', true);
+                    $("#company_1, #job_1").prop('disabled', false);
                 }
-                if(elem === "#company_2"){
+                if(elem === "company_2_btn"){
+                    $("#company_2").val("");
                     $("#job_2").val("");
                     removeVals('c2');
                     var dataid = $('#c2').attr('data-info');
@@ -951,9 +962,11 @@ $script = <<<JS
                         var index = dropped.indexOf(dataid);
                         dropped.splice(index, 1);
                     }
-                    $('#company_3, #job_3').attr('readonly', true);
+                    $('#company_3, #job_3').prop('disabled', true);
+                    $("#company_2, #job_2").prop('disabled', false);
                 }
-                if(elem === "#company_3"){
+                if(elem === "company_3_btn"){
+                    $("#company_3").val("");
                     $("#job_3").val("");
                     removeVals('c3');
                     var dataid = $('#c3').attr('data-info');
@@ -963,34 +976,9 @@ $script = <<<JS
                         var index = dropped.indexOf(dataid);
                         dropped.splice(index, 1);
                     }
+                    $("#job_2").prop('disabled', true);
+                    $("#company_2, #job_2").prop('disabled', false);
                 }
-        });
-    }
-    
-    emptyJob('#job_1');
-    emptyJob('#job_2');
-    emptyJob('#job_3');
-    function emptyJob(elem){
-        $(document).on('keyup', elem, function(){
-                if(elem === "#job_1"){
-                    if($('#company_1').val()){
-                        findJobInfo($('#company_1_id').val(), $('#company_1'));
-                    }
-                    removeVals('c1');
-                }
-                if(elem === "#company_2"){
-                    if($('#company_2').val()){
-                        findJobInfo($('#company_2_id').val(), $('#company_2'));
-                    }
-                    removeVals('c2');
-                }
-                if(elem === "#company_3"){
-                    if($('#company_1').val()){
-                        findJobInfo($('#company_3_id').val(), $('#company_3'));
-                    }
-                    removeVals('c3');
-                }
-        });
     }
     
     function assignElems(elem_id){
