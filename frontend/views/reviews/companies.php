@@ -128,7 +128,9 @@ $this->registerCss('
     color:#fff;
     position:absolute;
     right: 25px;
+    font-size:15px;
     bottom: 10px;
+    font-weight:bold;
 }
 .btn_add_org:hover{
     color:#00A0E3;
