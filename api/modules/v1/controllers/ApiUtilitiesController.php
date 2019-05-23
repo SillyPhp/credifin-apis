@@ -16,7 +16,7 @@ class ApiUtilitiesController extends ApiBaseController{
     public function actionStates(){
         $statesModel = new States();
         $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name'=>SORT_ASC])->asArray()->all(), 'name', 'state_enc_id');
-        array_unshift($states,'');
+        $states = ['select'=>'default']+$states;
         return $this->response(200, $states);
     }
 
