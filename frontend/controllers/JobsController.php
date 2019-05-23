@@ -408,6 +408,9 @@ class JobsController extends Controller
                     'b.status' => 'Active',
                     'b.is_deleted' => 0
                 ]);
+                $x->innerJoinWith(['applicationTypeEnc c' => function($y){
+                    $y->andWhere(['c.name' => 'Jobs']);
+                }]);
             }],false)
             ->where([
                 'a.status' => 'Active',
