@@ -20,12 +20,9 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <!--                    <div class="hbb-text">Explore school on basis of </div>-->
-                            <!--                    <div class="hbb-sub-text">-->
-                            <!--                        <a href="">School Review</a> |-->
-                            <!--                        <a href="">School Environment</a> | -->
-                            <!--                        <a href="">School Rating</a> -->
-                            <!--                    </div>-->
+                            <div class="btn_add_new_org pull-right">
+                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -85,7 +82,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Schools</div>
+                    <div class="heading-style">Top Rated Schools</div>
                     <div id="uncliamed_top">
 
                     </div>
@@ -95,6 +92,10 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.btn_add_org
+{
+padding:5px 17px;
+}
 .rating-stars{
     font-size:20px;
 }
@@ -239,6 +240,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     left:10px;
+    z-index:999;
 }
 .rb-box{
     text-align:center;
@@ -248,6 +250,18 @@ review-benifit{
 }
 .rb-icon img{
     max-width:100px;
+}
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
 }
 .rb-heading{
     padding-top:10px;
@@ -403,6 +417,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {

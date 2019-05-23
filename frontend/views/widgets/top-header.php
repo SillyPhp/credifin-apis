@@ -23,7 +23,7 @@ $this->registerCss('
     border-bottom: 1px solid #ddd !important;
 }
 .menuzord-menu li{
-    padding: 6px 0px !important;
+    padding: 7px 0px !important;
 }
 .menuzord-menu li a{
     font-size: 19px !important;
@@ -31,8 +31,8 @@ $this->registerCss('
     font-family: Georgia;
 }
 .menuzord-menu > li > a {
-    padding: 6px 15px !important;
-    border-radius: 10px !important;
+    padding: 5px 15px !important;
+    border-radius: 4px !important;
 }
 .menuzord-brand{
     margin-top: 7px !important;

@@ -20,14 +20,9 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <!--                        <div class="hbb-text">Explore colleges on the basis of </div>-->
-                            <!--                        <div class="hbb-sub-text">-->
-                            <!--                            <a href="">College Review</a> |-->
-                            <!--                            <a href="">College Rating</a> |-->
-                            <!--                            <a href="">College Environment</a> |-->
-                            <!--                            <a href="">College Infrastructure</a>-->
-                            <!---->
-                            <!--                        </div>-->
+                            <div class="btn_add_new_org pull-right">
+                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -86,7 +81,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Colleges</div>
+                    <div class="heading-style">Top Rated Colleges</div>
                     <div id="uncliamed_top">
 
                     </div>
@@ -105,6 +100,10 @@ $this->registerCss('
     justify-content:center;
     font-size:14px;
     min-height:25px;
+}
+.btn_add_org
+{
+padding:5px 17px;
 }
 .stars{
     margin-right:5px;
@@ -231,6 +230,18 @@ review-benifit{
     position:relative;
     min-height:400px;
 }
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
+}
 .head-bg-black{
     max-width:400px;
     background:rgba(0,0,0,.65);
@@ -241,6 +252,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     right:10px;
+    z-index:999;
 }
 .rb-box{
     text-align:center;
@@ -405,6 +417,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {

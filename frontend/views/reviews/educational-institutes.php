@@ -20,14 +20,9 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <!--                        <div class="hbb-text">Explore colleges on the basis of </div>-->
-                            <!--                        <div class="hbb-sub-text">-->
-                            <!--                            <a href="">College Review</a> |-->
-                            <!--                            <a href="">College Rating</a> |-->
-                            <!--                            <a href="">College Environment</a> |-->
-                            <!--                            <a href="">College Infrastructure</a>-->
-                            <!---->
-                            <!--                        </div>-->
+                            <div class="btn_add_new_org pull-right">
+                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -86,7 +81,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Educational Institute</div>
+                    <div class="heading-style">Top Rated Educational Institute</div>
                     <div id="uncliamed_top">
 
                     </div>
@@ -96,6 +91,10 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.btn_add_org
+{
+padding:5px 17px;
+}
 .rating-stars{
     font-size:20px;
 }
@@ -236,6 +235,19 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     right:10px;
+    z-index:999;
+}
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
 }
 .rb-box{
     text-align:center;
@@ -404,6 +416,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {
@@ -474,7 +489,7 @@ $(document).on('click','.add_new_org',function(e) {
 })
 var template;
 fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_recent'));
-fetch_cards_top(params={'rating':[1,2,3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_top'));
+fetch_cards_top(params={'rating':[4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_top'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,

@@ -50,6 +50,12 @@ class JobsController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -147,7 +153,7 @@ class JobsController extends Controller
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
                 ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-                ->andWhere(['is_deleted'=>0])
+                ->andWhere(['is_deleted' => 0])
                 ->exists();
 
             $shortlist = \common\models\ShortlistedApplications::find()
@@ -159,7 +165,7 @@ class JobsController extends Controller
         $model = new JobApplied();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
-            'data' => $object->getCloneData($application_details->application_enc_id,$application_type='Jobs'),
+            'data' => $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs'),
             'org' => $org_details,
             'applied' => $applied_jobs,
             'type' => $type,
@@ -184,14 +190,14 @@ class JobsController extends Controller
                 ->asArray()
                 ->one();
             $primary_cat = Categories::find()
-                ->select(['name','icon_png'])
+                ->select(['name', 'icon_png'])
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
-                        ->select(['benefit','icon','icon_location'])
+                        ->select(['benefit', 'icon', 'icon_location'])
                         ->where(['benefit_enc_id' => $benefit])
                         ->asArray()
                         ->one();
@@ -201,13 +207,13 @@ class JobsController extends Controller
             }
             if (!empty($object->interviewcity))
 
-            return $this->render('/employer-applications/preview', [
-                'object' => $object,
-                'industry' => $industry,
-                'primary_cat' => $primary_cat,
-                'benefits' => $benefits,
-                'type' => $type
-            ]);
+                return $this->render('/employer-applications/preview', [
+                    'object' => $object,
+                    'industry' => $industry,
+                    'primary_cat' => $primary_cat,
+                    'benefits' => $benefits,
+                    'type' => $type
+                ]);
         } else {
             return false;
         }
@@ -224,7 +230,7 @@ class JobsController extends Controller
                 ->asArray()
                 ->one();
             $short_status = $chkshort['shortlisted'];
-            if($short_status == 1){
+            if ($short_status == 1) {
                 $response = [
                     'status' => 201,
                     'message' => 'Can not add, it is already shortlisted.',
@@ -317,9 +323,10 @@ class JobsController extends Controller
         }
     }
 
-    public function actionNearMe(){
+    public function actionNearMe()
+    {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
             $radius = Yii::$app->request->post('inprange');
@@ -330,16 +337,17 @@ class JobsController extends Controller
 
             $radius = $radius / 1000;
 
-            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat, $long, $radius, $num, $keyword, $type, $walkin);
 
             return $cards;
         }
         return $this->render('near-me-beta');
     }
 
-    public function actionWalkInInterviews(){
+    public function actionWalkInInterviews()
+    {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
             $radius = Yii::$app->request->post('inprange');
@@ -350,24 +358,25 @@ class JobsController extends Controller
 
             $radius = $radius / 1000;
 
-            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat, $long, $radius, $num, $keyword, $type, $walkin);
 
             return $cards;
         }
         return $this->render('walkin-near-me-beta');
     }
 
-    public function actionUserLocation(){
+    public function actionUserLocation()
+    {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             $location = Users::find()
                 ->alias('a')
-                ->select(['b.name','c.name as state_name'])
-                ->where(['a.user_enc_id'=>Yii::$app->user->identity->user_enc_id])
-                ->joinWith(['cityEnc as b'=>function($x){
+                ->select(['b.name', 'c.name as state_name'])
+                ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->joinWith(['cityEnc as b' => function ($x) {
                     $x->joinWith(['stateEnc as c']);
-                }],false)
+                }], false)
                 ->asArray()
                 ->one();
 

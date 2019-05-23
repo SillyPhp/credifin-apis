@@ -29,6 +29,11 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </form>
             </div>
+            <div class="col-md-12">
+                <div class="btn_add_new_org pull-right">
+                    <a href="#" class="btn btn-default add_new_org">Add New Organizatons</a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -986,13 +991,14 @@ float:right;
 /*new modal css ends*/
 ');
 $script = <<< JS
+var template;
 $(document).on('click','input[name="avg_rating[]"]',function()
 {
      var avg_rating = [];
             $.each($("input[name='avg_rating[]']:checked"), function(){            
                 avg_rating.push($(this).val());
             });
-     fetch_cards(params={'rating':avg_rating,'limit':null},is_clear=true);       
+     fetch_cards(params={'rating':avg_rating,'limit':null},template=$('#review_container'),is_clear=true);       
 });
 $(document).on('click','input[name="activities[]"]',function()
 {
@@ -1000,15 +1006,14 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
-     fetch_cards(params={'business_activity':activities,'limit':null},is_clear=true);       
+     fetch_cards(params={'business_activity':activities,'limit':null},template=$('#review_container'),is_clear=true);       
 });
-var ps = new PerfectScrollbar('#industry-scroll'); 
-    // var ps = new PerfectScrollbar('#work-scroll'); 
+var ps = new PerfectScrollbar('#industry-scroll');
 var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},is_clear=true);
+    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},template=$('#review_container'),is_clear=true);
  });   
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -1071,9 +1076,9 @@ $('#city_search').typeahead(null, {
   source: locations,
 }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
   {
-     fetch_cards(params={'city':datum.text,'limit':9},is_clear=true);   
+     fetch_cards(params={'city':datum.text,'limit':9},template=$('#review_container'),is_clear=true);   
   });
-fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},is_clear=true);
+fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=true);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

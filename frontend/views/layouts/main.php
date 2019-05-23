@@ -57,7 +57,7 @@ AppAssets::register($this);
         <div id="header-main"
              class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-            if (Yii::$app->user->isGuest) {
+            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
@@ -151,6 +151,13 @@ AppAssets::register($this);
         <div id="page-loading" class="page-loading">
             <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
         </div>
+        <?php
+            if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+                echo $this->render('/widgets/sub-header',[
+                        'data' => $this->params['sub_header'],
+                ]);
+            }
+        ?>
         <?= $content; ?>
     </div>
     <footer id="footer" class="footer">
@@ -551,24 +558,6 @@ if (Yii::$app->user->isGuest) {
         header_main();
     ');
 }
-if (!$this->params['disablefacebookMessenger']) {
-    $this->registerJs('
-            window.fbAsyncInit = function() {
-               FB.init({
-                 xfbml            : true,
-                 version          : "v3.2"
-               });
-             };
-            
-             (function(d, s, id) {
-             var js, fjs = d.getElementsByTagName(s)[0];
-             if (d.getElementById(id)) return;
-             js = d.createElement(s); js.id = id;
-             js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-             fjs.parentNode.insertBefore(js, fjs);
-            }(document, "script", "facebook-jssdk"));
-        ');
-}
 if (!$this->params['header_dark']) {
     $this->registerJs(" $(document).on('scroll', function () {
                 var header = $('#main-header');
@@ -593,12 +582,6 @@ $this->registerJs('
                     }
             });
        ', View::POS_HEAD);
-if (!$this->params['disablefacebookMessenger']) {
-    ?>
-    <div id="fb-root"></div>
-    <div class="fb-customerchat" attribution=setup_tool page_id="383925102019276" theme_color="#00a0e3"></div>
-    <?php
-}
 ?>
 <?php $this->endBody(); ?>
 </body>

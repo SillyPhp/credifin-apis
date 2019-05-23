@@ -20,15 +20,9 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <!--                        <div class="hbb-text">Explore companies on the basis of </div>-->
-                            <!--                        <div class="hbb-sub-text">-->
-                            <!--                            <a href="">Company Review</a> |-->
-                            <!--                            <a href="">Career Growth</a> |-->
-                            <!--                            <a href="">Company Environment</a> |-->
-                            <!--                            <a href="">Salary & Benefits</a> |-->
-                            <!--                            <a href="">Skill Development</a>-->
-                            <!---->
-                            <!--                        </div>-->
+                            <div class="btn_add_new_org pull-right">
+                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,6 +194,10 @@ $this->registerCss('
 .twostar-box .read-bttn a{
     background:#fabf37;
 }
+.btn_add_org
+{
+padding:5px 17px;
+}
 .twostar-box .rating-stars i.active, .twostar-box .com-loc i, .twostar-box .com-dep i,
  .twostar-box .stars{
    color:#fabf37;
@@ -304,6 +302,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     left:10px;
+    z-index:999;
 }
 .rb-icon{
    text-align:center; 
@@ -468,6 +467,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {

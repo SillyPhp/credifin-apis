@@ -46,7 +46,7 @@ $this->beginPage();
         <?php $this->beginBody(); ?>
         <div id="wrapper" class="clearfix">
             <div class="main-content">
-                <section id="home" class="divider parallax fullscreen layer-overlay overlay-white-9" data-bg-img="<?= (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : ''; ?>">
+                <section id="home" class="divider parallax fullscreen layer-overlay overlay-white-9"">
                     <div class="display-table">
                         <div class="display-table-cell">
                             <div class="container">
@@ -67,12 +67,131 @@ $this->beginPage();
             </div>
         </div>
         <?php
-        $this->registerCss("
+        $bg_img = (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : '/assets/themes/ey/images/backgrounds/lco_bg.jpg';
+        $this->registerCss('
+        body{
+            background-image: url( ' . $bg_img . ' );
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        .display-table {
+            display: table;
+            height: 100%;
+            position: relative;
+            width: 100%;
+            z-index: 1;
+        }
+        .display-table-cell {
+            display: table-cell;
+            height: 100%;
+            vertical-align: middle;
+        }
+        .layer-overlay::before {
+            background: rgba(17, 17, 17, 0.5) none repeat scroll 0 0;
+            content: " ";
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 0;
+        }
+        .layer-overlay.overlay-white-9::before {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .form-control {
+            border-radius: 0;
+            height: 45px;
+        }
+        .divider .container {
+            padding-top: 70px;
+            padding-bottom: 70px;
+        }
+        .separator {
+            line-height: 1.2em;
+            margin: 30px auto;
+            overflow: hidden;
+            text-align: center;
+            width: 100%;
+        }
+        .separator i, .separator span, .separator a {
+            display: inline-block;
+            margin: 0 20px 0 24px;
+            font-size: 20px;
+        }
+        .no-border {
+            border: none !important;
+        }
+        .main-orange-btn, .main-blue-btn {
+            width: 100%;
+            color: #ffffff;
+            border: 0px;
+            background: #ff7803 !important;
+            margin-bottom: 20px;
+            -webkit-border-radius: 6px !important;
+            -moz-border-radius: 6px !important;
+            -ms-border-radius: 6px !important;
+            -o-border-radius: 6px !important;
+            border-radius: 6px !important;
+        }
+        .main-blue-btn {
+            background: #00a0e3 !important;
+        }
+        .main-orange-btn:hover, .main-orange-btn:focus , .main-blue-btn:hover, .main-blue-btn:focus {
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,.5) !important;
+            border: 0px;
+            transition: .3s all;
+            -webkit-transition: .3s all;
+            -moz-transition: .3s all;
+            -ms-transition: .3s all;
+            -o-transition: .3s all;
+        }
+        .btn {
+            font-size: 13px;
+            padding: 12px 22px;
+        }
+        .hvr-float {
+            display: inline-block;
+            vertical-align: middle;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            box-shadow: 0 0 1px rgba(0,0,0,0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-transition-duration: .3s;
+            transition-duration: .3s;
+            -webkit-transition-property: transform;
+            transition-property: transform;
+            -webkit-transition-timing-function: ease-out;
+            transition-timing-function: ease-out;
+        }
+        .hvr-float:active, .hvr-float:focus, .hvr-float:hover {
+            -webkit-transform: translateY(-8px);
+            transform: translateY(-8px);
+        }
+        .separator::before, .separator::after {
+            border-bottom: 1px solid #eee;
+            content: "";
+            display: inline-block;
+            height: .65em;
+            margin: 0 -4px 0 -100%;
+            vertical-align: top;
+            width: 50%;
+        }
+        .separator::after {
+            margin: 0 -100% 0 0;
+        }
+        .text-black {
+            color: #000 !important;
+        }
         #home {
             min-height:100vh !important;
             height: auto !important;
-            margin-bottom:-50px;
-        }");
+            position: relative;
+        }');
 
         if (!empty(Yii::$app->params->google->analytics->id)) {
             $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [

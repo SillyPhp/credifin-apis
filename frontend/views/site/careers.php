@@ -503,3 +503,5 @@ $(document).on('change', '#job_profile', function () {
 JS;
 $this->registerJs($script);
 $this->registerJsFile('//platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()], 'async' => 'async']);
+
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');

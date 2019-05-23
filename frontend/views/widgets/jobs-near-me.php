@@ -769,6 +769,7 @@ $('#city_location').typeahead(null, {
   });
 
 
+
 var sidebarpage = 1;
 getReviewList(sidebarpage);
 $(document).on('click','li.draggable-item .opens', function(){
