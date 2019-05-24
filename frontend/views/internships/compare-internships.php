@@ -23,7 +23,7 @@ use yii\helpers\Url;
                         <td width="10%" class="boldfont"> Choose Internships you want to compare</td>
                         <form>
                             <td width="30%" class="empty" id="c1" data-info="">
-                                <div id="company_1_btn">X</div>
+                                <div id="company_1_btn" class="remove-compare hidden">×</div>
                                 <div class='search-box'>
                                     <div class="load-suggestions Typeahead-spinner" id="company_1_spin"
                                          style="display: none;">
@@ -53,7 +53,7 @@ use yii\helpers\Url;
                                 </div>
                             </td>
                             <td width="30%" class="empty" id="c2" data-info="">
-                                <div id="company_2_btn">X</div>
+                                <div id="company_2_btn" class="remove-compare hidden">×</div>
                                 <div class='search-box'>
                                     <div class="load-suggestions Typeahead-spinner" id="company_2_spin"
                                          style="display: none;">
@@ -83,7 +83,7 @@ use yii\helpers\Url;
                                 </div>
                             </td>
                             <td width="30%" class="empty" id="c3" data-info="">
-                                <div id="company_3_btn">X</div>
+                                <div id="company_3_btn" class="remove-compare hidden">×</div>
                                 <div class='search-box'>
                                     <div class="load-suggestions Typeahead-spinner" id="company_3_spin"
                                          style="display: none;">
@@ -661,27 +661,67 @@ td{
     z-index:99;
     background-color:#ecececba;
 }
+.remove-compare{
+    float: right;
+    position: relative;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
 ');
 $script = <<<JS
 
     var dropped = [];
 
-    $('#company_1, #job_1, #company_2, #company_3, #job_2, #job_3').val('');
-    $('#company_2, #company_3, #job_2, #job_3').prop('disabled', true);
+    unBlockC1();
+    blockC2();
+    blockC3();
     
-    var company_search = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: '',
-        remote: {
-            url: '/internships/get-companies?query={query}',
-            wildcard: '{query}',
-        },
-    });
-
-    findCompanyInfo('#company_1', company_search);
+    function blockC1(){
+        $('#company_1_btn').removeClass('hidden');
+        $('#company_1, #job_1').prop('disabled', true);
+    }
     
-    function findCompanyInfo(elem, company_search){
+    function unBlockC1(){
+        droppable('#c1');
+        findCompanyInfo('#company_1');
+        $('#company_1_btn').addClass('hidden');
+        $('#company_1, #job_1').prop('disabled', false);
+    }
+    
+    function blockC2(){
+        $('#company_2_btn').removeClass('hidden');
+        $('#company_2, #job_2').prop('disabled', true);
+    }
+    
+    function unBlockC2(){
+        droppable('#c2');
+        findCompanyInfo('#company_2');
+        $('#company_2_btn').addClass('hidden');
+        $('#company_2, #job_2').prop('disabled', false);
+    }
+    
+    function blockC3(){
+        $('#company_3_btn').removeClass('hidden');
+        $('#company_3, #job_3').prop('disabled', true);
+    }
+    
+    function unBlockC3(){
+        droppable('#c3');
+        findCompanyInfo('#company_3');
+        $('#company_3_btn').addClass('hidden');
+        $('#company_3, #job_3').prop('disabled', false);
+    }
+    
+    function findCompanyInfo(elem){
+        var company_search = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: '',
+            remote: {
+                url: '/internships/get-companies?query={query}',
+                wildcard: '{query}',
+            },
+        });
         var spin_elem = elem + '_spin';
         var elem_id = elem + '_id';
         $(elem).typeahead(null, {
@@ -737,6 +777,7 @@ $script = <<<JS
             job_elem = '#job_3';
         }
         var spin_elen = job_elem + '_spin';
+        var btn_elen = job_elem + '_btn';
         
         $(job_elem).typeahead(null, {
             name: 'job_results',
@@ -752,6 +793,7 @@ $script = <<<JS
         }).on('typeahead:selected typeahead:completed',function(e,datum){
             $(elem).prop('disabled', true);
             $(job_elem).prop('disabled', true);
+            $(btn_elen).removeClass('hidden');
             addedToReview(datum.application_enc_id, $(this).parent().parent().parent().attr('id'));
          })
          .blur(validateSelection);
@@ -773,28 +815,30 @@ $script = <<<JS
         }
     }
     
-    $('.empty').droppable({
-        accept: '.draggable-item',
-        over: function(event, ui) {
-            $('.empty').addClass('highlight');
-        },
-        out: function(event, ui) {
-            $('.empty').removeClass('highlight');
-        },
-        drop: function(event, ui) {
-            var item_id = $.trim(ui.draggable.attr('data-id'));
-            var dropped_elem_id = $(this).attr('id');
-            var dropped_elem_data_id = $(this).attr('data-info');
-            if(dropped.includes(dropped_elem_data_id)){
-                $('[data-id='+dropped_elem_data_id+']').draggable({disabled:false});
-                $('[data-id='+dropped_elem_data_id+']').removeClass('b-li-card');
-                var index = dropped.indexOf(dropped_elem_data_id);
-                dropped.splice(index, 1);
+    function droppable(elem){
+        $(elem).droppable({
+            accept: '.draggable-item',
+            over: function(event, ui) {
+                $(elem).addClass('highlight');
+            },
+            out: function(event, ui) {
+                $(elem).removeClass('highlight');
+            },
+            drop: function(event, ui) {
+                var item_id = $.trim(ui.draggable.attr('data-id'));
+                var dropped_elem_id = $(this).attr('id');
+                var dropped_elem_data_id = $(this).attr('data-info');
+                if(dropped.includes(dropped_elem_data_id)){
+                    $('[data-id='+dropped_elem_data_id+']').draggable({disabled:false});
+                    $('[data-id='+dropped_elem_data_id+']').removeClass('b-li-card');
+                    var index = dropped.indexOf(dropped_elem_data_id);
+                    dropped.splice(index, 1);
+                }
+                addedToReview(item_id, dropped_elem_id, true);
+                $(elem).removeClass('highlight');
             }
-            addedToReview(item_id, dropped_elem_id, true);
-            $('.empty').removeClass('highlight');
-        }
-    });
+        });
+    }
 
     function findJob(id, elem_id, hasDropped){
         $.ajax({
@@ -806,15 +850,15 @@ $script = <<<JS
             success: function(data){
                 if(hasDropped){
                     if(elem_id === "c1"){
-                        $("#company_1, #job_1").prop('disabled', true);
+                        blockC1();
                         $('#company_1').val(data['message']['organization_name']);
                         $('#job_1').val(data['message']['name'] + " - " + data['message']['cat_name']);
                     }else if(elem_id === "c2"){
-                        $("#company_2, #job_2").prop('disabled', true);
+                        blockC2();
                         $('#company_2').val(data['message']['organization_name']);
                         $('#job_2').val(data['message']['name'] + " - " + data['message']['cat_name']);
                     } else{
-                        $("#company_3, #job_3").prop('disabled', true);
+                        blockC3();
                         $('#company_3').val(data['message']['organization_name']);
                         $('#job_3').val(data['message']['name'] + " - " + data['message']['cat_name']);
                     }
@@ -828,12 +872,14 @@ $script = <<<JS
                 
                 if(elem_id === 'c1'){
                     $('#c1').attr('data-info', data['message']['application_enc_id']);
-                    $('#company_2, #job_2').prop('disabled', false);
-                    findCompanyInfo('#company_2', company_search);
+                    if(!$('#c2').attr('data-info')){
+                        unBlockC2();
+                    }
                 }else if (elem_id === 'c2'){
                     $('#c2').attr('data-info', data['message']['application_enc_id']);
-                    $('#company_3, #job_3').prop('disabled', false);
-                    findCompanyInfo('#company_3', company_search);
+                    if(!$('#c3').attr('data-info')){
+                        unBlockC3();
+                    }
                 }else if(elem_id === 'c3'){
                     $('#c3').attr('data-info', data['message']['application_enc_id']);
                 }
@@ -964,6 +1010,7 @@ $script = <<<JS
                     }
                     $('#company_2, #company_3, #job_2, #job_3').prop('disabled', true);
                     $("#company_1, #job_1").prop('disabled', false);
+                    $("#company_1_btn").addClass('hidden');
                 }
                 if(elem === "company_2_btn"){
                     $("#company_2").val("");
@@ -976,8 +1023,9 @@ $script = <<<JS
                         var index = dropped.indexOf(dataid);
                         dropped.splice(index, 1);
                     }
-                    $('#company_3, #job_3').prop('disabled', true);
+                    $('#company_3, #job_3, #company_1, #job_1').prop('disabled', true);
                     $("#company_2, #job_2").prop('disabled', false);
+                    $("#company_2_btn").addClass('hidden');
                 }
                 if(elem === "company_3_btn"){
                     $("#company_3").val("");
@@ -990,8 +1038,9 @@ $script = <<<JS
                         var index = dropped.indexOf(dataid);
                         dropped.splice(index, 1);
                     }
-                    $("#job_2").prop('disabled', true);
-                    $("#company_2, #job_2").prop('disabled', false);
+                    $('#company_2, #job_2, #company_1, #job_1').prop('disabled', true);
+                    $("#company_3, #job_3").prop('disabled', false);
+                    $("#company_3_btn").addClass('hidden');
                 }
     }
     
