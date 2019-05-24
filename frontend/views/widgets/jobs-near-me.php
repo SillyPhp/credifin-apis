@@ -12,7 +12,7 @@ if($type == 'jobs'){
 
 ?>
 
-<div class="row">
+<div class="row m-0">
     <div class="col-md-10 col-md-offset-2">
         <div class="near-me-search row">
             <div class="col-md-3">
@@ -41,8 +41,8 @@ if($type == 'jobs'){
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-6 near-me-map" data-spy="affix" data-offset-top="138">
+<div class="row m-0">
+    <div class="col-md-6 near-me-map pr-0" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
     </div>
     <div class="col-md-2 near-me-filters pl-0">
@@ -193,10 +193,10 @@ $this->registerCss('
     top: 52px;
     left: 0;
     height: calc(100vh - 52px);
-    z-index:10050;
+    z-index:999;
     overflow-y: scroll;
     overflow-x: hidden;
-    box-shadow: 0px 0px 10px 1px #e6e6e6;
+//    box-shadow: 0px 0px 10px 1px #e6e6e6;
 }
 .near-me-map{
     height: calc(100vh - 52px);
@@ -222,6 +222,9 @@ $this->registerCss('
 }
 .in-map{
     margin-bottom:0px;
+}
+.modal-backdrop{
+    z-index:99;
 }
 .gm-style .gm-style-iw-c{
     padding:0px;
@@ -379,6 +382,9 @@ $this->registerCss('
   }
 }
 /*Load Suggestions loader css ends */
+body {
+  scroll-behavior: smooth;
+}
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
@@ -387,9 +393,11 @@ $('body').css('overflow','hidden');
 setTimeout(
     function(){
     $('body').css('overflow','inherit');
-}, 1000);
+}, 2000);
 
 //variables declaration
+var empty = true;
+var loading = false;
 var loadmore = true;
 var vals = {
     lat: null,
@@ -427,10 +435,12 @@ function showError(error) {
           success: function (res) {
             var response = JSON.parse(res);
             if(response == null){
+                $('#city_location').val('');
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
             }else if(response.name == null){
+                $('#city_location').val('');
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
@@ -461,6 +471,8 @@ function geocodeLatLng(lat,long) {
       }
     });
 }
+
+
 
 //initiates maps and cards
 function showCards(){
@@ -513,7 +525,7 @@ function card(){
                 $('.load-more-spinner').css('visibility', 'hidden');
                 
                 var response = JSON.parse(res);
-                if(response.length == 0){
+                if(response.length == 0 && empty){
                     $('#loadMore').hide();
                     $('.near-me-map').css('display','none');
                     $('.near-me-content').removeClass('col-md-4');
@@ -521,6 +533,7 @@ function card(){
                     $('.near-me-content').addClass('text-center');
                     $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/$type/not_found.png" class="not-found" alt="Not Found"/>');
                 }else{
+                    empty = false;
                     for(i=0;i<response.length;i++){
                             marker = new google.maps.Marker({
                             position: {lat: Number(response[i].latitude), lng: Number(response[i].longitude)},
@@ -548,10 +561,14 @@ function card(){
                     drag: function() { 
                         $('#sticky').addClass('drag-on');
                         $('#review-internships').addClass('drop-on');
+                        $('#header-main').css('z-index','1002');
+                        $('.near-me-content').css('z-index','1001');
                      },
                      stop: function() { 
                         $('#sticky').removeClass('drag-on');
                         $('#review-internships').removeClass('drop-on');
+                        $('#header-main').css('z-index','1000');
+                        $('.near-me-content').css('z-index','0');
                      },
                 });
             });
@@ -566,7 +583,7 @@ function card(){
     });
 }
 
-//load more click
+// load more click
 // $(document).on('click','#loadMore',function(e) {
 //     e.preventDefault();
 //     $('.load-more-text').css('visibility', 'hidden');
@@ -577,7 +594,6 @@ function card(){
 
 //card click
 $(document).on("click","#card-hover",function() {
-    
      if (infowindow) {
         infowindow.close();
      }
@@ -599,7 +615,8 @@ $(document).on("click","#card-hover",function() {
      var application_key = $(this).attr('data-key');
      var job_type = '$job_type';
      if(!logo){
-        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+        // logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+        logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
@@ -613,7 +630,11 @@ $(document).on("click","#card-hover",function() {
         draggable: false
      });
      infowindow.open(map, marker);
-     utilities.initials();
+     // utilities.initials();
+     setTimeout(
+                        function(){
+				            utilities.initials();
+				    }, 100);
 });
 
 //search for,
@@ -645,6 +666,7 @@ function searching() {
      $('#loadMore').hide();
      $('#loadMore').show();
      loadmore = true;
+     empty = true;
      
      geocodeAddress(city);
 }
@@ -671,6 +693,8 @@ function geocodeAddress(city) {
         vals.long = results[0].geometry.location.lng();
         
         showCards();
+      }else if(results.length == 0){
+          toastr.error('please enter correct city', 'error');
       } 
     });
 }
@@ -703,11 +727,20 @@ function getReviewList(sidebarpage){
 
 
 $(window).scroll(function() { //detact scroll
+    if($(window).scrollTop() == 0){
+                loading = true;
+            }
 			if($(window).scrollTop() + $(window).height() >= $(document).height()){ //scrolled to bottom of the page
-				$('.load-more-text').css('visibility', 'hidden');
-                $('.load-more-spinner').css('visibility', 'visible');
-                if(loadmore){
+				
+                if(loadmore && loading){
+                    loading = false;
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
 				    card();
+				    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 500);
                 }
 			}
 		});
@@ -741,9 +774,15 @@ $('#city_location').typeahead(null, {
   });
 
 
+
 var sidebarpage = 1;
 getReviewList(sidebarpage);
-
+$(document).on('click','li.draggable-item .opens', function(){
+    $('.near-me-filters').css('z-index','1000');
+});
+$(document).on('click','.jd-close', function(){
+    $('.near-me-filters').css('z-index','999');
+});
 var ps = new PerfectScrollbar('.near-me-filters');
 JS;
 $this->registerJs($script);
@@ -756,4 +795,4 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [JqueryAsset::className()]]);
 ?>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>

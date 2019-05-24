@@ -20,8 +20,8 @@ use yii\helpers\Url;
                                     <i class='fa fa-search'></i>
                                 </button>
                             </div>
-                            <div class="btn_add_new_org pull-right">
-                                <a href="#" class="btn btn-default add_new_org btn_add_org">Add New Organizatons</a>
+                            <div class="btn_add_new_org">
+                                <a href="#" class="add_new_org btn_add_org">Add New Institute</a>
                             </div>
                         </div>
                     </div>
@@ -91,10 +91,21 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
-.btn_add_org
-{
-padding:5px 17px;
+.btn_add_org{
+    color:#fff;
+    position:absolute;
+    right: 25px;
+    bottom: 10px;
+    font-weight:bold;
+    font-size:15px;
 }
+.btn_add_org:hover{
+    color:#DA4453;
+}
+.btn_add_new_org {
+    padding:10px;    
+}
+
 .rating-stars{
     font-size:20px;
 }
@@ -216,7 +227,7 @@ review-benifit{
     text-transform: capitalize;
 }
 .cri-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/review/educational-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/review/ic-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 400px;
@@ -234,7 +245,7 @@ review-benifit{
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    right:10px;
+    left:10px;
     z-index:999;
 }
 .com-review-box{
