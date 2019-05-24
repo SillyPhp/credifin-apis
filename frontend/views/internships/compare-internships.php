@@ -883,16 +883,36 @@ $script = <<<JS
                  
                  var assel = assignElems(elem_id);
                  
-                document.getElementById(assel.jobs_days_elem).innerHTML = d;
-                document.getElementById(assel.jobs_timings_elem).innerHTML = data['message']['timings_from'] + "-" + data['message']['timings_to'];
-                document.getElementById(assel.jobs_plocation_elem).innerHTML = plocs;
-                document.getElementById(assel.jobs_ilocation_elem).innerHTML = ilocs;
-                document.getElementById(assel.jobs_vacancy_elem).innerHTML = sum;
-                document.getElementById(assel.jobs_experience_elem).innerHTML = data['message']['experience'];
-                document.getElementById(assel.jobs_salary_elem).innerHTML = data['message']['amount'];
-                document.getElementById(assel.jobs_type_elem).innerHTML = data['message']['type'];
-                document.getElementById(assel.jobs_profile_elem).innerHTML = data['message']['cat_name'];
-                document.getElementById(assel.jobs_title_elem).innerHTML = data['message']['name'];
+                if(d){ 
+                    document.getElementById(assel.jobs_days_elem).innerHTML = d;
+                }
+                if(data['message']['timings_from']){
+                    document.getElementById(assel.jobs_timings_elem).innerHTML = data['message']['timings_from'] + "-" + data['message']['timings_to'];
+                }
+                if(plocs){
+                    document.getElementById(assel.jobs_plocation_elem).innerHTML = plocs;
+                }
+                if(ilocs){
+                    document.getElementById(assel.jobs_ilocation_elem).innerHTML = ilocs;
+                }
+                if(sum){
+                    document.getElementById(assel.jobs_vacancy_elem).innerHTML = sum;
+                }
+                if(data['message']['experience']){
+                    document.getElementById(assel.jobs_experience_elem).innerHTML = data['message']['experience'];
+                }
+                if(data['message']['amount']){
+                    document.getElementById(assel.jobs_salary_elem).innerHTML = data['message']['amount'];
+                }
+                if(data['message']['type']){
+                    document.getElementById(assel.jobs_type_elem).innerHTML = data['message']['type'];
+                }
+                if(data['message']['cat_name']){
+                    document.getElementById(assel.jobs_profile_elem).innerHTML = data['message']['cat_name'];
+                }
+                if(data['message']['name']){
+                    document.getElementById(assel.jobs_title_elem).innerHTML = data['message']['name'];
+                }
                 document.getElementById(assel.jobs_image_elem).setAttribute('src', '/assets/common/categories/profile/' + data['message']['icon_png']);
                 
                 var aer = '';
@@ -900,21 +920,27 @@ $script = <<<JS
                     var p = "<li>- " + data['message']['applicationEducationalRequirements'][i]['educational_requirement'] + "</li>";    
                     aer += p;
                 }
-                document.getElementById(assel.jobs_education_elem).innerHTML = aer;
+                if(aer){
+                    document.getElementById(assel.jobs_education_elem).innerHTML = aer;
+                }
                 
                 var apl = '';
                 for(var i = 0; i < data.message['applicationJobDescriptions'].length; i++){
                     var t = "<li>- " +  data['message']['applicationJobDescriptions'][i]['job_description'] + "</li>";
                     apl += t;
                 }
-                document.getElementById(assel.jobs_jd_elem).innerHTML = apl;
+                if(apl){
+                    document.getElementById(assel.jobs_jd_elem).innerHTML = apl;
+                }
                 
                 var as = '';
                 for(var i = 0; i < data.message['applicationSkills'].length; i++){
                     var k = "<li>- "  + data['message']['applicationSkills'][i]['skill'] + "</li>";    
                     as += k;
                 }
-                document.getElementById(assel.jobs_skills_elem).innerHTML = as;
+                if(as){
+                    document.getElementById(assel.jobs_skills_elem).innerHTML = as;
+                }
             }
         })
     }
