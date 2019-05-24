@@ -32,7 +32,7 @@ use yii\helpers\Url;
                                         <span></span>
                                     </div>
                                     <input id="company_1" class='form-control' placeholder='Choose Company'
-                                           type='text'>
+                                           type='text' autocomplete="off">
                                     <input id="company_1_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fa fa-search'></i>
@@ -45,7 +45,7 @@ use yii\helpers\Url;
                                         <span></span>
                                         <span></span>
                                     </div>
-                                    <input id="job_1" class='form-control' placeholder='Choose Job' type='text'>
+                                    <input id="job_1" class='form-control' placeholder='Choose Job' type='text' autocomplete="off">
                                     <input id="job_1_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fa fa-search'></i>
@@ -62,7 +62,7 @@ use yii\helpers\Url;
                                         <span></span>
                                     </div>
                                     <input id="company_2" class='form-control' placeholder='Choose Company'
-                                           type='text'>
+                                           type='text' autocomplete="off">
                                     <input id="company_2_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fa fa-search'></i>
@@ -75,7 +75,7 @@ use yii\helpers\Url;
                                         <span></span>
                                         <span></span>
                                     </div>
-                                    <input id="job_2" class='form-control' placeholder='Choose Job' type='text'>
+                                    <input id="job_2" class='form-control' placeholder='Choose Job' type='text' autocomplete="off">
                                     <input id="job_2_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fa fa-search'></i>
@@ -92,7 +92,7 @@ use yii\helpers\Url;
                                         <span></span>
                                     </div>
                                     <input id="company_3" class='form-control' placeholder='Choose Company'
-                                           type='text'>
+                                           type='text' autocomplete="off">
                                     <input id="company_3_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fa fa-search'></i>
@@ -105,7 +105,7 @@ use yii\helpers\Url;
                                         <span></span>
                                         <span></span>
                                     </div>
-                                    <input id="job_3" class='form-control' placeholder='Choose Job' type='text'>
+                                    <input id="job_3" class='form-control' placeholder='Choose Job' type='text' autocomplete="off">
                                     <input id="job_3_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fa fa-search'></i>
@@ -684,46 +684,44 @@ $script = <<<JS
     var dropped = [];
 
     unBlockC1();
-    blockC2();
-    blockC3();
+     $('#company_2, #job_2, #company_3, #job_3').prop('disabled', true);
     
     function blockC1(){
-        $('#company_1_btn').removeClass('hidden');
-        $('#company_1, #job_1').prop('disabled', true);
+        if($('#company_1').val() && $('#job_1').val()){
+            $('#company_1, #job_1').prop('disabled', true);
+        }
     }
     
     function unBlockC1(){
         droppable('#c1');
-        findCompanyInfo('#company_1');
         $('#company_1_btn').addClass('hidden');
         $('#company_1, #job_1').prop('disabled', false);
     }
     
     function blockC2(){
-        $('#company_2_btn').removeClass('hidden');
-        $('#company_2, #job_2').prop('disabled', true);
+        if($('#company_2').val() && $('#job_2').val()){
+            $('#company_2, #job_2').prop('disabled', true);
+        }
     }
     
     function unBlockC2(){
         droppable('#c2');
-        findCompanyInfo('#company_2');
         $('#company_2_btn').addClass('hidden');
         $('#company_2, #job_2').prop('disabled', false);
     }
     
     function blockC3(){
-        $('#company_3_btn').removeClass('hidden');
-        $('#company_3, #job_3').prop('disabled', true);
+        if($('#company_3').val() && $('#job_3').val()){
+            $('#company_3, #job_3').prop('disabled', true);
+        }
     }
     
     function unBlockC3(){
         droppable('#c3');
-        findCompanyInfo('#company_3');
         $('#company_3_btn').addClass('hidden');
         $('#company_3, #job_3').prop('disabled', false);
     }
     
-    function findCompanyInfo(elem){
         var company_search = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -733,9 +731,9 @@ $script = <<<JS
                 wildcard: '{query}',
             },
         });
-        var spin_elem = elem + '_spin';
-        var elem_id = elem + '_id';
-        $(elem).typeahead(null, {
+    
+    
+        $('#company_1, #company_2, #company_3').typeahead(null, {
             name: 'company_results',
             display: 'name',
             source: company_search,
@@ -743,14 +741,17 @@ $script = <<<JS
             minLength: 1,
             maxItem: 5
         }).on('typeahead:asyncrequest', function() {
-            $(spin_elem).show();
+            var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
+            $(c_spin).show();
         }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-            $(spin_elem).hide();
+            var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
+            $(c_spin).hide();
         }).on('typeahead:selected typeahead:completed',function(e,datum){
-            $(elem_id).val(datum.id);           
-            findJobInfo(datum.id, elem);           
+            var e = '#' + $(this).attr('id') + "_id";
+            $(e).val(datum.id);           
+            var f = '#' + $(this).attr('id');
+            findJobInfo(datum.id, f);           
          });
-    }
     
     function findJobInfo(id, elem){
         var global = [];
@@ -788,7 +789,7 @@ $script = <<<JS
             job_elem = '#job_3';
         }
         var spin_elen = job_elem + '_spin';
-        var btn_elen = job_elem + '_btn';
+        var btn_elen = elem + '_btn';
         
         $(job_elem).typeahead(null, {
             name: 'job_results',
@@ -805,7 +806,7 @@ $script = <<<JS
             $(elem).prop('disabled', true);
             $(job_elem).prop('disabled', true);
             $(btn_elen).removeClass('hidden');
-            addedToReview(datum.application_enc_id, $(this).parent().parent().parent().attr('id'));
+            addedToReview(datum.application_enc_id, $(this).parentsUntil('td').parent().attr('id'));
          })
          .blur(validateSelection);
         
@@ -861,17 +862,20 @@ $script = <<<JS
             success: function(data){
                 if(hasDropped){
                     if(elem_id === "c1"){
-                        blockC1();
+                        $('#company_1_btn').removeClass('hidden');
                         $('#company_1').val(data['message']['organization_name']);
                         $('#job_1').val(data['message']['name'] + " - " + data['message']['cat_name']);
+                        blockC1();
                     }else if(elem_id === "c2"){
-                        blockC2();
+                        $('#company_2_btn').removeClass('hidden');
                         $('#company_2').val(data['message']['organization_name']);
                         $('#job_2').val(data['message']['name'] + " - " + data['message']['cat_name']);
+                        blockC2();
                     } else{
-                        blockC3();
+                        $('#company_3_btn').removeClass('hidden');
                         $('#company_3').val(data['message']['organization_name']);
                         $('#job_3').val(data['message']['name'] + " - " + data['message']['cat_name']);
+                        blockC3();
                     }
                 }
                 
@@ -1011,6 +1015,7 @@ $script = <<<JS
     });
     function emptyInp(elem){
                 if(elem === "company_1_btn"){
+                    $("#job_1").typeahead("destroy");
                     $("#company_1").val("");
                     $("#job_1").val("");
                     removeVals('c1');
@@ -1022,11 +1027,13 @@ $script = <<<JS
                         dropped.splice(index, 1);
                     
                     }
-                    $('#company_2, #company_3, #job_2, #job_3').prop('disabled', true);
+                    $('#company_2, #job_2').prop('disabled', true);
+                    $('#company_3, #job_3').prop('disabled', true);
                     $("#company_1, #job_1").prop('disabled', false);
                     $("#company_1_btn").addClass('hidden');
                 }
                 if(elem === "company_2_btn"){
+                    $("#job_2").typeahead("destroy");
                     $("#company_2").val("");
                     $("#job_2").val("");
                     removeVals('c2');
@@ -1037,11 +1044,13 @@ $script = <<<JS
                         var index = dropped.indexOf(dataid);
                         dropped.splice(index, 1);
                     }
-                    $('#company_3, #job_3, #company_1, #job_1').prop('disabled', true);
+                    $('#company_3, #job_3').prop('disabled', true);
+                    $('#company_1, #job_1').prop('disabled', true);
                     $("#company_2, #job_2").prop('disabled', false);
                     $("#company_2_btn").addClass('hidden');
                 }
                 if(elem === "company_3_btn"){
+                    $("#job_3").typeahead("destroy");
                     $("#company_3").val("");
                     $("#job_3").val("");
                     removeVals('c3');
@@ -1052,7 +1061,8 @@ $script = <<<JS
                         var index = dropped.indexOf(dataid);
                         dropped.splice(index, 1);
                     }
-                    $('#company_2, #job_2, #company_1, #job_1').prop('disabled', true);
+                    $('#company_2, #job_2').prop('disabled', true);
+                    $('#company_1, #job_1').prop('disabled', true);
                     $("#company_3, #job_3").prop('disabled', false);
                     $("#company_3_btn").addClass('hidden');
                 }
