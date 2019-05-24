@@ -65,7 +65,7 @@ if($type == 'jobs'){
         </div>
 
         <div id="loading">
-            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
+            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                 <span class="load-more-text">Load More</span>
                 <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                      stroke="currentColor">
@@ -148,21 +148,11 @@ if($type == 'jobs'){
                     {{/experience}}
                 </div>
             </div>
-            {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center last-date" id="{{last_date}}">
-                Last Date to Apply
-                <br>
-                {{last_date}}
-            </h6>
-            <h4 class="col-md-7 org_name text-right pr-10 company-name">
-                {{name}}
-            </h4>
-            {{/last_date}}
-            {{^last_date}}
+
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right">{{name}}</h4>
+                <h4 class="org_name text-right company-name">{{name}}</h4>
             </div>
-            {{/last_date}}
+
             <div class="application-card-wrapper">
                 <a href="/<?= $job_type?>/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
                 <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
@@ -520,6 +510,7 @@ function card(){
             type: 'post',
             data: vals,
             success: function (res) {
+                $('#loadMore').addClass("loading_more");
                 $('.loader-main').hide();
                 $('.load-more-text').css('visibility', 'visible');
                 $('.load-more-spinner').css('visibility', 'hidden');
@@ -725,15 +716,17 @@ function getReviewList(sidebarpage){
     });
 }
 
+setTimeout(
+    function(){
+        loading = true;
+    }, 900);
 
 $(window).scroll(function() { //detact scroll
-    if($(window).scrollTop() == 0){
-                loading = true;
-            }
 			if($(window).scrollTop() + $(window).height() >= $(document).height()){ //scrolled to bottom of the page
 				
                 if(loadmore && loading){
                     loading = false;
+                    $('#loadMore').removeClass("loading_more");
                     $('.load-more-text').css('visibility', 'hidden');
                     $('.load-more-spinner').css('visibility', 'visible');
 				    card();
@@ -744,6 +737,14 @@ $(window).scroll(function() { //detact scroll
                 }
 			}
 		});
+
+$(document).on('click','.loading_more',function(e) {
+    e.preventDefault();
+    $('#loadMore').removeClass("loading_more");
+    $('.load-more-text').css('visibility', 'hidden');
+    $('.load-more-spinner').css('visibility', 'visible');
+    card();
+});
 
 var global = [];
 var city = new Bloodhound({
