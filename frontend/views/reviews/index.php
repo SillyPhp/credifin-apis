@@ -41,6 +41,9 @@ $this->params['seo_tags'] = [
 ?>
 
     <section class="head-bg">
+        <div class="bg-img">
+<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">-->
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -48,7 +51,7 @@ $this->params['seo_tags'] = [
                         <div class="header-bg">
                             <div class="search-box">
                                 <div class="head-text">
-                                    <p>India's first integrated reviews platform for career development</p>
+                                    <p>earn credibility, attract talent</p>
                                 </div>
                                 <form id="form-search" action="<?=Url::to(['search']) ?>">
                                     <div class="input-group search-bar">
@@ -173,6 +176,18 @@ $this->params['seo_tags'] = [
 echo $this->render('/widgets/mustache/review-cards');
 
 $this->registerCss('
+.bg-img{
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    top:0;
+    right:0;
+    background:url("' . Url::to('@eyAssets/images/pages/review/review-bg2.png') . '");
+//    background:url("' . Url::to('@eyAssets/images/pages/review/rl.png') . '");
+    background-position: right top;
+    background-repeat: no-repeat;
+    background-size: auto 450px;
+}
 .quick-view{
     padding:20px 15px;
 }
@@ -396,18 +411,18 @@ color: initial;
     
 .head-bg{
 //  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-     background: url(../assets/themes/ey/images/pages/review/review-bg2.png);
+//     background: url(../assets/themes/ey/images/pages/review/review-bg2.png);
 //    background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center;
      background-size: contain;
-    background-position: right;
+    background-position:bottom right;
 }  
 
 .pos-relative{
     position:relative;
-    height:450px
+    height:550px
 }
 .header-bg{
     max-width:600px;
@@ -438,9 +453,9 @@ color: initial;
 .head-text{
     padding-bottom:10px;
     color:#000;
-    font-family:lora;
-     font-size:30px;
-    text-transform:uppercase;
+    font-family:lobster;
+     font-size:40px;
+    text-transform:capitalize;
 }
 .head-text p{
     line-height:35px;
@@ -1079,7 +1094,22 @@ body.modal-open{
         height: 320px !important;
     }
 }
-
+@media only screen and (max-width: 768px){
+    .bg-img{
+        position:relative;
+        background-position: center;
+        height: 280px;
+        background-size: auto 100%;
+    }
+    .pos-relative, .header-bg{
+        height: auto;
+    }
+    .header-bg{
+        position:relative;
+        transform: translateY(-0%);
+        margin:auto;
+    }
+}
 ');
 echo $this->render('/widgets/mustache/recent-review-bar');
 echo $this->render('/widgets/mustache/review-cards');
