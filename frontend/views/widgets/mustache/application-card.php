@@ -99,6 +99,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
         },
         success: function(response) {
             $('.loader-main').hide();
+            $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
             if(response.status === 200) {
