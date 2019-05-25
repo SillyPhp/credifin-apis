@@ -34,15 +34,21 @@ class ExploreController extends ApiBaseController
                 ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
                 ->alias('a')
                 ->distinct()
-                ->joinWith(['parentEnc b'], false)
-                ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['employerApplications d' => function ($b) use ($options) {
-                    $b->joinWith(['applicationTypeEnc e']);
-                    $b->andWhere(['e.name' => ucfirst($options['type'])]);
+                ->innerJoinWith(['parentEnc b' => function ($b) {
+                    $b->onCondition([
+                        'or',
+                        ['!=', 'b.icon', NULL],
+                        ['!=', 'b.icon', ''],
+                    ])
+                        ->groupBy(['b.category_enc_id']);
                 }], false)
-                ->groupBy(['a.parent_enc_id'])
+                ->joinWith(['employerApplications d' => function ($d) use ($options) {
+                    $d->joinWith(['applicationTypeEnc e'=>function($e) use ($options){
+                        $e->andOnCondition(['e.name'=> ucfirst($options['type'])]);
+                    }], false);
+                }], false)
+                ->where(['a.assigned_to' => ucfirst($options['type'])])
                 ->orderBy(['total' => SORT_DESC])
-                ->limit(8)
                 ->asArray()
                 ->all();
 
@@ -74,7 +80,7 @@ class ExploreController extends ApiBaseController
                     $x->joinWith(['cityEnc d'], false);
                 }], false);
             }], false)
-            ->where(['a.is_deleted'=>0])
+            ->where(['a.is_deleted' => 0])
             ->orderBy(['total' => SORT_DESC])
             ->groupBy(['c.city_enc_id'])
             ->asArray()
