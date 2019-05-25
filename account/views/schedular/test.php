@@ -1,14 +1,4 @@
-
-<!--    <link rel="stylesheet" type="text/css" href="./semantic.min.css">-->
-<!--    <link href="http://ajay.eygb.me/assets/themes/dashboard/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" />-->
-<!--    <link href="http://ajay.eygb.me/assets/themes/dashboard/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" />-->
-<!--    <link href="assets/css/material-bootstrap-wizard.css" rel="stylesheet" />-->
-<!--    <link rel="stylesheet" href="./acc-wizard.min.css">-->
-<!--    <link href="assets/css/style.css" rel="stylesheet" />-->
-
 <div class="image-container set-full-height" style="">
-
-
     <!--   Big container   -->
     <div class="container">
         <div class="row">
@@ -16,14 +6,10 @@
                 <!--      Wizard container        -->
                 <div class="wizard-container">
                     <div class="card wizard-card" data-color="red" id="wizard">
-                        <!-- <form action="" method=""> -->
-                        <!--        You can switch " data-color="blue" "  with one of the next bright colors: "green", "orange", "red", "purple"             -->
-
                         <div class="wizard-header">
                             <h3 class="wizard-title">
                                 Schedule Interview
                             </h3>
-                            <!-- <h5>This information will let us know more about you.</h5> -->
                         </div>
                         <div class="wizard-navigation">
                             <ul>
@@ -32,7 +18,6 @@
                                 <li><a href="#details" data-toggle="tab">Add Another Detail</a></li>
                             </ul>
                         </div>
-
                         <div class="tab-content">
                             <div class="tab-pane" id="captain">
                                 <h4 class="info-text">Select Interview Type </h4>
@@ -66,9 +51,6 @@
                                 <!-- <div class="select-options">
                                   <input id="toggle1" type="checkbox">
                                   <label for="toggle1">Toggle me!</label>
-
-                                  <input id="toggle2" type="checkbox">
-                                  <label for="toggle2">Hey, me too!</label>
                                 </div> -->
 
                                 <!-- </div> -->
@@ -97,11 +79,9 @@
                                             </div>
                                             <div id="more-interviewers"></div>
                                         </div>
-                                        <!-- <div class="row"> -->
                                         <div class="col-md-12 col-sm-12">
                                             <a href="#" id="add-more-interviewers"><i class="fa fa-plus-circle"></i> Add More</a>
                                         </div>
-                                        <!-- </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +96,6 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                        <!-- </form> -->
                     </div>
                 </div> <!-- wizard container -->
             </div>
