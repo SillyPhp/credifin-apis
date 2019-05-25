@@ -30,9 +30,9 @@ class JobsController extends ApiBaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-//        $behaviors['authenticator'] = [
-//            'class' => HttpBearerAuth::className()
-//        ];
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className()
+        ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
@@ -45,20 +45,34 @@ class JobsController extends ApiBaseController
         return $behaviors;
     }
 
-    //create, update, delete, view, index
-//    public $modelClass = 'common\models\EmployerApplications';
-    public function actionShortlistedJobs(){
+    private function userId(){
 
         $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
             ->andWhere(['source' => Yii::$app->request->headers->get('source')])
             ->one();
 
-
-        $candidate = Users::findOne([
+        $user = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
 
+        return $user;
+    }
+
+    public function actionAddReviewedApplication(){
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+        $reviewed_application = new ReviewedApplications();
+
+        if(isset($parameters['application_enc_id'])){
+            
+        }
+
+    }
+
+    public function actionShortlistedJobs(){
+
+        $candidate = $this->userId();
 
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
@@ -84,15 +98,7 @@ class JobsController extends ApiBaseController
 
     public function actionReviewList(){
 
-        $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
-            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-            ->one();
-
-
-        $candidate = Users::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
+        $candidate = $this->userId();
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
@@ -121,15 +127,7 @@ class JobsController extends ApiBaseController
 
     public function actionAppliedApplications(){
 
-        $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
-            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-            ->one();
-
-
-        $candidate = Users::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
+        $candidate = $this->userId();
 
         $applied_applications = AppliedApplications::find()
             ->alias('a')
@@ -161,15 +159,7 @@ class JobsController extends ApiBaseController
 
     public function actionAcceptedApplications(){
 
-        $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
-            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-            ->one();
-
-
-        $candidate = Users::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
+        $candidate = $this->userId();
 
         $accepted_jobs = AppliedApplications::find()
             ->alias('a')
