@@ -2,8 +2,9 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+?>
 
-$this->registerCss('
+<style type="text/css" media="screen">
   * {
     margin:0; 
     padding:0;
@@ -50,7 +51,7 @@ $this->registerCss('
     line-height:30px;
   }
   .activate-button{
-    padding:45px 0 0px 0;
+    padding:45px 0 20px 0;
   }
   .activate-button a{ 
     padding:15px 30px; 
@@ -82,6 +83,8 @@ $this->registerCss('
     color:#00a0e3; 
     text-decoration:none;
   }
+</style>
+<style media="only screen and (max-device-width: 500px), only screen and (max-width: 380px)" type="text/css">
 @media only screen and (max-width: 500px){
     .welcome-text{
         padding:20px 30px 0 30px;
@@ -100,8 +103,7 @@ $this->registerCss('
         margin-bottom:20px;
     }
 }
-');
-?>
+  </style>
 
 <div class="wrapper">
     <div class="inner-wrapper">
@@ -120,6 +122,10 @@ $this->registerCss('
         </div>
         <div class="activate-button">
             <?= Html::a(Yii::t('app', 'Activate Account'), $data['link']); ?>
+        </div>
+        <div class="link-text">
+            <p style="padding: 8px 60px;font-size: 16px;">If you’re having trouble clicking the button, copy and paste the URL below into your web browser.</p>
+            <?= Html::a(Yii::t('app', $data['link']), $data['link'],['style' => 'font-size: 17px;text-decoration: none;word-break: break-word;']); ?>
         </div>
         <div class="ey-team">
             <img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', true); ?>">

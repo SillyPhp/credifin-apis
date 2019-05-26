@@ -2,11 +2,12 @@
 
 namespace api\modules\v1\controllers;
 
-use common\models\EmployerApplications;
+
 use Yii;
+use yii\helpers\Url;
+use common\models\EmployerApplications;
 use common\models\AssignedCategories;
 use common\models\Organizations;
-use yii\helpers\Url;
 
 class ExploreController extends ApiBaseController
 {
@@ -34,15 +35,28 @@ class ExploreController extends ApiBaseController
                 ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
                 ->alias('a')
                 ->distinct()
-                ->joinWith(['parentEnc b'], false)
-                ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['employerApplications d' => function ($b) use ($options) {
-                    $b->joinWith(['applicationTypeEnc e']);
-                    $b->andWhere(['e.name' => ucfirst($options['type'])]);
+                ->innerJoinWith(['parentEnc b' => function ($b) {
+                    $b->onCondition([
+                        'or',
+                        ['!=', 'b.icon', NULL],
+                        ['!=', 'b.icon', ''],
+                    ])
+                        ->groupBy(['b.category_enc_id']);
                 }], false)
-                ->groupBy(['a.parent_enc_id'])
-                ->orderBy(['total' => SORT_DESC])
-                ->limit(8)
+                ->joinWith(['employerApplications d' => function ($d) use ($options) {
+                    $d->andOnCondition([
+                        'd.status' => 'Active',
+                        'd.is_deleted' => 0,
+                    ])
+                        ->joinWith(['applicationTypeEnc e' => function ($e) use ($options) {
+                            $e->andOnCondition(['e.name' => ucfirst($options['type'])]);
+                        }], false);
+                }], false)
+                ->where(['a.assigned_to' => ucfirst($options['type'])])
+                ->orderBy([
+                    'total' => SORT_DESC,
+                    'b.name' => SORT_ASC,
+                ])
                 ->asArray()
                 ->all();
 
@@ -74,7 +88,7 @@ class ExploreController extends ApiBaseController
                     $x->joinWith(['cityEnc d'], false);
                 }], false);
             }], false)
-            ->where(['a.is_deleted'=>0])
+            ->where(['status' => 'Active', 'a.is_deleted' => 0])
             ->orderBy(['total' => SORT_DESC])
             ->groupBy(['c.city_enc_id'])
             ->asArray()
