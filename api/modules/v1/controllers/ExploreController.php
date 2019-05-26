@@ -2,11 +2,12 @@
 
 namespace api\modules\v1\controllers;
 
-use common\models\EmployerApplications;
+
 use Yii;
+use yii\helpers\Url;
+use common\models\EmployerApplications;
 use common\models\AssignedCategories;
 use common\models\Organizations;
-use yii\helpers\Url;
 
 class ExploreController extends ApiBaseController
 {
@@ -43,12 +44,19 @@ class ExploreController extends ApiBaseController
                         ->groupBy(['b.category_enc_id']);
                 }], false)
                 ->joinWith(['employerApplications d' => function ($d) use ($options) {
-                    $d->joinWith(['applicationTypeEnc e'=>function($e) use ($options){
-                        $e->andOnCondition(['e.name'=> ucfirst($options['type'])]);
-                    }], false);
+                    $d->andOnCondition([
+                        'd.status' => 'Active',
+                        'd.is_deleted' => 0,
+                    ])
+                        ->joinWith(['applicationTypeEnc e' => function ($e) use ($options) {
+                            $e->andOnCondition(['e.name' => ucfirst($options['type'])]);
+                        }], false);
                 }], false)
                 ->where(['a.assigned_to' => ucfirst($options['type'])])
-                ->orderBy(['total' => SORT_DESC])
+                ->orderBy([
+                    'total' => SORT_DESC,
+                    'b.name' => SORT_ASC,
+                ])
                 ->asArray()
                 ->all();
 
@@ -80,7 +88,7 @@ class ExploreController extends ApiBaseController
                     $x->joinWith(['cityEnc d'], false);
                 }], false);
             }], false)
-            ->where(['a.is_deleted' => 0])
+            ->where(['status' => 'Active', 'a.is_deleted' => 0])
             ->orderBy(['total' => SORT_DESC])
             ->groupBy(['c.city_enc_id'])
             ->asArray()
