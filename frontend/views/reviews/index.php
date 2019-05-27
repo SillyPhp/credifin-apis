@@ -98,7 +98,7 @@ $this->params['seo_tags'] = [
                                 <div class="rcb-icon" id="college-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
                                 </div>
-                                <div class="rcb-name">Colleges</div>
+                                <div class="rcb-name">Colleges/Universities</div>
                             </div>
                         </a>
                     </div>

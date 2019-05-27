@@ -15,7 +15,7 @@ use yii\helpers\Url;
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' name="search_college" id="search_college" placeholder='Search College' type='text'>
+                                <input class='form-control' name="search_college" id="search_college" placeholder='Search College,Universities' type='text'>
                                 <button class='btn btn-link search-btn'>
                                     <i class='fa fa-search'></i>
                                 </button>
