@@ -64,7 +64,7 @@ if (!empty($total_applications)) {
                     'action'=>'extends-date'
                 ]);
                       echo $form->field($model, 'date')->widget(DatePicker::classname(), [
-                                            'options' => ['placeholder' => 'Date'],
+                                            'options' => ['placeholder' => 'Last Date To Apply'],
                                             'readonly' => true,
                                             'pluginOptions' => [
                                                 'autoclose' => true,
