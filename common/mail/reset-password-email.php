@@ -2,8 +2,9 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+?>
 
-$this->registerCss('
+<style type="text/css" media="screen">
     * {
         margin:0; 
         padding:0;
@@ -86,6 +87,8 @@ $this->registerCss('
         color:#00a0e3; 
         text-decoration:none;
     }
+</style>
+<style media="only screen and (max-device-width: 500px), only screen and (max-width: 380px)" type="text/css">
     @media only screen and (max-width: 500px){
         .welcome-text{
             padding:20px 30px 0 30px;
@@ -103,8 +106,7 @@ $this->registerCss('
             margin-bottom:20px;
         }
     }
-');
-?>
+</style>
 <div class="wrapper">
     <div class="inner-wrapper">
         <div class="logo">

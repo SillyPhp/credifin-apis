@@ -13,6 +13,7 @@ namespace common\models;
  * @property string $created_by
  * @property int $is_deleted
  *
+ * @property Organizations $organizationEnc
  * @property Users $createdBy
  * @property OrganizationBlogInformationImages[] $organizationBlogInformationImages
  */
@@ -38,8 +39,17 @@ class OrganizationBlogInformation extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['blog_information_enc_id', 'organization_enc_id', 'created_by'], 'string', 'max' => 100],
             [['blog_information_enc_id'], 'unique'],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEnc()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
