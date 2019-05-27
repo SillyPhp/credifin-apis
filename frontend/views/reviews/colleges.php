@@ -21,7 +21,13 @@ use yii\helpers\Url;
                                 </button>
                             </div>
                             <div class="btn_add_new_org">
-                                <a href="#" class="add_new_org btn_add_org">Add New College</a>
+                                <div class="btn_add_new_org">
+                                    <?php if (Yii::$app->user->isGuest): ?>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New College/Universities</a>
+                                    <?php else : ?>
+                                        <a href="#" class="add_new_org btn_add_org">Add New College/Universities</a>
+                                    <?php  endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
