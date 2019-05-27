@@ -4,7 +4,7 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
-$keywords = 'Jobs,Find Jobs in Ludhiana,find Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Top 10 Websites for jobs,Fresher Jobs, machine learning jobs, MBA jobs';
+$keywords = 'Data Science Jobs,Jobs in Bangalore, IT Jobs,Job Vacancies,Fresher Jobs,Graphic Designer Jobs,Jobs in Delhi,Bank Jobs';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
