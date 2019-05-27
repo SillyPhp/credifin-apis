@@ -4,6 +4,7 @@ namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
+use account\models\applications\ExtendsJob;
 use account\models\applications\UserAppliedApplication;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\Cities;
@@ -1003,10 +1004,21 @@ class JobsController extends Controller
             'shortlisted_resume' => $shortlist1,
         ]);
     }
-
+    public function actionExtendsDate()
+    {
+        $model = new ExtendsJob();
+        if ($model->load(Yii::$app->request->post()))
+        {
+           if ($model->save())
+           {
+               return $this->redirect(Yii::$app->request->referrer);
+           }
+        }
+    }
     private function __organizationDashboard()
     {
         $coaching_category = new WidgetTutorials();
+        $model = new ExtendsJob();
         $userApplied = new UserAppliedApplication();
         $tutorial_cat = $coaching_category->find()
             ->where(['name' => "organization_jobs_stats"])
@@ -1025,10 +1037,12 @@ class JobsController extends Controller
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
+            'closed_application' => $this->__closedjobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Jobs',10),
             'total_applied' => $userApplied->total_applied($type='Jobs'),
             'viewed' => $viewed,
+            'model' => $model,
             'primary_fields' => $this->getCategories()
         ]);
     }
@@ -1061,6 +1075,29 @@ class JobsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
+            ],
+            'having'=>[
+                '>=','a.last_date',date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+ private function __closedjobs($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Jobs',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+            ],
+            'having'=>[
+                '<','a.last_date',date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
