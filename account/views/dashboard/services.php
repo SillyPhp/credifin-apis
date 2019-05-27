@@ -159,7 +159,7 @@ path.two {
 }
 .light-box-in{
     position: relative;
-    width: 33%;
+    width: 90%;
     max-width: 450px;
     margin: auto;
 //    height: 78vh;
@@ -289,6 +289,14 @@ ul.ks-cboxtags {
 }
 .service-list input[type='checkbox']:focus + label {
   border: 2px solid #00a0e3;
+}
+@media screen and (max-width: 992px){
+    .light-box-in{
+        height: 400px;
+    }
+    .light-box-img{
+        height: calc(100% - 180px);
+    }
 }
 ");
 $script = <<<JS
