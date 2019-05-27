@@ -188,8 +188,8 @@ AppAssets::register($this);
                             <div class="col-md-12">
                                 <div class="quick-btns">
                                     <ul class="qb">
-                                        <li><a href="" class="career-btn">Careers</a></li>
-                                        <li><a href="" class="subscribe-btn">Subscribe</a></li>
+                                        <li><a href="/careers" class="career-btn">Careers</a></li>
+<!--                                        <li><a href="" class="subscribe-btn">Subscribe</a></li>-->
 <!--                                        <li><a href="" class="dr-btn">Drop Resume</a></li>-->
                                     </ul>
                                 </div>

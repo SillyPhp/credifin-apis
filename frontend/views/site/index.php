@@ -550,7 +550,30 @@ $this->params['seo_tags'] = [
         'feedbackFormModel' => $feedbackFormModel,
         'partnerWithUsModel' => $partnerWithUsModel,
 ]);?>
-
+<section class="moble-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pos-rel">
+                    <div class="pos-middle">
+                        <div class="mob-heading"> Download our App today </div>
+                        <div class="mob-sub-heading"> Find your dream job or internship On-The-Go Using  Empower Youth app</div>
+                        <div class="app-btn">
+                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'/></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="pos-rel">
+                    <div class="mob-pos">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/mobiles1.png')?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -597,7 +620,54 @@ $this->params['seo_tags'] = [
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-
+.pos-rel{
+    position:relative;
+    min-height:300px;
+    width:100%;
+    text-align:center;
+} 
+.pos-middle{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%
+}
+.mob-pos{
+    position:absolute;
+    bottom:0;
+    left:30px;
+}
+.mob-pos img{
+    max-height:300px;
+}
+.moble-bg{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/moble-bg.png') . ');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+.mob-heading{
+    font-size:33px;
+    color:#000;
+    font-family:lora;
+        font-weight:bold;
+    text-transform:capitalize;
+    width:100%;
+}
+.mob-sub-heading{
+    font-size:18px;
+    color:#000;
+    font-family:lora;
+    text-transform:capitalize;
+    width:100%;
+}
+.mob-imgs img{
+    max-height: 300px;
+}
+.app-btn{
+    max-width:200px;
+    margin:0 auto;
+}
 .intern-tag{
     position:absolute;
     top:0;
@@ -1506,6 +1576,7 @@ function scrollFunction() {
 
 JS;
 $this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
