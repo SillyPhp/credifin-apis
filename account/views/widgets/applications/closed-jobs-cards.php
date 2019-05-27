@@ -51,7 +51,7 @@ if (!empty($total_applications)) {
         </div>
     </div>
     <div id="form_modal2" class="modal fade in" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -77,7 +77,7 @@ if (!empty($total_applications)) {
                                         ?>
                 </div>
                 <div class="modal-footer">
-                    <?= Html::submitButton('Save',['class'=>'btn green']) ?>
+                    <?= Html::submitButton('Save',['class'=>'btn btn-c-save']) ?>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
@@ -89,7 +89,38 @@ if (!empty($total_applications)) {
 <?php }
 Pjax::end();
 $this->registerCss("
-
+.modal-open {
+    overflow: hidden!important;
+}
+.btn-c-save{
+    background: #00a0e3;
+    padding: 8px 18px;
+    color: #ffffff;
+    font-family: Open Sans;
+    font-size: 13px;
+    text-decoration: none;
+    -webkit-border-radius: 5px !important;
+    -moz-border-radius: 5px !important;
+    -ms-border-radius: 5px !important;
+    -o-border-radius: 5px !important;
+    border-radius: 5px !important;
+}
+.modal {
+  text-align: center;
+}
+@media screen and (min-width: 768px) { 
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: '';
+    height: 100%;
+  }
+}
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
 ");
 $script = <<<JS
 $(document).on('click','.datepicker_opn',function(e) {
