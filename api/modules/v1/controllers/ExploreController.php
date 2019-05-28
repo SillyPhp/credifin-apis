@@ -72,7 +72,10 @@ class ExploreController extends ApiBaseController
         if(isset($req['type'])){
             $top_companies = EmployerApplications::find()
                 ->alias('a')
-                ->select(['c.name org_name','a.organization_enc_id','b.name type','COUNT(a.organization_enc_id) as total'])
+                ->select(['c.name org_name','a.organization_enc_id','b.name type','COUNT(a.organization_enc_id) as total',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'c.initials_color color'
+                ])
                 ->joinWith(['applicationTypeEnc b'=>function($b) use($req){
                     $b->where(['b.name'=>$req['type']]);
                 }],false)
