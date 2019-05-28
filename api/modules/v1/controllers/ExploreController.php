@@ -96,7 +96,11 @@ class ExploreController extends ApiBaseController
                 ])
                 ->asArray()
                 ->all();
-            return $this->response(200,$top_companies);
+            if($top_companies == null || $top_companies == ''){
+                return $this->response(404);
+            }else{
+                return $this->response(200,$top_companies);
+            }
         }else{
             return $this->response(422);
         }
@@ -149,7 +153,12 @@ class ExploreController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200,$org);
+            if($org == null || $org == ''){
+                return $this->response(404);
+            }else{
+                return $this->response(200,$org);
+            }
+
         }else{
             return $this->response(422);
         }

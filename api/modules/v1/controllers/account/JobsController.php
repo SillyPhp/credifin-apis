@@ -180,7 +180,12 @@ class JobsController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, $review_list);
+            if($review_list == null || $review_list == ''){
+                return $this->response(404);
+            }else{
+                return $this->response(200, $review_list);
+            }
+
         }else{
             return $this->response(422);
         }
