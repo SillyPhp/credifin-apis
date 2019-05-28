@@ -159,7 +159,7 @@ class JobsController extends ApiBaseController
             $review_list = ReviewedApplications::find()
                 ->alias('a')
                 ->select(['a.review_enc_id', 'a.review', 'c.name type', 'b.application_enc_id', 'g.name as org_name', 'SUM(h.positions) as positions', 'e.name title', 'f.name parent_category',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
                     'g.initials_color color',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
                     'f.icon_png'])
