@@ -83,8 +83,8 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in one">
                         <a href="/employers">
-                            <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
-                                                   alt="Employers"></div>
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>" alt="Employers" title="Employers"></div>
                             <div class="h-heading">Employers</div>
                             <div class="h-text">I want to recruit talent</div>
                         </a>
@@ -93,7 +93,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in two">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates" title="Candidates">
                         </div>
                         <div class="h-heading">Candidates</div>
                         <div class="h-text">I'm the talent</div>
@@ -102,9 +102,8 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in three">
                         <div class="box-overlay">
-                            <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"
-                                        alt="Universities & Colleges">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>" alt="Universities & Colleges" title="Universities and Colleges">
                             </div>
                             <div class="h-heading">Universities & Colleges</div>
                             <div class="h-text">I want to enroll talent</div>
@@ -117,8 +116,8 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in four">
                         <div class="box-overlay">
-                            <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>" title="Recruiters" alt="Recruiters">
                             </div>
                             <div class="h-heading">Recruiters</div>
                             <div class="h-text">I want to find the best match for talent</div>
@@ -143,7 +142,7 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs" title="Jobs" />
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
@@ -153,8 +152,7 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>"
-                                 alt="Internships">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships" title="Internships" />
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -164,8 +162,7 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/reviews'); ?>">
                     <div class="service-box ser-box-purple">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
-                                 alt="Reviews">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="Reviews" title="Reviews" />
                         </div>
                         <div class="ser-heading">Reviews</div>
                     </div>
@@ -216,15 +213,19 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/midland">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
-                                                                 alt="Midland Microfin"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>" alt="Midland Microfin" title="Midland Microfin"/>
                                                         </a>
                                                     </div>
-
-                                                    <h3><a href="/job/audit-and-risk-management-manager-65391554294078"
-                                                           title="">Audit And Risk Management</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/midland"> Midland Microfin Ltd.</a></div>
-
+                                                    <h3>
+                                                        <a href="/job/audit-and-risk-management-manager-65391554294078" title="Audit And Risk Management">
+                                                            Audit And Risk Management
+                                                        </a>
+                                                    </h3>
+                                                    <div class="wtabs-com-name">
+                                                        <a href="/midland" title="Midland Microfin Ltd">
+                                                            Midland Microfin Ltd.
+                                                        </a>
+                                                    </div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jodhpur,
                                                         <a href="/job/audit-and-risk-management-manager-65391554294078"> 4 more</a></div>
                                                     </div>
@@ -238,14 +239,16 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/dsbedutech">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>"
-                                                                 alt="DSB EduTech"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB EduTech" title="DSB EduTech"/>
                                                         </a>
                                                     </div>
 
-                                                    <h3><a href="/job/business-development-executive-1901271548600570"
-                                                           title="">Business Development Executive</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/dsbedutech"> DSB EduTech</a></div>
+                                                    <h3>
+                                                        <a href="/job/business-development-executive-1901271548600570" title="Business Development Executive">
+                                                            Business Development Executive
+                                                        </a>
+                                                    </h3>
+                                                    <div class="wtabs-com-name"><a href="/dsbedutech" title="DSB EduTech"> DSB EduTech</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -259,12 +262,11 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/capitalbank">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>"
-                                                                 alt="capital-small-bank"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>" alt="capital-small-bank" title="capital-small-bank"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/job/credit-officer-credit-development-officer-28891553595039" title="">Credit Officer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/capitalbank"> Capital Small Finance Bank</a></div>
+                                                    <h3><a href="/job/credit-officer-credit-development-officer-28891553595039" title="Credit Officer">Credit Officer</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/capitalbank" title="Capital Small Finance Bank"> Capital Small Finance Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar,
                                                         <a href="/job/credit-officer-credit-development-officer-28891553595039">10 More</a>
                                                     </div>
@@ -282,13 +284,12 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/hamco">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                                 alt="Hamco"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco" title="Hamco"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/job/business-development-business-develpment-executive-20931553506890" title="">
+                                                    <h3><a href="/job/business-development-business-develpment-executive-20931553506890" title="Business Development">
                                                             Business Development</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
+                                                    <div class="wtabs-com-name"><a href="/hamco" title="Hamco"> Hamco</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
                                                     </div>
                                                 </div>
@@ -302,13 +303,15 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/citizensbank">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>"
-                                                                 alt="Citizen Bank"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>" alt="Citizen Bank" title="Citizen Bank"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/sales-officer-29591553927078"
-                                                           title="">Sales Officer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/citizensbank"> Citizens Bank</a></div>
+                                                    <h3>
+                                                        <a href="/internship/sales-officer-29591553927078" title="Sales Officer">
+                                                            Sales Officer
+                                                        </a>
+                                                    </h3>
+                                                    <div class="wtabs-com-name"><a href="/citizensbank" title="Citizens Bank"> Citizens Bank</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Mohali, <a href="/internship/sales-officer-29591553927078">8 More</a></div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -323,12 +326,11 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/manojoshempo">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/fame-finders.png') ?>"
-                                                                 alt="Up Money Limited"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/fame-finders.png') ?>" alt="Up Money Limited" title="Up Money Limited"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/assistant-director-98591554009460" title="">Assistant Director</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/manojoshempo"> Fame Finders Media </a></div>
+                                                    <h3><a href="/internship/assistant-director-98591554009460" title="Assistant Director">Assistant Director</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/manojoshempo" title="Fame Finders Media"> Fame Finders Media </a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>New Delhi</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -350,12 +352,11 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/webriderz">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/webRiderz.png') ?>"
-                                                                 alt="Up Money Limited"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/webRiderz.png') ?>" alt="Up Money Limited" title="Up Money Limited"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/job/web-developer-front-backend-developer-72621553337524" title="">Web Developer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/webriderz"> Web Riderz</a></div>
+                                                    <h3><a href="/job/web-developer-front-backend-developer-72621553337524" title="Web Developer">Web Developer</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/webriderz" title="Web Riderz"> Web Riderz</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -372,9 +373,11 @@ $this->params['seo_tags'] = [
                                                         </a>
                                                     </div>
                                                     <h3>
-                                                        <a href="/internship/business-development-associate-62841553668575"
-                                                           title="">Business Development Associate</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/thesmarttree"> The SmartTree</a></div>
+                                                        <a href="/internship/business-development-associate-62841553668575" title="Business Development Associate">
+                                                            Business Development Associate
+                                                        </a>
+                                                    </h3>
+                                                    <div class="wtabs-com-name"><a href="/thesmarttree" title="The SmartTree"> The SmartTree</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Work From Home</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -388,13 +391,11 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/hamco">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                                 alt="hamco"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="hamco" title="Hamco"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/market-research-analyst-11301553596170"
-                                                           title="">Market Research Analyst</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
+                                                    <h3><a href="/internship/market-research-analyst-11301553596170" title="Market Research Analyst">Market Research Analyst</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/hamco" title="Hamco"> Hamco</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -410,13 +411,11 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/becre8v">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>"
-                                                                 alt="Be Creative"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>" alt="Be Creative" title="Be Creative"/>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/teaching-electronics-65721553323006"
-                                                           title="">Teaching (Electronics)</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/becre8v"> Be Cre8v</a></div>
+                                                    <h3><a href="/internship/teaching-electronics-65721553323006" title="Teaching (Electronics)">Teaching (Electronics)</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/becre8v" title="Be Cre8v"> Be Cre8v</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana, <a href="">3 More</a>
                                                     </div>
                                                 </div>
@@ -431,14 +430,12 @@ $this->params['seo_tags'] = [
                                                 <div class="job-title-sec">
                                                     <div class="c-logo">
                                                         <a href="/insta">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
-                                                                 alt="Insta Apphanced"/>
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>" alt="Insta Apphanced" title="Insta Apphanced"/>
                                                         </a>
                                                     </div>
                                                     <h3>
-                                                        <a href="/internship/digital-marketing-22371553238862"
-                                                           title="">Digital Marketing</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/insta"> Insta Apphanced</a></div>
+                                                        <a href="/internship/digital-marketing-22371553238862" title="Digital Marketing">Digital Marketing</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/insta" title="Insta Apphanced"> Insta Apphanced</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
                                                     </div>
                                                 </div>
@@ -456,9 +453,8 @@ $this->params['seo_tags'] = [
                                                             <canvas class="user-icon" name="Akrolix Innovations" color="#ea3fa8" width="80" height="60" font="30px"></canvas>
                                                         </a>
                                                     </div>
-                                                    <h3><a href="/internship/website-designing-internship-in-gurgaon-26131551884452" title="">
-                                                            Website Designing</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/akrolixinnovations"> Akrolix Innovations</a></div>
+                                                    <h3><a href="/internship/website-designing-internship-in-gurgaon-26131551884452" title="Website Designing">Website Designing</a></h3>
+                                                    <div class="wtabs-com-name"><a href="/akrolixinnovations" title="Akrolix Innovations"> Akrolix Innovations</a></div>
                                                     <div class="job-lctn"><i class="fa fa-map-marker"></i>Gurgaon</div>
                                                 </div>
                                                 <div class="job-style-bx">
@@ -550,7 +546,30 @@ $this->params['seo_tags'] = [
         'feedbackFormModel' => $feedbackFormModel,
         'partnerWithUsModel' => $partnerWithUsModel,
 ]);?>
-
+<section class="moble-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pos-rel">
+                    <div class="pos-middle">
+                        <div class="mob-heading"> Download our App today </div>
+                        <div class="mob-sub-heading"> Find your dream job or internship On-The-Go Using  Empower Youth app</div>
+                        <div class="app-btn">
+                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'/></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="pos-rel">
+                    <div class="mob-pos">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/mobiles1.png')?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -597,7 +616,54 @@ $this->params['seo_tags'] = [
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-
+.pos-rel{
+    position:relative;
+    min-height:300px;
+    width:100%;
+    text-align:center;
+} 
+.pos-middle{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%
+}
+.mob-pos{
+    position:absolute;
+    bottom:0;
+    left:30px;
+}
+.mob-pos img{
+    max-height:300px;
+}
+.moble-bg{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/moble-bg.png') . ');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+.mob-heading{
+    font-size:33px;
+    color:#000;
+    font-family:lora;
+        font-weight:bold;
+    text-transform:capitalize;
+    width:100%;
+}
+.mob-sub-heading{
+    font-size:18px;
+    color:#000;
+    font-family:lora;
+    text-transform:capitalize;
+    width:100%;
+}
+.mob-imgs img{
+    max-height: 300px;
+}
+.app-btn{
+    max-width:200px;
+    margin:0 auto;
+}
 .intern-tag{
     position:absolute;
     top:0;
@@ -1506,6 +1572,7 @@ function scrollFunction() {
 
 JS;
 $this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
