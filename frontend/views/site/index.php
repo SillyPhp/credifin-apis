@@ -485,7 +485,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-3">
                 <div class="fade-in one">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>" title="Create your Exclusive Profile" alt="Create your Exclusive Profile" />
                     </div>
                     <div class="how-text-box">
                         <div class="how-heading">Create your Exclusive Profile </div>
@@ -495,7 +495,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-3">
                 <div class="fade-in two">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>" title="Get discovered by top employers" alt="Get discovered by top employers" />
                     </div>
                     <div class="how-text-box">
                         <div class="how-heading"> Get discovered by top employers </div>
@@ -505,7 +505,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-3">
                 <div class="fade-in three">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>" title="Evaluate Offer" alt="Evaluate Offer" />
                     </div>
                     <div class="how-text-box">
                         <div class="how-heading">Evaluate Offer</div>
@@ -515,7 +515,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-3">
                 <div class="fade-in four">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>" title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
                     </div>
                     <div class="how-text-box">
                         <div class="how-heading">Receive Custom Job Notifications</div>
@@ -528,8 +528,8 @@ $this->params['seo_tags'] = [
                 ?>
                 <div class="row">
                     <div class="signupbttns">
-                        <a href="/login" class="login-bttn">Login</a>
-                        <a href="/signup/individual" class="sign-up">Sign Up</a>
+                        <a href="/login" class="login-bttn" title="Login">Login</a>
+                        <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
                     </div>
                 </div>
                 <?php
@@ -555,7 +555,9 @@ $this->params['seo_tags'] = [
                         <div class="mob-heading"> Download our App today </div>
                         <div class="mob-sub-heading"> Find your dream job or internship On-The-Go Using  Empower Youth app</div>
                         <div class="app-btn">
-                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'/></a>
+                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1' title='Get it on Google Play'>
+                                <img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png' title='Download Empower Youth App on Google Play'/>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -563,7 +565,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-6 col-sm-6">
                 <div class="pos-rel">
                     <div class="mob-pos">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/mobiles1.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/mobiles1.png')?>" title="Empower Youth Mobile" alt="Empower Youth Mobile">
                     </div>
                 </div>
             </div>
@@ -577,7 +579,11 @@ $this->params['seo_tags'] = [
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
                     <?php foreach($search_words as $sw){ ?>
-                        <li class="hide"><a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>"><?= $sw['name'] ?></a></li>
+                        <li class="hide">
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>" title="<?= $sw['name'] ?>">
+                                <?= $sw['name'] ?>
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
@@ -586,7 +592,11 @@ $this->params['seo_tags'] = [
                 <div class="list-heading">Jobs</div>
                 <ul class="quick-links" id="jobs">
                     <?php foreach($job_profiles as $jp){ ?>
-                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>"><?= $jp['name']; ?> Jobs</a></li>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>" title="<?= $jp['name']; ?> Jobs">
+                                <?= $jp['name']; ?> Jobs
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
@@ -595,7 +605,11 @@ $this->params['seo_tags'] = [
                 <div class="list-heading">Browse by City</div>
                 <ul class="quick-links" id="cities">
                     <?php foreach($cities as $c){ ?>
-                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>">Jobs in <?= $c['name']; ?></a></li>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
+                                Jobs in <?= $c['name']; ?>
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
@@ -604,7 +618,11 @@ $this->params['seo_tags'] = [
                 <div class="list-heading">Internships</div>
                 <ul class="quick-links" id="internships">
                     <?php foreach($internship_profiles as $ip){ ?>
-                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>"><?= $ip['name']; ?> Internships</a></li>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>" title="<?= $ip['name']; ?> Internships">
+                                <?= $ip['name']; ?> Internships
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
