@@ -161,13 +161,10 @@ AppAssets::register($this);
         <?= $content; ?>
     </div>
     <footer id="footer" class="footer">
-        <div class="footer-border">
-<!--            <a href="/"><img src="--><?//= Url::to('/assets/common/logos/footer-logo.png'); ?><!--"> </a>-->
-        </div>
+        <div class="footer-border"></div>
         <div class="set_container container">
             <div class="row">
                 <div class="mt-6 useful-links col-sm-6 col-xs-12 col-md-3">
-
                     <div class="footer-widget ">
                         <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                         <div class="row">
@@ -189,8 +186,6 @@ AppAssets::register($this);
                                 <div class="quick-btns">
                                     <ul class="qb">
                                         <li><a href="/careers" class="career-btn">Careers</a></li>
-<!--                                        <li><a href="" class="subscribe-btn">Subscribe</a></li>-->
-<!--                                        <li><a href="" class="dr-btn">Drop Resume</a></li>-->
                                     </ul>
                                 </div>
                             </div>
@@ -201,72 +196,23 @@ AppAssets::register($this);
                                 </div>
                             </div>
                         </div>
-
-<!---->
-<!--                        <br/><br/>-->
-<!--                        <a href="/careers">Careers</a>-->
-<!--                        <a class="text-gray mt-10 send_mail" href="mailto:info@empoweryouth.com"><i-->
-<!--                                    class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>-->
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="f-logo">
-                        <a href=""><img src="<?= Url::to('/assets/common/logos/fg2.png')?>"> </a>
+                        <a href="/" title='Empower Youth'>
+                            <img src="<?= Url::to('/assets/common/logos/fg2.png')?>" title='Empower Youth' />
+                        </a>
                     </div>
                     <div class="ftxt">Empowering youth and going beyond</div>
-
-                    <div class="col-md-12">
-                        <div class="text-center">
-                            <div class="quick-links">
-                                <ul class="ql">
-
-                                    <!--                            <li><a href="">About Us</a></li> |-->
-                                    <!--                            <li><a href="">Our Team</a></li>-->
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-md-3">
                     <div class="app-btn">
-                        <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'/></a>
+                        <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1' title='Download Empower Youth App on Google Play'>
+                            <img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png' title='Download Empower Youth App on Google Play'/>
+                        </a>
                     </div>
                 </div>
-<!--                <div class="col-md-9">-->
-<!--                    <div class="col-sm-6 col-xs-12 col-md-3">-->
-<!--                        <div class="footer-widget mb-10">--><?//= Yii::t('frontend', 'Jobs By Location'); ?><!--</div>-->
-<!--                        <ul class="footer-list">-->
-<!--                            <li><a href="/jobs/list?location=Ludhiana">Jobs in Ludhiana</a></li>-->
-<!--                            <li><a href="/jobs/list?location=Jalandhar">Jobs in Jalandhar</a></li>-->
-<!--                            <li><a href="/jobs/list?location=Chandigarh">Jobs in Chandigarh</a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6 col-xs-12 col-md-3">-->
-<!--                        <div class="footer-widget mb-10">--><?//= Yii::t('frontend', 'Jobs By Profile'); ?><!--</div>-->
-<!--                        <ul class="footer-list">-->
-<!--                            <li><a href="/jobs/list?keyword=Information%20Technology">IT Jobs</a></li>-->
-<!--                            <li><a href="/jobs/list?keyword=Social%20Services">Social Services Jobs</a></li>-->
-<!--                            <li><a href="/jobs/list?keyword=Business%20Development">Business Development Jobs</a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6 col-xs-12 col-md-3">-->
-<!--                        <div class="footer-widget mb-10">--><?//= Yii::t('frontend', 'Internships By Location'); ?><!--</div>-->
-<!--                        <ul class="footer-list">-->
-<!--                            <li><a href="/internships/list?location=Ludhiana">Internships in Ludhiana</a></li>-->
-<!--                            <li><a href="/internships/list?location=Jalandhar">Internships in Jalandhar</a></li>-->
-<!--                            <li><a href="/internships/list?location=Chandigarh">Internships in Chandigarh</a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6 col-xs-12 col-md-3">-->
-<!--                        <div class="footer-widget mb-10">--><?//= Yii::t('frontend', 'Internships By Profile'); ?><!--</div>-->
-<!--                        <ul class="footer-list">-->
-<!--                            <li><a href="/internships/list?keyword=Marketing">Marketing Internships</a></li>-->
-<!--                            <li><a href="/internships/list?keyword=Arts%20and%20Design">Arts and Design Internships</a>-->
-<!--                            </li>-->
-<!--                            <li><a href="/internships/list?keyword=Administrative">Administrative Internships</a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
         </div>
         <div class="footer-bottom">

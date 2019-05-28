@@ -9,10 +9,9 @@ use yii\helpers\Url;
                     <h1 class="heading-style">Companies With Us</h1>
                     <div class="">Companies recruiting top talent from our portal.</div>
                     <div class="com1 animatable fadeIn">
-                        <a href="/capitalbank">
+                        <a href="/capitalbank" title="Capital Small Finance Bank">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>"
-                                     alt="Capital Small Finance Bank">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>" alt="Capital Small Finance Bank" title="Capital Small Finance Bank" />
                             </div>
                             <div class="com-name">
                                 Capital Small Finance Bank
@@ -20,10 +19,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com2 animatable fadeIn">
-                        <a href="/midland">
+                        <a href="/midland" title="Midland MicroFin">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
-                                     alt="Midland MicroFin">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>" alt="Midland MicroFin" title="Midland MicroFin" />
                             </div>
                             <div class="com-name">
                                 Midland MicroFin
@@ -31,9 +29,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com3 animatable fadeIn">
-                        <a href="/dsb">
+                        <a href="/dsb" title="DSB Law Group">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>" alt="DSB Law Group" title="DSB Law Group" />
                             </div>
                             <div class="com-name">
                                 DSB Law Group
@@ -41,9 +39,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com4 animatable fadeIn">
-                        <a href="/citizensbank">
+                        <a href="/citizensbank" title="Citizens Bank">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>" alt="Citizens Bank">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>" alt="Citizens Bank" title="Citizens Bank" />
                             </div>
                             <div class="com-name">
                                 Citizens Bank
@@ -51,9 +49,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com5 animatable fadeIn">
-                        <a href="/agile">
+                        <a href="/agile" title="Agile Finserv">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv" title="Agile Finserv" />
                             </div>
                             <div class="com-name">
                                 Agile Finserv
@@ -61,9 +59,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com6 animatable fadeIn">
-                        <a href="/becre8v">
+                        <a href="/becre8v" title="Be Cre8v">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>" alt="Be Cre8v ">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>" alt="Be Cre8v" title="Be Cre8v" />
                             </div>
                             <div class="com-name">
                                 Be Cre8v
@@ -71,10 +69,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com8 animatable fadeIn">
-                        <a href="/amritmalwa">
+                        <a href="/amritmalwa" title="Amrit Malwa Capital Limited">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>"
-                                     alt="Amrit Malwa Capital Limited">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/amrit-malwa.png') ?>" alt="Amrit Malwa Capital Limited" title="Amrit Malwa Capital Limited" />
                             </div>
                             <div class="com-name">
                                 Amrit Malwa Capital Limited
@@ -82,9 +79,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com9 animatable fadeIn">
-                        <a href="/hamco">
+                        <a href="/hamco" title="Hamco Ispat">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco Ispat" title="Hamco Ispat" />
                             </div>
                             <div class="com-name">
                                 Hamco Ispat
@@ -92,9 +89,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com10 animatable fadeIn">
-                        <a href="/upmoney">
+                        <a href="/upmoney" title="Up Money Ltd">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/up-money.png') ?>" alt="Up Money Ltd" title="Up Money Ltd" />
                             </div>
                             <div class="com-name">
                                 Up Money Ltd
@@ -102,9 +99,9 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="com11 animatable fadeIn">
-                        <a href="/apurva">
+                        <a href="/apurva" title="Code Nomad">
                             <div class="com-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/codenomad.png') ?>" alt="Code Nomad">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/codenomad.png') ?>" alt="Code Nomad" title="Code Nomad" />
                             </div>
                             <div class="com-name">
                                 Code Nomad
