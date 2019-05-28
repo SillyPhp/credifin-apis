@@ -22,6 +22,7 @@ class ExploreController extends ApiBaseController
                 'featured-employers' => ['POST'],
                 'top-cities' => ['POST'],
                 'top-companies' => ['POST'],
+                'company-search' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -69,7 +70,7 @@ class ExploreController extends ApiBaseController
 
     public function actionTopCompanies(){
         $req = Yii::$app->request->post();
-        if(isset($req['type'])){
+        if(!empty($req['type'])){
             $top_companies = EmployerApplications::find()
                 ->alias('a')
                 ->select(['c.name org_name','a.organization_enc_id','b.name type','COUNT(a.organization_enc_id) as total',
@@ -130,6 +131,28 @@ class ExploreController extends ApiBaseController
             ->all();
 
         return $this->response(200, $cities);
+    }
+
+    public function actionCompanySearch(){
+
+        $req = Yii::$app->request->post();
+
+        if(!empty($req['q'])){
+            $org = Organizations::find()
+                ->select(['organization_enc_id','name'])
+                ->where([
+                    'or',
+                    ['like', 'name', $req['q']],
+                    ['like', 'slug', $req['q']],
+                ])
+                ->andWhere(['status'=>'Active','is_deleted'=>0])
+                ->asArray()
+                ->all();
+
+            return $this->response(200,$org);
+        }else{
+            return $this->response(422);
+        }
     }
 
 }
