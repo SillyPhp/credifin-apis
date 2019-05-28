@@ -549,7 +549,7 @@ $this->params['seo_tags'] = [
 <section class="moble-bg">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <div class="pos-rel">
                     <div class="pos-middle">
                         <div class="mob-heading"> Download our App today </div>
@@ -562,7 +562,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <div class="pos-rel">
                     <div class="mob-pos">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/mobiles1.png')?>" title="Empower Youth Mobile" alt="Empower Youth Mobile">
@@ -1011,13 +1011,11 @@ $this->registerCss('
 .how-it-works{
     padding: 20px 0 45px 0;
     background:#ecf5fe;
+    text-align:center;
 }
 .how-heading{
-//    color:#f07706;
     font-size: 15px;
-//    font-family: lobster;
-//    font-weight: bold;
-//    text-transform: uppercase;
+    font-family:lora;
 }
 .steps-row{
     padding: 30px 0;
@@ -1530,7 +1528,34 @@ how-icon{
     font-size:14px;
 }
 
+
+@media only screen and (max-width: 992px){
+    .mob-pos{
+        left: 30px;
+    }    
+     .how-icon{
+        text-align:center;
+        padding:0 0 20px 0;
+    }
+    .how-heading{
+        font-family:lora;
+        font-size:20px
+    }
+}
+@media only screen and (max-width: 768px){
+    .mob-pos{
+        left: 50%;
+        transform:translateX(-50%);
+    }    
+}
 @media only screen and (max-width:500px){
+    .pos-rel{
+        min-height: 225px;        
+    }
+    .mob-heading{
+        font-size: 26px;
+        padding: 20px 0 0 0;
+    }
     .c-logo{
         width:100% !important ;
         text-align:center;

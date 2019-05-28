@@ -164,11 +164,13 @@ AppAssets::register($this);
         <div class="footer-border"></div>
         <div class="set_container container">
             <div class="row">
-                <div class="mt-6 useful-links col-sm-6 col-xs-12 col-md-3">
+                <div class="mt-6 col-sm-6 col-xs-12 col-md-3">
+
                     <div class="footer-widget ">
                         <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                         <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="si-icons">
                             <ul class="styled-icons icon-bordered icon-sm mb-5">
                                 <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
                                                 class="fa fa-facebook"></i></a></li>
@@ -181,15 +183,16 @@ AppAssets::register($this);
                                 <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
                                        class="overlink"><i class="fa fa-linkedin"></i></a></li>
                             </ul>
+                            </div>
                         </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="quick-btns">
                                     <ul class="qb">
                                         <li><a href="/careers" class="career-btn">Careers</a></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
                                                 class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
@@ -198,15 +201,15 @@ AppAssets::register($this);
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-sm-6">
                     <div class="f-logo">
                         <a href="/" title='Empower Youth'>
-                            <img src="<?= Url::to('/assets/common/logos/fg2.png')?>" title='Empower Youth' />
+                            <img src="<?= Url::to('/assets/common/logos/fg2.png')?>" title='Empower Youth'  alt="Empower Youth"/>
                         </a>
                     </div>
                     <div class="ftxt">Empowering youth and going beyond</div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-12">
                     <div class="app-btn">
                         <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1' title='Download Empower Youth App on Google Play'>
                             <img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png' title='Download Empower Youth App on Google Play'/>
@@ -233,6 +236,9 @@ AppAssets::register($this);
 </div>
 <?php
 $this->registerCss('
+.si-icons{
+    width:100%;
+}
 .f-logo{
     text-align:center;
     margin-top:15px;
@@ -581,6 +587,18 @@ $this->registerCss('
     margin-bottom: 10px;
     font-size: 13px;
     color: #888888;
+}
+@media only screen and (max-width: 768px){
+    .footer-widget {
+        text-align:center;
+    }
+    .app-btn{
+        margin:0 auto;
+    }
+    .f-logo img{
+        margin:40px 0 0 0;
+        width:100%;
+    }
 }
 ');
 
