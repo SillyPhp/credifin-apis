@@ -17,6 +17,7 @@ use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\Users;
+use MongoDB\Driver\Query;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -30,9 +31,9 @@ class JobsController extends ApiBaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-//        $behaviors['authenticator'] = [
-//            'class' => HttpBearerAuth::className()
-//        ];
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className()
+        ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
@@ -40,25 +41,155 @@ class JobsController extends ApiBaseController
                 'review-list' => ['POST'],
                 'applied-applications' => ['POST'],
                 'accepted-applications' => ['POST'],
+                'add-reviewed-application' => ['POST'],
+                'remove-reviewed-application' => ['POST'],
             ]
         ];
         return $behaviors;
     }
 
-    //create, update, delete, view, index
-//    public $modelClass = 'common\models\EmployerApplications';
-    public function actionShortlistedJobs(){
+    private function userId()
+    {
 
         $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
             ->andWhere(['source' => Yii::$app->request->headers->get('source')])
             ->one();
 
-
-        $candidate = Users::findOne([
+        $user = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
 
+        return $user;
+    }
+
+    public function actionAddReviewedApplication()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (isset($parameters['application_enc_id'])) {
+            $id = $parameters['application_enc_id'];
+            $chkshort = ShortlistedApplications::find()
+                ->select(['shortlisted'])
+                ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                ->asArray()
+                ->one();
+            $short_status = $chkshort['shortlisted'];
+            if ($short_status == 1) {
+                return $this->response(409, 'Can not add, it is already shortlisted.');
+            } else {
+                $chkuser = ReviewedApplications::find()
+                    ->select(['review'])
+                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->asArray()
+                    ->one();
+                $status = $chkuser['review'];
+                if (empty($chkuser)) {
+                    $model = new ReviewedApplications();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->review_enc_id = $utilitiesModel->encrypt();
+                    $model->application_enc_id = $id;
+                    $model->review = 1;
+                    $model->created_on = date('Y-m-d H:i:s');
+                    $model->created_by = $candidate->user_enc_id;
+                    if ($model->validate() && $model->save()) {
+                        return $this->response(201, 'Job successfully created in review list.');
+                    } else {
+                        return $this->response(500, 'Job is not created in review list');
+                    }
+                } else if ($status == 0) {
+                    $update_reviewed_applications = ReviewedApplications::find()
+                        ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                        ->one();
+                    $update_reviewed_applications->review = 1;
+                    if ($update_reviewed_applications->update()) {
+                        return $this->response(201, 'Job successfully created in review list.');
+                    } else {
+                        return $this->response(500, 'Job is not created in review list');
+                    }
+                } else if ($status == 1) {
+                    $this->response(409, 'already exists');
+                }
+            }
+        } else {
+            return $this->response(422);
+        }
+
+    }
+
+    public function actionRemoveReviewedApplication()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (isset($parameters['application_enc_id'])) {
+            $id = $parameters['application_enc_id'];
+            $chkuser = ReviewedApplications::find()
+                ->select(['review'])
+                ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                ->asArray()
+                ->one();
+            $status = $chkuser['review'];
+            if ($status == 1) {
+                $delete_application = ReviewedApplications::find()
+                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->one();
+                $delete_application->review = 0;
+                if ($delete_application->update()) {
+                    return $this->response(200, 'deleted successfully');
+                } else {
+                    return $this->response(500, 'Job is not deleted in review list');
+                }
+            } else {
+                return $this->response(409, 'already deleted or not found');
+            }
+        } else {
+            return $this->response(422);
+        }
+    }
+
+    public function actionReviewList()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if(isset($parameters['type'])) {
+            $review_list = ReviewedApplications::find()
+                ->alias('a')
+                ->select(['a.review_enc_id', 'a.review', 'c.name type', 'b.application_enc_id', 'g.name as org_name', 'SUM(h.positions) as positions', 'e.name title', 'f.name parent_category',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'g.initials_color color',
+                    'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
+                    'f.icon_png'])
+                ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->distinct();
+                    $b->joinWith(['applicationTypeEnc c']);
+                    $b->joinWith(['title d' => function ($c) {
+                        $c->joinWith(['categoryEnc e']);
+                        $c->joinWith(['parentEnc f']);
+                    }]);
+                    $b->joinWith(['organizationEnc g']);
+                    $b->joinWith(['applicationPlacementLocations h']);
+                    $b->groupBy(['h.application_enc_id']);
+                }], false)
+                ->having(['type' => $parameters['type']])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, $review_list);
+        }else{
+            return $this->response(422);
+        }
+    }
+
+    public function actionShortlistedJobs()
+    {
+
+        $candidate = $this->userId();
 
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
@@ -79,57 +210,13 @@ class JobsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        return $this->response(200,$shortlist_jobs);
+        return $this->response(200, $shortlist_jobs);
     }
 
-    public function actionReviewList(){
+    public function actionAppliedApplications()
+    {
 
-        $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
-            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-            ->one();
-
-
-        $candidate = Users::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
-
-        $review_list = ReviewedApplications::find()
-            ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'f.name parent_category',
-                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
-                'f.icon_png'])
-            ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
-            ->joinWith(['applicationEnc b' => function ($b) {
-                $b->distinct();
-                $b->joinWith(['applicationTypeEnc c']);
-                $b->joinWith(['title d' => function ($c) {
-                    $c->joinWith(['categoryEnc e']);
-                    $c->joinWith(['parentEnc f']);
-                }]);
-                $b->joinWith(['organizationEnc g']);
-                $b->joinWith(['applicationPlacementLocations h']);
-                $b->groupBy(['h.application_enc_id']);
-            }], false)
-            ->having(['type' => 'Jobs'])
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        return $this->response(200,$review_list);
-    }
-
-    public function actionAppliedApplications(){
-
-        $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
-            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-            ->one();
-
-
-        $candidate = Users::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
+        $candidate = $this->userId();
 
         $applied_applications = AppliedApplications::find()
             ->alias('a')
@@ -156,20 +243,13 @@ class JobsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        return $this->response(200,$applied_applications);
+        return $this->response(200, $applied_applications);
     }
 
-    public function actionAcceptedApplications(){
+    public function actionAcceptedApplications()
+    {
 
-        $token_holder_id = UserAccessTokens::find()
-            ->where(['access_token' => Yii::$app->request->headers->get('Authorization')])
-            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-            ->one();
-
-
-        $candidate = Users::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
+        $candidate = $this->userId();
 
         $accepted_jobs = AppliedApplications::find()
             ->alias('a')
@@ -193,10 +273,8 @@ class JobsController extends ApiBaseController
             ->all();
 
 
-        return $this->response(200,$accepted_jobs);
+        return $this->response(200, $accepted_jobs);
     }
-
-
 
 
 }
