@@ -430,6 +430,7 @@ color: initial;
     position:absolute;
     top:50%;
     transform:translateY(-50%);
+    z-index:9;
 }  
 .search-box{
 
