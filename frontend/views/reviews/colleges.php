@@ -237,7 +237,6 @@ review-benifit{
 #search_college
 {
     width: 75%;
-    height:42px;
 }
 .cri-bg{
     background:url(' . Url::to('@eyAssets/images/pages/review/clg.png') . ');
@@ -316,6 +315,7 @@ review-benifit{
     font-size:14px;
 }
 .search-box {
+    height:42px;
     display: inline-block;
     width: 100%;
     border-radius: 3px;
