@@ -12,6 +12,7 @@ use common\models\OrganizationReviewLikeDislike;
 use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\OrganizationProductsForm;
+use frontend\models\organizations\OrgAutoGenrateBlog;
 use frontend\models\OrgAutoBlogForm;
 use frontend\models\reviews\EditUnclaimedCollegeOrg;
 use frontend\models\reviews\EditUnclaimedInstituteOrg;
@@ -1478,4 +1479,28 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionGenrateBlog()
+    {
+        $this->layout = 'main-secondary';
+        $model = new OrgAutoGenrateBlog();
+        if (Yii::$app->user->identity->organization):
+        $data = $model->getJobs();
+        $model->title = Yii::$app->user->identity->organization->name;
+        $model->description = Yii::$app->user->identity->organization->description;
+        endif;
+        if ($model->load(Yii::$app->request->post()))
+        {
+            $model->images = UploadedFile::getInstances($model, 'images');
+            if ($model->save())
+            {
+                Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+            }
+            return $this->refresh();
+        }
+        return $this->render('genrate-blog',['model'=>$model,'data'=>$data]);
+    }
 }
