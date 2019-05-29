@@ -5,8 +5,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = Yii::t('frontend', 'Reviews | Latest Reviews');
 
-$keywords = 'Company Reviews, School Reviews, Best Compamies Reviews, Best School Reviews, Top Schools of Mumbai, Best IT Colleges Reviews,
-Best MBA colleges reviews, Best Ielts Institutes Reviews, Best CBSE Schools in Delhi, Artificial Intelligence Course Reviews.';
+$keywords = 'Reviews,School Reviews,College Reviews,Review,Company Reviews,top 10 Companies,Top 10 Schools in India,Top 10 Colleges in India';
 
 $description = "Here's you get top listed and top reviews schools, companies, institutes, organisations, colleges of your city. you can easily
 watch the reviews and see the ratings and you can also post your reviews of any sector.";

@@ -442,7 +442,8 @@ $this->registerCss('
     padding: 75px 0px;
 }
 .search-by-type {
-    width: 80%;
+    float:right;
+    width: 95%;
     background-color: #14141459;
     padding: 10px 20px;
     color: #fff;
@@ -476,7 +477,7 @@ $this->registerCss('
     text-align:left !important;
 }
 .set-col-2{
-    width:34%;
+    width:36%;
     float: left !important;
 }
 .in-s-btn{
@@ -605,6 +606,7 @@ $this->registerCss('
 @media only screen and (max-width: 766px){
     .search-by-type{
         width:55%;
+        float:none;
     }
     .set-col-2{
         width:100%;
