@@ -68,7 +68,7 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (isset($parameters['application_enc_id'])) {
+        if (!empty($parameters['application_enc_id'])) {
             $id = $parameters['application_enc_id'];
             $chkshort = ShortlistedApplications::find()
                 ->select(['shortlisted'])
@@ -104,6 +104,8 @@ class JobsController extends ApiBaseController
                         ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
                         ->one();
                     $update_reviewed_applications->review = 1;
+                    $update_reviewed_applications->last_updated_by = $candidate->user_enc_id;
+                    $update_reviewed_applications->last_updated_on = date('Y-m-d H:i:s');
                     if ($update_reviewed_applications->update()) {
                         return $this->response(201, 'Job successfully created in review list.');
                     } else {
@@ -137,6 +139,8 @@ class JobsController extends ApiBaseController
                     ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
                     ->one();
                 $delete_application->review = 0;
+                $delete_application->last_updated_by = $candidate->user_enc_id;
+                $delete_application->last_updated_on = date('Y-m-d H:i:s');
                 if ($delete_application->update()) {
                     return $this->response(200, 'deleted successfully');
                 } else {
@@ -155,11 +159,11 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if(isset($parameters['type'])) {
+        if (!empty($parameters['type'])) {
             $review_list = ReviewedApplications::find()
                 ->alias('a')
                 ->select(['a.review_enc_id', 'a.review', 'c.name type', 'b.application_enc_id', 'g.name as org_name', 'SUM(h.positions) as positions', 'e.name title', 'f.name parent_category',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
                     'g.initials_color color',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
                     'f.icon_png'])
@@ -180,42 +184,149 @@ class JobsController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            if($review_list == null || $review_list == ''){
+            if ($review_list == null || $review_list == '') {
                 return $this->response(404);
-            }else{
+            } else {
                 return $this->response(200, $review_list);
             }
 
+        } else {
+            return $this->response(422);
+        }
+    }
+
+    public function actionShortlist()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (!empty($parameters['application_enc_id'])) {
+            $id = $parameters['application_enc_id'];
+            $chkshort = ShortlistedApplications::find()
+                ->select(['shortlisted'])
+                ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                ->asArray()
+                ->one();
+            $short_status = $chkshort['shortlisted'];
+            if (empty($chkshort)) {
+                $shortlist_application = new ShortlistedApplications();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $shortlist_application->shortlisted_enc_id = $utilitiesModel->encrypt();
+                $shortlist_application->application_enc_id = $id;
+                $shortlist_application->shortlisted = 1;
+                $shortlist_application->created_by = $candidate->user_enc_id;
+                $shortlist_application->created_on = date('Y-m-d H:i:s');
+                if ($shortlist_application->validate() && $shortlist_application->save()) {
+
+                    $chkuser = ReviewedApplications::find()
+                        ->select(['review'])
+                        ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                        ->asArray()
+                        ->one();
+                    $status = $chkuser['review'];
+
+                    if ($status == 1) {
+                        $delete_application = ReviewedApplications::find()
+                            ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                            ->one();
+                        $delete_application->review = 0;
+                        $delete_application->last_updated_by = $candidate->user_enc_id;
+                        $delete_application->last_updated_on = date('Y-m-d H:i:s');
+                        $delete_application->update();
+                    }
+                    return $this->response(201, 'successfully shortlisted.');
+                } else {
+                    return $this->response(500, 'not shortlisted');
+                }
+            } elseif ($short_status == 0) {
+                $update_shortlisted = ShortlistedApplications::find()
+                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->one();
+
+                $update_shortlisted->shortlisted = 1;
+                $update_shortlisted->last_updated_by = $candidate->user_enc_id;
+                $update_shortlisted->last_updated_on = date('Y-m-d H:i:s');
+                if ($update_shortlisted->update()) {
+                    return $this->response(201, 'successfully shortlisted.');
+                } else {
+                    return $this->response(500, 'not shorlisted');
+                }
+            } elseif ($short_status == 1) {
+                return $this->response(409, 'already exists');
+            }
         }else{
             return $this->response(422);
         }
     }
 
-    public function actionShortlistedJobs()
+    public function actionRemoveShortlisted()
     {
-
+        $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        $shortlist_jobs = ShortlistedApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'd.name', 'e.name as org_name',
-                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
-                'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => $candidate->user_enc_id, 'a.shortlisted' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
+        if (!empty($parameters['application_enc_id'])) {
+            $id = $parameters['application_enc_id'];
+            $chkshort = ShortlistedApplications::find()
+                ->select(['shortlisted'])
+                ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                ->asArray()
+                ->one();
+            $short_status = $chkshort['shortlisted'];
+            if ($short_status == 1) {
+                $delete_shortlisted = ShortlistedApplications::find()
+                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->one();
+                $delete_shortlisted->shortlisted = 0;
+                $delete_shortlisted->last_updated_by = $candidate->user_enc_id;
+                $delete_shortlisted->last_updated_on = date('Y-m-d H:i:s');
+                if ($delete_shortlisted->update()) {
+                    return $this->response(200, 'deleted successfully');
+                } else {
+                    return $this->response(500, 'Job is not deleted in shortlist');
+                }
+            } else {
+                return $this->response(409, 'already deleted or not found');
+            }
+        } else {
+            return $this->response(422);
+        }
+    }
 
-        return $this->response(200, $shortlist_jobs);
+    public function actionShortlistedApplications()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (!empty($parameters['type'])) {
+            $shortlist_jobs = ShortlistedApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'j.name type', 'd.name', 'e.name as org_name',
+                    'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
+                    'SUM(g.positions) as positions'])
+                ->where(['a.created_by' => $candidate->user_enc_id, 'a.shortlisted' => 1])
+                ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+                ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+                ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+                ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+                ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+                ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
+                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+                ->groupBy(['b.application_enc_id'])
+                ->having(['type' => $parameters['type']])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($shortlist_jobs == null || $shortlist_jobs == '') {
+                return $this->response(404);
+            } else {
+                return $this->response(200, $shortlist_jobs);
+            }
+
+        } else {
+            return $this->response(422);
+        }
     }
 
     public function actionAppliedApplications()
