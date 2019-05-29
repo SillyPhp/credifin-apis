@@ -1,16 +1,17 @@
 <?php
-$this->params['header_dark'] = true;
+$this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
 ?>
 <section class="headerbg">
+    <div class="bg-vector"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="main-heading">
                     <div class="pos-center">
-                        <div class="main-text">Company Listing</div>
+                        <div class="main-text">Explore Companies</div>
                         <div class="search-container">
                         <form action="">
                             <input type="text" placeholder="Search Companies" name="search">
@@ -62,19 +63,31 @@ $this->registerCss('
     padding-top:20px;
 }
 .headerbg{
-    background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/com-bg.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/all-com-bg.png') . ');
     background-size:cover;
     background-repeat:no-repeat;
-//    min-height:400px !important;
+    position:relative;
+    min-height:300px !important;
+}
+.bg-vector{
+    background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/all-com-bg-text.png') . ');
+    position:absolute;
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    background-size: auto 161px;
+    width:100%;
+    height:100%;
+    right:30px;
+    bottom: -1px;
 }
 .main-heading{
     position:relative;
-    height:190px;
+    height:280px;
     text-align:left;
 }
 .main-text{
      font-size:40px;
-     color:#fff;
+     color:#f2f2f5;
      font-family:lobster;  
 }
 .pos-center{
@@ -190,6 +203,11 @@ form {
 .search-container button:hover {
  background: #00a0e3;
 }
+@media only screen and (max-width: 768px){
+    .bg-vector{
+        background-size: auto 124px;
+    }
+}   
 ');
 
 $script = <<<JS
