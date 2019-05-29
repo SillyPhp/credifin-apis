@@ -983,9 +983,6 @@ class InternshipsController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
-            'having'=>[
-                '>=','a.last_date',date('Y-m-d')
-            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
