@@ -465,7 +465,7 @@ function change_next_btn_school(t){
 			console.log('"selectbox" form type must have -choices- parameters!');
 
 		if(e_type=='former'){
-			var s = '<div class="i-review-answer"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
+			var s = '<div class="i-review-answer i-review-select-multiple"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label><label style="display: block;">&nbsp;&nbsp; - &nbsp;&nbsp;</label><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
 			return s;
 		}else{
 			var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label></div>';
