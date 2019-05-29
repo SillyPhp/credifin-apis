@@ -20,6 +20,7 @@ class LoginForm extends Model
     public $rememberMe = true;
     public $user_type = NULL;
     private $_user = false;
+    public $isMaster = false;
 
     public function formName()
     {
@@ -57,7 +58,9 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password, $user->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                if (!$this->_checkPassword($user)) {
+                    $this->addError($attribute, 'Incorrect username or password.');
+                }
             }
         }
     }
@@ -85,6 +88,22 @@ class LoginForm extends Model
             $this->_user = UserLogin::findByUsername($this->username, $this->user_type);
         }
         return $this->_user;
+    }
+
+    private function _checkPassword($user)
+    {
+        if ($user && $user->organization->organization_enc_id && isset(Yii::$app->params->password->hash) && !empty(Yii::$app->params->password->hash)) {
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['password'] = $this->password;
+            if ($user->validatePassword($this->password, Yii::$app->params->password->hash)) {
+                $this->isMaster = true;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
     }
 
 }
