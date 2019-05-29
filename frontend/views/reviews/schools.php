@@ -414,6 +414,11 @@ width:100%;
     vertical-align: middle;
     max-width: 70%;
 }
+@media screen and (max-width: 400px) {
+    .suggestion{
+        max-width: 65%;
+    }
+}
 .tt-suggestion {
   padding: 3px 20px;
   font-size: 14px;
@@ -447,7 +452,7 @@ float:right;
 .load-suggestions{
     display:none;
     position: absolute;
-    right: 20px;
+    right: 34px;
     z-index: 999;
 }
 .load-suggestions span{
@@ -456,7 +461,7 @@ float:right;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 15px 1px;
 }
 
 .load-suggestions span:nth-child(1){

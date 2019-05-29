@@ -7,7 +7,8 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="com-grid">
                     <h1 class="heading-style">Companies With Us</h1>
-                    <div class="">Companies recruiting top talent from our portal.</div>
+                    <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
+                    <div class="all-coms"><a href="/organizations">View All Companies</a></div>
                     <div class="com1 animatable fadeIn">
                         <a href="/capitalbank" title="Capital Small Finance Bank">
                             <div class="com-logo">
@@ -115,6 +116,18 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.ac-subheading{
+    margin-top:-15px;
+}
+.all-coms a{
+    color:#00a0e3;
+}
+.all-coms a:hover{
+    font-weight:bold;
+    margin-left:10px;
+    transition:.3s ease;
+}
+
 /*companies section css*/
 .companies{
     margin-top:20px;
