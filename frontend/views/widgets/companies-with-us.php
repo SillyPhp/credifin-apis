@@ -8,7 +8,6 @@ use yii\helpers\Url;
                 <div class="com-grid">
                     <h1 class="heading-style">Companies With Us</h1>
                     <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
-                    <div class="all-coms"><a href="/organizations">View All Companies</a></div>
                     <div class="com1 animatable fadeIn">
                         <a href="/capitalbank" title="Capital Small Finance Bank">
                             <div class="com-logo">
