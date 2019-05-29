@@ -195,7 +195,7 @@ class JobsController extends ApiBaseController
         }
     }
 
-    public function actionShortlist()
+    public function actionAddShortlisted()
     {
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
