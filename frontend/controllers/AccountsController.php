@@ -79,7 +79,7 @@ class AccountsController extends Controller
         }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
             if ($loginFormModel->isMaster) {
-                Yii::$app->session->set('userSessionTimeout', time() + 60);
+                Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
             return $this->redirect(Yii::$app->session->get("backURL"));
         }

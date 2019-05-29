@@ -15,10 +15,12 @@ use yii\helpers\Url;
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' name="search_college" id="search_college" placeholder='Search College,Universities' type='text'>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords" id="search_college" placeholder='Search College,Universities' type='text'>
                                 <button class='btn btn-link search-btn'>
                                     <i class='fa fa-search'></i>
                                 </button>
+                                </form>
                             </div>
                             <div class="btn_add_new_org">
                                 <div class="btn_add_new_org">
@@ -235,6 +237,7 @@ review-benifit{
 #search_college
 {
     width: 75%;
+    height:42px;
 }
 .cri-bg{
     background:url(' . Url::to('@eyAssets/images/pages/review/clg.png') . ');
