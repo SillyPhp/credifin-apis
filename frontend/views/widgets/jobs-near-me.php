@@ -184,9 +184,7 @@ $this->registerCss('
     left: 0;
     height: calc(100vh - 52px);
     z-index:999;
-    overflow-y: scroll;
-    overflow-x: hidden;
-//    box-shadow: 0px 0px 10px 1px #e6e6e6;
+    overflow: visible !important;
 }
 .near-me-map{
     height: calc(100vh - 52px);
