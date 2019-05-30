@@ -75,10 +75,10 @@ use yii\helpers\Url;
             <div class="pos-abso">
             <div class="row">
                 <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
-<!--                <div class="gb-text">-->
-<!--                    <span class="qots">"</span>All children start their school careers with sparkling imaginations, fertile minds, and a willingness-->
-<!--                    to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>-->
-<!--                </div>-->
+                <div class="gb-text">
+                    <span class="qots">"</span>All children start their school careers with sparkling imaginations, fertile minds, and a willingness
+                    to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>
+                </div>
             </div>
             </div>
         </div>
@@ -125,6 +125,7 @@ $this->registerCss('
     position:absolute;
     top:50%;
     left:50%;
+    max-width:800px;
     width:100%;
     transform:translate(-50%, -50%);
 }
@@ -137,9 +138,9 @@ $this->registerCss('
 }
 .gb-heading{
     width:100%;
-//    padding:0 0 20px 0;
+    padding:0 0 20px 0;
     font-weight:bold;
-    font-size:35px;
+    font-size:30px;
     color:#fff;
        
 }
