@@ -153,7 +153,7 @@ class ExploreController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            if($org == null || $org == ''){
+            if($org == null || $org == '' || empty($org)){
                 return $this->response(404);
             }else{
                 return $this->response(200,$org);

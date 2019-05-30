@@ -118,6 +118,10 @@ class ReviewCards {
         {
             $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
         }
+        if (isset($options['rating']))
+        {
+            $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
+        }
         if (isset($options['sort']))
         {
             $cards->orderBy(['c.created_on' => SORT_DESC]);

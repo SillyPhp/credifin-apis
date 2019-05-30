@@ -91,7 +91,7 @@ function fetch_cards(params,template,is_clear=false)
             $('.fader').css('display','none');
             if (is_clear)
                 {
-                    $('#review_container').html('');
+                    template.html('');
                 }
             template.append(Mustache.render($('#review-card').html(),response.cards));
             utilities.initials();

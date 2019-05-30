@@ -19,6 +19,8 @@ use yii\helpers\Url;
                     {{/logo}}
                 </div>
                 <div class="com-name"><a href="/{{slug}}/reviews">{{name}}</a></div>
+                <div class="com-loc"></div>
+                <div class="com-dep"></div>
                 {{#rating}}
                 <div class="com-rating">
                     <div class="average-star" data-score="{{rating}}"></div>
@@ -64,7 +66,7 @@ height:260px !important;
 }
 ");
 $script = <<< JS
-function fetch_cards_top(params,template)
+function fetch_cards_top(params,template,is_clear=false)
 {
     $.ajax({
         url : '/organizations/fetch-unclaimed-review-cards',
@@ -72,6 +74,11 @@ function fetch_cards_top(params,template)
         data: {params:params},
         success: function(response) {
             if (response.status==200){
+                if (is_clear)
+                {
+                    $('#review_container').html('');
+                    template.html('');
+                }
             template.append(Mustache.render($('#review-card_main').html(),response.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';

@@ -31,7 +31,11 @@ use yii\bootstrap\ActiveForm;
             </div>
             <div class="col-md-12">
                 <div class="btn_add_new_org pull-right">
-                    <a href="#" class="add_new_org1">Add New Organizaton</a>
+                    <?php if (Yii::$app->user->isGuest): ?>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Company</a>
+                    <?php else : ?>
+                        <a href="#" class="add_new_org1 add_new_org">Add New Organizaton</a>
+                    <?php  endif; ?>
                 </div>
             </div>
         </div>
@@ -177,6 +181,9 @@ use yii\bootstrap\ActiveForm;
                         <div id="review_container">
 
                         </div>
+                        <div id="review_container_unclaimed">
+
+                        </div>
                         <div class="col-md-12">
                             <div class="load-more-bttn">
                                 <button type="button" id="load_review_card_btn">Load More</button>
@@ -315,6 +322,8 @@ use yii\bootstrap\ActiveForm;
 <div class="fader"></div>
 <?php
 echo $this->render('/widgets/mustache/review-cards', [
+]);
+echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 ]);
 ?>
 </div>
@@ -993,7 +1002,10 @@ float:right;
   background-color: #3498db;
   margin: 35px 1px;
 }
-
+.uncliamed_height
+{
+min-height:304px;
+}
 .load-suggestions span:nth-child(1){
   animation: bounce 1s ease-in-out infinite;
 }
@@ -1004,6 +1016,9 @@ float:right;
 
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
+}
+.com-loc, .com-dep{
+    min-height:24px;
 }
 /*new modal css ends*/
 ');
@@ -1023,6 +1038,7 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
+     fetch_cards_top(params={'rating':[1,2,3,4,5],business_activity:activities,'offset':0},template=$('#review_container_unclaimed'),is_clear=true);       
      fetch_cards(params={'business_activity':activities,'limit':null},template=$('#review_container'),is_clear=true);       
 });
 var ps = new PerfectScrollbar('#industry-scroll');
@@ -1030,6 +1046,7 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
+    fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),business_activity:['College','School','Educational Institute','Others'],'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
     fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},template=$('#review_container'),is_clear=true);
  });   
 var companies = new Bloodhound({
@@ -1085,7 +1102,7 @@ var locations = new Bloodhound({
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
-})
+});
 $('#city_search').typeahead(null, {
   name: 'keywords',
   displayKey: "text",
@@ -1095,6 +1112,7 @@ $('#city_search').typeahead(null, {
   {
      fetch_cards(params={'city':datum.text,'limit':9},template=$('#review_container'),is_clear=true);   
   });
+fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),business_activity:['College','School','Educational Institute','Others'],'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
 fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=true);
 JS;
 $this->registerJs($script);
