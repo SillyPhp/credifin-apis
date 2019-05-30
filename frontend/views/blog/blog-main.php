@@ -649,10 +649,10 @@ $this->registerCss('
     position:absolute;
 }
 .zoom:hover{
-    -ms-transform: scale(2.0,2.0); /* IE 9 */
-    -webkit-transform: scale(2.0,2.0); /* Safari 3-8 */
-    transform: scale(2.0,2.0); 
-    top:-20%;
+    -ms-transform: scale(1.5,1.5); /* IE 9 */
+    -webkit-transform: scale(1.5,1.5); /* Safari 3-8 */
+    transform: scale(1.5,1.5); 
+    top:0%;
     left:0;
     position: absolute;
     z-index: 999;
@@ -724,9 +724,6 @@ hr {
 @media screen and (max-width: 768px){
     .owl-stage-outer{
         overflow: hidden !important;
-    }
-    .zoom img{
-        height:150px;
     }
     .zoom:hover{
         -ms-transform: scale(1.5,1.2);
