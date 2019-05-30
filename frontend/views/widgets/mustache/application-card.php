@@ -59,6 +59,7 @@ $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<<JS
 let loader = false;
 let draggable = false;
+let review_list_draggable = false;
 let page = 0;
 function renderCards(cards, container){
     var card = $('#application-card').html();
@@ -176,6 +177,20 @@ function getReviewList(sidebarpage){
                 reviewlists(response);
                 check_list();
                 utilities.initials();
+            }
+        }).done(function(){
+            if(review_list_draggable === true) {
+                $.each($('.draggable-item'), function(){
+                    $(this).draggable({
+                        helper: "clone",
+                        drag: function() { 
+                            $('.ps').addClass('ps-visible');
+                         },
+                         stop: function() { 
+                            $('.ps').removeClass('ps-visible');
+                         },
+                    });
+                });
             }
         });
     }
