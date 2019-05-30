@@ -846,6 +846,12 @@ $script = <<<JS
                     var index = dropped.indexOf(dropped_elem_data_id);
                     dropped.splice(index, 1);
                 }
+                
+                if(!dropped.includes(item_id)){
+                    $('[data-id='+item_id+']').draggable({disabled:true});
+                    $('[data-id='+item_id+']').addClass('b-li-card');
+                    dropped.push(item_id);
+                }
                 addedToReview(item_id, dropped_elem_id, true);
                 $(elem).removeClass('highlight');
             }
@@ -877,12 +883,6 @@ $script = <<<JS
                         $('#job_3').val(data['message']['name'] + " - " + data['message']['cat_name']);
                         blockC3();
                     }
-                }
-                
-                if(!dropped.includes(data['message']['application_enc_id'])){
-                    $('[data-id='+data['message']['application_enc_id']+']').draggable({disabled:true});
-                    $('[data-id='+data['message']['application_enc_id']+']').addClass('b-li-card');
-                    dropped.push(data['message']['application_enc_id']);
                 }
                 
                 if(elem_id === 'c1'){
