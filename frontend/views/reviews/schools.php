@@ -70,6 +70,19 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <section class="green-bg">
+        <div class="container">
+            <div class="pos-abso">
+            <div class="row">
+                <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
+<!--                <div class="gb-text">-->
+<!--                    <span class="qots">"</span>All children start their school careers with sparkling imaginations, fertile minds, and a willingness-->
+<!--                    to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>-->
+<!--                </div>-->
+            </div>
+            </div>
+        </div>
+    </section>
     <section>
         <div class="container">
             <div class="row">
@@ -96,6 +109,40 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.green-bg{
+    background-image: linear-gradient(141deg, #6cc8ad 0%, #65bca3 51%, #59a693 75%);
+    min-height:300px;
+    position:relative;
+    text-align:center;
+    margin-top:40px;
+    font-family:lora;
+}
+.qots{
+    font-size: 30px;
+    line-height: 20px;
+}
+.pos-abso{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:100%;
+    transform:translate(-50%, -50%);
+}
+.gb-text{
+    color:#fff;
+    font-size:22px;
+}
+.gb-text span{
+    font-weight:bold;
+}
+.gb-heading{
+    width:100%;
+//    padding:0 0 20px 0;
+    font-weight:bold;
+    font-size:35px;
+    color:#fff;
+       
+}
 .btn_add_org{
     color:#fff;
     position:absolute;
@@ -549,5 +596,6 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
   });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
