@@ -311,7 +311,7 @@ class InternshipsController extends Controller
             ->select(['a.organization_enc_id id','a.name'])
             ->innerJoinWith(['employerApplications b' => function($x){
                 $x->onCondition([
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0
                 ]);
                 $x->innerJoinWith(['applicationTypeEnc c' => function($y){
@@ -319,7 +319,7 @@ class InternshipsController extends Controller
                 }]);
             }],false)
             ->where([
-                'a.status' => 'Active',
+//                'a.status' => 'Active',
                 'a.is_deleted' => 0
             ])
             ->andFilterWhere(['like', 'a.name', $query])
@@ -344,7 +344,7 @@ class InternshipsController extends Controller
             ->innerJoinWith(['employerApplications b' => function($x) use($query, $applications){
                 $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
                 $x->onCondition([
-                    'b.status' => 'Active',
+//                    'b.status' => 'Active',
                     'b.is_deleted' => 0
                 ]);
 
@@ -376,7 +376,7 @@ class InternshipsController extends Controller
                 $x->limit(10);
             }])
             ->where([
-                'a.status' => 'Active',
+//                'a.status' => 'Active',
                 'a.is_deleted' => 0,
                 'a.organization_enc_id' => $id
             ])
@@ -538,7 +538,10 @@ class InternshipsController extends Controller
             }])
             ->joinwith(['applicationTypeEnc r'], false, 'INNER JOIN')
             ->joinwith(['organizationEnc w' => function ($s) {
-                $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
+                $s->onCondition([
+//                    'w.status' => 'Active',
+                    'w.is_deleted' => 0
+                ]);
             }], false)
             ->asArray()
             ->one();
