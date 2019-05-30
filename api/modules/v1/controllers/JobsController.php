@@ -6,6 +6,7 @@ use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Cards;
 use api\modules\v1\models\JobApply;
 use api\modules\v1\models\JobDetail;
+use common\models\Organizations;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
 use common\models\UserAccessTokens;
@@ -27,7 +28,7 @@ class JobsController extends ApiBaseController
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['list', 'detail'],
+            'except' => ['list', 'detail','get-jobs-by-organization'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -70,7 +71,7 @@ class JobsController extends ApiBaseController
             $options['company'] = $parameters['company'];
         }
 
-        if ($parameters['careers'] && !empty($parameters['careers'])){
+        if ($parameters['careers'] && !empty($parameters['careers'])) {
             $options['for_careers'] = (int)$parameters['careers'];
         }
 
@@ -117,9 +118,9 @@ class JobsController extends ApiBaseController
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
                 $token_holder_id = UserAccessTokens::find()
-                                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
-                                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-                                    ->one();
+                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                    ->one();
 
                 $user = Candidates::findOne([
                     'user_enc_id' => $token_holder_id->user_enc_id
@@ -137,14 +138,14 @@ class JobsController extends ApiBaseController
                         ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => $user->user_enc_id])
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
-                }else{
+                } else {
                     return $this->response(401);
                 }
             }
 
             $organization_details = $application_details
                 ->getOrganizationEnc()
-                ->select(['organization_enc_id','name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
+                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
                 ->asArray()
                 ->one();
 
@@ -166,9 +167,9 @@ class JobsController extends ApiBaseController
 
             $i = 0;
             foreach ($data["applicationEmployeeBenefits"] as $d) {
-                if(!empty($d["icon"])) {
+                if (!empty($d["icon"])) {
                     $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
-                } else{
+                } else {
                     $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
                 }
                 $i++;
@@ -219,20 +220,20 @@ class JobsController extends ApiBaseController
                     $data["vacancies"] += $apl['positions'];
                 }
             }
-            
-            if(empty($data['applicationInterviewLocations'])){
+
+            if (empty($data['applicationInterviewLocations'])) {
                 $data['applicationInterviewLocations'][] = [
-                       "location_enc_id" => "kdmvkdkv",
-                       "application_enc_id" => "kdmklvadkv",
-                       "city_enc_id" => "",
-                       "name" => "Online"
+                    "location_enc_id" => "kdmvkdkv",
+                    "application_enc_id" => "kdmklvadkv",
+                    "city_enc_id" => "",
+                    "name" => "Online"
                 ];
             }
 
-            if(!$data["vacancies"]){
+            if (!$data["vacancies"]) {
                 $data["vacancies"] = 0;
             }
-            
+
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
             $data['preferred_gender'] = $this->prefferedGender($data['preferred_gender']);
@@ -294,9 +295,9 @@ class JobsController extends ApiBaseController
 
         if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && isset($reqParams['city_id'])) {
 
-            if($reqParams['city_id'] != ''){
+            if ($reqParams['city_id'] != '') {
                 $city_enc_ids = explode(",", $reqParams['city_id']);
-            }else{
+            } else {
                 $city_enc_ids = [];
             }
 
@@ -363,6 +364,65 @@ class JobsController extends ApiBaseController
             }
         } else {
             return $this->response(422);
+        }
+    }
+
+    public function actionGetJobsByOrganization()
+    {
+        $parameters = \Yii::$app->request->post();
+        $options = [];
+
+        if (!empty($parameters['org_enc_id']) && isset($parameters['org_enc_id'])) {
+            $options['org_enc_id'] = $parameters['org_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (!empty($parameters['type']) && isset($parameters['type'])) {
+            $options['type'] = $parameters['type'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (!empty($parameters['keyword']) && isset($parameters['keyword'])) {
+            $options['keyword'] = $parameters['keyword'];
+        }else{
+            return $this->response(422);
+        }
+
+        $organization_applications = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.slug', 'h.name'])
+            ->joinWith(['designationEnc l'], false)
+            ->joinWith(['applicationOptions as f'], false)
+            ->joinWith(['title g' => function ($z) {
+                $z->joinWith(['categoryEnc as h'], false);
+                $z->joinWith(['parentEnc p'], false);
+            }], false)
+            ->joinWith(['preferredIndustry o'], false)
+            ->joinWith(['applicationTypeEnc as j'], false)
+            ->innerJoinWith(['organizationEnc b'=>function($a){
+                $a->onCondition(['b.status'=>'Active','b.is_deleted'=>0]);
+            }],false)
+            ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'j.name' => $options['type']]);
+
+        if (!empty($options['keyword'])) {
+
+            $organization_applications->andWhere([
+                'or',
+                ['like', 'a.slug', $options['keyword']],
+                ['like', 'l.designation', $options['keyword']],
+                ['like', 'h.name', $options['keyword']],
+                ['like', 'o.industry', $options['keyword']],
+                ['like', 'p.name', $options['keyword']],
+            ]);
+        }
+        $data = $organization_applications->asArray()->all();
+
+        if ($data == null || empty($data) || $data == '') {
+            return $this->response(404);
+        } else {
+            return $this->response(200, $data);
         }
     }
 }
