@@ -27,6 +27,19 @@ class BlogController extends Controller
             ->limit(8)
             ->asArray()
             ->all();
+        $quotes = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->innerJoinWith(['postCategories b' => function ($b) {
+                $b->innerJoinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => 'Quotes'])
+            ->groupBy(['a.post_enc_id'])
+            ->orderby(new Expression('rand()'))
+            ->limit(6)
+            ->asArray()
+            ->all();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $popular_posts = Posts::find()
@@ -48,6 +61,7 @@ class BlogController extends Controller
         }
         return $this->render('blog-main', [
             'posts' => $posts,
+            'quotes' => $quotes,
         ]);
     }
 
