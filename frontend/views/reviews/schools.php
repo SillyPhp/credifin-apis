@@ -49,10 +49,12 @@ $this->params['seo_tags'] = [
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' name="search_school" id="search_school" placeholder='Search School' type='text'>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                <input class='form-control' name="keywords" id="search_school" placeholder='Search School' type='text'>
                                 <button class='btn btn-link search-btn'>
                                     <i class='fa fa-search'></i>
                                 </button>
+                                </form>
                             </div>
                             <div class="btn_add_new_org ">
                                 <?php if (Yii::$app->user->isGuest): ?>
@@ -345,6 +347,7 @@ review-benifit{
     font-size:14px;
 }
 .search-box {
+    height:42px;
     display: inline-block;
     width: 100%;
     border-radius: 3px;
