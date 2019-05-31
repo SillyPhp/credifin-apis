@@ -7,6 +7,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\web\HttpException;
 use yii\helpers\Url;
+use yii\db\Expression;
 use common\models\Posts;
 use common\models\PostTags;
 use common\models\PostCategories;
@@ -26,9 +27,109 @@ class BlogController extends Controller
             ->limit(8)
             ->asArray()
             ->all();
+        $quotes = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->innerJoinWith(['postCategories b' => function ($b) {
+                $b->innerJoinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => 'Quotes'])
+            ->groupBy(['a.post_enc_id'])
+            ->orderby(new Expression('rand()'))
+            ->limit(6)
+            ->asArray()
+            ->all();
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $popular_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id','a.title','a.slug','a.excerpt', 'c.name','CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->joinWith(['postCategories b' => function ($b){
+                    $b->joinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->orderby(new Expression('rand()'))
+                ->limit(4)
+                ->asArray()
+                ->all();
+            return $response = [
+                'status' => 200,
+                'message' => 'Success',
+                'popular_posts' => $popular_posts,
+            ];
+        }
         return $this->render('blog-main', [
             'posts' => $posts,
+            'quotes' => $quotes,
         ]);
+    }
+
+    public function actionTrendingPosts(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $popular_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->innerJoinWith(['postCategories b' => function ($b) {
+                    $b->innerJoinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['c.name' => 'Infographics']])
+                ->groupBy(['a.post_enc_id'])
+                ->orderby(new Expression('rand()'))
+                ->limit(4)
+                ->asArray()
+                ->all();
+
+            $exclusions = [];
+
+            foreach ($popular_posts as $p){
+                array_push($exclusions, $p['post_enc_id']);
+            }
+
+            $whats_new_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->innerJoinWith(['postCategories b' => function ($b) {
+                    $b->innerJoinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['not in', 'a.post_enc_id', $exclusions])
+                ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['c.name' => 'Infographics']])
+                ->groupBy(['a.post_enc_id'])
+                ->orderby(new Expression('rand()'))
+                ->limit(6)
+                ->asArray()
+                ->all();
+
+            foreach ($whats_new_posts as $w){
+                array_push($exclusions, $w['post_enc_id']);
+            }
+
+            $trending_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->innerJoinWith(['postCategories b' => function ($b) {
+                    $b->innerJoinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['not in', 'a.post_enc_id', $exclusions])
+                ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['c.name' => 'Infographics']])
+                ->groupBy(['a.post_enc_id'])
+                ->orderby(new Expression('rand()'))
+                ->limit(12)
+                ->asArray()
+                ->all();
+
+        return $response = [
+            'status' => 200,
+            'message' => 'Success',
+            'popular_posts' => $popular_posts,
+            'whats_new_posts' => $whats_new_posts,
+            'trending_posts' => $trending_posts,
+        ];
+        }
     }
 
 //    public function actionIndex()
@@ -127,20 +228,6 @@ class BlogController extends Controller
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
-    }
-
-    public function actionBlogList()
-    {
-        $postsModel = new Posts();
-        $posts = $postsModel->find()
-            ->where(['status' => 'Active', 'is_deleted' => 0])
-            ->orderby(['created_on' => SORT_ASC])
-            ->asArray()
-            ->all();
-
-        return $this->render('blog-list', [
-            'posts' => $posts,
-        ]);
     }
 
     public function actionGetPostsByTag($slug)

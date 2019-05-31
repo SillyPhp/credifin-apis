@@ -43,6 +43,15 @@ use frontend\models\questionnaire\QuestionnaireForm;
 class SiteController extends Controller
 {
 
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $feedbackFormModel = new FeedbackForm();
@@ -50,65 +59,65 @@ class SiteController extends Controller
 
         $job_profiles = AssignedCategories::find()
             ->alias('a')
-            ->select(['a.*','d.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function($z){
+            ->select(['a.*', 'd.category_enc_id', 'd.name'])
+            ->joinWith(['parentEnc d' => function ($z) {
                 $z->groupBy(['d.category_enc_id']);
             }], false)
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
                     'b.is_deleted' => 0,
                     'b.status' => 'Active'
                 ]);
-                $x->joinWith(['applicationTypeEnc c' => function($y){
+                $x->joinWith(['applicationTypeEnc c' => function ($y) {
                     $y->andWhere(['c.name' => 'Jobs']);
                 }], false);
             }], false)
             ->where([
-                'a.status'=>'Approved',
-                'a.is_deleted'=>0,
+                'a.status' => 'Approved',
+                'a.is_deleted' => 0,
             ])->asArray()
             ->all();
         $internship_profiles = AssignedCategories::find()
             ->alias('a')
-            ->select(['a.*','d.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function($z){
+            ->select(['a.*', 'd.category_enc_id', 'd.name'])
+            ->joinWith(['parentEnc d' => function ($z) {
                 $z->groupBy(['d.category_enc_id']);
             }])
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
                     'b.is_deleted' => 0,
                     'b.status' => 'Active'
                 ]);
-                $x->joinWith(['applicationTypeEnc c' => function($y){
+                $x->joinWith(['applicationTypeEnc c' => function ($y) {
                     $y->andWhere(['c.name' => 'Internships']);
                 }], false);
             }], false)
             ->where([
-                'a.status'=>'Approved',
-                'a.is_deleted'=>0,
+                'a.status' => 'Approved',
+                'a.is_deleted' => 0,
             ])->asArray()
             ->all();
         $search_words = AssignedCategories::find()
             ->alias('a')
             ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['categoryEnc d' => function($y){
+            ->joinWith(['categoryEnc d' => function ($y) {
                 $y->groupBy(['d.category_enc_id']);
             }], false)
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
                     'b.is_deleted' => 0,
                     'b.status' => 'Active',
                 ]);
             }], false)
             ->where([
-                'a.status'=>'Approved',
-                'a.is_deleted'=>0,
+                'a.status' => 'Approved',
+                'a.is_deleted' => 0,
             ])
             ->asArray()
             ->all();
         $cities = EmployerApplications::find()
             ->alias('a')
-            ->select(['d.name','COUNT(c.city_enc_id) as total','c.city_enc_id'])
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
             ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
                 $x->joinWith(['locationEnc c' => function ($x) {
                     $x->joinWith(['cityEnc d']);
@@ -426,6 +435,52 @@ class SiteController extends Controller
             }
             return $response;
         }
+    }
+    public function actionWorkingProfiles()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            // $jobCategories = \frontend\models\profiles\ProfileCards::getProfiles();
+            $jobCategories =   AssignedCategories::find()
+                ->select(['b.name','b.slug', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->where(['a.assigned_to' => 'Jobs'])
+                ->andWhere(['!=', 'a.parent_enc_id', ''])
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['b.name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            $internshipCategories =   AssignedCategories::find()
+                ->select(['b.name', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->where(['a.assigned_to' => 'Internships'])
+                ->andWhere(['!=', 'a.parent_enc_id', ''])
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['b.name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            //$internshipCategories = \frontend\models\profiles\ProfileCards::getProfiles('Internships');
+            if ($jobCategories || $internshipCategories) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'categories' => [
+                        'jobs' => $jobCategories,
+                        'internships' => $internshipCategories,
+                    ],
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('working-profiles');
     }
 
     public function actionQuestionnaire($qidk)

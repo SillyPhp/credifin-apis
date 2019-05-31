@@ -15,6 +15,12 @@ use yii\helpers\ArrayHelper;
 
 class ReviewsController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $model = new RegistrationForm();
@@ -40,25 +46,37 @@ class ReviewsController extends Controller
         return $this->render('filter-companies', ['keywords' => $keywords, 'business_activity' => $business_activity]);
     }
 
-    public function actionSearchOrg($query)
+    public function actionSearchOrg($type=null,$query)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $query1 = (new \yii\db\Query())
+        $params1 = (new \yii\db\Query())
             ->select(['name', 'slug', 'initials_color color', 'logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])
             ->from(UnclaimedOrganizations::tableName() . 'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
-            ->where('name LIKE "%' . $query . '%"')
-            ->andWhere(['is_deleted' => 0]);
+            ->where('name LIKE "%' . $query . '%"');
+        if ($type!=null) {
+            $query1 = $params1->andWhere(['business_activity' => $type])
+                ->andWhere(['is_deleted' => 0]);
+            }
+        else{
+            $query1 = $params1->andWhere(['is_deleted' => 0]);
+        }
 
-        $query2 = (new \yii\db\Query())
+        $params2 = (new \yii\db\Query())
             ->select(['name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
-            ->where('name LIKE "%' . $query . '%"')
-            ->andWhere(['is_deleted' => 0]);
+            ->where('name LIKE "%' . $query . '%"');
+            if ($type!=null) {
+                $query2 = $params2->andWhere(['business_activity' => $type])
+                    ->andWhere(['is_deleted' => 0]);
+            }
+            else{
+                $query2 = $params2->andWhere(['is_deleted' => 0]);
+            }
 
         return $query1->union($query2)->all();
 
@@ -118,7 +136,7 @@ class ReviewsController extends Controller
         return $this->render('colleges');
     }
 
-    public function actionEducationalInstitutes()
+    public function actionInstitutes()
     {
         return $this->render('educational-institutes');
     }

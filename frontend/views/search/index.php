@@ -464,7 +464,7 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
-$('.s-input').val(window.location.search.split('=')[1].split('+').join(' '));
+$('.s-input').val(decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20')));
 
 $(document).on('click', '.s-btn', function(e){
     e.preventDefault();
@@ -484,7 +484,7 @@ function fillData(){
         async: false,
         url: window.location.pathname,
         data: {
-            'keyword' : window.location.search.split('=')[1].split('+').join(' ')
+            'keyword' : decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20'))
         },
         success: function(result){
             result = JSON.parse(result);

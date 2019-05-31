@@ -690,7 +690,7 @@ Primary use : Web & Mobile
       -webkit-transform: none;
       -ms-transform: none;
       transform: none;
-      top: 40px;
+      top: 25%;
     }
     .i-review-container.i-review-boxed{
       left: 15px;
@@ -715,6 +715,21 @@ Primary use : Web & Mobile
     }
     .i-review-next-btn-institute .i-review-next-btn-institute-icon::before{
       background-color: #FFF;
+    }
+    .i-review-selectbox{
+        width: 100%;
+        display: block;
+        margin-bottom: 0px;
+    }
+    .i-review-select-label:before {
+        height: 55px;
+    }
+    .i-review-select-multiple{
+        margin-top: 8px !Important;
+    }
+    .i-review-star {
+        width: 34px !Important;
+        height: 34px !important;
     }
 }
 

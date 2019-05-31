@@ -531,11 +531,11 @@ margin-right:5px;
 margin-bottom:10px;
 }
 .video-container{
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-border-radius:10px;
-height:250px;
-position:relative;
-margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    border-radius:10px;
+    height:auto;
+    position:relative;
+    margin-bottom:20px;
 }
 .video-container2{
 //height:auto;
@@ -884,13 +884,6 @@ position:absolute;
 bottom:5px;
 left:10px;
 }
-.video-container{
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-    border-radius:10px;
-    height:250px;
-    position:relative;
-    margin-bottom:20px;
-}
 .video-icon{
     height:120px;
     overflow:hidden;
@@ -1187,7 +1180,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     {{#.}}
     <div class="col-md-3 col-sm-4">
         <div class="video-container">
-            <a href="/skills/video/{{slug}}">
+            <a href="/learning/video/{{slug}}">
                 <div class="video-icon">
                     <img src="{{cover_image}}" alt="Cover Image">
                 </div>

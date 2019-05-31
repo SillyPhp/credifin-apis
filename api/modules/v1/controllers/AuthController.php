@@ -12,9 +12,11 @@ use common\models\RandomColors;
 use common\models\UserAccessTokens;
 use common\models\Utilities;
 
-class AuthController extends ApiBaseController{
+class AuthController extends ApiBaseController
+{
 
-    public function behaviors(){
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
@@ -27,20 +29,24 @@ class AuthController extends ApiBaseController{
         return $behaviors;
     }
 
-    public function actionSignup(){
+    public function actionSignup()
+    {
         $model = new IndividualSignup();
-        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
-            if($model->validate()) {
-                if(!$this->usernameValid($model)){
-                    return $this->response(409, 'Username already taken');
+        $already_taken = [
+            'username' => 'Username already taken'
+        ];
+        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
+            if ($model->validate()) {
+                if (!$this->usernameValid($model)) {
+                    return $this->response(409, $already_taken);
                 }
                 if ($user = $this->newUser($model)) {
-                    if(!empty($user->user_enc_id)){
+                    if (!empty($user->user_enc_id)) {
                         if ($token = $this->newToken($user->user_enc_id, \Yii::$app->request->post('source'))) {
-                                $data = $this->returnData($user, $token);
-                                return $this->response(200, $data);
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
                         }
-                    }else{
+                    } else {
                         return $this->response(500);
                     }
                 }
@@ -50,18 +56,20 @@ class AuthController extends ApiBaseController{
         return $this->response(422);
     }
 
-    private function usernameValid($model){
+    private function usernameValid($model)
+    {
         $usernamesModel = new Usernames();
         $usernamesModel->username = $model->username;
         $usernamesModel->assigned_to = 1;
         if (!$usernamesModel->validate()) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    private function returnData($user, $token){
+    private function returnData($user, $token)
+    {
         return [
             'user_id' => $token->user_enc_id,
             'username' => $user->username,
@@ -77,7 +85,8 @@ class AuthController extends ApiBaseController{
         ];
     }
 
-    private function returnToken($token){
+    private function returnToken($token)
+    {
         return [
             'user_id' => $token->user_enc_id,
             'access_token' => $token->access_token,
@@ -87,7 +96,8 @@ class AuthController extends ApiBaseController{
         ];
     }
 
-    private function newUser($model){
+    private function newUser($model)
+    {
         $user = new Candidates();
         $usernamesModel = new Usernames();
         $usernamesModel->username = $model->username;
@@ -107,46 +117,49 @@ class AuthController extends ApiBaseController{
         $user->status = "Active";
         $user->setPassword($model->password);
         $user->generateAuthKey();
-        if($user->save()){
+        if ($user->save()) {
             return $user;
         }
         return false;
     }
 
-    private function newToken($user_id, $source){
+    private function newToken($user_id, $source)
+    {
         $token = new UserAccessTokens();
         $time_now = date('Y-m-d H:i:s', time('now'));
         $token->access_token_enc_id = time() . mt_rand(10, 99);
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
-        $token->access_token_expiration = date('Y-m-d H:i:s',strtotime("+43200 minute", strtotime($time_now)));
+        $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);
-        $token->refresh_token_expiration = date('Y-m-d H:i:s',strtotime("+11520 minute", strtotime($time_now)));
+        $token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
         $token->source = $source;
-        if($token->save()){
+        if ($token->save()) {
             return $token;
         }
         return $token->getErrors();
     }
 
-    private function withoutPassword($username){
+    private function withoutPassword($username)
+    {
 
-            $user = Candidates::find()
-                    ->where(['username' => $username])
-                    ->orWhere(['email' => $username])
-                    ->one();
-            if($user > 0) {
-                return $this->response(409);
-            }else{
-                return $this->response(404);
-            }
+        $user = Candidates::find()
+            ->where(['username' => $username])
+            ->orWhere(['email' => $username])
+            ->one();
+        if ($user > 0) {
+            return $this->response(409);
+        } else {
+            return $this->response(404);
+        }
     }
 
-    private function findUser($model){
+    private function findUser($model)
+    {
         $user = Candidates::findOne([
             'username' => $model->username,
         ]);
-        if(!$user){
+        if (!$user) {
             $user = Candidates::findOne([
                 'email' => $model->username,
             ]);
@@ -154,26 +167,29 @@ class AuthController extends ApiBaseController{
         return $user;
     }
 
-    private function findToken($user, $source){
+    private function findToken($user, $source)
+    {
         return UserAccessTokens::findOne([
             'user_enc_id' => $user->user_enc_id,
             'source' => $source
         ]);
     }
 
-    private function onlyTokens($token){
+    private function onlyTokens($token)
+    {
         $time_now = date('Y-m-d H:i:s', time('now'));
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);
         $token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
-        if($token->save()){
+        if ($token->save()) {
             return $token;
         }
         return $token->getErrors();
     }
 
-    public function actionLogin(){
+    public function actionLogin()
+    {
 
         $params = \Yii::$app->request->post();
 
@@ -181,19 +197,19 @@ class AuthController extends ApiBaseController{
         $password = $params['password'];
         $source = $params['source'];
 
-        if(!isset($password) && isset($username)){
+        if (!isset($password) && isset($username)) {
             $user = Candidates::find()
                 ->where(['username' => $username])
                 ->orWhere(['email' => $username])
                 ->one();
-            if(!empty($user)) {
+            if (!empty($user)) {
                 return $this->response(409);
-            }else{
+            } else {
                 return $this->response(404);
             }
         }
 
-        if(isset($username) && isset($password) && isset($source)) {
+        if (isset($username) && isset($password) && isset($source)) {
             $model = new LoginForm();
 
             if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
@@ -202,20 +218,20 @@ class AuthController extends ApiBaseController{
                     $token = $this->findToken($user, $source);
                     if (empty($token)) {
                         if ($token = $this->newToken($user->user_enc_id, $source)) {
-                                $data = $this->returnData($user, $token);
-                                return $this->response(200, $data);
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
                         }
                     } else {
                         if ($token = $this->onlyTokens($token)) {
-                                $data = $this->returnData($user, $token);
-                                return $this->response(200, $data);
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
                         }
                     }
                 }
                 return $this->response(409, $model->getErrors());
             }
-        }else{
-                return $this->response(422);
+        } else {
+            return $this->response(422);
         }
         return $this->response(405);
     }

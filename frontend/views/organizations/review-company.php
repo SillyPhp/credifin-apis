@@ -103,7 +103,7 @@ $this->params['seo_tags'] = [
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
                             <?php if ($review_type=='unclaimed'):?>
-                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>
+<!--                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>-->
                             <?php else: ?>
                                 <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
                             <?php endif;?>

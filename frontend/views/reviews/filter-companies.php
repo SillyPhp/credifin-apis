@@ -29,6 +29,15 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </form>
             </div>
+            <div class="col-md-12">
+                <div class="btn_add_new_org pull-right">
+                    <?php if (Yii::$app->user->isGuest): ?>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Company</a>
+                    <?php else : ?>
+                        <a href="#" class="add_new_org1 add_new_org">Add New Organizaton</a>
+                    <?php  endif; ?>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -172,6 +181,9 @@ use yii\bootstrap\ActiveForm;
                         <div id="review_container">
 
                         </div>
+                        <div id="review_container_unclaimed">
+
+                        </div>
                         <div class="col-md-12">
                             <div class="load-more-bttn">
                                 <button type="button" id="load_review_card_btn">Load More</button>
@@ -311,6 +323,8 @@ use yii\bootstrap\ActiveForm;
 <?php
 echo $this->render('/widgets/mustache/review-cards', [
 ]);
+echo $this->render('/widgets/mustache/review-cards-unclaimed', [
+]);
 ?>
 </div>
 <!--<div id="myModal" class="modal">-->
@@ -338,6 +352,23 @@ echo $this->render('/widgets/mustache/review-cards', [
 <!--</div>-->
 <?php
 $this->registerCss('
+.btn_add_new_org{
+    margin-top:15px;
+}
+.add_new_org1{
+
+    padding:10px 15px;
+    background:#fff;
+    color:#00a0e3;
+    border: 2px solid #eee;
+    border-radius:10px;
+    font-weight:bold;
+}
+.add_new_org1:hover{
+    color:#00a0e3;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
 .search-bar{
     width:100%;
     background:#fff;
@@ -971,7 +1002,10 @@ float:right;
   background-color: #3498db;
   margin: 35px 1px;
 }
-
+.uncliamed_height
+{
+min-height:304px;
+}
 .load-suggestions span:nth-child(1){
   animation: bounce 1s ease-in-out infinite;
 }
@@ -983,16 +1017,20 @@ float:right;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
+.com-loc, .com-dep{
+    min-height:24px;
+}
 /*new modal css ends*/
 ');
 $script = <<< JS
+var template;
 $(document).on('click','input[name="avg_rating[]"]',function()
 {
      var avg_rating = [];
             $.each($("input[name='avg_rating[]']:checked"), function(){            
                 avg_rating.push($(this).val());
             });
-     fetch_cards(params={'rating':avg_rating,'limit':null},is_clear=true);       
+     fetch_cards(params={'rating':avg_rating,'limit':null},template=$('#review_container'),is_clear=true);       
 });
 $(document).on('click','input[name="activities[]"]',function()
 {
@@ -1000,15 +1038,16 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
-     fetch_cards(params={'business_activity':activities,'limit':null},is_clear=true);       
+     fetch_cards_top(params={'rating':[1,2,3,4,5],business_activity:activities,'offset':0},template=$('#review_container_unclaimed'),is_clear=true);       
+     fetch_cards(params={'business_activity':activities,'limit':null},template=$('#review_container'),is_clear=true);       
 });
-var ps = new PerfectScrollbar('#industry-scroll'); 
-    // var ps = new PerfectScrollbar('#work-scroll'); 
+var ps = new PerfectScrollbar('#industry-scroll');
 var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},is_clear=true);
+    fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),business_activity:['College','School','Educational Institute','Others'],'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
+    fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},template=$('#review_container'),is_clear=true);
  });   
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
@@ -1063,7 +1102,7 @@ var locations = new Bloodhound({
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
-})
+});
 $('#city_search').typeahead(null, {
   name: 'keywords',
   displayKey: "text",
@@ -1071,9 +1110,10 @@ $('#city_search').typeahead(null, {
   source: locations,
 }).on('typeahead:selected typeahead:autocompleted',function(e, datum)
   {
-     fetch_cards(params={'city':datum.text,'limit':9},is_clear=true);   
+     fetch_cards(params={'city':datum.text,'limit':9},template=$('#review_container'),is_clear=true);   
   });
-fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},is_clear=true);
+fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),business_activity:['College','School','Educational Institute','Others'],'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
+fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=true);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
