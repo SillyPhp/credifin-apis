@@ -191,130 +191,6 @@ use yii\bootstrap\ActiveForm;
                         </div>
                     </div>
                 </div>
-
-
-<!--                <div class="empty-section">-->
-<!--                    <div class="e-icon"></div>-->
-<!--                    <div class="e-text">Oops ! There are no reviews for this company</div>-->
-<!--                    <div class="e-text padd-20">Be the first one & write review for this company</div>-->
-<!--                    <div class="e-bttn">-->
-<!--                        <div class="wr-bttn hvr-icon-pulse">-->
-<!--                            <button type="button" id="wr">-->
-<!--                                <i class="fa fa-comments-o hvr-icon"></i> Write Review-->
-<!--                            </button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="related-company">-->
-<!--                        <div class="heading-style">Related Companies</div>-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-4">-->
-<!--                                <div class="com-review-box fivestar-box">-->
-<!--                                    <div class="com-logo">-->
-<!--                                        <img src="--><?//= Url::to('@commonAssets/logos/logo-vertical.svg') ?><!--">-->
-<!--                                    </div>-->
-<!--                                    <div class="com-name">Empower Youth</div>-->
-<!--                                    <div class="com-loc"><span>5</span> Jobs</div>-->
-<!--                                    <div class="com-dep"><span>5</span> Internships</div>-->
-<!--                                    <div class="rating-stars">-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                    </div>-->
-<!--                                    <div class="rating">-->
-<!--                                        <div class="stars">5 </div>-->
-<!--                                        <div class="reviews-rate"> of 1.5k review</div>-->
-<!--                                    </div>-->
-<!--                                    <div class="row">-->
-<!--                                        <div class="cm-btns padd-0">-->
-<!--                                            <div class="col-md-6">-->
-<!--                                                <div class="color-blue">-->
-<!--                                                    <a href="">View Profile</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="col-md-6">-->
-<!--                                                <div class="color-orange">-->
-<!--                                                    <a href="">Read Review</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-4">-->
-<!--                                <div class="com-review-box fourstar-box">-->
-<!--                                    <div class="com-logo">-->
-<!--                                        <img src="--><?//= Url::to('@commonAssets/logos/logo-vertical.svg') ?><!--">-->
-<!--                                    </div>-->
-<!--                                    <div class="com-name">Empower Youth</div>-->
-<!--                                    <div class="com-loc"><span>5</span> Jobs</div>-->
-<!--                                    <div class="com-dep"><span>5</span> Internships</div>-->
-<!--                                    <div class="rating-stars">-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                    </div>-->
-<!--                                    <div class="rating">-->
-<!--                                        <div class="stars">4 </div>-->
-<!--                                        <div class="reviews-rate"> of 1.5k review</div>-->
-<!--                                    </div>-->
-<!--                                    <div class="row">-->
-<!--                                        <div class="cm-btns padd-0">-->
-<!--                                            <div class="col-md-6">-->
-<!--                                                <div class="color-blue">-->
-<!--                                                    <a href="">View Profile</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="col-md-6">-->
-<!--                                                <div class="color-orange">-->
-<!--                                                    <a href="">Read Review</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-4">-->
-<!--                                <div class="com-review-box threestar-box">-->
-<!--                                    <div class="com-logo">-->
-<!--                                        <img src="--><?//= Url::to('@commonAssets/logos/logo-vertical.svg') ?><!--">-->
-<!--                                    </div>-->
-<!--                                    <div class="com-name">Empower Youth</div>-->
-<!--                                    <div class="com-loc"><span>5</span> Jobs</div>-->
-<!--                                    <div class="com-dep"><span>5</span> Internships</div>-->
-<!--                                    <div class="rating-stars">-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star active"></i>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                        <i class="fa fa-star"></i>-->
-<!--                                    </div>-->
-<!--                                    <div class="rating">-->
-<!--                                        <div class="stars">3 </div>-->
-<!--                                        <div class="reviews-rate"> of 1.5k review</div>-->
-<!--                                    </div>-->
-<!--                                    <div class="row">-->
-<!--                                        <div class="cm-btns padd-0">-->
-<!--                                            <div class="col-md-6">-->
-<!--                                                <div class="color-blue">-->
-<!--                                                    <a href="">View Profile</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div class="col-md-6">-->
-<!--                                                <div class="color-orange">-->
-<!--                                                    <a href="">Read Review</a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
         </div>
     </div>
@@ -327,29 +203,6 @@ echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 ]);
 ?>
 </div>
-<!--<div id="myModal" class="modal">-->
-<!---->
-<!--    <!-- Modal content -->-->
-<!--    <div class="modal-content">-->
-<!--        <div class="wr-modal-header">-->
-<!--            <span class="close">&times;</span>-->
-<!--            <p>Enter Company Name</p>-->
-<!--        </div>-->
-<!--        <div class="wr-modal-body">-->
-<!--            <form>-->
-<!--                <div class="com-name-modal">-->
-<!--                    <input type="text">-->
-<!--                </div>-->
-<!--                <div class="wr-modal-bttn">-->
-<!--                    <button href="" class="i-review-next">-->
-<!--                        <span class="i-review-button-text"> Search Company</span>-->
-<!--                    </button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
-<!---->
-<!--</div>-->
 <?php
 $this->registerCss('
 .btn_add_new_org{
@@ -1046,7 +899,7 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),business_activity:['College','School','Educational Institute','Others'],'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
+    fetch_cards_top(params={'keywords':$('input[name="keywords"]').val()},template=$('#review_container_unclaimed'),is_clear=true);
     fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},template=$('#review_container'),is_clear=true);
  });   
 var companies = new Bloodhound({
@@ -1112,7 +965,7 @@ $('#city_search').typeahead(null, {
   {
      fetch_cards(params={'city':datum.text,'limit':9},template=$('#review_container'),is_clear=true);   
   });
-fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),business_activity:['College','School','Educational Institute','Others'],'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
+fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
 fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=true);
 JS;
 $this->registerJs($script);

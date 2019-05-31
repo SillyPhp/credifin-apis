@@ -93,6 +93,7 @@ class EditReview extends Model {
         $modal->compensation = $this->salary_benefits;
         $modal->organization_culture = $this->compnay_culture;
         $modal->growth = $this->career_growth;
+        $modal->average_rating = (($this->job_security+$this->skill_devel+$this->work_life+$this->work_satisfaction+$this->salary_benefits+$this->compnay_culture+$this->career_growth)/7);
         $modal->show_user_details = $this->identity;
         $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
 

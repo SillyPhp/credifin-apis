@@ -75,6 +75,7 @@ class EditUnclaimedSchoolOrg extends Model {
         $modal->co_curricular_activities= $this->co_curricular_activities;
         $modal->leadership_development= $this->leadership_development;
         $modal->sports = $this->sports;
+        $modal->average_rating = (($this->student_engagement+$this->school_infrastructure+$this->faculty+$this->accessibility_of_faculty+$this->co_curricular_activities+$this->leadership_development+$this->sports)/7);
         $modal->likes = $this->likes;
         $modal->dislikes = $this->dislikes;
         $modal->show_user_details = $this->identity;
