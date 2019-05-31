@@ -43,7 +43,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
 
-    <div class="container">
+    <div class="container" style="margin-top: 8vh;">
         <div class="row">
             <div class="col-xs-12 col-md-10 col-md-offset-1 text-center">
                 <p id="quiz-question" class="animated"></p>
