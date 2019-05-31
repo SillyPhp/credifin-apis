@@ -61,19 +61,27 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $keyword = Yii::$app->request->post('keyword');
             $organization = Organizations::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'b.business_activity'])
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'b.business_activity'])
                 ->joinWith(['businessActivityEnc b'], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-                ->asArray()
-                ->all();
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+            if(!empty($keyword)){
+                $organization->andWhere([
+                    'or',
+                    ['like', 'a.name', $keyword],
+                    ['like', 'a.slug', $keyword],
+                ]);
+            }
+            $with_logo = $organization->orderBy(['a.logo' => SORT_DESC])->asArray()->all();
 
-            if ($organization) {
+
+            if ($with_logo) {
                 $response = [
                     'status' => 200,
                     'message' => 'Success',
-                    'organization' => $organization,
+                    'organization' => $with_logo,
                 ];
             } else {
                 $response = [
@@ -83,6 +91,27 @@ class OrganizationsController extends Controller
             return $response;
         }
         return $this->render('index');
+    }
+
+    public function actionCompanies($q = null){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!is_null($q)) {
+            $organizations = Organizations::find()
+                ->alias('a')
+                ->select(['a.name as text','a.slug'])
+                ->joinWith(['businessActivityEnc b'], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['like', 'a.name', $q],
+                    ['like', 'a.slug', $q],
+                ])
+            ->asArray()
+                ->all();
+
+            return $organizations;
+        }
+
     }
 
     public function actionProfile($slug)
