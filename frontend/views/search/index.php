@@ -32,6 +32,48 @@ use yii\helpers\Url;
     </div>
 </section>
 
+<section id="schools">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Schools</div>
+            </div>
+
+        </div>
+        <div class="row school-list">
+
+        </div>
+    </div>
+</section>
+
+<section id="colleges">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Colleges</div>
+            </div>
+
+        </div>
+        <div class="row college-list">
+
+        </div>
+    </div>
+</section>
+
+<section id="institutes">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Educational Institute</div>
+            </div>
+
+        </div>
+        <div class="row institute-list">
+
+        </div>
+    </div>
+</section>
+
 <section id="jobs">
     <div class="container">
         <div class="row">
@@ -508,6 +550,30 @@ function fillData(){
                $('#companies').remove(); 
             }
             
+            if(result["schools"].length){
+                var schools_card = $('#un-card').html();
+                var school_render = Mustache.render(schools_card, result['schools']);
+                $('.school-list').html(school_render);
+            }else{
+               $('#schools').remove(); 
+            }
+            
+            if(result["colleges"].length){
+                var colleges_card = $('#un-card').html();
+                var college_render = Mustache.render(colleges_card, result['colleges']);
+                $('.college-list').html(college_render);
+            }else{
+               $('#colleges').remove(); 
+            }
+            
+            if(result["institutes"].length){
+                var institute_card = $('#un-card').html();
+                var institute_render = Mustache.render(institute_card, result['institutes']);
+                $('.institute-list').html(institute_render);
+            }else{
+               $('#institutes').remove(); 
+            }
+            
             if(result["internships"].length){
                 var application_card = $('#application-card').html();
                 var internships_render = Mustache.render(application_card, result['internships']);
@@ -641,6 +707,59 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     </div>
     {{/.}}
 </script>
+<script id="un-card" type="text/template">
+    {{#.}}
+    <div class="col-md-3">
+        <div class="com-review-box onestar-box">
+            <div class="com-logo">
+                {{#logo}}
+                <a href="/{{slug}}"><img src="{{logo}}"></a>
+                {{/logo}}
+                {{^logo}}
+                <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                        color="{{color}}" font="55px"></canvas>
+                {{/logo}}
+            </div>
+            <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
+
+            {{#employerApplications}}
+            {{#applications_cnt}}
+            <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
+            {{/applications_cnt}}
+            {{/employerApplications}}
+            {{^employerApplications}}
+            <div class="com-loc"><span>No</span> Openings</div>
+            {{/employerApplications}}
+
+            {{#organizationReviews}}
+            {{#average_rating}}
+            <div class="starr" data-score="{{average_rating}}"></div>
+            <div class="rating">
+                <div class="stars">{{average_rating}}</div>
+                <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
+            </div>
+            {{/average_rating}}
+            {{/organizationReviews}}
+            {{^organizationReviews}}
+            <div class="starr" data-score="0"></div>
+            <div class="rating">
+                <div class="reviews-rate">No reviews</div>
+            </div>
+            {{/organizationReviews}}
+
+            <div class="row">
+                <div class="cm-btns padd-0">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="color-orange">
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/.}}
+</script>
 <script id="company-card" type="text/template">
     {{#.}}
     <div class="col-md-3">
@@ -683,16 +802,16 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 
             <div class="row">
                  <div class="cm-btns padd-0">
-                    <div class="col-md-6">
-                        <div class="color-blue">
-                             <a href="/{{slug}}">View Profile</a>
+                        <div class="col-md-6">
+                            <div class="color-blue">
+                                 <a href="/{{slug}}">View Profile</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Reviews</a>
+                        <div class="col-md-6">
+                            <div class="color-orange">
+                                <a href="/{{slug}}/reviews">Read Reviews</a>
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
