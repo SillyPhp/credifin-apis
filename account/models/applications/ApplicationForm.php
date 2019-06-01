@@ -199,6 +199,7 @@ class ApplicationForm extends Model
             default:
                 $wage_type = 'Unpaid';
         }
+
         if ($type=='Jobs'||$type=='Clone_Jobs') {
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
             $type = 'Jobs';
@@ -207,6 +208,7 @@ class ApplicationForm extends Model
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
         }
+
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -223,6 +225,7 @@ class ApplicationForm extends Model
             ->alias('a')
             ->where(['name' => $this->title]);
         $chk_cat = $category_execute->asArray()->one();
+
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
             $utilitiesModel = new Utilities();
@@ -263,7 +266,7 @@ class ApplicationForm extends Model
             }
         }
 
-//        $image_information = $this->_createSharingImage($employerApplicationsModel->title);
+//        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
 //        if (!$image_information) {
 //            return false;
 //        } else {
@@ -300,6 +303,7 @@ class ApplicationForm extends Model
                 $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
             }
         }
+
         $employerApplicationsModel->description = $this->othrdetail;
         $employerApplicationsModel->type = $this->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($this->from));
@@ -660,15 +664,33 @@ class ApplicationForm extends Model
             return false;
         }
     }
-    private function _createSharingImage($category)
-    {
-        $client = new \yii\httpclient\Client(['baseUrl' => Url::base(true)]);
-        $response = $client->createRequest()
-            ->setUrl('jobs/job-card/' . $category)
-            ->addHeaders(['content-type' => 'application/json'])
-            ->send();
-        print_r($response);
-    }
+
+//    private function _createSharingImage($category, $type)
+//    {
+//        $result = AssignedCategories::find()
+//            ->alias()
+//            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssetsDirectory/categories/svg/') . '", b.icon) icon'])
+//            ->innerJoinWith(['parentEnc b' => function ($b) {
+//                $b->onCondition([
+//                    'or',
+//                    ['!=', 'b.icon', NULL],
+//                    ['!=', 'b.icon', ''],
+//                ])
+//                    ->groupBy(['b.category_enc_id']);
+//            }], false)
+//            ->where([
+//                'a.assigned_to' => ucfirst($type),
+//                'a.assigned_category_enc_id' => $category,
+//            ])
+//            ->asArray()
+//            ->one();
+//
+//        $script =
+//        $cmd = "python  " . $p1 . " "  . $organizationLogo . " " . $sharingImage . " " . $profile . " " . $profileIcon;
+//        if(exec($cmd)) {
+//
+//        }
+//    }
 
     public function getQuestionnnaireList($type = 1)
     {

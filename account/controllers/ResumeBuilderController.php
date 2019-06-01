@@ -420,8 +420,8 @@ class ResumeBuilderController extends Controller
             ->one();
         $from_date = date_create($editedu['from_date']);
         $to_date = date_create($editedu['to_date']);
-        $editedu['from_date'] = date_format($from_date, 'd-M-Y');
-        $editedu['to_date'] = date_format($to_date, 'd-M-Y');
+        $editedu['from_date'] = date_format($from_date, 'Y/m/d');
+        $editedu['to_date'] = date_format($to_date, 'Y/m/d');
 
         return json_encode($editedu);
     }
@@ -439,8 +439,8 @@ class ResumeBuilderController extends Controller
 
         $from_date = date_create($editexp['from_date']);
         $to_date = date_create($editexp['to_date']);
-        $editexp['from_date'] = date_format($from_date, 'd-M-Y');
-        $editexp['to_date'] = date_format($to_date, 'd-M-Y');
+        $editexp['from_date'] = date_format($from_date, 'Y/m/d');
+        $editexp['to_date'] = date_format($to_date, 'Y/m/d');
 
         return json_encode($editexp);
     }
