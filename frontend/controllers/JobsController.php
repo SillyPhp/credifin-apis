@@ -2,9 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\ShortlistedApplications;
-use common\models\User;
-use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -12,19 +9,14 @@ use yii\web\Response;
 use yii\helpers\Url;
 use frontend\models\JobApplied;
 use common\models\EmployerApplications;
-use common\models\ApplicationPlacementLocations;
 use common\models\Organizations;
-use common\models\OrganizationLocations;
-use common\models\Cities;
+use common\models\ShortlistedApplications;
+use common\models\Users;
 use common\models\Categories;
-use common\models\AssignedCategories;
 use common\models\EmployeeBenefits;
 use common\models\AppliedApplications;
-use common\models\UserResume;
 use common\models\ReviewedApplications;
 use common\models\Industries;
-use common\models\ApplicationInterviewQuestionnaire;
-use common\models\InterviewProcessFields;
 use frontend\models\applications\ApplicationCards;
 
 class JobsController extends Controller
