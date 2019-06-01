@@ -44,7 +44,7 @@ $this->beginPage();
         <div class="background-overlay"></div>
         <div class="logo-bottom"> 
             <a href="/">
-                <img alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo-horizontal.png'); ?>"/>
+                <img alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>" style="width: 20vw;"/>
             </a>
         </div>
         <div id="quiz">
