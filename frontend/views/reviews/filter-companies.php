@@ -191,6 +191,14 @@ use yii\bootstrap\ActiveForm;
                         </div>
                     </div>
                 </div>
+                <div class="empty">
+                    <div class="es-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/review/nofound.png')?>">
+                    </div>
+                    <div class="es-text">
+                        Sorry, we are not able to find what you are looking for.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -205,6 +213,9 @@ echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 </div>
 <?php
 $this->registerCss('
+.empty{
+    text-align:center;
+}
 .btn_add_new_org{
     margin-top:15px;
 }
