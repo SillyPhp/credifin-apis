@@ -16,6 +16,7 @@ use common\models\Organizations;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
+use common\models\UserPreferences;
 use common\models\Users;
 use MongoDB\Driver\Query;
 use yii\helpers\Url;
@@ -255,7 +256,7 @@ class JobsController extends ApiBaseController
             } elseif ($short_status == 1) {
                 return $this->response(409, 'already exists');
             }
-        }else{
+        } else {
             return $this->response(422);
         }
     }
@@ -392,5 +393,236 @@ class JobsController extends ApiBaseController
         return $this->response(200, $accepted_jobs);
     }
 
+    public function actionPreferedApplications()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (!empty($parameters['value'])) {
+            $val = $parameters['value'];
+        } else {
+            $val = 0;
+        }
+
+        if (isset($parameters['type']) || !empty($parameters['type'])) {
+            $type = $parameters['type'];
+        } else {
+            return $this->response(422);
+        }
+
+        if ($type == 'jobs' || $type == 'Jobs') {
+
+            $user_pref_exist = UserPreferences::find()
+                ->where([
+                    'created_by' => $candidate->user_enc_id,
+                    'assigned_to' => $type,
+                    'is_deleted' => 0
+                ])
+                ->exists();
+
+        } elseif ($type == 'jobs' || $type == "Jobs") {
+
+            $user_pref_exist = UserPreferences::find()
+                ->where([
+                    'created_by' => $candidate->user_enc_id,
+                    'assigned_to' => $type,
+                    'is_deleted' => 0
+                ])
+                ->exists();
+        }
+
+        $user_keyword = [];
+
+        if ($user_pref_exist) {
+            $prefs = UserPreferences::find()
+                ->alias('a')
+                ->joinWith(['userPreferredSkills b' => function ($x) {
+                    $x->select(['b.preference_enc_id', 'f.skill_enc_id', 'f.skill']);
+                    $x->andWhere(['b.is_deleted' => 0]);
+                    $x->joinWith(['skillEnc f'], false);
+                }])
+                ->joinWith(['userPreferredLocations c' => function ($x) {
+                    $x->select(['c.preference_enc_id', 'g.city_enc_id', 'g.name']);
+                    $x->andWhere(['c.is_deleted' => 0]);
+                    $x->joinWith(['cityEnc g'], false);
+                }])
+                ->joinWith(['userPreferredJobProfiles d' => function ($x) {
+                    $x->select(['d.preference_enc_id', 'i.category_enc_id', 'i.name']);
+                    $x->andWhere(['d.is_deleted' => 0]);
+                    $x->joinWith(['jobProfileEnc i'], false);
+                }])
+                ->joinWith(['userPreferredIndustries e' => function ($x) {
+                    $x->select(['e.preference_enc_id', 'h.industry_enc_id', 'h.industry']);
+                    $x->andWhere(['e.is_deleted' => 0]);
+                    $x->joinWith(['industryEnc h'], false);
+                }])
+                ->where([
+                    'a.created_by' => $candidate->user_enc_id,
+                    'assigned_to' => $type,
+                    'a.is_deleted' => 0,
+                ])
+                ->asArray()
+                ->all();
+            foreach ($prefs as $pref) {
+                array_push($user_keyword, $pref['type']);
+                foreach ($pref['userPreferredSkills'] as $s) {
+                    array_push($user_keyword, $s['skill']);
+                }
+                foreach ($pref['userPreferredLocations'] as $l) {
+                    array_push($user_keyword, $l['name']);
+                }
+                foreach ($pref['userPreferredIndustries'] as $i) {
+                    array_push($user_keyword, $i['industry']);
+                }
+                foreach ($pref['userPreferredJobProfiles'] as $j) {
+                    array_push($user_keyword, $j['name']);
+                }
+            }
+        } else {
+            $user_prefs = Users::find()
+                ->alias('a')
+                ->joinWith(['cityEnc b'])
+                ->joinWith(['userSkills c' => function ($x) {
+                    $x->select(['c.created_by', 'e.skill_enc_id', 'e.skill']);
+                    $x->andWhere(['c.is_deleted' => 0]);
+                    $x->joinWith(['skillEnc e'], false);
+                }])
+                ->joinWith(['jobFunction d'])
+                ->where([
+                    'a.status' => 'Active',
+                    'a.user_enc_id' => $candidate->user_enc_id,
+                    'a.is_deleted' => 0,
+                ])
+                ->asArray()
+                ->all();
+            if (empty($user_prefs)) {
+                return $this->response(404);
+            } else {
+                foreach ($user_prefs as $u) {
+                    array_push($user_keyword, $u['cityEnc']['name']);
+                    array_push($user_keyword, $u['jobFunction']['name']);
+                    foreach ($u['userSkills'] as $user_skill) {
+                        array_push($user_keyword, $user_skill['skill']);
+                    }
+                }
+            }
+
+        }
+
+        if ($val == 1) {
+            $prefered_applications = $this->findJobs1($user_keyword, $type);
+
+            return $this->response(200, $prefered_applications);
+        } elseif ($val == 2) {
+            $prefered_applications = $this->findJobs2($user_keyword, $type);
+
+            return $this->response(200, $prefered_applications);
+        } else {
+            return $this->response(422);
+        }
+
+
+    }
+
+    private function findJobs1($keyword, $type)
+    {
+        $results = [];
+        foreach ($keyword as $k) {
+            if (!empty($k)) {
+                $result = EmployerApplications::find()
+                    ->alias('a')
+                    ->select([
+                        'a.application_enc_id application_id'
+                    ])
+                    ->joinWith(['title b' => function ($x) {
+                        $x->joinWith(['categoryEnc c'], false);
+                        $x->joinWith(['parentEnc i'], false);
+                    }], false)
+                    ->joinWith(['organizationEnc d'], false)
+                    ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                        $x->joinWith(['locationEnc f' => function ($x) {
+                            $x->joinWith(['cityEnc g'], false);
+                        }], false);
+                    }], false)
+                    ->joinWith(['preferredIndustry h'], false)
+                    ->joinWith(['designationEnc l'], false)
+                    ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                    ->joinWith(['applicationOptions m'], false)
+                    ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.for_careers' => 0])
+                    ->andWhere([
+                        'or',
+                        ['like', 'l.designation', $k],
+                        ['like', 'c.name', $k],
+                        ['like', 'g.name', $k],
+                        ['like', 'a.type', $k],
+                        ['like', 'h.industry', $k],
+                        ['like', 'i.name', $k],
+                        ['like', 'd.name', $k],
+                    ])
+                    ->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+                foreach ($result as $r) {
+                    array_push($results, $r['application_id']);
+                }
+            }
+        }
+        return array_unique($results);
+    }
+
+    private function findJobs2($keyword, $type)
+    {
+
+        $result = EmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->select([
+                'a.application_enc_id application_id',
+                'a.slug',
+                'j.name application_type',
+                'l.designation',
+                'c.name category_name',
+                'i.name profile_name',
+                'h.industry',
+                'a.type',
+                'd.name org_name'
+            ])
+            ->joinWith(['title b' => function ($x) {
+                $x->joinWith(['categoryEnc c'], false);
+                $x->joinWith(['parentEnc i'], false);
+            }], false)
+            ->joinWith(['organizationEnc d'], false)
+            ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                $x->joinWith(['locationEnc f' => function ($x) {
+                    $x->joinWith(['cityEnc g'], false);
+                }], false);
+            }], false)
+            ->joinWith(['preferredIndustry h'], false)
+            ->joinWith(['designationEnc l'], false)
+            ->innerJoinWith(['applicationTypeEnc j' => function ($j) use ($type) {
+                $j->andOnCondition([
+                    'j.name' => $type
+                ]);
+            }], false)
+            ->joinWith(['applicationOptions m'], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.for_careers' => 0]);
+
+        foreach ($keyword as $k) {
+            if (!empty($k)) {
+                $result->orWhere([
+                    'or',
+                    ['like', 'l.designation', $k],
+                    ['like', 'c.name', $k],
+                    ['like', 'g.name', $k],
+                    ['like', 'a.type', $k],
+                    ['like', 'h.industry', $k],
+                    ['like', 'i.name', $k],
+                    ['like', 'd.name', $k],
+                ]);
+            }
+        }
+
+        return $result->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+    }
 
 }

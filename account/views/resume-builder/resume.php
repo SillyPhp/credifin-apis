@@ -80,7 +80,7 @@ function random_color()
                                                     'readonly' => true,
                                                     'pluginOptions' => [
                                                         'autoclose' => true,
-                                                        'format' => 'dd-M-yyyy',
+                                                        'format' => 'yyyy/mm/dd',
                                                         'name' => 'qualification_from',
                                                         'todayHighlight' => true,
                                                     ]])->label(false);
@@ -94,7 +94,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'dd-M-yyyy',
+                                                            'format' => 'yyyy/mm/dd',
                                                             'name' => 'qualification_to',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -159,7 +159,7 @@ function random_color()
                                                     'readonly' => true,
                                                     'pluginOptions' => [
                                                         'autoclose' => true,
-                                                        'format' => 'dd-M-yyyy',
+                                                        'format' => 'yyyy/mm/dd',
                                                         'name' => 'qualification_from',
                                                         'todayHighlight' => true,
                                                     ]])->label(false);
@@ -173,7 +173,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'dd-M-yyyy',
+                                                            'format' => 'yyyy/mm/dd',
                                                             'name' => 'qualification_to',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -300,7 +300,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'dd-M-yyyy',
+                                                            'format' => 'yyyy/mm/dd',
                                                             'name' => 'exp_from',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -314,7 +314,7 @@ function random_color()
                                                             'readonly' => true,
                                                             'pluginOptions' => [
                                                                 'autoclose' => true,
-                                                                'format' => 'dd-M-yyyy',
+                                                                'format' => 'yyyy/mm/dd',
                                                                 'name' => 'earliestjoiningdate',
                                                                 'todayHighlight' => true,
                                                             ]])->label(false);
@@ -415,7 +415,7 @@ function random_color()
                                                         'readonly' => true,
                                                         'pluginOptions' => [
                                                             'autoclose' => true,
-                                                            'format' => 'dd-M-yyyy',
+                                                            'format' => 'yyyy/mm/dd',
                                                             'name' => 'exp_from',
                                                             'todayHighlight' => true,
                                                         ]])->label(false);
@@ -429,7 +429,7 @@ function random_color()
                                                             'readonly' => true,
                                                             'pluginOptions' => [
                                                                 'autoclose' => true,
-                                                                'format' => 'dd-M-yyyy',
+                                                                'format' => 'yyyy/mm/dd',
                                                                 'name' => 'earliestjoiningdate',
                                                                 'todayHighlight' => true,
                                                             ]])->label(false);

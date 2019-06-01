@@ -530,7 +530,7 @@ function fillData(){
         },
         success: function(result){
             result = JSON.parse(result);
-            if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0){
+            if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0 && result["schools"].length ==0 && result["colleges"].length ==0 && result["institutes"].length ==0){
                 $('#not-found').fadeIn(1000);
             }
                 
