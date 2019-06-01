@@ -1,5 +1,38 @@
 <?php
 use yii\helpers\Url;
+
+$this->title = Yii::t('frontend', 'Educational Institute Reviews | Reviews');
+
+$keywords = 'Top Institutes in India,Institute Reviews,Immigration,Reviews,Coaching Centres';
+
+$description = "Here you can get all Indian institute reviews, so you can get help to find the best institute for you and also you can post your review.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <section class="cri-bg">
         <div class="container">
@@ -15,13 +48,19 @@ use yii\helpers\Url;
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' placeholder='Search educational institute' id="search_institute" name="search_institute" type='text'>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                <input class='form-control' name="keywords" placeholder='Search educational institute' id="search_institute" name="search_institute" type='text'>
                                 <button class='btn btn-link search-btn'>
                                     <i class='fa fa-search'></i>
                                 </button>
+                                </form>
                             </div>
                             <div class="btn_add_new_org">
-                                <a href="#" class="add_new_org btn_add_org">Add New Institute</a>
+                                <?php if (Yii::$app->user->isGuest): ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New Institute</a>
+                                <?php else : ?>
+                                    <a href="#" class="add_new_org btn_add_org">Add New Institute</a>
+                                <?php  endif; ?>
                             </div>
                         </div>
                     </div>
@@ -307,6 +346,7 @@ review-benifit{
     font-size:14px;
 }
 .search-box {
+    height:42px;
     display: inline-block;
     width: 100%;
     border-radius: 3px;
@@ -410,6 +450,11 @@ width:100%;
     vertical-align: middle;
     max-width: 70%;
 }
+@media screen and (max-width: 400px) {
+    .suggestion{
+        max-width: 65%;
+    }
+}
 .tt-suggestion {
   padding: 3px 20px;
   font-size: 14px;
@@ -443,7 +488,7 @@ float:right;
 .load-suggestions{
     display:none;
     position: absolute;
-    right: 20px;
+    right: 34px;
     z-index: 999;
 }
 .load-suggestions span{
@@ -452,7 +497,7 @@ float:right;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 15px 1px;
 }
 
 .load-suggestions span:nth-child(1){

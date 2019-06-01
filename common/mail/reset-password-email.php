@@ -2,9 +2,8 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-?>
 
-<style type="text/css" media="screen">
+$this->registerCss('
     * {
         margin:0; 
         padding:0;
@@ -43,13 +42,15 @@ use yii\helpers\Url;
     }
     .com-name{
         padding:10px 0 0 0; 
-        font-weight:bold; 
+        font-weight:bold;
+        color:#4d4d4d;
         font-size:28px;
     }
     .welcome-text{
         padding:20px 50px 0 50px; 
         font-size:24px; 
         line-height:30px;
+        color:#4d4d4d;
     }
     .wt2{
         padding-top:50px;
@@ -74,6 +75,7 @@ use yii\helpers\Url;
     .copyright{
         padding:10px 0 0 0; 
         font-size:15px;
+        color:#4d4d4d;
     } 
     .last-list{
         padding:5px 0 10px 0; 
@@ -87,11 +89,12 @@ use yii\helpers\Url;
         color:#00a0e3; 
         text-decoration:none;
     }
-</style>
-<style media="only screen and (max-device-width: 500px), only screen and (max-width: 380px)" type="text/css">
+', ['media' => 'screen']);
+$this->registerCss('
     @media only screen and (max-width: 500px){
         .welcome-text{
             padding:20px 30px 0 30px;
+            font-size:20px;
         }
     }
     @media only screen and (max-width: 380px){
@@ -106,7 +109,8 @@ use yii\helpers\Url;
             margin-bottom:20px;
         }
     }
-</style>
+', ['media' => 'only screen and (max-device-width: 500px), only screen and (max-width: 380px)']);
+?>
 <div class="wrapper">
     <div class="inner-wrapper">
         <div class="logo">
@@ -124,6 +128,10 @@ use yii\helpers\Url;
         </div>
         <div class="activate-button">
             <?= Html::a(Yii::t('app', 'Reset Your Password'), $data['link']); ?>
+        </div>
+        <div class="link-text">
+            <p style="padding: 8px 60px;font-size: 16px;color:#4d4d4d;">If you’re having trouble clicking the button, copy and paste the URL below into your web browser.</p>
+            <?= Html::a(Yii::t('app', $data['link']), $data['link'],['style' => 'padding: 2px 10px;font-size: 17px;text-decoration: none;word-break: break-word;']); ?>
         </div>
         <div class="welcome-text wt2">
             <?= Yii::t('app', 'The link will expire in 24 hours for security reasons. If you

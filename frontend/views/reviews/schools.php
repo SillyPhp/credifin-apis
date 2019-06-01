@@ -1,5 +1,39 @@
 <?php
 use yii\helpers\Url;
+
+$this->title = Yii::t('frontend', 'Schools Reviews | Reviews');
+
+$keywords = 'School Reviews,Top Schools in India,Best Schools in India,Top CBSE Schools in India,Top Schools in Delhi,Best Schools in Delhi,Schools in Mumbai';
+
+$description = "Here you can get reviews of top schools in India. You can also write a review of any school and help to other people to find the best School.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
     <section class="cri-bg">
         <div class="container">
@@ -15,13 +49,19 @@ use yii\helpers\Url;
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' name="search_school" id="search_school" placeholder='Search School' type='text'>
+                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                <input class='form-control' name="keywords" id="search_school" placeholder='Search School' type='text'>
                                 <button class='btn btn-link search-btn'>
                                     <i class='fa fa-search'></i>
                                 </button>
+                                </form>
                             </div>
                             <div class="btn_add_new_org ">
-                                <a href="#" class="add_new_org btn_add_org">Add New School</a>
+                                <?php if (Yii::$app->user->isGuest): ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New School</a>
+                                <?php else : ?>
+                                    <a href="#" class="add_new_org btn_add_org">Add New School</a>
+                                <?php  endif; ?>
                             </div>
                         </div>
                     </div>
@@ -66,6 +106,19 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <section class="green-bg">
+        <div class="container">
+            <div class="pos-abso">
+            <div class="row">
+                <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
+                <div class="gb-text">
+                    <span class="qots">"</span>All children start their school careers with sparkling imaginations, fertile minds, and a willingness
+                    to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
     <section>
         <div class="container">
             <div class="row">
@@ -92,6 +145,41 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.green-bg{
+    background-image: linear-gradient(141deg, #6cc8ad 0%, #65bca3 51%, #59a693 75%);
+    min-height:300px;
+    position:relative;
+    text-align:center;
+    margin-top:40px;
+    font-family:lora;
+}
+.qots{
+    font-size: 30px;
+    line-height: 20px;
+}
+.pos-abso{
+    position:absolute;
+    top:50%;
+    left:50%;
+    max-width:800px;
+    width:100%;
+    transform:translate(-50%, -50%);
+}
+.gb-text{
+    color:#fff;
+    font-size:22px;
+}
+.gb-text span{
+    font-weight:bold;
+}
+.gb-heading{
+    width:100%;
+    padding:0 0 20px 0;
+    font-weight:bold;
+    font-size:30px;
+    color:#fff;
+       
+}
 .btn_add_org{
     color:#fff;
     position:absolute;
@@ -307,6 +395,7 @@ review-benifit{
     font-size:14px;
 }
 .search-box {
+    height:42px;
     display: inline-block;
     width: 100%;
     border-radius: 3px;
@@ -410,6 +499,11 @@ width:100%;
     vertical-align: middle;
     max-width: 70%;
 }
+@media screen and (max-width: 400px) {
+    .suggestion{
+        max-width: 65%;
+    }
+}
 .tt-suggestion {
   padding: 3px 20px;
   font-size: 14px;
@@ -443,7 +537,7 @@ float:right;
 .load-suggestions{
     display:none;
     position: absolute;
-    right: 20px;
+    right: 34px;
     z-index: 999;
 }
 .load-suggestions span{
@@ -452,7 +546,7 @@ float:right;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 15px 1px;
 }
 
 .load-suggestions span:nth-child(1){
@@ -540,5 +634,6 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
   });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

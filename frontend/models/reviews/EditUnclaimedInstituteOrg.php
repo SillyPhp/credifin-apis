@@ -75,6 +75,7 @@ class EditUnclaimedInstituteOrg extends Model {
         $modal->teaching_style= $this->teaching_style;
         $modal->coverage_of_subject_matter= $this->coverage_of_subject_matter;
         $modal->accessibility_of_faculty = $this->accessibility_of_faculty;
+        $modal->average_rating = (($this->student_engagement+$this->school_infrastructure+$this->faculty+$this->value_for_money+$this->teaching_style+$this->coverage_of_subject_matter+$this->accessibility_of_faculty)/7);
         $modal->likes = $this->likes;
         $modal->dislikes = $this->dislikes;
         $modal->show_user_details = $this->identity;

@@ -436,6 +436,52 @@ class SiteController extends Controller
             return $response;
         }
     }
+    public function actionWorkingProfiles()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            // $jobCategories = \frontend\models\profiles\ProfileCards::getProfiles();
+            $jobCategories =   AssignedCategories::find()
+                ->select(['b.name','b.slug', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->where(['a.assigned_to' => 'Jobs'])
+                ->andWhere(['!=', 'a.parent_enc_id', ''])
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['b.name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            $internshipCategories =   AssignedCategories::find()
+                ->select(['b.name', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->where(['a.assigned_to' => 'Internships'])
+                ->andWhere(['!=', 'a.parent_enc_id', ''])
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['b.name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            //$internshipCategories = \frontend\models\profiles\ProfileCards::getProfiles('Internships');
+            if ($jobCategories || $internshipCategories) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'categories' => [
+                        'jobs' => $jobCategories,
+                        'internships' => $internshipCategories,
+                    ],
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('working-profiles');
+    }
 
     public function actionQuestionnaire($qidk)
     {

@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Internships');
-$keywords = 'Internship, Internships, Summer Internship 2019, Summer Internships, Paid Internships, Internships in Ludhiana, Online Internships, Internships in India, Summer Internships, Summer Internships 2019';
+$keywords = 'Internships, INTERNSHIP, Internshala,Internships in Mumbai,Internship in India,Summer Internships,Internships in Kolkata,Internship in Chennai';
 $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
@@ -442,7 +442,8 @@ $this->registerCss('
     padding: 75px 0px;
 }
 .search-by-type {
-    width: 80%;
+    float:right;
+    width: 95%;
     background-color: #14141459;
     padding: 10px 20px;
     color: #fff;
@@ -476,7 +477,7 @@ $this->registerCss('
     text-align:left !important;
 }
 .set-col-2{
-    width:34%;
+    width:36%;
     float: left !important;
 }
 .in-s-btn{
@@ -605,6 +606,7 @@ $this->registerCss('
 @media only screen and (max-width: 766px){
     .search-by-type{
         width:55%;
+        float:none;
     }
     .set-col-2{
         width:100%;
