@@ -266,13 +266,13 @@ class ApplicationForm extends Model
             }
         }
 
-        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
-        if (!$image_information) {
-            return false;
-        } else {
-            $employerApplicationsModel->image_location = $image_information['image_location'];
-            $employerApplicationsModel->image = $image_information['image'];
-        }
+//        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
+//        if (!$image_information) {
+//            return false;
+//        } else {
+//            $employerApplicationsModel->image_location = $image_information['image_location'];
+//            $employerApplicationsModel->image = $image_information['image'];
+//        }
 
         if (!empty($this->designations)) {
             $chk_d = Designations::find()
