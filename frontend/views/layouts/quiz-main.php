@@ -17,7 +17,7 @@ $this->beginPage();
         <?= Html::csrfMetaTags(); ?>
         <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <link rel="icon" href="<?= Url::to('@commonAssets/favicons/favicon.png'); ?>">
+        <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
         <?php
         if ($this->params['seo_tags']) {
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
