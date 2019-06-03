@@ -1,5 +1,8 @@
 <?php
 
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\assets\QuizAssets;
@@ -70,16 +73,19 @@ $this->beginPage();
             <?= $content; ?>
         </div>
         <?php
-        $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=UA-118802085-1', [
-            'depends' => [\yii\web\JqueryAsset::className()],
-            'sync' => 'async',
-        ]);
+        if (!empty(Yii::$app->params->google->analytics->id)) {
+            $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
+                'depends' => [\yii\web\JqueryAsset::className()],
+                'sync' => 'async',
+            ]);
 
-        $this->registerJs('
+            $this->registerJs('
             window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag("js", new Date());
-                    gtag("config", "UA-118802085-1");');
+            function gtag(){dataLayer.push(arguments);}
+            gtag("js", new Date());
+            gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
+        ');
+        }
         ?>
         <?php $this->endBody(); ?>
     </body>
