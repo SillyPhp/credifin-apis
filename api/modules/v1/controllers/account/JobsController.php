@@ -69,7 +69,7 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (!empty($parameters['application_enc_id'])) {
+        if (!empty($parameters['application_enc_id']) && isset($parameters['application_enc_id'])) {
             $id = $parameters['application_enc_id'];
             $chkshort = ShortlistedApplications::find()
                 ->select(['shortlisted'])
@@ -127,7 +127,7 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (isset($parameters['application_enc_id'])) {
+        if (isset($parameters['application_enc_id']) && !empty($parameters['application_enc_id'])) {
             $id = $parameters['application_enc_id'];
             $chkuser = ReviewedApplications::find()
                 ->select(['review'])
@@ -160,12 +160,10 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (!empty($parameters['type'])) {
+        if (!empty($parameters['type']) && isset($parameters['type'])) {
             $review_list = ReviewedApplications::find()
                 ->alias('a')
                 ->select(['a.review_enc_id', 'a.review', 'c.name type', 'b.application_enc_id', 'g.name as org_name', 'SUM(h.positions) as positions', 'e.name title', 'f.name parent_category',
-                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
-                    'g.initials_color color',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
                     'f.icon_png'])
                 ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
@@ -201,7 +199,7 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (!empty($parameters['application_enc_id'])) {
+        if (!empty($parameters['application_enc_id']) && isset($parameters['application_enc_id'])) {
             $id = $parameters['application_enc_id'];
             $chkshort = ShortlistedApplications::find()
                 ->select(['shortlisted'])
@@ -266,7 +264,7 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (!empty($parameters['application_enc_id'])) {
+        if (!empty($parameters['application_enc_id']) && isset($parameters['application_enc_id'])) {
             $id = $parameters['application_enc_id'];
             $chkshort = ShortlistedApplications::find()
                 ->select(['shortlisted'])
@@ -299,7 +297,7 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (!empty($parameters['type'])) {
+        if (!empty($parameters['type']) && isset($parameters['type'])) {
             $shortlist_jobs = ShortlistedApplications::find()
                 ->alias('a')
                 ->select(['a.application_enc_id', 'j.name type', 'd.name', 'e.name as org_name',
