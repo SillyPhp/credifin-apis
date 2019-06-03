@@ -15,9 +15,6 @@ var THEMEMASCOT = {};
     var $header = $('#header');
     var $footer = $('#footer');
     var $sections = $('section');
-    var portfolio_filter = ".portfolio-filter a";
-    var $portfolio_filter_first_child = $(".portfolio-filter a:eq(0)");
-    var $portfolio_flex_slider = $(".portfolio-slider");
 
 
     THEMEMASCOT.isMobile = {
@@ -159,31 +156,7 @@ var THEMEMASCOT = {};
             THEMEMASCOT.initialize.TM_platformDetect();
             THEMEMASCOT.initialize.TM_customDataAttributes();
             THEMEMASCOT.initialize.TM_parallaxBgInit();
-            THEMEMASCOT.initialize.TM_resizeFullscreen();
-            THEMEMASCOT.initialize.TM_equalHeightDivs();
         },
-
-
-        /* ---------------------------------------------------------------------- */
-        /* ----------------------------- slider range  -------------------------- */
-        /* ---------------------------------------------------------------------- */
-        TM_sliderRange: function() {
-            $(".slider-range").each(function(){
-                var id = $(this).attr('id');
-                var target_id = $(this).data('target');
-                $( "#" + target_id ).slider({
-                  range: "max",
-                  min: 2001,
-                  max: 2016,
-                  value: 2010,
-                  slide: function( event, ui ) {
-                    $( "#" + id ).val( ui.value );
-                  }
-                });
-                $( "#" + id ).val( $( "#" + target_id ).slider( "value" ) );
-            });
-        },
-
        
 
         /* ---------------------------------------------------------------------- */
@@ -281,300 +254,6 @@ var THEMEMASCOT = {};
                 $('.parallax').addClass("mobile-parallax");
             }
         },
-
-        /* ---------------------------------------------------------------------- */
-        /* --------------------------- Home Resize Fullscreen ------------------- */
-        /* ---------------------------------------------------------------------- */
-        TM_resizeFullscreen: function() {
-            var windowHeight = $window.height();
-            $('.fullscreen, .revslider-fullscreen').height(windowHeight);
-        },
-
-        /* ---------------------------------------------------------------------- */
-        /* ----------------------------- Magnific Popup ------------------------- */
-        /* ---------------------------------------------------------------------- */
-        TM_magnificPopup_lightbox: function() {
-            
-            $('.image-popup-lightbox').magnificPopup({
-                type: 'image',
-                closeOnContentClick: true,
-                closeBtnInside: false,
-                fixedContentPos: true,
-                mainClass: 'mfp-no-margins mfp-fade', // class to remove default margin from left and right side
-                image: {
-                    verticalFit: true
-                }
-            });
-
-            $('.image-popup-vertical-fit').magnificPopup({
-                type: 'image',
-                closeOnContentClick: true,
-                mainClass: 'mfp-img-mobile',
-                image: {
-                    verticalFit: true
-                }
-            });
-
-            $('.image-popup-fit-width').magnificPopup({
-                type: 'image',
-                closeOnContentClick: true,
-                image: {
-                    verticalFit: false
-                }
-            });
-
-            $('.image-popup-no-margins').magnificPopup({
-                type: 'image',
-                closeOnContentClick: true,
-                closeBtnInside: false,
-                fixedContentPos: true,
-                mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
-                image: {
-                    verticalFit: true
-                },
-                zoom: {
-                    enabled: true,
-                    duration: 300 // don't foget to change the duration also in CSS
-                }
-            });
-
-            $('.popup-gallery').magnificPopup({
-                delegate: 'a',
-                type: 'image',
-                tLoading: 'Loading image #%curr%...',
-                mainClass: 'mfp-img-mobile',
-                gallery: {
-                    enabled: true,
-                    navigateByImgClick: true,
-                    preload: [0,1] // Will preload 0 - before current, and 1 after the current image
-                },
-                image: {
-                    tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
-                    titleSrc: function(item) {
-                        return item.el.attr('title') + '<small>by Marsel Van Oosten</small>';
-                    }
-                }
-            });
-
-            $('.zoom-gallery').magnificPopup({
-                delegate: 'a',
-                type: 'image',
-                closeOnContentClick: false,
-                closeBtnInside: false,
-                mainClass: 'mfp-with-zoom mfp-img-mobile',
-                image: {
-                    verticalFit: true,
-                    titleSrc: function(item) {
-                        return item.el.attr('title') + ' &middot; <a class="image-source-link" href="'+item.el.attr('data-source')+'" target="_blank">image source</a>';
-                    }
-                },
-                gallery: {
-                    enabled: true
-                },
-                zoom: {
-                    enabled: true,
-                    duration: 300, // don't foget to change the duration also in CSS
-                    opener: function(element) {
-                        return element.find('img');
-                    }
-                }
-                
-            });
-            
-            $('.popup-youtube, .popup-vimeo, .popup-gmaps').magnificPopup({
-                disableOn: 700,
-                type: 'iframe',
-                mainClass: 'mfp-fade',
-                removalDelay: 160,
-                preloader: false,
-
-                fixedContentPos: false
-            });
-
-            $('.popup-with-zoom-anim').magnificPopup({
-                type: 'inline',
-
-                fixedContentPos: false,
-                fixedBgPos: true,
-
-                overflowY: 'auto',
-
-                closeBtnInside: true,
-                preloader: false,
-
-                midClick: true,
-                removalDelay: 300,
-                mainClass: 'my-mfp-zoom-in'
-            });
-
-            $('.popup-with-move-anim').magnificPopup({
-                type: 'inline',
-
-                fixedContentPos: false,
-                fixedBgPos: true,
-
-                overflowY: 'auto',
-
-                closeBtnInside: true,
-                preloader: false,
-
-                midClick: true,
-                removalDelay: 300,
-                mainClass: 'my-mfp-slide-bottom'
-            });
-            
-            $('.ajaxload-popup').magnificPopup({
-              type: 'ajax',
-              alignTop: true,
-              overflowY: 'scroll', // as we know that popup content is tall we set scroll overflow by default to avoid jump
-              callbacks: {
-                parseAjax: function(mfpResponse) {
-                    THEMEMASCOT.initialize.TM_datePicker();
-                }
-              }
-            });
-
-            $('.form-ajax-load').magnificPopup({
-              type: 'ajax'
-            });
-            
-            $('.popup-with-form').magnificPopup({
-                type: 'inline',
-                preloader: false,
-                focus: '#name',
-
-                mainClass: 'mfp-no-margins mfp-fade',
-                closeBtnInside: false,
-                fixedContentPos: true,
-
-                // When elemened is focused, some mobile browsers in some cases zoom in
-                // It looks not nice, so we disable it:
-                callbacks: {
-                  beforeOpen: function() {
-                    if($window.width() < 700) {
-                      this.st.focus = false;
-                    } else {
-                      this.st.focus = '#name';
-                    }
-                  }
-                }
-            });
-
-            var $mfpLightboxAjax = $('[data-lightbox="ajax"]');
-            if( $mfpLightboxAjax.length > 0 ) {
-                $mfpLightboxAjax.magnificPopup({
-                    type: 'ajax',
-                    closeBtnInside: false,
-                    callbacks: {
-                        ajaxContentAdded: function(mfpResponse) {
-                        },
-                        open: function() {
-                        },
-                        close: function() {
-                        }
-                    }
-                });
-            }
-
-            //lightbox image
-            var $mfpLightboxImage = $('[data-lightbox="image"]');
-            if( $mfpLightboxImage.length > 0 ) {
-                $mfpLightboxImage.magnificPopup({
-                    type: 'image',
-                    closeOnContentClick: true,
-                    closeBtnInside: false,
-                    fixedContentPos: true,
-                    mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
-                    image: {
-                        verticalFit: true
-                    }
-                });
-            }
-
-            //lightbox gallery
-            var $mfpLightboxGallery = $('[data-lightbox="gallery"]');
-            if( $mfpLightboxGallery.length > 0 ) {
-                $mfpLightboxGallery.each(function() {
-                    var element = $(this);
-                    element.magnificPopup({
-                        delegate: 'a[data-lightbox="gallery-item"]',
-                        type: 'image',
-                        closeOnContentClick: true,
-                        closeBtnInside: false,
-                        fixedContentPos: true,
-                        mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
-                        image: {
-                            verticalFit: true
-                        },
-                        gallery: {
-                            enabled: true,
-                            navigateByImgClick: true,
-                            preload: [0,1] // Will preload 0 - before current, and 1 after the current image
-                        },
-                        zoom: {
-                          enabled: true,
-                          duration: 300, // don't foget to change the duration also in CSS
-                          opener: function(element) {
-                            return element.find('img');
-                          }
-                        }
-
-                    });
-                });
-            }
-
-            //lightbox iframe
-            var $mfpLightboxIframe = $('[data-lightbox="iframe"]');
-            if( $mfpLightboxIframe.length > 0 ) {
-                $mfpLightboxIframe.magnificPopup({
-                    disableOn: 600,
-                    type: 'iframe',
-                    removalDelay: 160,
-                    preloader: false,
-                    fixedContentPos: false
-                });
-            }
-
-            //lightbox inline
-            var $mfpLightboxInline = $('[data-lightbox="inline"]');
-            if( $mfpLightboxInline.length > 0 ) {
-                $mfpLightboxInline.magnificPopup({
-                    type: 'inline',
-                    mainClass: 'mfp-no-margins mfp-zoom-in',
-                    closeBtnInside: false,
-                    fixedContentPos: true
-                });
-            }
-        },
-
-        /* ---------------------------------------------------------------------- */
-        /* ---------------------------- equalHeights ---------------------------- */
-        /* ---------------------------------------------------------------------- */
-        TM_equalHeightDivs: function() {
-            /* equal heigh */
-            var $equal_height = $('.equal-height');
-            $equal_height.children('div').css('min-height', 'auto');
-            $equal_height.equalHeights();
-
-            /* equal heigh inner div */
-            var $equal_height_inner = $('.equal-height-inner');
-            $equal_height_inner.children('div').css('min-height', 'auto');
-            $equal_height_inner.children('div').children('div').css('min-height', 'auto');
-            $equal_height_inner.equalHeights();
-            $equal_height_inner.children('div').each(function() {
-                $(this).children('div').css('min-height', $(this).css('min-height'));
-            });
-
-            /* pricing-table equal heigh*/
-            var $equal_height_pricing_table = $('.equal-height-pricing-table');
-            $equal_height_pricing_table.children('div').css('min-height', 'auto');
-            $equal_height_pricing_table.children('div').children('div').css('min-height', 'auto');
-            $equal_height_pricing_table.equalHeights();
-            $equal_height_pricing_table.children('div').each(function() {
-                $(this).children('div').css('min-height', $(this).css('min-height'));
-            });
-        }
-
     };
 
 
@@ -584,7 +263,6 @@ var THEMEMASCOT = {};
 
             var t = setTimeout(function() {
                 THEMEMASCOT.header.TM_fullscreenMenu();
-                THEMEMASCOT.header.TM_sidePanelReveal();
                 THEMEMASCOT.header.TM_scroolToTopOnClick();
                 THEMEMASCOT.header.TM_scrollToFixed();
                 THEMEMASCOT.header.TM_topnavAnimate();
@@ -607,29 +285,6 @@ var THEMEMASCOT = {};
             $menufullpage.menufullpage();
         },
 
-
-        /* ---------------------------------------------------------------------- */
-        /* ------------------------- Side Push Panel ---------------------------- */
-        /* ---------------------------------------------------------------------- */
-        TM_sidePanelReveal: function() {
-            $('.side-panel-trigger').on('click', function(e) {
-                $body.toggleClass("side-panel-open");
-                if ( THEMEMASCOT.isMobile.any() ) {
-                    $body.toggleClass("overflow-hidden");
-                }
-                return false;
-            });
-
-            $('.has-side-panel .body-overlay').on('click', function(e) {
-                $body.toggleClass("side-panel-open");
-                return false;
-            });
-
-            //sitebar tree
-            $('.side-panel-nav .nav .tree-toggler').on('click', function(e) {
-                $(this).parent().children('ul.tree').toggle(300);
-            });
-        },
 
         /* ---------------------------------------------------------------------- */
         /* ------------------------------- scrollToTop  ------------------------- */
@@ -1381,7 +1036,6 @@ var THEMEMASCOT = {};
         init: function() {
             var t = setTimeout(function() {
                 THEMEMASCOT.widget.TM_twittie();
-                THEMEMASCOT.initialize.TM_magnificPopup_lightbox();
                 THEMEMASCOT.initialize.TM_preLoaderOnLoad();
                 THEMEMASCOT.initialize.TM_hashForwarding();
                 THEMEMASCOT.initialize.TM_parallaxBgInit();
@@ -1402,28 +1056,12 @@ var THEMEMASCOT = {};
         }
     };
 
-    //window on resize
-    THEMEMASCOT.windowOnResize = {
-        init: function() {
-            var t = setTimeout(function() {
-                THEMEMASCOT.initialize.TM_equalHeightDivs();
-                THEMEMASCOT.initialize.TM_resizeFullscreen();
-            }, 400);
-        }
-    };
-
 
     /* ---------------------------------------------------------------------- */
     /* ---------------------------- Call Functions -------------------------- */
     /* ---------------------------------------------------------------------- */
     $document.ready(
         THEMEMASCOT.documentOnReady.init
-    );
-    $window.on('load',
-        THEMEMASCOT.windowOnLoad.init
-    );
-    $window.on('resize', 
-        THEMEMASCOT.windowOnResize.init
     );
 
     //call function before document ready
