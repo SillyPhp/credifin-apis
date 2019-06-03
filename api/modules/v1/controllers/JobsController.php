@@ -33,6 +33,7 @@ class JobsController extends ApiBaseController
             'except' => [
                 'list',
                 'detail',
+                'application-detail',
                 'get-jobs-by-organization',
                 'search'
                 ],
