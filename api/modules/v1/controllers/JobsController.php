@@ -34,7 +34,8 @@ class JobsController extends ApiBaseController
                 'list',
                 'detail',
                 'get-jobs-by-organization',
-                'search'
+                'search',
+                'jobs-near-me'
                 ],
             'class' => HttpBearerAuth::className()
         ];
@@ -789,6 +790,61 @@ class JobsController extends ApiBaseController
         }else{
             return $this->response(404);
         }
+
+    }
+
+    public function actionJobsNearMe(){
+
+        $parameters = \Yii::$app->request->post();
+        $options = [];
+        if(!empty($parameters['latitude']) && isset($parameters['latitude'])){
+            $options['latitude'] = $parameters['latitude'];
+        }else{
+            return $this->response(422);
+        }
+
+        if(!empty($parameters['longitude']) && isset($parameters['longitude'])){
+            $options['longitude'] = $parameters['longitude'];
+        }else{
+            return $this->response(422);
+        }
+
+        if(!empty($parameters['radius']) && isset($parameters['radius'])){
+            $options['radius'] = $parameters['radius'];
+        }else{
+            $options['radius'] = 25;
+        }
+
+        if(!empty($parameters['type']) && isset($parameters['type'])){
+            $options['type'] = $parameters['type'];
+        }else{
+            return $this->response(422);
+        }
+
+        if ($parameters['page'] && (int)$parameters['page'] >= 1) {
+            $options['page'] = $parameters['page'];
+        } else {
+            $options['page'] = 1;
+        }
+
+        if(!empty($parameters['walkin']) && (int)$parameters['walkin'] == 1){
+            $options['walkin'] = $parameters['walkin'];
+        }else{
+            $options['walkin'] = 0;
+        }
+
+        if ($parameters['keyword'] && !empty($parameters['keyword'])) {
+            $options['keyword'] = $parameters['keyword'];
+        }
+
+        $data = Cards::jobsNearMe($options);
+
+        if(!empty($data)){
+            return $this->response(200,$data);
+        }else{
+            return $this->response(404);
+        }
+
 
     }
 
