@@ -54,8 +54,12 @@ document.querySelector("#quiz-play-again-btn").addEventListener("click", functio
 
 
 function initiateGame(questions, stats) {
+    var path = window.location.pathname.split('/');
     $.ajax({
         url: window.location.href,
+        method: 'POST',
+        data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
+        dataType: 'JSON',
         success: function (data) {
             for (let i = 0; i < data.results.length; i++) {
                 questions.push({
@@ -147,9 +151,10 @@ function nextQuestion(questions) {
 function displayStats(stats) {
     document.querySelectorAll("#quiz-stats>div>span").forEach(el => el.classList.add("fadeOut"));
     setTimeout(() => {
+        var path = window.location.pathname.split('/');
         document.querySelector("#rate-span").innerHTML = stats.correct + "/" + stats.questionsAsked;
         document.querySelector('#finish-quiz').innerHTML = "You Scored " + stats.correct + "/" + stats.questionsAsked;
-        document.querySelector('#btn-share').href = "http://www.facebook.com/share.php?u=http://aditya.eygb.me/quiz/world-cup-2019/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#btn-share').href = "http://www.facebook.com/share.php?u=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
         document.querySelector("#streak-span").innerHTML = stats.correctStreak;
         document.querySelector("#response-time-span").innerHTML = stats.averageResponseTime;
         document.querySelectorAll("#quiz-stats>div>span").forEach(el => {

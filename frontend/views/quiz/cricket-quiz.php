@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 
-$this->title = 'Cricket World Cup| Quiz 2019| ';
+$this->title = 'Cricket World Cup | Quiz 2019';
 
 $keywords = 'cricket, cricket world cup, cricket world cup 2019, cricket quiz, cricket news, world cup news';
 
@@ -43,7 +43,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
 
-    <div class="container" style="margin-top: 8vh;">
+    <div class="container" style="margin-top: 12vh;">
         <div class="row">
             <div class="col-xs-12 col-md-10 col-md-offset-1 text-center">
                 <p id="quiz-question" class="animated"></p>
@@ -52,7 +52,7 @@ $this->params['seo_tags'] = [
                 <div id="quiz-play-again">
                     <button id="quiz-play-again-btn" class="btn animated">Play Again</button>
                     <h1 id="finish-quiz"></h1>
-                    <a onclick="return fbs_click()" href="#" id="btn-share" target="_blank">
+                    <a href="#" id="btn-share" target="_blank">
                         <img src="<?= Url::to('@root/assets/themes/quiz/fb-share.png'); ?>" alt="Share on Facebook" class="share-img" align="left"/>
                     </a>
                     <a href="/signup/individual">
@@ -64,9 +64,4 @@ $this->params['seo_tags'] = [
     </div>
 
 <?php
-$this->registerJs("function fbs_click() {
-   u = location.href;
-   t = document.title;
-   window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent(u) + '&t=' + encodeURIComponent(t), 'sharer', 'toolbar=0,status=0,width=626,height=436');
-   return false;
-}");
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
