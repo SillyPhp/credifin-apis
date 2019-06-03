@@ -53,7 +53,7 @@ button, button:hover, button:active, button:focus, button:visited, .btn, .btn:ho
 #quiz {
     width: 100%;
     overflow-x: hidden;
-    font-family: 'Audiowide';
+    font-family: "Lora", serif;
     color:#fff;
     letter-spacing: .015em;
 }
@@ -66,8 +66,6 @@ button, button:hover, button:active, button:focus, button:visited, .btn, .btn:ho
     padding: 16px 0 12px 0;
     margin: 0;
     font-size: 14px;
-
-
 }
 #quiz-stats .fa-bar-chart {
     font-size: 56px;
