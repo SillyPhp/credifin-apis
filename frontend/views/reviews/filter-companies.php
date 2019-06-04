@@ -409,9 +409,6 @@ form input[type="text"]:focus{
     border:none;
     font-size: 14px;
 }
-.f-search-loc{
-    margin-top:15px;
-}
 .f-search input::placeholder, .f-search-loc input::placeholder, .f-search-1 input::placeholder{
     color:#999;
 }
@@ -451,9 +448,10 @@ form input[type="text"]:focus{
     margin-bottom: 0px !important;
 }
 .filter-heading{
-    padding:00px 15px 10px 10px;
-    font-size:18px;
+    padding:0px 15px 0px 10px;
+    font-size:17px;
     text-transform:uppercase;
+    font-family: lora;
 }
 .overall-box-heading{
     font-size:16px;
