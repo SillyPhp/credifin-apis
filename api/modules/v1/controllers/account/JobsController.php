@@ -12,6 +12,7 @@ use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\EmployerApplications;
+use common\models\FollowedOrganizations;
 use common\models\Organizations;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
@@ -170,12 +171,15 @@ class JobsController extends ApiBaseController
                 ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->distinct();
+                    $b->where(['b.is_deleted'=>0]);
                     $b->joinWith(['applicationTypeEnc c']);
                     $b->joinWith(['title d' => function ($c) {
                         $c->joinWith(['categoryEnc e']);
                         $c->joinWith(['parentEnc f']);
                     }]);
-                    $b->joinWith(['organizationEnc g']);
+                    $b->joinWith(['organizationEnc g'=>function($d){
+                        $d->where(['g.is_deleted'=>0]);
+                    }]);
                     $b->joinWith(['applicationPlacementLocations h']);
                     $b->groupBy(['h.application_enc_id']);
                 }], false)
@@ -304,7 +308,7 @@ class JobsController extends ApiBaseController
                 ->select(['a.application_enc_id', 'j.name type', 'd.name', 'e.name as org_name',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
                     'SUM(g.positions) as positions'])
-                ->where(['a.created_by' => $candidate->user_enc_id, 'a.shortlisted' => 1])
+                ->where(['a.created_by' => $candidate->user_enc_id, 'a.shortlisted' => 1,'e.is_deleted'=>0,'b.is_deleted'=>0])
                 ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
                 ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -350,7 +354,7 @@ class JobsController extends ApiBaseController
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => $candidate->user_enc_id, 'a.is_deleted'=>0])
+            ->andwhere(['a.created_by' => $candidate->user_enc_id, 'a.is_deleted'=>0, 'e.is_deleted'=>0, 'k.is_deleted'=>0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -397,7 +401,7 @@ class JobsController extends ApiBaseController
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => $candidate->user_enc_id, 'a.status' => 'Accepted','a.is_deleted' => 0])
+            ->where(['b.user_enc_id' => $candidate->user_enc_id, 'a.status' => 'Accepted','a.is_deleted' => 0, 'c.is_deleted'=>0, 'g.is_deleted'=>0])
             ->having(['type' => $type])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -436,7 +440,7 @@ class JobsController extends ApiBaseController
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => $candidate->user_enc_id, 'a.status' => 'Pending','a.is_deleted' => 0])
+            ->where(['b.user_enc_id' => $candidate->user_enc_id, 'a.status' => 'Pending','a.is_deleted' => 0, 'c.is_deleted'=>0, 'g.is_deleted'=>0])
             ->having(['type' => $type])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -448,6 +452,31 @@ class JobsController extends ApiBaseController
         }else{
             return $this->response(404);
         }
+    }
+
+    public function actionFollowedCompanies(){
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+
+        $followedCompanies = FollowedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id','b.name','b.initials_color',
+                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+            ->joinWith(['organizationEnc b'=>function($a){
+                $a->where(['b.is_deleted'=>0, 'b.status'=> 'Active']);
+            }],false)
+            ->where(['a.followed'=>1,'a.created_by'=>$candidate->user_enc_id])
+            ->asArray()
+            ->all();
+
+        if(!empty($followedCompanies)){
+            return $this->response(200,$followedCompanies);
+        }else{
+            return $this->response(404);
+        }
+
     }
 
 

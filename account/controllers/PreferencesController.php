@@ -8,8 +8,6 @@ use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Industries;
 use yii\web\HttpException;
-use common\models\Skills;
-use common\models\User;
 use common\models\UserPreferences;
 use Yii;
 use yii\web\Controller;
@@ -19,7 +17,7 @@ class PreferencesController extends Controller
 {
     public function actionIndex()
     {
-        if(!Yii::$app->user->identity->organization) {
+        if (!Yii::$app->user->identity->organization) {
 
             $applicationpreferenceformModel = new CandidatePreferenceForm();
             $internapplicationpreferenceformModel = new CandidateInternshipPreferenceForm();
@@ -28,7 +26,7 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Jobs','b.status'=>'Approved'])
+                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
                 ->asArray()
                 ->all();
 
@@ -36,7 +34,7 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Internships','b.status'=>'Approved'])
+                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved'])
                 ->asArray()
                 ->all();
 
@@ -207,16 +205,17 @@ class PreferencesController extends Controller
                 'applicationpreferenceformModel' => $applicationpreferenceformModel,
                 'internapplicationpreferenceformModel' => $internapplicationpreferenceformModel,
                 'jobprimaryfields' => $jobprimaryfields,
-                'internprimaryfields'=>$internprimaryfields,
+                'internprimaryfields' => $internprimaryfields,
                 'juser_skills' => $juser_skills,
                 'iuser_skills' => $iuser_skills
             ]);
-        }else{
+        } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
-    public function actionGetIndustry($q = null) {
+    public function actionGetIndustry($q = null)
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         if (!empty($q)) {
@@ -232,63 +231,65 @@ class PreferencesController extends Controller
         }
     }
 
-    public function actionGetJobData(){
+    public function actionGetJobData()
+    {
 
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             $data = UserPreferences::find()
                 ->alias('a')
-                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>'Jobs'])
-                ->joinWith(['userPreferredLocations c'=>function($x){
-                    $x->onCondition(['c.is_deleted'=>0]);
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => 'Jobs'])
+                ->joinWith(['userPreferredLocations c' => function ($x) {
+                    $x->onCondition(['c.is_deleted' => 0]);
                     $x->joinWith(['cityEnc']);
                 }])
-                ->joinWith(['userPreferredIndustries d'=>function($y){
-                    $y->onCondition(['d.is_deleted'=>0]);
+                ->joinWith(['userPreferredIndustries d' => function ($y) {
+                    $y->onCondition(['d.is_deleted' => 0]);
                     $y->joinWith(['industryEnc']);
                 }])
-                ->joinWith(['userPreferredSkills e'=>function($z){
-                    $z->onCondition(['e.is_deleted'=>0]);
+                ->joinWith(['userPreferredSkills e' => function ($z) {
+                    $z->onCondition(['e.is_deleted' => 0]);
                     $z->joinWith(['skillEnc']);
                 }])
                 ->asArray()
                 ->all();
 
 
-            if(empty($data)){
-                return json_encode(['status'=>201]);
-            }else{
+            if (empty($data)) {
+                return json_encode(['status' => 201]);
+            } else {
                 return json_encode($data);
             }
 
         }
     }
 
-    public function actionGetInternData(){
+    public function actionGetInternData()
+    {
 
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             $data = UserPreferences::find()
                 ->alias('a')
-                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id,'assigned_to'=>'Internships'])
-                ->joinWith(['userPreferredLocations c'=>function($x){
-                    $x->onCondition(['c.is_deleted'=>0]);
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => 'Internships'])
+                ->joinWith(['userPreferredLocations c' => function ($x) {
+                    $x->onCondition(['c.is_deleted' => 0]);
                     $x->joinWith(['cityEnc']);
                 }])
-                ->joinWith(['userPreferredIndustries d'=>function($y){
-                    $y->onCondition(['d.is_deleted'=>0]);
+                ->joinWith(['userPreferredIndustries d' => function ($y) {
+                    $y->onCondition(['d.is_deleted' => 0]);
                     $y->joinWith(['industryEnc']);
                 }])
-                ->joinWith(['userPreferredSkills e'=>function($z){
-                    $z->onCondition(['e.is_deleted'=>0]);
+                ->joinWith(['userPreferredSkills e' => function ($z) {
+                    $z->onCondition(['e.is_deleted' => 0]);
                     $z->joinWith(['skillEnc']);
                 }])
                 ->asArray()
                 ->all();
 
-            if(empty($data)){
-                return json_encode(['status'=>201]);
-            }else{
+            if (empty($data)) {
+                return json_encode(['status' => 201]);
+            } else {
                 return json_encode($data);
             }
 

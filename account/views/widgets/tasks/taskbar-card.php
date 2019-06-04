@@ -284,6 +284,7 @@ ul.widget-todo-list li .todo-actions .todo-remove {
     display: table-cell;
     vertical-align: bottom;
     width: 100%;
+    text-transform: capitalize;
     color: #FFF;
 }
 .card {

@@ -63,7 +63,9 @@ class ApplicationCards
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
             }], false)
-            ->joinWith(['organizationEnc d'], false)
+            ->joinWith(['organizationEnc d'=>function($a){
+                $a->where(['d.is_deleted'=>0]);
+            }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->joinWith(['locationEnc f' => function ($x) {
                     $x->joinWith(['cityEnc g'=>function($x)
@@ -217,7 +219,9 @@ class ApplicationCards
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
             }], false)
-            ->joinWith(['organizationEnc d'], false)
+            ->joinWith(['organizationEnc d'=>function($a){
+                $a->where(['d.is_deleted'=>0]);
+            }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->joinWith(['locationEnc f' => function ($x) {
                     $x->joinWith(['cityEnc g'], false);

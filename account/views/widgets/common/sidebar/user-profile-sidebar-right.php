@@ -313,6 +313,7 @@ $this->registerCss('
     font-size: 22px;
     color: #202020;
     font-weight: bold;
+    text-transform: capitalize;
     margin: 0;
 }
 .can-detail-s span {

@@ -6,6 +6,7 @@ use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ExtendsJob;
 use account\models\applications\UserAppliedApplication;
 use common\models\DropResumeApplications;
+use common\models\FollowedOrganizations;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -26,8 +27,6 @@ use common\models\ShortlistedOrganizations;
 use common\models\ReviewedApplications;
 use common\models\AppliedApplicationProcess;
 use common\models\Utilities;
-use account\models\internships\InternshipApplicationForm;
-use account\models\jobs\JobApplicationForm;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
 use common\models\InterviewProcessFields;
@@ -176,7 +175,7 @@ class InternshipsController extends Controller
                 }
             } else {
                 $obj = new ApplicationDataProvider();
-                $model = $obj->setValues($model,$aidk);
+                $model = $obj->setValues($model, $aidk);
                 return $this->render('/employer-applications/form', ['model' => $model,
                     'primary_cat' => $primary_cat,
                     'placement_locations' => $placement_locations,
@@ -206,7 +205,7 @@ class InternshipsController extends Controller
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
-                if ($obj->update($model,$aidk,$type)){
+                if ($obj->update($model, $aidk, $type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
@@ -216,7 +215,7 @@ class InternshipsController extends Controller
                     return false;
                 }
             } else {
-                $model = $obj->setValues($model,$aidk);
+                $model = $obj->setValues($model, $aidk);
                 return $this->render('/employer-applications/form', ['model' => $model,
                     'primary_cat' => $primary_cat,
                     'placement_locations' => $placement_locations,
@@ -315,7 +314,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -351,7 +350,7 @@ class InternshipsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted'])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted'=>0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -588,7 +587,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
+                ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['followed_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -686,7 +685,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -709,7 +708,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -737,22 +736,22 @@ class InternshipsController extends Controller
             ->groupBy(['b.application_enc_id'])
             ->count();
 
-        $shortlist_org = ShortlistedOrganizations::find()
+        $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year', 'a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
             ->orderBy(['a.id' => SORT_DESC])
             ->limit(8)
             ->asArray()
             ->all();
-        $total_shortlist_org = ShortlistedOrganizations::find()
+        $total_shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year', 'a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
             ->orderBy(['a.id' => SORT_DESC])
             ->count();
 
@@ -805,7 +804,7 @@ class InternshipsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted'])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted','a.is_deleted'=>0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->limit(8)
@@ -823,7 +822,7 @@ class InternshipsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted'])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted','a.is_deleted'=>0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->count();
@@ -849,7 +848,7 @@ class InternshipsController extends Controller
             ->alias('a')
             ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
             ->joinWith(['appliedApplications e' => function ($y) {
-                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id,'e.is_deleted'=>0]);
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
             ->joinWith(['title c' => function ($x) {
@@ -871,11 +870,12 @@ class InternshipsController extends Controller
             'total_pending' => $total_pending,
             'accepted_jobs' => $accepted_jobs,
             'total_accepted' => $total_accepted,
-            'shortlist1'=>$shortlist1,
+            'shortlist1' => $shortlist1,
         ]);
     }
 
-    public function actionShortlistedResume(){
+    public function actionShortlistedResume()
+    {
 
         $application_id = DropResumeApplications::find()
             ->alias('a')
@@ -898,7 +898,7 @@ class InternshipsController extends Controller
             ->alias('a')
             ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
             ->joinWith(['appliedApplications e' => function ($y) {
-                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id,'e.is_deleted'=>0]);
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
             ->joinWith(['title c' => function ($x) {
@@ -912,17 +912,17 @@ class InternshipsController extends Controller
             'shortlisted_resume' => $shortlist1,
         ]);
     }
+
     public function actionExtendsDate()
     {
         $model = new ExtendsJob();
-        if ($model->load(Yii::$app->request->post()))
-        {
-            if ($model->save())
-            {
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
                 return $this->redirect(Yii::$app->request->referrer);
             }
         }
     }
+
     private function __organizationDashboard()
     {
 
@@ -948,8 +948,8 @@ class InternshipsController extends Controller
             'applications' => $this->__internships(8),
             'closed_application' => $this->__closedinternships(8),
             'interview_processes' => $this->__interviewProcess(4),
-            'applied_applications' => $userApplied->getUserDetails('Internships',10),
-            'total_applied' => $userApplied->total_applied($type='Internships'),
+            'applied_applications' => $userApplied->getUserDetails('Internships', 10),
+            'total_applied' => $userApplied->total_applied($type = 'Internships'),
             'primary_fields' => $this->getCategories(),
             'model' => $model,
             'viewed' => $viewed,
@@ -983,8 +983,8 @@ class InternshipsController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
-            'having'=>[
-                '>=','a.last_date',date('Y-m-d')
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -995,6 +995,7 @@ class InternshipsController extends Controller
         $applications = new \account\models\applications\Applications();
         return $applications->getApplications($options);
     }
+
     private function __closedinternships($limit = NULL)
     {
         $options = [
@@ -1003,8 +1004,8 @@ class InternshipsController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
-            'having'=>[
-                '<','a.last_date',date('Y-m-d')
+            'having' => [
+                '<', 'a.last_date', date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -1015,6 +1016,7 @@ class InternshipsController extends Controller
         $applications = new \account\models\applications\Applications();
         return $applications->getApplications($options);
     }
+
     private function __interviewProcess($limit = NULL)
     {
         $options = [
@@ -1065,7 +1067,7 @@ class InternshipsController extends Controller
             ->where(['a.status' => 'Pending', 'a.status' => 'Incomplete'])
             ->having(['active' => 0])
             ->groupBy('a.applied_application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 

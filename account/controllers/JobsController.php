@@ -6,11 +6,8 @@ use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
 use account\models\applications\ExtendsJob;
 use account\models\applications\UserAppliedApplication;
-use common\models\ApplicationInterviewQuestionnaire;
-use common\models\Cities;
 use common\models\DropResumeApplications;
-use common\models\OrganizationAssignedCategories;
-use common\models\UserResume;
+use common\models\FollowedOrganizations;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -27,12 +24,9 @@ use common\models\AppliedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
-use common\models\ShortlistedOrganizations;
 use common\models\ReviewedApplications;
 use common\models\AppliedApplicationProcess;
 use common\models\Utilities;
-use account\models\jobs\JobApplicationForm;
-use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
 use common\models\InterviewProcessFields;
 use common\models\UserCoachingTutorials;
@@ -388,7 +382,7 @@ class JobsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id,'a.is_deleted'=>0])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -424,7 +418,7 @@ class JobsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted'])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted'=>0])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -665,7 +659,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['shortlisted_enc_id' => $rmv_id])
+                ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['followed_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -777,7 +771,7 @@ class JobsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id,'a.is_deleted'=>0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -800,7 +794,7 @@ class JobsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -828,22 +822,22 @@ class JobsController extends Controller
             ->groupBy(['b.application_enc_id'])
             ->count();
 
-        $shortlist_org = ShortlistedOrganizations::find()
+        $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year', 'a.shortlisted_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
             ->orderBy(['a.id' => SORT_DESC])
             ->limit(8)
             ->asArray()
             ->all();
-        $total_shortlist_org = ShortlistedOrganizations::find()
+        $total_shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year', 'a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
             ->orderBy(['a.id' => SORT_DESC])
             ->count();
 
@@ -898,7 +892,7 @@ class JobsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted'])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted'=>0])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->limit(8)
@@ -916,7 +910,7 @@ class JobsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted'])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted'=>0])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->count();
@@ -1179,57 +1173,6 @@ class JobsController extends Controller
             'total' => $total_applications,
             'list' => $candidate_applications,
         ];
-    }
-
-    public function actionJobCard($cidk)
-    {
-
-        $category = AssignedCategories::find()
-            ->alias('a')
-            ->select(['b.name',
-                'CONCAT("' . Url::to('@commonAssets/categories/png/') . '", c.icon_png) icon'
-            ])
-            ->innerJoin(Categories::tableName() . ' b', 'b.category_enc_id = a.category_enc_id')
-            ->innerJoin(Categories::tableName() . ' c', 'c.category_enc_id = a.parent_enc_id')
-            ->where(['a.assigned_category_enc_id' => $cidk])
-            ->asArray()
-            ->one();
-
-        if ($category) {
-//            if (Yii::$app->request->post('image')) {
-//                Yii::$app->response->format = Response::FORMAT_JSON;
-//                $image = Yii::$app->request->post('image');
-//                $image_parts = explode(";base64,", $image);
-//                $image_base64 = base64_decode($image_parts[1]);
-//                $utilitiesModel = new Utilities();
-//                $image_location = Yii::$app->getSecurity()->generateRandomString();
-//                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $image = $utilitiesModel->encrypt() . '.png';
-//                if (!is_dir($base_path)) {
-//                    if (!mkdir($base_path, 0755, true)) {
-//                        return [
-//                            'status' => 201,
-//                        ];
-//                    }
-//                }
-//
-//                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
-//                    return [
-//                        'status' => 200,
-//                        'image_location' => $image_location,
-//                        'image' => $image,
-//                    ];
-//                }
-//            }
-            return $this->renderPartial('og-image', [
-                'category' => $category,
-            ]);
-        } else {
-            return [
-                'status' => 201,
-            ];
-        }
     }
 
 }
