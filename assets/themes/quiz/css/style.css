@@ -85,7 +85,7 @@ button, button:hover, button:active, button:focus, button:visited, .btn, .btn:ho
     animation-duration: 0.375s;
 }
 #quiz-question {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: 600;
     margin: 32px 0 26px 0;
 }
@@ -121,6 +121,7 @@ button, button:hover, button:active, button:focus, button:visited, .btn, .btn:ho
 #quiz-play-again {
     overflow-y: hidden;
     display: none;
+    margin-top: -100px;
 }
 #quiz-play-again-btn {  
     display: block;
@@ -155,24 +156,18 @@ button, button:hover, button:active, button:focus, button:visited, .btn, .btn:ho
     #quiz-play-again-btn {  font-size: 28px; width: 66%; }
 }
 .share-img{
-    width: 46%;
-    height: 120px;
+    width: 210px;
+    height: auto;
 }
 @media (max-width: 430px) {
     .share-img{
-        width: 43%;
-        height: 70px;
+        width: 150px;
+    }
+    .background-overlay {
+        background-position: center;
+        background-size: cover;
     }
 }
-@media only screen and (max-width: 530px) and (min-width: 430px) {
-    .share-img{
-        width: 45%;
-        height: 80px;
-    }
-}
-@media only screen and (max-width: 768px) and (min-width: 530px) {
-    .share-img{
-        width: 46%;
-        height: 95px;
-    }
+#quiz-play-again a{
+    display: inline-block;
 }
