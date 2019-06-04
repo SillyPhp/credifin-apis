@@ -3244,71 +3244,9 @@ blockquote p {
   margin-bottom: 10px;
   vertical-align: middle;
 }
-/* -------- Horizontal-Tab-Centered ---------- */
-.horizontal-tab-centered .nav-pills {
-  display: inline-block;
-}
-.horizontal-tab-centered .nav-pills > li > a {
-  background: #eeeeee;
-  color: #555555;
-  font-size: 14px;
-  padding: 8px 10px;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  text-transform: capitalize;
-}
-.horizontal-tab-centered .nav-pills > li > a:hover {
-  color: #fff;
-}
-.horizontal-tab-centered .nav-pills > li > a i {
-  font-size: 14px;
-  margin-right: 8px;
-}
-.horizontal-tab-centered .nav-pills > li.active > a,
-.horizontal-tab-centered .nav-pills > li.active > a:hover,
-.horizontal-tab-centered .nav-pills > li.active > a:focus {
-  color: #fff;
-}
 /* -------- Horizontal-Tab Fullwide ---------- */
 .horizontal-tab.fullwide .nav-tabs > li {
   width: 20%;
-}
-/* -------- Vertical Nav-Tabs ---------- */
-.vertical-tab .tab-content {
-  padding: 5px 5px 20px 20px;
-  border: none;
-}
-.vertical-tab .nav-tabs > li {
-  float: none;
-  margin-bottom: 0;
-}
-.vertical-tab .nav-tabs > li > a {
-  background: none;
-  border-radius: 0;
-  border-bottom: 1px solid #d3d3d3;
-  border-right: 1px solid #d3d3d3;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  font-size: 14px;
-  padding: 30px 0 30px 15px;
-}
-.vertical-tab .nav-tabs > li:first-child > a {
-  border-top: 1px solid #d3d3d3;
-}
-.vertical-tab .nav-tabs > li.active > a,
-.vertical-tab .nav-tabs > li.active > a:hover,
-.vertical-tab .nav-tabs > li.active > a:focus {
-  background: none;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
-  border-bottom: 1px solid #d3d3d3;
-}
-.vertical-tab .small-padding .nav-tabs > li a {
-  padding: 20px 0 20px 15px;
-}
-.vertical-tab .small-padding .nav-tabs > li i {
-  font-size: 24px;
 }
 @media only screen and (max-width: 767px) {
   .vertical-tab .tab-content {
@@ -3325,152 +3263,6 @@ blockquote p {
     border-bottom: none;
     border-left: 2px solid #d3d3d3;
   }
-}
-.custom-nav-tabs {
-  -moz-border-bottom-colors: none;
-  -moz-border-left-colors: none;
-  -moz-border-right-colors: none;
-  -moz-border-top-colors: none;
-  border-color: -moz-use-text-color;
-  border-image: none;
-  border-style: none solid none none;
-  border-width: medium 0px medium medium;
-  margin-right: 53px;
-}
-.custom-nav-tabs > li {
-  float: none;
-  margin: 0 0 1px;
-}
-.custom-nav-tabs > li a {
-  background: #eeeeee none repeat scroll 0 0;
-  border: medium none;
-  border-radius: 0;
-  display: block;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 59px;
-  margin: 0;
-  outline: medium none;
-  padding: 0;
-  text-align: center;
-  text-transform: uppercase;
-}
-.custom-nav-tabs > li.active > a,
-.custom-nav-tabs > li.active > a:hover,
-.custom-nav-tabs > li.active > a:focus,
-.custom-nav-tabs > li > a:hover,
-.custom-nav-tabs > li > a:focus {
-  border: medium none;
-  color: #000;
-  padding: 0;
-}
-/*
- * Shortcode: Toggles-Accordions.less
- * -----------------------------------------------
-*/
-.panel-group .panel {
-  box-shadow: none;
-  -webkit-border-radius: 0 0 0 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0 0 0 0;
-  border-radius: 0 0 0 0;
-  border: none;
-  position: relative;
-}
-.panel-group .panel-title {
-  font-size: 13px;
-}
-.panel-group .panel-title a {
-  background: #f8f8f8;
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px 15px 10px 48px;
-  white-space: normal;
-}
-.panel-group .panel-title a.active {
-  background: #16174f none repeat scroll 0 0;
-  border-bottom: 1px solid #d3d3d3;
-  color: #fff;
-}
-.panel-group .panel-title a.active .open-sub:after {
-  display: none;
-}
-.panel-group .panel-title a.active::after {
-  color: #fff;
-  content: "\f068";
-}
-.panel-group .panel-title a::after {
-  color: #888;
-  content: "\f067";
-  font-family: fontawesome;
-  font-size: 14px;
-  left: 0;
-  padding: 10px 14px;
-  position: absolute;
-  top: 0;
-}
-.panel-group .panel-title.active.panel-group .panel-title:hover a,
-.panel-group .panel-title.active.panel-group .panel-title:focus a {
-  color: #333333;
-}
-.panel-group .panel-title .open-sub {
-  display: block;
-  position: relative;
-}
-.panel-group .panel-title .open-sub:before,
-.panel-group .panel-title .open-sub:after {
-  content: "";
-  display: block;
-  position: absolute;
-  height: 1px;
-  top: 50%;
-  margin-top: -0.5px;
-  left: 50%;
-}
-.panel-group .panel-content {
-  background: #fff none repeat scroll 0 0;
-  border: 1px solid #ddd;
-  padding: 10px 20px 20px;
-}
-.panel-group .panel-content > :last-child {
-  margin-bottom: 0;
-}
-.panel-group.white .panel-title a {
-  background-color: #fff;
-}
-/* -------- Toggle ---------- */
-.panel-group.toggle .panel-heading {
-  padding: 0;
-  border-bottom: 0;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-.panel-group.toggle .panel-body {
-  padding: 10px 0 5px 25px;
-}
-.panel-group.accordion.transparent .panel-title a,
-.panel-group.toggle.transparent .panel-title a,
-.panel-group.accordion.transparent .panel-title a.active,
-.panel-group.toggle.transparent .panel-title a.active {
-  background: transparent;
-  border: none;
-  color: #333333;
-}
-.panel-group.accordion.transparent .panel-title a::after,
-.panel-group.toggle.transparent .panel-title a::after,
-.panel-group.accordion.transparent .panel-title a.active::after,
-.panel-group.toggle.transparent .panel-title a.active::after {
-  color: #333333;
-  background: transparent;
-}
-.panel-group.accordion.transparent .panel-content,
-.panel-group.toggle.transparent .panel-content {
-  background: transparent;
-}
-.panel-group.toggle .panel-heading + .panel-collapse > .panel-body,
-.panel-group.toggle .panel-heading + .panel-collapse > .list-group {
-  border-top: none;
 }
 /*
  * Widgets.less
@@ -3597,12 +3389,6 @@ blockquote p {
   border-image: none;
   border-style: solid;
   border-width: 1px;
-}
-.widget.dark .product-title a {
-  color: #808080;
-}
-.widget.dark .post-title a {
-  color: #c0c0c0;
 }
 .widget.dark .tab-content {
   background: #333333 none repeat scroll 0 0;
@@ -3793,4 +3579,7 @@ blockquote p {
 }
 .font-weight-700 {
   font-weight: 700 !important;
+}
+.text-white{
+    color: #ffffff;
 }
