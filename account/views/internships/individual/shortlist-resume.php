@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
                     <div class="portlet-title tabbable-line">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase">Shortlisted Jobs</span>
+                            <span class="caption-subject font-dark bold uppercase">Shortlisted Internships</span>
                         </div>
                     </div>
                     <div class="portlet-body">

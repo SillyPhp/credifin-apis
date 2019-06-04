@@ -80,7 +80,7 @@ use yii\widgets\Pjax;
                 <div class="details">
                     <div class="number"> 
                         <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
-                    <div class="desc">Companies Shortlisted</div>
+                    <div class="desc">Followed Companies</div>
                 </div>
             </a>
         </div>
@@ -127,7 +127,7 @@ use yii\widgets\Pjax;
                         |
                         <li data-tab="tab-4" data-url="/account/internships/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
                         |
-                        <li data-tab="tab-5" data-url="/account/internships/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
+                        <li data-tab="tab-5" data-url="/account/internships/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shortlisted Resume</li>
                     </ul>
                 </div>
                 <div class="actions col-lg-1">
@@ -432,7 +432,7 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Companies shortlisted</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/shortlist-companies') ?>" title="" class="viewall-jobs">View All</a>
@@ -440,71 +440,10 @@ use yii\widgets\Pjax;
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_org']);
-                    if ($shortlist_org) {
-                        foreach ($shortlist_org as $shortlist) {
-                            $logo = $shortlist['logo'];
-                            ?>
-                            <div class="col-md-3 hr-j-box">
-                                <div class="topic-con"> 
-                                    <div class="hr-company-box">
-                                        <a href="/<?= $shortlist['slug']; ?>">
-                                            <div class="hr-com-icon">
-                                                <?php
-                                                if (empty($shortlist['logo_location'])) {
-                                                    ?>
-                                                    <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="80" height="80" font="35px"></canvas>
-                                                    <?php
-                                                } else {
-                                                    $logo_location = $shortlist['logo_location'];
-                                                    $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                    $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                    if (!file_exists($logo_base_path)) {
-                                                        $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
-                                                    }
-                                                    ?>
-                                                    <img src="<?= Url::to($logo_image); ?>" class="img-responsive ">
-                                                    <?php
-                                                }
-                                                ?>
-                                            </div>
-                                            <div class="hr-com-name">
-                                                <?= $shortlist['org_name']; ?>
-                                            </div>
-                                            <div class="hr-com-field">
-                                                <?= $shortlist['industry']; ?>
-                                            </div>
-                                        </a>
-                                        <div class="hr-com-jobs">
-                                            <div class="row">
-                                                <div class="col-md-1 j-cross"><button value="<?= $shortlist['shortlisted_enc_id']; ?>" class="rmv_org"><i class="fa fa-times"></i></button></div> 
-                                                <div class="col-md-offset-3 col-md-6 minus-15-pad j-grid"> 
-                                                    <a  href="/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                    } else {
-                        ?>
-                        <div class="col-md-12">
-                            <div class="tab-empty"> 
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">There are no Jobs to show.</div>
-                                    <div class="">You haven't Shortlisted any Company.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                    Pjax::end();
+                    <?=
+                    $this->render('/widgets/organization/card', [
+                        'organization_data' => $shortlist_org,
+                    ]);
                     ?>
                 </div>
             </div>
