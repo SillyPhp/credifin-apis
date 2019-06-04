@@ -95,6 +95,11 @@ a.wn-overlay-text {
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
+@media screen and (max-width: 768px){
+    .wn-box-icon{
+        max-width: 100%;
+    }
+}
 ');
 if($is_ajax){
 $script = <<<JS
