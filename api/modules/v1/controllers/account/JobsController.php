@@ -12,6 +12,7 @@ use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\EmployerApplications;
+use common\models\FollowedOrganizations;
 use common\models\Organizations;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
@@ -448,6 +449,31 @@ class JobsController extends ApiBaseController
         }else{
             return $this->response(404);
         }
+    }
+
+    public function actionFollowedCompanies(){
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+
+        $followedCompanies = FollowedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id','b.name','b.initials_color',
+                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+            ->joinWith(['organizationEnc b'=>function($a){
+                $a->where(['b.is_deleted'=>0, 'b.status'=> 'Active']);
+            }],false)
+            ->where(['a.followed'=>1,'a.created_by'=>$candidate->user_enc_id])
+            ->asArray()
+            ->all();
+
+        if(!empty($followedCompanies)){
+            return $this->response(200,$followedCompanies);
+        }else{
+            return $this->response(404);
+        }
+
     }
 
 
