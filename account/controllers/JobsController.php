@@ -6,12 +6,8 @@ use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
 use account\models\applications\ExtendsJob;
 use account\models\applications\UserAppliedApplication;
-use common\models\ApplicationInterviewQuestionnaire;
-use common\models\Cities;
 use common\models\DropResumeApplications;
 use common\models\FollowedOrganizations;
-use common\models\OrganizationAssignedCategories;
-use common\models\UserResume;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -28,12 +24,9 @@ use common\models\AppliedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
-use common\models\ShortlistedOrganizations;
 use common\models\ReviewedApplications;
 use common\models\AppliedApplicationProcess;
 use common\models\Utilities;
-use account\models\jobs\JobApplicationForm;
-use account\models\jobs\JobApplicationFormEdit;
 use account\models\jobs\JobApplied;
 use common\models\InterviewProcessFields;
 use common\models\UserCoachingTutorials;
@@ -1180,57 +1173,6 @@ class JobsController extends Controller
             'total' => $total_applications,
             'list' => $candidate_applications,
         ];
-    }
-
-    public function actionJobCard($cidk)
-    {
-
-        $category = AssignedCategories::find()
-            ->alias('a')
-            ->select(['b.name',
-                'CONCAT("' . Url::to('@commonAssets/categories/png/') . '", c.icon_png) icon'
-            ])
-            ->innerJoin(Categories::tableName() . ' b', 'b.category_enc_id = a.category_enc_id')
-            ->innerJoin(Categories::tableName() . ' c', 'c.category_enc_id = a.parent_enc_id')
-            ->where(['a.assigned_category_enc_id' => $cidk])
-            ->asArray()
-            ->one();
-
-        if ($category) {
-//            if (Yii::$app->request->post('image')) {
-//                Yii::$app->response->format = Response::FORMAT_JSON;
-//                $image = Yii::$app->request->post('image');
-//                $image_parts = explode(";base64,", $image);
-//                $image_base64 = base64_decode($image_parts[1]);
-//                $utilitiesModel = new Utilities();
-//                $image_location = Yii::$app->getSecurity()->generateRandomString();
-//                $base_path = Yii::$app->params->upload_directories->employer_application->image_path . $image_location;
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $image = $utilitiesModel->encrypt() . '.png';
-//                if (!is_dir($base_path)) {
-//                    if (!mkdir($base_path, 0755, true)) {
-//                        return [
-//                            'status' => 201,
-//                        ];
-//                    }
-//                }
-//
-//                if (file_put_contents($base_path . DIRECTORY_SEPARATOR . $image, $image_base64)) {
-//                    return [
-//                        'status' => 200,
-//                        'image_location' => $image_location,
-//                        'image' => $image,
-//                    ];
-//                }
-//            }
-            return $this->renderPartial('og-image', [
-                'category' => $category,
-            ]);
-        } else {
-            return [
-                'status' => 201,
-            ];
-        }
     }
 
 }
