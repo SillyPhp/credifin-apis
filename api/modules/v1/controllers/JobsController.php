@@ -36,7 +36,8 @@ class JobsController extends ApiBaseController
                 'application-detail',
                 'get-jobs-by-organization',
                 'search',
-                'jobs-near-me'
+                'jobs-near-me',
+                'test'
                 ],
             'class' => HttpBearerAuth::className()
         ];
@@ -438,7 +439,7 @@ class JobsController extends ApiBaseController
     private function findUnclaimed($t, $s){
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug username', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
             ->joinWith(['organizationTypeEnc b' => function($y) use($t){
                 $y->andWhere([
                     'b.business_activity' => $t
@@ -447,7 +448,7 @@ class JobsController extends ApiBaseController
             ->joinWith(['newOrganizationReviews c' => function ($x) {
                 $x->select(['c.organization_enc_id', 'c.average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
                     ->groupBy(['c.organization_enc_id']);
-            }], false)
+            }])
             ->where([
                 'a.is_deleted' => 0,
                 'a.status' => 1
@@ -476,7 +477,9 @@ class JobsController extends ApiBaseController
 
         $organizations = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.name','a.slug username', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo',
+                'a.initials_color color',
+                ])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['businessActivityEnc c'], false)
             ->joinWith(['industryEnc d'], false)
@@ -529,7 +532,7 @@ class JobsController extends ApiBaseController
         $jobs = EmployerApplications::find()
             ->alias('a')
             ->select([
-                'a.application_enc_id application_id',
+                'a.application_enc_id',
                 'a.last_date',
                 'a.type',
                 '(CASE
@@ -656,7 +659,7 @@ class JobsController extends ApiBaseController
         $internships = EmployerApplications::find()
             ->alias('a')
             ->select([
-                'a.application_enc_id application_id',
+                'a.application_enc_id',
                 'a.last_date',
                 'a.type',
                 'c.initials_color color',
@@ -765,7 +768,7 @@ class JobsController extends ApiBaseController
         $posts = Posts::find()
             ->select([
                 'title',
-                'CONCAT("/blog/", slug) link',
+                'CONCAT("https://'. Yii::$app->request->serverName .'/blog/", slug) link',
                 'excerpt',
                 'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image,'https') . '", featured_image_location, "/", featured_image) ELSE NULL END image'
             ])
@@ -909,7 +912,6 @@ class JobsController extends ApiBaseController
             return $this->response(422);
         }
     }
-
 
     private function getApplication($id){
         return EmployerApplications::find()
