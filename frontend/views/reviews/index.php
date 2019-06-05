@@ -40,9 +40,9 @@ $this->params['seo_tags'] = [
 ?>
 
     <section class="head-bg">
-        <div class="bg-img">
-<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">-->
-        </div>
+<!--        <div class="bg-img">-->
+<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">
+<!--        </div>-->
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -727,13 +727,13 @@ color: initial;
     
 .head-bg{
 //  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-//     background: url(../assets/themes/ey/images/pages/review/review-bg2.png);
-//    background-size: cover;
+     background: url(../assets/themes/ey/images/pages/review/review-bs3.png);
+    background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center;
-     background-size: contain;
-    background-position:bottom right;
+//     background-size: contain;
+//    background-position:bottom right;
 }  
 
 .pos-relative{

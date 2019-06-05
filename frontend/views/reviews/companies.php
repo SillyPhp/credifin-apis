@@ -367,6 +367,7 @@ $this->registerCss('
     box-shadow:0 0 5px rgba(0,0,0,.2);
     border-radius:10px;
     transition:.3s ease;
+    background:#fff;
     padding:5px 10px;
 }
 .qrb-details{
