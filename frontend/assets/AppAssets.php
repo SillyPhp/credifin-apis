@@ -14,11 +14,11 @@ class AppAssets extends AssetBundle {
         'css/css-plugin-collections.css',
         'css/menuzord-skins/menuzord-rounded-boxed.css',
         'css/style-main.css',
-        'css/preloader.css',
+//        'css/preloader.css',
         'css/custom-bootstrap-margin-padding.css',
         'css/custom.css',
         'css/responsive.css',
-        'css/colors/theme-skin-color-set-1.css',
+//        'css/colors/theme-skin-color-set-1.css',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
     ];
     public $js = [
