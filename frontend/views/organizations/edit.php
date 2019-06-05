@@ -1949,4 +1949,4 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/crop
 //$this->registerJsFile('https://foliotek.github.io/Croppie/bower_components/exif-js/exif.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 //$this->registerJsFile('http://vitalets.github.io/combodate/combodate.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('http://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('http://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
