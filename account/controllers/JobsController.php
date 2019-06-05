@@ -1175,4 +1175,49 @@ class JobsController extends Controller
         ];
     }
 
+    public function actionImage()
+    {
+        $profile = AssignedCategories::find()
+            ->alias('a')
+            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssetsDirectory/categories/png/') . '", b.icon_png) icon'])
+            ->innerJoinWith(['parentEnc b' => function ($b) {
+                $b->onCondition([
+                    'or',
+                    ['!=', 'b.icon', NULL],
+                    ['!=', 'b.icon', ''],
+                ])
+                    ->groupBy(['b.category_enc_id']);
+            }], false)
+            ->where([
+                'a.assigned_to' => ucfirst(Yii::$app->request->get('type')),
+                'a.assigned_category_enc_id' => Yii::$app->request->get('category'),
+            ])
+            ->asArray()
+            ->one();
+
+        if (!$profile) {
+            return false;
+        }
+
+        if (isset(Yii::$app->user->identity->organization->logo) && !empty(Yii::$app->user->identity->organization->logo)) {
+            $organizationLogo = Yii::$app->params->upload_directories->organizations->logo_path . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+        } else {
+            $organizationLogo = "https://ui-avatars.com/api/?name=" . Yii::$app->user->identity->organization->name . "&size=200&rounded=true&background=" . str_replace("#", "", Yii::$app->user->identity->organization->initials_color) . "&color=ffffff";
+        }
+
+        $pyscript = Url::to('@consoleDirectory/commands/applicationSharingImage/main.py');
+        $backgroudImage = Url::to('@consoleDirectory/commands/applicationSharingImage/hiring.png');
+
+        $sharingImagePath = Yii::$app->getSecurity()->generateRandomString();
+        $sharingImage = Yii::$app->getSecurity()->generateRandomString() . '.png';
+        $imagePath = Yii::$app->params->upload_directories->applications->image_path . $sharingImagePath . DIRECTORY_SEPARATOR . $sharingImage;
+
+        $cmd = 'sudo python3 "' . $pyscript . '" "' . $backgroudImage . '" "' . $organizationLogo . '" "' . $imagePath . '" "' . $profile["name"] . '" "' . $profile["icon"] . '"';
+        if (exec($cmd)) {
+            return Url::to(Yii::$app->params->upload_directories->applications->image . $sharingImagePath . DIRECTORY_SEPARATOR . $sharingImage, 'https');
+        }
+
+        return false;
+    }
+
 }
