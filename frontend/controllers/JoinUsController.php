@@ -10,12 +10,12 @@ use Yii;
 
 class JoinUsController extends Controller
 {
-    public function actionIndex($ref_csrf_tc)
+    public function actionIndex($ref)
     {
      $cookies_response = Yii::$app->response->cookies;
      $cookies_response->add(new \yii\web\Cookie([
-            'name' => '_csrf-tc',
-            'value' => $ref_csrf_tc,
+            'name' => 'ref_csrf-tc',
+            'value' => $ref,
         ]));
         return $this->redirect('/');
     }
@@ -38,7 +38,7 @@ class JoinUsController extends Controller
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->referral_enc_id = $utilitiesModel->encrypt();
         $model->code = $this->getReferralCode();
-        $model->referral_link = 'sneh.eygb.me/join-us?ref_csrf_tc='.$model->code;
+        $model->referral_link = 'sneh.eygb.me/join-us?ref='.$model->code;
         $model->user_enc_id = Yii::$app->user->identity->user_enc_id;
         $model->created_by = Yii::$app->user->identity->user_enc_id;
             if($model->save())
@@ -53,7 +53,7 @@ class JoinUsController extends Controller
     public function actionTest1()
     {
         $cookies_request = Yii::$app->request->cookies;
-        return $cookies_request->get('code');
+        return $cookies_request->get('ref_csrf-tc');
     }
     public function actionTest2()
     {
@@ -61,10 +61,10 @@ class JoinUsController extends Controller
         return $cookies_request->get('code');
     }
 
-    private function chk()
+    private function chk_referral()
     {
         $cookies_request = Yii::$app->request->cookies;
-        $code = $cookies_request->get('_csrf-tc');
+        $code = $cookies_request->get('ref_csrf-tc');
         if (!empty($code))
         {
             $ref = Referral::findOne(['code'=>$code]);

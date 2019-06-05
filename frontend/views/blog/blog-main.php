@@ -2,7 +2,36 @@
 
 use yii\helpers\Url;
 
+$this->title = Yii::t('frontend', 'Blogs');
 $this->registerCssFile('@eyAssets/css/blog-main.css');
+
+$keywords = 'Blogs,Digital Marketing Blogs,IT Blogs,Lifestyle Blogs,Business Blog';
+$description = 'Read the top blogs on business development, how to deal with rejection, how to write resume and many more are available on our platform.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
     <section class="blog-header">
@@ -25,7 +54,7 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
                         </div>
                     </div>
                 </div>
-                <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel">
+                <div id="carousel-example" class="carousel slide" data-ride="carousel">
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner">
                         <?php
@@ -242,6 +271,56 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
         </div>
     </section>
 <?php
+if(!empty($quotes)) {
+    ?>
+    <div class="myfade1"></div>
+    <div class="imgmain-div"><img class="imgmain"/></div>
+    <ul class="styled-icon icon-bordered icon-md mb-5 lightbox-ul">
+        <li><a link='https://www.facebook.com/sharer/sharer.php?u=' target="_blank" class="overfb"><i
+                        class="fa fa-facebook"></i></a></li>
+        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fa fa-twitter"></i></a>
+        </li>
+        <li><a href link="https://www.pinterest.com/pin/create/button/?url={link}&media={image}&description={title}"
+               target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
+        <li><a target="_blank" class="overdw" download><i class="fa fa-download"></i></a></li>
+    </ul>
+    <section class="blog-mirror">
+        <div class="my-container">
+            <div class="container pt-20 pb-5">
+                <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
+                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food Of Thoughts'); ?></h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <article class="post clearfix">
+                            <div class="entry-header">
+                                <div class="post-thumb">
+                                    <div id="slider1" class="owl-carousel-4col" data-nav="true">
+                                        <?php
+                                        foreach ($quotes as $post) {
+                                            ?>
+                                            <div class="zoom">
+                                                <img class="imgsdds" src="<?= Url::to($post['image']); ?>" width="570"
+                                                     height="133" alt="<?= $post['featured_image_alt']; ?>"
+                                                     title="<?= $post['featured_image_title']; ?>"
+                                                     url="<?= Yii::$app->urlManager->createAbsoluteUrl('/blog/' . $post['slug']); ?>">
+                                                <div class="carousel-content">
+                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>"></a>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php
+}
 echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
@@ -253,6 +332,7 @@ $this->registerCss('
  /*blog-section-0-css*/
 .blog-section-0{
     padding:10px 0 30px 0;
+    overflow:hidden;
 }
  /*blog-section-0-ends*/
  
@@ -260,6 +340,7 @@ $this->registerCss('
 /*blog-section-2-css*/
 .blog-section-2{
     padding:0px 0 30px 0;
+    overflow:hidden;
 }
 .whats-block-heading, .popular-heading, .trending-heading{
     position:relative;
@@ -512,6 +593,256 @@ $this->registerCss('
         box-shadow: none;
     }
  }
+ .myfade1{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-color:#000;
+    top:0;
+    left:0;
+    opacity:0.8;
+    display:none;
+    z-index: 2000;
+}
+.imgmain{
+    width:100%;
+    height:100%;
+    display:none;
+}
+.imgmain-div{
+    width:60%;
+    height:80%;
+    top:10%;
+    left:20%;
+    display: none;
+    position: fixed;
+    z-index: 2000;
+}
+@media(min-width : 1500px) {
+    .imgmain-div{
+        width: 50%;
+        height: 70%;
+        top:15%;
+        left:25%;
+    }
+}
+.lightbox-ul{
+    display: none;
+    float:right;
+    position: fixed;
+    right:10%;
+    width:50px !important;
+    top:20%;
+    z-index: 2000;
+}
+.lightbox-ul li a{
+    border-radius: 25px !important;
+}
+.lightbox-ul li a{
+    clear: both !important;
+    color:white;
+}
+@media only screen and (min-width:2000px){
+    .lightbox-ul{
+        right:18%;
+        width:64px !important;
+    }
+    .lightbox-ul li a{
+        border-radius: 35px !important;
+    }
+    .styled-icon.icon-md a {
+        font-size: 34px;
+        height: 60px;
+        line-height: 60px;
+        width: 60px;
+    }
+}
+.imgsdds{
+    cursor:pointer !important;
+}
+.zoom {
+    transition: transform .4s;
+    width: 253px;
+    height: 320px;
+    margin: 0 auto;
+    padding: 50px;
+    top:-10px;
+    left:-10px;
+    transition-timing-function: linear;
+    z-index:300;
+}
+.zoom img{
+    width:150px;
+    height:200px;
+    z-index:-500;
+    position:absolute;
+}
+.zoom:hover{
+    -ms-transform: scale(1.5,1.5); /* IE 9 */
+    -webkit-transform: scale(1.5,1.5); /* Safari 3-8 */
+    transform: scale(1.5,1.5); 
+    top:0%;
+    left:0;
+    position: absolute;
+    z-index: 999;
+}
+.c_content{
+    left:44%;
+}
+.tag {
+    background-color: #e0e0eb;
+    border-left: 6px solid  #33334d;
+}
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid  #ff704d;
+    margin: 1em 0;
+    padding: 0; 
+}
+.caption{
+    background-color: #e0e0eb;
+    border-left: 6px solid  #33334d;
+}
+#slider1 .owl-stage-outer{
+    overflow: visible !important;
+    z-index: 1000;
+}
+.owl-controls{
+    display: none !important;
+}
+.overdw:hover{
+    background-color:#1c99e9 !important;
+    color:white;
+    border:0px !important;
+}
+#slider1 {
+    margin-bottom: 20px;
+    margin-top: -40px;
+}
+#slider1 .owl-stage{
+    margin-left: -56px !important;
+}
+.blog-mirror{
+    background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
+}
+.styled-icon.icon-md a {
+    font-size: 24px;
+    height: 50px;
+    line-height: 50px;
+    width: 50px;
+    color:#fff;
+    border: 1px solid #777777;
+    float: left;
+    margin: 5px 7px 5px 0;
+    text-align: center;
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.my-container{
+    max-width: 100%;
+    overflow:hidden;
+    display: block;
+    margin: auto;
+}
+.lightbox-ul-show{
+    display:block;
+}
+@media screen and (max-width: 768px){
+    .owl-stage-outer{
+        overflow: hidden !important;
+    }
+    .zoom:hover{
+        -ms-transform: scale(1.5,1.2);
+        -webkit-transform: scale(1.5,1.2);
+        transform: scale(1.5,1.2);
+        left: 8%;
+    }
+    .imgmain-div{
+        width: 70%;
+        height: 275px;
+        top: calc(47vh - 137px);
+        left: 15%;
+    }
+    .lightbox-ul-show{
+        display: inline;
+    }
+    .lightbox-ul{
+        width: 90% !important;
+        bottom: 5%;
+        top: auto;
+        left: 5%;
+        text-align: center;
+    }
+    .lightbox-ul li{
+        display: inline;
+    }
+    .styled-icon.icon-md a{
+        font-size: 18px;
+        height: 40px;
+        display: inline-block;
+        line-height: 40px;
+        width: 40px;
+        float: none;
+    }
+    .carousel-inner {
+        padding: 0px 10px;
+    }
+    .col-item {
+        margin-bottom: 10px;
+    }
+    #slider1 .owl-stage-outer .owl-stage .owl-item{
+        margin: 0px 10px !important;
+    }
+    .whats-block-heading:before{
+        border-width: 1px 280px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 250px 0px 0px;
+    }
+}
+@media screen and (max-width: 450px){
+    .zoom img{
+        width:79vw !important;
+    }
+    .zoom{
+        padding-left: 26px;
+    }
+}
+@media screen and (max-width: 500px){
+    .whats-block-heading:before{
+        border-width: 1px 200px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 170px 0px 0px;
+    }
+}
+@media screen and (max-width: 425px){
+    .whats-block-heading:before{
+        border-width: 1px 180px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 150px 0px 0px;
+    }
+}
+@media screen and (max-width: 400px){
+    .whats-block-heading:before{
+        border-width: 1px 150px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 120px 0px 0px;
+    }
+}
+@media screen and (max-width: 374px){
+    .whats-block-heading:before{
+        border-width: 1px 110px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 80px 0px 0px;
+    }
+}
   /*blog-section-1-css*/   
 //.blog-section-1{
 //    padding:0px 0 70px 0;
@@ -611,6 +942,86 @@ $.ajax({
         $("#popular-blog").html(Mustache.render(tb_data, response.popular_posts));
     }
 }
+});
+$(document).on('click', '.imgsdds', function () {
+    var u = $(this).attr('url');
+    var t = $(this).attr('alt');
+    var image = $(location).attr('protocol') + '//' + $(location).attr('hostname') + $(this).attr('src');
+    $('.lightbox-ul li a').each(function () {
+        if ($(this).attr('class') != 'overpt' || $(this).attr('class') != 'overdw') {
+            $(this).attr('href', $(this).attr('link') + u);
+        }
+    });
+
+    $(function () {
+        var link = $('.overpt').attr('link');
+        $('.overdw').attr('href', image);
+        $('.overpt').each(function () {
+            this.href = this.href.replace('{link}', u);
+            this.href = this.href.replace('{image}', image);
+            this.href = this.href.replace('{title}', t);
+        });
+    });
+});
+
+$(function () {
+    $('.imgsdds').click(function () {
+        var c = $(this).attr('src');
+        $('.imgmain').attr('src', c);
+        $('.myfade1').fadeIn(500);
+        $('.imgmain').fadeIn(1000);
+        $('.imgmain-div').fadeIn(1000);
+        $('.lightbox-ul').addClass('lightbox-ul-show');
+
+    });
+    $('.myfade1').click(function () {
+        var d = $(this).attr('src');
+        $('.main').attr('src', d);
+        $('.imgmain').fadeOut(1000);
+        $('.myfade1').fadeOut(1000);
+        $('.imgmain-div').fadeOut(1000);
+        $('.lightbox-ul').removeClass('lightbox-ul-show');
+    });
+
+    $(document).bind('keydown', function (e) {
+        if (e.which == 27) {
+            var d = $(this).attr('src');
+            $('.main').attr('src', d);
+            $('.imgmain').fadeOut(1000);
+            $('.myfade1').fadeOut(1000);
+            $('.imgmain-div').fadeOut(1000);
+            $('.lightbox-ul').removeClass('lightbox-ul-show');
+        }
+    });
+});
+
+$('.owl-carousel-4col').owlCarousel({
+    loop: true,
+    nav: true,
+    pauseControls: true,
+    margin: 20,
+    autoplay: true,
+    autoplayTimeout: 2000,
+    autoplayHoverPause: true,
+    responsiveClass: true,
+    navText: [
+        '<i class="fa fa-chevron-left"></i>',
+        '<i class="fa fa-chevron-right"></i>'
+    ],
+    responsive: {
+        0: {
+            items: 1
+        },
+        568: {
+            items: 1
+        },
+        600: {
+            items: 2
+        },
+        1000: {
+            items: 4
+        }
+    }
 });
 JS;
 $this->registerJs($script);

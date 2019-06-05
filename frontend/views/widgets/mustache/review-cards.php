@@ -90,8 +90,8 @@ function fetch_cards(params,template,is_clear=false)
             $('#loading_img').removeClass('show');
             $('.fader').css('display','none');
             if (is_clear)
-                {
-                    $('#review_container').html('');
+                { 
+                    template.html('');
                 }
             template.append(Mustache.render($('#review-card').html(),response.cards));
             utilities.initials();
@@ -113,7 +113,7 @@ function fetch_cards(params,template,is_clear=false)
             $('#loading_img').removeClass('show');
             $('#load_review_card_btn').hide();
             $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
+                    $('#review_container').html('<div class="e-text">Oops ! No Company found for this Keywords</div>');
                 }
             $('#load_review_card_btn').html('Load More')
         }

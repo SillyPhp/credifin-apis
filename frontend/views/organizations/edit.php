@@ -6,8 +6,6 @@ use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
 use yii\helpers\Json;
 
-$this->params['disablefacebookMessenger'] = true;
-
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
     $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];

@@ -21,11 +21,9 @@ use common\models\UserWorkExperience;
 use common\models\Utilities;
 use frontend\models\account\Applications;
 use frontend\models\account\OrganizationsExtends;
-use frontend\models\IndividualImageForm;
 use frontend\models\NotesForm;
 use frontend\models\OrganizationSignUpForm;
 use frontend\models\PersonalProfile;
-use TwitterPhp\Connection\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
@@ -420,8 +418,8 @@ class ResumeBuilderController extends Controller
             ->one();
         $from_date = date_create($editedu['from_date']);
         $to_date = date_create($editedu['to_date']);
-        $editedu['from_date'] = date_format($from_date, 'd-M-Y');
-        $editedu['to_date'] = date_format($to_date, 'd-M-Y');
+        $editedu['from_date'] = date_format($from_date, 'Y/m/d');
+        $editedu['to_date'] = date_format($to_date, 'Y/m/d');
 
         return json_encode($editedu);
     }
@@ -439,8 +437,8 @@ class ResumeBuilderController extends Controller
 
         $from_date = date_create($editexp['from_date']);
         $to_date = date_create($editexp['to_date']);
-        $editexp['from_date'] = date_format($from_date, 'd-M-Y');
-        $editexp['to_date'] = date_format($to_date, 'd-M-Y');
+        $editexp['from_date'] = date_format($from_date, 'Y/m/d');
+        $editexp['to_date'] = date_format($to_date, 'Y/m/d');
 
         return json_encode($editexp);
     }
@@ -509,9 +507,9 @@ class ResumeBuilderController extends Controller
             $model->qualification_from = Yii::$app->request->post('from');
             $model->qualification_to = Yii::$app->request->post('to');
 
-            if($model->update($id)) {
+            if ($model->update($id)) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -643,38 +641,40 @@ class ResumeBuilderController extends Controller
         }
     }
 
-    public function actionOrganizations($q = null){
+    public function actionOrganizations($q = null)
+    {
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
             $org = Organizations::find()
                 ->alias('a')
                 ->select(['a.name AS text'])
-                ->where(['like', 'a.name', $q,'is_deleted'=>0]);
+                ->where(['like', 'a.name', $q, 'is_deleted' => 0]);
 
             $unclaimed_org = UnclaimedOrganizations::find()
                 ->alias('a')
                 ->select(['a.name AS text'])
-                ->where(['like', 'a.name', $q,'is_deleted'=>0]);
+                ->where(['like', 'a.name', $q, 'is_deleted' => 0]);
 
             return $unclaimed_org->union($org)->asArray()->all();
         }
     }
 
-    public function actionSchools($q = null){
+    public function actionSchools($q = null)
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
             $school = Organizations::find()
                 ->alias('a')
                 ->select(['a.name AS text'])
-                ->joinWith(['businessActivityEnc b'],false)
-                ->where(['like', 'a.name', $q, 'a.is_deleted'=>0])
+                ->joinWith(['businessActivityEnc b'], false)
+                ->where(['like', 'a.name', $q, 'a.is_deleted' => 0])
                 ->andWhere([
-                        'or',
-                    ['b.business_activity'=>'School'],
-                    ['b.business_activity'=>'College'],
-                    ['b.business_activity'=>'Educational Institute']
-                    ])
+                    'or',
+                    ['b.business_activity' => 'School'],
+                    ['b.business_activity' => 'College'],
+                    ['b.business_activity' => 'Educational Institute']
+                ])
                 ->asArray()
                 ->all();
 

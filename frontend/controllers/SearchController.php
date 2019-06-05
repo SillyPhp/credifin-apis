@@ -8,6 +8,7 @@ use common\models\EmployerApplications;
 use common\models\Industries;
 use common\models\Organizations;
 use common\models\Posts;
+use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Html;
@@ -15,6 +16,35 @@ use yii\helpers\Url;
 
 class SearchController extends Controller
 {
+    private function findUnclaimed($t, $s){
+        return UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b' => function($y) use($t){
+                $y->andWhere([
+                    'b.business_activity' => $t
+                ]);
+            }], false)
+            ->joinWith(['newOrganizationReviews c' => function ($x) {
+                $x->select(['c.organization_enc_id', 'c.average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
+                    ->groupBy(['c.organization_enc_id']);
+            }], false)
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 1
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'a.name', $s],
+                ['like', 'a.slug', $s],
+                ['like', 'a.website', $s],
+                ['like', 'b.business_activity', $s],
+            ])
+            ->groupBy(['a.organization_enc_id'])
+            ->limit(8)
+            ->asArray()
+            ->all();
+    }
 
     public function actionIndex()
     {
@@ -58,6 +88,10 @@ class SearchController extends Controller
                 ->limit(8);
 
             $result['organizations'] = $organizations->asArray()->all();
+
+            $result['schools'] = $this->findUnclaimed('School', $s);
+            $result['colleges'] = $this->findUnclaimed('College', $s);
+            $result['institutes'] = $this->findUnclaimed('Educational Institute', $s);
 
             $jobs = EmployerApplications::find()
                 ->alias('a')

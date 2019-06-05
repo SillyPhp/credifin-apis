@@ -17,9 +17,9 @@
             {{/city}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="{{organization_link}}">
+                    <a href="{{organization_link}}" title="{{organization_name}}">
                         {{#logo}}
-                        <img src="{{logo}}">
+                        <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                         {{/logo}}
                         {{^logo}}
                         <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
@@ -28,7 +28,7 @@
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
+                    <a href="{{link}}" title="{{title}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
                     <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
@@ -43,24 +43,12 @@
                     {{/experience}}
                 </div>
             </div>
-            {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                Last Date to Apply
-                <br>
-                {{last_date}}
-            </h6>
-            <h4 class="col-md-7 org_name text-right pr-10">
-                {{organization_name}}
-            </h4>
-            {{/last_date}}
-            {{^last_date}}
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h4 class="org_name text-right">{{organization_name}}</h4>
             </div>
-            {{/last_date}}
             <div class="application-card-wrapper">
-                <a href="{{link}}" class="application-card-open">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>
@@ -71,6 +59,7 @@ $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<<JS
 let loader = false;
 let draggable = false;
+let review_list_draggable = false;
 let page = 0;
 function renderCards(cards, container){
     var card = $('#application-card').html();
@@ -111,6 +100,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
         },
         success: function(response) {
             $('.loader-main').hide();
+            $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
             if(response.status === 200) {
@@ -187,6 +177,20 @@ function getReviewList(sidebarpage){
                 reviewlists(response);
                 check_list();
                 utilities.initials();
+            }
+        }).done(function(){
+            if(review_list_draggable === true) {
+                $.each($('.draggable-item'), function(){
+                    $(this).draggable({
+                        helper: "clone",
+                        drag: function() { 
+                            $('.ps').addClass('ps-visible');
+                         },
+                         stop: function() { 
+                            $('.ps').removeClass('ps-visible');
+                         },
+                    });
+                });
             }
         });
     }

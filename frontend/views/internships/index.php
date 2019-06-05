@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Internships');
-$keywords = 'Internship, Internships, Summer Internship 2019, Summer Internships, Paid Internships, Internships in Ludhiana, Online Internships, Internships in India, Summer Internships, Summer Internships 2019';
+$keywords = 'Internships, INTERNSHIP, Internshala,Internships in Mumbai,Internship in India,Summer Internships,Internships in Kolkata,Internship in Chennai';
 $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
@@ -34,22 +34,18 @@ $this->params['seo_tags'] = [
     <section class="backgrounds">
         <div class="container">
             <div class="row">
-                <div class="col-md-5 col-sm-6 text-center">
+                <div class="col-md-3 col-sm-3 text-center">
 
                 </div>
-                <div class="col-md-offset-1 col-md-5 col-sm-6 text-center">
-                    <h2 class="intern-banner-heading">
+                <div class="col-md-9 col-sm-12 text-center">
+                    <h2 class="intern-banner-heading mt-0">
                         <?= Yii::t('frontend', 'Intern with the best'); ?></h2>
                     <div class="search-by-type row">
                         <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
                             <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <input type="text" name="keyword" class="form-control"
-                                       placeholder="Job Title or Skill"/>
-                            </div>
-                            <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
-                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
-                                <input type="text" name="company" class="form-control" placeholder="Company"/>
+                                       placeholder="Job Title or Skill or Company"/>
                             </div>
                             <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                                 <span class="input-group-addon"><i class="fa fa-map-marker fa-lg"></i></span>
@@ -57,8 +53,8 @@ $this->params['seo_tags'] = [
                                        placeholder="City or State"/>
                                 <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                             </div>
-                            <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
-                                <input type="submit" class="form-control submit-next hvr-float" id="form_control_1"
+                            <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn">
+                                <input type="submit" class="form-control submit-next" id="form_control_1"
                                        value="Search">
                             </div>
                         </form>
@@ -242,7 +238,7 @@ $this->registerCss('
     position: absolute;
     color: #222;
     z-index: 999;
-    right: 0;
+    right: 10px;
     top: 10px;
     font-size: 25px;
     display: none;
@@ -446,7 +442,8 @@ $this->registerCss('
     padding: 75px 0px;
 }
 .search-by-type {
-    width: 88%;
+    float:right;
+    width: 95%;
     background-color: #14141459;
     padding: 10px 20px;
     color: #fff;
@@ -454,6 +451,9 @@ $this->registerCss('
     border-radius: 10px;
 //    margin-top: 20px;
     padding-top: 20px;
+}
+.input-group-addon{
+    width: 49px !important;
 }
 .submit-next {
     border-radius: 4px;
@@ -477,8 +477,12 @@ $this->registerCss('
     text-align:left !important;
 }
 .set-col-2{
-    width:49%;
+    width:36%;
     float: left !important;
+}
+.in-s-btn{
+    max-width: 200px;
+    float: right !important;
 }
 /* animated menu css starts */
 .nav1{
@@ -581,6 +585,44 @@ $this->registerCss('
     .intern-banner-heading{
         font-size: 24px;
         font-weight: 700;
+    }
+}
+@media only screen and (max-width: 1230px){
+    .set-col-2{
+        width:33%;
+    }
+    .in-s-btn{
+        max-width:250px;
+    }
+}
+@media only screen and (max-width: 991px){
+    .set-col-2{
+        width:33%;
+    }
+    .in-s-btn{
+        max-width:200px;
+    }
+}
+@media only screen and (max-width: 766px){
+    .search-by-type{
+        width:55%;
+        float:none;
+    }
+    .set-col-2{
+        width:100%;
+    }
+    .in-s-btn{
+        max-width:unset;
+    }
+}
+@media only screen and (max-width: 550px){
+    .search-by-type{
+        width:70%;
+    }
+}
+@media only screen and (max-width: 450px){
+    .search-by-type{
+        width:90%;
     }
 }
 ');
