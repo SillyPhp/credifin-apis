@@ -53,18 +53,18 @@ $this->beginPage();
         <div id="quiz">
             <div class="container-fluid">
                 <div id="quiz-stats" class="row text-center">
-                    <div class="col-xs-3">
+                    <div class="col-xs-12 col-md-3">
 
                     </div>
-                    <div class="col-xs-3 col-lg-2">
+                    <div class="col-xs-4 col-md-3 col-lg-2">
                         <p>Correct Rate</p>
                         <span id="rate-span" class="animated">0/0</span>
                     </div>
-                    <div class="col-xs-3 col-lg-2">
+                    <div class="col-xs-4 col-md-3 col-lg-2">
                         <p>Correct Streak</p>
                         <span id="streak-span" class="animated">0</span>
                     </div> 
-                    <div class="col-xs-3 col-lg-2">
+                    <div class="col-xs-4 col-md-3 col-lg-2">
                         <p><span>Avg. </span>Response Time (s)</p>
                         <span id="response-time-span" class="animated">0</span>
                     </div>      
