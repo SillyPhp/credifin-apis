@@ -259,13 +259,16 @@ class ApplicationForm extends Model
             }
         }
 
-        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
-        if (!$image_information) {
-            return false;
-        } else {
-            $employerApplicationsModel->image_location = $image_information['image_location'];
-            $employerApplicationsModel->image = $image_information['image'];
-        }
+//        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
+//        if (!$image_information) {
+//            return false;
+//        } else {
+//            $employerApplicationsModel->image_location = $image_information['image_location'];
+//            $employerApplicationsModel->image = $image_information['image'];
+//        }
+
+        $employerApplicationsModel->image_location = 1;
+        $employerApplicationsModel->image = 1;
 
         if (!empty($this->designations)) {
             $chk_d = Designations::find()
@@ -655,7 +658,7 @@ class ApplicationForm extends Model
     {
         $profile = AssignedCategories::find()
             ->alias('a')
-            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssetsDirectory/categories/svg/') . '", b.icon) icon'])
+            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssetsDirectory/categories/png/') . '", b.icon_png) icon'])
             ->innerJoinWith(['parentEnc b' => function ($b) {
                 $b->onCondition([
                     'or',
