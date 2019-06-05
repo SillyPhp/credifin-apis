@@ -56,7 +56,8 @@ class ReviewsController extends Controller
                 END) as business_activity'])
             ->from(UnclaimedOrganizations::tableName() . 'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
-            ->where('name LIKE "%' . $query . '%"');
+            //->where('name LIKE "%' . $query . '%"');
+            ->where("replace(name, '.', '') LIKE '%$query%'");
         if ($type!=null) {
             $query1 = $params1->andWhere(['business_activity' => $type])
                 ->andWhere(['is_deleted' => 0]);
@@ -69,7 +70,8 @@ class ReviewsController extends Controller
             ->select(['name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
-            ->where('name LIKE "%' . $query . '%"');
+            //->where('name LIKE "%' . $query . '%"');
+            ->where("replace(name, '.', '') LIKE '%$query%'");
             if ($type!=null) {
                 $query2 = $params2->andWhere(['business_activity' => $type])
                     ->andWhere(['is_deleted' => 0]);
