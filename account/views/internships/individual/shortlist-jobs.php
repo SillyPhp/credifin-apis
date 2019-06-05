@@ -247,6 +247,7 @@ $script = <<<JS
                 beforeSend: function()
                     {
                         $(".loader").css("display", "block");
+                        
                     },
                 success : function(data){
                    if(data==true){

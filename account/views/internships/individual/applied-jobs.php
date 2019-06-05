@@ -27,7 +27,7 @@ use yii\helpers\Url;
                                         <div class="cd-box-border" id="cd-box-border">
                                             <div class="row">
                                                 <div class=" cd-user-icon col-md-6">
-                                                    <a href="<?= '/job/' . $user['slug'] ?>" target="_blank">
+                                                    <a href="<?= '/internship/' . $user['slug'] ?>" target="_blank">
                                                         <img src="<?= '/assets/common/categories/' . $user['job_icon'] ?>" class="img-responsive img-thumbnail img-rounded">
                                                     </a>
                                                 </div>
@@ -38,7 +38,7 @@ use yii\helpers\Url;
                                             <div class="row">
                                                 <div class="cd-user-detail col-md-2">
                                                     <div class="cd-u-name">
-                                                        <a href="<?= '/job/' . $user['slug'] ?>" target="_blank">
+                                                        <a href="<?= '/internship/' . $user['slug'] ?>" target="_blank">
                                                             <?= $user['title'] ?>
                                                         </a>
                                                     </div>
