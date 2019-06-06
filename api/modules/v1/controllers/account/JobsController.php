@@ -12,6 +12,7 @@ use common\models\AppliedApplicationProcess;
 use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
+use common\models\DropResumeApplications;
 use common\models\EmployerApplications;
 use common\models\FollowedOrganizations;
 use common\models\Organizations;
@@ -510,6 +511,57 @@ class JobsController extends ApiBaseController
             return $this->response(404);
         }
 
+    }
+
+    public function actionShortlistedResume(){
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if(isset($parameters['type']) && !empty($parameters['type'])){
+            $type = $parameters['type'];
+        }else{
+            return $this->response(422);
+        }
+
+        $application_id = DropResumeApplications::find()
+            ->alias('a')
+            ->innerJoinWith(['dropResumeApplicationTitles b' => function ($x) use ($type) {
+                $x->joinWith(['title0 c'], false);
+                $x->andWhere(['c.assigned_to' => $type]);
+            }], false)
+            ->where(['a.user_enc_id' => $candidate->user_enc_id])
+            ->andWhere(['a.status' => 1])
+            ->asArray()
+            ->all();
+
+
+        $application_enc_id = [];
+        foreach ($application_id as $app) {
+            array_push($application_enc_id, $app['application_enc_id']);
+        }
+
+        $shortlist1 = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.organization_enc_id', 'b.name as org_name', 'd.name',
+                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon'])
+            ->joinWith(['appliedApplications e' => function ($y) use($candidate) {
+                $y->onCondition(['e.created_by' => $candidate->user_enc_id,'e.is_deleted'=>0]);
+            }], false)
+            ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->joinWith(['title c' => function ($x) {
+                $x->joinWith(['categoryEnc d'], false);
+                $x->joinWith(['parentEnc f'],false);
+            }], false)
+            ->joinWith(['organizationEnc b'], false)
+            ->asArray()
+            ->all();
+
+        if(!empty($shortlist1)){
+            return $this->response(200,$shortlist1);
+        }else{
+            return $this->response(404);
+        }
     }
 
 
