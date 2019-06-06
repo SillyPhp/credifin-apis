@@ -74,6 +74,77 @@ use yii\helpers\Url;
     </div>
 </section>
 
+<section id="recruiters">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Recruiters</div>
+            </div>
+
+        </div>
+        <div class="row recruiter-list">
+
+        </div>
+    </div>
+</section>
+
+<section id="businesses">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Business</div>
+            </div>
+
+        </div>
+        <div class="row business-list">
+
+        </div>
+    </div>
+</section>
+
+<section id="scholarships">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Scholarship Fund</div>
+            </div>
+
+        </div>
+        <div class="row scholarship-list">
+
+        </div>
+    </div>
+</section>
+
+
+<section id="bankings">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Banking & Finance Company</div>
+            </div>
+
+        </div>
+        <div class="row banking-list">
+
+        </div>
+    </div>
+</section>
+
+<section id="others">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="heading-style">Others</div>
+            </div>
+
+        </div>
+        <div class="row other-list">
+
+        </div>
+    </div>
+</section>
+
 <section id="jobs">
     <div class="container">
         <div class="row">
@@ -530,7 +601,7 @@ function fillData(){
         },
         success: function(result){
             result = JSON.parse(result);
-            if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0 && result["schools"].length ==0 && result["colleges"].length ==0 && result["institutes"].length ==0){
+            if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0 && result["School"].length ==0 && result["College"].length ==0 && result["Educational Institute"].length ==0 && result["Business"].length ==0 && result["Recruiter"].length ==0 && result["Scholarship Fund"].length ==0 && result["Banking & Finance Company"].length ==0 && result["Others"].length ==0){
                 $('#not-found').fadeIn(1000);
             }
                 
@@ -550,28 +621,70 @@ function fillData(){
                $('#companies').remove(); 
             }
             
-            if(result["schools"].length){
-                var schools_card = $('#un-card').html();
-                var school_render = Mustache.render(schools_card, result['schools']);
-                $('.school-list').html(school_render);
+            if(result["School"].length){
+                    var schools_card = $('#un-card').html();
+                    var school_render = Mustache.render(schools_card, result['School']);
+                    $('.school-list').html(school_render);
             }else{
                $('#schools').remove(); 
             }
             
-            if(result["colleges"].length){
-                var colleges_card = $('#un-card').html();
-                var college_render = Mustache.render(colleges_card, result['colleges']);
-                $('.college-list').html(college_render);
-            }else{
+            if(result["College"].length){
+                    var colleges_card = $('#un-card').html();
+                    var college_render = Mustache.render(colleges_card, result['College']);
+                    $('.college-list').html(college_render);
+            }
+            else{
                $('#colleges').remove(); 
             }
             
-            if(result["institutes"].length){
-                var institute_card = $('#un-card').html();
-                var institute_render = Mustache.render(institute_card, result['institutes']);
-                $('.institute-list').html(institute_render);
+            if(result["Educational Institute"].length){
+                    var institute_card = $('#un-card').html();
+                    var institute_render = Mustache.render(institute_card, result['Educational Institute']);
+                    $('.institute-list').html(institute_render);
             }else{
                $('#institutes').remove(); 
+            }
+            
+            if(result["Recruiter"].length){
+                    var recruiter = $('#un-card').html();
+                    var recruiter_render = Mustache.render(recruiter, result['Recruiter']);
+                    $('.recruiter-list').html(recruiter_render);
+            }else{
+               $('#recruiters').remove(); 
+            }
+            
+            if(result["Business"].length){
+                    var business = $('#un-card').html();
+                    var business_render = Mustache.render(business, result['Business']);
+                    $('.business-list').html(business_render);
+            }
+            else{
+               $('#businesses').remove(); 
+            }
+            
+            if(result["Scholarship Fund"].length){
+                    var scholarship = $('#un-card').html();
+                    var scholarship_render = Mustache.render(scholarship, result['Scholarship Fund']);
+                    $('.scholarship-list').html(scholarship_render);
+            }else{
+               $('#scholarships').remove(); 
+            }
+            
+            if(result["Banking & Finance Company"].length){
+                    var banking = $('#un-card').html();
+                    var banking_render = Mustache.render(banking, result['Banking & Finance Company']);
+                    $('.banking-list').html(banking_render);
+            }else{
+               $('#bankings').remove(); 
+            }
+            
+            if(result["Others"].length){
+                    var others = $('#un-card').html();
+                    var others_render = Mustache.render(others, result['Others']);
+                    $('.other-list').html(others_render);
+            }else{
+               $('#others').remove(); 
             }
             
             if(result["internships"].length){
@@ -731,7 +844,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             <div class="com-loc"><span>No</span> Openings</div>
             {{/employerApplications}}
 
-            {{#organizationReviews}}
+            {{#newOrganizationReviews}}
             {{#average_rating}}
             <div class="starr" data-score="{{average_rating}}"></div>
             <div class="rating">
@@ -739,13 +852,13 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
             </div>
             {{/average_rating}}
-            {{/organizationReviews}}
-            {{^organizationReviews}}
+            {{/newOrganizationReviews}}
+            {{^newOrganizationReviews}}
             <div class="starr" data-score="0"></div>
             <div class="rating">
                 <div class="reviews-rate">No reviews</div>
             </div>
-            {{/organizationReviews}}
+            {{/newOrganizationReviews}}
 
             <div class="row">
                 <div class="cm-btns padd-0">

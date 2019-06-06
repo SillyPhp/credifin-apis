@@ -18,7 +18,7 @@ use yii\bootstrap\ActiveForm;
                         </div>
                         <div class="log-icon">
                             <span></span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-image.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>"
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">

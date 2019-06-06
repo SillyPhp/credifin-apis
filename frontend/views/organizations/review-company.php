@@ -35,6 +35,7 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
+
 ?>
 <section class="rh-header">
     <div class="container">
@@ -63,6 +64,14 @@ $this->params['seo_tags'] = [
                     <?php } ?>
                 </div>
                 <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
+                <div class="share-btn">
+                    <button id="sb">Share</button>
+                        <ul class="sd-btns share-hidden">
+                           <li><a href=""><i class="fa fa-facebook-f"></i></a> </li>
+                           <li><a href=""><i class="fa fa-twitter"></i></a> </li>
+                           <li><a href=""><i class="fa fa-linkedin"></i></a> </li>
+                        </ul>
+                </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -488,6 +497,40 @@ if ($review_type=='claimed')
 }
 
 $this->registerCss('
+.share-btn{
+    display:flex;
+    width:100%;
+}
+.share-hidden{
+    display:none;
+    opacity:0;
+    transition:.5s ease-in;
+}
+.share-btn button{
+    background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+.share-btn ul{
+    width:100%;
+    margin:10px 0 0 8px;
+}
+.share-btn ul li{
+    display:inline;
+}
+.share-btn ul li a{
+     background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 10px 13px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
 .i-review-navigation
 {
 display:none;
@@ -1355,6 +1398,7 @@ function review_post_ajax(data) {
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
@@ -1365,4 +1409,12 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [
 ?>
 <script id="review-cards" type="text/template">
 
+</script>
+
+<script>
+    document.getElementById('sb').addEventListener("click", function () {
+        var sharecom = document.querySelector('.sd-btns');
+        sharecom.classList.toggle('share-hidden');
+
+    })
 </script>
