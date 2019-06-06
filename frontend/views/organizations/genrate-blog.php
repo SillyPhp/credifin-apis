@@ -11,12 +11,13 @@ use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 use frontend\widgets\login;
+$this->title = 'Top 10 Blogs';
 if (Yii::$app->user->isGuest) {
     echo login::widget();
 }
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/top10.jpg');
+$image = Yii::to('/assets/common/images/top10.jpg', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
