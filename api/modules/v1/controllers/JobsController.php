@@ -36,8 +36,9 @@ class JobsController extends ApiBaseController
                 'application-detail',
                 'get-jobs-by-organization',
                 'search',
-                'jobs-near-me'
-                ],
+                'jobs-near-me',
+                'test'
+            ],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -395,7 +396,7 @@ class JobsController extends ApiBaseController
 
         if (!empty($parameters['keyword']) && isset($parameters['keyword'])) {
             $options['keyword'] = $parameters['keyword'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
@@ -410,9 +411,9 @@ class JobsController extends ApiBaseController
             }], false)
             ->joinWith(['preferredIndustry o'], false)
             ->joinWith(['applicationTypeEnc as j'], false)
-            ->innerJoinWith(['organizationEnc b'=>function($a){
-                $a->onCondition(['b.status'=>'Active','b.is_deleted'=>0]);
-            }],false)
+            ->innerJoinWith(['organizationEnc b' => function ($a) {
+                $a->onCondition(['b.status' => 'Active', 'b.is_deleted' => 0]);
+            }], false)
             ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'j.name' => $options['type']]);
 
         if (!empty($options['keyword'])) {
@@ -435,11 +436,12 @@ class JobsController extends ApiBaseController
         }
     }
 
-    private function findUnclaimed($t, $s){
+    private function findUnclaimed($t, $s)
+    {
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-            ->joinWith(['organizationTypeEnc b' => function($y) use($t){
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug username', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b' => function ($y) use ($t) {
                 $y->andWhere([
                     'b.business_activity' => $t
                 ]);
@@ -447,7 +449,7 @@ class JobsController extends ApiBaseController
             ->joinWith(['newOrganizationReviews c' => function ($x) {
                 $x->select(['c.organization_enc_id', 'c.average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
                     ->groupBy(['c.organization_enc_id']);
-            }], false)
+            }])
             ->where([
                 'a.is_deleted' => 0,
                 'a.status' => 1
@@ -467,16 +469,18 @@ class JobsController extends ApiBaseController
     public function actionSearch()
     {
         $parameters = \Yii::$app->request->post();
-        if(isset($parameters['keyword']) && !empty($parameters['keyword']) ){
+        if (isset($parameters['keyword']) && !empty($parameters['keyword'])) {
             $s = $parameters['keyword'];
-        }else{
+        } else {
             return $this->response(422);
         }
         $result = [];
 
         $organizations = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug username', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo',
+                'a.initials_color color',
+            ])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['businessActivityEnc c'], false)
             ->joinWith(['industryEnc d'], false)
@@ -513,23 +517,23 @@ class JobsController extends ApiBaseController
         $colleges = $this->findUnclaimed('College', $s);
         $institutes = $this->findUnclaimed('Educational Institute', $s);
 
-        if(!empty($organizations)){
+        if (!empty($organizations)) {
             $result['organizations'] = $organizations;
         }
-        if(!empty($schools)){
+        if (!empty($schools)) {
             $result['schools'] = $schools;
         }
-        if(!empty($colleges)){
+        if (!empty($colleges)) {
             $result['colleges'] = $colleges;
         }
-        if(!empty($institutes)){
+        if (!empty($institutes)) {
             $result['institutes'] = $institutes;
         }
 
         $jobs = EmployerApplications::find()
             ->alias('a')
             ->select([
-                'a.application_enc_id application_id',
+                'a.application_enc_id',
                 'a.last_date',
                 'a.type',
                 '(CASE
@@ -545,7 +549,7 @@ class JobsController extends ApiBaseController
                     END) as experience',
                 'c.initials_color color',
                 'c.name as organization_name',
-                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                 'h.name category',
                 'g.name as title',
                 'e.designation',
@@ -649,19 +653,19 @@ class JobsController extends ApiBaseController
             $i++;
         }
 
-        if(!empty($final_jobs)){
+        if (!empty($final_jobs)) {
             $result['jobs'] = $final_jobs;
         }
 
         $internships = EmployerApplications::find()
             ->alias('a')
             ->select([
-                'a.application_enc_id application_id',
+                'a.application_enc_id',
                 'a.last_date',
                 'a.type',
                 'c.initials_color color',
                 'c.name as organization_name',
-                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                 'h.name category',
                 'g.name as title',
                 'l.fixed_wage as fixed_salary',
@@ -735,7 +739,7 @@ class JobsController extends ApiBaseController
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $final_internships[$i]['salary'] = (string)$val['min_salary']  . ' p.m.';
+                        $final_internships[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
                         $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {
@@ -758,16 +762,16 @@ class JobsController extends ApiBaseController
             $i++;
         }
 
-        if(!empty($final_internships)){
+        if (!empty($final_internships)) {
             $result['internships'] = $final_internships;
         }
 
         $posts = Posts::find()
             ->select([
                 'title',
-                'CONCAT("/blog/", slug) link',
+                'CONCAT("' . Url::to('/blog/', 'https') . '", slug) link',
                 'excerpt',
-                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image,'https') . '", featured_image_location, "/", featured_image) ELSE NULL END image'
+                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image,'https') . '", featured_image_location, " / ", featured_image) ELSE NULL END image'
             ])
             ->where([
                 'status' => 'Active',
@@ -910,7 +914,6 @@ class JobsController extends ApiBaseController
         }
     }
 
-
     private function getApplication($id){
         return EmployerApplications::find()
             ->alias('a')
@@ -946,11 +949,11 @@ class JobsController extends ApiBaseController
                     WHEN a.experience = "0" THEN "No Experience"
                     WHEN a.experience = "1" THEN "Less Than 1 Year"
                     WHEN a.experience = "2" THEN "1 Year"
-                    WHEN a.experience = "3" THEN "2-3 Years"
-                    WHEN a.experience = "3-5" THEN "3-5 Years"
-                    WHEN a.experience = "5-10" THEN "5-10 Years"
-                    WHEN a.experience = "10-20" THEN "10-20 Years"
-                    WHEN a.experience = "20+" THEN "More Than 20 Years"
+                    WHEN a.experience = "3" THEN "2 - 3 Years"
+                    WHEN a.experience = "3 - 5" THEN "3 - 5 Years"
+                    WHEN a.experience = "5 - 10" THEN "5 - 10 Years"
+                    WHEN a.experience = "10 - 20" THEN "10 - 20 Years"
+                    WHEN a.experience = "20 + " THEN "More Than 20 Years"
                     ELSE "No Experience"
                     END) as experience',
                 'b.wage_type',
@@ -967,8 +970,8 @@ class JobsController extends ApiBaseController
                 'w.initials_color color',
                 'w.email',
                 'w.website',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
-                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, "/", w.cover_image) END cover_image'
+                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
+                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
             ])
             ->where([
                 'a.application_enc_id' => $id,

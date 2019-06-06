@@ -37,6 +37,7 @@ use yii\widgets\Pjax;
                                             <div class="hr-com-name">
                                                 <?= $review['title']; ?>
                                             </div>
+                                            <div class="hr-com-field"></div>
                                             <div class="opening-txt">
                                                 <?= $review["positions"]; ?> Openings
                                             </div>
@@ -101,6 +102,16 @@ $this->registerCss('
     margin:10px 0;
     padding: 6px 12px;  
 }
+.hr-com-field{height:21px;}
+.opening-txt {
+    padding-top: 2px;
+    padding-bottom: 10px;
+    font-size: 14px;
+    color: #080808;
+}
+.hr-company-box{padding: 20px 0px !Important;padding-bottom:0px !Important;}
+.hr-com-jobs{margin-top:0px !important;padding: 10px 0 0px !Important;}
+.j-cross button{margin-left:0px !Important;}
 .loader
 {
     display:none;
