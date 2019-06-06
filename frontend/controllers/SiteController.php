@@ -119,8 +119,8 @@ class SiteController extends Controller
             ->alias('a')
             ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
             ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
-                $x->joinWith(['locationEnc c' => function ($x) {
-                    $x->joinWith(['cityEnc d']);
+                $x->innerJoinWith(['locationEnc c' => function ($y) {
+                    $y->innerJoinWith(['cityEnc d']);
                 }], false);
             }], false)
             ->where([
