@@ -456,7 +456,7 @@ $('.cd-box-border').click(function(){
             
         
             $.ajax({
-                url:'/account/cancel-application',
+                url:'/account/internships/cancel-application',
                 data:{data:data},
                 method:'post',
                 success:function(data)

@@ -417,7 +417,6 @@ use yii\widgets\Pjax;
                                         <?php
                                     } ?>
 
-
                                 </div>
                             </div>
                         </div>
