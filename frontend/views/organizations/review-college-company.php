@@ -411,6 +411,11 @@ $this->registerCss('
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
     transition: .2s all;
 }
+.logo-box img 
+{
+    width: 100%;
+    height: 100%;
+}
 .star-rating1 {
   font-family: "FontAwesome";
 }
