@@ -1510,12 +1510,20 @@ class OrganizationsController extends Controller
 
     public function actionGenrateBlog()
     {
+      return $this->generateblog();
+    }
+    public function actionTopTenBlogs()
+    {
+        return $this->generateblog();
+    }
+    private function generateblog()
+    {
         $this->layout = 'main-secondary';
         $model = new OrgAutoGenrateBlog();
         if (Yii::$app->user->identity->organization):
-        $data = $model->getJobs();
-        $model->title = Yii::$app->user->identity->organization->name;
-        $model->description = Yii::$app->user->identity->organization->description;
+            $data = $model->getJobs();
+            $model->title = Yii::$app->user->identity->organization->name;
+            $model->description = Yii::$app->user->identity->organization->description;
         endif;
         if ($model->load(Yii::$app->request->post()))
         {
@@ -1532,4 +1540,5 @@ class OrganizationsController extends Controller
         }
         return $this->render('genrate-blog',['model'=>$model,'data'=>$data]);
     }
+
 }
