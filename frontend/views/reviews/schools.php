@@ -1,5 +1,39 @@
 <?php
 use yii\helpers\Url;
+
+$this->title = Yii::t('frontend', 'Schools Reviews | Reviews');
+
+$keywords = 'School Reviews,Top Schools in India,Best Schools in India,Top CBSE Schools in India,Top Schools in Delhi,Best Schools in Delhi,Schools in Mumbai';
+
+$description = "Here you can get reviews of top schools in India. You can also write a review of any school and help to other people to find the best School.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
     <section class="cri-bg">
         <div class="container">
@@ -69,6 +103,19 @@ use yii\helpers\Url;
                             <span>Co-Curricular Activities</span></div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+    <section class="green-bg">
+        <div class="container">
+            <div class="pos-abso">
+            <div class="row">
+                <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
+                <div class="gb-text">
+                    <span class="qots">"</span>All children start their school careers with sparkling imaginations, fertile minds, and a willingness
+                    to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>
+                </div>
+            </div>
             </div>
         </div>
     </section>
@@ -315,6 +362,41 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.green-bg{
+    background-image: linear-gradient(141deg, #6cc8ad 0%, #65bca3 51%, #59a693 75%);
+    min-height:300px;
+    position:relative;
+    text-align:center;
+    margin-top:40px;
+    font-family:lora;
+}
+.qots{
+    font-size: 30px;
+    line-height: 20px;
+}
+.pos-abso{
+    position:absolute;
+    top:50%;
+    left:50%;
+    max-width:800px;
+    width:100%;
+    transform:translate(-50%, -50%);
+}
+.gb-text{
+    color:#fff;
+    font-size:22px;
+}
+.gb-text span{
+    font-weight:bold;
+}
+.gb-heading{
+    width:100%;
+    padding:0 0 20px 0;
+    font-weight:bold;
+    font-size:30px;
+    color:#fff;
+       
+}
 .footer{
     margin-top:0px !important;
 }
