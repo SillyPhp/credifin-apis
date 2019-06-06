@@ -88,16 +88,19 @@ class SearchController extends Controller
 
             $unclaimed = $this->findUnclaimed($s);
 
+            $result['School'] = [];
+            $result['College'] = [];
+            $result['Educational Institute'] = [];
+            $result['Recruiter'] = [];
+            $result['Business'] = [];
+            $result['Scholarship Fund'] = [];
+            $result['Banking & Finance Company'] = [];
+            $result['Others'] = [];
             foreach($unclaimed as $uc){
                 $ba = $uc['organizationTypeEnc']['business_activity'];
                 if($ba) {
-                    if (!$result[$ba]) {
-                        $result[$ba] = [];
+                    if(count($result[$ba]) < 8) {
                         array_push($result[$ba], $uc);
-                    } else {
-                        if(count($result[$ba]) < 8) {
-                            array_push($result[$ba], $uc);
-                        }
                     }
                 }
             }
