@@ -436,18 +436,16 @@ class JobsController extends ApiBaseController
         }
     }
 
-    private function findUnclaimed($t, $s)
+    private function findUnclaimed($s)
     {
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug username', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-            ->joinWith(['organizationTypeEnc b' => function ($y) use ($t) {
-                $y->andWhere([
-                    'b.business_activity' => $t
-                ]);
-            }], false)
+            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b' => function($y){
+                $y->select(['b.business_activity_enc_id', 'b.business_activity']);
+            }])
             ->joinWith(['newOrganizationReviews c' => function ($x) {
-                $x->select(['c.organization_enc_id', 'c.average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
+                $x->select(['c.organization_enc_id', 'ROUND(AVG(c.average_rating)) average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
                     ->groupBy(['c.organization_enc_id']);
             }])
             ->where([
@@ -478,9 +476,7 @@ class JobsController extends ApiBaseController
 
         $organizations = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug username', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo',
-                'a.initials_color color',
-            ])
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['businessActivityEnc c'], false)
             ->joinWith(['industryEnc d'], false)
@@ -493,7 +489,7 @@ class JobsController extends ApiBaseController
                     ->groupBy(['e.organization_enc_id']);
             }])
             ->joinWith(['organizationReviews f' => function ($y) {
-                $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
+                $y->select(['f.organization_enc_id', 'ROUND(AVG(f.average_rating)) average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
                     ->groupBy(['f.organization_enc_id']);
             }])
             ->where([
@@ -509,25 +505,29 @@ class JobsController extends ApiBaseController
                 ['like', 'c.business_activity', $s],
                 ['like', 'd.industry', $s]
             ])
-            ->groupBy(['a.organization_enc_id']);
+            ->groupBy(['a.organization_enc_id'])
+            ->limit(8);
+
+        $result['organizations'] = $organizations->asArray()->all();
+
+        $unclaimed = $this->findUnclaimed($s);
 
 
-        $organizations = $organizations->asArray()->all();
-        $schools = $this->findUnclaimed('School', $s);
-        $colleges = $this->findUnclaimed('College', $s);
-        $institutes = $this->findUnclaimed('Educational Institute', $s);
-
-        if (!empty($organizations)) {
-            $result['organizations'] = $organizations;
-        }
-        if (!empty($schools)) {
-            $result['schools'] = $schools;
-        }
-        if (!empty($colleges)) {
-            $result['colleges'] = $colleges;
-        }
-        if (!empty($institutes)) {
-            $result['institutes'] = $institutes;
+        $result['School'] = [];
+        $result['College'] = [];
+        $result['Educational Institute'] = [];
+        $result['Recruiter'] = [];
+        $result['Business'] = [];
+        $result['Scholarship Fund'] = [];
+        $result['Banking & Finance Company'] = [];
+        $result['Others'] = [];
+        foreach($unclaimed as $uc){
+            $ba = $uc['organizationTypeEnc']['business_activity'];
+            if($ba) {
+                if(count($result[$ba]) < 8) {
+                    array_push($result[$ba], $uc);
+                }
+            }
         }
 
         $jobs = EmployerApplications::find()
