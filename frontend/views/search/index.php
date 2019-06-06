@@ -681,7 +681,7 @@ function fillData(){
             
             if(result["Others"].length){
                     var others = $('#un-card').html();
-                    var others_render = Mustache.render(business, result['Others']);
+                    var others_render = Mustache.render(others, result['Others']);
                     $('.other-list').html(others_render);
             }else{
                $('#others').remove(); 
