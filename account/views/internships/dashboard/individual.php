@@ -160,8 +160,7 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                               <!-- <div class="text-o col-md-5"><a class="over-bttn ob1"  >Apply</a></div>-->
-                                                                <div class="text-o"><a class="over-bttn ob1  href="/internship/<?= $review['slug']; ?>">Apply</a></div>
+                                                                <div class="text-o col-md-5"><a class="over-bttn ob1" href="/internship/<?= $review['slug']; ?>">Apply</a></div>
                                                                 <div class="text-o col-md-7">
                                                                     <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
                                                                         <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
@@ -176,6 +175,7 @@ use yii\widgets\Pjax;
                                                                         <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
+
                                                                     </div>
                                                                     <div class="j-grid"> 
                                                                         <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW INTERNSHIP</a>
@@ -660,13 +660,16 @@ $(document).on('click','.shortlist',function()
       Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
    
-$(document).on('click','.rmv_list',function()
+      
+   $(document).on('click','.rmv_list',function()
     {
-      var  url = '/account/internships/shortlist-delete';
+      var  url = '/account/jobs/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
+      var main_card = $(this).parentsUntil(".topic-con").closest('.hr-j-box');
+      main_card.remove();
       Ajax_call(rmv_id,url,pjax_refresh_id);
-   })   
+   }) 
         
 $(document).on('click','.rmv_review',function()
     {

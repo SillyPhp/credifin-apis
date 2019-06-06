@@ -438,13 +438,13 @@ class InternshipsController extends Controller
         }
     }
 
+
     public function actionPendingDelete()
     {
-        if(Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             $rmv_id = Yii::$app->request->post('rmv_id');
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $rmv_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->update(AppliedApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $rmv_id])
                 ->execute();
             if ($update) {
                 return true;
@@ -453,7 +453,6 @@ class InternshipsController extends Controller
             }
         }
     }
-
 
     public function actionCancelApplication()
     {
@@ -470,6 +469,7 @@ class InternshipsController extends Controller
             }
         }
     }
+
 
     public function actionShortlistDelete()
     {
