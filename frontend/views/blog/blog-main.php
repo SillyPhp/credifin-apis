@@ -201,6 +201,24 @@ $this->params['seo_tags'] = [
 <!--            </div>-->
 <!--        </div>-->
 <!--    </section>-->
+    <section class="bg-black">
+        <div class="container">
+            <div class="row">
+                <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
+                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg')?>" class="q-box-img">
+                        <div class="q-box-hover">
+                            <div class="text2">Coming Soon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="blog-section-2">
         <div class="container">
             <div class="row">
@@ -319,12 +337,57 @@ if(!empty($quotes)) {
             </div>
         </div>
     </section>
+
     <?php
 }
 echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.q-box{
+    text-align:center;
+    position:relative;   
+    border-radius:10px;
+}
+.bg-black{
+    background:#2b2d32;
+    padding-bottom:40px;
+}
+.q-box-img{
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+    border-radius:10px;
+}
+.q-box-hover{
+   transition: .5s ease;
+   opacity: 0;
+   position: absolute;
+   bottom: 0px;
+   left: 50%;
+   transform: translateX(-50%);
+   -ms-transform: translateX(-50%);
+   text-align: center;
+}
+.q-box .q-box-img {
+  opacity: 0.3;
+}
+.q-box .q-box-hover {
+  opacity: 1;
+  width:100%
+}
+.text2{
+  background-color: #00a0e3;
+  color: white;
+  font-size: 16px;
+  font-family:lora;
+  padding: 5px 0px;
+  border-radius: 0 0 10px 10px;
+}
+
 .bttn-left, .bttn-right{
     background:transparent;
     color:#00a0e3;
@@ -1026,3 +1089,4 @@ $('.owl-carousel-4col').owlCarousel({
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
