@@ -606,7 +606,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="cities">
                     <?php foreach($cities as $c){ ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
+                            <a href="<?= Url::to($c['link'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
                         </li>
