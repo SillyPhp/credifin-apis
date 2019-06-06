@@ -659,7 +659,7 @@ $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webf
 $this->registerJs('
             WebFont.load({
                     google: {
-                            "families": ["Lobster", "Roboto", "Poppins", "Open+Sans","Didact Gothic", "Raleway", "Playfair+Display"]
+                            "families": ["Lobster", "Open+Sans"]
                     },
                     active: function() {
                             sessionStorage.fonts = true;

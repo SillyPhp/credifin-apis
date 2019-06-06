@@ -83,6 +83,11 @@ $this->registerCss('
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
+@media screen and (max-width: 768px){
+    #trending-post .tp-box div a .no-padd{
+        padding:15px 0px;
+    }
+}
 ');
 if($is_ajax){
 $script = <<<JS

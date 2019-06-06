@@ -54,7 +54,7 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                 </div>
-                <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel">
+                <div id="carousel-example" class="carousel slide" data-ride="carousel">
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner">
                         <?php
@@ -763,7 +763,7 @@ hr {
     .imgmain-div{
         width: 70%;
         height: 275px;
-        top: calc(50vh - 137px);
+        top: calc(47vh - 137px);
         left: 15%;
     }
     .lightbox-ul-show{
@@ -786,6 +786,61 @@ hr {
         line-height: 40px;
         width: 40px;
         float: none;
+    }
+    .carousel-inner {
+        padding: 0px 10px;
+    }
+    .col-item {
+        margin-bottom: 10px;
+    }
+    #slider1 .owl-stage-outer .owl-stage .owl-item{
+        margin: 0px 10px !important;
+    }
+    .whats-block-heading:before{
+        border-width: 1px 280px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 250px 0px 0px;
+    }
+}
+@media screen and (max-width: 450px){
+    .zoom img{
+        width:79vw !important;
+    }
+    .zoom{
+        padding-left: 26px;
+    }
+}
+@media screen and (max-width: 500px){
+    .whats-block-heading:before{
+        border-width: 1px 200px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 170px 0px 0px;
+    }
+}
+@media screen and (max-width: 425px){
+    .whats-block-heading:before{
+        border-width: 1px 180px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 150px 0px 0px;
+    }
+}
+@media screen and (max-width: 400px){
+    .whats-block-heading:before{
+        border-width: 1px 150px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 120px 0px 0px;
+    }
+}
+@media screen and (max-width: 374px){
+    .whats-block-heading:before{
+        border-width: 1px 110px 0px 0px;
+    }
+    .whats-popular-heading:before{
+        border-width: 1px 80px 0px 0px;
     }
 }
   /*blog-section-1-css*/   
@@ -961,7 +1016,7 @@ $('.owl-carousel-4col').owlCarousel({
             items: 1
         },
         600: {
-            items: 1
+            items: 2
         },
         1000: {
             items: 4

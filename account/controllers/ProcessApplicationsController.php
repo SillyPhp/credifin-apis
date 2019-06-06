@@ -5,17 +5,9 @@ namespace account\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
-use common\models\Cities;
 use common\models\EmployerApplications;
-use common\models\AssignedCategories;
-use common\models\Categories;
 use common\models\AppliedApplications;
-use common\models\Users;
-use common\models\AppliedApplicationProcess;
-use common\models\AppliedApplicationLocations;
-use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationInterviewQuestionnaire;
-use common\models\InterviewProcessFields;
 
 class ProcessApplicationsController extends Controller
 {
@@ -29,7 +21,7 @@ class ProcessApplicationsController extends Controller
                 ->distinct()
                 ->alias('a')
                 ->where(['a.application_enc_id' => $application_id])
-                ->select(['e.resume','e.resume_location','a.applied_application_enc_id,a.status, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
+                ->select(['e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['resumeEnc e'], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($b) {
@@ -40,15 +32,14 @@ class ProcessApplicationsController extends Controller
                 ->asArray()
                 ->all();
             $application_name = EmployerApplications::find()
-                                ->alias('a')
-                                ->select(['c.name job_title'])
-                                ->where(['a.application_enc_id'=>$aidk])
-                                ->joinWith(['title b'=>function($b)
-                                {
-                                  $b->joinWith(['categoryEnc c'],false,'INNER JOIN');
-                                }],false,'INNER JOIN')
-                                ->asArray()
-                                ->one();
+                ->alias('a')
+                ->select(['c.name job_title'])
+                ->where(['a.application_enc_id' => $aidk])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false, 'INNER JOIN');
+                }], false, 'INNER JOIN')
+                ->asArray()
+                ->one();
             $question = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->distinct()

@@ -1,25 +1,27 @@
 <?php
+
 namespace account\controllers;
+
 use yii\web\Response;
 use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
+
 class TemplatesController extends Controller
 {
-   public function actionIndex()
-   {
-       if (!empty(Yii::$app->user->identity->organization)) {
-           return  $this->render('index',[
-               'questionnaire' => $this->__questionnaire(4),
-               'interview_processes' => $this->__interviewProcess(4),
-           ]);
-       }
-       else
-       {
-           throw new HttpException(404, Yii::t('account', 'Page not found.'));
-       }
+    public function actionIndex()
+    {
+        if (!empty(Yii::$app->user->identity->organization)) {
+            return $this->render('index', [
+                'questionnaire' => $this->__questionnaire(4),
+                'interview_processes' => $this->__interviewProcess(4),
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
 
-   }
+    }
+
     private function __questionnaire($limit = NULL)
     {
         $options = [

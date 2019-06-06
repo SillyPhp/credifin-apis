@@ -760,7 +760,7 @@ class OrganizationsController extends Controller
             $organizations = \common\models\Organizations::find()
                 ->select(['initials_color color', 'CONCAT("/", slug) link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->where(['is_sponsored' => 1])
-                ->limit(10)
+                ->limit(6)
                 ->asArray()
                 ->all();
             if ($organizations) {

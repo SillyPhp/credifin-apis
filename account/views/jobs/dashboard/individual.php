@@ -81,7 +81,7 @@ use frontend\models\applications\CandidateApply;
                 <div class="details">
                     <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
-                    <div class="desc">Companies Shortlisted</div>
+                    <div class="desc">Followed Companies</div>
                 </div>
             </a>
         </div>
@@ -128,7 +128,7 @@ use frontend\models\applications\CandidateApply;
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
                         |
-                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shortlisted Resume</li>
 
                     </ul>
                 </div>
@@ -339,7 +339,7 @@ use frontend\models\applications\CandidateApply;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
+                                                            <div class="text-o"><a href="/account/process-applications/<?= $apply['app_id']; ?>" class="over-bttn ob2">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
@@ -440,7 +440,7 @@ use frontend\models\applications\CandidateApply;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Shortlisted Companies</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>

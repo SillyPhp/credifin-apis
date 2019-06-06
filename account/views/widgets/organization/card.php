@@ -16,7 +16,7 @@ if ($organization_data) {
                             <?php
                             if (empty($shortlist['logo_location'])) {
                                 ?>
-                                <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="80" height="80" font="35px" color="<?= $shortlist['initials_color']; ?>"></canvas>
+                                <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="100" height="100" font="35px" color="<?= $shortlist['initials_color']; ?>"></canvas>
                                 <?php
                             } else {
                                 $logo_location = $shortlist['logo_location'];
@@ -41,7 +41,7 @@ if ($organization_data) {
                     <div class="hr-com-jobs">
                         <div class="row">
                             <div class="col-md-1 j-cross">
-                                <button value="<?= $shortlist['shortlisted_enc_id']; ?>" class="rmv_org">
+                                <button value="<?= $shortlist['followed_enc_id']; ?>" class="rmv_org">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
@@ -63,7 +63,7 @@ if ($organization_data) {
                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
             </div>
             <div class="tab-empty-text">
-                <div class="">You haven't Shortlisted any Company.</div>
+                <div class="">You haven't Followed any Company.</div>
             </div>
         </div>
     </div>
@@ -90,6 +90,8 @@ $this->registerCss('
     padding: 20px 0px 0px 0px !important;
     text-align: center;
 }
+.hr-com-field{min-height:21px;}
+.hr-com-icon{height:120px;}
 ');
 $script = <<<JS
 $(document).on('click','.rmv_org',function(){
