@@ -606,7 +606,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="cities">
                     <?php foreach($cities as $c){ ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
+                            <a href="<?= Url::to($c['link'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
                         </li>
@@ -1152,7 +1152,7 @@ how-icon{
     border-radius: 23px !important;
 }
 .search-job2{
-        border-radius: 25px;
+        border-radius: 8px;
         background:none;
     }
 @media screen and (max-width: 495px){   
@@ -1489,18 +1489,18 @@ how-icon{
     margin-top: 60px;
 }
 .search-job2 form{
-    -webkit-border-radius: 23px;
-    -moz-border-radius: 23px;
-    -ms-border-radius: 23px;
-    -o-border-radius: 23px;
-    border-radius: 23px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
 }
 .search-job2 form button{
-    -webkit-border-radius: 0px 23px 23px 0px !important;
-    -moz-border-radius: 0px 23px 23px 0px !important;
-    -ms-border-radius: 0px 23px 23px 0px !important;
-    -o-border-radius: 0px 23px 23px 0px !important;
-    border-radius: 0px 23px 23px 0px !important;
+    -webkit-border-radius: 0px 8px 8px 0px !important;
+    -moz-border-radius: 0px 8px 8px 0px !important;
+    -ms-border-radius: 0px 8px 8px 0px !important;
+    -o-border-radius: 0px 8px 8px 0px !important;
+    border-radius: 0px 8px 8px 0px !important;
 }
 .list-heading{
     font-size:16px;
