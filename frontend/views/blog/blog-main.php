@@ -41,12 +41,12 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-md-9 col-xs-9">
                         <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
                     </div>
                     <div class="col-md-3">
                         <!-- Controls -->
-                        <div class="controls pull-right hidden-xs">
+                        <div class="controls pull-right col-xs-3">
                             <a class="left fa fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fa fa-chevron-right bttn-right" href="#carousel-example"
@@ -113,7 +113,7 @@ $this->params['seo_tags'] = [
 <!--        <div class="container">-->
 <!--            <div class="row">-->
 <!--                <div class="col-md-12">-->
-<!--                    <h2 class="heading-style">--><?//= Yii::t('frontend', 'Travel Blogs'); ?><!--</h2>-->
+<!--                    <h2 class="heading-style">--?//= Yii::t('frontend', 'Travel Blogs'); ?><!--</h2>-->
 <!--                </div>-->
 <!--            </div>-->
 <!--            <div class="section-1-shadow">-->
@@ -122,7 +122,7 @@ $this->params['seo_tags'] = [
 <!--                        <div class="blog-box col-sm-12 no-padd">-->
 <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
 <!--                                <div class="blog-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
+<!--                                    <img src="--?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                            <div class="col-md-6 col-sm-8 no-padd">-->
@@ -140,7 +140,7 @@ $this->params['seo_tags'] = [
 <!--                    <div class="col-md-6 col-sm-12 no-padd">-->
 <!--                        <div class="blog-box col-sm-12 no-padd">-->
 <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
-<!--                                <div class="blog-img"><img src="--><?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
+<!--                                <div class="blog-img"><img src="--?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                            <div class="col-md-6 col-sm-8 no-padd">-->
@@ -172,7 +172,7 @@ $this->params['seo_tags'] = [
 <!--                            </div>-->
 <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
 <!--                                <div class="blog-img-right ">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
+<!--                                    <img src="--?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                        </div>-->
@@ -192,7 +192,7 @@ $this->params['seo_tags'] = [
 <!--                            </div>-->
 <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
 <!--                                <div class="blog-img-right arrow-right">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
+<!--                                    <img src="--?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                        </div>-->
@@ -201,24 +201,24 @@ $this->params['seo_tags'] = [
 <!--            </div>-->
 <!--        </div>-->
 <!--    </section>-->
-    <section class="bg-black">
-        <div class="container">
-            <div class="row">
-                <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg')?>" class="q-box-img">
-                        <div class="q-box-hover">
-                            <div class="text2">Coming Soon</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="bg-black">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
+<!--                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--<//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <img src="-- Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg')?><!--" class="q-box-img">-->
+<!--                        <div class="q-box-hover">-->
+<!--                            <div class="text2">Coming Soon</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section class="blog-section-2">
         <div class="container">
             <div class="row">
@@ -814,6 +814,9 @@ hr {
     display:block;
 }
 @media screen and (max-width: 768px){
+    .controls {
+        margin-top: 35px;
+    }
     .owl-stage-outer{
         overflow: hidden !important;
     }
