@@ -7,6 +7,16 @@ body{
 *{
     font-weight: 600;
 }
+.fade-bg{
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0.4;
+    border-radius: 0;
+}
 .answer{
     font-weight: 600;
 }
@@ -240,8 +250,9 @@ body {
 .elem-title-screen-title {
     animation: intro-animation 0.3s 0s linear;
     font-size: 38px;
-    letter-spacing: -3px;
-    /*margin-top: 100px;*/
+    font-family: "Lora", serif;
+    font-weight: 700;
+    /* margin-top: 100px; */
     text-transform: uppercase;
 }
 
@@ -303,6 +314,50 @@ progress::-webkit-progress-value {
     text-decoration: underline;
 }
 
+/* sharing icon css start*/
+.effect {
+    width: 100%;
+    padding: 10px 0px 30px 0px;
+}
+.effect .buttons {
+    display: flex;
+    justify-content: center;
+}
+.effect a {
+    text-decoration: none !important;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-right: 20px;
+    font-size: 25px;
+    overflow: hidden;
+    position: relative;
+}
+.effect a i {
+    position: relative;
+    z-index: 3;
+}
+.effect a.fb {
+    background-color: #3b5998;
+}
+.effect a.tw {
+    background-color: #00aced;
+}
+.effect a.whats {
+    background-color: #25D366;
+}
+/* jaques effect */
+.effect.jaques a {
+    transition: border-top-left-radius 0.1s linear 0s, border-top-right-radius 0.1s linear 0.1s, border-bottom-right-radius 0.1s linear 0.2s, border-bottom-left-radius 0.1s linear 0.3s;
+}
+.effect.jaques a:hover {
+    border-radius: 50%;
+}
+/* sharing icon css ends*/
 /* Keyframe animations */
 @keyframes spinning {
     0% {
