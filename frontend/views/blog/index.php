@@ -68,6 +68,7 @@ $this->registerCssFile('https://fonts.googleapis.com/css?family=Crimson+Text');
     </div>
 </section>
 
+
 <?php
 $this->registerCss('
 .myfade1{
