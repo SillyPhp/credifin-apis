@@ -441,7 +441,7 @@ class JobsController extends ApiBaseController
         return UnclaimedOrganizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-            ->joinWith(['organizationTypeEnc b' => function($y){
+            ->joinWith(['organizationTypeEnc b' => function ($y) {
                 $y->select(['b.business_activity_enc_id', 'b.business_activity']);
             }])
             ->joinWith(['newOrganizationReviews c' => function ($x) {
@@ -521,10 +521,10 @@ class JobsController extends ApiBaseController
         $result['Scholarship Fund'] = [];
         $result['Banking & Finance Company'] = [];
         $result['Others'] = [];
-        foreach($unclaimed as $uc){
+        foreach ($unclaimed as $uc) {
             $ba = $uc['organizationTypeEnc']['business_activity'];
-            if($ba) {
-                if(count($result[$ba]) < 8) {
+            if ($ba) {
+                if (count($result[$ba]) < 8) {
                     array_push($result[$ba], $uc);
                 }
             }
@@ -653,9 +653,9 @@ class JobsController extends ApiBaseController
             $i++;
         }
 
-        if (!empty($final_jobs)) {
-            $result['jobs'] = $final_jobs;
-        }
+
+        $result['jobs'] = $final_jobs;
+
 
         $internships = EmployerApplications::find()
             ->alias('a')
@@ -762,16 +762,16 @@ class JobsController extends ApiBaseController
             $i++;
         }
 
-        if (!empty($final_internships)) {
-            $result['internships'] = $final_internships;
-        }
+
+        $result['internships'] = $final_internships;
+
 
         $posts = Posts::find()
             ->select([
                 'title',
                 'CONCAT("' . Url::to('/blog/', 'https') . '", slug) link',
                 'excerpt',
-                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image,'https') . '", featured_image_location, " / ", featured_image) ELSE NULL END image'
+                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, " / ", featured_image) ELSE NULL END image'
             ])
             ->where([
                 'status' => 'Active',
@@ -786,23 +786,24 @@ class JobsController extends ApiBaseController
 
         $posts_filter = $posts->asArray()->all();
 
-        if(!empty($posts_filter)){
-            $result['posts'] = $posts_filter;
-        }
 
-        if(!empty($result)){
-            return $this->response(200,$result);
-        }else{
+        $result['posts'] = $posts_filter;
+
+
+        if (!empty($result)) {
+            return $this->response(200, $result);
+        } else {
             return $this->response(404);
         }
     }
 
-    public function actionApplicationDetail(){
-        $req =  Yii::$app->request->post();
-        if(!empty($req['id'])) {
+    public function actionApplicationDetail()
+    {
+        $req = Yii::$app->request->post();
+        if (!empty($req['id'])) {
             $data = $this->getApplication($req['id']);
 
-            if(empty($data)){
+            if (empty($data)) {
                 return $this->response(404);
             }
 
@@ -909,12 +910,13 @@ class JobsController extends ApiBaseController
             unset($data['fixed_wage']);
 
             return $this->response(200, $data);
-        }else{
+        } else {
             return $this->response(422);
         }
     }
 
-    private function getApplication($id){
+    private function getApplication($id)
+    {
         return EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -977,80 +979,81 @@ class JobsController extends ApiBaseController
                 'a.application_enc_id' => $id,
                 'a.is_deleted' => 0,
             ])
-            ->joinWith(['applicationTypeEnc r' => function($x){
+            ->joinWith(['applicationTypeEnc r' => function ($x) {
                 $x->andWhere(['r.name' => 'Jobs']);
             }], false)
             ->joinWith(['applicationOptions b'], false)
-            ->joinWith(['applicationEmployeeBenefits c' => function($x){
+            ->joinWith(['applicationEmployeeBenefits c' => function ($x) {
                 $x->onCondition(['c.is_deleted' => 0]);
                 $x->joinWith(['benefitEnc d'], false);
                 $x->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
-            ->joinWith(['applicationEducationalRequirements e' => function($x){
+            ->joinWith(['applicationEducationalRequirements e' => function ($x) {
                 $x->joinWith(['educationalRequirementEnc f'], false);
                 $x->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
-            ->joinWith(['applicationSkills g' => function($x){
+            ->joinWith(['applicationSkills g' => function ($x) {
                 $x->joinWith(['skillEnc h'], false);
                 $x->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
             }])
-            ->joinWith(['applicationJobDescriptions i' => function($x){
+            ->joinWith(['applicationJobDescriptions i' => function ($x) {
                 $x->onCondition(['i.is_deleted' => 0]);
                 $x->joinWith(['jobDescriptionEnc j'], false);
                 $x->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])
-            ->joinWith(['title k' => function($x){
+            ->joinWith(['title k' => function ($x) {
                 $x->joinWith(['parentEnc l'], false);
                 $x->joinWith(['categoryEnc m'], false);
             }], false)
             ->joinWith(['designationEnc n'], false)
-            ->joinWith(['applicationPlacementLocations o' => function($x){
-                $x->onCondition(['o.is_deleted'=>0]);
-                $x->joinWith(['locationEnc s' => function($x){
+            ->joinWith(['applicationPlacementLocations o' => function ($x) {
+                $x->onCondition(['o.is_deleted' => 0]);
+                $x->joinWith(['locationEnc s' => function ($x) {
                     $x->joinWith(['cityEnc t'], false);
                 }], false);
                 $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
             }])
-            ->joinWith(['applicationInterviewLocations p' => function($x){
+            ->joinWith(['applicationInterviewLocations p' => function ($x) {
                 $x->onCondition(['p.is_deleted' => 0]);
-                $x->joinWith(['locationEnc u' => function($x){
+                $x->joinWith(['locationEnc u' => function ($x) {
                     $x->joinWith(['cityEnc v'], false);
                 }], false);
                 $x->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
             }])
-            ->joinWith(['organizationEnc w' => function($s){
-                $s->onCondition(['w.status' => 'Active', 'w.is_deleted'=>0]);
+            ->joinWith(['organizationEnc w' => function ($s) {
+                $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
             }], false)
             ->joinWith(['preferredIndustry x'], false)
             ->asArray()
             ->one();
     }
 
-    public function actionJobsNearMe(){
+    public function actionJobsNearMe()
+    {
 
         $parameters = \Yii::$app->request->post();
         $options = [];
-        if(!empty($parameters['latitude']) && isset($parameters['latitude'])){
+        if (!empty($parameters['latitude']) && isset($parameters['latitude'])) {
             $options['latitude'] = $parameters['latitude'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
-        if(!empty($parameters['longitude']) && isset($parameters['longitude'])){
+        if (!empty($parameters['longitude']) && isset($parameters['longitude'])) {
             $options['longitude'] = $parameters['longitude'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
-        if(!empty($parameters['radius']) && isset($parameters['radius'])){
+        if (!empty($parameters['radius']) && isset($parameters['radius'])) {
             $options['radius'] = $parameters['radius'];
-        }else{
+        } else {
             $options['radius'] = 25;
         }
 
-        if(!empty($parameters['type']) && isset($parameters['type'])){
+        if (!empty($parameters['type']) && isset($parameters['type'])) {
             $options['type'] = $parameters['type'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
@@ -1060,9 +1063,9 @@ class JobsController extends ApiBaseController
             $options['page'] = 1;
         }
 
-        if(!empty($parameters['walkin']) && (int)$parameters['walkin'] == 1){
+        if (!empty($parameters['walkin']) && (int)$parameters['walkin'] == 1) {
             $options['walkin'] = $parameters['walkin'];
-        }else{
+        } else {
             $options['walkin'] = 0;
         }
 
@@ -1072,9 +1075,9 @@ class JobsController extends ApiBaseController
 
         $data = Cards::jobsNearMe($options);
 
-        if(!empty($data)){
-            return $this->response(200,$data);
-        }else{
+        if (!empty($data)) {
+            return $this->response(200, $data);
+        } else {
             return $this->response(404);
         }
 
