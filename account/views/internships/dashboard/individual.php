@@ -160,7 +160,13 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-5">
+                                                                    <?php if($review['applied_application_enc_id']){?>
+                                                                        <a class="over-bttn ob1" disabled="disabled">Applied</a>
+                                                                    <?php }else{?>
+                                                                        <a href="/internship/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
+                                                                    <?php } ?>
+                                                                </div>
                                                                 <div class="text-o col-md-7">
                                                                     <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
                                                                         <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
@@ -177,7 +183,7 @@ use yii\widgets\Pjax;
                                                                         </button>
                                                                     </div>
                                                                     <div class="j-grid"> 
-                                                                        <a  href="/job/<?= $review['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -224,7 +230,14 @@ use yii\widgets\Pjax;
                                                             <?= $shortlist["positions"]; ?> Openings
                                                         </div>
                                                         <div class="overlay2">
-                                                            <div class="text-o"><a class="over-bttn ob2 shortlist hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                            <div class="text-o">
+                                                                <?php if($shortlist['applied_application_enc_id']){?>
+                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                        <i class="fa fa-check"></i>Applied</a>
+                                                                <?php }else{?>
+                                                                    <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                <?php } ?>
+                                                            </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row ">
@@ -235,7 +248,7 @@ use yii\widgets\Pjax;
                                                                         </button>
                                                                     </div> 
                                                                     <div class=" j-grid"> 
-                                                                        <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -282,12 +295,12 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay1">
                                                             <div class="text-o">
-                                                                <a class="over-bttn ob1">View Application</a>
+                                                                <a class="over-bttn ob1" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/job/<?= $apply['slug']; ?>" title="">VIEW JOB</a></div>
+                                                                <div class="j-grid"> <a  href="/internship/<?= $apply['slug']; ?>" title="">VIEW JOB</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -331,11 +344,11 @@ use yii\widgets\Pjax;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
+                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/job/<?= $accept['slug']; ?>" title="">VIEW JOB</a></div>
+                                                                <div class="j-grid"> <a  href="/internship/<?= $accept['slug']; ?>" title="">VIEW JOB</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -381,7 +394,7 @@ use yii\widgets\Pjax;
                                                                     <a class="over-bttn ob2 hover_short" disabled="disabled">
                                                                         <i class="fa fa-check"></i>Applied</a>
                                                                 <?php }else{?>
-                                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                    <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
                                                                 <?php } ?>
                                                             </div>
 
@@ -390,7 +403,7 @@ use yii\widgets\Pjax;
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-grid">
-                                                                        <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
