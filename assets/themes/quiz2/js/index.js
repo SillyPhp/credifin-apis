@@ -70,7 +70,7 @@
         skipQuestion: 'No answer selected. Skip the question?'
       },
       start: {
-        begin: 'Begin &rarr;'
+        begin: 'Play &rarr;'
       },
       end: {
         answeredCorrectly: 'questions answered correctly',
@@ -379,12 +379,11 @@
       userScore.calculate();
       const scoreAsPercentage = userScore.format.asPercentage();
       let scoreMessage = `
-        <span class="elem-span-score">${config.question.score}</span> of 
-        <span class="elem-span-score">${config.question.data.length}</span>  
-        ${uiLabels.main.end.answeredCorrectly}!`;
+        <span class="elem-span-score font-30">${config.question.score}</span><span class="font-25"> of </span> 
+        <span class="elem-span-score font-30">${config.question.data.length}</span>  
+        <span class="font-25">${uiLabels.main.end.answeredCorrectly}!</span>`;
         elemQuestion.html(`${userScore.getFeedback(scoreAsPercentage)}!`);
-        elemAnswersContainer.html(`${scoreMessage} (
-        <span class="elem-span-score">${scoreAsPercentage}%</span>).</br><br/>
+        elemAnswersContainer.html(`${scoreMessage}.</br><br/>
         <button id="elem-button-retake-quiz" class="elem-button-end-screen">
           ${uiLabels.main.end.retake}
         </button><br/>
