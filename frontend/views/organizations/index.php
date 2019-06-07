@@ -206,7 +206,7 @@ form {
    color: #fff;
    cursor: pointer;
    top: -1px;
-   right: 0;
+   right: -1px;
    border-radius: 0 8px 8px 0;
 }
 .search-container button:hover {
