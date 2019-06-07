@@ -44,9 +44,9 @@ $this->params['seo_tags'] = [
                     <div class="col-md-9 col-xs-9">
                         <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
-                        <div class="controls pull-right col-xs-3">
+                        <div class="controls pull-right">
                             <a class="left fa fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fa fa-chevron-right bttn-right" href="#carousel-example"
