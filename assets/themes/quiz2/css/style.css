@@ -192,7 +192,7 @@ body {
     justify-content: center;
     border: 0px dotted #000;
     height: 15px;
-    margin-bottom: 35px;
+    margin-bottom: 10px;
     min-height: 15px;
     width: 100%;
 }
@@ -204,7 +204,7 @@ body {
     border: 0px dotted #000;
     text-align: center;
     width: 100%;
-    min-height: 180px;
+    min-height: 150px;
 }
 
 .elem-div-results-container {
@@ -221,8 +221,14 @@ body {
 
 .elem-small-progress-val {
     margin-left: 5px;
+    margin-bottom: 25px;
 }
-
+.font-30{
+    font-size: 35px;
+}
+.font-25{
+    font-size: 25px;
+}
 .elem-span-score {
     font-size: 27px;
 }
@@ -277,6 +283,7 @@ progress {
     border: 0 none;
     background: #F3F3F3;
     border-radius: 14px;
+    margin-bottom: 25px;
 }
 
 progress::-webkit-progress-bar {
@@ -303,7 +310,7 @@ progress::-webkit-progress-value {
     padding: 50px;
     height: 92%;
     width: 100%;
-    opacity: 0.8;
+    opacity: 0.95;
     padding-top: 30px;
     text-align: center;
 }
