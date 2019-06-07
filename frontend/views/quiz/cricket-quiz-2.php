@@ -10,7 +10,7 @@ if (!empty($score) && !empty($total)) {
         $description = 'I scored ' . $score . ' out of ' . $total . '. Try Yours!!!. ' . $description;
     }
 }
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz/eycricket.png');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz2/quizvol2.png');
 
 $this->params['seo_tags'] = [
     'rel' => [
