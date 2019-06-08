@@ -18,7 +18,9 @@ use yii\helpers\Url;
                     </a>
                     {{/logo}}
                 </div>
+                <div class="pos-rel1">
                 <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
+                </div>
                 {{#employerApplications}}
                 <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
                 <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
@@ -66,9 +68,24 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss("
-.com-review-box
-{
-height:304px;
+.com-review-box{
+    height:320px !important;
+}
+.pos-rel1{
+    position:relative;
+    min-height:60px;
+}
+.com-name{
+    text-align:center;
+    padding: 0 10px;
+    color: #bcbaba;
+    font-size: 18px;
+    text-transform: capitalize;
+    position:absolute;
+    width:100%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 ");
 $script = <<< JS
