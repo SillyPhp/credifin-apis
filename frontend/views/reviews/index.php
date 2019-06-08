@@ -727,7 +727,7 @@ color: initial;
     
 .head-bg{
 //  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-     background: url(../assets/themes/ey/images/pages/review/review-bs3.png);
+     background: url(../assets/themes/ey/images/pages/review/review-R1.png);
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
