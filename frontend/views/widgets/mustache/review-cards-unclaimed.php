@@ -71,7 +71,7 @@ height:295px !important;
 }
 .com-name{
     text-align:center;
-    padding: 10px;
+    padding: 0 10px;
     color: #bcbaba;
     font-size: 18px;
     text-transform: capitalize;

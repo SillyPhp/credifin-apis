@@ -40,6 +40,7 @@ $this->params['seo_tags'] = [
 ?>
 
     <section class="head-bg">
+        <div class="overlay-bg"></div>
 <!--        <div class="bg-img">-->
 <!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">
 <!--        </div>-->
@@ -144,9 +145,9 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pos-rel">
+                    <div class="pos-rel-help">
                         <div class="pos-abso">
-                            <div class="tc-heading">Let's Help You</div>
+                            <div class="tc-heading">Let us Help You</div>
                             <div class="tc-text">Empower Youth is a platform open to everyone. Share your experiences to help
                                 others make better choices, and help Organizations up their game.</div>
                         </div>
@@ -414,7 +415,7 @@ $this->registerCss('
     background:#ecf5fe;
     padding:30px 0;
 }
-.pos-rel{
+.pos-rel-help   {
     position:relative;
     min-height:400px;
 }
@@ -607,7 +608,6 @@ $this->registerCss('
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
-    height:300px !important;
 }
 .com-logo{
     width:100px;
@@ -727,15 +727,22 @@ color: initial;
     
 .head-bg{
 //  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-     background: url(../assets/themes/ey/images/pages/review/review-R1.png);
+     background: url(../assets/themes/ey/images/pages/review/rr.png);
+    
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center;
 //     background-size: contain;
-//    background-position:bottom right;
+//   background-position:bottom;
 }  
-
+.overlay-bg{
+    position:absolute;
+    
+   background-image: linear-gradient(155deg, rgba(255,255,255,.8)0%, rgba(255,255,255,.7)40%, rgba(255,255,255,.0)65%, rgba(255,255,255,.0)100%);
+    width:100%;
+    height:100%;
+}
 .pos-relative{
     position:relative;
     height:550px
