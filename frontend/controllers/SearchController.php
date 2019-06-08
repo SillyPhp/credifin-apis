@@ -19,7 +19,7 @@ class SearchController extends Controller
     private function findUnclaimed($t, $s){
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
             ->joinWith(['organizationTypeEnc b' => function($y) use($t){
                 $y->andWhere([
                     'b.business_activity' => $t
