@@ -397,6 +397,7 @@
                 <a href="#" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
             </div>
         </div>
+        <a href="/login" id="" class="login-s" title="Login or Signup to Empoweryouth">Login or Signup</a>
         `);
       $('#elem-button-review-answers').on('click', function() { screen.reviewAnswers(); });
       $('#elem-button-retake-quiz').on('click', function() {
