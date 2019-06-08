@@ -117,13 +117,12 @@ class SiteController extends Controller
             ->all();
         $cities = EmployerApplications::find()
             ->alias('a')
-            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
             ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
                 $x->joinWith(['locationEnc c' => function ($x) {
                     $x->joinWith(['cityEnc d']);
                 }], false);
             }], false)
-            ->joinWith(['applicationTypeEnc e'], false)
             ->where([
                 'a.is_deleted' => 0
             ])

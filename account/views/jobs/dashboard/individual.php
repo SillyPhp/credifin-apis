@@ -162,13 +162,7 @@ use frontend\models\applications\CandidateApply;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-5">
-                                                                    <?php if($review['applied_application_enc_id']){?>
-                                                                        <a class="over-bttn ob1" disabled="disabled">Applied</a>
-                                                                    <?php }else{?>
-                                                                        <a href="/job/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
-                                                                    <?php } ?>
-                                                                </div>
+                                                                <div class="text-o col-md-5"><a class="over-bttn ob1" href="/job/<?= $review['slug']; ?>">Apply</a></div>
                                                                 <div class="text-o col-md-7">
                                                                     <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
                                                                             <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
@@ -235,14 +229,7 @@ use frontend\models\applications\CandidateApply;
                                                             <?= $shortlist["positions"]; ?> Openings
                                                         </div>
                                                         <div class="overlay2">
-                                                            <div class="text-o">
-                                                                <?php if($shortlist['applied_application_enc_id']){?>
-                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
-                                                                        <i class="fa fa-check"></i>Applied</a>
-                                                                <?php }else{?>
-                                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
-                                                                <?php } ?>
-                                                            </div>
+                                                            <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row ">

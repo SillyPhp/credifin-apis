@@ -85,7 +85,7 @@ $this->registerCss('
 }
 @media screen and (max-width: 768px){
     #trending-post .tp-box div a .no-padd{
-        padding:0px 15px !important;
+        padding:15px 0px;
     }
 }
 ');

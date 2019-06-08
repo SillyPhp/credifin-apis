@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\AssignedCategories;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -71,86 +70,8 @@ class JobsController extends Controller
             }
             return $response;
         }
-        $job_profiles = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function ($z) {
-                $z->groupBy(['d.category_enc_id']);
-            }], false)
-            ->innerJoinWith(['employerApplications b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0,
-                    'b.status' => 'Active'
-                ]);
-                $x->joinWith(['applicationTypeEnc c' => function ($y) {
-                    $y->andWhere(['c.name' => 'Jobs']);
-                }], false);
-            }], false)
-            ->where([
-                'a.status' => 'Approved',
-                'a.is_deleted' => 0,
-            ])->asArray()
-            ->all();
-        $internship_profiles = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['parentEnc d' => function ($z) {
-                $z->groupBy(['d.category_enc_id']);
-            }])
-            ->innerJoinWith(['employerApplications b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0,
-                    'b.status' => 'Active'
-                ]);
-                $x->joinWith(['applicationTypeEnc c' => function ($y) {
-                    $y->andWhere(['c.name' => 'Internships']);
-                }], false);
-            }], false)
-            ->where([
-                'a.status' => 'Approved',
-                'a.is_deleted' => 0,
-            ])->asArray()
-            ->all();
-        $search_words = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.*', 'd.category_enc_id', 'd.name'])
-            ->joinWith(['categoryEnc d' => function ($y) {
-                $y->groupBy(['d.category_enc_id']);
-            }], false)
-            ->innerJoinWith(['employerApplications b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0,
-                    'b.status' => 'Active',
-                ]);
-            }], false)
-            ->where([
-                'a.status' => 'Approved',
-                'a.is_deleted' => 0,
-            ])
-            ->asArray()
-            ->all();
-        $cities = EmployerApplications::find()
-            ->alias('a')
-            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
-            ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
-                $x->joinWith(['locationEnc c' => function ($x) {
-                    $x->joinWith(['cityEnc d']);
-                }], false);
-            }], false)
-            ->where([
-                'a.is_deleted' => 0
-            ])
-            ->orderBy(['total' => SORT_DESC])
-            ->groupBy(['c.city_enc_id'])
-            ->asArray()
-            ->all();
 
-        return $this->render('index', [
-            'job_profiles' => $job_profiles,
-            'internship_profiles' => $internship_profiles,
-            'search_words' => $search_words,
-            'cities' => $cities,
-            ]);
+        return $this->render('index');
     }
 
 

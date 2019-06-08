@@ -1,5 +1,5 @@
-<?php
 
+<?php
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
@@ -9,7 +9,7 @@ use yii\helpers\Url;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Applied Jobs</span>
+                    <span class="caption-subject font-dark bold uppercase">Applied Internships</span>
                 </div>
             </div>
             <div class="portlet-body">
@@ -20,91 +20,91 @@ use yii\helpers\Url;
                                 <div class="row cd-box">
                                     <?php
                                     if (!empty($fields)) {
-                                        foreach ($fields as $arr) {
-                                            foreach ($arr as $user) {
-                                                ?>
-                                                <div class="cd-can-box">
-                                                    <div class="cd-box-border" id="cd-box-border">
-                                                        <div class="row">  
-                                                            <div class=" cd-user-icon col-md-6">
-                                                                <a href="<?= '/job/' . $user['slug'] ?>" target="_blank">
-                                                                    <img src="<?= '/assets/common/categories/' . $user['job_icon'] ?>" class="img-responsive img-thumbnail img-rounded">
-                                                                </a>        
-                                                            </div>
-                                                            <div class="vj-btn col-md-6"> 
-                                                                <a href="<?= '/job/' . $user['slug'] ?>">View Detail</a>
+                                    foreach ($fields as $arr) {
+                                    foreach ($arr as $user) {
+                                    ?>
+                                    <div class="cd-can-box">
+                                        <div class="cd-box-border" id="cd-box-border">
+                                            <div class="row">
+                                                <div class=" cd-user-icon col-md-6">
+                                                    <a href="<?= '/internship/' . $user['slug'] ?>" target="_blank">
+                                                        <img src="<?= '/assets/common/categories/' . $user['job_icon'] ?>" class="img-responsive img-thumbnail img-rounded">
+                                                    </a>
+                                                </div>
+                                                <div class="vj-btn col-md-6">
+                                                    <a href="<?= '/internship/' . $user['slug'] ?>">View Detail</a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="cd-user-detail col-md-2">
+                                                    <div class="cd-u-name">
+                                                        <a href="<?= '/internship/' . $user['slug'] ?>" target="_blank">
+                                                            <?= $user['title'] ?>
+                                                        </a>
+                                                    </div>
+                                                    <div class="cd-u-p-company"><a href="<?= '/company/' . $user['org_slug'] ?>" ><?= $user['org_name'] ?></a></div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="steps-form-2">
+                                                                <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">
+                                                                    <?php
+                                                                    $len = count($user['process']);
+                                                                    $j = 0;
+                                                                    foreach ($user['process'] as $p) {
+                                                                        ?>
+                                                                        <div class="steps-step-2 <?php
+                                                                        if ($j < $user['active']) {
+                                                                            echo 'active';
+                                                                        } else {
+                                                                            echo '';
+                                                                        }
+                                                                        ?>">
+                                                                            <a type="button" class="btn btn-circle-2 waves-effect btn-blue-grey <?php
+                                                                            if ($j < $user['active']) {
+                                                                                echo 'active';
+                                                                            } elseif ($j == $user['active']) {
+                                                                                echo 'current';
+                                                                            }
+                                                                            ?>" data-toggle="tooltip" data-placement="top" title="" data-id ="<?= $p['field_enc_id'] ?>" data-original-title="<?= $p['field_name'] ?>">
+                                                                                <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </div>
+
+                                                                        <?php
+                                                                        $j++;
+                                                                    }
+                                                                    ?>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row"> 
-                                                            <div class="cd-user-detail col-md-2">                                       
-                                                                <div class="cd-u-name">
-                                                                    <a href="<?= '/job/' . $user['slug'] ?>" target="_blank">
-                                                                        <?= $user['title'] ?>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="cd-u-p-company"><a href="<?= '/' . $user['org_slug'] ?>" ><?= $user['org_name'] ?></a></div>
-                                                            </div>
-                                                            <div class="col-md-8">
-                                                                <div class="row"> 
-                                                                    <div class="col-md-12">
-                                                                        <div class="steps-form-2">
-                                                                            <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">
-                                                                                <?php
-                                                                                $len = count($user['process']);
-                                                                                $j = 0;
-                                                                                foreach ($user['process'] as $p) {
-                                                                                    ?>
-                                                                                    <div class="steps-step-2 <?php
-                                                                                    if ($j < $user['active']) {
-                                                                                        echo 'active';
-                                                                                    } else {
-                                                                                        echo '';
-                                                                                    }
-                                                                                    ?>">
-                                                                                        <a type="button" class="btn btn-circle-2 waves-effect btn-blue-grey <?php
-                                                                                        if ($j < $user['active']) {
-                                                                                            echo 'active';
-                                                                                        } elseif ($j == $user['active']) {
-                                                                                            echo 'current';
-                                                                                        }
-                                                                                        ?>" data-toggle="tooltip" data-placement="top" title="" data-id ="<?= $p['field_enc_id'] ?>" data-original-title="<?= $p['field_name'] ?>">
-                                                                                            <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                                                        </a>
-                                                                                    </div>
-
-                                                                                    <?php
-                                                                                    $j++;
-                                                                                }
-                                                                                ?>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>        
-
-                                                            </div>
-                                                            <div class="cd-btns col-md-2">
-                                                                <?php if ($user['status'] == 'Cancelled') { ?>
-                                                                    <a class="btn btn-circle red btn-sm cancel-app" disabled>Canceled</a>
-                                                                <?php } else { ?>
-                                                                    <button value="<?= $user['app_id'] ?>" type="button" class="btn btn-outline btn-circle red btn-sm cancel ">Cancel</button> 
-                                                                <?php } ?>
-
-                                                            </div>                     
-                                                        </div>                     
                                                     </div>
-                                                    <?php
-                                                }
-                                            }
+
+                                                </div>
+                                                <div class="cd-btns col-md-2">
+                                                    <?php if ($user['status'] == 'Cancelled') { ?>
+                                                        <a class="btn btn-circle red btn-sm cancel-app" disabled>Canceled</a>
+                                                    <?php } else { ?>
+                                                        <button value="<?= $user['app_id'] ?>" type="button" class="btn btn-outline btn-circle red btn-sm cancel ">Cancel</button>
+                                                    <?php } ?>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                        }
+                                        }
                                         } else {
                                             ?>
                                             <div class="col-md-12">
-                                                <div class="tab-empty"> 
+                                                <div class="tab-empty">
                                                     <div class="tab-empty-icon">
                                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                     </div>
                                                     <div class="tab-empty-text">
-                                                        <div class="">There are no Jobs to show.</div>
-                                                        <div class="">You haven't apply any job.</div>
+                                                        <div class="">There are no Internships to show.</div>
+                                                        <div class="">You haven't apply any internship.</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -215,11 +215,9 @@ $this->registerCss('
 //  padding:5px 10px;
 //  border-radius:20px !important;
 //}
-
 //.tooltip.top .tooltip-arrow {
 //  border-top-color: #00acd6;
 //}
-
 //.js-title-step span{
 //    display:none;
 //}
@@ -232,9 +230,7 @@ $this->registerCss('
 a:hover{
     text-decoration:none;
 }
-
 /*stepbar css*/
-
 .steps-form-2 {
     display: table;
     width: 100%;
@@ -330,7 +326,6 @@ a:hover{
 //  width: 100%;
 //  font-weight: bold;
 //}
-
 //.overSelect {
 //  position: absolute;
 //  left: 0;
@@ -351,7 +346,6 @@ a:hover{
 //#checkboxes label:hover {
 //  background-color: #1e90ff;
 //}
-
 //.spin {
 //  width: 5em;
 //  height: 5em;
@@ -389,7 +383,6 @@ a:hover{
 //  transition: transform 2.0s linear 0s, border-left-width 0s linear 1.75s;
 //  transition: transform 2.0s linear 0s, border-left-width 0s linear 1.75s, -webkit-transform 2.0s linear 0s;
 //}
-
 /* Top Radio filter css starts */
 //.filters{
 //    height: auto;
@@ -424,7 +417,6 @@ $('[data-toggle="tooltip"]').tooltip();
 //$('#chkveg').multiselect({
 //    includeSelectAllOption: true
 //});
-
 //$('#btnget').click(function() {
 //    alert($('#chkveg').val());    
 //}); 
@@ -432,8 +424,6 @@ $('[data-toggle="tooltip"]').tooltip();
 $('.cd-box-border').click(function(){
     $(this).closest('.cd-can-box').find('.cd-box-border-hide').slideToggle('slow');
 });
-
-
             
    function run(thisObj)
        {
@@ -466,7 +456,7 @@ $('.cd-box-border').click(function(){
             
         
             $.ajax({
-                url:'/account/cancel-application',
+                url:'/account/internships/cancel-application',
                 data:{data:data},
                 method:'post',
                 success:function(data)
@@ -498,6 +488,5 @@ $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery
         console.log($(this).closest('.steps-row-2.active:last').next('.steps-row-2'));
     });
     </script>    -->
-
 
 
