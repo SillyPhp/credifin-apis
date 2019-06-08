@@ -16,20 +16,18 @@ use yii\helpers\Url;
 
 class SearchController extends Controller
 {
-    private function findUnclaimed($t, $s)
+    private function findUnclaimed($s)
     {
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-            ->joinWith(['organizationTypeEnc b' => function ($y) use ($t) {
-                $y->andWhere([
-                    'b.business_activity' => $t
-                ]);
-            }], false)
+            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b' => function ($y) {
+                $y->select(['b.business_activity_enc_id', 'b.business_activity']);
+            }])
             ->joinWith(['newOrganizationReviews c' => function ($x) {
-                $x->select(['c.organization_enc_id', 'c.average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
+                $x->select(['c.organization_enc_id', 'ROUND(AVG(c.average_rating)) average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
                     ->groupBy(['c.organization_enc_id']);
-            }], false)
+            }])
             ->where([
                 'a.is_deleted' => 0,
                 'a.status' => 1
@@ -42,7 +40,6 @@ class SearchController extends Controller
                 ['like', 'b.business_activity', $s],
             ])
             ->groupBy(['a.organization_enc_id'])
-            ->limit(8)
             ->asArray()
             ->all();
     }
@@ -50,8 +47,10 @@ class SearchController extends Controller
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+
             $s = Yii::$app->request->post('keyword');
             $result = [];
+
             $organizations = Organizations::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
@@ -67,7 +66,7 @@ class SearchController extends Controller
                         ->groupBy(['e.organization_enc_id']);
                 }])
                 ->joinWith(['organizationReviews f' => function ($y) {
-                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
+                    $y->select(['f.organization_enc_id', 'ROUND(AVG(f.average_rating)) average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
                         ->groupBy(['f.organization_enc_id']);
                 }])
                 ->where([
@@ -85,10 +84,28 @@ class SearchController extends Controller
                 ])
                 ->groupBy(['a.organization_enc_id'])
                 ->limit(8);
+
             $result['organizations'] = $organizations->asArray()->all();
-            $result['schools'] = $this->findUnclaimed('School', $s);
-            $result['colleges'] = $this->findUnclaimed('College', $s);
-            $result['institutes'] = $this->findUnclaimed('Educational Institute', $s);
+
+            $unclaimed = $this->findUnclaimed($s);
+
+            $result['School'] = [];
+            $result['College'] = [];
+            $result['Educational Institute'] = [];
+            $result['Recruiter'] = [];
+            $result['Business'] = [];
+            $result['Scholarship Fund'] = [];
+            $result['Banking & Finance Company'] = [];
+            $result['Others'] = [];
+            foreach ($unclaimed as $uc) {
+                $ba = $uc['organizationTypeEnc']['business_activity'];
+                if ($ba) {
+                    if (count($result[$ba]) < 8) {
+                        array_push($result[$ba], $uc);
+                    }
+                }
+            }
+
             $jobs = EmployerApplications::find()
                 ->alias('a')
                 ->select([
@@ -166,7 +183,9 @@ class SearchController extends Controller
                 ])
                 ->groupBy(['a.application_enc_id'])
                 ->limit(6);
+
             $final_jobs = $jobs->asArray()->all();
+
             $i = 0;
             foreach ($final_jobs as $val) {
                 $final_jobs[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
@@ -215,7 +234,9 @@ class SearchController extends Controller
                 }
                 $i++;
             }
+
             $result['jobs'] = $final_jobs;
+
             $internships = EmployerApplications::find()
                 ->alias('a')
                 ->select([
@@ -275,7 +296,9 @@ class SearchController extends Controller
                 ])
                 ->groupBy(['a.application_enc_id'])
                 ->limit(6);
+
             $final_internships = $internships->asArray()->all();
+
             $i = 0;
             foreach ($final_internships as $val) {
                 $final_internships[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
@@ -324,7 +347,9 @@ class SearchController extends Controller
                 }
                 $i++;
             }
+
             $result['internships'] = $final_internships;
+
             $posts = Posts::find()
                 ->select([
                     'title',
@@ -343,10 +368,14 @@ class SearchController extends Controller
                     ['like', 'meta_keywords', $s],
                 ])
                 ->limit(3);
+
             $posts_filter = $posts->asArray()->all();
+
             $result['posts'] = $posts_filter;
+
             return json_encode($result);
         }
         return $this->render('index');
     }
+
 }
