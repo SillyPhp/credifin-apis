@@ -39,10 +39,9 @@ $this->params['seo_tags'] = [
     <div class="fade-bg"></div>
     <div class="container">
         <span class="sub-container" id="sub-container">
-
-            <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>"
-                 style="clear:both; border-radius:0px;max-width:320px;" align="center">
-
+            <a href="/" style="max-width: 275px;display: block;margin: auto;border-radius: 0px;">
+                <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>" style="width: 100%;border-radius: 0px;"/>
+            </a>
             <!-- Question container -->
             <div class="elem-div-question-container">
               <h1 id="elem-h1-question">

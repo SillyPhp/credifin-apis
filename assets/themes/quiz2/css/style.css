@@ -357,8 +357,20 @@ progress::-webkit-progress-value {
 .effect a.whats {
     background-color: #25D366;
 }
+a.login-s {
+    background-color: #00a0e3;
+    padding: 18px 60px;
+    border-radius: 10px;
+    margin-right: 19px;
+    color: #fff;
+    font-weight: 500;
+}
+a.login-s:hover {
+    border-radius: 25px;
+    text-decoration: none;
+}
 /* jaques effect */
-.effect.jaques a {
+.effect.jaques a, a.login-s {
     transition: border-top-left-radius 0.1s linear 0s, border-top-right-radius 0.1s linear 0.1s, border-bottom-right-radius 0.1s linear 0.2s, border-bottom-left-radius 0.1s linear 0.3s;
 }
 .effect.jaques a:hover {
