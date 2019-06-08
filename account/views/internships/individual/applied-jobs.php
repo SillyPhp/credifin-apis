@@ -42,7 +42,7 @@ use yii\helpers\Url;
                                                             <?= $user['title'] ?>
                                                         </a>
                                                     </div>
-                                                    <div class="cd-u-p-company"><a href="<?= '/company/' . $user['org_slug'] ?>" ><?= $user['org_name'] ?></a></div>
+                                                    <div class="cd-u-p-company"><a href="<?= '/' . $user['org_slug'] ?>" ><?= $user['org_name'] ?></a></div>
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
