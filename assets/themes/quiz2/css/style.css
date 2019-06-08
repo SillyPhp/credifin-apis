@@ -339,7 +339,7 @@ progress::-webkit-progress-value {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    margin-right: 20px;
+    margin: 0px 10px;
     font-size: 25px;
     overflow: hidden;
     position: relative;
@@ -359,11 +359,13 @@ progress::-webkit-progress-value {
 }
 a.login-s {
     background-color: #00a0e3;
-    padding: 18px 60px;
+    padding: 18px 22px;
     border-radius: 10px;
-    margin-right: 19px;
     color: #fff;
     font-weight: 500;
+    display: block;
+    max-width: 220px;
+    margin: auto;
 }
 a.login-s:hover {
     border-radius: 25px;
