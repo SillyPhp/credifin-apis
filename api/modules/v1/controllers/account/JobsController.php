@@ -499,7 +499,7 @@ class JobsController extends ApiBaseController
         $object = new Applied();
         $question = [];
         foreach ($applications_applied as $v) {
-            $array = $object->getCurrentQuestions($v['id'], $v['current_round'],$user_id);
+            $array = $object->getCurrentQuestions($v['id'], $v['current_round'], $user_id);
             if (!empty($array)) {
                 $question[] = $array;
             }
@@ -513,14 +513,15 @@ class JobsController extends ApiBaseController
 
     }
 
-    public function actionShortlistedResume(){
+    public function actionShortlistedResume()
+    {
 
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if(isset($parameters['type']) && !empty($parameters['type'])){
+        if (isset($parameters['type']) && !empty($parameters['type'])) {
             $type = $parameters['type'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
@@ -545,23 +546,85 @@ class JobsController extends ApiBaseController
             ->alias('a')
             ->select(['a.application_enc_id', 'a.organization_enc_id', 'b.name as org_name', 'd.name',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon'])
-            ->joinWith(['appliedApplications e' => function ($y) use($candidate) {
-                $y->onCondition(['e.created_by' => $candidate->user_enc_id,'e.is_deleted'=>0]);
+            ->joinWith(['appliedApplications e' => function ($y) use ($candidate) {
+                $y->onCondition(['e.created_by' => $candidate->user_enc_id, 'e.is_deleted' => 0]);
             }], false)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
             ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
-                $x->joinWith(['parentEnc f'],false);
+                $x->joinWith(['parentEnc f'], false);
             }], false)
             ->joinWith(['organizationEnc b'], false)
             ->asArray()
             ->all();
 
-        if(!empty($shortlist1)){
-            return $this->response(200,$shortlist1);
+        if (!empty($shortlist1)) {
+            return $this->response(200, $shortlist1);
+        } else {
+            return $this->response(404);
+        }
+    }
+
+    public function actionAllAppliedApplications()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        $applied_applications = AppliedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'a.application_enc_id', 'a.status', 'd.name as title', 'e.name as org_name',
+                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
+                'SUM(g.positions) as positions'])
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->andwhere(['a.created_by' => $candidate->user_enc_id, 'a.is_deleted' => 0, 'e.is_deleted' => 0, 'k.is_deleted' => 0])
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->groupBy(['b.application_enc_id'])
+            ->orderBy(['j.name' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if (!empty($applied_applications)) {
+            return $this->response(200, $applied_applications);
         }else{
             return $this->response(404);
         }
+
+    }
+
+    public function actionCancelApplication()
+    {
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if ($parameters['application_enc_id'] && !empty($parameters['application_enc_id'])) {
+            $application_enc_id = $parameters['application_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        $cancel_application = AppliedApplications::find()
+            ->where(['created_by'=>$candidate->user_enc_id,'application_enc_id'=>$application_enc_id,'is_deleted'=>0])
+            ->one();
+
+        if($cancel_application['status'] == 'Pending' || $cancel_application['status'] == 'Incomplete'){
+            $cancel_application->status = 'Cancelled';
+            $cancel_application->last_updated_by = $candidate->user_enc_id;
+            $cancel_application->last_updated_on = date('Y-m-d H:i:s');
+            if ($cancel_application->update()) {
+                return $this->response(200);
+            } else {
+                return $this->response(500);
+            }
+        }else{
+            return $this->response(500);
+        }
+
     }
 
 
