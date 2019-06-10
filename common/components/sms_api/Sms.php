@@ -22,5 +22,12 @@ class Sms  extends Component
                 'country'=>91
                 ])
             ->send();
+        if ($response->isOk) {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
