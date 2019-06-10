@@ -448,7 +448,7 @@ use yii\widgets\Pjax;
                     <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/shortlist-companies') ?>" title="" class="viewall-jobs">View All</a>
+                    <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
