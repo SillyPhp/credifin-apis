@@ -6,7 +6,7 @@ use yii\base\InvalidParamException;
 use Yii;
 use yii\base\Component;
 use yii\httpclient\Client;
-class Sms  extends Component
+class SmsComponent  extends Component
 {
     public function send($mobile,$senderId,$msg)
     {
