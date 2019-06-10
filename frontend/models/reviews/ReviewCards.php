@@ -16,6 +16,7 @@ class ReviewCards {
               ->alias('a')
               ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
               ->where(['a.is_deleted'=>0])
+              ->andWhere(['a.status'=>'Active'])
               ->joinWith(['businessActivityEnc b'],false)
               ->joinWith(['organizationReviews c'=>function($b)
               {
@@ -77,7 +78,7 @@ class ReviewCards {
     {
         $card_query =  UnclaimedOrganizations::find()
             ->alias('a');
-        $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
+        $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
 //        if ($options['business_activity']=='Educational Institute') {
 //            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((student_engagement+school_infrastructure+faculty+value_for_money+teaching_style+coverage_of_subject_matter+accessibility_of_faculty)/7) rating']);
 //        }

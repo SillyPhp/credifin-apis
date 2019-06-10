@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
+<div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
 <div class="row">
     <?php
         Pjax::begin(['id' => 'widgets']);
@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
                     <div class="number">
                         <span data-counter="counterup" data-value="1349"><?= $total_reviews; ?></span>
                     </div>
-                    <div class="desc">Applications Reviewed </div>
+                    <div class="desc">Applications Reviewed  </div>
                 </div>
             </a>
         </div>
@@ -181,9 +181,10 @@ use yii\widgets\Pjax;
                                                                         <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
+
                                                                     </div>
                                                                     <div class="j-grid"> 
-                                                                        <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -201,8 +202,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Select any jobs for review.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Select any internships for review.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -243,12 +244,12 @@ use yii\widgets\Pjax;
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-cross">
-                                                                        <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
+                                                                        <button value="<?= $shortlist['application_enc_id']; ?>" class="rmv_list">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div> 
                                                                     <div class=" j-grid"> 
-                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -266,8 +267,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Shortlisted any internships.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -300,7 +301,7 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/internship/<?= $apply['slug']; ?>" title="">VIEW JOB</a></div>
+                                                                <div class="j-grid"> <a  href="/internship/<?= $apply['slug']; ?>" title="">VIEW INTERNSHIP</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -316,8 +317,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Applied any jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Applied any internships.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -348,7 +349,7 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/internship/<?= $accept['slug']; ?>" title="">VIEW JOB</a></div>
+                                                                <div class="j-grid"> <a  href="/internship/<?= $accept['slug']; ?>" title="">VIEW  INTERNSHIP</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -364,8 +365,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't any accepted jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't any accepted internships.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -403,7 +404,7 @@ use yii\widgets\Pjax;
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-grid">
-                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -421,14 +422,13 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Shortlisted any internships</div>
                                                 </div>
                                             </div>
                                         </div>
                                         <?php
                                     } ?>
-
 
                                 </div>
                             </div>
@@ -672,13 +672,16 @@ $(document).on('click','.shortlist',function()
       Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
    
-$(document).on('click','.rmv_list',function()
+      
+   $(document).on('click','.rmv_list',function()
     {
       var  url = '/account/internships/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
+      var main_card = $(this).parentsUntil(".topic-con").closest('.hr-j-box');
+      main_card.remove();
       Ajax_call(rmv_id,url,pjax_refresh_id);
-   })   
+   }) 
         
 $(document).on('click','.rmv_review',function()
     {

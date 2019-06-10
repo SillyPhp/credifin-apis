@@ -134,6 +134,64 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.footer{
+    margin-top:0px !important;
+}
+.qr-bg{
+    margin-top:20px;
+    background:#ecf5fe;
+    padding:30px 0;
+}
+.quick-review-box{
+   padding:5px 10px; 
+}
+.qr-heading{
+    font-size:18px;
+    font-weight:bold;
+    font-family: lora;
+    color:#000;
+}
+.quick-review-box:hover{
+    box-shadow:0 0 5px rgba(0,0,0,.2);
+    border-radius:10px;
+    transition:.3s ease;
+    background:#fff;
+    padding:5px 10px;
+}
+.qrb-details{
+    padding-top:10px;
+}
+.qr-name{
+    font-size:14px;
+}
+.qrb-thumb{
+    width:80px;
+    height:80px;
+    position:relative;
+}
+.qrb-thumb a{
+    max-height:50px;
+    max-width:50px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%;
+}
+.qr-stars i{ 
+    color:#ff7803
+}
+.qr-stars ul li {
+    display:inline;
+}
+.qr-stars ul li img{
+    max-width:15px;
+    max-height:20px;
+}
+.qr-stars ul{
+    margin-left:0px;
+}
+
 .btn_add_org{
     color:#fff;
     position:absolute;
@@ -296,6 +354,8 @@ review-benifit{
 }
 .head-bg-black{
     max-width:400px;
+    font-family:lora;
+    font-weight:bold;
     background:rgba(0,0,0,.65);
     color:#fff;
     padding:25px 25px;
@@ -587,8 +647,8 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     window.location.replace('/'+datum.slug+'/reviews');
   });
 JS;
+$this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-$this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

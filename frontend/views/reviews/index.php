@@ -40,9 +40,10 @@ $this->params['seo_tags'] = [
 ?>
 
     <section class="head-bg">
-        <div class="bg-img">
-<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">-->
-        </div>
+        <div class="overlay-bg"></div>
+<!--        <div class="bg-img">-->
+<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">
+<!--        </div>-->
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -140,6 +141,21 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <section class="top-com-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pos-rel-help">
+                        <div class="pos-abso">
+                            <div class="tc-heading">Let us Help You</div>
+                            <div class="tc-text">Empower Youth is a platform open to everyone. Share your experiences to help
+                                others make better choices, and help Organizations up their game.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!---->
     <section class="top-com">
         <div class="container">
@@ -175,6 +191,92 @@ $this->params['seo_tags'] = [
 echo $this->render('/widgets/mustache/review-cards');
 
 $this->registerCss('
+.footer{
+    margin-top:0px !important;
+}
+.qr-bg{
+    margin-top:20px;
+    background:#ecf5fe;
+    padding:30px 0;
+}
+.pos-rel-help   {
+    position:relative;
+    min-height:400px;
+}
+.pos-abso{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+}
+.tc-heading{
+    color:#fff;
+    font-size:30px;
+    font-weight:Bold;
+    font-family:lora;
+}
+.tc-text{
+    color:#fff;
+    font-family:lora;
+    font-size:19px;
+    max-width:600px;
+}
+.quick-review-box{
+   padding:5px 10px; 
+}
+.top-com-bg{
+   background:url("' . Url::to('@eyAssets/images/pages/review/review-section-bg.png') . '");
+   background-size: cover;
+   background-attachment: fixed;
+   background-repeat: no-repeat;
+   min-height:400px;
+   
+}
+.qr-heading{
+    font-size:18px;
+    font-weight:bold;
+    font-family: lora;
+    color:#000;
+}
+.quick-review-box:hover{
+    box-shadow:0 0 5px rgba(0,0,0,.2);
+    border-radius:10px;
+    transition:.3s ease;
+    background:#fff;
+    padding:5px 10px;
+}
+.qrb-details{
+    padding-top:10px;
+}
+.qr-name{
+    font-size:14px;
+}
+.qrb-thumb{
+    width:80px;
+    height:80px;
+    position:relative;
+}
+.qrb-thumb a{
+    max-height:50px;
+    max-width:50px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%;
+}
+.qr-stars i{ 
+    color:#ff7803
+}
+.qr-stars ul li {
+    display:inline;
+}
+.qr-stars ul li img{
+    max-width:15px;
+    max-height:20px;
+}
+.qr-stars ul{
+    margin-left:0px;
+}
 .bg-img{
     position:absolute;
     height: 100%;
@@ -212,13 +314,13 @@ $this->registerCss('
 }
 .review-cat-box > .rcb-icon img {
     -webkit-transform: rotate(10deg) scale(1.2);
-    transform: rotate(10deg) scale(1.2);
+    transform: rotate(0deg) scale(1.2);
     -webkit-transition: .3s ease-in-out;
     transition: .3s ease-in-out;
 }
 .review-cat-box:hover > .rcb-icon img {
-    -webkit-transform: rotate(0) scale(1);
-    transform: rotate(0) scale(1);
+    -webkit-transform: rotate(-10deg) scale(1);
+    transform: rotate(-10deg) scale(1);
 }
 .tc{
     text-align:center;
@@ -233,7 +335,7 @@ $this->registerCss('
 }
 .rcb-name{
     padding-top:40px;
-    font-size:25px;
+    font-size:23px;
     text-transform:capitalize;
     font-family: lora;
     line-height: 25px;  
@@ -290,7 +392,6 @@ $this->registerCss('
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
-    height:300px !important;
 }
 .com-logo{
     width:100px;
@@ -410,15 +511,22 @@ color: initial;
     
 .head-bg{
 //  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-//     background: url(../assets/themes/ey/images/pages/review/review-bg2.png);
-//    background-size: cover;
+     background: url(../assets/themes/ey/images/pages/review/rr.png);
+    
+    background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center;
-     background-size: contain;
-    background-position:bottom right;
+//     background-size: contain;
+//   background-position:bottom;
 }  
-
+.overlay-bg{
+    position:absolute;
+    
+   background-image: linear-gradient(155deg, rgba(255,255,255,.8)0%, rgba(255,255,255,.7)40%, rgba(255,255,255,.0)65%, rgba(255,255,255,.0)100%);
+    width:100%;
+    height:100%;
+}
 .pos-relative{
     position:relative;
     height:550px
@@ -1167,5 +1275,6 @@ JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
