@@ -18,7 +18,9 @@ use yii\helpers\Url;
                     </a>
                     {{/logo}}
                 </div>
+                <div class="pos-rel">
                 <div class="com-name"><a href="/{{slug}}/reviews">{{name}}</a></div>
+                </div>
                 <div class="com-loc"></div>
                 <div class="com-dep"></div>
                 {{#rating}}
@@ -60,9 +62,24 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss("
-.uncliamed_height
-{
-height:260px !important;
+.uncliamed_height{
+height:295px !important;
+}
+.pos-rel{
+    position:relative;
+    min-height:80px;
+}
+.com-name{
+    text-align:center;
+    padding: 0 10px;
+    color: #bcbaba;
+    font-size: 18px;
+    text-transform: capitalize;
+    position:absolute;
+    width:100%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 ");
 $script = <<< JS
