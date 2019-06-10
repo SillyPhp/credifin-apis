@@ -879,52 +879,52 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                    <a href="/{{slug}}"><img src="{{logo}}"></a>
+                <a href="/{{slug}}"><img src="{{logo}}"></a>
                 {{/logo}}
                 {{^logo}}
-                    <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                <canvas class="user-icon" name="{{name}}" width="100" height="100"
                         color="{{color}}" font="55px"></canvas>
                 {{/logo}}
             </div>
             <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
 
             {{#employerApplications}}
-                {{#applications_cnt}}
-                <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
-                {{/applications_cnt}}
+            {{#applications_cnt}}
+            <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
+            {{/applications_cnt}}
             {{/employerApplications}}
             {{^employerApplications}}
-                <div class="com-loc"><span>No</span> Openings</div>
+            <div class="com-loc"><span>No</span> Openings</div>
             {{/employerApplications}}
 
             {{#organizationReviews}}
-                {{#average_rating}}
-                    <div class="starr" data-score="{{average_rating}}"></div>
-                    <div class="rating">
-                        <div class="stars">{{average_rating}}</div>
-                        <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
-                    </div>
-                {{/average_rating}}
+            {{#average_rating}}
+            <div class="starr" data-score="{{average_rating}}"></div>
+            <div class="rating">
+                <div class="stars">{{average_rating}}</div>
+                <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
+            </div>
+            {{/average_rating}}
             {{/organizationReviews}}
             {{^organizationReviews}}
-                <div class="starr" data-score="0"></div>
-                <div class="rating">
-                    <div class="reviews-rate">No reviews</div>
-                </div>
+            <div class="starr" data-score="0"></div>
+            <div class="rating">
+                <div class="reviews-rate">No reviews</div>
+            </div>
             {{/organizationReviews}}
 
             <div class="row">
-                 <div class="cm-btns padd-0">
-                        <div class="col-md-6">
-                            <div class="color-blue">
-                                 <a href="/{{slug}}">View Profile</a>
-                            </div>
+                <div class="cm-btns padd-0">
+                    <div class="col-md-6">
+                        <div class="color-blue">
+                            <a href="/{{slug}}">View Profile</a>
                         </div>
-                        <div class="col-md-6">
-                            <div class="color-orange">
-                                <a href="/{{slug}}/reviews">Read Reviews</a>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="color-orange">
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -868,14 +868,14 @@ class ApplicationForm extends Model
                 $b->joinWith(['locationEnc s' => function ($b) {
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->onCondition(['p.is_deleted' => 0]);
                 $b->joinWith(['locationEnc u' => function ($b) {
                     $b->joinWith(['cityEnc v'], false);
                 }], false);
-                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name', 'u.latitude', 'u.longitude']);
+                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name', 'u.latitude as interview_lat', 'u.longitude as interview_long']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->onCondition(['q.is_deleted' => 0]);

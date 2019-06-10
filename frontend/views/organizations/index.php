@@ -13,16 +13,16 @@ use yii\helpers\Url;
                     <div class="pos-center">
                         <div class="main-text">Explore Companies</div>
                         <div class="search-container">
-                        <form action="">
-                            <div class="load-suggestions Typeahead-spinner city-spin"
-                                 style="display: none;">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                            <input id="company_search" type="text" placeholder="Search Companies" name="search">
-                            <button id="search"><i class="fa fa-search"></i></button>
-                        </form>
+                            <form action="">
+                                <div class="load-suggestions Typeahead-spinner city-spin"
+                                     style="display: none;">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <input id="company_search" type="text" placeholder="Search Companies" name="search">
+                                <button id="search"><i class="fa fa-search"></i></button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -36,23 +36,23 @@ use yii\helpers\Url;
             <div class="padd-top-20">
                 <div id="companies-card"></div>
             </div>
-<!--            <div class="col-md-4">-->
-<!--                <div class="com-box">-->
-<!--                    <a href="">-->
-<!--                        <div class="com-icon">-->
-<!--                            <div class="icon"><img src="--><?//= Url::to('@commonAssets/logos/logo.svg') ?><!--"></div>-->
-<!--                            <div class="follow">-->
-<!--                                <button><i class="fa fa-heart-o"></i></button>-->
-<!--                            </div>-->
-<!--                            <div class="featured">Featured</div>-->
-<!--                        </div>-->
-<!--                        <div class="com-det">-->
-<!--                            <div class="com-name">Empower Youth Foundation</div>-->
-<!--                            <div class="com-cate">Information Technology</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="col-md-4">-->
+            <!--                <div class="com-box">-->
+            <!--                    <a href="">-->
+            <!--                        <div class="com-icon">-->
+            <!--                            <div class="icon"><img src="--><?//= Url::to('@commonAssets/logos/logo.svg') ?><!--"></div>-->
+            <!--                            <div class="follow">-->
+            <!--                                <button><i class="fa fa-heart-o"></i></button>-->
+            <!--                            </div>-->
+            <!--                            <div class="featured">Featured</div>-->
+            <!--                        </div>-->
+            <!--                        <div class="com-det">-->
+            <!--                            <div class="com-name">Empower Youth Foundation</div>-->
+            <!--                            <div class="com-cate">Information Technology</div>-->
+            <!--                        </div>-->
+            <!--                    </a>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </div>
     </div>
 </section>
@@ -206,7 +206,7 @@ form {
    color: #fff;
    cursor: pointer;
    top: -1px;
-   right: -1px;
+   right: 0;
    border-radius: 0 8px 8px 0;
 }
 .search-container button:hover {
@@ -385,6 +385,3 @@ $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-<script>
-
-</script>

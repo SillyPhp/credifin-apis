@@ -150,7 +150,7 @@ class JobsController extends Controller
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
-            ]);
+        ]);
     }
 
 
