@@ -790,10 +790,21 @@ class JobsController extends ApiBaseController
         $result['posts'] = $posts_filter;
 
 
-        if (!empty($result)) {
-            return $this->response(200, $result);
-        } else {
+        if(empty($result['organizations'])
+        && empty($result['School'])
+        && empty($result['College'])
+        && empty($result['Educational Institute'])
+        && empty($result['Recruiter'])
+        && empty($result['Business'])
+        && empty($result['Scholarship Fund'])
+        && empty($result['Banking & Finance Company'])
+        && empty($result['Others'])
+        && empty($result['jobs'])
+        && empty($result['internships'])
+        && empty($result['posts'])){
             return $this->response(404);
+        }else{
+            return $this->response(200, $result);
         }
     }
 
