@@ -148,6 +148,7 @@ class JobsController extends Controller
     {
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('data');
+
             $update = Yii::$app->db->createCommand()
                 ->update(AppliedApplications::tableName(), ['status' => 'Cancelled', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['applied_application_enc_id' => $id])
                 ->execute();
