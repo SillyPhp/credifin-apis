@@ -6,6 +6,7 @@ namespace api\modules\v1\controllers\account;
 use api\modules\v1\controllers\ApiBaseController;
 use api\modules\v1\models\Applied;
 use api\modules\v1\models\Candidates;
+use common\models\AnsweredQuestionnaire;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplicationProcess;
@@ -15,7 +16,9 @@ use common\models\Categories;
 use common\models\DropResumeApplications;
 use common\models\EmployerApplications;
 use common\models\FollowedOrganizations;
+use common\models\OrganizationQuestionnaire;
 use common\models\Organizations;
+use common\models\QuestionnaireFields;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
@@ -591,7 +594,7 @@ class JobsController extends ApiBaseController
 
         if (!empty($applied_applications)) {
             return $this->response(200, $applied_applications);
-        }else{
+        } else {
             return $this->response(404);
         }
 
@@ -609,10 +612,10 @@ class JobsController extends ApiBaseController
         }
 
         $cancel_application = AppliedApplications::find()
-            ->where(['created_by'=>$candidate->user_enc_id,'application_enc_id'=>$application_enc_id,'is_deleted'=>0])
+            ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $application_enc_id, 'is_deleted' => 0])
             ->one();
 
-        if($cancel_application['status'] == 'Pending' || $cancel_application['status'] == 'Incomplete'){
+        if ($cancel_application['status'] == 'Pending' || $cancel_application['status'] == 'Incomplete') {
             $cancel_application->status = 'Cancelled';
             $cancel_application->last_updated_by = $candidate->user_enc_id;
             $cancel_application->last_updated_on = date('Y-m-d H:i:s');
@@ -621,10 +624,65 @@ class JobsController extends ApiBaseController
             } else {
                 return $this->response(500);
             }
-        }else{
+        } else {
             return $this->response(500);
         }
 
+    }
+
+    public function actionQuestionnaireFields()
+    {
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
+            $q_enc_id = $parameters['questionnaire_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
+            $applied_application_enc_id = $parameters['applied_application_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        $chk = AnsweredQuestionnaire::find()
+            ->where([
+                'applied_application_enc_id' => $applied_application_enc_id,
+                'questionnaire_enc_id' => $q_enc_id,
+                'created_by' => $candidate->user_enc_id,
+            ])
+            ->asArray()
+            ->one();
+
+        if($chk){
+            return $this->response(409);
+        }
+
+        $questions = OrganizationQuestionnaire::find()
+            ->select(['questionnaire_enc_id', 'questionnaire_name'])
+            ->where(['questionnaire_enc_id' => $q_enc_id])
+            ->asArray()
+            ->all();
+
+        $fields = QuestionnaireFields::find()
+            ->alias('a')
+            ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+            ->joinWith(['questionnaireFieldOptions b' => function ($a) {
+                $a->select(['b.field_option_enc_id', 'b.field_enc_id', 'b.field_option']);
+            }], true)
+            ->where(['a.questionnaire_enc_id' => $questions[0]['questionnaire_enc_id']])
+            ->groupBy(['a.field_enc_id'])
+            ->asArray()
+            ->all();
+
+        if (!empty($fields)) {
+            return $this->response(200, $fields);
+        }else{
+            return $this->response(404);
+        }
     }
 
 
