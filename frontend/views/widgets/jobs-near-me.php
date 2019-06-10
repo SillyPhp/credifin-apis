@@ -520,7 +520,11 @@ function card(){
                     $('.near-me-content').removeClass('col-md-4');
                     $('.near-me-content').addClass('col-md-10');
                     $('.near-me-content').addClass('text-center');
-                    $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/$type/not_found.png" class="not-found" alt="Not Found"/>');
+                    if("$action" == 'near-me'){
+                        $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/oops_404.png" class="not-found" alt="Not Found"/><h2>Currently there are no $type in selected Keyword or Location.</h2>');
+                    } else{
+                        $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/oops_404.png" class="not-found" alt="Not Found"/><h2>Currently there are no Walk In Interviews for today.</h2>');
+                    }
                 }else{
                     empty = false;
                     for(i=0;i<response.length;i++){

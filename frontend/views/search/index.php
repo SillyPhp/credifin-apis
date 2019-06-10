@@ -621,84 +621,68 @@ function fillData(){
                $('#companies').remove(); 
             }
             
-            if(result["School"]){
-                if(result["School"].length){
+            if(result["School"].length){
                     var schools_card = $('#un-card').html();
                     var school_render = Mustache.render(schools_card, result['School']);
                     $('.school-list').html(school_render);
-                }
             }else{
                $('#schools').remove(); 
             }
             
-            if(result["College"]){
-                if(result["College"].length){
+            if(result["College"].length){
                     var colleges_card = $('#un-card').html();
                     var college_render = Mustache.render(colleges_card, result['College']);
                     $('.college-list').html(college_render);
-                }
             }
             else{
                $('#colleges').remove(); 
             }
             
-            if(result["Educational Institute"]){
-                if(result["Educational Institute"].length){
+            if(result["Educational Institute"].length){
                     var institute_card = $('#un-card').html();
                     var institute_render = Mustache.render(institute_card, result['Educational Institute']);
                     $('.institute-list').html(institute_render);
-                }
             }else{
                $('#institutes').remove(); 
             }
             
-            if(result["Recruiter"]){
-                if(result["Recruiter"].length){
+            if(result["Recruiter"].length){
                     var recruiter = $('#un-card').html();
                     var recruiter_render = Mustache.render(recruiter, result['Recruiter']);
                     $('.recruiter-list').html(recruiter_render);
-                }
             }else{
                $('#recruiters').remove(); 
             }
             
-            if(result["Business"]){
-                if(result["Business"].length){
+            if(result["Business"].length){
                     var business = $('#un-card').html();
                     var business_render = Mustache.render(business, result['Business']);
                     $('.business-list').html(business_render);
-                }
             }
             else{
                $('#businesses').remove(); 
             }
             
-            if(result["Scholarship Fund"]){
-                if(result["Scholarship Fund"].length){
+            if(result["Scholarship Fund"].length){
                     var scholarship = $('#un-card').html();
                     var scholarship_render = Mustache.render(scholarship, result['Scholarship Fund']);
                     $('.scholarship-list').html(scholarship_render);
-                }
             }else{
                $('#scholarships').remove(); 
             }
             
-            if(result["Banking & Finance Company"]){
-                if(result["Banking & Finance Company"].length){
+            if(result["Banking & Finance Company"].length){
                     var banking = $('#un-card').html();
                     var banking_render = Mustache.render(banking, result['Banking & Finance Company']);
                     $('.banking-list').html(banking_render);
-                }
             }else{
                $('#bankings').remove(); 
             }
             
-            if(result["Others"]){
-                if(result["Others"].length){
+            if(result["Others"].length){
                     var others = $('#un-card').html();
-                    var others_render = Mustache.render(business, result['Others']);
+                    var others_render = Mustache.render(others, result['Others']);
                     $('.other-list').html(others_render);
-                }
             }else{
                $('#others').remove(); 
             }
@@ -895,52 +879,52 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                    <a href="/{{slug}}"><img src="{{logo}}"></a>
+                <a href="/{{slug}}"><img src="{{logo}}"></a>
                 {{/logo}}
                 {{^logo}}
-                    <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                <canvas class="user-icon" name="{{name}}" width="100" height="100"
                         color="{{color}}" font="55px"></canvas>
                 {{/logo}}
             </div>
             <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
 
             {{#employerApplications}}
-                {{#applications_cnt}}
-                <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
-                {{/applications_cnt}}
+            {{#applications_cnt}}
+            <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
+            {{/applications_cnt}}
             {{/employerApplications}}
             {{^employerApplications}}
-                <div class="com-loc"><span>No</span> Openings</div>
+            <div class="com-loc"><span>No</span> Openings</div>
             {{/employerApplications}}
 
             {{#organizationReviews}}
-                {{#average_rating}}
-                    <div class="starr" data-score="{{average_rating}}"></div>
-                    <div class="rating">
-                        <div class="stars">{{average_rating}}</div>
-                        <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
-                    </div>
-                {{/average_rating}}
+            {{#average_rating}}
+            <div class="starr" data-score="{{average_rating}}"></div>
+            <div class="rating">
+                <div class="stars">{{average_rating}}</div>
+                <div class="reviews-rate"> of {{reviews_cnt}} reviews</div>
+            </div>
+            {{/average_rating}}
             {{/organizationReviews}}
             {{^organizationReviews}}
-                <div class="starr" data-score="0"></div>
-                <div class="rating">
-                    <div class="reviews-rate">No reviews</div>
-                </div>
+            <div class="starr" data-score="0"></div>
+            <div class="rating">
+                <div class="reviews-rate">No reviews</div>
+            </div>
             {{/organizationReviews}}
 
             <div class="row">
-                 <div class="cm-btns padd-0">
-                        <div class="col-md-6">
-                            <div class="color-blue">
-                                 <a href="/{{slug}}">View Profile</a>
-                            </div>
+                <div class="cm-btns padd-0">
+                    <div class="col-md-6">
+                        <div class="color-blue">
+                            <a href="/{{slug}}">View Profile</a>
                         </div>
-                        <div class="col-md-6">
-                            <div class="color-orange">
-                                <a href="/{{slug}}/reviews">Read Reviews</a>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="color-orange">
+                            <a href="/{{slug}}/reviews">Read Reviews</a>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>

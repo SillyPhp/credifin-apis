@@ -41,12 +41,12 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-md-9 col-xs-9">
                         <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
-                        <div class="controls pull-right hidden-xs">
+                        <div class="controls pull-right">
                             <a class="left fa fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
                             <a class="right fa fa-chevron-right bttn-right" href="#carousel-example"
@@ -109,98 +109,139 @@ $this->params['seo_tags'] = [
 
         </div>
     </section>
-<!--    <section class="blog-section-1">-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                    <h2 class="heading-style">--><?//= Yii::t('frontend', 'Travel Blogs'); ?><!--</h2>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="section-1-shadow">-->
-<!--                <div class="row padd">-->
-<!--                    <div class="col-md-6 col-sm-12 no-padd">-->
-<!--                        <div class="blog-box col-sm-12 no-padd">-->
-<!--                            <div class="col-md-6 col-sm-4 no-padd">-->
-<!--                                <div class="blog-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-8 no-padd">-->
-<!--                                <div class="blog-discription">-->
-<!--                                    <div class="blog-title"><a href="">Fashion Model Shoot</a></div>-->
-<!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
-<!--                                        dolor sit amet,-->
-<!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
-<!--                                    </div>-->
-<!--                                    <div class="read-more"><a href="">Read More</a></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-6 col-sm-12 no-padd">-->
-<!--                        <div class="blog-box col-sm-12 no-padd">-->
-<!--                            <div class="col-md-6 col-sm-4 no-padd">-->
-<!--                                <div class="blog-img"><img src="--><?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-8 no-padd">-->
-<!--                                <div class="blog-discription">-->
-<!--                                    <div class="blog-title"><a href="">Fashion Model Shoot Lorem ipsum dosectetur</a>-->
-<!--                                    </div>-->
-<!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
-<!--                                        dolor sit amet,-->
-<!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
-<!--                                    </div>-->
-<!--                                    <div class="read-more"><a href="">Read More</a></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="row blog-row-2 padd">-->
-<!--                    <div class="col-md-6 col-sm-12 no-padd">-->
-<!--                        <div class="blog-box col-sm-12 no-padd">-->
-<!--                            <div class="col-md-6 col-sm-8 no-padd">-->
-<!--                                <div class="blog-discription2">-->
-<!--                                    <div class="blog-title"><a href="">Fashion model shoot</a></div>-->
-<!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
-<!--                                        dolor sit amet,-->
-<!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
-<!--                                    </div>-->
-<!--                                    <div class="read-more"><a href="">Read More</a></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-4 no-padd">-->
-<!--                                <div class="blog-img-right ">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-6 col-sm-12 no-padd">-->
-<!--                        <div class="blog-box col-sm-12 no-padd">-->
-<!--                            <div class="col-md-6 col-sm-8 no-padd">-->
-<!--                                <div class="blog-discription2">-->
-<!--                                    <div class="blog-title"><a href="">Fashion model shoot Lorem ipsum dosectetur-->
-<!--                                            adipisicing elit</a></div>-->
-<!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
-<!--                                        dolor sit amet,-->
-<!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
-<!--                                    </div>-->
-<!--                                    <div class="read-more"><a href="">Read More</a></div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-4 no-padd">-->
-<!--                                <div class="blog-img-right arrow-right">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
+    <!--    <section class="blog-section-1">-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                    <h2 class="heading-style">--?//= Yii::t('frontend', 'Travel Blogs'); ?><!--</h2>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--            <div class="section-1-shadow">-->
+    <!--                <div class="row padd">-->
+    <!--                    <div class="col-md-6 col-sm-12 no-padd">-->
+    <!--                        <div class="blog-box col-sm-12 no-padd">-->
+    <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
+    <!--                                <div class="blog-img">-->
+    <!--                                    <img src="--?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="col-md-6 col-sm-8 no-padd">-->
+    <!--                                <div class="blog-discription">-->
+    <!--                                    <div class="blog-title"><a href="">Fashion Model Shoot</a></div>-->
+    <!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
+    <!--                                        dolor sit amet,-->
+    <!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
+    <!--                                    </div>-->
+    <!--                                    <div class="read-more"><a href="">Read More</a></div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                    <div class="col-md-6 col-sm-12 no-padd">-->
+    <!--                        <div class="blog-box col-sm-12 no-padd">-->
+    <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
+    <!--                                <div class="blog-img"><img src="--?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="col-md-6 col-sm-8 no-padd">-->
+    <!--                                <div class="blog-discription">-->
+    <!--                                    <div class="blog-title"><a href="">Fashion Model Shoot Lorem ipsum dosectetur</a>-->
+    <!--                                    </div>-->
+    <!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
+    <!--                                        dolor sit amet,-->
+    <!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
+    <!--                                    </div>-->
+    <!--                                    <div class="read-more"><a href="">Read More</a></div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="row blog-row-2 padd">-->
+    <!--                    <div class="col-md-6 col-sm-12 no-padd">-->
+    <!--                        <div class="blog-box col-sm-12 no-padd">-->
+    <!--                            <div class="col-md-6 col-sm-8 no-padd">-->
+    <!--                                <div class="blog-discription2">-->
+    <!--                                    <div class="blog-title"><a href="">Fashion model shoot</a></div>-->
+    <!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
+    <!--                                        dolor sit amet,-->
+    <!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
+    <!--                                    </div>-->
+    <!--                                    <div class="read-more"><a href="">Read More</a></div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
+    <!--                                <div class="blog-img-right ">-->
+    <!--                                    <img src="--?//= Url::to('@eyAssets/images/pages/blog/p3.png') ?><!--">-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                    <div class="col-md-6 col-sm-12 no-padd">-->
+    <!--                        <div class="blog-box col-sm-12 no-padd">-->
+    <!--                            <div class="col-md-6 col-sm-8 no-padd">-->
+    <!--                                <div class="blog-discription2">-->
+    <!--                                    <div class="blog-title"><a href="">Fashion model shoot Lorem ipsum dosectetur-->
+    <!--                                            adipisicing elit</a></div>-->
+    <!--                                    <div class="blog-txt">Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum-->
+    <!--                                        dolor sit amet,-->
+    <!--                                        consectetur Nulla fringilla purus at leo dignissim congue.-->
+    <!--                                    </div>-->
+    <!--                                    <div class="read-more"><a href="">Read More</a></div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="col-md-6 col-sm-4 no-padd">-->
+    <!--                                <div class="blog-img-right arrow-right">-->
+    <!--                                    <img src="--?//= Url::to('@eyAssets/images/pages/blog/p2.png') ?><!--">-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
+    <section class="bg-black">
+        <div class="container">
+            <div class="row">
+                <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
+                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <a href="/quiz/world-cup-2019">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" class="q-box-img">
+                            <div class="q-box-hover">
+                                <div class="text2">Take Quiz</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <a href="/quiz/world-cup-2019-vol-2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>" class="q-box-img">
+                            <div class="q-box-hover">
+                                <div class="text2">Take Quiz</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <a href="#">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/ey_worldcup_vol3.png') ?>"
+                                 class="q-box-img coming-soon">
+                            <div class="q-box-hover">
+                                <div class="text2">Coming Soon</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section class="blog-section-2">
         <div class="container">
             <div class="row">
@@ -241,37 +282,37 @@ $this->params['seo_tags'] = [
 
                     </div>
                 </div>
-<!--                <div class="row">-->
-<!--                    <div class="col-md-12">-->
-<!--                        <div class="popular-heading">Popular Categories</div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="tg-widget tg-widgetcategories">-->
-<!--                    <div class="tg-widgetcontent">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-12">-->
-<!--                                <ul>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Funny</span>28245</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Sports</span>4856</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>DIY</span>8654</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Fashion</span>6247</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Travel</span>888654</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Lifestyle</span>873144</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Gifs</span>873144</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Video</span>18465</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Gadgets</span>3148</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>Audio</span>77531</a></li>-->
-<!--                                    <li><a href="javascript:void(0);"><span>All</span>9247</a></li>-->
-<!--                                </ul>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="row">-->
+                <!--                    <div class="col-md-12">-->
+                <!--                        <div class="popular-heading">Popular Categories</div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="tg-widget tg-widgetcategories">-->
+                <!--                    <div class="tg-widgetcontent">-->
+                <!--                        <div class="row">-->
+                <!--                            <div class="col-md-12">-->
+                <!--                                <ul>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Funny</span>28245</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Sports</span>4856</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>DIY</span>8654</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Fashion</span>6247</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Travel</span>888654</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Lifestyle</span>873144</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Gifs</span>873144</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Video</span>18465</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Gadgets</span>3148</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>Audio</span>77531</a></li>-->
+                <!--                                    <li><a href="javascript:void(0);"><span>All</span>9247</a></li>-->
+                <!--                                </ul>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
         </div>
     </section>
 <?php
-if(!empty($quotes)) {
+if (!empty($quotes)) {
     ?>
     <div class="myfade1"></div>
     <div class="imgmain-div"><img class="imgmain"/></div>
@@ -319,12 +360,66 @@ if(!empty($quotes)) {
             </div>
         </div>
     </section>
+
     <?php
 }
 echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.q-box{
+    text-align:center;
+    position:relative;   
+    border-radius:10px;
+    padding-bottom:35px;
+    overflow:hidden;
+}
+.bg-black{
+    background:#2b2d32;
+    padding-bottom:40px;
+}
+.q-box-img{
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: 200px;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    backface-visibility: hidden;
+    border-radius:10px;
+}
+.q-box:hover a .q-box-img{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+.q-box-hover{
+   transition: .5s ease;
+   opacity: 0;
+   position: absolute;
+   bottom: 0px;
+   left: 50%;
+   transform: translateX(-50%);
+   -ms-transform: translateX(-50%);
+   text-align: center;
+}
+.q-box a .q-box-img.coming-soon {
+  opacity: 0.3;
+}
+.q-box a .q-box-hover {
+  opacity: 1;
+  width:100%
+}
+.text2{
+  background-color: #00a0e3;
+  color: white;
+  font-size: 16px;
+  font-family:lora;
+  padding: 8px 0px;
+  border-radius: 0 0 10px 10px;
+}
+
 .bttn-left, .bttn-right{
     background:transparent;
     color:#00a0e3;
@@ -751,6 +846,9 @@ hr {
     display:block;
 }
 @media screen and (max-width: 768px){
+    .controls {
+        margin-top: 35px;
+    }
     .owl-stage-outer{
         overflow: hidden !important;
     }
@@ -1026,3 +1124,4 @@ $('.owl-carousel-4col').owlCarousel({
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');

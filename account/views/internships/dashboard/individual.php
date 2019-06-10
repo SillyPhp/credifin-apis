@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
+<div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
 <div class="row">
     <?php
         Pjax::begin(['id' => 'widgets']);
@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
                     <div class="number">
                         <span data-counter="counterup" data-value="1349"><?= $total_reviews; ?></span>
                     </div>
-                    <div class="desc">Applications Reviewed </div>
+                    <div class="desc">Applications Reviewed  </div>
                 </div>
             </a>
         </div>
@@ -160,7 +160,13 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-5">
+                                                                    <?php if($review['applied_application_enc_id']){?>
+                                                                        <a class="over-bttn ob1" disabled="disabled">Applied</a>
+                                                                    <?php }else{?>
+                                                                        <a href="/internship/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
+                                                                    <?php } ?>
+                                                                </div>
                                                                 <div class="text-o col-md-7">
                                                                     <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
                                                                         <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
@@ -175,9 +181,10 @@ use yii\widgets\Pjax;
                                                                         <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
+
                                                                     </div>
                                                                     <div class="j-grid"> 
-                                                                        <a  href="/job/<?= $review['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -195,8 +202,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Select any jobs for review.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Select any internships for review.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,18 +231,25 @@ use yii\widgets\Pjax;
                                                             <?= $shortlist["positions"]; ?> Openings
                                                         </div>
                                                         <div class="overlay2">
-                                                            <div class="text-o"><a class="over-bttn ob2 shortlist hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                            <div class="text-o">
+                                                                <?php if($shortlist['applied_application_enc_id']){?>
+                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                        <i class="fa fa-check"></i>Applied</a>
+                                                                <?php }else{?>
+                                                                    <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                <?php } ?>
+                                                            </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-cross">
-                                                                        <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
+                                                                        <button value="<?= $shortlist['application_enc_id']; ?>" class="rmv_list">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div> 
                                                                     <div class=" j-grid"> 
-                                                                        <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -253,8 +267,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Shortlisted any internships.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -282,12 +296,12 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay1">
                                                             <div class="text-o">
-                                                                <a class="over-bttn ob1">View Application</a>
+                                                                <a class="over-bttn ob1" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/job/<?= $apply['slug']; ?>" title="">VIEW JOB</a></div>
+                                                                <div class="j-grid"> <a  href="/internship/<?= $apply['slug']; ?>" title="">VIEW INTERNSHIP</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -303,8 +317,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Applied any jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Applied any internships.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -331,11 +345,11 @@ use yii\widgets\Pjax;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
+                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/job/<?= $accept['slug']; ?>" title="">VIEW JOB</a></div>
+                                                                <div class="j-grid"> <a  href="/internship/<?= $accept['slug']; ?>" title="">VIEW  INTERNSHIP</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -351,8 +365,8 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't any accepted jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't any accepted internships.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -381,7 +395,7 @@ use yii\widgets\Pjax;
                                                                     <a class="over-bttn ob2 hover_short" disabled="disabled">
                                                                         <i class="fa fa-check"></i>Applied</a>
                                                                 <?php }else{?>
-                                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                    <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
                                                                 <?php } ?>
                                                             </div>
 
@@ -390,7 +404,7 @@ use yii\widgets\Pjax;
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-grid">
-                                                                        <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -408,14 +422,13 @@ use yii\widgets\Pjax;
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">There are no Internships to show.</div>
+                                                    <div class="">You haven't Shortlisted any internships</div>
                                                 </div>
                                             </div>
                                         </div>
                                         <?php
                                     } ?>
-
 
                                 </div>
                             </div>
@@ -435,7 +448,7 @@ use yii\widgets\Pjax;
                     <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/shortlist-companies') ?>" title="" class="viewall-jobs">View All</a>
+                    <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -659,13 +672,16 @@ $(document).on('click','.shortlist',function()
       Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
    
-$(document).on('click','.rmv_list',function()
+      
+   $(document).on('click','.rmv_list',function()
     {
       var  url = '/account/internships/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
+      var main_card = $(this).parentsUntil(".topic-con").closest('.hr-j-box');
+      main_card.remove();
       Ajax_call(rmv_id,url,pjax_refresh_id);
-   })   
+   }) 
         
 $(document).on('click','.rmv_review',function()
     {

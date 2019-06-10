@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
+<div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
 <section>
     <div class="row">
         <div class="col-md-5 col-md-offset-7">
