@@ -565,7 +565,7 @@ $this->params['seo_tags'] = [
             <div class="col-md-6 col-sm-6">
                 <div class="pos-rel">
                     <div class="mob-pos">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phone-image.png')?>" title="Empower Youth Mobile" alt="Empower Youth Mobile">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phone.png')?>" title="Empower Youth Mobile" alt="Empower Youth Mobile">
                     </div>
                 </div>
             </div>
