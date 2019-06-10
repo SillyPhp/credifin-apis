@@ -11,7 +11,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="main-heading">
                     <div class="pos-center">
-                        <div class="main-text">Explore Companies</div>
+                        <div class="main-text">Explore All Companies</div>
                         <div class="search-container">
                         <form action="">
                             <div class="load-suggestions Typeahead-spinner city-spin"
