@@ -345,7 +345,7 @@ use yii\widgets\Pjax;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a></div>
+                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $accept['app_id']; ?>">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
