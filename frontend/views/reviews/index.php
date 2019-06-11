@@ -511,7 +511,7 @@ color: initial;
     
 .head-bg{
 //  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-     background: url(../assets/themes/ey/images/pages/review/rr.png);
+     background: url(../assets/themes/ey/images/pages/review/review2.png);
     
     background-size: cover;
     width: 100%;

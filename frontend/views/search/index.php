@@ -826,7 +826,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                <a href="/{{slug}}"><img src="{{logo}}"></a>
+                <img src="{{logo}}">
                 {{/logo}}
                 {{^logo}}
                 <canvas class="user-icon" name="{{name}}" width="100" height="100"
