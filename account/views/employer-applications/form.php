@@ -1742,7 +1742,7 @@ window.ChildFunction = ChildFunction;
                        }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
-                       toastr.error('Your internet connection is interrupted re-submit the application by clicking submit', 'Connection Error');
+                       toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');
                        $('.button-submit').removeAttr('disabled');
                     }
                     });
