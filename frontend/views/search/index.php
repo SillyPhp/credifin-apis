@@ -826,14 +826,13 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                <a href="/{{slug}}"><img src="{{logo}}"></a>
+                <img src="{{logo}}">
                 {{/logo}}
                 {{^logo}}
                 <canvas class="user-icon" name="{{name}}" width="100" height="100"
                         color="{{color}}" font="55px"></canvas>
                 {{/logo}}
             </div>
-            <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
 
             {{#employerApplications}}
             {{#applications_cnt}}
@@ -882,11 +881,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <a href="/{{slug}}"><img src="{{logo}}"></a>
                 {{/logo}}
                 {{^logo}}
-                <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                        color="{{color}}" font="55px"></canvas>
+                <a href="/{{slug}}"><canvas class="user-icon" name="{{name}}" width="100" height="100"
+                                            color="{{color}}" font="55px"></canvas></a>
                 {{/logo}}
             </div>
-            <a href="/{{slug}}"><div class="com-name">{{name}}</div></a>
 
             {{#employerApplications}}
             {{#applications_cnt}}
