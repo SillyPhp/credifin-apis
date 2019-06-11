@@ -89,7 +89,8 @@ class ReviewsController extends Controller
         $model = new RegistrationForm();
         $org_type = $model->types();
         if (!empty(Yii::$app->user->identity->organization) || Yii::$app->user->isGuest) {
-            return 'You are not authorized to access this page as Your are not login as User';
+            $this->layout = 'main-secondary';
+            return $this->render('without-login');
         }
         if (Yii::$app->request->isPost) {
             $org_name = Yii::$app->request->post('org_name');

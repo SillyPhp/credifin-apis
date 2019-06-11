@@ -32,9 +32,9 @@ use yii\bootstrap\ActiveForm;
             <div class="col-md-12">
                 <div class="btn_add_new_org pull-right">
                     <?php if (Yii::$app->user->isGuest): ?>
-                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Company</a>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Review</a>
                     <?php else : ?>
-                        <a href="#" class="add_new_org1 add_new_org">Add New Organizaton</a>
+                        <a href="#" class="add_new_org1 add_new_org">Add New Review</a>
                     <?php  endif; ?>
                 </div>
             </div>
