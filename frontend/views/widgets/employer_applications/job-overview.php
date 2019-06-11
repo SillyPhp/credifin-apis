@@ -7,7 +7,7 @@ if (!empty($placement_locations)) {
     $locations = [];
     foreach ($placement_locations as $placements) {
         $total_vac += $placements['positions'];
-        array_push($locations, $placements['name']);
+        array_push($locations, '<a target="_blank" title="View on Google Map" href="http://maps.google.com/maps?q=' . $placements['latitude'] .',' . $placements['longitude'] .'&ll=' . $placements['latitude'] .',' . $placements['longitude'] .'&z=17">' . $placements['name'] . '</a>');
     }
     $str = implode(", ", array_unique($locations));
 }
