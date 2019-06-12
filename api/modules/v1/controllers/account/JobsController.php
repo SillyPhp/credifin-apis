@@ -573,27 +573,27 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        $applied_applications = AppliedApplications::find()
+        $applied_app = EmployerApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'a.application_enc_id', 'a.status', 'd.name as title', 'e.name as org_name',
-                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
-                'SUM(g.positions) as positions'])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->andwhere(['a.created_by' => $candidate->user_enc_id, 'a.is_deleted' => 0, 'e.is_deleted' => 0, 'k.is_deleted' => 0])
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->orderBy(['j.name' => SORT_DESC])
+            ->select(['a.application_enc_id', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id', 'f.status', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", d.icon) icon', 'g.name as org_name',
+//                'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active',
+//                'COUNT(h.is_completed) as total',
+                'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+            ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = b.parent_enc_id')
+            ->innerJoin(Organizations::tablename() . 'as g', 'g.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as f', 'f.application_enc_id = a.application_enc_id')
+            ->where(['f.created_by' => $candidate->user_enc_id])
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as h', 'h.applied_application_enc_id = f.applied_application_enc_id')
+            ->groupBy(['h.applied_application_enc_id'])
+            ->orderBy(['f.id' => SORT_DESC])
             ->asArray()
             ->all();
 
-        if (!empty($applied_applications)) {
-            return $this->response(200, $applied_applications);
+        if (!empty($applied_app)) {
+            return $this->response(200, $applied_app);
         } else {
             return $this->response(404);
         }
