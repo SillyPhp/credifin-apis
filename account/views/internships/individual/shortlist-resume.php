@@ -60,7 +60,7 @@ use yii\widgets\Pjax;
                                                             <!--                                                                    </button>-->
                                                             <!--                                                                </div> -->
                                                             <div class=" j-grid">
-                                                                <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -352,7 +352,7 @@ use frontend\models\applications\CandidateApply;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a href="/account/process-applications/<?= $apply['app_id']; ?>" class="over-bttn ob2">View Application</a></div>
+                                                            <div class="text-o"><a href="/account/process-applications/<?= $accept['app_id']; ?>" class="over-bttn ob2">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">

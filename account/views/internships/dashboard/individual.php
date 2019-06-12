@@ -345,7 +345,7 @@ use yii\widgets\Pjax;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a></div>
+                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $accept['app_id']; ?>">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
@@ -448,7 +448,7 @@ use yii\widgets\Pjax;
                     <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/shortlist-companies') ?>" title="" class="viewall-jobs">View All</a>
+                    <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
