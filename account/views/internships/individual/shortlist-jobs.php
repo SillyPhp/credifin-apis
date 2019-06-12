@@ -43,7 +43,15 @@ use yii\widgets\Pjax;
                                                     <?= $shortlist["positions"]; ?> Openings
                                                 </div>
                                                 <div class="overlay2">
-                                                    <div class="text-o"><a class="over-bttn ob2 hover_short" href="/internship/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                    <div class="text-o">
+<!--                                                        <a class="over-bttn ob2 hover_short" href="/internship/--><?//= $shortlist['slug']; ?><!--">Apply</a>-->
+                                                        <?php if($shortlist['applied_application_enc_id']){?>
+                                                            <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                <i class="fa fa-check"></i>Applied</a>
+                                                        <?php }else{?>
+                                                            <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                        <?php } ?>
+                                                    </div>
                                                 </div>
                                                 <div class="hr-com-jobs">
                                                     <div class="row ">
