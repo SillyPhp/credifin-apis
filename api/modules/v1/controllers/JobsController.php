@@ -840,7 +840,7 @@ class JobsController extends ApiBaseController
                         ->select('shortlisted')
                         ->where(['shortlisted' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
                         ->exists();
-                    $result["hasShortlisted"] = $shortlist;
+                    $data["hasShortlisted"] = $shortlist;
                 } else {
                     return $this->response(401);
                 }
