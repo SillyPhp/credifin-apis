@@ -447,6 +447,8 @@ class InternshipsController extends ApiBaseController
                 $i++;
             }
 
+            $data['has_placement_offer'] = $this->placementOffer($data['has_placement_offer']);
+
             $data["vacancies"] = 0;
             if (!empty($data['applicationPlacementLocations'])) {
                 foreach ($data['applicationPlacementLocations'] as $apl) {
@@ -513,6 +515,7 @@ class InternshipsController extends ApiBaseController
                 'b.working_days',
                 'b.interview_start_date',
                 'b.interview_end_date',
+                'b.has_placement_offer',
                 'w.organization_enc_id',
                 'w.name organization_name',
                 'w.initials_color color',
