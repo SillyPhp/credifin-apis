@@ -170,11 +170,20 @@ class OrganizationSignUpForm extends Model
                 }
             }
 
+            $referralModel = new \common\models\crud\Referral();
+            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+
+            if (!$referralModel->create()) {
+                $transaction->rollBack();
+                $this->_flag = false;
+            } else {
+                $this->_flag = true;
+            }
+
             if ($this->_flag) {
-                if(Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id)){
-                    Referral::widget(['user_org_id' =>$organizationsModel->organization_enc_id]);
-                    $transaction->commit();
-                }
+                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
+                $transaction->commit();
             }
         } catch (Exception $e) {
             $transaction->rollBack();
