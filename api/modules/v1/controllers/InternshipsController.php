@@ -426,8 +426,9 @@ class InternshipsController extends ApiBaseController
                 }
                 setlocale(LC_MONETARY, 'en_IN');
                 $data['amount'] = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
+            }else{
+                $data['amount'] = "Unpaid";
             }
-
             $data['hasQuestionnaire'] = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
