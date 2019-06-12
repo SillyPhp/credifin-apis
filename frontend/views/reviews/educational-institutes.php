@@ -38,7 +38,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pos-rel">
+                    <div class="pos-rels">
                         <div class="head-bg-black">
                             <div class="hbb-heading">Choose a great educational institute for your great future</div>
                             <div class="hbb-sub-heading">Find an educational institute</div>
@@ -330,7 +330,7 @@ review-benifit{
     background-size: cover;
     min-height: 400px;
 }
-.pos-rel{
+.pos-rels{
     position:relative;
     min-height:400px;
 }
