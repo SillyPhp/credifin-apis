@@ -2,7 +2,6 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-    <div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
     <section>
 
         <div class="row">
@@ -44,7 +43,15 @@ use yii\widgets\Pjax;
                                                     <?= $shortlist["positions"]; ?> Openings
                                                 </div>
                                                 <div class="overlay2">
-                                                    <div class="text-o"><a class="over-bttn ob2 hover_short" href="/internship/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                    <div class="text-o">
+<!--                                                        <a class="over-bttn ob2 hover_short" href="/internship/--><?//= $shortlist['slug']; ?><!--">Apply</a>-->
+                                                        <?php if($shortlist['applied_application_enc_id']){?>
+                                                            <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                <i class="fa fa-check"></i>Applied</a>
+                                                        <?php }else{?>
+                                                            <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                        <?php } ?>
+                                                    </div>
                                                 </div>
                                                 <div class="hr-com-jobs">
                                                     <div class="row ">
@@ -93,14 +100,6 @@ use yii\widgets\Pjax;
     </section>
 <?php
 $this->registerCss('
-.loader{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
 .tab-empty{
     padding:20px;
 }
@@ -114,39 +113,6 @@ $this->registerCss('
     font-family:lobster; 
     color:#999999; 
     padding-top:20px;
-}
-.j-grid > a {
-    font-family: Open Sans;
-    font-size: 11px;
-    color: #00a0e3;
-    border: 1px solid #00a0e3;
-    -webkit-border-radius: 20px !important;
-    -moz-border-radius: 20px !important;
-    -ms-border-radius: 20px !important;
-    -o-border-radius: 20px !important;
-    border-radius: 4px !important;
-    margin:15px 0;
-    padding: 6px 12px;  
-}
-.hr-company-box{text-align:center;border:2px solid #eef1f5; background:#fff; padding:20px 10px;
-                    border-radius:14px !important; margin-bottom:20px; text-decoration:none; }
-.hr-company-box:hover{border-color:#fff; box-shadow:0 0 20px rgb(0,0,0,.3); transition:.3s all;
-                        text-decoration:none;} 
-.hr-company-box > div:hover {text-decoration:none;}                       
-.hr-com-icon{ text-align:center; text-decoration:none;  vertical-align:middle; padding:10px 0;}
-.hr-com-icon img{text-align:center; margin:0 auto; width:100px; height:100px; }
-.hr-com-name{color:#00a0e3; padding-top:20px;text-decoration:none; font-size:16px;} 
-.hr-com-name:hover{text-decoration:none;}                                   
-.hr-com-field{padding-top:2px;font-size:14px; color:#080808;}
-.hr-com-jobs {
-    font-size: 13px;
-    color: #080808;
-    padding: 10px 0 10px;
-    margin-top: 10px;
-    border-top: 1px solid #eef1f5;
-}       
-a:hover{
-    text-decoration:none;
 }
 .topic-con{
     position:relative;
@@ -165,8 +131,7 @@ button.over-bttn, .ob2{
     background:#ff7803 !important; 
     border:2px solid #ff7803; 
     border-radius:5px !important;
-    padding:8px 13px; 
-    text-tansform:uppercase;
+    padding:8px 13px;
     color:#fff;
 }                 
 .ob2:hover{
@@ -193,42 +158,9 @@ button.over-bttn, .ob2{
   background: rgba(208, 208, 208, 0.5);
  
 }
-.j-cross{
-    text-align: left;
-    margin-bottom: -38px !important;
-    padding-left: 0px !important;
-    margin-left: -17px;
-}
-.j-cross button{
-    padding: 7px 12px;
-    border-radius: 0px 12px 0px 0px !important;;
-    background: transparent;
-    border-top: 2px solid #eef1f5;
-    margin-left: 6px;
-    border-right: 2px solid #eef1f5;
-    border-bottom: none;
-    color: #999999;
-    font-size:16px;
-    border-left: none; 
-    transition:.1s ease-in-out;
-     transition:.3s ease-in-out;
-    -webkit-transition:.3s ease-in-out;
-    -moz-transition:.3s ease-in-out;
-    -o-transition:.3s ease-in-out;
-}
-.j-cross button:hover{
-    border:1px solid transparent;
-    color:#fff;
-    margin-left:5px;
-    border-radius:50px !important; 
-    background:#00a0e3 !important; 
-    transition:.3s ease-in-out;
-    -webkit-transition:.3s ease-in-out;
-    -moz-transition:.3s ease-in-out;
-    -o-transition:.3s ease-in-out;
-}
-.j-cross button:focus{
-    outline:none;
+.hr-com-jobs {
+    padding: 20px 0px 0px 0px !important;
+    text-align: center;
 }
 .opening-txt {
     padding-top: 2px;
@@ -246,12 +178,12 @@ $script = <<<JS
                 data : {rmv_id:rmv_id},
                 beforeSend: function()
                     {
-                        $(".loader").css("display", "block");
+                        // $(".loader").css("display", "block");
                         
                     },
                 success : function(data){
                    if(data==true){
-                        $(".loader").css("display", "none");
+                        // $(".loader").css("display", "none");
                         $.pjax.reload({container: '#pjax_shortlist', async: false});
                     }
            },
