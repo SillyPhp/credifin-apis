@@ -661,7 +661,7 @@ class JobsController extends ApiBaseController
             ->asArray()
             ->one();
 
-        if($chk){
+        if ($chk) {
             return $this->response(409);
         }
 
@@ -684,9 +684,69 @@ class JobsController extends ApiBaseController
 
         if (!empty($fields)) {
             return $this->response(200, $fields);
+        } else {
+            return $this->response(404);
+        }
+    }
+
+    public function actionProcessApplication()
+    {
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (isset($parameters['application_enc_id']) && !empty($parameters['application_enc_id'])) {
+            $app_id = $parameters['application_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        $applied_user = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->where(['a.application_enc_id' => $app_id, 'a.created_by' => $candidate->user_enc_id])
+            ->select(['a.applied_application_enc_id', 'a.status',
+                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", i.icon) icon',
+                'h.name org_name', 'g.name title', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->joinWith(['organizationEnc h'], false);
+                $b->joinWith(['title f' => function ($b) {
+                    $b->joinWith(['parentEnc i'], false);
+                    $b->joinWith(['categoryEnc g'], false);
+                }], false);
+
+            }], false)
+            ->joinWith(['appliedApplicationProcesses c' => function ($b) {
+                $b->joinWith(['fieldEnc d'], false);
+                $b->select(['c.applied_application_enc_id',
+                    'TRIM(REPLACE(d.field_name, "\n", " ")) as field_name',
+                    '(CASE
+                        WHEN d.icon = "fa fa-sitemap" THEN "f0e8"
+                        WHEN d.icon = "fa fa-phone" THEN "f095"
+                        WHEN d.icon = "fa fa-user" THEN "f007"
+                        WHEN d.icon = "fa fa-cogs" THEN "f085"
+                        WHEN d.icon = "fa fa-user-circle" THEN "f2bd"
+                        WHEN d.icon = "fa fa-users" THEN "f0c0"
+                        WHEN d.icon = "fa fa-video-camera" THEN "f03d"
+                        WHEN d.icon = "fa fa-check" THEN "f00c"
+                        WHEN d.icon = "fa fa-pencil-square-o" THEN "f044"
+                        WHEN d.icon = "fa fa-envelope" THEN "f0e0"
+                        WHEN d.icon = "fa fa-question" THEN "f128"
+                        WHEN d.icon = "fa fa-paper-plane" THEN "f1d8"
+                        ELSE "f067"
+                        END) as icon',
+                ]);
+            }])
+            ->groupBy(['a.applied_application_enc_id'])
+            ->asArray()
+            ->one();
+
+        if (!empty($applied_user)) {
+            return $this->response(200, $applied_user);
         }else{
             return $this->response(404);
         }
+
     }
 
 
