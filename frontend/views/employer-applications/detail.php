@@ -189,6 +189,13 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                         ?>
                     </div>
+                    <?php
+                    if(!empty($data['applicationPlacementLocations'])) {
+                        echo $this->render('/widgets/employer_applications/placement-direction', [
+                            'placement_locations' => $data['applicationPlacementLocations'],
+                        ]);
+                    }
+                    ?>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
@@ -197,6 +204,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'org_logo'=>$org['logo'],
                     'org_logo_location'=>$org['logo_location'],
                     'org_name'=>$org['org_name'],
+                    'initial_color'=>$org['color'],
                     'slug'=>$org['slug'],
                     'website'=>$org['website'],
                     'type'=>$type,

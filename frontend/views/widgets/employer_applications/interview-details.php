@@ -17,7 +17,7 @@
                 $str2 = "";
                 $locations = [];
                 foreach ($interview_locations as $loc) {
-                    array_push($locations , $loc['name']);
+                    array_push($locations , '<a target="_blank" title="View on Google Map" href="https://www.google.com/maps/?q=' . $loc['interview_lat'] .',' . $loc['interview_long'] .'">' . $loc['name'] . '</a>');
                 }
                 $str2 = implode(", ", array_unique($locations));
                 echo rtrim($str2, ',');

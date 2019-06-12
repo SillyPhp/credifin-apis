@@ -3,42 +3,43 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
 $this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
-Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var slug = "' . $slug . '"; var business_type = "' . $org_details['business_activity'] . '" ', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
+$overall_college_avg = array_sum($stats_students) / count($stats_students);
 $round_avg = round($overall_avg);
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
-//$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
-//$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-//$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
-//$this->params['seo_tags'] = [
-//    'rel' => [
-//        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-//    ],
-//    'name' => [
-//        'keywords' => $keywords,
-//        'description' => $description,
-//        'twitter:card' => 'summary_large_image',
-//        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-//        'twitter:site' => '@EmpowerYouth__',
-//        'twitter:creator' => '@EmpowerYouth__',
-//        'twitter:image' => $image,
-//    ],
-//    'property' => [
-//        'og:locale' => 'en',
-//        'og:type' => 'website',
-//        'og:site_name' => 'Empower Youth',
-//        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-//        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-//        'og:description' => $description,
-//        'og:image' => $image,
-//        'fb:app_id' => '973766889447403'
-//    ],
-//];
+$round_students_avg = round($overall_college_avg);
+$logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
+$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<section class="rh-header">
+<section class="rh-header <?= $org_details['business_activity'] ?>">
     <div class="container">
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
@@ -60,11 +61,18 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             <div class="col-md-6 col-sm-6">
                 <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
-                    <?php for ($i = 1; $i <= 5; $i++) { ?>
-                        <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
-                    <?php } ?>
+                    <?php for ($i = 1; $i <= 5; $i++) {
+                        if (!empty($round_avg)) {
+                            ?>
+                            <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                        <?php } else { ?>
+                            <i class="fa fa-star <?= (($round_students_avg < $i) ? '' : 'active') ?>"></i>
+                        <?php }
+                    } ?>
                 </div>
-                <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
+                <div class="com-rate"><?= (($round_avg) ? $round_avg : $round_students_avg) ?>/5 - based
+                    on <?= $reviews + $reviews_students; ?> reviews
+                </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -104,10 +112,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                             <?php } else {
                                 if (empty(Yii::$app->user->identity->organization_enc_id)) { ?>
                                     <div class="wr-bttn hvr-icon-pulse">
-                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Employee
+                                        <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Employee
                                             Review
                                         </button>
-                                        <button type="button" id="wr1"><i class="fa fa-comments-o hvr-icon"></i> Write Student
+                                    </div>
+                                    <div class="wr-bttn hvr-icon-pulse">
+                                        <button type="button" id="wr1"><i class="fa fa-comments-o hvr-icon"></i> Student
                                             Review
                                         </button>
                                     </div>
@@ -126,18 +136,53 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     </div>
 </section>
 <section>
-    <ul class="nav nav-tabs nav-padd-20">
-        <li class="active"><a data-toggle="tab" href="#home">Employee Review</a></li>
-        <li><a data-toggle="tab" href="#menu1">Students Review</a></li>
-    </ul>
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#menu1">Student Reviews</a></li>
+            <li><a data-toggle="tab" href="#home">Employee Reviews</a></li>
+        </ul>
+    </div>
 </section>
 <section class="rh-body">
     <div class="container">
         <div class="tab-content">
-            <div id="home" class="tab-pane fade in active">
+            <div id="menu1" class="tab-pane fade in active">
                 <div class="row">
                     <div class="col-md-8">
-                        <h1 class="heading-style"><?= ucwords($org_details['name']); ?>'s Employee Reviews </h1>
+                        <h1 class="heading-style">Student Reviews </h1>
+                        <div id="org-students-reviews"></div>
+                        <div class="col-md-offset-2 load-more-bttn">
+                            <button type="button" id="load_more_btn1">Load More</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <?php if ($org_details['business_activity'] == 'College') {
+                            echo $this->render('/widgets/review/review-college-stats', [
+                                'reviews_students' => $reviews_students,
+                                'round_students_avg' => $round_students_avg,
+                                'stats_students' => $stats_students,
+                            ]);
+                        } elseif ($org_details['business_activity'] == 'School') {
+                            echo $this->render('/widgets/review/review-school-stats', [
+                                'reviews_students' => $reviews_students,
+                                'round_students_avg' => $round_students_avg,
+                                'stats_students' => $stats_students,
+                            ]);
+                        } elseif ($org_details['business_activity'] == 'Educational Institute') {
+                            echo $this->render('/widgets/review/review-institute-stats', [
+                                'reviews_students' => $reviews_students,
+                                'round_students_avg' => $round_students_avg,
+                                'stats_students' => $stats_students,
+                            ]);
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div id="home" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1 class="heading-style">Employee Reviews </h1>
                         <div id="org-reviews"></div>
                         <div class="col-md-offset-2 load-more-bttn">
                             <button type="button" id="load_more_btn">Load More</button>
@@ -145,7 +190,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     </div>
                     <div class="col-md-4">
                         <div class="review-summary">
-                            <h1 class="heading-style">Overall Reviews</h1>
+                            <h1 class="heading-style">Overall Ratings</h1>
                             <div class="row">
                                 <div class="col-md-12 col-sm-4">
                                     <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
@@ -255,134 +300,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     </div>
                 </div>
             </div>
-            <div id="menu1" class="tab-pane fade">
-                <div class="tab-content">
-                    <div id="home" class="tab-pane fade in active">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h1 class="heading-style"><?= ucwords($org_details['name']); ?>'s Students Reviews </h1>
-                                <div id="org-students-reviews"></div>
-                                <div class="col-md-offset-2 load-more-bttn">
-                                    <button type="button" id="load_more_btn1">Load More</button>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="review-summary">
-                                    <h1 class="heading-style">Overall Reviews</h1>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
-                                                <div class="rating-large"><?= $round_avg ?>/5</div>
-                                                <div class="com-rating-1">
-                                                    <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                        <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
-                                                    <?php } ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Academics</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['job_avg'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Faculity & Teaching Quality</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['growth_avg'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Infrastructure</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_cult'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Accomodation & Food</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_compensation'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Placements/Internships</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
-                                                    <div class="threestar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_work'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Social Life/Extracurriculars</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_work_life'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-4">
-                                            <div class="rs1">
-                                                <div class="re-heading">Culture & Diversity</div>
-                                                <div class="summary-box">
-                                                    <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
-                                                    <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
-                                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                            <i class="fa fa-star <?= (($stats['avg_skill'] < $i) ? '' : 'active') ?>"></i>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="menu1" class="tab-pane fade">
-                        content
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -394,6 +311,16 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <h4 class="modal-title">Edit Your Review</h4>
             </div>
             <div class="modal-body">
+                <?php if ($editReviewForm->type == 'org') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=org';
+                } elseif ($editReviewForm->type == 'college') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=college';
+                } elseif ($editReviewForm->type == 'school') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=school';
+                } elseif ($editReviewForm->type == 'institute') {
+                    $url = '/organizations/edit-review-unclaimed?request_type=2&type=institute';
+                }
+                ?>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'edit-review-form',
@@ -404,194 +331,34 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 ]);
                 ?>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 col-md-offset-1">
                         <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => Anonymous, 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
                     </div>
-                    <div class="col-md-6">
-                        <?= $form->field($editReviewForm, 'dept')->dropDownList($primary_cat)->label('Department'); ?>
-                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Career Growth</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'career_growth', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="career' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="career' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Company Culture</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'compnay_culture', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="compnay_culture' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="compnay_culture' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Salary Benefits</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'salary_benefits', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="salary_benefits' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="salary_benefits' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Work satisfaction</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'work_satisfaction', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="work_satisfaction' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="work_satisfaction' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Work-Life Balance</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'work_life', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="work_life' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="work_life' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Skill Development</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'skill_devel', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="skill_devel' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="skill_devel' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Job Security</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
+                <div id="widget_bar_stats">
+                    <?php if ($editReviewForm->type == 'org') {
+                        echo $this->render('/widgets/review/review-org-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    } elseif ($editReviewForm->type == 'college') {
+                        echo $this->render('/widgets/review/review-college-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    } elseif ($editReviewForm->type == 'school') {
+                        echo $this->render('/widgets/review/review-school-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    } elseif ($editReviewForm->type == 'institute') {
+                        echo $this->render('/widgets/review/review-institute-stats-edit', [
+                            'form' => $form,
+                            'editReviewForm' => $editReviewForm
+                        ]);
+                    }
+                    ?>
+
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -618,9 +385,21 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 <?php
 echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
+    'org_slug'=>$slug
 ]);
-echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews', [
-]);
+if ($org_details['business_activity'] == 'College') {
+    echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews',[
+        'org_slug'=>$slug
+    ]);
+} elseif ($org_details['business_activity'] == 'School') {
+    echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews',[
+        'org_slug'=>$slug
+    ]);
+} elseif ($org_details['business_activity'] == 'Educational Institute') {
+    echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews',[
+        'org_slug'=>$slug
+    ]);
+}
 
 $this->registerCss('
 .nav-padd-20 {
@@ -631,6 +410,11 @@ $this->registerCss('
     background-color: #00a0e3 !important;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
     transition: .2s all;
+}
+.logo-box img 
+{
+    width: 100%;
+    height: 100%;
 }
 .star-rating1 {
   font-family: "FontAwesome";
@@ -686,7 +470,7 @@ $this->registerCss('
     background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
     background-size:100% 300px;
     background-repeat: no-repeat;
-} 
+}
 .no-padd{
     padding-left:0px !important;
     padding-right:0px !important
@@ -695,9 +479,8 @@ $this->registerCss('
     padding-top:20px;
 }
 .header-bttns-flex{
-    display:flex;
+    text-align:center;
     padding: 20px 0 0 0;
-    justify-content:center;
 }
 .padding_top
 {
@@ -711,6 +494,7 @@ padding:16px 0px;
     font-size:14px;
     border-radius:5px;
     text-transform:uppercase;
+    margin-bottom: 4px;
 }
 .cp-center{
     text-align:center;
@@ -720,6 +504,7 @@ padding:16px 0px;
 }
 .rh-header{
     padding:80px 0;
+    padding-bottom: 30px;
 }
 .fade_background
 {
@@ -732,26 +517,26 @@ border: 2px solid #cadfe8 !important;
 .logo-box{
     height:150px;
     width:150px;
-//    padding:0 10px;
     background:#fff;
     display:block;
     line-height:150px; 
     text-align:center;
     border-radius:6px;
+    margin-bottom: 20px;
 }  
 .logo-box img, .logo-box canvas{
     border-radius:6px;
 }
-//.logo{
-//    display:table-cell;
-//    vertical-align: middle;  
-//    max-width:150px;   
-//}
 .com-name{
-    font-size:40px;
-    font-family:lobster;
+    font-size:38px;
+    font-family: "Lora", serif;
+    font-weight: 700;
     color:#fff;
+    line-height:50px;
     margin-top: -16px;
+}
+.com-rating-1{
+    padding-top:15px;
 }
 .com-rating i{
     font-size:16px;
@@ -799,12 +584,6 @@ border: 2px solid #cadfe8 !important;
 .user-saying{
     padding-top:20px;
 }
-.user-rating{
-    display:flex;
-    justify-content:center; 
-    text-align:center;
-    padding-top:20px;
-}
 .uheading{
     font-weight:bold;
     
@@ -814,7 +593,6 @@ border: 2px solid #cadfe8 !important;
 }
 .publish-date{
     text-align:right;
-//    font-style:italic;
     font-size: 14px;
 }
 .view-detail-btn button{
@@ -864,14 +642,6 @@ border: 2px solid #cadfe8 !important;
 .user-review-main{
     border-left:2px solid #ccc;
 }
-.ur-bg{
-   background:#edecec;
-    color: #000;
-    border-radius: 5px;
-    padding: 10px 5px;
-    border-right: 1px solid #fff;
-    height: 95px;
-}
 .uratingtitle{
     font-size:12px;
     line-height:15px;
@@ -881,8 +651,6 @@ border: 2px solid #cadfe8 !important;
 }
 .emp-duration{
     text-align:right;
-//    line-height:18px;
-//    padding-top:20px;
 }
 .ushare i{
    font-size:20px;
@@ -994,6 +762,7 @@ border: 2px solid #cadfe8 !important;
 .rating-large{
     font-size:56px;
 }
+
 .com-rating-1 i{ 
     font-size:16px;
     background:#fff;
@@ -1038,7 +807,7 @@ border: 2px solid #cadfe8 !important;
     -webkit-transform: perspective(1px) translateZ(0);
     transform: perspective(1px) translateZ(0);
     box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-    padding-right:1.2em;
+    padding-right:0px;
 }
 .hvr-icon-pulse .hvr-icon {
     -webkit-transform: translateZ(0);
@@ -1065,6 +834,7 @@ border: 2px solid #cadfe8 !important;
     font-size: 14px;
     border-radius: 5px;
     display:block;
+    margin-bottom: 4px;
     text-transform: uppercase;
 }
 .hvr-icon-pulse:before{
@@ -1214,6 +984,31 @@ border: 2px solid #cadfe8 !important;
     .logo-box{
         margin:0 auto;
     }
+}
+@media only screen and (max-width: 992px){
+    .rh-header {
+        padding: 45px 0;
+    }
+}
+.i-review-navigation
+{
+display:none;
+}
+.ur-bg{
+   background:#edecec;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 5px;
+    border-right: 1px solid #fff;
+    min-height: 95px;
+}
+.user-rating{
+    display:flex;
+    justify-content:center; 
+    text-align:center;
+    padding-top:20px;
+}
+@media only screen and (max-width: 767px){
     .ur-bg {
         background: #edecec;
         color: #000;
@@ -1230,8 +1025,107 @@ border: 2px solid #cadfe8 !important;
     }
     
 }
+.i-review-box *{
+    font-family: "Roboto Slab";
+    font-weight:400;
+}
+.i-review-start-end-title, .i-review-question-title{
+    font-weight:700;
+}
+.i-review-star{
+    width: 45px;
+    height: 45px;
+}
+/*----- College css starts -----*/
+.rh-header.College{
+    background-image: linear-gradient(141deg, #7453c6bd 0%, #7453c6 51%, #7453c6 75%);
+}
+.rh-header.College div .com-rating-1 i.active, .rh-header.College ~ .rh-body .tab-content .review-summary .rs-main .com-rating-1 i.active{
+    color: #7453c6;
+}
+.rh-header.College .header-bttns button, .rh-header.College .header-bttns a{
+    border: 1px solid #7453c6;
+    color: #7453c6;
+}
+.rh-header.College ~ section .nav-tabs > li.active a, .rh-header.College ~ section .nav-tabs > li.active a:hover, .rh-header.College ~ section .nav-tabs > li.active a:focus{
+    background-color: #7453c6 !important;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs-main, .rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating{
+    background: #7453c6;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2{
+    border-color: #7453c6;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs-main.fade_background, .rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating.fade_background{
+    background: #bbaddc !important;
+}
+.rh-header.College ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2.fade_border{
+    border-color: #bbaddc !important;
+}
+/*----- College css ends -----*/
+
+/*----- Educational Institute css starts -----*/
+.rh-header.Educational.Institute{
+    background-image: linear-gradient(141deg, #da4453c7 0%, #da4453eb 51%, #da4453 75%);
+}
+.rh-header.Educational.Institute div .com-rating-1 i.active, .rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs-main .com-rating-1 i.active{
+    color: #da4453;
+}
+.rh-header.Educational.Institute .header-bttns button, .rh-header.Educational.Institute .header-bttns a{
+    border: 1px solid #da4453;
+    color: #da4453;
+}
+.rh-header.Educational.Institute ~ section .nav-tabs > li.active a, .rh-header.Educational.Institute ~ section .nav-tabs > li.active a:hover, .rh-header.Educational.Institute ~ section .nav-tabs > li.active a:focus{
+    background-color: #da4453 !important;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs-main, .rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating{
+    background: #da4453;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2{
+    border-color: #da4453;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs-main.fade_background, .rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating.fade_background{
+    background: #e8b8bd !important;
+}
+.rh-header.Educational.Institute ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2.fade_border{
+    border-color: #e8b8bd !important;
+}
+/*----- Educational Institute css ends -----*/
+
+/*----- School css starts -----*/
+.rh-header.School{
+    background-image: linear-gradient(141deg, #0caa41db 0%, #0caa41eb 51%, #0caa41 75%);
+}
+.rh-header.School div .com-rating-1 i.active, .rh-header.School ~ .rh-body .tab-content .review-summary .rs-main .com-rating-1 i.active{
+    color: #0caa41;
+}
+.rh-header.School .header-bttns button, .rh-header.School .header-bttns a{
+    border: 1px solid #0caa41;
+    color: #0caa41;
+}
+.rh-header.School ~ section .nav-tabs > li.active a, .rh-header.School ~ section .nav-tabs > li.active a:hover, .rh-header.School ~ section .nav-tabs > li.active a:focus{
+    background-color: #0caa41 !important;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs-main, .rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating{
+    background: #0caa41;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2{
+    border-color: #0caa41;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs-main.fade_background, .rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .sr-rating.fade_background{
+    background: #a8e0ba !important;
+}
+.rh-header.School ~ .rh-body .tab-content .review-summary .rs1 .summary-box .com-rating-2.fade_border{
+    border-color: #a8e0ba !important;
+}
+/*----- School css ends -----*/
 ');
 $script = <<< JS
+$(document).on("click", "#widget_bar_stats label", function(e){
+    e.preventDefault();
+    var id = "#" + $(this).attr("for");
+    $(id).prop("checked", true);
+});
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({
@@ -1281,11 +1175,11 @@ var popup = new ideaboxPopup({
 			},
 			data: [
 					{
-						question 	: 'Post your review',
+						question 	: 'Post Your Review As',
 						answerType	: 'radio',
 						formName	: 'user',
 						choices     : [
-								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'Anonymous', value : 'anonymous' },
 								{ label : 'With your Name', value : 'credentials' },
 						],
 						description	: 'Please select anyone choice.',
@@ -1485,11 +1379,11 @@ var popup2 = new ideaboxPopupCollege({
 
 				},
 				{
-						question 	: 'Post your review',
+						question 	: 'Post Your Review As',
 						answerType	: 'radio',
 						formName	: 'user',
 						choices     : [
-								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'Anonymous', value : 'anonymous' },
 								{ label : 'With your Name', value : 'credentials' },
 						],
 						description	: 'Please select anyone choice.',
@@ -1498,9 +1392,22 @@ var popup2 = new ideaboxPopupCollege({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 				},
 				{
-					question 	: 'Acedemic Year:',
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
-					formName	: 'academic_year',
+					formName	: 'tenure',
 					choices : [
 							[
 								{ label : '-Select-', value : '' },
@@ -1522,7 +1429,7 @@ var popup2 = new ideaboxPopupCollege({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
@@ -1612,6 +1519,368 @@ var popup2 = new ideaboxPopupCollege({
 					answerType	: 'textarea',
 					formName	: 'dislikes',
 					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: '<b style="color:#900;">Please share your reviews.</b>',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
+var popup3 = new ideaboxPopupSchool({
+            background	: 'url("/assets/themes/ey/ideapopup/bg-example-1.jpg") center center / cover no-repeat',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_school(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the School on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the School',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of School',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The College/University..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post Your Review As',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymous', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Academic Year:',
+					answerType	: 'selectbox',
+					formName	: 'tenure',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Academic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Student Engagement',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'student_engagement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accessibility of Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accessibility_of_faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Co-curricular Activitie',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'co_curricular_activitie',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Leadership Development',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'leadership_development',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Sports',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'sports',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: '<b style="color:#900;">Please share your reviews.</b>',
+					nextLabel	: 'Finish',
+				}
+				
+			]
+		});
+var popup4 = new ideaboxPopupInstitute({
+            background	: '#2995c2',
+            popupView : 'full',
+			onFinish: function(){
+				ajax_institute(this.values);
+			},
+			startPage: {
+					msgTitle        : 'Rate the Institute on the following criteria :',
+					msgDescription 	: '',
+					startBtnText	: "Let's Get Start",
+					showCancelBtn	: false,
+					cancelBtnText	: 'Cancel'
+
+			},
+			endPage: {
+					msgTitle	: 'Thank you :) ',
+					msgDescription 	: 'We thank you for giving your review about the Institute',
+					showCloseBtn	: true,
+					closeBtnText	: 'Close All',
+					inAnimation     : 'zoomIn'
+			},
+			data: [
+			    {
+					question 	: 'City Of Institute',
+					answerType	: 'colleg_city_autocomplete',
+					formName	: 'college_city',
+					description	: 'Please input City Of The Institute..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid City.'
+
+				},
+				{
+						question 	: 'Post your review',
+						answerType	: 'radio',
+						formName	: 'user',
+						choices     : [
+								{ label : 'Anonymously', value : 'anonymous' },
+								{ label : 'With your Name', value : 'credentials' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Next',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+				},
+				{
+						question 	: 'Are you a current or former student?',
+						answerType	: 'radio',
+						formName	: 'current_employee',
+						choices     : [
+								{ label : 'Current', value : 'current' },
+								{ label : 'Former', value : 'former' },
+						],
+						description	: 'Please select anyone choice.',
+						nextLabel	: 'Go to Step 3',
+						required	: true,
+						errorMsg	: '<b style="color:#900;">Please select one</b>'
+					},
+				{
+					question 	: 'Academic Year:',
+					answerType	: 'selectbox',
+					formName	: 'tenure',
+					choices : [
+							[
+								{ label : '-Select-', value : '' },
+								{ label : 'January', value : '1' },
+								{ label : 'February', value : '2' },
+								{ label : 'March', value : '3' },
+								{ label : 'April', value : '4' },
+								{ label : 'May', value : '5' },
+								{ label : 'June', value : '6' },
+								{ label : 'July', value : '7' },
+								{ label : 'August', value : '8' },
+								{ label : 'September', value : '9' },
+								{ label : 'October', value : '10' },
+								{ label : 'Novemeber', value : '11' },
+								{ label : 'December', value : '12' },
+							],
+							yearsObj
+						],
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please select Your Academic Year Correctly.'
+				},
+				{
+					question 	: 'Educational Stream',
+					answerType	: 'stream_autocomplete',
+					formName	: 'stream',
+					description	: 'Please input Your Education Stream..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Please Choose A Valid Stream.'
+
+				},
+				{
+					question 	: 'Student Engagement',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'student_engagement',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Infrastructure',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'infrastructure',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true,
+				},
+				{
+					question 	: 'Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Value for Money',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'value_for_money',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Teaching Style',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'teaching_style',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				
+				},
+				{
+					question 	: 'Coverage of Subject Matter',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'coverage_of_subject_matter',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Accessibility of Faculty',
+					answerType	: 'starrate',
+					starCount	: 5,
+					formName	: 'accessibility_of_faculty',
+					description	: '',
+					nextLabel	: 'Next',
+					required	: true
+				},
+				{
+					question 	: 'Likes',
+					answerType	: 'textarea',
+					formName	: 'likes',
+					description	: 'Please input any words..',
+					nextLabel	: 'Next',
+					required	: true,
+					errorMsg	: 'Write Something.'
+				},
+				{
+					question 	: 'Dislikes',
+					answerType	: 'textarea',
+					formName	: 'dislikes',
+					description	: 'Please input any words..',
+					required	: true,
+					errorMsg	: 'Write Something.',
 					nextLabel	: 'Finish',
 				}
 				
@@ -1623,12 +1892,43 @@ document.getElementById("wr").addEventListener("click", function(e){
         });
 }
 if($("#wr1").length>0){
+    if (business_type=='College'){ 
 document.getElementById("wr1").addEventListener("click", function(e){
             popup2.open();
         });
 }
+    else if (business_type=='School')
+        {
+            document.getElementById("wr1").addEventListener("click", function(e){
+            popup3.open();
+        });
+        }
+     else if (business_type=='Educational Institute')
+        {
+            document.getElementById("wr1").addEventListener("click", function(e){
+            popup4.open();
+        });
+        }
+}
 JS;
 $headScript = <<< JS
+function ajax_institute(data) {
+  var type = 'institute';
+	$.ajax({
+       method: 'POST',
+       url : '/organizations/post-college-company-reviews',
+	   data:{data:data,type:type,slug:slug},
+       success: function(response) {
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+               else
+                   {
+                       window.location = window.location.pathname;
+                   }
+          }});
+}
 function review_post_ajax(data) {
     var type = 'company';
 	$.ajax({
@@ -1639,6 +1939,27 @@ function review_post_ajax(data) {
                if (response==false)
                    {
                        alert('there is some server error');
+                   }
+               else
+                   {
+                       window.location = window.location.pathname;
+                   }
+          }});
+}
+function ajax_school(data) {
+    var type = 'school';
+	$.ajax({
+       method: 'POST',
+       url : '/organizations/post-college-company-reviews',
+	   data:{data:data,type:type,slug:slug},
+       success: function(response) {
+               if (response==false)
+                   {
+                       alert('there is some server error');
+                   }
+               else
+                   {
+                       window.location = window.location.pathname;
                    }
           }});
 }
@@ -1653,19 +1974,29 @@ function ajax_college(data) {
                    {
                        alert('there is some server error');
                    }
+               else
+                   {
+                       window.location = window.location.pathname;
+                   }
           }});
 }
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript, yii\web\View::POS_HEAD);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-school.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-school.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-college.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-college.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup-institute.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup-institute.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 

@@ -1,80 +1,97 @@
 <?php
 use yii\helpers\Url;
 ?>
-<script id="review-card" type="text/template">
-    {{#.}}
-    <div class="col-md-4">
-        <div class="com-review-box fivestar-box">
-            <div class="com-logo">
-                {{#logo}}
-                <a href="/{{slug}}">
-                <img src="{{logo}}">
-                </a>
-                {{/logo}}
-                {{^logo}}
-                <a href="/{{slug}}">
-                <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                        color="{{color}}" font="35px"></canvas>
-                </a>
-                {{/logo}}
-            </div>
-            <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
-            {{#employerApplications}}
-            <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
-            <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
-            {{/employerApplications}}
-            {{^employerApplications}}
-            <div class="com-loc"><span>0</span> Jobs</div>
-            <div class="com-dep"><span>0</span> Internships</div>
-            {{/employerApplications}}
-            {{#rating}}
-            <div class="com-rating">
-                <div class="average-star" data-score="{{rating}}"></div>
-            </div>
-            <div class="rating">
-                <div class="stars">{{rating}}</div>
-                <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
-            </div>
-            {{/rating}}
-            {{^rating}}
-            <div class="com-rating">
+    <script id="review-card" type="text/template">
+        {{#.}}
+        <div class="col-md-4">
+            <div class="com-review-box fivestar-box">
+                <div class="com-logo">
+                    {{#logo}}
+                    <a href="/{{slug}}">
+                        <img src="{{logo}}">
+                    </a>
+                    {{/logo}}
+                    {{^logo}}
+                    <a href="/{{slug}}">
+                        <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                                color="{{color}}" font="35px"></canvas>
+                    </a>
+                    {{/logo}}
+                </div>
+                <div class="pos-rel1">
+                <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
+                </div>
+                {{#employerApplications}}
+                <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
+                <div class="com-dep"><span>{{#employerApplications}}{{total_internships}}{{/employerApplications}}</span> Internships</div>
+                {{/employerApplications}}
+                {{^employerApplications}}
+                <div class="com-loc"><span>0</span> Jobs</div>
+                <div class="com-dep"><span>0</span> Internships</div>
+                {{/employerApplications}}
+                {{#rating}}
+                <div class="com-rating">
+                    <div class="average-star" data-score="{{rating}}"></div>
+                </div>
+                <div class="rating">
+                    <div class="stars">{{rating}}</div>
+                    <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
+                </div>
+                {{/rating}}
+                {{^rating}}
+                <div class="com-rating">
 
-                <div class="average-star" data-score="0"></div>
+                    <div class="average-star" data-score="0"></div>
 
-            </div>
-            <div class="rating">
-                <div class="reviews-rate"> Currenlty No Review</div>
-            </div>
-            {{/rating}}
-            <div class="row">
-                <div class="cm-btns padd-0">
-                    <div class="col-md-6">
-                        <div class="color-blue">
-                            <a href="/{{slug}}">View Profile</a>
+                </div>
+                <div class="rating">
+                    <div class="reviews-rate"> Currenlty No Review</div>
+                </div>
+                {{/rating}}
+                <div class="row">
+                    <div class="cm-btns padd-0">
+                        <div class="col-md-6">
+                            <div class="color-blue">
+                                <a href="/{{slug}}">View Profile</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="color-orange">
-                            <a href="/{{slug}}/reviews">Read Reviews</a>
+                        <div class="col-md-6">
+                            <div class="color-orange">
+                                <a href="/{{slug}}/reviews">Read Reviews</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {{/.}}
-</script>
+        {{/.}}
+    </script>
 <?php
 $this->registerCss("
-.com-review-box
-{
-height:304px;
+.com-review-box{
+    height:320px !important;
+}
+.pos-rel1{
+    position:relative;
+    min-height:60px;
+}
+.com-name{
+    text-align:center;
+    padding: 0 10px;
+    color: #bcbaba;
+    font-size: 18px;
+    text-transform: capitalize;
+    position:absolute;
+    width:100%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 ");
 $script = <<< JS
 var page_name=0;
 var total=0;
-function fetch_cards(params,is_clear=false)
+function fetch_cards(params,template,is_clear=false)
 {
     $.ajax({
         url : '/organizations/fetch-review-cards',
@@ -90,10 +107,10 @@ function fetch_cards(params,is_clear=false)
             $('#loading_img').removeClass('show');
             $('.fader').css('display','none');
             if (is_clear)
-                {
-                    $('#review_container').html('');
+                { 
+                    template.html('');
                 }
-            $('#review_container').append(Mustache.render($('#review-card').html(),response.cards));
+            template.append(Mustache.render($('#review-card').html(),response.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
@@ -113,7 +130,7 @@ function fetch_cards(params,is_clear=false)
             $('#loading_img').removeClass('show');
             $('#load_review_card_btn').hide();
             $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found..</div>');
+                    $('#review_container').html('<div class="e-text">Oops ! No Company found for this Keywords</div>');
                 }
             $('#load_review_card_btn').html('Load More')
         }

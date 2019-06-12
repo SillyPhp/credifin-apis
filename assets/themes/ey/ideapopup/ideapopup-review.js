@@ -497,10 +497,10 @@ function random_fn(t){
 	}
 	function make_designation() {
 		var designation = new Bloodhound({
-			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('designation'),
 			queryTokenizer: Bloodhound.tokenizers.whitespace,
 			remote: {
-				url: '/account/categories-list/job-profiles?q=%QUERY',
+				url: '/account/categories-list/designations?q=%QUERY',
 				wildcard: '%QUERY',
 				cache: true,
 				filter: function(list) {
@@ -511,7 +511,7 @@ function random_fn(t){
 
 		$('.i-review-designation_autocomplete').typeahead(null, {
 			name: 'cities_test',
-			display: 'value',
+			display: 'designation',
 			limit: 8,
 			source: designation
 		}).on('typeahead:asyncrequest', function() {
@@ -618,7 +618,7 @@ function random_fn(t){
 			console.log('"selectbox" form type must have -choices- parameters!');
 
                 if(e_type=='former'){
-                    var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label>&nbsp;&nbsp; - &nbsp;&nbsp;<label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
+                    var s = '<div class="i-review-answer i-review-select-multiple"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label><label style="display: block;">&nbsp;&nbsp; - &nbsp;&nbsp;</label><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-to-y">'+years+'</select></label></div>';
                     return s;
                 }else{
                     var s = '<div class="i-review-answer"><label class="i-review-select-label"><select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-m">'+months+'</select>&nbsp;<select name="'+that.options.data[qno].formName+'" class="i-review-selectbox i-review-from-y">'+years+'</select></label></div>';

@@ -19,8 +19,8 @@ $this->registerCss('
 ?>
 
     <section class="applications-cards-list">
-        <div class="row">
-            <div class="col-md-2 col-sm-3 sidebar-review-bar">
+        <div class="row m-0">
+            <div class="col-md-2 col-sm-3 sidebar-review-bar pl-0">
                 <?=
                 $this->render('/widgets/sidebar-review', [
                     'type' => 'internships',
@@ -35,7 +35,7 @@ $this->registerCss('
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card'); ?>
                         <a href="#" id="loadMore"
-                           class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
+                           class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                             <span class="load-more-text">Load More</span>
                             <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                                  stroke="currentColor">
@@ -66,8 +66,6 @@ $this->registerCss('
                                 </g>
                             </svg>
                         </a>
-                    <hr class="change-hr">
-                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
@@ -77,8 +75,42 @@ echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Internships',
 ]);
 $script = <<<JS
-$('#loadMore').on('click', function(e){
+
+var loading = false;
+var load_more_cards = true;
+$(window).animate({scrollTop:0}, '300');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 1300);
+
+setTimeout(
+    function(){
+        loading = true;
+    }, 900);
+
+$(window).scroll(function() { //detact scroll
+            
+            
+			if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){ //scrolled to bottom of the page
+                if(load_more_cards && loading){
+                    loading = false;
+                    $('#loadMore').removeClass("loading_more");
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
+				    getCards("Internships");
+                    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 900);
+                }
+			}
+		});
+
+$(document).on('click','.loading_more', function(e){
     e.preventDefault();
+    $('#loadMore').removeClass("loading_more");
     getCards("Internships");
 });
 loader = true;

@@ -27,6 +27,7 @@ use Yii;
  * @property Categories $parentEnc
  * @property EmployerApplications[] $employerApplications
  * @property LearningVideos[] $learningVideos
+ * @property Users[] $users
  */
 class AssignedCategories extends \yii\db\ActiveRecord
 {
@@ -57,6 +58,9 @@ class AssignedCategories extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -112,5 +116,13 @@ class AssignedCategories extends \yii\db\ActiveRecord
     public function getLearningVideos()
     {
         return $this->hasMany(LearningVideos::className(), ['assigned_category_enc_id' => 'assigned_category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(Users::className(), ['asigned_job_function' => 'assigned_category_enc_id']);
     }
 }

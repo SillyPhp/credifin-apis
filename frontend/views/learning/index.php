@@ -300,15 +300,15 @@ $this->registerCss('
 .flipbox{
     position:relative;
     width:160px;
-    height:160px;
-    padding-top:10px;
     margin-left:50px;
 }
 .flipbox a > .front{
     position:relative;
     text-align: center; 
     transform: perspective(600px) rotateY(0deg );
-    height: 160px; width: 160px;
+    height: 160px;
+    line-height:160px; 
+    width: 160px;
     background:transparent; 
     backface-visibility:hidden;
     transition: transform .5s linear 0s;
@@ -318,7 +318,10 @@ $this->registerCss('
     position: absolute;
     justify-content: center;
     transform: perspective(600px) rotateY(180deg );
-    height: 160px; width: 160px; background: #ff7803; border-radius:50%; 
+    height: 160px;
+    width: 160px;
+    background: #ff7803;
+    border-radius:50%; 
     backface-visibility:hidden;
     transition: transform .5s linear 0s;	
 }
@@ -342,7 +345,7 @@ $this->registerCss('
 }
 a .b-text{
     text-align: center; 
-    padding: 20px 0 0 0; 
+    padding: 10px 0 0 0; 
     font-weight: bold; 
     font-size: 20px; 
     text-decoration: none; 

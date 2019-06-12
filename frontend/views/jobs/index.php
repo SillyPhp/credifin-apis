@@ -4,7 +4,7 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
-$keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+$keywords = 'Data Science Jobs,Jobs in Bangalore, IT Jobs,Job Vacancies,Fresher Jobs,Graphic Designer Jobs,Jobs in Delhi,Bank Jobs';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
@@ -32,84 +32,150 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
-    <section class="backgrounds">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center text-white">
-                    <h2 class="text-white"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
-                    <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
-                    <div class="search-by-type">
-                        <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
-                            <div class="input-group mb-10 mr-10">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <input type="text" name="keyword" class="form-control"
-                                       placeholder="Job Title or Keywords"/>
-                            </div>
-                            <div class="input-group mb-10 mr-10">
-                                <span class="input-group-addon"><i class="fa fa-building"></i></span>
-                                <input type="text" name="company" class="form-control" placeholder="Company"/>
-                            </div>
-                            <div class="input-group mb-10 mr-10">
+<section class="backgrounds">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center text-white">
+                <h2 class="text-white"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
+                <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
+                <div class="search-by-type">
+                    <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
+                        <div class="input-group mb-10 mr-10 col-md-5">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" name="keyword" class="form-control"
+                                   placeholder="Job Title or Keywords or Company"/>
+                        </div>
+                        <!--                            <div class="input-group mb-10 mr-10">-->
+                        <!--                                <span class="input-group-addon"><i class="fa fa-building"></i></span>-->
+                        <!--                                <input type="text" name="company" class="form-control" placeholder="Company"/>-->
+                        <!--                            </div>-->
+                        <div class="input-group mb-10 mr-10 col-md-3">
                                 <span class="input-group-addon set-heights"><i
                                             class="fa fa-map-marker"></i></span>
-                                <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
-                                       placeholder="City or State"/>
-                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
-                            </div>
-                            <div class="form-group mb-10 mr-10">
-                                <input type="submit" class="form-control submit-next" id="form_control_1"
-                                       value="Search">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row mt-20">
-                <div class="col-md-12 col-sm-12">
-                    <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="categories"></div>
-            </div>
-        </div>
-    </section>
-    <section class="bg-lighter">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Jobs'); ?></h1>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="type-1">
-                        <div>
-                            <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
-                                <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                                <span class="round"><i class="fa fa-chevron-right"></i></span>
-                            </a>
+                            <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
+                                   placeholder="City or State"/>
+                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
                         </div>
+                        <div class="form-group mb-10 mr-10">
+                            <input type="submit" class="form-control submit-next" id="form_control_1"
+                                   value="Search">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row mt-20">
+            <div class="col-md-12 col-sm-12">
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="categories"></div>
+        </div>
+    </div>
+</section>
+<section class="bg-lighter">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Jobs'); ?></h1>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fa fa-chevron-right"></i></span>
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="blogbox"></div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
             <div class="col-md-12">
-                <div class="blogbox"></div>
+                <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="heading-style">Blogs</div>
+                    </div>
+                </div>
+                <div id="whats-new" class="row">
+
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+<section class="search-lists">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="list-heading">Popular Searches</div>
+                <ul class="quick-links" id="searches">
+                    <?php foreach($search_words as $sw){ ?>
+                        <li class="hide">
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>" title="<?= $sw['name'] ?>">
+                                <?= $sw['name'] ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-4">
+                <div class="list-heading">Jobs</div>
+                <ul class="quick-links" id="jobs">
+                    <?php foreach($job_profiles as $jp){ ?>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>" title="<?= $jp['name']; ?> Jobs">
+                                <?= $jp['name']; ?> Jobs
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+            <div class="col-md-4">
+                <div class="list-heading">Browse by City</div>
+                <ul class="quick-links" id="b-cities">
+                    <?php foreach($cities as $c){ ?>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
+                                Jobs in <?= $c['name']; ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                </ul>
+                <button type="button" class="showHideBtn">More</button>
+            </div>
+        </div>
+    </div>
+</section>
 <?php
+echo $this->render('/widgets/blogs/whats-new',[
+    'size' => 'col-md-3',
+    'is_ajax' => true,
+]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
@@ -117,9 +183,44 @@ echo $this->render('/widgets/mustache/application-card');
 //    'posts' => $posts,
 //]);
 $this->registerCss('
+.search-lists{
+    padding:20px 0 50px;
+    text-transform:capitalize;
+    background:#ecf5fe;
+    margin-top:30px;
+}
+.footer{
+    margin-top:0px !important;
+}
+.list-heading{
+    font-size:16px;
+    font-weight:bold;
+}
+.quick-links li a{
+    line-height:23px;
+    font-size:13px;
+}
+.quick-links li a:hover{
+    color:#00a0e3;
+}
+.hide{
+    display:none;
+}
+.showHideBtn{
+    background:none;
+    border:none;
+    color:#00a0e3;
+    padding:0;
+    font-size:14px;
+}
+
+
+.wn-box-details{
+    min-height:100px !important;
+}
 .input-group-addon{
     font-size:15px;
-    min-width:45px;
+    width:45px !important;
 }
 .backgrounds{
     background-size: 100% 520px;
@@ -348,7 +449,7 @@ $this->registerCss('
 /*<!---- view-all button css ends --->*/
 
 .search-by-type {
-    width: 88%;
+    width: 84%;
     background-color: #14141459;
     padding: 2px 20px;
     color: #fff;
@@ -641,6 +742,13 @@ $this->registerCss('
 .twitter-typeahead{
     float:left;
 }
+.wn-box-icon{
+    max-width: 270px !important;
+}
+.wn-box-icon img{
+    height: 200px !important;
+    object-fit: fill;
+}
 ');
 $script = <<<JS
 var city = new Bloodhound({
@@ -681,3 +789,81 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.mi
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+<script>
+
+    expandFirst('searches');
+    expandFirst('b-cities');
+    expandFirst('jobs');
+
+
+    function expandFirst(elem){
+        var i = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k =0;
+        while(k < listElementsLength){
+            if(k < i + 4){
+                if(document.getElementById(elem)) {
+                    document.getElementById(elem).children[k].classList.remove('hide');
+                }
+            }else{
+                break;
+            }
+            k += 1;
+        }
+    }
+
+    $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+
+    function showMoreEvent(){
+        hideMore('searches');
+        hideMore('b-cities');
+        hideMore('jobs');
+    }
+
+    function hideMore(elem){
+        var i = 0;
+        i += 5;
+        var k = 4;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.remove('hide');
+            }
+            k += 1;
+        }
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+    }
+
+    $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
+
+    function showLessEvent(){
+        hideLess('searches');
+        hideLess('b-cities');
+        hideLess('jobs');
+    }
+
+    function hideLess(elem){
+        shrinkFirst(elem);
+        document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
+        document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
+        expandFirst(elem);
+    }
+
+    function shrinkFirst(elem){
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+        var k = 5;
+        while(k < listElementsLength){
+            if(document.getElementById(elem)) {
+                document.getElementById(elem).children[k].classList.add('hide');
+            }
+            k += 1;
+        }
+    }
+
+</script>

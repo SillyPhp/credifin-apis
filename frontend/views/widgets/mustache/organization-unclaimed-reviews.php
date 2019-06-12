@@ -32,7 +32,7 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="col-md-6 col-sm-6">
                         <div class="com-rating">
                             <div class="average-star" data-score="{{average}}"></div>
-                            <div class="num-rate">{{average}}/5.00</div>
+                            <div class="num-rate">{{average}}/5</div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">

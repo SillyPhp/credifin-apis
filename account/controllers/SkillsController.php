@@ -9,12 +9,12 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use common\models\Skills;
 
-class SkillsController extends Controller {
+class SkillsController extends Controller
+{
 
-    public function actionGetSkills($q = null) {
+    public function actionGetSkills($q = null)
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
-//        $q = Yii::$app->request->post('q');
-
         if (!empty($q)) {
             $skillsModel = new Skills();
             $skills = $skillsModel->find()

@@ -8,6 +8,7 @@ use common\models\EmployerApplications;
 use common\models\Industries;
 use common\models\Organizations;
 use common\models\Posts;
+use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Html;
@@ -15,6 +16,32 @@ use yii\helpers\Url;
 
 class SearchController extends Controller
 {
+    private function findUnclaimed($s){
+        return UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b' => function($y){
+                $y->select(['b.business_activity_enc_id', 'b.business_activity']);
+            }])
+            ->joinWith(['newOrganizationReviews c' => function ($x) {
+                $x->select(['c.organization_enc_id', 'ROUND(AVG(c.average_rating)) average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
+                    ->groupBy(['c.organization_enc_id']);
+            }])
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 1
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'a.name', $s],
+                ['like', 'a.slug', $s],
+                ['like', 'a.website', $s],
+                ['like', 'b.business_activity', $s],
+            ])
+            ->groupBy(['a.organization_enc_id'])
+            ->asArray()
+            ->all();
+    }
 
     public function actionIndex()
     {
@@ -31,14 +58,14 @@ class SearchController extends Controller
                 ->joinWith(['industryEnc d'], false)
                 ->joinWith(['employerApplications e' => function ($x) {
                     $x->select(['e.organization_enc_id', 'COUNT(e.application_enc_id) applications_cnt'])
-                        ->andWhere([
+                        ->onCondition([
                             'e.status' => 'Active',
                             'e.is_deleted' => 0
                         ])
                         ->groupBy(['e.organization_enc_id']);
                 }])
                 ->joinWith(['organizationReviews f' => function ($y) {
-                    $y->select(['f.organization_enc_id', 'f.average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
+                    $y->select(['f.organization_enc_id', 'ROUND(AVG(f.average_rating)) average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
                         ->groupBy(['f.organization_enc_id']);
                 }])
                 ->where([
@@ -58,6 +85,25 @@ class SearchController extends Controller
                 ->limit(8);
 
             $result['organizations'] = $organizations->asArray()->all();
+
+            $unclaimed = $this->findUnclaimed($s);
+
+            $result['School'] = [];
+            $result['College'] = [];
+            $result['Educational Institute'] = [];
+            $result['Recruiter'] = [];
+            $result['Business'] = [];
+            $result['Scholarship Fund'] = [];
+            $result['Banking & Finance Company'] = [];
+            $result['Others'] = [];
+            foreach($unclaimed as $uc){
+                $ba = $uc['organizationTypeEnc']['business_activity'];
+                if($ba) {
+                    if(count($result[$ba]) < 8) {
+                        array_push($result[$ba], $uc);
+                    }
+                }
+            }
 
             $jobs = EmployerApplications::find()
                 ->alias('a')

@@ -382,7 +382,7 @@ $('.cd-box-border').click(function(){
             
         
             $.ajax({
-                url:'/account/cancel-application',
+                url:'/account/jobs/cancel-application',
                 data:{data:data},
                 method:'post',
                 success:function(data)

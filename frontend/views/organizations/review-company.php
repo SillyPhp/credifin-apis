@@ -35,6 +35,7 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
+
 ?>
 <section class="rh-header">
     <div class="container">
@@ -63,6 +64,14 @@ $this->params['seo_tags'] = [
                     <?php } ?>
                 </div>
                 <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
+                <div class="share-btn">
+                    <button id="sb">Share</button>
+                        <ul class="sd-btns share-hidden">
+                           <li><a href=""><i class="fa fa-facebook-f"></i></a> </li>
+                           <li><a href=""><i class="fa fa-twitter"></i></a> </li>
+                           <li><a href=""><i class="fa fa-linkedin"></i></a> </li>
+                        </ul>
+                </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -103,7 +112,7 @@ $this->params['seo_tags'] = [
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
                             <?php if ($review_type=='unclaimed'):?>
-                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>
+<!--                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>-->
                             <?php else: ?>
                                 <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
                             <?php endif;?>
@@ -118,7 +127,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= ucwords($org_details['name']); ?> Reviews </h1>
+                <h1 class="heading-style">Reviews </h1>
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
@@ -126,7 +135,7 @@ $this->params['seo_tags'] = [
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
-                    <h1 class="heading-style">Overall Reviews</h1>
+                    <h1 class="heading-style">Overall Ratings</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
                             <div class="rs-main <?= (($reviews) ? '': 'fade_background') ?>">
@@ -478,14 +487,50 @@ $this->params['seo_tags'] = [
 if ($review_type=='claimed')
 {
     echo $this->render('/widgets/mustache/organization-reviews',[
+        'org_slug'=>$slug
     ]);
 }else
 {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+        'org_slug'=>$slug
     ]);
 }
 
 $this->registerCss('
+.share-btn{
+    display:flex;
+    width:100%;
+}
+.share-hidden{
+    display:none;
+    opacity:0;
+    transition:.5s ease-in;
+}
+.share-btn button{
+    background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+.share-btn ul{
+    width:100%;
+    margin:10px 0 0 8px;
+}
+.share-btn ul li{
+    display:inline;
+}
+.share-btn ul li a{
+     background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 10px 13px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
 .i-review-navigation
 {
 display:none;
@@ -600,16 +645,16 @@ border: 2px solid #cadfe8 !important;
 .logo-box img, .logo-box canvas{
     border-radius:6px;
 }
-//.logo{
-//    display:table-cell;
-//    vertical-align: middle;  
-//    max-width:150px;   
-//}
 .com-name{
-    font-size:40px;
-    font-family:lobster;
+    font-size:38px;
+    font-family: "Lora", serif;
+    font-weight: 700;
     color:#fff;
+    line-height:50px;
     margin-top: -16px;
+}
+.com-rating-1{
+    padding-top:15px;
 }
 .com-rating i{
     font-size:16px;
@@ -1088,8 +1133,24 @@ border: 2px solid #cadfe8 !important;
     }
     
 }
+.i-review-box *{
+    font-family: "Roboto Slab";
+    font-weight:400;
+}
+.i-review-start-end-title, .i-review-question-title{
+    font-weight:700;
+}
+.i-review-star{
+    width: 45px;
+    height: 45px;
+}
 ');
 $script = <<< JS
+$(document).on("click", ".star-rating1 label", function(e){
+    e.preventDefault();
+    var id = "#" + $(this).attr("for");
+    $(id).prop("checked", true);
+});
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({
@@ -1337,8 +1398,10 @@ function review_post_ajax(data) {
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1346,4 +1409,12 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [
 ?>
 <script id="review-cards" type="text/template">
 
+</script>
+
+<script>
+    document.getElementById('sb').addEventListener("click", function () {
+        var sharecom = document.querySelector('.sd-btns');
+        sharecom.classList.toggle('share-hidden');
+
+    })
 </script>
