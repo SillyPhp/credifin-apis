@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 $this->title = $temp['title'];
 
-$keywords = $temp['keyword'];
+$keywords = $temp['keywords'];
 
 $description = $temp['description'];
 
@@ -18,7 +18,7 @@ $image = Yii::$app->params->upload_directories->quiz->background->image . '/' . 
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Url::canonical(),
     ],
     'name' => [
         'keywords' => $keywords,

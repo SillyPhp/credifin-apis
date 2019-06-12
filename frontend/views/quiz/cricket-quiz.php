@@ -19,7 +19,7 @@ $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz/eycricket
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Url::canonical(),
     ],
     'name' => [
         'keywords' => $keywords,
