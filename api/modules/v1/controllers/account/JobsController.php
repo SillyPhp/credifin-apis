@@ -468,9 +468,13 @@ class JobsController extends ApiBaseController
 
         $followedCompanies = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'b.name', 'b.initials_color',
+            ->select(['a.organization_enc_id',
+                'b.name',
+                'b.initials_color',
+                'c.industry',
                 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
             ->joinWith(['organizationEnc b' => function ($a) {
+                $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);
             }], false)
             ->where(['a.followed' => 1, 'a.created_by' => $candidate->user_enc_id])
