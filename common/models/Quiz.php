@@ -12,7 +12,14 @@ use Yii;
  * @property string $name Name of the Quiz
  * @property string $slug Quiz Slug
  * @property int $type 1 as Cricket
- * @property string $template Template of the Quiz
+ * @property int $template Template of the Quiz
+ * @property string $background_image
+ * @property string $background_image_location
+ * @property string $sharing_image
+ * @property string $sharing_image_location
+ * @property string $title
+ * @property string $keyword
+ * @property string $description
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -41,10 +48,10 @@ class Quiz extends \yii\db\ActiveRecord
     {
         return [
             [['quiz_enc_id', 'name', 'slug', 'type', 'template', 'created_by'], 'required'],
-            [['type', 'status', 'is_deleted'], 'integer'],
-            [['template'], 'string'],
+            [['type', 'template', 'status', 'is_deleted'], 'integer'],
+            [['description'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['quiz_enc_id', 'name', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['quiz_enc_id', 'name', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keyword', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['quiz_enc_id'], 'unique'],
             [['name', 'slug', 'type'], 'unique', 'targetAttribute' => ['name', 'slug', 'type']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
