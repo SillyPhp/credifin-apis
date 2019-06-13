@@ -641,7 +641,7 @@
    ***************************************************/
   
   function addBeginQuizListener() {
-    $('#elem-button-begin-quiz').o  n('click', function() {
+    $('#elem-button-begin-quiz').on('click', function() {
       elemQuestion.html(uiLabels.main.general.loading);
       elemAnswersContainer.html(loader);
       init(); 
