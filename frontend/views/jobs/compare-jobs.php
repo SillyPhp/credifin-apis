@@ -684,6 +684,23 @@ td{
 ');
 $script = <<<JS
 
+    var url = new URL(window.location.href);
+    var params = url.searchParams;
+    if(params.get('s')){
+        $.ajax({
+            url: '/jobs/find-application',
+            async: false,
+            type: 'POST',
+            data: {
+                slug: params.get('s')
+            },
+            success:function(response){
+                findJob(response['message'], 'c1', true);
+            }
+        })        
+    }
+    
+    
     var dropped = [];
 
     unBlockC1();
@@ -736,25 +753,25 @@ $script = <<<JS
         });
     
     
-        $('#company_1, #company_2, #company_3').typeahead(null, {
-            name: 'company_results',
-            display: 'name',
-            source: company_search,
-            hint: true,
-            minLength: 1,
-            maxItem: 5
-        }).on('typeahead:asyncrequest', function() {
-            var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
-            $(c_spin).show();
-        }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-            var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
-            $(c_spin).hide();
-        }).on('typeahead:selected typeahead:completed',function(e,datum){
-            var e = '#' + $(this).attr('id') + "_id";
-            $(e).val(datum.id);           
-            var f = '#' + $(this).attr('id');
-            findJobInfo(datum.id, f);           
-         });
+    $('#company_1, #company_2, #company_3').typeahead(null, {
+        name: 'company_results',
+        display: 'name',
+        source: company_search,
+        hint: true,
+        minLength: 1,
+        maxItem: 5
+    }).on('typeahead:asyncrequest', function() {
+        var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
+        $(c_spin).show();
+    }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+        var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
+        $(c_spin).hide();
+    }).on('typeahead:selected typeahead:completed',function(e,datum){
+        var e = '#' + $(this).attr('id') + "_id";
+        $(e).val(datum.id);           
+        var f = '#' + $(this).attr('id');
+        findJobInfo(datum.id, f);           
+     });
     
     function findJobInfo(id, elem){
         var global = [];
@@ -909,7 +926,7 @@ $script = <<<JS
                      3 : "Wednesday",
                      4 : "Thursday",
                      5 : "Friday",
-                     6 : "Satday",
+                     6 : "Saturday",
                      7 : "Sunday",
                  };
                  
