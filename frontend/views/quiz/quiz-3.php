@@ -14,7 +14,7 @@ if (!empty($score) && !empty($total)) {
     }
 }
 
-$image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['sharing_image_location'] . '/' . $quiz['sharing_image'];
+$image = Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
 
 $this->params['seo_tags'] = [
     'rel' => [
@@ -47,10 +47,11 @@ $this->params['seo_tags'] = [
         <div id="quiz"></div>
     </div>
     <input type="hidden" id="quest-path" value="<?= Yii::$app->params->upload_directories->quiz->question->image; ?>">
+    <input type="hidden" id="quest-name" value="<?= $quiz['name'] ?>">
 <?php
 $this->registerCss('
 body{
-    background: url('. Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['background_image_location'] . '/' . $quiz['background_image'] .');
+    background: url(' . Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['background_image_location'] . DIRECTORY_SEPARATOR . $quiz['background_image']) . ');
     background-size: 100% 100%;
     background-attachment: fixed;
     background-repeat: no-repeat;

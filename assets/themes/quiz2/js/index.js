@@ -641,7 +641,7 @@
    ***************************************************/
   
   function addBeginQuizListener() {
-    $('#elem-button-begin-quiz').on('click', function() {
+    $('#elem-button-begin-quiz').o  n('click', function() {
       elemQuestion.html(uiLabels.main.general.loading);
       elemAnswersContainer.html(loader);
       init(); 
@@ -653,6 +653,7 @@
    ***************************************************/
   
   function getData() {
+    var quiz_name = document.getElementById('quest-name').getAttribute('value');
     if (!config.question.retake) {
       $.ajax({
         url: config.api.uri,
@@ -665,7 +666,7 @@
 
           var quesans = [];
 
-          var datares = data['results'];
+          var datares = quiz_name;
 
           a.push({
             "title" : datares['name'],

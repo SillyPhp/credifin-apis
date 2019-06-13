@@ -17,17 +17,17 @@ if (!empty($score) && !empty($total)) {
 
 $sharing_image = null;
 
-if($quiz['sharing_image']){
-    $sharing_image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['sharing_image_location'] . '/' . $quiz['sharing_image'];
-}else{
-    $sharing_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz2/quizvol2.png');
+if ($quiz['sharing_image']) {
+    $sharing_image = Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
+} else {
+    $sharing_image = Url::to('/assets/themes/quiz2/quizvol2.png', 'https');
 }
 
 $image = $sharing_image;
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -42,7 +42,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::canonical(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -75,20 +75,22 @@ $this->params['seo_tags'] = [
     </div>
 
     <input type="hidden" id="quest-path" value="<?= Yii::$app->params->upload_directories->quiz->question->image; ?>">
+    <input type="hidden" id="quest-name" value="<?= $quiz['name'] ?>">
 
 <?php
 
 $background_image = null;
 
-if($quiz['background_image']){
-    $background_image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['background_image_location'] . '/' . $quiz['background_image'];
-}else{
-    $background_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz2/bg.png');
+if ($quiz['background_image']) {
+    $background_image = Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['background_image_location'] . DIRECTORY_SEPARATOR . $quiz['background_image']);
+} else {
+    $background_image = Url::to('/assets/themes/quiz2/bg.png');
 }
+
 
 $this->registerCss('
 body{
-    background: url('. $background_image .');
+    background: url(' . $background_image . ');
     background-size: 100% 100%;
     background-attachment: fixed;
     background-repeat: no-repeat;
