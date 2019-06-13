@@ -2,15 +2,28 @@
 
 use yii\helpers\Url;
 
-$this->title = 'Cricket World Cup | Quiz 2019';
-$keywords = 'cricket, cricket world cup, cricket world cup 2019, cricket quiz, cricket news, world cup news';
-$description = 'If You Are Cricket Lover Then You Definately Like Our Cricket World Cup Quiz And You Also Know The More Facts About Cricket.';
+
+$this->title = $quiz['title'];
+
+$keywords = $quiz['keyword'];
+
+$description = $quiz['description'];
+
 if (!empty($score) && !empty($total)) {
     if (($score >= 0 && $score <= 10) && ($total >= 0 && $total <= 10)) {
         $description = 'I scored ' . $score . ' out of ' . $total . '. Try Yours!!!. ' . $description;
     }
 }
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz2/quizvol2.png');
+
+$sharing_image = null;
+
+if($quiz['sharing_image']){
+    $sharing_image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['sharing_image_location'] . '/' . $quiz['sharing_image'];
+}else{
+    $sharing_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz2/quizvol2.png');
+}
+
+$image = $sharing_image;
 
 $this->params['seo_tags'] = [
     'rel' => [
@@ -61,7 +74,26 @@ $this->params['seo_tags'] = [
             </div>
     </div>
 
+    <input type="hidden" id="quest-path" value="<?= Yii::$app->params->upload_directories->quiz->question->image; ?>">
+
 <?php
+
+$background_image = null;
+
+if($quiz['background_image']){
+    $background_image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['background_image_location'] . '/' . $quiz['background_image'];
+}else{
+    $background_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz2/bg.png');
+}
+
+$this->registerCss('
+body{
+    background: url('. $background_image .');
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerJs("function fbs_click() {
     u = location.href;

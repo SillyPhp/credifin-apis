@@ -5,16 +5,16 @@
         $.ajax({
             url: url,
             method: 'POST',
-            // data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
+            data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
             dataType: 'JSON',
             success: function (response) {
 
+                var result = response['results'];
+
                 var data = {};
-                data['title'] = 'Cricket World Cup 2019 Vol 3';
+                data['title'] = result['name'];
                 data['url'] = 'https://www.empoweryouth.com';
                 data['questions'] = [];
-
-                var result = response['results'];
 
                 var k = 0;
 

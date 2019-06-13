@@ -2,11 +2,11 @@
 
 use yii\helpers\Url;
 
-$this->title = $temp['title'];
+$this->title = $quiz['title'];
 
-$keywords = $temp['keyword'];
+$keywords = $quiz['keyword'];
 
-$description = $temp['description'];
+$description = $quiz['description'];
 
 if (!empty($score) && !empty($total)) {
     if (($score >= 0 && $score <= 10) && ($total >= 0 && $total <= 10)) {
