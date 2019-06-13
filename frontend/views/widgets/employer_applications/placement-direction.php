@@ -40,7 +40,7 @@ $this->registerCss('
     content:"";
     position:absolute;
     width:100%;
-    height:78%;
+    height:77%;
     left:0;
     top:0;
     background-repeat: no-repeat;

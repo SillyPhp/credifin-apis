@@ -469,6 +469,25 @@ class JobsController extends Controller
         return $this->render('compare-jobs');
     }
 
+    public function actionFindApplication(){
+        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $req = Yii::$app->request->post();
+            $slug = $req['slug'];
+            $result = EmployerApplications::find()
+                ->where([
+                    'slug' => $slug,
+                    'is_deleted' => 0,
+                ])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'message' => $result['application_enc_id']
+            ];
+        }
+    }
+
     public function actionGetCompanies($query){
         $companies = Organizations::find()
             ->alias('a')
