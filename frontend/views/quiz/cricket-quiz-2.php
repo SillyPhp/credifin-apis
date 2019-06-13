@@ -75,6 +75,7 @@ $this->params['seo_tags'] = [
     </div>
 
     <input type="hidden" id="quest-path" value="<?= Yii::$app->params->upload_directories->quiz->question->image; ?>">
+    <input type="hidden" id="quest-name" value="<?= $quiz['name'] ?>">
 
 <?php
 
