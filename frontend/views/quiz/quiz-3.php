@@ -14,7 +14,7 @@ if (!empty($score) && !empty($total)) {
     }
 }
 
-$image = Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
+$image = Url::to(Yii::$app->params->upload_directories->quiz->sharing->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
 
 $this->params['seo_tags'] = [
     'rel' => [
