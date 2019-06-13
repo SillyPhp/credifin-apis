@@ -238,7 +238,7 @@ class ApplicationForm extends Model
                 $categoriesModel->created_on = date('Y-m-d H:i:s');
                 $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if ($categoriesModel->save()) {
-                    $this->addNewAssignedCategory($transaction,$categoriesModel->category_enc_id, $employerApplicationsModel);
+                    $this->addNewAssignedCategory($transaction, $categoriesModel->category_enc_id, $employerApplicationsModel, $type);
                 } else {
                     $transaction->rollBack();
                     $this->_flag = false;
@@ -253,7 +253,7 @@ class ApplicationForm extends Model
                     ->asArray()
                     ->one();
                 if (empty($chk_assigned)) {
-                    $this->addNewAssignedCategory($transaction,$chk_cat['category_enc_id'], $employerApplicationsModel, $type);
+                    $this->addNewAssignedCategory($transaction, $chk_cat['category_enc_id'], $employerApplicationsModel, $type);
                 } else {
                     $employerApplicationsModel->title = $chk_assigned['assigned_category_enc_id'];
                     $utilitiesModel->variables['name'] = $chk_assigned['name'] . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
@@ -454,7 +454,7 @@ class ApplicationForm extends Model
                             $transaction->rollBack();
                             $this->_flag = false;
                         }
-                        $this->assignedSkill($transaction,$skills_set['skill_enc_id'], $cat_id);
+                        $this->assignedSkill($transaction, $skills_set['skill_enc_id'], $cat_id);
                     } else {
                         $skillsModel = new Skills();
                         $utilitiesModel = new Utilities();
@@ -477,7 +477,7 @@ class ApplicationForm extends Model
                                 $transaction->rollBack();
                                 $this->_flag = false;
                             }
-                            $this->assignedSkill($transaction,$skillsModel->skill_enc_id, $cat_id);
+                            $this->assignedSkill($transaction, $skillsModel->skill_enc_id, $cat_id);
                         }
                     }
                 }
@@ -503,7 +503,7 @@ class ApplicationForm extends Model
                         }
 
                         //new code added//
-                        $this->assignedJob($transaction,$job_desc['job_description_enc_id'], $cat_id);
+                        $this->assignedJob($transaction, $job_desc['job_description_enc_id'], $cat_id);
                         //new code added//
                     } else {
                         $jobDescriptionModel = new JobDescription();
@@ -528,7 +528,7 @@ class ApplicationForm extends Model
                                 $this->_flag = false;
                             }
                             //new code added//
-                            $this->assignedJob($transaction,$jobDescriptionModel->job_description_enc_id, $cat_id);
+                            $this->assignedJob($transaction, $jobDescriptionModel->job_description_enc_id, $cat_id);
                             //new code added//
                         }
                     }
@@ -556,7 +556,7 @@ class ApplicationForm extends Model
                             $this->_flag = false;
                         }
                         //new code//
-                        $this->assignedEdu($transaction,$edu_quali['educational_requirement_enc_id'], $cat_id);
+                        $this->assignedEdu($transaction, $edu_quali['educational_requirement_enc_id'], $cat_id);
                         //new code//
                     } else {
                         $qualificationsModel = new EducationalRequirements();
@@ -581,14 +581,13 @@ class ApplicationForm extends Model
                                 $this->_flag = false;
                             }
                             //new code//
-                            $this->assignedEdu($transaction,$qualificationsModel->educational_requirement_enc_id, $cat_id);
+                            $this->assignedEdu($transaction, $qualificationsModel->educational_requirement_enc_id, $cat_id);
                             //new code//
                         }
                     }
                 }
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollBack();
             return false;
         }
@@ -601,7 +600,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedJob($transaction,$j_id, $cat_id)
+    private function assignedJob($transaction, $j_id, $cat_id)
     {
         $asignedJobModel = new AssignedJobDescription();
         $utilitiesModel = new Utilities();
@@ -617,7 +616,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedEdu($transaction,$e_id, $cat_id)
+    private function assignedEdu($transaction, $e_id, $cat_id)
     {
         $asignedEduModel = new AssignedEducationalRequirements();
         $utilitiesModel = new Utilities();
@@ -633,7 +632,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedSkill($transaction,$s_id, $cat_id)
+    private function assignedSkill($transaction, $s_id, $cat_id)
     {
         $asignedSkillModel = new AssignedSkills();
         $utilitiesModel = new Utilities();
@@ -649,7 +648,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function addNewAssignedCategory($transaction,$category_id, $employerApplicationsModel, $type)
+    private function addNewAssignedCategory($transaction, $category_id, $employerApplicationsModel, $type)
     {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
