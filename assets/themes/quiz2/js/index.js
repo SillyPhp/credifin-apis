@@ -641,7 +641,7 @@
    ***************************************************/
   
   function addBeginQuizListener() {
-    $('#elem-button-begin-quiz').o  n('click', function() {
+    $('#elem-button-begin-quiz').on('click', function() {
       elemQuestion.html(uiLabels.main.general.loading);
       elemAnswersContainer.html(loader);
       init(); 
@@ -666,10 +666,10 @@
 
           var quesans = [];
 
-          var datares = quiz_name;
+          var datares = data['results'];
 
           a.push({
-            "title" : datares['name'],
+            "title" : quiz_name,
             "footer": "Empower Youth"
           });
 
