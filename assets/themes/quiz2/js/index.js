@@ -666,10 +666,10 @@
 
           var quesans = [];
 
-          var datares = quiz_name;
+          var datares = data['results'];
 
           a.push({
-            "title" : datares['name'],
+            "title" : quiz_name,
             "footer": "Empower Youth"
           });
 
