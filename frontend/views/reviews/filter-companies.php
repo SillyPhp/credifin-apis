@@ -44,7 +44,11 @@ use yii\bootstrap\ActiveForm;
 <div>
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
+            <div class="pos-relative-mobile">
+            <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
+                <div class="filter-btns" id="hide-filter">
+                    <button class="hide-btn"><i class="fa fa-close"></i> Close</button>
+                </div>
                 <div class="filter-heading">
                     Search companies by
                 </div>
@@ -175,7 +179,12 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </form>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9 col-sm-8 col-xs-12 ">
+                <div class="filter-btns">
+                    <button type="button" id="show-filter"><i class="fa fa-bars"></i> Show Filters </button>
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-8 col-xs-12">
                 <div class="companies-reviews">
                     <div class="row">
                         <div id="review_container">
@@ -207,6 +216,7 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     </div>
 </div>
@@ -220,11 +230,16 @@ echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 </div>
 <?php
 $this->registerCss('
+.filter-btns{
+    display:none;
+}
 .empty{
     text-align:center;
 }
 .es-btn{
     padding-top: 20px;
+    padding-bottom: 20px;
+    
 }
 .es-btn button{
     background:#00a0e3;
@@ -915,7 +930,55 @@ min-height:304px;
 .com-loc, .com-dep{
     min-height:24px;
 }
+ .mobile-hidden{
+    display:block
+ }
 /*new modal css ends*/
+
+@media only screen and (max-width: 768px){
+    .pos-relative-mobile{
+        position:relative;
+        overflow:scroll;
+    }
+
+    .mobile-hidden{
+        display:none;
+        position:absolute;
+        background:#fff;
+        top:0px;
+        right:0px;
+        z-index:9999;
+        border:1px solid #eee;
+        border-top:none;
+        border-bottom:none;
+        border-right:none;
+    }
+    .filter-btns{
+        display:block;
+        text-align:right;
+    }
+    #show-filter{
+        background:none;
+        border:none;
+        margin:10px 0;
+        text-align:right; 
+        color:#00a0e3;
+    }
+    .hide-btn{
+        background:none;
+        border:none;
+        margin:10px 0;
+        text-align:left; 
+        color:#00a0e3;
+    }
+    .footer{
+        margin-top:0px !important;
+    }
+    .rh-header{
+        margin-bottom:0px;
+    }
+}
+
 ');
 $script = <<< JS
 var template;
@@ -1020,3 +1083,14 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+
+<script>
+    document.getElementById('show-filter').addEventListener("click", function () {
+        var s = document.getElementsByClassName('mobile-hidden');
+        s[0].style.display = 'block';
+    });
+    document.getElementById('hide-filter').addEventListener("click", function () {
+        var s = document.getElementsByClassName('mobile-hidden');
+        s[0].style.display = 'none';
+    });
+</script>
