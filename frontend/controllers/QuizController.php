@@ -48,13 +48,22 @@ class QuizController extends Controller
             $this->layout = 'quiz-main';
             return $this->render('cricket-quiz', [
                 'score' => $s,
-                'total' => $t
+                'total' => $t,
+                'quiz' => $temp
             ]);
         }elseif ($temp['template'] == 2){
             $this->layout = 'quiz2-main';
             return $this->render('cricket-quiz-2', [
                 'score' => $s,
-                'total' => $t
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        }elseif($temp['template'] == 3){
+            $this->layout = 'quiz3-main';
+            return $this->render('quiz-3', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
             ]);
         }
     }

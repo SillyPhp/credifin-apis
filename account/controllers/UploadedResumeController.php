@@ -35,7 +35,7 @@ class UploadedResumeController extends Controller
                 $x->joinWith(['categoryEnc d'], false);
             }], false)
             ->joinWith(['organizationEnc b'], false)
-            ->where(['b.organization_enc_id' => $organization_id['organization_enc_id']])
+            ->where(['b.organization_enc_id' => $organization_id['organization_enc_id'],'a.is_deleted'=> 0,'a.status'=>'Active'])
             ->andWhere(['c.assigned_to' => $type])
             ->asArray()
             ->all();
