@@ -1,4 +1,5 @@
 ; (function ($) {
+    var quiz_name = document.getElementById('quest-name').getAttribute('value');
     var quest_path = document.getElementById('quest-path').getAttribute('value');
     var quiz_count = 0;
     $.fn.quiz = function (url) {
@@ -12,7 +13,7 @@
                 var result = response['results'];
 
                 var data = {};
-                data['title'] = result['name'];
+                data['title'] = quiz_name;
                 data['url'] = 'https://www.empoweryouth.com';
                 data['questions'] = [];
 
