@@ -3,11 +3,11 @@
 use yii\helpers\Url;
 
 
-$this->title = 'Cricket World Cup | Quiz 2019';
+$this->title = $quiz['title'];
 
-$keywords = 'cricket, cricket world cup, cricket world cup 2019, cricket quiz, cricket news, world cup news';
+$keywords = $quiz['keywords'];
 
-$description = 'If You Are Cricket Lover Then You Definately Like Our Cricket World Cup Quiz And You Also Know The More Facts About Cricket.';
+$description = $quiz['description'];
 
 if (!empty($score) && !empty($total)) {
     if (($score >= 0 && $score <= 10) && ($total >= 0 && $total <= 10)) {
@@ -15,7 +15,16 @@ if (!empty($score) && !empty($total)) {
     }
 }
 
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz/eycricket.png');
+
+$sharing_image = null;
+
+if($quiz['sharing_image']){
+    $sharing_image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['sharing_image_location'] . '/' . $quiz['sharing_image'];
+}else{
+    $sharing_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz/eycricket.png');
+}
+
+$image = $sharing_image;
 
 $this->params['seo_tags'] = [
     'rel' => [
@@ -78,7 +87,28 @@ $this->params['seo_tags'] = [
     </div>
 
 <?php
+
+$background_image = null;
+
+if($quiz['background_image']){
+    $background_image = Yii::$app->params->upload_directories->quiz->background->image . '/' . $quiz['background_image_location'] . '/' . $quiz['background_image'];
+}else{
+    $background_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/quiz/cric.png');
+}
+
 $this->registerCss('
+.background-overlay {
+    width: 100%;
+    height: 100%;
+    background: url('. $background_image .');
+    background-position: 100% 45%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    position: fixed;
+    z-index: -1;
+    background-position: center;
+    background-size: cover;
+}
 .effect {
   width: 100%;
   padding: 10px 0px 30px 0px;

@@ -2,11 +2,11 @@
 
 use yii\helpers\Url;
 
-$this->title = $temp['title'];
+$this->title = $quiz['title'];
 
-$keywords = $temp['keywords'];
+$keywords = $quiz['keywords'];
 
-$description = $temp['description'];
+$description = $quiz['description'];
 
 if (!empty($score) && !empty($total)) {
     if (($score >= 0 && $score <= 10) && ($total >= 0 && $total <= 10)) {
@@ -18,7 +18,7 @@ $image = Yii::$app->params->upload_directories->quiz->background->image . '/' . 
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::canonical(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -59,7 +59,6 @@ body{
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $script = <<<JS
     $(function() {
-      // $('#quiz').quiz("/assets/themes/quiz3/tpc.json");
       $('#quiz').quiz(window.location.href);
     });
 JS;
