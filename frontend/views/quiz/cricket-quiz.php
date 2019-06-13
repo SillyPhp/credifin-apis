@@ -18,7 +18,7 @@ if (!empty($score) && !empty($total)) {
 $sharing_image = null;
 
 if ($quiz['sharing_image']) {
-    $sharing_image = Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
+    $sharing_image = Url::to(Yii::$app->params->upload_directories->quiz->sharing->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
 } else {
     $sharing_image = Url::to('/assets/themes/quiz/eycricket.png', 'https');
 }
