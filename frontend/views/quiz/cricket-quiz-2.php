@@ -5,7 +5,7 @@ use yii\helpers\Url;
 
 $this->title = $quiz['title'];
 
-$keywords = $quiz['keyword'];
+$keywords = $quiz['keywords'];
 
 $description = $quiz['description'];
 
