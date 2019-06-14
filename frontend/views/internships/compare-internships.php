@@ -670,6 +670,23 @@ td{
 ');
 $script = <<<JS
 
+    
+    var url = new URL(window.location.href);
+    var params = url.searchParams;
+    if(params.get('s')){
+        $.ajax({
+            url: '/internships/find-application',
+            async: false,
+            type: 'POST',
+            data: {
+                slug: params.get('s')
+            },
+            success:function(response){
+                findJob(response['message'], 'c1', true);
+            }
+        })        
+    }
+
     var dropped = [];
 
     unBlockC1();
@@ -872,6 +889,12 @@ $script = <<<JS
                         $('#job_3').val(data['message']['name'] + " - " + data['message']['cat_name']);
                         blockC3();
                     }
+                }
+                
+                if(!dropped.includes(data['message']['application_enc_id'])){
+                    $('[data-id='+data['message']['application_enc_id']+']').draggable({disabled:true});
+                    $('[data-id='+data['message']['application_enc_id']+']').addClass('b-li-card');
+                    dropped.push(data['message']['application_enc_id']);
                 }
                 
                 if(elem_id === 'c1'){
