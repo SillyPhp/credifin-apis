@@ -905,6 +905,12 @@ $script = <<<JS
                     }
                 }
                 
+                if(!dropped.includes(data['message']['application_enc_id'])){
+                    $('[data-id='+data['message']['application_enc_id']+']').draggable({disabled:true});
+                    $('[data-id='+data['message']['application_enc_id']+']').addClass('b-li-card');
+                    dropped.push(data['message']['application_enc_id']);
+                }
+                
                 if(elem_id === 'c1'){
                     $('#c1').attr('data-info', data['message']['application_enc_id']);
                     if(!$('#c2').attr('data-info')){
