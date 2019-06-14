@@ -65,14 +65,14 @@ img + div {
     color: #999;
 }
 .wrapper-header{
-    background: url(' . Url::to('@commonAssets/email_service/wrapper-header-bg.png', 'https') . ');
-    background-size:cover;
-    background-repeat:no-repeat;
     padding:30px 0;
     text-align:center;
     float: left;
     width: 100%;
     border-radius:9px;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-image: url(' . Url::to('@commonAssets/email_service/wrapper-header-bg.png', 'https') . ');
 }
 .header-logo{
     text-align:center;
@@ -227,6 +227,7 @@ img + div {
     padding-inline-start: 10px;
 }
 .last-list ul li{
+    margin:0px;
     list-style-type:none;
     display:inline;
     padding:15px 5px;
@@ -262,6 +263,10 @@ $this->registerCss('
     .wrapper-outer{
         padding:20px 10px;
     }
+    .last-list ul{
+        margin:0px;
+        padding:0px;
+    }
     .skills-list ul li{
         margin-bottom: 5px;
     }
@@ -282,7 +287,7 @@ $this->registerCss('
 
     <div class="wrapper-outer">
         <div class="wrapper">
-            <div class="wrapper-header">
+            <div class="wrapper-header" style="background: url('<?= Url::to('@commonAssets/email_service/wrapper-header-bg.png', 'https')?>');">
                 <div class="header-logo"><a href=""><img
                                 src="<?= Url::to('@commonAssets/email_service/email-logo.png', 'https'); ?>"
                                 class="responsive"></a></div>
