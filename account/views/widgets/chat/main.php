@@ -1,19 +1,28 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
 
-<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->user_enc_id : null ?>" id="current-organization-user">
-<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->organization_enc_id : Yii::$app->user->identity->user_enc_id ?>" id="current-user">
-<input type="hidden" value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->name : Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>" id="current-name">
+<input type="hidden"
+       value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->user_enc_id : null ?>"
+       id="current-organization-user">
+<input type="hidden"
+       value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->organization_enc_id : Yii::$app->user->identity->user_enc_id ?>"
+       id="current-user">
+<input type="hidden"
+       value="<?= Yii::$app->user->identity->organization->organization_enc_id ? Yii::$app->user->identity->organization->name : Yii::$app->user->identity->first_name . " " . Yii::$app->user->identity->last_name ?>"
+       id="current-name">
 
 <div id="chat-icon">
-    <button type="button" id="trigger"><img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png')?>"></button>
+    <button type="button" id="trigger"><img
+                src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"></button>
 </div>
 
 <div class="fadeout" id="chat-list">
     <div id="chat-list-heading">Conversations</div>
     <div class="srch-form">
-            <input type="text" id="search-user" placeholder="Search">
+        <input type="text" id="search-user" placeholder="Search">
     </div>
     <ul id="users-list">
 
@@ -52,7 +61,8 @@ $this->registerCss("
     opacity: 1;
 }
 .c-icon img{
-    max-width:30px;
+    width:30px;
+    height:30px;
     border-radius:50%;
 }
 .c-name{
@@ -72,7 +82,7 @@ $this->registerCss("
     border: none;
     width:100%;
 }
-.chats.message-list{margin-bottom:50px}
+.chats.message-list{margin-bottom:50px;margin-top:0px;}
 #chat-list ul{
     padding-inline-start:0px !important;
 }
@@ -230,6 +240,15 @@ element.style {
     right: 45px;
 }
 ");
+?>
+
+<script type="text/javascript">
+    // Variables defined
+    var sendMessagesUrl = '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->functions->sendMessages; ?>';
+    var specialKey = '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->specialKey; ?>';
+</script>
+
+<?php
 $script = <<<JS
     
     //all variables defined
@@ -238,7 +257,6 @@ $script = <<<JS
     var current_user_name = $('#current-name').val(); // name of current user
     var chat_icon = document.getElementById('chat-icon'); // chat icon
     var chat_list = document.getElementById('chat-list');// main id of conversations list
-    var specialKey = 'BnE3860mWdnBEZMLXlwkdjw9A2K5DJ';
     var search_user = document.getElementById('search-user'); // search user input id
     var users_list = document.getElementById('users-list'); // id of ul in conversations list
     var chat_icon_button = document.getElementById('trigger');
@@ -334,8 +352,12 @@ $script = <<<JS
          if(msginput && msginput.length < 1500){
              var converseRef = db.ref(specialKey + '/conversations/' + unique_id );
              var currentDate = new Date();
-             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()];
-             var sendtime = currentDate.getHours() + ":" + currentDate.getMinutes();
+             var senddate = currentDate.getDate() + " " + monthDict[currentDate.getMonth()] + " " + currentDate.getFullYear();
+             var getMins = currentDate.getMinutes();
+             if (getMins < 10) {
+                getMins = "0" + getMins;
+              }
+             var sendtime = currentDate.getHours() + ":" + getMins;
              var data = {
                 sender : current_user,
                 sender_organization_id : current_organization_user,
@@ -346,7 +368,6 @@ $script = <<<JS
                 time: sendtime
              };
              var key = converseRef.push(data).key;
-
              data['uniqueid'] = unique_id;
              data['key'] = key;
              
@@ -358,7 +379,7 @@ $script = <<<JS
              
              $.ajax({
                 type: 'GET',
-                url: 'https://us-central1-empoweryouth-49c18.cloudfunctions.net/sendMessages',
+                url: sendMessagesUrl,
              });
     
             var messagetypeinp = t.closest('.msginput');
@@ -411,7 +432,7 @@ $script = <<<JS
                         chat_icon.classList.remove('chat-bounce');
                     }
              }
-    })
+    });
     
     //list users on chat icon
     random_users();
@@ -484,7 +505,6 @@ $script = <<<JS
             db
             .ref(specialKey + '/conversations/' + getUniqueId(single_user_id))
             .off();
-
             var existingDates = {};
             
             db
@@ -686,7 +706,7 @@ $script = <<<JS
             document.getElementById('trigger').innerHTML += redbtn; 
         }
         // utilities.initials();
-    })
+    });
     
  function chats() {
     var e = $(".chats-main"),
@@ -746,21 +766,24 @@ $(document).on('click','.closeBtn', function(){
 });
 JS;
 $this->registerJs($script);
+
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
 <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
-<script>
+
+<script type="text/javascript">
     // Initialize Firebase
     var config = {
-        apiKey: "AIzaSyDRQXJJP1rOOh8omclQ7146ME-oL9tNDAg",
-        authDomain: "empoweryouth-49c18.firebaseapp.com",
-        databaseURL: "https://empoweryouth-49c18.firebaseio.com",
-        projectId: "empoweryouth-49c18",
-        storageBucket: "empoweryouth-49c18.appspot.com",
-        messagingSenderId: "173074095977"
+        apiKey: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->apiKey; ?>',
+        authDomain: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->authDomain; ?>',
+        databaseURL: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->databaseURL; ?>',
+        projectId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->projectId; ?>',
+        storageBucket: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->storageBucket; ?>',
+        messagingSenderId: '<?= Yii::$app->params->fireabse->modules->realtimeChat->config->messagingSenderId; ?>',
     };
     firebase.initializeApp(config);
 </script>
+
 <script id="no-user" type="text/template">
     <li>
         No User Found
@@ -768,21 +791,23 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/
 </script>
 <script id="users" type="text/template">
     {{#.}}
-        <li>
-            <button class="single-user" type="button" id="{{user_enc_id}}">
-                <div class="chat-person">
-                        {{#image}}
-                            <div class="c-icon"><img src="{{image}}"></div>
-                        {{/image}}
-                        {{^image}}
-                        <div class="c-icon"><img src="https://ui-avatars.com/api/?name={{first_name}}+{{last_name}}&background={{initials_color}}&color=fff&size=30&font-size=0.55"></div>
-<!--                            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"-->
-<!--                                color="{{initials_color}}" font="18px"></canvas>-->
-                        {{/image}}
-                        <div class="c-name">{{first_name}} {{last_name}}</div>
+    <li>
+        <button class="single-user" type="button" id="{{user_enc_id}}">
+            <div class="chat-person">
+                {{#image}}
+                <div class="c-icon"><img src="{{image}}"></div>
+                {{/image}}
+                {{^image}}
+                <div class="c-icon"><img
+                            src="https://ui-avatars.com/api/?name={{first_name}}+{{last_name}}&background={{initials_color}}&color=fff&size=30&font-size=0.55">
                 </div>
-            </button>
-        </li>
+                <!--                            <canvas class="user-icon" name="{{first_name}} {{last_name}}" width="30" height="30"-->
+                <!--                                color="{{initials_color}}" font="18px"></canvas>-->
+                {{/image}}
+                <div class="c-name">{{first_name}} {{last_name}}</div>
+            </div>
+        </button>
+    </li>
     {{/.}}
 </script>
 <script id="date-badge" type="text/template">

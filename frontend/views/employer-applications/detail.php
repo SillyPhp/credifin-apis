@@ -189,19 +189,29 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                         ?>
                     </div>
+                    <?php
+                    if(!empty($data['applicationPlacementLocations'])) {
+                        echo $this->render('/widgets/employer_applications/placement-direction', [
+                            'placement_locations' => $data['applicationPlacementLocations'],
+                        ]);
+                    }
+                    ?>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
                 <?=
                 $this->render('/widgets/employer_applications/organization-details', [
                     'org_logo'=>$org['logo'],
                     'org_logo_location'=>$org['logo_location'],
                     'org_name'=>$org['org_name'],
+                    'initial_color'=>$org['color'],
                     'slug'=>$org['slug'],
                     'website'=>$org['website'],
+                    'email'=>$org['email'],
                     'type'=>$type,
                     'applied'=>$applied,
                     'application_slug'=>$application_details["slug"],
+                    'shortlist'=>$shortlist,
                 ]);
                 ?>
             </div>
@@ -224,6 +234,9 @@ $this->render('/widgets/employer_applications/top-banner', [
 </script>
 <?php
 $this->registerCss("
+    .z-index-9{
+        z-index:9;
+    }
      .sub_description_1,sub_description_2{
         display:none;
      }   
@@ -350,8 +363,8 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 124px;
-        height: 124px; 
+        width: 90px;
+        height: 90px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -776,8 +789,8 @@ $this->registerCss("
         border-color: #4FCE5D;
     }
     .job-single-head.style2 {
-        float: left;
-        width: 100%;
+//        float: left;
+//        width: 100%;
         display: inherit;
         text-align: center;
         border: none;
@@ -793,11 +806,11 @@ $this->registerCss("
         display: inline-block;
         width: auto;
         border: none;
-        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
-        -moz-box-shadow: 0px 0px 20px 7px #ddd;
-        -ms-box-shadow: 0px 0px 20px 7px #ddd;
-        -o-box-shadow: 0px 0px 20px 7px #ddd;
-        box-shadow: 0px 0px 20px 7px #ddd;
+//        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
+//        -moz-box-shadow: 0px 0px 20px 7px #ddd;
+//        -ms-box-shadow: 0px 0px 20px 7px #ddd;
+//        -o-box-shadow: 0px 0px 20px 7px #ddd;
+//        box-shadow: 0px 0px 20px 7px #ddd;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -815,14 +828,14 @@ $this->registerCss("
     .job-single-head.style2 .job-head-info p {
         float: left;
         width: 100%;
-        text-align: center;
+//        text-align: center;
         margin: 0;
         margin-top: 0px;
-        margin-top: 5px;
     }
     .job-single-head.style2 .job-head-info p i {
         float: none;
-        color: #4aa1e3;
+        color: #fff;
+        display:inline-block;
     }
     .job-single-head.style2 .job-head-info > span {
         margin-top: 5px;
@@ -867,16 +880,16 @@ $this->registerCss("
         font-family: Open Sans;
         font-size: 17px;
         font-weight: 600;
-        color: #202020;
+        color: #fff;
         margin: 0;
         margin-bottom: 0px;
         margin-bottom: 10px;
     }
     .job-head-info span {
-        float: left;
-        width: 100%;
+        float: none;
+        width: auto;
         font-size: 13px;
-        color: #888888;
+        color: #fff;
         line-height: 10px;
     }
     .job-head-info p {
@@ -891,28 +904,29 @@ $this->registerCss("
     }
     .job-head-info p i {
         float: left;
-        font-size: 21px;
+        font-size: 14px;
         line-height: 27px;
         margin-right: 9px;
+        margin-top: 1px;
     }
     .apply-job-btn {
-        background: #ffffff;
+        background: #00a0e3;
         -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -webkit-border-radius: 40px;
-        -moz-border-radius: 40px;
-        -ms-border-radius: 40px;
-        -o-border-radius: 40px;
-        border-radius: 40px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+        border-radius: 2px;
         font-family: Open Sans;
         font-size: 13px;
-        color: #ef7706;
-        width: 200px;
+        color: #fff;
+        width: 175px;
         height: auto;
-        padding: 15px 15px;
+        padding: 15px 6px;
         text-align: center;
         margin:auto;
     }
@@ -922,12 +936,12 @@ $this->registerCss("
         -ms-border-radius: 8px;
         -o-border-radius: 8px;
         border-radius: 8px;
-        color: #ef7706 !important;
+        color: #fff !important;
     }
     .apply-job-btn i {
         float: none;
-        font-size: 25px;
-        margin-right: 10px;
+        font-size: 18px;
+        margin-right: 6px;
         line-height: 8px;
         position: relative;
         top: 4px;

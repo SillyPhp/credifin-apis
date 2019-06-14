@@ -42,15 +42,15 @@ $this->registerCss('
     }
     .com-name{
         padding:10px 0 0 0; 
-        font-weight:bold; 
+        font-weight:bold;
+        color:#4d4d4d;
         font-size:28px;
-        color:#000;
     }
     .welcome-text{
         padding:20px 50px 0 50px; 
         font-size:24px; 
         line-height:30px;
-        color:#000;
+        color:#4d4d4d;
     }
     .wt2{
         padding-top:50px;
@@ -75,6 +75,7 @@ $this->registerCss('
     .copyright{
         padding:10px 0 0 0; 
         font-size:15px;
+        color:#4d4d4d;
     } 
     .last-list{
         padding:5px 0 10px 0; 
@@ -88,9 +89,12 @@ $this->registerCss('
         color:#00a0e3; 
         text-decoration:none;
     }
+', ['media' => 'screen']);
+$this->registerCss('
     @media only screen and (max-width: 500px){
         .welcome-text{
             padding:20px 30px 0 30px;
+            font-size:20px;
         }
     }
     @media only screen and (max-width: 380px){
@@ -104,13 +108,8 @@ $this->registerCss('
         .activate-button{
             margin-bottom:20px;
         }
-        .welcome-text{
-            padding:20px 50px 0 50px; 
-            font-size:20px; 
-            line-height:30px;
-        }
     }
-');
+', ['media' => 'only screen and (max-device-width: 500px), only screen and (max-width: 380px)']);
 ?>
 <div class="wrapper">
     <div class="inner-wrapper">
@@ -130,6 +129,10 @@ $this->registerCss('
         <div class="activate-button">
             <?= Html::a(Yii::t('app', 'Reset Your Password'), $data['link']); ?>
         </div>
+        <div class="link-text">
+            <p style="padding: 8px 60px;font-size: 16px;color:#4d4d4d;">If you’re having trouble clicking the button, copy and paste the URL below into your web browser.</p>
+            <?= Html::a(Yii::t('app', $data['link']), $data['link'],['style' => 'padding: 2px 10px;font-size: 17px;text-decoration: none;word-break: break-word;']); ?>
+        </div>
         <div class="welcome-text wt2">
             <?= Yii::t('app', 'The link will expire in 24 hours for security reasons. If you
             didn’t make this request, simply ignore this message.');?>
@@ -141,15 +144,5 @@ $this->registerCss('
         <div class="copyright">
             <?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name; ?>
         </div>
-        <div class="last-list">
-            <ul>
-                <li><a href="">Contact Us</a></li>
-                |
-                <li><a href="">Terms and Conditions</a></li>
-                |
-                <li><a href="">Privacy Policies</a></li>
-            </ul>
-        </div>
-
     </div>
 </div>
