@@ -882,6 +882,7 @@ $script = <<<JS
         $.ajax({
             type: 'POST',
             url: window.location.href,
+            async: false,
             data: {
                 id: id
             },
