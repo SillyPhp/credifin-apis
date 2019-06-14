@@ -36,15 +36,30 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
                         class="fa fa-paper-plane"></i>Login to apply</a>
             <div class="sub-actions">
-                <a href="<?= Url::to('/jobs/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
-                    Compare Job</a>
+                 <?php
+        if ($type == 'Internship'): ?>
+                <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                    Compare Internship</a>
+        <?php elseif ($type == 'Job'): ?>
+            <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+               class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                Compare Job</a>
+        <?php endif; ?>
             </div>
         <?php else: ?>
             <?php if ($applied): ?>
                 <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i class="fa fa-check"></i>Applied</a>
                 <div class="sub-actions">
-                    <a href="<?= Url::to('/jobs/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
-                        Compare Job</a>
+                    <?php
+                    if ($type == 'Internship'): ?>
+                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                            Compare Internship</a>
+
+                    <?php elseif ($type == 'Job'): ?>
+                        <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                           class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                            Compare Job</a>
+                    <?php endif; ?>
                 </div>
             <?php elseif (!Yii::$app->user->identity->organization): ?>
                 <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fa fa-paper-plane hvr-icon"></i>Apply
@@ -66,7 +81,16 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                         }
                     }
                     ?>
-                    <a href="<?= Url::to('/jobs/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse"><i class="fa fa-files-o hvr-icon"></i> Compare Job</a>
+                    <?php
+                    if ($type == 'Internship'): ?>
+                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                            Compare Internship</a>
+
+                    <?php elseif ($type == 'Job'): ?>
+                        <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                           class="add-or-compare hvr-icon-pulse"><i class="fa fa-files-o hvr-icon"></i>
+                            Compare Job</a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         <?php endif; ?>
@@ -111,45 +135,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <i class="fa fa-envelope"></i>
             </a>
         </div>
-        <!--        <div class="share-bar no-border">-->
-        <!--            --><?php
-        //            if ($type == 'Internship') {
-        //                $link = Url::to('internship/' . $application_slug, true);
-        //            } else if ($type == 'Job') {
-        //                $link = Url::to('job/' . $application_slug, true);
-        //            }
-        //            ?>
-        <!--            <h3>Share</h3>-->
-        <!--            <a href="#"-->
-        <!--               onclick="window.open('-//= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"-->
-        <!--//               class="share-fb">-->
-        <!--//                <i class="fa fa-facebook"></i>-->
-        <!--//            </a>-->
-        <!--//            <a href="#"-->
-        <!--//               onclick="window.open('-->
-        <? ////= Url::to('https://twitter.com/home?status=' . $link); ?><!--//', '_blank', 'width=800,height=400,left=200,top=100');"-->
-        <!--//               class="share-twitter">-->
-        <!--//                <i class="fa fa-twitter"></i>-->
-        <!--//            </a>-->
-        <!--//            <a href="#"-->
-        <!--//               onclick="window.open('-->
-        <? ////= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?><!--//', '_blank', 'width=800,height=400,left=200,top=100');"-->
-        <!--//               class="share-linkedin">-->
-        <!--//                <i class="fa fa-linkedin"></i>-->
-        <!--//            </a>-->
-        <!--//            <a href="#"-->
-        <!--//               onclick="window.open('-->
-        <? ////= Url::to('https://wa.me/?text=' . $link); ?><!--//', '_blank', 'width=800,height=400,left=200,top=100');"-->
-        <!--//               class="share-whatsapp">-->
-        <!--//                <i class="fa fa-whatsapp"></i>-->
-        <!--//            </a>-->
-        <!--//            <a href="#"-->
-        <!--//               onclick="window.open('-->
-        <? ////= Url::to('mailto:?&body=' . $link); ?><!--//', '_blank', 'width=800,height=400,left=200,top=100');"-->
-        <!--//               class="share-google">-->
-        <!--//                <i class="fa fa-envelope"></i>-->
-        <!--//            </a>-->
-        <!--        </div>-->
         <div class="row m-0">
             <div class="col-lg-12">
                 <h4 class="text-white">or</h4>
