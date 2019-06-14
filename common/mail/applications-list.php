@@ -4,6 +4,11 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->registerCss('
+*, :after, :before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 body{
     margin:0 auto;
     padding:0;
@@ -38,7 +43,6 @@ img + div {
 }
 .job-box{
     position:relative;
-    border:1px solid #eee;
     border-radius:10px;
     padding:10px 15px;
     float:left;
@@ -46,6 +50,8 @@ img + div {
     width:100%;
     margin-bottom:10px;
     margin-top:20px;
+    padding-top:20px;
+    box-shadow: 2px 5px 10px rgba(93,93,93,.3);
 }
 .jboxMarginTop{
     margin-top:30px;
@@ -53,6 +59,7 @@ img + div {
 .last-date{
     position: absolute;
     right: 10px;
+    top:5px;
     font-size: 12px;
     text-align: center;
     color: #999;
@@ -121,24 +128,25 @@ img + div {
     max-width:250px;
 }
 .logo-box{
-    height:100px;
-    width:100px;
-    padding:0 0px;
-    background:#fff;
-    border-radius:50%;
-    display:table;
-    text-align:center;
-    border:1px solid #eee;
-    position:relative;
-    float:left;
+    height: 80px;
+    width: 80px;
+    display: block;
+    padding: 0 0px;
+    background: #fff;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 0px 1px 13px 1px rgba(140, 140, 140, 0.74);
+    position: relative;
+    float: left;
 }
 .logo{
-    display:table-cell;
-    vertical-align: middle;
-    width:100%;
+    display: block;
+    width: 100%;
 }
 .logo img{
-    max-width:80px;
+    width: 100%;
+    border-radius: 50%;
+    height: 100%;
 }
 .job-description > ul, .education > ul {
     float: left;
@@ -229,7 +237,7 @@ img + div {
 }
 ', ['media' => 'screen']);
 $this->registerCss('
-@media screen and (max-width:670px ){
+@media screen and (max-width:740px ){
     .width-30{
         width:100%;
         float:left;
@@ -266,7 +274,7 @@ $this->registerCss('
         margin-bottom:5px;
     }
 }
-', ['media' => 'only screen and (max-device-width: 670px), only screen and (max-device-width: 500px), only screen and (max-width: 420px)']);
+', ['media' => 'only screen and (max-device-width: 740px), only screen and (max-device-width: 500px), only screen and (max-width: 420px)']);
 ?>
 
     <div class="wrapper-outer">
