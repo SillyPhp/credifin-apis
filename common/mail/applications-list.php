@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->registerCss('
-*, :after, :before {
+.wrapper-outer *, :after, :before {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -43,6 +43,7 @@ img + div {
 }
 .job-box{
     position:relative;
+    border:1px solid #eee;
     border-radius:10px;
     padding:10px 15px;
     float:left;
@@ -51,7 +52,6 @@ img + div {
     margin-bottom:10px;
     margin-top:20px;
     padding-top:20px;
-    box-shadow: 2px 5px 10px rgba(93,93,93,.3);
 }
 .jboxMarginTop{
     margin-top:30px;
@@ -135,7 +135,7 @@ img + div {
     background: #fff;
     border-radius: 50%;
     text-align: center;
-    box-shadow: 0px 1px 13px 1px rgba(140, 140, 140, 0.74);
+    border:1px solid #eee;
     position: relative;
     float: left;
 }
