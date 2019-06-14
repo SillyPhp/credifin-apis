@@ -670,7 +670,8 @@ td{
 ');
 $script = <<<JS
 
-    
+    var dropped = [];
+
     var url = new URL(window.location.href);
     var params = url.searchParams;
     if(params.get('s')){
@@ -687,7 +688,6 @@ $script = <<<JS
         })        
     }
 
-    var dropped = [];
 
     unBlockC1();
      $('#company_2, #job_2, #company_3, #job_3').prop('disabled', true);
@@ -728,36 +728,35 @@ $script = <<<JS
         $('#company_3, #job_3').prop('disabled', false);
     }
     
-        var company_search = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: '',
-            remote: {
-                url: '/internships/get-companies?query={query}',
-                wildcard: '{query}',
-            },
-        });
+    var company_search = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: '',
+        remote: {
+            url: '/internships/get-companies?query={query}',
+            wildcard: '{query}',
+        },
+    });
     
-    
-        $('#company_1, #company_2, #company_3').typeahead(null, {
-            name: 'company_results',
-            display: 'name',
-            source: company_search,
-            hint: true,
-            minLength: 1,
-            maxItem: 5
-        }).on('typeahead:asyncrequest', function() {
-            var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
-            $(c_spin).show();
-        }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-            var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
-            $(c_spin).hide();
-        }).on('typeahead:selected typeahead:completed',function(e,datum){
-            var e = '#' + $(this).attr('id') + "_id";
-            $(e).val(datum.id);           
-            var f = '#' + $(this).attr('id');
-            findJobInfo(datum.id, f);           
-         });
+    $('#company_1, #company_2, #company_3').typeahead(null, {
+        name: 'company_results',
+        display: 'name',
+        source: company_search,
+        hint: true,
+        minLength: 1,
+        maxItem: 5
+    }).on('typeahead:asyncrequest', function() {
+        var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
+        $(c_spin).show();
+    }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+        var c_spin = $(this).closest('.search-box').children()[0].getAttribute('id');
+        $(c_spin).hide();
+    }).on('typeahead:selected typeahead:completed',function(e,datum){
+        var e = '#' + $(this).attr('id') + "_id";
+        $(e).val(datum.id);           
+        var f = '#' + $(this).attr('id');
+        findJobInfo(datum.id, f);           
+     });
     
     function findJobInfo(id, elem){
         var global = [];
@@ -892,8 +891,8 @@ $script = <<<JS
                 }
                 
                 if(!dropped.includes(data['message']['application_enc_id'])){
-                    $('[data-id='+data['message']['application_enc_id']+']').draggable({disabled:true});
-                    $('[data-id='+data['message']['application_enc_id']+']').addClass('b-li-card');
+                    $('[data-id="'+data['message']['application_enc_id']+'"]').draggable({disabled:true});
+                    $('[data-id="'+data['message']['application_enc_id']+'"]').addClass('b-li-card');
                     dropped.push(data['message']['application_enc_id']);
                 }
                 
@@ -1022,6 +1021,7 @@ $script = <<<JS
     $(document).on('click', '#company_1_btn,#company_2_btn,#company_3_btn', function(e){
         emptyInp(e.target.getAttribute('id'));
     });
+    
     function emptyInp(elem){
                 if(elem === "company_1_btn"){
                     $("#job_1").typeahead("destroy");
