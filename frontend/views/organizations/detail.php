@@ -477,7 +477,6 @@ $.ajax({
     url: '/account/resume/check-resume',
     data : data,
     success: function(response){
-        // console.log(response);
         $('#dropcv').val(response);
     }
 });

@@ -553,9 +553,7 @@ function showCards(){
         mapTypeId: 'roadmap'
     });
     for(i=0;i<data.length;i++){
-        console.log(data[i]);
         var res = data[i].split(",");
-        console.log(res);
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(Number(res[0]),Number(res[1])),
             map: map,
@@ -594,7 +592,6 @@ function showCards(){
     
     $("#mapper").on("input change", function() {
         inprange.rangerval = $(this).val();
-        console.log(inprange.rangerval);
     });
     var myCity = null;
     $(document).on('click', ".button__bg", function(){
@@ -606,11 +603,8 @@ function showCards(){
         var city = $('#form_control_3').val();
         var location = $('#form_control_1').val();
         var address = city + " " + location;
-        console.log(address);
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === 'OK') {
-            
-            console.log(inprange.rangerval);
               myCity = new google.maps.Circle({
                 center: results[0].geometry.location,
                 radius: inprange.rangerval * 1000,
@@ -621,10 +615,7 @@ function showCards(){
                 fillOpacity: 0.4
               });
               var position = results[0].geometry.location;
-              map.setCenter(position);
-              console.log(position);
               map.setZoom(12);
-              
               myCity.setMap(map);
           } else {
             alert("Location does not exist.");

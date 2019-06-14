@@ -290,7 +290,6 @@ var getParams = function (url) {
                 }
             });
         }
-        console.log(results);
         });
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -319,11 +318,6 @@ $('#cities').typeahead(null, {
     $('.Typeahead-spinner').hide();
   });
         
-//console.log();
-//$("#searchbtn").click(function(){
-//    console.log("the button is clicked!! ");
-//    ajax({method:methodToBe, url:urlToBe});
-//});
 var loadIncre = 2;
 $(document).ready(function () {
     $(".work-load").slice(0, 3).show();
@@ -343,15 +337,6 @@ $(document).ready(function () {
         
     $("#loadMore").on('click', function (e) {
         e.preventDefault();
-//        $.ajax({
-//            url:'/service/searched-results',
-//            method:'post',
-//            data: loadIncre,
-//            success:function(data)
-//                {
-//                    console.log("data sent");
-//                },
-//        });
         
         $(function(){
             $('a').each(function(){
@@ -359,10 +344,6 @@ $(document).ready(function () {
             });
         });
         $('.loader-main').slideDown();
-        
-//        $('a').attr('href', function(i, currentAttribute){
-//            return currentAttribute + loadIncre;
-//        });
         
         loadIncre = loadIncre + 1;
         setTimeout(function() { $(".loader-main").hide(); 
@@ -407,15 +388,11 @@ $("form").submit(function(e) {
                 $('.loader-main').hide();
                 $('.load-more-text').css('visibility', 'visible');
                 $('.load-more-spinner').css('visibility', 'hidden');
-                console.log("response is this :", response);
                 if(response.status == 200) {
                     var jobCard = $('#application-card').html();
                     for(var i=0; i<response.cards.length;i++){
                         $(".cards").append(Mustache.render(jobCard, response.cards[i]));
                     }
-                    
-                } else {
-                    console.log("response is not coming");
                 }
             }
         }).done(function(){
@@ -445,7 +422,6 @@ $("form").submit(function(e) {
 });
         
     function foo(req){
-        console.log("in foo ");
         req();
     }
         

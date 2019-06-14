@@ -1537,11 +1537,9 @@ $(document).on('submit', '#upload-user-image', function(event) {
             $('.loader-aj-main').fadeIn(1000);  
         },
         success: function (response) {
-//        console.log(response);
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-//                console.log('okkk');
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1588,7 +1586,6 @@ $(document).on('submit', '#add-experience-form', function(event) {
             $('.loader-aj-main').fadeIn(1000);  
         },
         success: function (response) {
-        console.log(response);
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);

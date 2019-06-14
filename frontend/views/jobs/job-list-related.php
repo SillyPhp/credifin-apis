@@ -807,7 +807,6 @@ $(document).ready(function () {
             $('.load-more-spinner').css('visibility', 'visible');
         },
         success: function(response) {
-//        console.log("response",response);
             $('.loader-main').hide();
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
@@ -833,8 +832,6 @@ function jobcards(response){
     if(response.status == 200){    
                 var card = $('#application-card').html();
                 $(".blogbox").append(Mustache.render(card, response.jobcards));
-    }else{
-        console.log("not work");
     }
 }        
         

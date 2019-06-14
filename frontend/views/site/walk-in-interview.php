@@ -661,8 +661,6 @@ function jobcards(response){
     if(response.status == 200){    
                 var card = $('#application-card').html();
                 $(".blogbox").append(Mustache.render(card, response.jobcards));
-    }else{
-        console.log("not work");
     }
 }        
         

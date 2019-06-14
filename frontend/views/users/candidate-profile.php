@@ -1433,8 +1433,6 @@ $(document).on('click', '.check_this', function(){
         $('#exp_present').val('0');
     }
 });
-//console.log(image_path);
-//console.log(cover_image_path);
         
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -1467,13 +1465,11 @@ $("#coverImageUpload").change(function() {
 
 $('#profile-img').on('load', function () {
     if($("#profile-img").attr('src') != image_path ){
-//        console.log(1);
         $('#pop-content').fadeIn(1000);
    }
 });
 $('.jumbo').on('change', function () {
     if($(".jumbo").css('background-image') != image_path ){
-//        console.log(10);
         $('#pop-content2').fadeIn(1000);
    }
 });
@@ -1492,11 +1488,9 @@ $(document).on('submit', '#upload-user-image', function(event) {
             $('.loader-aj-main').fadeIn(1000);  
         },
         success: function (response) {
-//        console.log(response);
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-//                console.log('okkk');
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1519,11 +1513,9 @@ $(document).on('submit', '#upload-user-cover-image', function(event) {
             $('.loader-aj-main').fadeIn(1000);  
         },
         success: function (response) {
-//        console.log(response);
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-//                console.log('okkk');
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1544,12 +1536,10 @@ $(document).on('submit', '#add-experience-form', function(event) {
         beforeSend:function(){     
          //   $('.loader-aj-main').fadeIn(1000);  
         },
-        success: function (response) {
-        console.log(response);
+        success: function (response) 
         $('.loader-aj-main').fadeOut(1000);
             if (response.title == 'Success') {
                 toastr.success(response.message, response.title);
-//                console.log('okkk');
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -1599,7 +1589,6 @@ $('#cities').typeahead(null, {
     $('.Typeahead-spinner').hide();
   }).on('typeahead:selected typeahead:completed',function(e,datum)
       {
-        console.log(datum.id);
         $('#city_id').val(datum.id);
      });
         
