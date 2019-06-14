@@ -70,12 +70,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                         if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                             ?>
-                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job"><i
+                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
                                         class="fa fa-heart-o hvr-icon"></i>Shortlisted</a>
                             <?php
                         } else {
                             ?>
-                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job"><i
+                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
                                         class="fa fa-heart-o hvr-icon"></i>Shortlist</a>
                             <?php
                         }
