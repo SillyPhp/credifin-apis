@@ -73,9 +73,12 @@ if (Yii::$app->session->hasFlash('success')):
         var marginLeft = width / 2;
         $('.light-box-outer').css('margin-left', -marginLeft);
         $('.fader, .light-box-outer, .light-box-inner').fadeOut(500);
-        $('#careers-form')[0].reset();
+        $('#categories, #sub-cat, #tags').tagsinput('removeAll');
+        $('input:not(#careers-form input:first-child)').val('');
         $('#url').val('');
         $('#video_type').val('');
+        $('#video_id').val('');
+        $('#video_duration').val('');
         
     ");
 endif;
@@ -129,9 +132,11 @@ $form->field($learningCornerFormModel, 'video_type')->dropDownList([
 $form->field($learningCornerFormModel, 'video_url', ['enableAjaxValidation' => true])->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_url'), 'id' => 'url']);
 ?>
 
+<div class="hidden">
 <?= $form->field($learningCornerFormModel, 'video_id', ['enableAjaxValidation' => true])->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_id'), 'id' => 'video-id']); ?>
-
 <?= $form->field($learningCornerFormModel, 'video_duration')->hiddenInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('video_duration'), 'id' => 'video-duration']); ?>
+</div>
+
 
 <?=
 $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'off', 'placeholder' => $learningCornerFormModel->getAttributeLabel('tags'), 'id' => 'tags', 'data-role' => 'tagsinput']);
@@ -175,11 +180,11 @@ $form->field($learningCornerFormModel, 'tags')->textInput(['autocomplete' => 'of
         <div class="effect jaques">
             <div class="buttons">
                 <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i
-                            class="fa fa-facebook" aria-hidden="true"></i></a>
+                            class="fab fa-facebook-f" aria-hidden="true"></i></a>
                 <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i
-                            class="fa fa-twitter" aria-hidden="true"></i></a>
+                            class="fab fa-twitter" aria-hidden="true"></i></a>
                 <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank"
-                   title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                   title="Join us on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
             </div>
         </div>
     </div>
@@ -379,7 +384,7 @@ $this->registerCss('
 }
 .btn-collapse {
   position: absolute;
-  padding: 8px 12px;
+  padding: 8px 12px !important;
   border-radius: 10px 10px 0 0;
   top: 20px;
   right: 0;
@@ -449,8 +454,10 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-  
-    $('[data-toggle=offcanvas]').click(function () {
+    $('span[data-role="remove"]').each(function(){
+        $(this).trigger('click');
+    });
+$('[data-toggle=offcanvas]').click(function () {
         $('.row-offcanvas').toggleClass('active');
     });
         
@@ -465,6 +472,7 @@ $script = <<< JS
           this.text(t1);
       return this;
     };
+    
     $(".title").hide();
     
     $(".description").hide();
@@ -517,6 +525,7 @@ $script = <<< JS
 JS;
 $this->registerJs($script);
 $this->registerJsFile('//platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()], 'async' => 'async']);
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
 $this->registerCssFile('https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

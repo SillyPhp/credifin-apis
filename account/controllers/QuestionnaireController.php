@@ -9,7 +9,7 @@ use common\models\QuestionnaireFields;
 use common\models\QuestionnaireFieldOptions;
 use common\models\AnsweredQuestionnaire;
 use account\models\questionnaire\QuestionnaireForm;
-use \account\models\questionnaire\QuestionnaireViewForm;
+use account\models\questionnaire\QuestionnaireViewForm;
 
 class QuestionnaireController extends Controller
 {
@@ -137,7 +137,7 @@ class QuestionnaireController extends Controller
                 'applied_application_enc_id' => $aaidk,
                 'questionnaire_enc_id' => $qidk,
                 'created_by' => Yii::$app->user->identity->user_enc_id,
-                ])
+            ])
             ->asArray()
             ->one();
         $result = OrganizationQuestionnaire::find()

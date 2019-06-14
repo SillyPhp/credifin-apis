@@ -1,19 +1,15 @@
-let questions = []; // Global Array of Objects (each Object representing a Question)
+let questions = [];
+
 let stats = {
     questionsAsked: 0,
     correct: 0,
     correctStreak: 0,
     currentTime: null,
     averageResponseTime: 0
-}; // Global stats Object
+};
 
 initiateGame(questions, stats);
 
-/*
- // Event Handlers
- */
-
-// Handle click events
 document.addEventListener("click", function (event) { // This way of handling is useful for dynamically created elements
     if (event.target.classList.contains("quiz-ans-btn")) { // Handle ".quiz-ans-btn" click
         Array.from(document.querySelectorAll(".quiz-ans-btn")).forEach(btn => btn.disabled = true); // Disable buttons
@@ -42,14 +38,13 @@ document.addEventListener("click", function (event) { // This way of handling is
         displayStats(stats);
     }
 });
-// Handle "quiz-play-again-btn" Click (Not a dynamically created element => No need to handle it the same way as ".quiz-ans-btn")
+
 document.querySelector("#quiz-play-again-btn").addEventListener("click", function () {
     document.querySelector("#quiz-play-again-btn").classList.remove("infinite", "pulse");
     document.querySelector("#quiz-play-again-btn").classList.add("flipOutX");
     setTimeout(() => {
         document.querySelector("#quiz-play-again-btn").classList.remove("flipOutX");
         document.querySelector("#quiz-play-again").style.display = "none";
-//     document.querySelector("#quiz-play-again-btn").style.display = "none";
         questions = [];
         stats = {questionsAsked: 0, correct: 0, correctStreak: 0, currentTime: null, averageResponseTime: 0};
         displayStats(stats);
@@ -58,55 +53,51 @@ document.querySelector("#quiz-play-again-btn").addEventListener("click", functio
 });
 
 
-/*
- // Auxiliary Functions
- */
-
-// Initiate New Game
 function initiateGame(questions, stats) {
-    fetch("/api/v1/quiz")
-            .then(function (res) {
-                if (!res.ok) {
-                    throw Error(res.statusText);
-                }
-                return res.json(); // Read the response as json.
-            })
-            .then(function (data) {
-                for (let i = 0; i < data.results.length; i++) {
-                    questions.push({
-                        category: data.results[i].category,
-                        difficulty: data.results[i].difficulty,
-                        type: data.results[i].type,
-                        question: data.results[i].question,
-                        answers: createAnswersArray(data.results[i].correct_answer, data.results[i].incorrect_answers)
-                    });
-                }
-                displayQuestion(questions[0]);
-            })
-            .catch(function (error) {
-                console.log('Looks like there was a problem: \n', error);
-            });
+    var path = window.location.pathname.split('/');
+    $.ajax({
+        url: window.location.href,
+        method: 'POST',
+        data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
+        dataType: 'JSON',
+        success: function (data) {
+            for (let i = 0; i < data.results.length; i++) {
+                questions.push({
+                    category: data.results[i].category,
+                    difficulty: data.results[i].difficulty,
+                    type: data.results[i].type,
+                    question: data.results[i].question,
+                    answers: createAnswersArray(data.results[i]['quizAnswers'])
+                });
+            }
+            displayQuestion(questions[0]);
+        }
+    })
 }
 
-// Manipulate API Data structure and return an Answers Array 
-function createAnswersArray(correct_answer, incorrect_answers) {
-    const totalAnswers = incorrect_answers.length + 1;
-    const correct_answer_index = Math.floor(Math.random() * totalAnswers);
+function createAnswersArray(answers) {
+
+    const answersLength = answers.length;
     let answersArray = [];
-    for (let i = 0; i < incorrect_answers.length; i++) {
-        answersArray.push({
-            answer: incorrect_answers[i],
-            isCorrect: false
-        });
+    for (let i = 0; i < answers.length; i++) {
+        if (answers[i].is_answer == 1) {
+            answersArray.push({
+                answer: answers[i].answer,
+                isCorrect: true
+            })
+        } else {
+            answersArray.push({
+                answer: answers[i].answer,
+                isCorrect: false
+            })
+        }
     }
-    answersArray.splice(correct_answer_index, 0, {answer: correct_answer, isCorrect: true});
-    if (totalAnswers === 2) { // => Boolean -> Preferably always show True(1st) - False(2nd) (or Yes - No) -> sort in descending order since both "True" and "Yes" are alphabetically greater than ("False" and "No")
-        answersArray.sort((a, b) => a.answer < b.answer);
-    }
+    // if(answersLength === 2){
+    //     answersArray.sort((a, b) => a.answer < b.answer);
+    // }
     return answersArray;
 }
 
-// Display Question
 function displayQuestion(questionObject) {
     document.querySelector("#quiz-question").innerHTML = questionObject.question;
     document.querySelector("#quiz-question").classList.remove("zoomOut");
@@ -145,7 +136,6 @@ function nextQuestion(questions) {
             questions.shift();
             displayQuestion(questions[0]);
 
-            console.log("Completed " + (10 - questions.length));
         } else {
             document.querySelector("#quiz-play-again").style.display = "block";
             document.querySelector("#quiz-play-again-btn").classList.add("flipInX");
@@ -161,9 +151,13 @@ function nextQuestion(questions) {
 function displayStats(stats) {
     document.querySelectorAll("#quiz-stats>div>span").forEach(el => el.classList.add("fadeOut"));
     setTimeout(() => {
+        var path = window.location.pathname.split('/');
         document.querySelector("#rate-span").innerHTML = stats.correct + "/" + stats.questionsAsked;
         document.querySelector('#finish-quiz').innerHTML = "You Scored " + stats.correct + "/" + stats.questionsAsked;
-        document.querySelector('#btn-share').href = "http://www.facebook.com/share.php?u=http://www.empoweryouth.in/fifa-quiz/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#btn-share').href = "https://www.facebook.com/share.php?u=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#tw-share').href = "https://twitter.com/intent/tweet?text=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#link-share').href = "https://www.linkedin.com/sharing/share-offsite?url=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#wa-share').href = "https://wa.me/?text=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
         document.querySelector("#streak-span").innerHTML = stats.correctStreak;
         document.querySelector("#response-time-span").innerHTML = stats.averageResponseTime;
         document.querySelectorAll("#quiz-stats>div>span").forEach(el => {
@@ -176,74 +170,73 @@ function displayStats(stats) {
     }, 375);
 }
 
-// Auxilliary Rounding Function
 function round(value, decimals) {
     return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-} // Note: decimals>=0, Example: round(1.005, 2); -> 1.01
-
-var track = (function () {
-    var ip;
-    var city;
-    function load() {
-        $.ajax({
-            async: false,
-            type: "GET",
-            url: "https://ipapi.co/json/",
-            dataType: "json",
-            success: function (data) {
-                ip = JSON.stringify(data["ip"]);
-                city = JSON.stringify(data["city"]);
-            }
-        });
-    }
-    return {
-        load: function () {
-            if (ip && city)
-                return;
-            load();
-        },
-        getHtml: function () {
-            if (!ip || !city)
-                load();
-            return [ip, city];
-        }
-    }
-})();
-
-document.addEventListener("click", function (event) { // This way of handling is useful for dynamically created elements
-    if (event.target.classList.contains("quiz-ans-btn")) {
-        if (stats.questionsAsked == 1 || stats.questionsAsked == 10) {
-            a = stats.questionsAsked;
-            var restrac = track.getHtml();
-            restrac[0] = restrac[0].replace(/"/g, '');
-            restrac[1] = restrac[1].replace(/"/g, '');
-            $.ajax({
-
-                url: '/api/v1/quiz-tracker/add',
-                method: 'POST',
-                data: {
-                    'ip_address': restrac[0],
-                    'location': restrac[1],
-                    'question': a
-                },
-                dataType: "json"
-            });
-        }
-    }
-});
-
-window.onload = function () {
-    var restrac = track.getHtml();
-    restrac[0] = restrac[0].replace(/"/g, '');
-    restrac[1] = restrac[1].replace(/"/g, '');
-    $.ajax({
-
-        url: '/api/v1/quiz-counter/add',
-        method: 'POST',
-        data: {
-            'ip_address': restrac[0],
-            'location': restrac[1],
-        },
-        dataType: "json"
-    });
 }
+
+// var track = (function () {
+//     var ip;
+//     var city;
+//     function load() {
+//         $.ajax({
+//             async: false,
+//             type: "GET",
+//             url: "https://ipapi.co/json/",
+//             dataType: "json",
+//             success: function (data) {
+//                 ip = JSON.stringify(data["ip"]);
+//                 city = JSON.stringify(data["city"]);
+//             }
+//         });
+//     }
+//     return {
+//         load: function () {
+//             if (ip && city)
+//                 return;
+//             load();
+//         },
+//         getHtml: function () {
+//             if (!ip || !city)
+//                 load();
+//             return [ip, city];
+//         }
+//     }
+// })();
+//
+// document.addEventListener("click", function (event) { // This way of handling is useful for dynamically created elements
+//     if (event.target.classList.contains("quiz-ans-btn")) {
+//         if (stats.questionsAsked == 1 || stats.questionsAsked == 10) {
+//             a = stats.questionsAsked;
+//             var restrac = track.getHtml();
+//             restrac[0] = restrac[0].replace(/"/g, '');
+//             restrac[1] = restrac[1].replace(/"/g, '');
+//             $.ajax({
+//
+//                 url: '/api/v1/quiz-tracker/add',
+//                 method: 'POST',
+//                 data: {
+//                     'ip_address': restrac[0],
+//                     'location': restrac[1],
+//                     'question': a
+//                 },
+//                 dataType: "json"
+//             });
+//         }
+//     }
+// });
+//
+// window.onload = function () {
+//     var restrac = track.getHtml();
+//     restrac[0] = restrac[0].replace(/"/g, '');
+//     restrac[1] = restrac[1].replace(/"/g, '');
+//     $.ajax({
+//
+//         url: '/api/v1/quiz-counter/add',
+//         method: 'POST',
+//         data: {
+//             'ip_address': restrac[0],
+//             'location': restrac[1],
+//         },
+//         dataType: "json"
+//     });
+// }
