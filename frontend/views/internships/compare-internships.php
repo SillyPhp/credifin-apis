@@ -891,8 +891,8 @@ $script = <<<JS
                 }
                 
                 if(!dropped.includes(data['message']['application_enc_id'])){
-                    $('[data-id='+data['message']['application_enc_id']+']').draggable({disabled:true});
-                    $('[data-id='+data['message']['application_enc_id']+']').addClass('b-li-card');
+                    $('[data-id="'+data['message']['application_enc_id']+'"]').draggable({disabled:true});
+                    $('[data-id="'+data['message']['application_enc_id']+'"]').addClass('b-li-card');
                     dropped.push(data['message']['application_enc_id']);
                 }
                 
