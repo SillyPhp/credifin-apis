@@ -684,8 +684,11 @@ td{
 ');
 $script = <<<JS
 
+    var dropped = [];
+
     var url = new URL(window.location.href);
     var params = url.searchParams;
+    
     if(params.get('s')){
         $.ajax({
             url: '/jobs/find-application',
@@ -699,12 +702,9 @@ $script = <<<JS
             }
         })        
     }
-    
-    
-    var dropped = [];
 
     unBlockC1();
-     $('#company_2, #job_2, #company_3, #job_3').prop('disabled', true);
+    $('#company_2, #job_2, #company_3, #job_3').prop('disabled', true);
     
     function blockC1(){
         if($('#company_1').val() && $('#job_1').val()){
@@ -742,15 +742,15 @@ $script = <<<JS
         $('#company_3, #job_3').prop('disabled', false);
     }
     
-        var company_search = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: '',
-            remote: {
-                url: '/jobs/get-companies?query={query}',
-                wildcard: '{query}',
-            },
-        });
+    var company_search = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: '',
+        remote: {
+            url: '/jobs/get-companies?query={query}',
+            wildcard: '{query}',
+        },
+    });
     
     
     $('#company_1, #company_2, #company_3').typeahead(null, {
@@ -1039,6 +1039,7 @@ $script = <<<JS
     $(document).on('click', '#company_1_btn,#company_2_btn,#company_3_btn', function(e){
         emptyInp(e.target.getAttribute('id'));
     });
+    
     function emptyInp(elem){
                 if(elem === "company_1_btn"){
                     $("#job_1").typeahead("destroy");
