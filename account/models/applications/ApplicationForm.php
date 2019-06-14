@@ -239,7 +239,7 @@ class ApplicationForm extends Model
             if ($categoriesModel->save()) {
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplicationsModel);
             } else {
-                return false; 
+                return false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
