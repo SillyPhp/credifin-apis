@@ -248,7 +248,7 @@ $this->registerCss('
     }
     .job-box{
         text-align:center;
-        margin: 15px 10px;
+        margin: 15px 0px;
     }
     .job-description li{
         text-align:left;
@@ -259,6 +259,9 @@ $this->registerCss('
     }
 }
 @media only screen and (max-width:500px ){
+    .wrapper-outer{
+        padding:20px 10px;
+    }
     .skills-list ul li{
         margin-bottom: 5px;
     }
