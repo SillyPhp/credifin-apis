@@ -135,7 +135,16 @@ class ApplicationCards
             $cards->limit = $options['limit'];
             $cards->offset = ($options['page'] - 1) * $options['limit'];
         }
-        $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+
+        $result = null;
+        if(isset($options['similar_jobs'])){
+            $cards->andWhere(['in', 'c.name', $options['similar_jobs']]);
+            $cards->andWhere(['in', 'i.name', $options['similar_jobs']]);
+            $result = $cards->orderBy(new \yii\db\Expression('rand()'))->asArray()->all();
+        }else {
+            $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+        }
+
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
@@ -280,7 +289,15 @@ class ApplicationCards
             $cards->limit = $options['limit'];
             $cards->offset = ($options['page'] - 1) * $options['limit'];
         }
-        $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+
+        $result = null;
+        if(isset($options['similar_jobs'])){
+            $cards->andWhere(['in', 'c.name', $options['similar_jobs']]);
+            $cards->andWhere(['in', 'i.name', $options['similar_jobs']]);
+            $result = $cards->orderBy(new \yii\db\Expression('rand()'))->asArray()->all();
+        }else {
+            $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+        }
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
