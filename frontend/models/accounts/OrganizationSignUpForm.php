@@ -137,6 +137,15 @@ class OrganizationSignUpForm extends Model
 
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $transaction->rollBack();
+                $this->_flag = false;
+            }
+
+            $referralModel = new \common\models\crud\Referral();
+            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+
+            if (!$referralModel->create()) {
+                $transaction->rollBack();
+                $this->_flag = false;
             } else {
                 $this->_flag = true;
             }
@@ -168,16 +177,18 @@ class OrganizationSignUpForm extends Model
                     $transaction->rollBack();
                     $this->_flag = false;
                 }
-            }
 
-            $referralModel = new \common\models\crud\Referral();
-            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->created_by = $usersModel->user_enc_id;
+                $referralModel->is_organization = true;
+                $referralModel->organization_enc_id = $organizationsModel->organization_enc_id;
 
-            if (!$referralModel->create()) {
-                $transaction->rollBack();
-                $this->_flag = false;
-            } else {
-                $this->_flag = true;
+                if (!$referralModel->create()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if ($this->_flag) {
