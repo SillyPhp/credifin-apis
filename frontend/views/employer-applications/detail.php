@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
 $separator = Yii::$app->params->seo_settings->title_separator;
 if ($type=='Job') {
+    $smililars = 'jobs';
     if ($data['wage_type'] == 'Fixed') {
         if ($data['wage_duration'] == 'Monthly') {
             $data['fixed_wage'] = $data['fixed_wage'] * 12;
@@ -43,6 +44,7 @@ if ($type=='Job') {
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
 if ($type=='Internship') {
+    $smililars = 'internships';
     if ($data['wage_type'] == 'Fixed') {
         if ($data['wage_duration'] == 'Weekly') {
             $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
@@ -216,6 +218,12 @@ $this->render('/widgets/employer_applications/top-banner', [
                 ?>
             </div>
         </div>
+        <div class="row m-0">
+            <div class="col-md-12">
+                <h2 class="heading-style">Related <?= $type . 's';?></h2>
+                <div class="similar-application"></div>
+            </div>
+        </div>
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
@@ -233,6 +241,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     }
 </script>
 <?php
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss("
     .z-index-9{
         z-index:9;
@@ -1226,12 +1235,15 @@ $this->registerCss("
     }
     /* Profile icons css ends */
     ");
-$script = <<< JS
+$this->registerJs("
  $(document).on('click','#close_btn',function()
  {
     $('.fader').css('display','none');
     $(this).parent().removeClass('show');
-})          
-JS;
-$this->registerJs($script);
+});
+loader = false;
+getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
+");
+//JS;
+//$this->registerJs($script);
 ?>

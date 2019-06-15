@@ -24,7 +24,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     <div class="job-head-info">
         <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
         <div class="organization-details">
-            <h4>Company Detail</h4>
+<!--            <h4>Company Detail</h4>-->
             <?php if ($website): ?>
                 <p><i class="fa fa-unlink"></i><?= $website; ?></p>
             <?php endif; ?>
