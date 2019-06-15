@@ -20,7 +20,6 @@ use common\models\AppliedApplications;
 use common\models\UserResume;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
-use frontend\models\JobApplied;
 use frontend\models\applications\ApplicationCards;
 
 class InternshipsController extends Controller
@@ -294,7 +293,7 @@ class InternshipsController extends Controller
         }
 
         if (!empty($application_details)) {
-            $model = new JobApplied();
+            $model = new \frontend\models\applications\JobApplied();
             return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
                 'data' => $object->getCloneData($application_details->application_enc_id,$application_type='Internships'),
