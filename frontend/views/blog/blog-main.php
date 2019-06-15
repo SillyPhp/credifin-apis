@@ -210,8 +210,8 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" class="q-box-img">
+                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
                             </div>
@@ -220,8 +220,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>" class="q-box-img">
+                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>" alt="World Cup 2019 Quiz vol-2" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
                             </div>
@@ -230,11 +230,10 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a href="#">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/ey_worldcup_vol3.png') ?>"
-                                 class="q-box-img coming-soon">
+                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>" alt="Yuvraj Singh Quiz" class="q-box-img">
                             <div class="q-box-hover">
-                                <div class="text2">Coming Soon</div>
+                                <div class="text2">Take Quiz</div>
                             </div>
                         </a>
                     </div>
