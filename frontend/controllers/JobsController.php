@@ -469,106 +469,6 @@ class JobsController extends Controller
         return $this->render('compare-jobs');
     }
 
-    public function actionFindApplication(){
-        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $req = Yii::$app->request->post();
-            $slug = $req['slug'];
-            $result = EmployerApplications::find()
-                ->where([
-                    'slug' => $slug,
-                    'is_deleted' => 0,
-                ])
-                ->asArray()
-                ->one();
-            return [
-                'status' => 200,
-                'message' => $result['application_enc_id']
-            ];
-        }
-    }
-
-    public function actionGetCompanies($query){
-        $companies = Organizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id id','a.name'])
-            ->innerJoinWith(['employerApplications b' => function($x){
-                $x->onCondition([
-//                    'b.status' => 'Active',
-                    'b.is_deleted' => 0
-                ]);
-                $x->innerJoinWith(['applicationTypeEnc c' => function($y){
-                    $y->andWhere(['c.name' => 'Jobs']);
-                }]);
-            }],false)
-            ->where([
-//                'a.status' => 'Active',
-                'a.is_deleted' => 0
-            ])
-            ->andFilterWhere(['like', 'a.name', $query])
-            ->groupBy(['a.organization_enc_id'])
-            ->asArray()
-            ->all();
-        return json_encode($companies);
-    }
-
-    public function actionGetJobs(){
-        $req = Yii::$app->request->post();
-        $query = $req['q'];
-        $id = $req['id'];
-        $applications = $req['applications'];
-        if(!$applications){
-            $applications = [];
-        }
-        $jobs = Organizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id'])
-            ->distinct()
-            ->innerJoinWith(['employerApplications b' => function($x) use($query, $applications){
-                $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
-                $x->onCondition([
-//                    'b.status' => 'Active',
-                    'b.is_deleted' => 0
-                ]);
-
-                $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
-
-                $x->joinWith(['title c' => function($y) use($query){
-
-//                    $y->andWhere([
-//                        'c.status' => 'Approved',
-//                        'c.is_deleted' => 0
-//                    ]);
-
-                    $y->andFilterWhere([
-                        'or',
-                        ['like', 'd.name', $query],
-                        ['like', 'e.name', $query],
-                    ]);
-
-                    $y->joinWith(['categoryEnc d']);
-                    $y->joinWith(['parentEnc e']);
-                }], false);
-
-                $x->joinWith(['applicationTypeEnc z' => function($zz){
-                    $zz->andWhere(['z.name' => 'Jobs']);
-                }]);
-
-                $x->groupBy(['b.application_enc_id']);
-
-                $x->limit(10);
-            }])
-            ->where([
-//                'a.status' => 'Active',
-                'a.is_deleted' => 0,
-                'a.organization_enc_id' => $id
-            ])
-            ->asArray()
-            ->all();
-        return json_encode($jobs[0]['employerApplications']);
-
-    }
-
     private function getApplicationInfo($id)
     {
         $data = $this->getApplication($id);
@@ -675,7 +575,7 @@ class JobsController extends Controller
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
                 END) as experience', 'b.*, SUBSTRING(r.name, 1, CHAR_LENGTH(r.name) - 1) application_type'])
-            ->joinWith(['applicationOptions b'],false)
+            ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
@@ -730,6 +630,143 @@ class JobsController extends Controller
             ->one();
 
         return $application;
+    }
+
+    public function actionFindApplication()
+    {
+        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $req = Yii::$app->request->post();
+            $slug = $req['slug'];
+            $result = EmployerApplications::find()
+                ->where([
+                    'slug' => $slug,
+                    'is_deleted' => 0,
+                ])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'message' => $result['application_enc_id']
+            ];
+        }
+    }
+
+    public function actionGetCompanies($query)
+    {
+        $companies = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id id', 'a.name'])
+            ->innerJoinWith(['employerApplications b' => function ($x) {
+                $x->onCondition([
+//                    'b.status' => 'Active',
+                    'b.is_deleted' => 0
+                ]);
+                $x->innerJoinWith(['applicationTypeEnc c' => function ($y) {
+                    $y->andWhere(['c.name' => 'Jobs']);
+                }]);
+            }], false)
+            ->where([
+//                'a.status' => 'Active',
+                'a.is_deleted' => 0
+            ])
+            ->andFilterWhere(['like', 'a.name', $query])
+            ->groupBy(['a.organization_enc_id'])
+            ->asArray()
+            ->all();
+        return json_encode($companies);
+    }
+
+    public function actionGetJobs()
+    {
+        $req = Yii::$app->request->post();
+        $query = $req['q'];
+        $id = $req['id'];
+        $applications = $req['applications'];
+        if (!$applications) {
+            $applications = [];
+        }
+        $jobs = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id'])
+            ->distinct()
+            ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
+                $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
+                $x->onCondition([
+//                    'b.status' => 'Active',
+                    'b.is_deleted' => 0
+                ]);
+
+                $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
+
+                $x->joinWith(['title c' => function ($y) use ($query) {
+
+//                    $y->andWhere([
+//                        'c.status' => 'Approved',
+//                        'c.is_deleted' => 0
+//                    ]);
+
+                    $y->andFilterWhere([
+                        'or',
+                        ['like', 'd.name', $query],
+                        ['like', 'e.name', $query],
+                    ]);
+
+                    $y->joinWith(['categoryEnc d']);
+                    $y->joinWith(['parentEnc e']);
+                }], false);
+
+                $x->joinWith(['applicationTypeEnc z' => function ($zz) {
+                    $zz->andWhere(['z.name' => 'Jobs']);
+                }]);
+
+                $x->groupBy(['b.application_enc_id']);
+
+                $x->limit(10);
+            }])
+            ->where([
+//                'a.status' => 'Active',
+                'a.is_deleted' => 0,
+                'a.organization_enc_id' => $id
+            ])
+            ->asArray()
+            ->all();
+        return json_encode($jobs[0]['employerApplications']);
+
+    }
+
+    public function actionSimilarApplication($slug)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $app_data = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title'])
+                ->joinWith(['title b' => function ($x) {
+                    $x->select(['b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'c.name title', 'd.name profile']);
+                    $x->joinWith(['categoryEnc c'], false);
+                    $x->joinWith(['parentEnc d'], false);
+                }])
+                ->where([
+                    'a.slug' => $slug,
+                    'a.is_deleted' => 0
+                ])
+                ->asArray()
+                ->one();
+
+            $app_keys = [];
+            array_push($app_keys, $app_data['title']['title']);
+            array_push($app_keys, $app_data['title']['profile']);
+
+            $options['similar_jobs'] = $app_keys;
+            $options['limit'] = 6;
+            $related_app_data = ApplicationCards::jobs($options);
+
+            return [
+                'status' => 200,
+                'cards' => $related_app_data
+            ];
+        }
     }
 
 }
