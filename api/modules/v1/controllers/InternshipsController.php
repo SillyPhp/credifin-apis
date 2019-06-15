@@ -492,7 +492,7 @@ class InternshipsController extends ApiBaseController
                     WHEN a.preferred_gender = "2" THEN "Female"
                     WHEN a.preferred_gender = "3" THEN "Transgender"
                     END) as preferred_gender',
-                'a.description',
+                'TRIM(REPLACE(a.description, "\n", " ")) as description',
                 'l.category_enc_id',
                 'm.category_enc_id as cat_id',
                 'm.name',
