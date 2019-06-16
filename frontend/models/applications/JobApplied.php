@@ -1,6 +1,6 @@
 <?php
 
-namespace account\models\jobs;
+namespace frontend\models\applications;
 
 use Yii;
 use yii\base\Model;
@@ -27,7 +27,7 @@ class JobApplied extends Model
     {
         return [
             [['id', 'resume_file', 'status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf'],
+            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg','maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -74,7 +74,7 @@ class JobApplied extends Model
                                     $app_id = $appliedModel->applied_application_enc_id;
                                     $id = $this->id;
                                     if (!$locModel->save()) {
-                                        print_r($locModel->getErrors());
+                                       return false;
                                     }
                                 }
                             }
@@ -127,7 +127,7 @@ class JobApplied extends Model
                     $app_id = $appliedModel->applied_application_enc_id;
                     $id = $this->id;
                     if (!$locModel->save()) {
-                        print_r($locModel->getErrors());
+                        return false;
                     }
                 }
             }

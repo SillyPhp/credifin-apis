@@ -6,7 +6,7 @@ use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
 use common\models\AppliedApplications;
 use common\models\UserResume;
-use frontend\models\JobApplied;
+use frontend\models\applications\JobApplied;
 use yii\base\Widget;
 use yii\helpers\Html;
 use Yii;
