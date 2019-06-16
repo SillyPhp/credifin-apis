@@ -478,44 +478,6 @@ class JobsController extends Controller
         }
     }
 
-    public function actionJobsApply()
-    {
-        $model = new JobApplied();
-        if (Yii::$app->request->isPost) {
-            if (!Yii::$app->user->isGuest) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                if (Yii::$app->request->post("check") == 1) {
-                    $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->id = Yii::$app->request->post("application_enc_id");
-                    $model->resume_list = Yii::$app->request->post("resume_enc_id");
-                    $model->location_pref = $arr_loc;
-                    $model->status = Yii::$app->request->post("status");
-                    if ($res = $model->saveValues()) {
-                        return $res;
-                    } else {
-                        $status = [
-                            'status' => false,
-                        ];
-                        return $status;
-                    }
-                } else if (Yii::$app->request->post("check") == 0) {
-                    $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->resume_file = UploadedFile::getInstance($model, 'resume_file');
-                    $model->id = Yii::$app->request->post("id");
-                    $model->location_pref = $arr_loc;
-                    $model->status = Yii::$app->request->post("status");
-                    if ($res = $model->upload()) {
-                        return $res;
-                    } else {
-                        $status = [
-                            'status' => false,
-                        ];
-                        return $status;
-                    }
-                }
-            }
-        }
-    }
 
     public function actionReviewDelete()
     {

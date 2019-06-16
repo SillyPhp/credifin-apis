@@ -8,7 +8,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
-use frontend\models\JobApplied;
+use yii\web\UploadedFile;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\ShortlistedApplications;
@@ -47,6 +47,45 @@ class JobsController extends Controller
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
         return parent::beforeAction($action);
+    }
+
+    public function actionJobsApply()
+    {
+        $model = new \frontend\models\applications\JobApplied();
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if (Yii::$app->request->post("check") == 1) {
+                    $arr_loc = Yii::$app->request->post("json_loc");
+                    $model->id = Yii::$app->request->post("application_enc_id");
+                    $model->resume_list = Yii::$app->request->post("resume_enc_id");
+                    $model->location_pref = $arr_loc;
+                    $model->status = Yii::$app->request->post("status");
+                    if ($res = $model->saveValues()) {
+                        return $res;
+                    } else {
+                        $status = [
+                            'status' => false,
+                        ];
+                        return $status;
+                    }
+                } else if (Yii::$app->request->post("check") == 0) {
+                    $arr_loc = Yii::$app->request->post("json_loc");
+                    $model->resume_file = UploadedFile::getInstance($model, 'resume_file');
+                    $model->id = Yii::$app->request->post("id");
+                    $model->location_pref = $arr_loc;
+                    $model->status = Yii::$app->request->post("status");
+                    if ($res = $model->upload()) {
+                        return $res;
+                    } else {
+                        $status = [
+                            'status' => false,
+                        ];
+                        return $status;
+                    }
+                }
+            }
+        }
     }
 
     public function actionIndex()
@@ -232,7 +271,7 @@ class JobsController extends Controller
                 ->asArray()
                 ->one();
         }
-        $model = new JobApplied();
+        $model = new \frontend\models\applications\JobApplied();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data' => $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs'),
