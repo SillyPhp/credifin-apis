@@ -153,7 +153,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rated Companies</div>
+                    <div class="heading-style">Top Rated Organizations</div>
                     <div id="review_container">
 
                     </div>
