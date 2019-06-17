@@ -1530,7 +1530,14 @@ class OrganizationsController extends Controller
             $model->images = UploadedFile::getInstances($model, 'images');
             if ($model->save())
             {
-                Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                if (Yii::$app->user->isGuest)
+                {
+                    Yii::$app->session->setFlash('success', [['Success', 'Your Information Has Been Successfully Submitted..Would You like to Sign-up with us? <a class="btn btn-primary" href="">Yes</a> <a class="btn btn-primary" href="/">No Thanks</a>']]);
+                }
+                else
+                {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                }
             }
             else
             {
