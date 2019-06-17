@@ -187,12 +187,7 @@ use yii\bootstrap\ActiveForm;
             <div class="col-md-9 col-sm-8 col-xs-12">
                 <div class="companies-reviews">
                     <div class="row">
-                        <div id="review_container">
-
-                        </div>
-                        <div id="review_container_unclaimed">
-
-                        </div>
+                        <div id="review_container"></div>
                         <div class="col-md-12">
                             <div class="load-more-bttn">
                                 <button type="button" id="load_review_card_btn">Load More</button>
@@ -209,10 +204,9 @@ use yii\bootstrap\ActiveForm;
                     </div>
                     <div class="es-text2">
                         Be the first one to wirte a review.
-<!--                        Write a review for this organization, and our team will add this organization to Empower Youth.-->
                     </div>
                     <div class="es-btn">
-                        <button>Write a Review</button>
+                        <button class="add_new_org">Write a Review</button>
                     </div>
                 </div>
             </div>
@@ -235,6 +229,7 @@ $this->registerCss('
 }
 .empty{
     text-align:center;
+    display:none;
 }
 .es-btn{
     padding-top: 20px;
@@ -996,7 +991,6 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
-     fetch_cards_top(params={'rating':[1,2,3,4,5],business_activity:activities,'offset':0},template=$('#review_container_unclaimed'),is_clear=true);       
      fetch_cards(params={'business_activity':activities,'limit':null},template=$('#review_container'),is_clear=true);       
 });
 var ps = new PerfectScrollbar('#industry-scroll');
@@ -1004,7 +998,6 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards_top(params={'keywords':$('input[name="keywords"]').val()},template=$('#review_container_unclaimed'),is_clear=true);
     fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},template=$('#review_container'),is_clear=true);
  });   
 var companies = new Bloodhound({
@@ -1070,7 +1063,6 @@ $('#city_search').typeahead(null, {
   {
      fetch_cards(params={'city':datum.text,'limit':9},template=$('#review_container'),is_clear=true);   
   });
-fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
 fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=true);
 JS;
 $this->registerJs($script);

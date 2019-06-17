@@ -35,7 +35,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="rating">
                     <div class="stars">{{rating}}</div>
-                    <div class="reviews-rate"> of {{#organizationReviews}}{{total_reviews}}{{/organizationReviews}} reviews</div>
+                    <div class="reviews-rate"> of {{total_reviews}} reviews</div>
                 </div>
                 {{/rating}}
                 {{^rating}}
@@ -130,7 +130,7 @@ function fetch_cards(params,template,is_clear=false)
             $('#loading_img').removeClass('show');
             $('#load_review_card_btn').hide();
             $('.fader').css('display','none');
-                    $('#review_container').html('<div class="e-text">Oops ! No Company found for this Keywords</div>');
+            $('.empty').css('display','block');
                 }
             $('#load_review_card_btn').html('Load More')
         }
@@ -140,7 +140,7 @@ $(document).on('click','#load_review_card_btn',function(e) {
   e.preventDefault();
   page_name = page_name+9;
    total = total+9;
-  fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},is_clear=false);
+  fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=false);
 })
 JS;
 $this->registerJs($script);
