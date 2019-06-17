@@ -7,6 +7,7 @@ $this->title = $org_details['name'].' '.Yii::$app->params->seo_settings->title_s
 Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats)/count($stats);
 $round_avg = round($overall_avg);
+$link = Url::to($slug . '/reviews', true);
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
@@ -67,9 +68,9 @@ $this->params['seo_tags'] = [
                 <div class="share-btn">
                     <button id="sb">Share</button>
                         <ul class="sd-btns share-hidden">
-                           <li><a href=""><i class="fa fa-facebook-f"></i></a> </li>
-                           <li><a href=""><i class="fa fa-twitter"></i></a> </li>
-                           <li><a href=""><i class="fa fa-linkedin"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-facebook-f"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-twitter"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-linkedin"></i></a> </li>
                         </ul>
                 </div>
             </div>
