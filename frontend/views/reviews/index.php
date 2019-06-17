@@ -134,7 +134,7 @@ $this->params['seo_tags'] = [
 <!--    </section>-->
     <section class="top-com">
         <div class="container">
-            <h1 class="heading-style">Top Companies</h1>
+            <h1 class="heading-style">Top Organizations</h1>
             <div class="row">
                 <div id="review_container">
                 </div>
