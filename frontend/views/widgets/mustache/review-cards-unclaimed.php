@@ -107,6 +107,13 @@ function fetch_cards_top(params,template,is_clear=false)
                   }
                 });
             }
+            else
+                {
+              $('#loading_img').removeClass('show');
+            $('#load_review_card_btn').hide();
+            $('.fader').css('display','none');
+            empty_div();
+                }
         }
     });
 }

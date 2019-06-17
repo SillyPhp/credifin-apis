@@ -12,65 +12,179 @@ class ReviewCards {
 
     public function getReviewCards($options=[])
     {
-        $cards =  Organizations::find()
-              ->alias('a')
-              ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
-              ->where(['a.is_deleted'=>0])
-              ->andWhere(['a.status'=>'Active'])
-              ->joinWith(['businessActivityEnc b'],false)
-              ->joinWith(['organizationReviews c'=>function($b)
-              {
-                  $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
-                  $b->groupBy(['c.organization_enc_id']);
-              }],true)
-              ->joinWith(['employerApplications e'=>function($x)
-              {
-                  $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
-                  $x->joinWith(['applicationTypeEnc h'],false);
-                  $x->onCondition(['e.is_deleted'=>0]);
-                  $x->groupBy(['e.organization_enc_id']);
-              }],true)
-              ->joinWith(['organizationLocations d'=>function($x)
-              {
-                      $x->joinWith(['cityEnc g'], false);
-              }],false)
-              ->groupBy('a.organization_enc_id');
+//        $cards =  Organizations::find()
+//              ->alias('a')
+//              ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+//              ->where(['a.is_deleted'=>0])
+//              ->andWhere(['a.status'=>'Active'])
+//              ->joinWith(['businessActivityEnc b'],false)
+//              ->joinWith(['organizationReviews c'=>function($b)
+//              {
+//                  $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
+//                  $b->groupBy(['c.organization_enc_id']);
+//              }],true)
+//              ->joinWith(['employerApplications e'=>function($x)
+//              {
+//                  $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
+//                  $x->joinWith(['applicationTypeEnc h'],false);
+//                  $x->onCondition(['e.is_deleted'=>0]);
+//                  $x->groupBy(['e.organization_enc_id']);
+//              }],true)
+//              ->joinWith(['organizationLocations d'=>function($x)
+//              {
+//                      $x->joinWith(['cityEnc g'], false);
+//              }],false)
+//              ->groupBy('a.organization_enc_id');
+//        if (isset($options['business_activity']))
+//        {
+//           $cards->andWhere([
+//               'or',
+//               ['in','b.business_activity',$options['business_activity']]
+//           ]);
+//        }
+//        if (isset($options['keywords']))
+//        {
+//           $cards->andWhere([
+//               'or',
+//               ['like', 'a.name', $options['keywords']],
+//           ]);
+//        }
+//        if (isset($options['city']))
+//        {
+//           $cards->andWhere([
+//               'or',
+//               ['like', 'g.name', $options['city']],
+//           ]);
+//        }
+//        if (isset($options['sort']))
+//        {
+//            $cards->orderBy(['c.created_on' => SORT_DESC]);
+//
+//        }
+//        if (isset($options['rating']))
+//        {
+//            $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
+//        }
+//        $total_cards = $cards->count();
+//        $data = $cards->limit($options['limit'])->offset($options['offset'])->asArray()->all();
+//
+//        return [
+//            'total'=>$total_cards,
+//            'cards'=>$data
+//        ];
+        $q1 = Organizations::find()->alias('a')
+            ->select(['a.organization_enc_id','a.name','a.initials_color color','COUNT(distinct c.average_rating) total_reviews','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->where(['a.is_deleted'=>0])
+            ->andWhere(['a.status'=>'Active'])
+            ->joinWith(['businessActivityEnc b'],false)
+            ->joinWith(['organizationReviews c'],false)
+            ->joinWith(['employerApplications e'=>function($x)
+            {
+                $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
+                $x->joinWith(['applicationTypeEnc h'],false);
+                $x->onCondition(['e.is_deleted'=>0]);
+                $x->groupBy(['e.organization_enc_id']);
+            }],true)
+            ->joinWith(['organizationLocations d'=>function($x)
+            {
+                $x->joinWith(['cityEnc g'], false);
+            }],false)
+            ->groupBy('a.organization_enc_id');
+
         if (isset($options['business_activity']))
         {
-           $cards->andWhere([
-               'or',
-               ['in','b.business_activity',$options['business_activity']]
-           ]);
+            $q1->andWhere([
+                'or',
+                ['in','b.business_activity',$options['business_activity']]
+            ]);
         }
         if (isset($options['keywords']))
         {
-           $cards->andWhere([
-               'or',
-               ['like', 'a.name', $options['keywords']],
-           ]);
+            $q1->andWhere([
+                'or',
+                ['like','g.name',$options['keywords']],
+                ['like','replace(a.name, ".", "")',$options['keywords']]
+            ]);
+        }
+        if (isset($options['limit']))
+        {
+            $q1->limit($options['limit']);
+
         }
         if (isset($options['city']))
         {
-           $cards->andWhere([
-               'or',
-               ['like', 'g.name', $options['city']],
-           ]);
+            $q1->andWhere([
+                'or',
+                ['like', 'g.name', $options['city']],
+            ]);
         }
         if (isset($options['sort']))
         {
-            $cards->orderBy(['c.created_on' => SORT_DESC]);
+            $q1->orderBy(['c.created_on' => SORT_DESC]);
 
+        }
+        if (isset($options['offset']))
+        {
+            $q1->offset($options['offset']);
         }
         if (isset($options['rating']))
         {
-            $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
+            $q1->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
         }
-        $total_cards = $cards->count();
-        $data = $cards->limit($options['limit'])->offset($options['offset'])->asArray()->all();
+        $q1_count = $q1->count();
+        $q2 = UnclaimedOrganizations::find()->alias('a')
+            ->select(['a.organization_enc_id', 'a.name','a.initials_color color','COUNT(distinct c.average_rating) total_reviews','a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
+            ->joinWith(['organizationTypeEnc b'],false)
+            ->joinWith(['newOrganizationReviews c'=>function($b)
+            {
+                $b->joinWith(['cityEnc d'],false);
+            }],false)
+            ->where(['a.is_deleted'=>0])
+            ->groupBy('a.organization_enc_id');
+        if (isset($options['business_activity']))
+        {
+            $q2->andWhere([
+                'or',
+                ['in','b.business_activity',$options['business_activity']]
+            ]);
+        }
+        if (isset($options['keywords']))
+        {
+            $q2->andWhere([
+                'or',
+                ['like','d.name',$options['keywords']],
+                ['like','replace(a.name, ".", "")',$options['keywords']]
+            ]);
+        }
+        if (isset($options['sort']))
+        {
+            $q2->orderBy(['c.created_on' => SORT_DESC]);
 
+        }
+        if (isset($options['city']))
+        {
+            $q2->andWhere([
+                'or',
+                ['like', 'd.name', $options['city']],
+            ]);
+        }
+        if (isset($options['limit']))
+        {
+            $q2->limit($options['limit']);
+        }
+        if (isset($options['offset']))
+        {
+            $q2->offset($options['offset']);
+        }
+        if (isset($options['rating']))
+        {
+            $q2->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
+        }
+        $q2_count = $q2->count();
+        $q1_count = $q1->count();
         return [
-            'total'=>$total_cards,
-            'cards'=>$data
+            'total'=>$q2_count+$q1_count,
+            'cards'=>$q1->union($q2)->asArray()->all()
         ];
     }
 
@@ -79,21 +193,6 @@ class ReviewCards {
         $card_query =  UnclaimedOrganizations::find()
             ->alias('a');
         $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
-//        if ($options['business_activity']=='Educational Institute') {
-//            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((student_engagement+school_infrastructure+faculty+value_for_money+teaching_style+coverage_of_subject_matter+accessibility_of_faculty)/7) rating']);
-//        }
-//        elseif($options['business_activity']=='School')
-//        {
-//            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((student_engagement+school_infrastructure+faculty+accessibility_of_faculty+co_curricular_activities+leadership_development+sports)/7) rating']);
-//        }
-//        elseif ($options['business_activity']=='College')
-//        {
-//            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((academics+faculty_teaching_quality+infrastructure+accomodation_food+placements_internships+social_life_extracurriculars+culture_diversity)/7) rating']);
-//        }
-//        else
-//        {
-//            $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating']);
-//        }
         $cards->where(['a.is_deleted'=>0])
             ->joinWith(['organizationTypeEnc b'],false)
             ->joinWith(['newOrganizationReviews c'=>function($b)
@@ -111,10 +210,7 @@ class ReviewCards {
         }
         if (isset($options['keywords']))
         {
-            $cards->andWhere([
-                'or',
-                ['like', 'a.name', $options['keywords']],
-            ]);
+            $cards->where('replace(name, ".", "") LIKE "%' . $options['keywords'] . '%"');
         }
         if (isset($options['rating']))
         {
