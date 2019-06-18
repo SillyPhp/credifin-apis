@@ -18,6 +18,16 @@ use common\models\AppliedApplicationProcess;
 
 class DashboardController extends Controller
 {
+
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
     private $_condition;
 
     private function hasViewed()
@@ -192,5 +202,12 @@ class DashboardController extends Controller
 
         ]);
     }
+
+//    public function actionError(){
+//        $error = Yii::$app->errorHandler->exception;
+//        return $this->render('error',[
+//            'error' => $error
+//        ]);
+//    }
 
 }
