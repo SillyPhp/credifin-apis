@@ -92,7 +92,28 @@ class ReviewsController extends ApiBaseController
             $review_type = 'claimed';
             $reviews = OrganizationReviews::find()
                 ->alias('a')
-                ->select(['a.show_user_details', 'a.review_enc_id', 'a.status', 'ROUND(a.average_rating) average', 'c.name profile', 'a.created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'b.first_name', 'b.last_name', 'b.image user_logo', 'b.image_location user_logo_location', 'b.initials_color'])
+                ->select([
+                    'a.show_user_details',
+                    'a.review_enc_id', 'a.status',
+                    'ROUND(a.average_rating) average',
+                    'c.name profile', 'a.created_on',
+                    'a.is_current_employee',
+                    'a.overall_experience',
+                    'a.skill_development',
+                    'a.work_life',
+                    'a.compensation',
+                    'a.organization_culture',
+                    'a.job_security',
+                    'a.growth',
+                    'a.work',
+                    'a.likes',
+                    'a.dislikes',
+                    'a.from_date',
+                    'a.to_date',
+                    'b.first_name',
+                    'b.last_name',
+                    'b.initials_color',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image'])
                 ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
