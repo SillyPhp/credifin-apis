@@ -94,9 +94,10 @@ class ReviewsController extends ApiBaseController
                 ->alias('a')
                 ->select([
                     'a.show_user_details',
-                    'a.review_enc_id', 'a.status',
+                    'a.review_enc_id',
                     'ROUND(a.average_rating) average',
-                    'c.name profile', 'a.created_on',
+                    'c.name profile',
+                    'a.created_on',
                     'a.is_current_employee',
                     'a.overall_experience',
                     'a.skill_development',
