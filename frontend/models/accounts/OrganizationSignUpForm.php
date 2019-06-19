@@ -140,16 +140,6 @@ class OrganizationSignUpForm extends Model
                 $this->_flag = false;
             }
 
-            $referralModel = new \common\models\crud\Referral();
-            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
-
-            if (!$referralModel->create()) {
-                $transaction->rollBack();
-                $this->_flag = false;
-            } else {
-                $this->_flag = true;
-            }
-
             if ($this->_flag) {
                 $organizationsModel = new Organizations();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -176,18 +166,6 @@ class OrganizationSignUpForm extends Model
                 if (!$usersModel->validate() || !$usersModel->update()) {
                     $transaction->rollBack();
                     $this->_flag = false;
-                }
-
-                $referralModel = new \common\models\crud\Referral();
-                $referralModel->created_by = $usersModel->user_enc_id;
-                $referralModel->is_organization = true;
-                $referralModel->organization_enc_id = $organizationsModel->organization_enc_id;
-
-                if (!$referralModel->create()) {
-                    $transaction->rollBack();
-                    $this->_flag = false;
-                } else {
-                    $this->_flag = true;
                 }
             }
 
