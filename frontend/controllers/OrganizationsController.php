@@ -1485,6 +1485,29 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionFetchReviewCardsCompany()
+    {
+        $get = new ReviewCards();
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post('params');
+            $cards = $get->getCompaniesCard($options);
+            if ($cards['total'] > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'total' => $cards['total'],
+                    'cards' => $cards['cards'],
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
+
     public function actionFetchUnclaimedReviewCards()
     {
         $get = new ReviewCards();
