@@ -124,16 +124,6 @@ class IndividualSignUpForm extends Model
                     $transaction->rollBack();
                     $this->_flag = false;
                 }
-
-                $referralModel = new \common\models\crud\Referral();
-                $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
-
-                if (!$referralModel->create()) {
-                    $transaction->rollBack();
-                    $this->_flag = false;
-                } else {
-                    $this->_flag = true;
-                }
             }
 
             if ($this->_flag) {
