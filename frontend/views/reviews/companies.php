@@ -652,7 +652,7 @@ float:right;
 }
 /*Load Suggestions loader css ends */
 ');
-echo $this->render('/widgets/mustache/review-cards', [
+echo $this->render('/widgets/mustache/review-cards-company', [
 ]);
 $script = <<<JS
 $(document).on('click','.add_new_org',function(e) {
@@ -660,8 +660,8 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
 var template;
-fetch_cards(params={'rating':[4,5],'limit':3},template=$('#review_container'));
-fetch_cards(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
+fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container'));
+fetch_cards_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,

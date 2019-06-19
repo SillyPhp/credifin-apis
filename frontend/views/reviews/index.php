@@ -136,7 +136,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <h1 class="heading-style">Top Organizations</h1>
             <div class="row">
-                <div id="review_container">
+                <div id="review_container_compnay">
                 </div>
             </div>
         </div>
@@ -1220,7 +1220,7 @@ body.modal-open{
 }
 ');
 echo $this->render('/widgets/mustache/recent-review-bar');
-echo $this->render('/widgets/mustache/review-cards');
+echo $this->render('/widgets/mustache/review-cards-company');
 echo $this->render('/widgets/mustache/review-cards-unclaimed');
 $script = <<< JS
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
@@ -1232,7 +1232,7 @@ $(document).on('click','.add_new_org',function(e) {
 })
 var array_types = ['School','College','Educational Institute'];
 var get_random_cat = array_types[Math.floor(Math.random()*array_types.length)];
-fetch_cards(params={'rating':[4,5],'limit':3},template=$('#review_container'));
+fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container_compnay'));
 fetch_cards_slider_card(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:get_random_cat,'offset':0},template=$('#main-cont'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
