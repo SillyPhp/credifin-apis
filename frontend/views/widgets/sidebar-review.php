@@ -63,6 +63,7 @@ if ($type == "internships"){
 //echo $this->render('/widgets/popup');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+#header > div{width:100% !important;}
 .highlight{
     background-color: #CCC !important;
 }
