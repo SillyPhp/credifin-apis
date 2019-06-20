@@ -193,17 +193,13 @@ class OrganizationSignUpForm extends Model
                 Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
                 Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
+                return true;
             } else {
                 $transaction->rollBack();
+                return false;
             }
         } catch (Exception $e) {
             $transaction->rollBack();
-            return false;
-        }
-
-        if ($this->_flag) {
-            return true;
-        } else {
             return false;
         }
     }
