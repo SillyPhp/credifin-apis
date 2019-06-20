@@ -1938,15 +1938,11 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 $this->registerCssFile('@eyAssets/css/jquery.fancybox.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-//$this->registerCssFile('http://foliotek.github.io/Croppie/bower_components/sweetalert/dist/sweetalert.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
 $this->registerJsFile('@eyAssets/js/jquery.fancybox.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('http://foliotek.github.io/Croppie/bower_components/sweetalert/dist/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('https://foliotek.github.io/Croppie/bower_components/exif-js/exif.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$this->registerJsFile('http://vitalets.github.io/combodate/combodate.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerJsFile('http://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://vitalets.github.io/combodate/momentjs/moment.min.2.5.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
