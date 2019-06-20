@@ -312,6 +312,9 @@ $this->registerCss('
 body{
     background-color:#fff !important;
 }
+#header-main{
+    z-index: 99999 !Important;
+}
 .fil-btn{
     background:#00a0e3;
     border:none;

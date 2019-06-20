@@ -126,12 +126,6 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-<!--    <section class="quick-view">-->
-<!--        <div class="container">-->
-<!--            <div class="row" id="main-cont">-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Organizations</h1>
@@ -187,8 +181,34 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 <?php
 echo $this->render('/widgets/mustache/review-cards');
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/mustache/top-user-reviews');
 
 $this->registerCss('
 .footer{
@@ -1219,7 +1239,6 @@ body.modal-open{
     }
 }
 ');
-echo $this->render('/widgets/mustache/recent-review-bar');
 echo $this->render('/widgets/mustache/review-cards-company');
 echo $this->render('/widgets/mustache/review-cards-unclaimed');
 $script = <<< JS
@@ -1233,7 +1252,9 @@ $(document).on('click','.add_new_org',function(e) {
 var array_types = ['School','College','Educational Institute'];
 var get_random_cat = array_types[Math.floor(Math.random()*array_types.length)];
 fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container_compnay'));
-fetch_cards_slider_card(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:get_random_cat,'offset':0},template=$('#main-cont'));
+fetch_cards_new_latest(params={'rating':[1,2,3,4,5],'sort':1,'limit':2},template=$('#latest_reviews_card_new'));
+fetch_cards_top_user(params={'rating':[5,4],'limit':2},template=$('#top_user_reviews_card_new'));
+fetch_cards_new_most(params={'rating':[5,4],'limit':2,'most_reviewed':1},template=$('#most_reviews_card_new'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,

@@ -306,7 +306,7 @@ progress::-webkit-progress-value {
     min-height: 92%;
     margin-top:15px;
     width: 100%;
-    opacity: 0.95;
+    opacity: 0.8;
     padding-top: 30px;
     text-align: center;
 }
