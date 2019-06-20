@@ -131,6 +131,29 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 <?php
 
 $this->registerCss('
@@ -601,12 +624,18 @@ float:right;
 ');
 echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 ]);
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/mustache/top-user-reviews');
 $script = <<<JS
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_college').val());
 })
 var template;
+fetch_cards_unclaim_latest(params={'rating':[1,2,3,4,5],'sort':1,business_activity:'College','limit':4},template=$('#latest_reviews_card_new'));
+fetch_cards_top_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'College'},template=$('#top_user_reviews_card_new'));
+fetch_cards_most_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'College','most_reviewed':1},template=$('#most_reviews_card_new'));
 fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'College','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#uncliamed_top')); 
 var companies = new Bloodhound({

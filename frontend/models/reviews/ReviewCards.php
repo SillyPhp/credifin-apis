@@ -13,7 +13,7 @@ class ReviewCards {
     public function getReviewCards($options=[])
     {
         $q1 = Organizations::find()->alias('a')
-            ->select(['a.organization_enc_id','a.name','a.initials_color color','COUNT(distinct c.average_rating) total_reviews','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id','a.name','a.initials_color color','max(c.created_on) created_on','COUNT(distinct c.review_enc_id) total_reviews','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted'=>0])
             ->andWhere(['a.status'=>'Active'])
             ->joinWith(['businessActivityEnc b'],false)
@@ -63,6 +63,11 @@ class ReviewCards {
             $q1->orderBy(['c.created_on' => SORT_DESC]);
 
         }
+        if (isset($options['most_reviewed']))
+        {
+            $q1->orderBy(['total_reviews'=>SORT_DESC]);
+
+        }
         if (isset($options['offset']))
         {
             $q1->offset($options['offset']);
@@ -73,7 +78,7 @@ class ReviewCards {
         }
         $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name','a.initials_color color','COUNT(distinct c.average_rating) total_reviews','a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
+            ->select(['a.organization_enc_id', 'a.name','a.initials_color color','max(c.created_on) created_on','COUNT(distinct c.review_enc_id) total_reviews','a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
             ->joinWith(['organizationTypeEnc b'],false)
             ->joinWith(['newOrganizationReviews c'=>function($b)
             {
@@ -95,6 +100,11 @@ class ReviewCards {
                 ['like','d.name',$options['keywords']],
                 ['like','replace(a.name, ".", "")',$options['keywords']]
             ]);
+        }
+        if (isset($options['most_reviewed']))
+        {
+            $q2->orderBy(['total_reviews'=>SORT_DESC]);
+
         }
         if (isset($options['sort']))
         {
@@ -132,15 +142,11 @@ class ReviewCards {
     {
         $cards =  Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id','a.name','a.initials_color color','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id','a.name','a.initials_color color','COUNT(distinct c.review_enc_id) total_reviews','max(c.created_on) created_on','a.slug','CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity_enc_id','b.business_activity','ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted'=>0])
             ->andWhere(['a.status'=>'Active'])
             ->joinWith(['businessActivityEnc b'],false)
-            ->joinWith(['organizationReviews c'=>function($b)
-            {
-                $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
-                $b->groupBy(['c.organization_enc_id']);
-            }],true)
+            ->joinWith(['organizationReviews c'],false)
             ->joinWith(['employerApplications e'=>function($x)
             {
                 $x->select(['e.organization_enc_id','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
@@ -179,6 +185,11 @@ class ReviewCards {
             $cards->orderBy(['c.created_on' => SORT_DESC]);
 
         }
+        if (isset($options['most_reviewed']))
+        {
+            $cards->orderBy(['total_reviews'=>SORT_DESC]);
+
+        }
         if (isset($options['rating']))
         {
             $cards->orFilterHaving(['ROUND(AVG(c.average_rating))'=>$options['rating']]);
@@ -195,14 +206,10 @@ class ReviewCards {
     {
         $card_query =  UnclaimedOrganizations::find()
             ->alias('a');
-        $cards = $card_query->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
+        $cards = $card_query->select(['a.organization_enc_id','COUNT(distinct c.review_enc_id) total_reviews','max(c.created_on) created_on','a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
         $cards->where(['a.is_deleted'=>0])
             ->joinWith(['organizationTypeEnc b'],false)
-            ->joinWith(['newOrganizationReviews c'=>function($b)
-            {
-                $b->select(['c.organization_enc_id','COUNT(c.average_rating) total_reviews']);
-                $b->groupBy(['c.organization_enc_id']);
-            }],true)
+            ->joinWith(['newOrganizationReviews c'],false)
             ->groupBy('a.organization_enc_id');
         if (isset($options['business_activity']))
         {
@@ -226,6 +233,11 @@ class ReviewCards {
         if (isset($options['sort']))
         {
             $cards->orderBy(['c.created_on' => SORT_DESC]);
+
+        }
+        if (isset($options['most_reviewed']))
+        {
+            $cards->orderBy(['total_reviews'=>SORT_DESC]);
 
         }
         $total_cards = $cards->count();
