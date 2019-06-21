@@ -6,6 +6,7 @@ namespace api\modules\v1\controllers;
 
 use account\models\applications\ApplicationForm;
 use api\modules\v1\models\Candidates;
+use api\modules\v1\models\Reviews;
 use common\models\FollowedOrganizations;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
@@ -496,12 +497,13 @@ class ReviewsController extends ApiBaseController
                     return $this->response(404);
                 }
             }
-        }else{
+        } else {
             return $this->response(404);
         }
     }
 
-    public function actionReviewFields(){
+    public function actionReviewFields()
+    {
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
@@ -536,14 +538,14 @@ class ReviewsController extends ApiBaseController
                 ->alias('a')
                 ->select([])
                 ->select([
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
-                    ])
+                    'a.job_security Job_Security',
+                    'a.growth Career_Growth',
+                    'a.organization_culture Company_Culture',
+                    'a.compensation Salary_And_Benefits',
+                    'a.work Work_Satisfaction',
+                    'a.work_life Work_Life_Balance',
+                    'a.skill_development Skill_Development',
+                ])
                 ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
@@ -568,13 +570,13 @@ class ReviewsController extends ApiBaseController
             $options['main'] = [
                 'alias' => 'a',
                 'selections' => [
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
+                    'a.job_security Job_Security',
+                    'a.growth Career_Growth',
+                    'a.organization_culture Company_Culture',
+                    'a.compensation Salary_And_Benefits',
+                    'a.work Work_Satisfaction',
+                    'a.work_life Work_Life_Balance',
+                    'a.skill_development Skill_Development',
                 ]
             ];
 
@@ -605,13 +607,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.academics',
-                        'a.faculty_teaching_quality',
-                        'a.infrastructure',
-                        'a.accomodation_food',
-                        'a.placements_internships',
-                        'a.social_life_extracurriculars',
-                        'a.culture_diversity',
+                        'a.academics Academics',
+                        'a.faculty_teaching_quality Faculty_Teaching_Quality',
+                        'a.infrastructure Infrastructure',
+                        'a.accomodation_food Accomodation_Food',
+                        'a.placements_internships Placements_Internships',
+                        'a.social_life_extracurriculars Social_Life_Extracurriculars',
+                        'a.culture_diversity Culture_Diversity',
                     ]
                 ];
 
@@ -638,13 +640,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.accessibility_of_faculty',
-                        'a.co_curricular_activities',
-                        'a.leadership_development',
-                        'a.sports',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure School_Infrastructure',
+                        'a.faculty Faculty',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
+                        'a.co_curricular_activities Co_Curricular_Activities',
+                        'a.leadership_development Leadership_Development',
+                        'a.sports Sports',
                     ]
                 ];
 
@@ -670,13 +672,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.value_for_money',
-                        'a.teaching_style',
-                        'a.coverage_of_subject_matter',
-                        'a.accessibility_of_faculty',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure School_Infrastructure',
+                        'a.faculty Faculty',
+                        'a.value_for_money Value_For_Money',
+                        'a.teaching_style Teaching_Style',
+                        'a.coverage_of_subject_matter Coverage_Of_Subject_Matter',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
                     ]
                 ];
 
@@ -710,7 +712,7 @@ class ReviewsController extends ApiBaseController
                     return $this->response(404);
                 }
             }
-        }else{
+        } else {
             return $this->response(404);
         }
     }
@@ -861,13 +863,18 @@ class ReviewsController extends ApiBaseController
         $parameters = Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if (isset($parameters['job_security']) && !empty($parameters['job_security'])) {
-            $job_security = $parameters['job_security'];
+        $model = new Reviews();
+        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
+            if ($model->validate()) {
+                $data = $model->user_detail;
+            }else{
+                return $this->response(422);
+            }
         } else {
-            return $this->response(422);
+            return $this->response(404);
         }
 
-        return $this->response(200, $job_security);
+        return $this->response(200, $data);
 
     }
 
