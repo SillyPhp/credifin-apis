@@ -42,7 +42,7 @@ class OrgAutoGenrateBlog extends Model
             {
                 return Yii::$app->user->identity->organization;
             }],
-            [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4],
+            [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4,'maxSize'=>1024*1024*2],
         ];
     }
 
