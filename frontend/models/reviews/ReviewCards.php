@@ -206,7 +206,7 @@ class ReviewCards {
     {
         $card_query =  UnclaimedOrganizations::find()
             ->alias('a');
-        $cards = $card_query->select(['a.organization_enc_id','COUNT(distinct c.review_enc_id) total_reviews','max(c.created_on) created_on','a.name', 'a.initials_color color','CONCAT(a.slug,"/reviews") profile_link','CONCAT(a.slug,"/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
+        $cards = $card_query->select(['a.organization_enc_id','COUNT(distinct c.review_enc_id) total_reviews','max(c.created_on) created_on','a.name', 'a.initials_color color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
         $cards->where(['a.is_deleted'=>0])
             ->joinWith(['organizationTypeEnc b'],false)
             ->joinWith(['newOrganizationReviews c'],false)
