@@ -6,6 +6,7 @@ namespace api\modules\v1\controllers;
 
 use account\models\applications\ApplicationForm;
 use api\modules\v1\models\Candidates;
+use api\modules\v1\models\Reviews;
 use common\models\FollowedOrganizations;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
@@ -182,7 +183,14 @@ class ReviewsController extends ApiBaseController
             }
 
             $stats = OrganizationReviews::find()
-                ->select(['ROUND(AVG(job_security)) job_security', 'ROUND(AVG(growth)) career_growth', 'ROUND(AVG(organization_culture)) company_culture', 'ROUND(AVG(compensation)) salary_and_benefits', 'ROUND(AVG(work)) work_satisfaction', 'ROUND(AVG(work_life)) work_life_balance', 'ROUND(AVG(skill_development)) skill_development'])
+                ->select([
+                    'ROUND(AVG(job_security)) Job_Security',
+                    'ROUND(AVG(growth)) Career_Growth',
+                    'ROUND(AVG(organization_culture)) Company_Culture',
+                    'ROUND(AVG(compensation)) Salary_And_Benefits',
+                    'ROUND(AVG(work)) Work_Satisfaction',
+                    'ROUND(AVG(work_life)) Work_Life_Balance',
+                    'ROUND(AVG(skill_development)) Skill_Development'])
                 ->where(['organization_enc_id' => $org['organization_enc_id'], 'status' => 1])
                 ->asArray()
                 ->one();
@@ -210,13 +218,13 @@ class ReviewsController extends ApiBaseController
             $options['main'] = [
                 'alias' => 'a',
                 'selections' => [
-                    'ROUND(AVG(a.job_security)) job_security',
-                    'ROUND(AVG(a.growth)) career_growth',
-                    'ROUND(AVG(a.organization_culture)) company_culture',
-                    'ROUND(AVG(a.compensation)) salary_and_benefits',
-                    'ROUND(AVG(a.work)) work_satisfaction',
-                    'ROUND(AVG(a.work_life)) work_life_balance',
-                    'ROUND(AVG(a.skill_development)) skill_development'
+                    'ROUND(AVG(a.job_security)) Job_Security',
+                    'ROUND(AVG(a.growth)) Career_Growth',
+                    'ROUND(AVG(a.organization_culture)) Company_Culture',
+                    'ROUND(AVG(a.compensation)) Salary_And_Benefits',
+                    'ROUND(AVG(a.work)) Work_Satisfaction',
+                    'ROUND(AVG(a.work_life)) Work_Life_Balance',
+                    'ROUND(AVG(a.skill_development)) Skill_Development'
                 ]
             ];
 
@@ -231,6 +239,7 @@ class ReviewsController extends ApiBaseController
             $options['main'] = [
                 'alias' => 'a',
                 'selections' => [
+                    'a.review_enc_id',
                     'a.average_rating',
                     'a.job_security',
                     'a.growth career_growth',
@@ -280,13 +289,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'ROUND(AVG(academics)) academics',
-                        'ROUND(AVG(faculty_teaching_quality)) faculty_teaching_quality',
-                        'ROUND(AVG(infrastructure)) infrastructure',
-                        'ROUND(AVG(accomodation_food)) accomodation_food',
-                        'ROUND(AVG(placements_internships)) placements_internships',
-                        'ROUND(AVG(social_life_extracurriculars)) social_life_extracurriculars',
-                        'ROUND(AVG(culture_diversity)) culture_diversity'
+                        'ROUND(AVG(academics)) Academics',
+                        'ROUND(AVG(faculty_teaching_quality)) Faculty_Teaching_Quality',
+                        'ROUND(AVG(infrastructure)) Infrastructure',
+                        'ROUND(AVG(accomodation_food)) Accomodation_Food',
+                        'ROUND(AVG(placements_internships)) Placements_Internships',
+                        'ROUND(AVG(social_life_extracurriculars)) Social_Life_Extracurriculars',
+                        'ROUND(AVG(culture_diversity)) Culture_Diversity'
                     ]
                 ];
 
@@ -302,6 +311,7 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
+                        'a.review_enc_id',
                         'a.average_rating',
                         'a.academics',
                         'a.faculty_teaching_quality',
@@ -346,13 +356,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'ROUND(AVG(student_engagement)) student_engagement',
-                        'ROUND(AVG(school_infrastructure)) school_infrastructure',
-                        'ROUND(AVG(faculty)) faculty',
-                        'ROUND(AVG(accessibility_of_faculty)) accessibility_of_faculty',
-                        'ROUND(AVG(co_curricular_activities)) co_curricular_activities',
-                        'ROUND(AVG(leadership_development)) leadership_development',
-                        'ROUND(AVG(sports)) sports'
+                        'ROUND(AVG(student_engagement)) Student_Engagement',
+                        'ROUND(AVG(school_infrastructure)) School_Infrastructure',
+                        'ROUND(AVG(faculty)) Faculty',
+                        'ROUND(AVG(accessibility_of_faculty)) Accessibility_Of_Faculty',
+                        'ROUND(AVG(co_curricular_activities)) Co_Curricular_Activities',
+                        'ROUND(AVG(leadership_development)) Leadership_Development',
+                        'ROUND(AVG(sports)) Sports'
                     ]
                 ];
 
@@ -368,6 +378,7 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
+                        'a.review_enc_id',
                         'a.average_rating',
                         'a.student_engagement',
                         'a.school_infrastructure infrastructure',
@@ -411,13 +422,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'ROUND(AVG(student_engagement)) student_engagement',
-                        'ROUND(AVG(school_infrastructure)) school_infrastructure',
-                        'ROUND(AVG(faculty)) faculty',
-                        'ROUND(AVG(value_for_money)) value_for_money',
-                        'ROUND(AVG(teaching_style)) teaching_style',
-                        'ROUND(AVG(coverage_of_subject_matter)) coverage_of_subject_matter',
-                        'ROUND(AVG(accessibility_of_faculty)) accessibility_of_faculty'
+                        'ROUND(AVG(student_engagement)) Student_Engagement',
+                        'ROUND(AVG(school_infrastructure)) School_Infrastructure',
+                        'ROUND(AVG(faculty)) Faculty',
+                        'ROUND(AVG(value_for_money)) Value_For_Money',
+                        'ROUND(AVG(teaching_style)) Teaching_Style',
+                        'ROUND(AVG(coverage_of_subject_matter)) Coverage_Of_Subject_Matter',
+                        'ROUND(AVG(accessibility_of_faculty)) Accessibility_Of_Faculty'
                     ]
                 ];
 
@@ -432,6 +443,7 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
+                        'a.review_enc_id',
                         'a.average_rating',
                         'a.student_engagement',
                         'a.school_infrastructure',
@@ -496,12 +508,13 @@ class ReviewsController extends ApiBaseController
                     return $this->response(404);
                 }
             }
-        }else{
+        } else {
             return $this->response(404);
         }
     }
 
-    public function actionReviewFields(){
+    public function actionReviewFields()
+    {
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
@@ -536,14 +549,14 @@ class ReviewsController extends ApiBaseController
                 ->alias('a')
                 ->select([])
                 ->select([
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
-                    ])
+                    'a.job_security Job_Security',
+                    'a.growth Career_Growth',
+                    'a.organization_culture Company_Culture',
+                    'a.compensation Salary_And_Benefits',
+                    'a.work Work_Satisfaction',
+                    'a.work_life Work_Life_Balance',
+                    'a.skill_development Skill_Development',
+                ])
                 ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
@@ -568,13 +581,13 @@ class ReviewsController extends ApiBaseController
             $options['main'] = [
                 'alias' => 'a',
                 'selections' => [
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
+                    'a.job_security Job_Security',
+                    'a.growth Career_Growth',
+                    'a.organization_culture Company_Culture',
+                    'a.compensation Salary_And_Benefits',
+                    'a.work Work_Satisfaction',
+                    'a.work_life Work_Life_Balance',
+                    'a.skill_development Skill_Development',
                 ]
             ];
 
@@ -605,13 +618,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.academics',
-                        'a.faculty_teaching_quality',
-                        'a.infrastructure',
-                        'a.accomodation_food',
-                        'a.placements_internships',
-                        'a.social_life_extracurriculars',
-                        'a.culture_diversity',
+                        'a.academics Academics',
+                        'a.faculty_teaching_quality Faculty_Teaching_Quality',
+                        'a.infrastructure Infrastructure',
+                        'a.accomodation_food Accomodation_Food',
+                        'a.placements_internships Placements_Internships',
+                        'a.social_life_extracurriculars Social_Life_Extracurriculars',
+                        'a.culture_diversity Culture_Diversity',
                     ]
                 ];
 
@@ -638,13 +651,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.accessibility_of_faculty',
-                        'a.co_curricular_activities',
-                        'a.leadership_development',
-                        'a.sports',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure School_Infrastructure',
+                        'a.faculty Faculty',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
+                        'a.co_curricular_activities Co_Curricular_Activities',
+                        'a.leadership_development Leadership_Development',
+                        'a.sports Sports',
                     ]
                 ];
 
@@ -670,13 +683,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.value_for_money',
-                        'a.teaching_style',
-                        'a.coverage_of_subject_matter',
-                        'a.accessibility_of_faculty',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure School_Infrastructure',
+                        'a.faculty Faculty',
+                        'a.value_for_money Value_For_Money',
+                        'a.teaching_style Teaching_Style',
+                        'a.coverage_of_subject_matter Coverage_Of_Subject_Matter',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
                     ]
                 ];
 
@@ -710,7 +723,7 @@ class ReviewsController extends ApiBaseController
                     return $this->response(404);
                 }
             }
-        }else{
+        } else {
             return $this->response(404);
         }
     }
@@ -855,20 +868,25 @@ class ReviewsController extends ApiBaseController
 
     }
 
-    public function actionWriteClaimedOrgReview()
-    {
-
-        $parameters = Yii::$app->request->post();
-        $candidate = $this->userId();
-
-        if (isset($parameters['job_security']) && !empty($parameters['job_security'])) {
-            $job_security = $parameters['job_security'];
-        } else {
-            return $this->response(422);
-        }
-
-        return $this->response(200, $job_security);
-
-    }
+//    public function actionWriteClaimedOrgReview()
+//    {
+//
+//        $parameters = Yii::$app->request->post();
+//        $candidate = $this->userId();
+//
+//        $model = new Reviews();
+//        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
+//            if ($model->validate()) {
+//                $data = $model;
+//            }else{
+//                return $this->response(422);
+//            }
+//        } else {
+//            return $this->response(404);
+//        }
+//
+//        return $this->response(200, $data);
+//
+//    }
 
 }
