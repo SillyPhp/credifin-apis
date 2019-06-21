@@ -30,6 +30,7 @@ class ReviewsController extends ApiBaseController
         $behaviors['authenticator'] = [
             'except' => [
                 'review',
+                'review-fields'
             ],
             'class' => HttpBearerAuth::className()
         ];
