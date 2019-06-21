@@ -1531,6 +1531,10 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionFeatures(){
+        return $this->render('features');
+    }
+
     public function actionGenrateBlog()
     {
       return $this->generateblog();
