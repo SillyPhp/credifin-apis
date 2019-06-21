@@ -38,7 +38,7 @@ class Referral extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['referral_enc_id', 'code', 'referral_link', 'created_by'], 'required'],
+            [['referral_enc_id', 'code', 'referral_link', 'created_by', 'user_enc_id'], 'required'],
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['referral_enc_id', 'code', 'referral_link', 'user_enc_id', 'organization_enc_id', 'created_by'], 'string', 'max' => 100],

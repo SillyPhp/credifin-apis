@@ -136,6 +136,7 @@ class OrganizationSignUpForm extends Model
 
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $this->_flag = false;
+//                $transaction->rollback();
             }
 
             if($this->_flag) {
@@ -144,6 +145,7 @@ class OrganizationSignUpForm extends Model
 
                 if (!$referralModel->create()) {
                     $this->_flag = false;
+//                    $transaction->rollback();
                 } else {
                     $this->_flag = true;
                 }
@@ -168,11 +170,13 @@ class OrganizationSignUpForm extends Model
                 $organizationsModel->status = 'Active';
                 if (!$organizationsModel->validate() || !$organizationsModel->save()) {
                     $this->_flag = false;
+//                    $transaction->rollback();
                 }
 
                 $usersModel->organization_enc_id = $organizationsModel->organization_enc_id;
                 if (!$usersModel->validate() || !$usersModel->update()) {
                     $this->_flag = false;
+//                    $transaction->rollback();
                 }
             }
 
@@ -184,6 +188,7 @@ class OrganizationSignUpForm extends Model
 
                 if (!$referralModel->create()) {
                     $this->_flag = false;
+//                    $transaction->rollback();
                 } else {
                     $this->_flag = true;
                 }
