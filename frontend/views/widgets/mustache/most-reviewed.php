@@ -11,11 +11,11 @@ use yii\helpers\Url;
                 <div class="col-md-3">
                     {{#logo}}
                     <div class="qrb-thumb">
-                        <a href="/{{slug}}/reviews"><img src="{{logo}}"></a>
+                        <a href="/{{profile_link}}"><img src="{{logo}}"></a>
                     </div>
                     {{/logo}}
                     {{^logo}}
-                    <a href="/{{slug}}/reviews">
+                    <a href="/{{profile_link}}">
                         <div class="qrb-thumb">
                             <canvas class="user-icon" name="{{name}}" width="60" height="60"
                                     color="{{color}}" font="35px"></canvas>
@@ -25,7 +25,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-9">
                     <div class="qrb-details">
-                        <div class="qr-name"><a href="/{{slug}}/reviews"> {{name}} </a></div>
+                        <div class="qr-name"><a href="/{{profile_link}}"> {{name}} </a></div>
                         <div class="qr-stars">
                             <i class="fa fa-users"></i> {{total_reviews}}
                         </div>

@@ -7,19 +7,19 @@ use yii\helpers\Url;
             <div class="com-review-box fivestar-box">
                 <div class="com-logo">
                     {{#logo}}
-                    <a href="/{{slug}}">
+                    <a href="/{{profile_link}}">
                         <img src="{{logo}}">
                     </a>
                     {{/logo}}
                     {{^logo}}
-                    <a href="/{{slug}}">
+                    <a href="/{{profile_link}}">
                         <canvas class="user-icon" name="{{name}}" width="100" height="100"
                                 color="{{color}}" font="35px"></canvas>
                     </a>
                     {{/logo}}
                 </div>
                 <div class="pos-rel1">
-                <div class="com-name"><a href="/{{slug}}">{{name}}</a></div>
+                <div class="com-name"><a href="/{{profile_link}}">{{name}}</a></div>
                 </div>
                 {{#employerApplications}}
                 <div class="com-loc"><span>{{#employerApplications}}{{total_jobs}}{{/employerApplications}}</span> Jobs</div>
@@ -52,12 +52,12 @@ use yii\helpers\Url;
                     <div class="cm-btns padd-0">
                         <div class="col-md-6">
                             <div class="color-blue">
-                                <a href="/{{slug}}">View Profile</a>
+                                <a href="/{{profile_link}}">View Profile</a>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="color-orange">
-                                <a href="/{{slug}}/reviews">Read Reviews</a>
+                                <a href="/{{review_link}}">Read Reviews</a>
                             </div>
                         </div>
                     </div>
