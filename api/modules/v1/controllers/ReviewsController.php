@@ -496,6 +496,8 @@ class ReviewsController extends ApiBaseController
                     return $this->response(404);
                 }
             }
+        }else{
+            return $this->response(404);
         }
     }
 
@@ -560,6 +562,42 @@ class ReviewsController extends ApiBaseController
 
         } elseif (!empty($unclaimed_org)) {
             $review_type = 'unclaimed';
+
+
+            $options = [];
+            $options['main'] = [
+                'alias' => 'a',
+                'selections' => [
+                    'a.job_security',
+                    'a.growth career_growth',
+                    'a.organization_culture company_culture',
+                    'a.compensation salary_and_benefits',
+                    'a.work work_satisfaction',
+                    'a.work_life work_life_balance',
+                    'a.skill_development',
+                ]
+            ];
+
+            $options['joins']['created_by'] = [
+                'alias' => 'b'
+            ];
+
+            $options['joins']['category'] = [
+                'alias' => 'c'
+            ];
+
+            $options['joins']['designation'] = [
+                'alias' => 'd'
+            ];
+
+            $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
+            $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
+
+            $options['user_id'] = $candidate->user_enc_id;
+
+            $options['quant'] = 'all';
+
+            $emp_reviews = $this->__unclaimedReviews($options);
 
             if ($unclaimed_org['business_activity'] == 'College') {
 
@@ -663,6 +701,7 @@ class ReviewsController extends ApiBaseController
             $org = $unclaimed_org;
 
             $data['reviews'] = $reviews_students;
+            $data['emp_reviews'] = $emp_reviews;
 
             if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute') {
                 if (!empty($data)) {
@@ -671,6 +710,8 @@ class ReviewsController extends ApiBaseController
                     return $this->response(404);
                 }
             }
+        }else{
+            return $this->response(404);
         }
     }
 
