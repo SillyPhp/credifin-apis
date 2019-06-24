@@ -107,9 +107,9 @@ $(document).on('click','.rmv_org',function(){
         },
         success:function(data){
             $.pjax.reload({container: pjax_refresh_id, async: false});
-            $.pjax.reload({container: '#widgets', async: false});
             if(data == true) {
                 toastr.success(data.message, 'Success');
+                utilities.initials();
             } else{
                 toastr.error('Something went wrong. Please try again.', 'Opps!!');
             }

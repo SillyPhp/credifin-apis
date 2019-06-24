@@ -311,6 +311,40 @@ class InternshipsController extends Controller
         }
     }
 
+    public function actionSimilarApplication($slug)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $app_data = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title'])
+                ->joinWith(['title b' => function ($x) {
+                    $x->select(['b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'c.name title', 'd.name profile']);
+                    $x->joinWith(['categoryEnc c'], false);
+                    $x->joinWith(['parentEnc d'], false);
+                }])
+                ->where([
+                    'a.slug' => $slug,
+                    'a.is_deleted' => 0
+                ])
+                ->asArray()
+                ->one();
+
+            $app_keys = [];
+            array_push($app_keys, $app_data['title']['title']);
+            array_push($app_keys, $app_data['title']['profile']);
+
+            $options['similar_jobs'] = $app_keys;
+            $options['limit'] = 6;
+            $related_app_data = ApplicationCards::internships($options);
+
+            return [
+                'status' => 200,
+                'cards' => $related_app_data
+            ];
+        }
+    }
+
     public function actionNearMe(){
 
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
@@ -382,6 +416,26 @@ class InternshipsController extends Controller
             ];
         }
         return $this->render('compare-internships');
+    }
+
+
+    public function actionFindApplication(){
+        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $req = Yii::$app->request->post();
+            $slug = $req['slug'];
+            $result = EmployerApplications::find()
+                ->where([
+                    'slug' => $slug,
+                    'is_deleted' => 0,
+                ])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'message' => $result['application_enc_id']
+            ];
+        }
     }
 
     public function actionGetCompanies($query){

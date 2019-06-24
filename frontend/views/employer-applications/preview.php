@@ -1,63 +1,54 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+
 $this->params['header_dark'] = false;
 $this->title = 'Job Preview';
 $object->fixed_wage = (($object->fixed_wage) ? str_replace(',', '', $object->fixed_wage) : 0);
 $object->min_wage = (($object->min_wage) ? str_replace(',', '', $object->min_wage) : 0);
 $object->max_wage = (($object->max_wage) ? str_replace(',', '', $object->max_wage) : 0);
-if (!empty($object->skillsArray))
-{
+if (!empty($object->skillsArray)) {
     $s = json_decode($object->skillsArray);
     $c = count($s);
-    for ($i = 0;$i<$c;$i++)
-    {
+    for ($i = 0; $i < $c; $i++) {
         $skills[$i]['skill'] = $s[$i];
     }
 }
-if (!empty($object->qualifications_arr))
-{
+if (!empty($object->qualifications_arr)) {
     $e = json_decode($object->qualifications_arr);
     $cnt = count($e);
-    for ($i = 0;$i<$cnt;$i++)
-    {
+    for ($i = 0; $i < $cnt; $i++) {
         $ed[$i]['educational_requirement'] = $e[$i];
     }
 }
-if (!empty($object->placement_loc))
-{
-    $pl_loc = json_decode($object->placement_loc,true);
-    foreach ($pl_loc as $key=>$val){
+if (!empty($object->placement_loc)) {
+    $pl_loc = json_decode($object->placement_loc, true);
+    foreach ($pl_loc as $key => $val) {
         $placement_locations[$key]['positions'] = $val['value'];
         $placement_locations[$key]['name'] = $val['name'];
     }
 }
-if ($object->type=='Work From Home')
-{
+if ($object->type == 'Work From Home') {
     $placement_locations = [];
 }
-if (!empty($object->checkboxArray))
-{
+if (!empty($object->checkboxArray)) {
     $j = json_decode($object->checkboxArray);
     $count = count($j);
-    for ($i = 0;$i<$count;$i++)
-    {
+    for ($i = 0; $i < $count; $i++) {
         $jd[$i]['job_description'] = $j[$i];
     }
 }
-if (!empty($object->getinterviewcity))
-{
+if (!empty($object->getinterviewcity)) {
     $int = json_decode($object->getinterviewcity);
     $count_int = count($int);
-    for ($i = 0;$i<$count_int;$i++)
-    {
+    for ($i = 0; $i < $count_int; $i++) {
         $int_t[$i]['name'] = $int[$i];
     }
 }
-switch ($object->min_exp)
-{
+switch ($object->min_exp) {
     case '0':
         $experience = 'No Experience';
         break;
@@ -97,7 +88,7 @@ switch ($object->wage_type) {
         $object->wage_type = 'Unpaid';
         break;
 }
-if ($type=='Job') {
+if ($type == 'Job') {
     if ($object->wage_type == 'Fixed') {
         if ($object->wage_duration == 'Monthly') {
             $fixd = $object->fixed_wage * 12;
@@ -131,13 +122,11 @@ if ($type=='Job') {
         }
     }
 }
-if ($type=='Internship') {
+if ($type == 'Internship') {
     if ($object->wage_type == 'Fixed') {
         if ($object->wage_duration == 'Weekly') {
             $fixd = $object->fixed_wage / 7 * 30;
-        }
-        else
-        {
+        } else {
             $fixd = $object->fixed_wage;
         }
         setlocale(LC_MONETARY, 'en_IN');
@@ -146,9 +135,7 @@ if ($type=='Internship') {
         if ($object->wage_duration == 'Weekly') {
             $min_wage = $object->min_wage / 7 * 30;
             $max_wage = $object->max_wage / 7 * 30;
-        }
-        else
-        {
+        } else {
             $min_wage = $object->min_wage;
             $max_wage = $object->max_wage;
         }
@@ -157,130 +144,130 @@ if ($type=='Internship') {
     }
 }
 echo $this->render('/widgets/employer_applications/top-banner', [
-    'org_image_location'=>Yii::$app->user->identity->organization->cover_image_location,
-    'org_image'=>Yii::$app->user->identity->organization->cover_image,
-    'job_title'=>$object->title,
-    'icon_png'=>$primary_cat['icon_png'],
-    'shortlist'=>null,
+    'org_image_location' => Yii::$app->user->identity->organization->cover_image_location,
+    'org_image' => Yii::$app->user->identity->organization->cover_image,
+    'job_title' => $object->title,
+    'icon_png' => $primary_cat['icon_png'],
+    'shortlist' => null,
 ]);
 ?>
-<section>
+    <section>
         <div class="container">
             <div class="row m-0">
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     <div class="job-single-sec">
                         <div class="job-single-head2">
-                            <?php if ($type=='Internship')
-                            {
+                            <?php if ($type == 'Internship') {
                                 echo $this->render('/widgets/employer_applications/internship-overview', [
-                                    'placement_offer'=>(($object->pre_placement_offer) ? 1 : 0),
-                                    'profile_name'=>$primary_cat['name'],
-                                    'wage_duration'=>$object->wage_duration,
-                                    'wage_type'=>$object->wage_type,
-                                    'max_wage'=>$max_wage,
-                                    'min_wage'=>$min_wage,
-                                    'gender'=>$object->gender,
-                                    'fixed_wage'=>$fixd,
-                                    'placement_locations'=>$placement_locations,
+                                    'placement_offer' => (($object->pre_placement_offer) ? 1 : 0),
+                                    'profile_name' => $primary_cat['name'],
+                                    'wage_duration' => $object->wage_duration,
+                                    'wage_type' => $object->wage_type,
+                                    'max_wage' => $max_wage,
+                                    'min_wage' => $min_wage,
+                                    'gender' => $object->gender,
+                                    'fixed_wage' => $fixd,
+                                    'placement_locations' => $placement_locations,
                                 ]);
-                            }
-                            else if ($type=='Job')
-                            {
+                            } else if ($type == 'Job') {
                                 echo $this->render('/widgets/employer_applications/job-overview', [
-                                    'profile_name'=>$primary_cat['name'],
-                                    'industry'=>$industry['industry'],
-                                    'designation'=>$object->designations,
-                                    'job_type'=>$object->type,
-                                    'wage_duration'=>$object->wage_duration,
-                                    'wage_type'=>$object->wage_type,
-                                    'max_wage'=>$max_wage,
-                                    'min_wage'=>$min_wage,
-                                    'gender'=>$object->gender,
-                                    'fixed_wage'=>$fixd,
-                                    'experience'=>$experience,
-                                    'placement_locations'=>$placement_locations,
+                                    'profile_name' => $primary_cat['name'],
+                                    'industry' => $industry['industry'],
+                                    'designation' => $object->designations,
+                                    'job_type' => $object->type,
+                                    'wage_duration' => $object->wage_duration,
+                                    'wage_type' => $object->wage_type,
+                                    'max_wage' => $max_wage,
+                                    'min_wage' => $min_wage,
+                                    'gender' => $object->gender,
+                                    'fixed_wage' => $fixd,
+                                    'experience' => $experience,
+                                    'placement_locations' => $placement_locations,
                                 ]);
                             } ?>
                         </div>
                         <div class="job-details">
                             <?=
                             $this->render('/widgets/employer_applications/working-days', [
-                                'working_days'=>json_encode($object->weekdays)
+                                'working_days' => json_encode($object->weekdays)
                             ]);
                             ?>
                             <?=
                             $this->render('/widgets/employer_applications/working-time', [
-                                'working_time_from'=>$object->from,
-                                'working_time_to'=>$object->to
+                                'working_time_from' => $object->from,
+                                'working_time_to' => $object->to
                             ]);
                             ?>
                             <?=
                             $this->render('/widgets/employer_applications/employee-benefits', [
-                                'benefits'=>$benefits
+                                'benefits' => $benefits
                             ]);
                             ?>
                             <?=
                             $this->render('/widgets/employer_applications/skills', [
-                                'skills'=>$skills
+                                'skills' => $skills
                             ]);
                             ?>
                             <?=
                             $this->render('/widgets/employer_applications/job-description', [
-                                'job_description'=>$jd,
-                                'type'=>$type,
+                                'job_description' => $jd,
+                                'type' => $type,
                             ]);
                             ?>
 
-                              <?=
+                            <?=
                             $this->render('/widgets/employer_applications/educational-requirements', [
-                                'educational_requirements'=>$ed,
+                                'educational_requirements' => $ed,
                             ]);
-                           ?>
-                        <?=
-                        $this->render('/widgets/employer_applications/other-details', [
-                                'other_details'=>$object->othrdetail,
-                        ]);
-                        ?>
-                    </div>
-                    <div class="job-overview">
-                        <?=
-                        $this->render('/widgets/employer_applications/interview-details', [
-                                'interview_start'=>$object->startdate.' '.$object->interviewstarttime,
-                                'interview_end'=>$object->enddate.' '.$object->interviewendtime,
-                                'interview_locations'=>$int_t,
-                        ]);
-                        ?>
+                            ?>
+                            <?=
+                            $this->render('/widgets/employer_applications/other-details', [
+                                'other_details' => $object->othrdetail,
+                            ]);
+                            ?>
+                        </div>
+                        <div class="job-overview">
+                            <?=
+                            $this->render('/widgets/employer_applications/interview-details', [
+                                'interview_start' => $object->startdate . ' ' . $object->interviewstarttime,
+                                'interview_end' => $object->enddate . ' ' . $object->interviewendtime,
+                                'interview_locations' => $int_t,
+                            ]);
+                            ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                <?=
-                $this->render('/widgets/employer_applications/organization-details', [
-                        'org_logo'=>Yii::$app->user->identity->organization->logo,
-                        'org_logo_location'=>Yii::$app->user->identity->organization->logo_location,
-                        'org_name'=>Yii::$app->user->identity->organization->name,
-                        'slug'=>Yii::$app->user->identity->organization->slug,
-                        'website'=>Yii::$app->user->identity->organization->website,
-                        'type'=>$type,
-                        'applied'=>false,
-                        'application_slug'=>'Empoweryouth',
-                ]);
-                ?>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
+                    <?=
+                    $this->render('/widgets/employer_applications/organization-details', [
+                        'org_logo' => Yii::$app->user->identity->organization->logo,
+                        'org_logo_location' => Yii::$app->user->identity->organization->logo_location,
+                        'org_name' => Yii::$app->user->identity->organization->name,
+                        'slug' => Yii::$app->user->identity->organization->slug,
+                        'website' => Yii::$app->user->identity->organization->website,
+                        'type' => $type,
+                        'applied' => false,
+                        'application_slug' => 'Empoweryouth',
+                    ]);
+                    ?>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-<script>
-    function copyToClipboard() {
-        var copyText = document.getElementById("share_manually");
-        copyText.select();
-        document.execCommand("copy");
-        toastr.success("", "Copied");
-        // alert("Copied the text: " + copyText.value);
-    }
-</script>
+    </section>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("share_manually");
+            copyText.select();
+            document.execCommand("copy");
+            toastr.success("", "Copied");
+            // alert("Copied the text: " + copyText.value);
+        }
+    </script>
 <?php
 $this->registerCss("
+    .z-index-9{
+        z-index:9;
+    }
      .sub_description_1,sub_description_2{
         display:none;
      }   
@@ -425,8 +412,8 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 124px;
-        height: 124px; 
+        width: 90px;
+        height: 90px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -464,7 +451,7 @@ $this->registerCss("
         float: left;
         width: 100%;
         position: relative;
-        padding-top: 185px;
+        padding-top: 215px;
         padding-bottom: 15px;
         z-index: 0;
     }
@@ -489,6 +476,7 @@ $this->registerCss("
         text-align: center;
         margin: auto;
         margin-bottom: 50px;
+        text-transform: capitalize;
     }
     .inner-header .container {
         position: relative;
@@ -850,8 +838,8 @@ $this->registerCss("
         border-color: #4FCE5D;
     }
     .job-single-head.style2 {
-        float: left;
-        width: 100%;
+//        float: left;
+//        width: 100%;
         display: inherit;
         text-align: center;
         border: none;
@@ -867,11 +855,11 @@ $this->registerCss("
         display: inline-block;
         width: auto;
         border: none;
-        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
-        -moz-box-shadow: 0px 0px 20px 7px #ddd;
-        -ms-box-shadow: 0px 0px 20px 7px #ddd;
-        -o-box-shadow: 0px 0px 20px 7px #ddd;
-        box-shadow: 0px 0px 20px 7px #ddd;
+//        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
+//        -moz-box-shadow: 0px 0px 20px 7px #ddd;
+//        -ms-box-shadow: 0px 0px 20px 7px #ddd;
+//        -o-box-shadow: 0px 0px 20px 7px #ddd;
+//        box-shadow: 0px 0px 20px 7px #ddd;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -889,14 +877,14 @@ $this->registerCss("
     .job-single-head.style2 .job-head-info p {
         float: left;
         width: 100%;
-        text-align: center;
+//        text-align: center;
         margin: 0;
         margin-top: 0px;
-        margin-top: 5px;
     }
     .job-single-head.style2 .job-head-info p i {
         float: none;
-        color: #4aa1e3;
+        color: #fff;
+        display:inline-block;
     }
     .job-single-head.style2 .job-head-info > span {
         margin-top: 5px;
@@ -941,16 +929,16 @@ $this->registerCss("
         font-family: Open Sans;
         font-size: 17px;
         font-weight: 600;
-        color: #202020;
+        color: #fff;
         margin: 0;
         margin-bottom: 0px;
         margin-bottom: 10px;
     }
     .job-head-info span {
-        float: left;
-        width: 100%;
+        float: none;
+        width: auto;
         font-size: 13px;
-        color: #888888;
+        color: #fff;
         line-height: 10px;
     }
     .job-head-info p {
@@ -965,28 +953,29 @@ $this->registerCss("
     }
     .job-head-info p i {
         float: left;
-        font-size: 21px;
+        font-size: 14px;
         line-height: 27px;
         margin-right: 9px;
+        margin-top: 1px;
     }
     .apply-job-btn {
-        background: #ffffff;
+        background: #00a0e3;
         -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
         box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -webkit-border-radius: 40px;
-        -moz-border-radius: 40px;
-        -ms-border-radius: 40px;
-        -o-border-radius: 40px;
-        border-radius: 40px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+        border-radius: 2px;
         font-family: Open Sans;
         font-size: 13px;
-        color: #ef7706;
-        width: 200px;
+        color: #fff;
+        width: 175px;
         height: auto;
-        padding: 15px 15px;
+        padding: 15px 6px;
         text-align: center;
         margin:auto;
     }
@@ -996,12 +985,12 @@ $this->registerCss("
         -ms-border-radius: 8px;
         -o-border-radius: 8px;
         border-radius: 8px;
-        color: #ef7706 !important;
+        color: #fff !important;
     }
     .apply-job-btn i {
         float: none;
-        font-size: 25px;
-        margin-right: 10px;
+        font-size: 18px;
+        margin-right: 6px;
         line-height: 8px;
         position: relative;
         top: 4px;
@@ -1245,7 +1234,7 @@ $this->registerCss("
                width: 260px;
           }
           .inner-header {
-               padding-top: 150px;
+               padding-top: 160px;
           }
           .inner-header > h3{
                width: 370px;
@@ -1261,7 +1250,7 @@ $this->registerCss("
                margin-bottom: 20px;
           }
           .inner-header {
-               padding-top: 100px;
+               padding-top: 160px;
           }
     }
     @media screen and (max-width: 649px) and (min-width: 0px) {
@@ -1274,7 +1263,7 @@ $this->registerCss("
                margin-bottom: 30px;
           }
           .inner-header {
-               padding-top: 80px;
+               padding-top: 90px;
           }
           .inner-header > h3 {
                font-size: 20px;
