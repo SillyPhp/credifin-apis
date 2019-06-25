@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\EmployerApplications;
+use common\models\Quiz;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -218,6 +219,27 @@ class SiteController extends Controller
         return $this->render('employers', [
             'feedbackFormModel' => $feedbackFormModel,
             'partnerWithUsModel' => $partnerWithUsModel,
+        ]);
+    }
+
+    public function actionAllQuiz()
+    {
+        $quizes = Quiz::find()
+            ->alias('a')
+            ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
+            ->joinWith(['quizQuestions b' => function ($x) {
+                $x->onCondition([
+                    'b.is_deleted' => 0
+                ]);
+                $x->groupBy(['b.quiz_enc_id']);
+            }], false)
+            ->where([
+                'a.is_deleted' => 0
+            ])
+            ->asArray()
+            ->all();
+        return $this->render('all-quizes', [
+            'data' => $quizes
         ]);
     }
 
@@ -437,13 +459,14 @@ class SiteController extends Controller
             return $response;
         }
     }
+
     public function actionWorkingProfiles()
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             // $jobCategories = \frontend\models\profiles\ProfileCards::getProfiles();
-            $jobCategories =   AssignedCategories::find()
-                ->select(['b.name','b.slug', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+            $jobCategories = AssignedCategories::find()
+                ->select(['b.name', 'b.slug', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
                 ->alias('a')
                 ->joinWith(['parentEnc b'], false)
                 ->joinWith(['categoryEnc c'], false)
@@ -453,7 +476,7 @@ class SiteController extends Controller
                 ->orderBy(['b.name' => SORT_ASC])
                 ->asArray()
                 ->all();
-            $internshipCategories =   AssignedCategories::find()
+            $internshipCategories = AssignedCategories::find()
                 ->select(['b.name', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
                 ->alias('a')
                 ->joinWith(['parentEnc b'], false)
