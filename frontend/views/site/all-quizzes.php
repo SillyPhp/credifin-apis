@@ -86,6 +86,12 @@ $this->registerCss('
     font-weight:bold;
     padding-top: 10px;
     font-family:lora;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 60px;
 }
 .quiz-ques{
     line-height: 13px;
