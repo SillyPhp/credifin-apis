@@ -6,6 +6,7 @@ use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Cards;
 use api\modules\v1\models\JobApply;
 use api\modules\v1\models\JobDetail;
+use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
 use common\models\UserAccessTokens;
@@ -408,6 +409,13 @@ class InternshipsController extends ApiBaseController
                         ->where(['shortlisted' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasShortlisted"] = $shortlist;
+
+                    $reviewlist = ReviewedApplications::find()
+                        ->select(['review'])
+                        ->where(['review' =>1,'application_enc_id'=>$req['id'], 'created_by'=>$user->user_enc_id])
+                        ->exists();
+                    $data["hasReviewed"] = $reviewlist;
+
                 } else {
                     return $this->response(401);
                 }
