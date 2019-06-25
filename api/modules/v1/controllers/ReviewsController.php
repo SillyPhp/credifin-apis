@@ -877,7 +877,7 @@ class ReviewsController extends ApiBaseController
 
         $candidate = $this->userId();
 
-        $model = new Reviews(['scenario'=>'employee-review']);
+        $model = new Reviews(['scenario' => 'employee-review']);
 
 
         if ($model->load(\Yii::$app->request->post(), '')) {
@@ -947,7 +947,7 @@ class ReviewsController extends ApiBaseController
                 } else {
                     return $this->response(500);
                 }
-            }else{
+            } else {
                 return $this->response(422);
             }
         } else {
@@ -1024,47 +1024,20 @@ class ReviewsController extends ApiBaseController
 
     }
 
-    public function actionWriteUnclaimedOrgReview(){
-
+    public function actionWriteUnclaimedOrgReview()
+    {
+        $a = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        $model = new Reviews(['scenario'=>'unclaimed_employee_review']);
-
-        if ($model->load(\Yii::$app->request->post(), '')) {
-
-            if ($model->validate()) {
-                $avg_rating = null;
-                $reviewer_type = null;
-                $show_user_detail = null;
-
-                if ($model->current_employee == 'zero') {
-                    $reviewer_type = 0;
-                } else {
-                    $reviewer_type = $model->current_employee;
-                }
-
-                if ($model->user_detail == 'one') {
-                    $show_user_detail = 1;
-                } elseif ($model->user_detail == 'zero') {
-                    $show_user_detail = 0;
-                }
-
-                $rating = [$model->skill_development, $model->work_life_balance, $model->salary_benefits , $model->company_culture , $model->job_security , $model->career_growth , $model->work_satisfaction];
-                $avg_rating = array_sum($rating) / 7;
-                $avg_rating = number_format($avg_rating, 2);
-
-                $chk = OrganizationReviews::find()
-                    ->select(['*'])
-                    ->where(['organization_enc_id' => $model->org_enc_id, 'created_by' => $candidate->user_enc_id])
-                    ->asArray()
-                    ->one();
-
-                if (!empty($chk)) {
-                    return $this->response(409);
-                }else{
-                    print_r($model);
-                }
-
+        if (isset($a['type']) && !empty($a['type'])) {
+            if ($a['type'] == 'company') {
+                $model = new Reviews(['scenario' => 'unclaimed_employee_review']);
+            }elseif($a['type'] == 'college'){
+                $model = new Reviews(['scenario' => 'college']);
+            }elseif($a['type'] == 'school'){
+                $model = new Reviews(['scenario' => 'school']);
+            }elseif($a['type'] == 'institute'){
+                $model = new Reviews(['scenario' => 'edu_institute']);
             }else{
                 return $this->response(422);
             }
@@ -1072,65 +1045,37 @@ class ReviewsController extends ApiBaseController
             return $this->response(422);
         }
 
-    }
 
-    private function __saveData($options,$model){
+        if ($model->load(\Yii::$app->request->post(), '')) {
 
-        $data = new NewOrganizationReviews();
+            if ($model->validate()) {
 
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $data->review_enc_id = $utilitiesModel->encrypt();
-        $data->organization_enc_id = $model->org_enc_id;
-        $data->average_rating = $model;
-        $data->reviewer_type = '';
-        $data->city_enc_id = '';
-        $data->likes = '';
-        $data->dislikes = '';
-        $data->from_date = '';
-        $data->to_date = '';
-        $data->show_user_details = '';
-        $data->created_by = '';
-        $data->created_on = '';
-        $options;
-        print_r($data);
-        die();
-        if($data->save()){
-            return $this->response(201);
-        }
+                $options['user_enc_id'] = $candidate->user_enc_id;
 
+                $chk = NewOrganizationReviews::find()
+                    ->select(['*'])
+                    ->where(['organization_enc_id' => $model->org_enc_id, 'created_by' => $candidate->user_enc_id])
+                    ->asArray()
+                    ->one();
 
+                if (!empty($chk)) {
+                    return $this->response(409);
+                } else {
+                    $save = $model->__saveData($options);
+                    if($save){
+                        return $this->response(201);
+                    }else{
+                        return $this->response(500);
+                    }
+                }
 
-    }
-
-    private function __eduStream($name){
-
-        $chk = Qualifications::find()
-            ->select(['qualification_enc_id'])
-            ->where(['name'=>$name])
-            ->asArray()
-            ->one();
-
-        if(!empty($chk)){
-            return $chk['qualification_enc_id'];
-        }else{
-            $model = new Qualifications();
-
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->qualification_enc_id = $utilitiesModel->encrypt();
-            $model->name = $name;
-            $utilitiesModel->variables['name'] = $name;
-            $utilitiesModel->variables['table_name'] = Qualifications::tableName();
-            $utilitiesModel->variables['field_name'] = 'slug';
-            $model->slug = $utilitiesModel->create_slug();
-            if($model->save()){
-                return $model->qualification_enc_id;
-            }else{
-                return $this->response(500);
+            } else {
+                return $this->response(422);
             }
+        } else {
+            return $this->response(422);
         }
-
     }
+
 
 }
