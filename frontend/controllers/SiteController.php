@@ -238,7 +238,7 @@ class SiteController extends Controller
             ])
             ->asArray()
             ->all();
-        return $this->render('all-quizes', [
+        return $this->render('all-quizzes', [
             'data' => $quizes
         ]);
     }
