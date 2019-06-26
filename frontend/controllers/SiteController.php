@@ -211,17 +211,6 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionEmployers()
-    {
-        $feedbackFormModel = new FeedbackForm();
-        $partnerWithUsModel = new PartnerWithUsForm();
-
-        return $this->render('employers', [
-            'feedbackFormModel' => $feedbackFormModel,
-            'partnerWithUsModel' => $partnerWithUsModel,
-        ]);
-    }
-
     public function actionAllQuiz()
     {
         $quizes = Quiz::find()

@@ -4,13 +4,21 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use frontend\models\FeedbackForm;
+use frontend\models\PartnerWithUsForm;
 
 class EmployersController extends Controller
 {
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $feedbackFormModel = new FeedbackForm();
+        $partnerWithUsModel = new PartnerWithUsForm();
+
+        return $this->render('index', [
+            'feedbackFormModel' => $feedbackFormModel,
+            'partnerWithUsModel' => $partnerWithUsModel,
+        ]);
     }
 
     public function actionFeatures()
