@@ -170,9 +170,35 @@ class JobsController extends ApiBaseController
         if (!empty($parameters['type']) && isset($parameters['type'])) {
             $review_list = ReviewedApplications::find()
                 ->alias('a')
-                ->select(['a.review_enc_id', 'a.review', 'c.name type', 'b.application_enc_id', 'g.name as org_name', 'SUM(h.positions) as positions', 'e.name title', 'f.name parent_category',
+                ->select([
+                    'a.review_enc_id',
+                    'a.review',
+                    'c.name type',
+                    'b.application_enc_id',
+                    'g.name as org_name',
+                    'SUM(h.positions) as positions',
+                    'e.name title',
+                    'f.name parent_category',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
-                    'f.icon_png'])
+                    'f.icon_png',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'g.initials_color',
+                    '(CASE
+                    WHEN b.experience = "0" THEN "No Experience"
+                    WHEN b.experience = "1" THEN "Less Than 1 Year"
+                    WHEN b.experience = "2" THEN "1 Year"
+                    WHEN b.experience = "3" THEN "2 - 3 Years"
+                    WHEN b.experience = "3 - 5" THEN "3 - 5 Years"
+                    WHEN b.experience = "5 - 10" THEN "5 - 10 Years"
+                    WHEN b.experience = "10 - 20" THEN "10 - 20 Years"
+                    WHEN b.experience = "20 + " THEN "More Than 20 Years"
+                    ELSE "No Experience"
+                    END) as experience',
+                    'b.type job_type',
+                    'b.last_date',
+                    'j.city_enc_id',
+                    'j.name city_name'
+            ])
                 ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->distinct();
@@ -185,7 +211,11 @@ class JobsController extends ApiBaseController
                     $b->joinWith(['organizationEnc g' => function ($d) {
                         $d->where(['g.is_deleted' => 0]);
                     }]);
-                    $b->joinWith(['applicationPlacementLocations h']);
+                    $b->joinWith(['applicationPlacementLocations h' => function ($x) {
+                        $x->joinWith(['locationEnc i' => function ($x) {
+                            $x->joinWith(['cityEnc j'], false);
+                        }], false);
+                    }], false);
                     $b->groupBy(['h.application_enc_id']);
                 }], false)
                 ->having(['type' => $parameters['type']])
