@@ -10,6 +10,12 @@ use frontend\models\PartnerWithUsForm;
 class EmployersController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $feedbackFormModel = new FeedbackForm();
