@@ -35,7 +35,7 @@ class LoginForm extends Model
         return [
             // username and password are both required
             [['username', 'password'], 'required'],
-            [['username'], 'string', 'length' => [3, 20]],
+            [['username'], 'string', 'length' => [3, 50]],
             [['password'], 'string', 'length' => [8, 20]],
             [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['username', 'password', 'rememberMe'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
