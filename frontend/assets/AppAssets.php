@@ -18,6 +18,7 @@ class AppAssets extends AssetBundle {
         'css/custom-bootstrap-margin-padding.css',
         'css/custom.css',
         'css/responsive.css',
+        'https://fonts.googleapis.com/css?family=Roboto:300,400,500',
 //        'css/colors/theme-skin-color-set-1.css',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
     ];
