@@ -51,7 +51,7 @@ $this->params['seo_tags'] = [
                         <!--                            </div>-->
                         <div class="input-group mb-10 mr-10 col-md-3">
                                 <span class="input-group-addon set-heights"><i
-                                            class="fa fa-map-marker"></i></span>
+                                            class="fas fa-map-marker-alt"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>

@@ -90,7 +90,7 @@ use yii\helpers\Url;
             <div class="search-box">
                 <form action="">
                     <input type="text" placeholder="Search Category" name="search">
-                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
         </div>

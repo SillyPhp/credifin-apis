@@ -159,13 +159,13 @@ $industries = Json::encode($industries);
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
                            data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i
-                                    class="fa fa-facebook"></i> </a>
+                                    class="fab fa-facebook-f"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
                            data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i
-                                    class="fa fa-twitter"></i> </a>
+                                    class="fab fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
                            data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i
-                                    class="fa fa-linkedin"></i> </a>
+                                    class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
                            data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
                                     class="fa fa-link"></i> </a>
@@ -298,7 +298,7 @@ $industries = Json::encode($industries);
                                                     Cancel
                                                 </button>
                                             </div>
-                                            <a class="remove-benefit-item"><i class="fa fa-times"></i></a>
+                                            <a class="remove-benefit-item"><i class="fas fa-times"></i></a>
                                             <div class="bb-icon">
                                                 <img src="<?= Url::to($benefits['icon']) ?>">
                                             </div>
@@ -352,7 +352,7 @@ $industries = Json::encode($industries);
                                                 </button>
                                             </div>
                                             <a href="#" class="remove_g_image">
-                                                <i class="fa fa-times-circle"></i>
+                                                <i class="fas fa-times-circle"></i>
                                             </a>
                                             <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
                                                data-fancybox="image">
@@ -418,7 +418,7 @@ $industries = Json::encode($industries);
                                                     </button>
                                                 </div>
                                                 <a href="#" class="remove_p_image">
-                                                    <i class="fa fa-times-circle"></i>
+                                                    <i class="fas fa-times-circle"></i>
                                                 </a>
                                             </div>
                                             <?php
@@ -474,7 +474,7 @@ $industries = Json::encode($industries);
                                                 </button>
                                             </div>
                                             <a href="#" class="remove_t_user">
-                                                <i class="fa fa-times-circle"></i>
+                                                <i class="fas fa-times-circle"></i>
                                             </a>
                                             <a href="#">
                                                 <div class="team-icon">
@@ -485,15 +485,15 @@ $industries = Json::encode($industries);
                                                                 <div class="know-bet">Know me better</div>
                                                                 <?php if (!empty($team['facebook'])) { ?><a
                                                                     href="<?= $team['facebook']; ?>" target="_blank"><i
-                                                                                class="fa fa-facebook t-fb"></i>
+                                                                                class="fab fa-facebook-f t-fb"></i>
                                                                     </a><?php } ?>
                                                                 <?php if (!empty($team['linkedin'])) { ?><a
                                                                     href="<?= $team['linkedin']; ?>" target="_blank"><i
-                                                                                class="fa fa-linkedin t-ln"></i>
+                                                                                class="fab fa-linkedin-in t-ln"></i>
                                                                     </a><?php } ?>
                                                                 <?php if (!empty($team['twitter'])) { ?><a
                                                                     href="<?= $team['twitter']; ?>" target="_blank"><i
-                                                                                class="fa fa-twitter t-tw"></i>
+                                                                                class="fab fa-twitter t-tw"></i>
                                                                     </a><?php } ?>
                                                             </div>
                                                         </div>

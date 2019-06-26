@@ -32,7 +32,7 @@ $this->params['header_dark'] = false;
                         if ($user['city']) {
                             ?>
                             <ul>
-                                <li><i class="fa fa-map-marker"></i> <?= $user['city'] ?></li>
+                                <li><i class="fas fa-map-marker-alt"></i> <?= $user['city'] ?></li>
                             </ul>
                             <?php
                         }
@@ -81,14 +81,14 @@ $this->params['header_dark'] = false;
                             <li>
                                 <a href="https://www.facebook.com/<?= Html::encode($user['facebook']) ?>"
                                    target="_blank">
-                                    <i class="fa fa-facebook"></i>
+                                    <i class="fab fa-facebook-f"></i>
                                 </a>
                             </li>
                         <?php }
                         if (!empty($user['twitter'])) { ?>
                             <li>
                                 <a href="https://www.twitter.com/<?= Html::encode($user['twitter']) ?>" target="_blank">
-                                    <i class="fa fa-twitter"></i>
+                                    <i class="fab fa-twitter"></i>
                                 </a>
                             </li>
                         <?php }
@@ -96,7 +96,7 @@ $this->params['header_dark'] = false;
                             <li>
                                 <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
                                    target="_blank">
-                                    <i class="fa fa-linkedin"></i>
+                                    <i class="fab fa-linkedin-in"></i>
                                 </a>
                             </li>
                         <?php }
@@ -128,7 +128,7 @@ $this->params['header_dark'] = false;
                         }
                         if ($user['city']) {
                             ?>
-                            <span><i class="fa fa-map-marker"></i><?= $user['city'] ?></span>
+                            <span><i class="fas fa-map-marker-alt"></i><?= $user['city'] ?></span>
                             <?php
                         }
                         ?>

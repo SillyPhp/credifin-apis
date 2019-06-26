@@ -120,13 +120,13 @@ if ($organization['cover_image']) {
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
                             href="<?= Html::encode($organization['facebook']) ?>" class="facebook" target="_blank"><i
-                                        class="fa fa-facebook"></i> </a><?php } ?>
+                                        class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
                             href="<?= Html::encode($organization['twitter']) ?>" class="twitter" target="_blank"><i
-                                        class="fa fa-twitter"></i> </a><?php } ?>
+                                        class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
                             href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i
-                                        class="fa fa-linkedin"></i> </a><?php } ?>
+                                        class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
                             href="<?= Html::encode($organization['website']) ?>" class="web" target="_blank"><i
                                         class="fa fa-link"></i> </a><?php } ?>
@@ -346,17 +346,17 @@ if ($organization['cover_image']) {
                                                                     <?php if (!empty($team['facebook'])) { ?><a
                                                                         href="<?= Html::encode($team['facebook']); ?>"
                                                                         target="_blank"><i
-                                                                                    class="fa fa-facebook t-fb"></i>
+                                                                                    class="fab fa-facebook-f t-fb"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['linkedin'])) { ?><a
                                                                         href="<?= Html::encode($team['linkedin']); ?>"
                                                                         target="_blank"><i
-                                                                                    class="fa fa-linkedin t-ln"></i>
+                                                                                    class="fab fa-linkedin-in t-ln"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['twitter'])) { ?><a
                                                                         href="<?= Html::encode($team['twitter']); ?>"
                                                                         target="_blank"><i
-                                                                                    class="fa fa-twitter t-tw"></i>
+                                                                                    class="fab fa-twitter t-tw"></i>
                                                                         </a><?php } ?>
                                                                 </div>
                                                             </div>

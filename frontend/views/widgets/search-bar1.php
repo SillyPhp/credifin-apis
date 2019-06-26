@@ -22,7 +22,7 @@ use yii\helpers\Url;
                         </div>
                         <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group display-flex">
-                                <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
+                                <span class="input-group-addon set-heights"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
@@ -247,7 +247,7 @@ var getParams = function (url) {
                 if(!($.trim(value)==="")){
                     results.push(value);
        
-                    $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fa fa-close'></i></a></span>");
+                    $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fas fa-times'></i></a></span>");
                 }
             });
         }

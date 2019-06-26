@@ -143,9 +143,9 @@ $this->params['header_dark'] = true;
                                         <div class="share">
                                             <button type="button" class="sbtn" onclick="showShare()"><i class="fa fa-share-alt"></i> Share </button></div>
                                         <ul class="s-list fadeout" id="Fader">
-                                            <li><a href=""> <i class="fa fa-facebook-f"></i> </a></li>
-                                            <li><a href=""> <i class="fa fa-linkedin"></i></a> </li>
-                                            <li><a href=""> <i class="fa fa-whatsapp"></i></a> </li>
+                                            <li><a href=""> <i class="fab fa-facebook-f"></i> </a></li>
+                                            <li><a href=""> <i class="fab fa-linkedin-in"></i></a> </li>
+                                            <li><a href=""> <i class="fab fa-whatsapp"></i></a> </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -373,12 +373,12 @@ $this->params['header_dark'] = true;
                     <div class="social-buttons">
                         <a href="#" class="social-buttons__button social-button social-button--facebook" aria-label="Facebook">
 <span class="social-button__inner">
- <i class="fa fa-facebook-f"></i>
+ <i class="fab fa-facebook-f"></i>
 </span>
                         </a>
                         <a href="#" class="social-buttons__button social-button social-button--linkedin" aria-label="LinkedIn">
 <span class="social-button__inner">
- <i class="fa fa-linkedin"></i>
+ <i class="fab fa-linkedin-in"></i>
 </span>
                         </a>
                         <a href="#" class="social-buttons__button social-button social-button--snapchat" aria-label="SnapChat">
@@ -1272,7 +1272,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     </div>
 
                     <div class="reply">
-                        <button class="replyButton" onclick="addReply(this)"><i class="fa fa-reply"></i> Reply</button>
+                        <button class="replyButton" onclick="addReply(this)"><i class="fas fa-reply"></i> Reply</button>
                     </div>
                 </div>
             </div>
@@ -1297,7 +1297,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     </div>
 
                     <div class="reply">
-                        <button class="replyButton" onclick="addReply(this)"><i class="fa fa-reply"></i> Reply</button>
+                        <button class="replyButton" onclick="addReply(this)"><i class="fas fa-reply"></i> Reply</button>
                     </div>
                 </div>
             </div>

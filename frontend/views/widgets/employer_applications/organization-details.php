@@ -116,19 +116,19 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             ?>
             <a href="#"
                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-facebook"></i>
+                <i class="fab fa-facebook-f"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-twitter"></i>
+                <i class="fab fa-twitter"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-linkedin"></i>
+                <i class="fab fa-linkedin-in"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-whatsapp"></i>
+                <i class="fab fa-whatsapp"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">

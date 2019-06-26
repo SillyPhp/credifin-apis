@@ -99,13 +99,13 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="col-md-6 col-sm-6">
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
-                            <i class="fa fa-facebook-square"
+                            <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-twitter-square"
+                            <i class="fab fa-twitter-square"
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-linkedin-square"
+                            <i class="fab fa-linkedin"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-whatsapp wa_icon_hover"
+                            <i class="fab fa-whatsapp wa_icon_hover"
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>

@@ -101,22 +101,22 @@ if ($type == 'Internships') {
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-fb">
-                                        <i class="fa fa-facebook"></i>
+                                        <i class="fab fa-facebook-f"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-twitter">
-                                        <i class="fa fa-twitter"></i>
+                                        <i class="fab fa-twitter"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-linkedin">
-                                        <i class="fa fa-linkedin"></i>
+                                        <i class="fab fa-linkedin-in"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-whatsapp">
-                                        <i class="fa fa-whatsapp"></i>
+                                        <i class="fab fa-whatsapp"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
@@ -135,7 +135,7 @@ if ($type == 'Internships') {
                                     <span><?= $data['experience'] ?></span>
                                 </li>
                                 <li>
-                                    <i class="fa fa-map-marker "></i>
+                                    <i class="fas fa-map-marker-alt"></i>
                                     <h3>Location</h3>
                                     <span><?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span>
                                 </li>
@@ -161,7 +161,7 @@ if ($type == 'Internships') {
                                     }
                                     ?>
                                     <li>
-                                        <i class="fa fa-money"></i>
+                                        <i class="far fa-money-bill-alt"></i>
                                         <h3>Salary</h3>
                                         <span><?= $amount; ?></span>
                                     </li>
@@ -188,7 +188,7 @@ if ($type == 'Internships') {
                                 if ($type == '"internships"') {
                                     if (!empty($data['min_wage'])) {
                                         ?>
-                                        <li><i class="fa fa-money"></i>
+                                        <li><i class="far fa-money-bill-alt"></i>
                                             <h3>Minimum stipend</h3>
                                             <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' p.m.' : 'N/A'); ?></span>
                                         </li>
@@ -196,7 +196,7 @@ if ($type == 'Internships') {
                                     }
                                     if (!empty($data['max_wage'])) {
                                         ?>
-                                        <li><i class="fa fa-money"></i>
+                                        <li><i class="far fa-money-bill-alt"></i>
                                             <h3>Maximum Stipend</h3>
                                             <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . ' p.m.' : 'N/A'); ?></span>
                                         </li>
@@ -204,7 +204,7 @@ if ($type == 'Internships') {
                                     }
                                     if (!empty($data['fixed_wage'])) {
                                         ?>
-                                        <li><i class="fa fa-money"></i>
+                                        <li><i class="far fa-money-bill-alt"></i>
                                             <h3>Fixed Stipend</h3>
                                             <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.' : 'N/A') ?></span>
                                         </li>

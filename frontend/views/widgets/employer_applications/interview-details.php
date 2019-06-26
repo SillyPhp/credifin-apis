@@ -10,7 +10,7 @@
             <span><?= date('H:i A', strtotime($interview_start)); ?> To <?= date('H:i A', strtotime($interview_end)); ?></span>
         </li>
     <?php } ?>
-    <li><i class="fa fa-map-marker"></i>
+    <li><i class="fas fa-map-marker-alt"></i>
         <h3>Interview Locations</h3><span> <?php
             if (!empty($interview_locations))
             {

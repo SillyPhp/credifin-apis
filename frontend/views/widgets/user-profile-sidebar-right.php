@@ -6,7 +6,7 @@ use yii\widgets\Pjax;
 
 ?>
     <div class="profiles-sidebar">
-        <span class="close-profile"><i class="fa fa-close"></i></span>
+        <span class="close-profile"><i class="fas fa-times"></i></span>
         <div class="can-detail-s">
             <?php Pjax::begin(['id' => 'pjax_profile_icon_sidebar']); ?>
             <div class="cst">
@@ -45,16 +45,16 @@ use yii\widgets\Pjax;
                     ?>
                     <li class="inner-child">
                         <a href="/<?= Yii::$app->user->identity->username; ?>" title="" class="tree-toggler"><i
-                                    class="fa fa-file-text-o"></i>My Profile</a>
+                                    class="far fa-file-alt"></i>My Profile</a>
 
                     </li>
                     <li class="inner-child">
                         <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
-                                    class="fa fa-pencil-square-o"></i>Edit Profile</a>
+                                    class="fas fa-edit"></i>Edit Profile</a>
 
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted
+                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Shorlisted
                             Job</a>
 
                     </li>
@@ -66,17 +66,17 @@ use yii\widgets\Pjax;
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
                         <a href="/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
-                                    class="fa fa-file-text-o"></i>My Profile</a>
+                                    class="far fa-file-alt"></i>My Profile</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs" title="" class="tree-toggler"><i class="fa fa-money"></i>Active Jobs</a>
+                        <a href="/account/jobs" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Active Jobs</a>
                     </li>
                     <li class="inner-child">
                         <a href="/account/internships" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Active
                             Internships</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/create" title="" class="tree-toggler"><i class="fa fa-money"></i>Create
+                        <a href="/account/jobs/create" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Create
                             Jobs</a>
                     </li>
                     <li class="inner-child">

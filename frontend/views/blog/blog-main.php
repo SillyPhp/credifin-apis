@@ -332,8 +332,8 @@ if (!empty($quotes)) {
     <div class="imgmain-div"><img class="imgmain"/></div>
     <ul class="styled-icon icon-bordered icon-md mb-5 lightbox-ul">
         <li><a link='https://www.facebook.com/sharer/sharer.php?u=' target="_blank" class="overfb"><i
-                        class="fa fa-facebook"></i></a></li>
-        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fa fa-twitter"></i></a>
+                        class="fab fa-facebook-f"></i></a></li>
+        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fab fa-twitter"></i></a>
         </li>
         <li><a href link="https://www.pinterest.com/pin/create/button/?url={link}&media={image}&description={title}"
                target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>

@@ -23,7 +23,7 @@ if (!empty($placement_locations)) {
             <h3>Designation</h3><span><?= $designation; ?></span></li>
         <li><i class="fa fa-suitcase"></i>
             <h3>Job Type</h3><span><?= ucwords($job_type); ?></span></li>
-        <li><i class="fa fa-money"></i>
+        <li><i class="far fa-money-bill-alt"></i>
             <h3>Offered Salary <?php if ($wage_type == 'Fixed') {
                     echo '(Fixed)';
                     $amount = $fixed_wage;
@@ -71,7 +71,7 @@ if (!empty($placement_locations)) {
         <li><i class="fa fa-line-chart "></i>
             <h3>Total Vacancies</h3>
             <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
-        <li><i class="fa fa-map-marker "></i>
+        <li><i class="fas fa-map-marker-alt"></i>
             <h3>Locations</h3>
             <span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span></li>
     </ul>

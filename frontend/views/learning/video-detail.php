@@ -90,13 +90,13 @@ $this->params['seo_tags'] = [
                                         <ul class="s-list fadeout" id="Fader">
                                             <li><a href="javascript:;"
                                                    onclick="window.open('<?= Url::to('https://www.facebook.com/sharer.php?u=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                                                    <i class="fa fa-facebook-f"></i> </a></li>
+                                                    <i class="fab fa-facebook-f"></i> </a></li>
                                             <li><a href="javascript:;"
                                                    onclick="window.open('<?= Url::to('https://www.twitter.com/home?status=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                                                    <i class="fa fa-twitter"></i></a></li>
+                                                    <i class="fab fa-twitter"></i></a></li>
                                             <li><a href="javascript:;"
                                                    onclick="window.open('<?= Url::to('https://wa.me?text=' . $fb_url); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                                                    <i class="fa fa-whatsapp"></i></a></li>
+                                                    <i class="fab fa-whatsapp"></i></a></li>
                                         </ul>
                                     </div>
                                 </div>

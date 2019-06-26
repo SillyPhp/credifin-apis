@@ -104,7 +104,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                 <div class="com-name"><?= ucwords($name); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
-                        <i class="fa fa-star"></i>
+                        <i class="fas fa-star"></i>
                     <?php } ?>
                 </div>
                 <div class="com-rate">0/5 - based on 0 reviews</div>
@@ -144,7 +144,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="rating-large">0/5</div>
                                 <div class="com-rating-1">
                                     <?php for ($i=1;$i<=5;$i++){ ?>
-                                        <i class="fa fa-star"></i>
+                                        <i class="fas fa-star"></i>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -184,7 +184,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="threestar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -223,7 +223,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -236,7 +236,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>

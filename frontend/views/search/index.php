@@ -760,13 +760,13 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             {{#city}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;{{city}}
+                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
                 </span>
             {{/city}}
             {{^city}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;All India
+                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
                 </span>
             {{/city}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">

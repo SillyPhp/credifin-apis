@@ -173,15 +173,15 @@ AppAssets::register($this);
                             <div class="si-icons">
                             <ul class="styled-icons icon-bordered icon-sm mb-5">
                                 <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
-                                                class="fa fa-facebook"></i></a></li>
+                                                class="fab fa-facebook-f"></i></a></li>
                                 <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
-                                                class="fa fa-twitter"></i></a></li>
+                                                class="fab fa-twitter"></i></a></li>
                                 <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i
                                                 class="fa fa-instagram"></i></a></li>
                                 <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
                                                 class="fa fa-pinterest"></i></a></li>
                                 <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
-                                       class="overlink"><i class="fa fa-linkedin"></i></a></li>
+                                       class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                             </ul>
                             </div>
                         </div>

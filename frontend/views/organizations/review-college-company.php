@@ -64,9 +64,9 @@ $this->params['seo_tags'] = [
                     <?php for ($i = 1; $i <= 5; $i++) {
                         if (!empty($round_avg)) {
                             ?>
-                            <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                            <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
                         <?php } else { ?>
-                            <i class="fa fa-star <?= (($round_students_avg < $i) ? '' : 'active') ?>"></i>
+                            <i class="fas fa-star <?= (($round_students_avg < $i) ? '' : 'active') ?>"></i>
                         <?php }
                     } ?>
                 </div>
@@ -197,7 +197,7 @@ $this->params['seo_tags'] = [
                                         <div class="rating-large"><?= $round_avg ?>/5</div>
                                         <div class="com-rating-1">
                                             <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                <i class="fa fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                                                <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -211,7 +211,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
                                             <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['job_avg'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['job_avg'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -224,7 +224,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
                                             <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['growth_avg'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['growth_avg'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -237,7 +237,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
                                             <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['avg_cult'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['avg_cult'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -250,7 +250,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
                                             <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['avg_compensation'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['avg_compensation'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -263,7 +263,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
                                             <div class="threestar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['avg_work'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['avg_work'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -276,7 +276,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
                                             <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['avg_work_life'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['avg_work_life'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -289,7 +289,7 @@ $this->params['seo_tags'] = [
                                             <div class="sr-rating <?= (($reviews) ? '' : 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
                                             <div class="fourstar-box com-rating-2 <?= (($reviews) ? '' : 'fade_border') ?>">
                                                 <?php for ($i = 1; $i <= 5; $i++) { ?>
-                                                    <i class="fa fa-star <?= (($stats['avg_skill'] < $i) ? '' : 'active') ?>"></i>
+                                                    <i class="fas fa-star <?= (($stats['avg_skill'] < $i) ? '' : 'active') ?>"></i>
                                                 <?php } ?>
                                             </div>
                                         </div>

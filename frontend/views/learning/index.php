@@ -13,7 +13,7 @@ use yii\helpers\Url;
                     <div class="search-box1">
                         <form action="<?= Url::to('/learning/search-video') ?>">
                             <input type="text" placeholder="Search" name="keyword">
-                            <button type="submit"><i class="fa fa-search"></i></button>
+                            <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
                 </div>

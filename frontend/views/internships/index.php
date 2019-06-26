@@ -48,7 +48,7 @@ $this->params['seo_tags'] = [
                                    placeholder="Job Title or Skill or Company"/>
                         </div>
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
-                            <span class="input-group-addon"><i class="fa fa-map-marker fa-lg"></i></span>
+                            <span class="input-group-addon"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>

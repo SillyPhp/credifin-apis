@@ -35,7 +35,7 @@ use yii\helpers\Url;
                                            type='text' autocomplete="off">
                                     <input id="company_1_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
-                                        <i class='fa fa-search'></i>
+                                        <i class='fas fa-search'></i>
                                     </button>
                                 </div>
                                 <div class='search-box'>
@@ -48,7 +48,7 @@ use yii\helpers\Url;
                                     <input id="job_1" class='form-control' placeholder='Choose Job' type='text' autocomplete="off">
                                     <input id="job_1_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
-                                        <i class='fa fa-search'></i>
+                                        <i class='fas fa-search'></i>
                                     </button>
                                 </div>
                             </td>
@@ -65,7 +65,7 @@ use yii\helpers\Url;
                                            type='text' autocomplete="off">
                                     <input id="company_2_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
-                                        <i class='fa fa-search'></i>
+                                        <i class='fas fa-search'></i>
                                     </button>
                                 </div>
                                 <div class='search-box'>
@@ -78,7 +78,7 @@ use yii\helpers\Url;
                                     <input id="job_2" class='form-control' placeholder='Choose Job' type='text' autocomplete="off">
                                     <input id="job_2_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
-                                        <i class='fa fa-search'></i>
+                                        <i class='fas fa-search'></i>
                                     </button>
                                 </div>
                             </td>
@@ -95,7 +95,7 @@ use yii\helpers\Url;
                                            type='text' autocomplete="off">
                                     <input id="company_3_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
-                                        <i class='fa fa-search'></i>
+                                        <i class='fas fa-search'></i>
                                     </button>
                                 </div>
                                 <div class='search-box'>
@@ -108,7 +108,7 @@ use yii\helpers\Url;
                                     <input id="job_3" class='form-control' placeholder='Choose Job' type='text' autocomplete="off">
                                     <input id="job_3_id" class='form-control' type='hidden'>
                                     <button class='btn btn-link search-btn'>
-                                        <i class='fa fa-search'></i>
+                                        <i class='fas fa-search'></i>
                                     </button>
                                 </div>
                             </td>
