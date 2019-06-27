@@ -25,7 +25,7 @@ use yii\bootstrap\ActiveForm;
                             <span></span>
                         </div>
                         <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input" placeholder="Search Company">
-                        <button type="submit" class="s-btn"><i class="fa fa-search"></i> </button>
+                        <button type="submit" class="s-btn"><i class="fas fa-search"></i> </button>
                     </div>
                 </form>
             </div>
@@ -47,7 +47,7 @@ use yii\bootstrap\ActiveForm;
             <div class="pos-relative-mobile">
             <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
                 <div class="filter-btns" id="hide-filter">
-                    <button class="hide-btn"><i class="fa fa-close"></i> Close</button>
+                    <button class="hide-btn"><i class="fas fa-times"></i> Close</button>
                 </div>
                 <div class="filter-heading">
                     Search companies by
@@ -57,7 +57,7 @@ use yii\bootstrap\ActiveForm;
                         <div class="filter-search">
                             <div class="f-search-loc">
                                 <input type="text" id="city_search" placeholder="Location" />
-                                <i class="fa fa-search"></i>
+                                <i class="fas fa-search"></i>
                             </div>
                         </div>
                         <div class="row">
@@ -66,7 +66,7 @@ use yii\bootstrap\ActiveForm;
                                     Filter companies by
                                 </div>
                                 <div class="show-search">
-                                    <button type="button" onclick="showSearch()"><i class="fa fa-search"></i></button>
+                                    <button type="button" onclick="showSearch()"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -82,11 +82,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="fivestars rating-stars">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -97,11 +97,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="fourstars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -112,11 +112,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="threestars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -127,11 +127,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="twostars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -142,11 +142,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="onestars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -181,7 +181,7 @@ use yii\bootstrap\ActiveForm;
             </div>
             <div class="col-md-9 col-sm-8 col-xs-12 ">
                 <div class="filter-btns">
-                    <button type="button" id="show-filter"><i class="fa fa-bars"></i> Show Filters </button>
+                    <button type="button" id="show-filter"><i class="fas fa-bars"></i> Show Filters </button>
                 </div>
             </div>
             <div class="col-md-9 col-sm-8 col-xs-12">

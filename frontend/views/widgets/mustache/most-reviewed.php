@@ -27,7 +27,7 @@ use yii\helpers\Url;
                     <div class="qrb-details">
                         <div class="qr-name"><a href="/{{profile_link}}"> {{name}} </a></div>
                         <div class="qr-stars">
-                            <i class="fa fa-users"></i> {{total_reviews}}
+                            <i class="fas fa-users"></i> {{total_reviews}}
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@ function fetch_cards_new_most(params,template,is_clear=false)
         beforeSend: function(){
           $('#loading_img').addClass('show');
           $('.fader').css('display','block');
-           $('#load_review_card_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+           $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if (response.status==200){
@@ -87,7 +87,7 @@ function fetch_cards_new_most_comp(params,template,is_clear=false)
         beforeSend: function(){
           $('#loading_img').addClass('show');
           $('.fader').css('display','block');
-           $('#load_review_card_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+           $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if (response.status==200){

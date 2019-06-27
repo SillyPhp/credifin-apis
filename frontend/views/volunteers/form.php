@@ -279,7 +279,7 @@ $(document).on('submit','#volunteer-apply-form', function(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     $('.submit-button').attr("disabled", true);
-    $('.submit-button').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+    $('.submit-button').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
     form.secondform = $('#volunteer-apply-form :input:not(:hidden)').serialize(); 
     var url = window.location.href;
     var result = form.firstform + '&' + form.secondform;

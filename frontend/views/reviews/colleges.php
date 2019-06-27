@@ -52,7 +52,7 @@ $this->params['seo_tags'] = [
                                 <form id="form-search" action="<?=Url::to(['search']) ?>">
                                     <input class='form-control' name="keywords" id="search_college" placeholder='Search College,Universities' type='text'>
                                 <button class='btn btn-link search-btn'>
-                                    <i class='fa fa-search'></i>
+                                    <i class='fas fa-search'></i>
                                 </button>
                                 </form>
                             </div>

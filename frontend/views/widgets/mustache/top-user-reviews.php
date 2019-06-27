@@ -59,7 +59,7 @@ function fetch_cards_top_user(params,template,is_clear=false)
         beforeSend: function(){
           $('#loading_img').addClass('show');
           $('.fader').css('display','block');
-           $('#load_review_card_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+           $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if (response.status==200){
@@ -104,7 +104,7 @@ function fetch_cards_new_top_user(params,template,is_clear=false)
         beforeSend: function(){
           $('#loading_img').addClass('show');
           $('.fader').css('display','block');
-           $('#load_review_card_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+           $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if (response.status==200){

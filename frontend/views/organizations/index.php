@@ -21,7 +21,7 @@ use yii\helpers\Url;
                                     <span></span>
                                 </div>
                                 <input id="company_search" type="text" placeholder="Search Companies" name="search">
-                                <button id="search"><i class="fa fa-search"></i></button>
+                                <button id="search"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
                     </div>

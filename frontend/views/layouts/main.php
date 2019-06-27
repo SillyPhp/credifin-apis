@@ -61,7 +61,7 @@ AppAssets::register($this);
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
-                        <a href="/employers"><i class="fa fa-user-circle"></i> Employer Zone</a>
+                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
                     </div>
                     <div class="secondary-top-header-right">
                         <a href="/signup/organization">Signup as Company</a>
@@ -173,15 +173,15 @@ AppAssets::register($this);
                             <div class="si-icons">
                             <ul class="styled-icons icon-bordered icon-sm mb-5">
                                 <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
-                                                class="fa fa-facebook"></i></a></li>
+                                                class="fab fa-facebook-f"></i></a></li>
                                 <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
-                                                class="fa fa-twitter"></i></a></li>
+                                                class="fab fa-twitter"></i></a></li>
                                 <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i
-                                                class="fa fa-instagram"></i></a></li>
+                                                class="fab fa-instagram"></i></a></li>
                                 <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
-                                                class="fa fa-pinterest"></i></a></li>
+                                                class="fab fa-pinterest"></i></a></li>
                                 <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
-                                       class="overlink"><i class="fa fa-linkedin"></i></a></li>
+                                       class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                             </ul>
                             </div>
                         </div>
@@ -195,7 +195,7 @@ AppAssets::register($this);
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
-                                                class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
+                                                class="far fa-envelope mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
                                 </div>
                             </div>
                         </div>

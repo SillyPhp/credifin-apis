@@ -44,7 +44,7 @@ $this->params['seo_tags'] = [
                             <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>
                             <div class="main-bttn">
                                 <a href="/signup/organization" class="button2">Create Account
-                                    <span><i class="fa fa-arrow-right"></i></span> </a>
+                                    <span><i class="fas fa-arrow-right"></i></span> </a>
                             </div>
                         </div>
                     </div>

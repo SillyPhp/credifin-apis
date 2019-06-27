@@ -36,11 +36,6 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <!--                    <div class="re-bttn">-->
-                        <!--                        <button type="button" data-toggle="modal" data-target="#report">-->
-                        <!--                            <i class="fa fa-flag"></i> Report-->
-                        <!--                        </button>-->
-                        <!--                    </div>-->
                         <div class="publish-date">{{created_on}}</div>
                         <div class="emp-duration">{{reviewer_type}} Student</div>
                     </div>
@@ -94,13 +89,13 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="col-md-6 col-sm-6">
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
-                            <i class="fa fa-facebook-square"
+                            <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-twitter-square"
+                            <i class="fab fa-twitter-square"
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-linkedin-square"
+                            <i class="fab fa-linkedin"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-whatsapp wa_icon_hover"
+                            <i class="fab fa-whatsapp wa_icon_hover"
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
@@ -170,7 +165,7 @@ function getStudentReviews(limit=null,offset=null) {
         url : '/organizations/get-unclaimed-student-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
         beforeSend:function()
         {
-            $('#load_more_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('#load_more_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if(response.status === 200) {

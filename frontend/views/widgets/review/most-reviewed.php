@@ -13,7 +13,7 @@
                     <div class="qrb-details">
                         <div class="qr-name"><a href=""> Agile Finserv </a></div>
                         <div class="qr-stars">
-                            <i class="fa fa-users"></i> 3
+                            <i class="fas fa-users"></i> 3
                         </div>
                     </div>
                 </div>

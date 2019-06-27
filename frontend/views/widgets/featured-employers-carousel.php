@@ -127,8 +127,8 @@ function getCompanies(){
                     margin: 20,
                     responsiveClass: true,
                     navText: [
-                '<i class="fa fa-angle-left set_icon"></i>',
-                '<i class="fa fa-angle-right set_icon"></i>'
+                '<i class="fas fa-angle-left set_icon"></i>',
+                '<i class="fas fa-angle-right set_icon"></i>'
             ],
                     responsive: {
                 0: {

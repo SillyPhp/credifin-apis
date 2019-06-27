@@ -64,7 +64,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
             <div class="col-md-6">
                 <?= $form->field($freeFormModel, 'city')->textInput(['id' => 'cities', 'autocomplete' => 'off', 'placeholder' => $freeFormModel->getAttributeLabel('city')]); ?>
                 <?= $form->field($freeFormModel, 'city_main')->hiddenInput(['id' => 'cities-main', 'autocomplete' => 'off', 'placeholder' => $freeFormModel->getAttributeLabel('city')]); ?>
-                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
             </div>
         </div>
         <div class="row">
@@ -135,7 +135,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                     <div class="col-md-12">
                         <?= $form->field($freeFormModel, 'experience_cities')->textInput(['id' => 'experience_cities', 'autocomplete' => 'off', 'placeholder' => $freeFormModel->getAttributeLabel('city')]); ?>
                         <?= $form->field($freeFormModel, 'experience_city_main')->hiddenInput(['id' => 'experience-cities-main']); ?>
-                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                     </div>
                     <div class="col-md-12">
                         <?= $form->field($freeFormModel, 'title')->textInput(['autocomplete' => 'off', 'placeholder' => $freeFormModel->getAttributeLabel('title')]); ?>
