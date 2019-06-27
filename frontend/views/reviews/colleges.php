@@ -197,8 +197,9 @@ $this->registerCss('
     position:absolute;
     right: 25px;
     bottom: 10px;
-    font-weight:bold;
+    font-weight:500;
     font-size:15px;
+    font-family:roboto;
 }
 .btn_add_org:hover{
     color:#7453C6;
@@ -302,6 +303,7 @@ review-benifit{
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    font-family:roboto;
 }
 .com-logo{
     width:100px;
@@ -398,6 +400,8 @@ review-benifit{
     padding-top:20px;
     padding-bottom:8px;
     font-size:16px;
+    font-family:roboto;
+    font-weight:400;
 }
 .hbb-text{
     padding-top:10px;

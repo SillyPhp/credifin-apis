@@ -229,7 +229,8 @@ $this->registerCss('
     right: 25px;
     font-size:15px;
     bottom: 10px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:roboto;
 }
 .btn_add_org:hover{
     color:#00A0E3;
@@ -333,6 +334,7 @@ review-benifit{
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    font-family:roboto;
 }
 .com-logo{
     width:100px;
@@ -390,6 +392,8 @@ review-benifit{
 }
 .with-us-block{
     text-align:center;
+    font-family:roboto;
+    font-weight:300;
 }
 .cri-bg{
     background:url(' . Url::to('@eyAssets/images/pages/review/company-bg.png') . ');
@@ -447,6 +451,8 @@ review-benifit{
     padding-top:20px;
     padding-bottom:8px;
     font-size:16px;
+    font-family:roboto;
+    font-weight:400;
 }
 .hbb-text{
     padding-top:10px;
