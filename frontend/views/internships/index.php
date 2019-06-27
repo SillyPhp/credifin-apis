@@ -38,8 +38,8 @@ $this->params['seo_tags'] = [
 
             </div>
             <div class="col-md-9 col-sm-12 text-center">
-                <h2 class="intern-banner-heading mt-0">
-                    <?= Yii::t('frontend', 'Intern with the best'); ?></h2>
+                <h2 class="intern-banner-heading mt-0 heading-text">
+                    <?= Yii::t('frontend', 'Intern With The Best'); ?></h2>
                 <div class="search-by-type row">
                     <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
@@ -66,8 +66,8 @@ $this->params['seo_tags'] = [
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <h2>
+            <div class="col-md-12 text-center ">
+                <h2 class="center-text">
                     <b>
                         <?= Yii::t('frontend', 'Ever wondered why are internships so important?'); ?>
                     </b>
@@ -205,6 +205,17 @@ echo $this->render('/widgets/mustache/application-card');
 //    'posts' => $posts,
 //]);
 $this->registerCss('
+.center-text{
+    font-family:lora;
+    }
+.heading-text{
+    font-family:lora;
+    }
+
+.form-control{
+    font-family:Roboto;
+    font-weight:300;
+    }
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -216,11 +227,14 @@ $this->registerCss('
 }
 .list-heading{
     font-size:16px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:Roboto;
 }
 .quick-links li a{
     line-height:23px;
     font-size:13px;
+    font-family:Roboto;
+    font-weight:300;
 }
 .quick-links li a:hover{
     color:#00a0e3;
@@ -537,6 +551,8 @@ $this->registerCss('
     background-color: #f07d1b;
     color: #FFF;
     border-color: transparent;
+    font-family:Roboto;
+    font-weight:400 !important;
 }
 .select2-selection{
     height:45px !important;
