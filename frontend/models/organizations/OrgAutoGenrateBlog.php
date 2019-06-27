@@ -36,11 +36,11 @@ class OrgAutoGenrateBlog extends Model
             [['title','description'],'required'],
             [['cities'],'required','when'=>function($model,$attribute)
             {
-                return Yii::$app->user->isGuest;
+                return ((Yii::$app->user->isGuest)? true : false);
             }],
             [['applications'],'required','when'=>function($model,$attribute)
             {
-                return Yii::$app->user->identity->organization;
+                return ((Yii::$app->user->identity->organization)? true : false);
             }],
             [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4,'maxSize'=>1024*1024*2],
         ];
