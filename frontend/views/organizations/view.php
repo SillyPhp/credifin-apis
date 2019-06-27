@@ -129,7 +129,7 @@ if ($organization['cover_image']) {
                                         class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
                             href="<?= Html::encode($organization['website']) ?>" class="web" target="_blank"><i
-                                        class="fa fa-link"></i> </a><?php } ?>
+                                        class="fas fa-link"></i> </a><?php } ?>
                     </div>
                 </div>
             </div>
@@ -1022,7 +1022,7 @@ $(document).on('click','.follow',function(e){
         data: {org_id:org_id},                         
         method: 'post',
         beforeSend:function(){
-         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.follow').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(data){  
             if(data.message == 'Following'){

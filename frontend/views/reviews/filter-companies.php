@@ -181,7 +181,7 @@ use yii\bootstrap\ActiveForm;
             </div>
             <div class="col-md-9 col-sm-8 col-xs-12 ">
                 <div class="filter-btns">
-                    <button type="button" id="show-filter"><i class="fa fa-bars"></i> Show Filters </button>
+                    <button type="button" id="show-filter"><i class="fas fa-bars"></i> Show Filters </button>
                 </div>
             </div>
             <div class="col-md-9 col-sm-8 col-xs-12">

@@ -81,41 +81,41 @@ $this->params['seo_tags'] = [
                         <?php if (!empty($follow) && $follow['followed'] == 1) {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="far fa-heart hvr-icon"></i> Following</button>
                             </div>
                             <?php
                         } else  {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="far fa-heart hvr-icon"></i> Follow</button>
                             </div>
                         <?php }} else { ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" data-toggle="modal" data-target="#loginModal"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                                <button type="button" data-toggle="modal" data-target="#loginModal"><i class="far fa-heart hvr-icon"></i> Follow</button>
                             </div>
                         <?php } ?>
                             <?php if (!Yii::$app->user->isGuest){
                                 if(!empty($edit)){ ?>
                         <div class="wr-bttn hvr-icon-pulse">
-                              <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Edit Your Review</a>
+                              <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="far fa-comments hvr-icon"></i> Edit Your Review</a>
                         </div>
                                <?php } else {
                                      if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
                         <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Write Review</button>
                         </div>
                             <?php } } } else{ ?>
                         <div class="wr-bttn hvr-icon-pulse">
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="far fa-comments hvr-icon"></i> Write Review</a>
                         </div>
                             <?php } ?>
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
                             <?php if ($review_type=='unclaimed'):?>
-<!--                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>-->
+<!--                                <a href="#" type="button"><i class="far fa-eye hvr-icon"></i> Claim This Profile</a>-->
                             <?php else: ?>
-                                <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                                <a href="/<?=$slug;?>" type="button"><i class="far fa-eye hvr-icon"></i> View Company Profile</a>
                             <?php endif;?>
                         </div>
                     </div>
@@ -1158,11 +1158,11 @@ $(document).on('click','.load_reviews',function(e){
         url:'/organizations/load-reviews',                         
         method: 'post',
         beforeSend:function(){
-         $('.load_reviews').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.load_reviews').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(res){
             if(res==true){
-                $('.load_reviews').html('<i class="fa fa-heart-o hvr-icon"></i> Load More');
+                $('.load_reviews').html('<i class="far fa-heart hvr-icon"></i> Load More');
                 }
          }
     });        

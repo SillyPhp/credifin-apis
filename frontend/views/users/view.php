@@ -103,7 +103,7 @@ $this->params['header_dark'] = false;
                         if (!empty($user['skype'])) { ?>
                             <li>
                                 <a href="https://www.skype.com/<?= Html::encode($user['skype']) ?>" target="_blank">
-                                    <i class="fa fa-skype"></i>
+                                    <i class="fab fa-skype"></i>
                                 </a>
                             </li>
                         <?php } ?>
@@ -122,7 +122,7 @@ $this->params['header_dark'] = false;
                         if ($user['job_profile']) {
                             ?>
                             <a href="#" class="cl-success">
-                                <span><i class="fa fa-building"></i><?= $user['job_profile'] ?></span>
+                                <span><i class="fas fa-building"></i><?= $user['job_profile'] ?></span>
                             </a>
                             <?php
                         }

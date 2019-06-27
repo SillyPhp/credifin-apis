@@ -41,20 +41,16 @@ $this->params['seo_tags'] = [
                 <div class="search-by-type">
                     <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
                         <div class="input-group mb-10 mr-10 col-md-5">
-                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <span class="input-group-addon"><i class="fas fa-user"></i></span>
                             <input type="text" name="keyword" class="form-control"
                                    placeholder="Job Title or Keywords or Company"/>
                         </div>
-                        <!--                            <div class="input-group mb-10 mr-10">-->
-                        <!--                                <span class="input-group-addon"><i class="fa fa-building"></i></span>-->
-                        <!--                                <input type="text" name="company" class="form-control" placeholder="Company"/>-->
-                        <!--                            </div>-->
                         <div class="input-group mb-10 mr-10 col-md-3">
                                 <span class="input-group-addon set-heights"><i
                                             class="fas fa-map-marker-alt"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
-                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
                         <div class="form-group mb-10 mr-10">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
@@ -89,7 +85,7 @@ $this->params['seo_tags'] = [
                     <div>
                         <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
                             <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </div>
                 </div>

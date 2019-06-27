@@ -115,11 +115,11 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                         <?php if (!Yii::$app->user->isGuest){
                             if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
                                 <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Back To Review</button>
+                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Back To Review</button>
                                 </div>
                             <?php } } else { ?>
                             <div class="wr-bttn hvr-icon-pulse">
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="far fa-comments hvr-icon"></i> Write Review</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -1206,11 +1206,11 @@ $(document).on('click','.load_reviews',function(e){
         url:'/organizations/load-reviews',                         
         method: 'post',
         beforeSend:function(){
-         $('.load_reviews').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.load_reviews').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(res){
             if(res==true){
-                $('.load_reviews').html('<i class="fa fa-heart-o hvr-icon"></i> Load More');
+                $('.load_reviews').html('<i class="far fa-heart hvr-icon"></i> Load More');
                 }
          }
     });        

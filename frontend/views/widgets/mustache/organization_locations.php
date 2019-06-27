@@ -18,7 +18,7 @@ use yii\helpers\Url;
             <?php
             if ($Edit) {
                 ?>
-                <a value="/account/locations/get-data?id={{location_enc_id}}" class="edit_location"><i class="fa fa-pencil"></i></a>
+                <a value="/account/locations/get-data?id={{location_enc_id}}" class="edit_location"><i class="fas fa-pencil-alt"></i></a>
                 <a href="#" class="remove_location"><i class="fas fa-times-circle"></i></a>
                 <div id="remove_location_confirm" class="confirm_remove_loc">
                     <button id="confirm_loc" type="button" value="{{location_enc_id}}"

@@ -141,7 +141,7 @@ $this->params['header_dark'] = true;
 
                                     <div class="share-list">
                                         <div class="share">
-                                            <button type="button" class="sbtn" onclick="showShare()"><i class="fa fa-share-alt"></i> Share </button></div>
+                                            <button type="button" class="sbtn" onclick="showShare()"><i class="fas fa-share-alt"></i> Share </button></div>
                                         <ul class="s-list fadeout" id="Fader">
                                             <li><a href=""> <i class="fab fa-facebook-f"></i> </a></li>
                                             <li><a href=""> <i class="fab fa-linkedin-in"></i></a> </li>
@@ -152,7 +152,7 @@ $this->params['header_dark'] = true;
                             </div>
                             <div class="col-md-2">
                                 <div class="flex-view report-btn">
-                                    <button type="button"><i class="fa fa-flag"></i> Report</button>
+                                    <button type="button"><i class="fas fa-flag"></i> Report</button>
                                 </div>
                             </div>
                         </div>
@@ -203,9 +203,9 @@ $this->params['header_dark'] = true;
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-6 align-right">
-                                <div class="views"><i class="fa fa-eye"></i> <span>1,200</span> Views</div>
+                                <div class="views"><i class="far fa-eye"></i> <span>1,200</span> Views</div>
                                 <div class="likes"> <span>1,200</span> Likes</div>
-                                <div class="comms"><a href="#comments"> <i class="fa fa-comments-o"></i> <span>0</span> Comments </a></div>
+                                <div class="comms"><a href="#comments"> <i class="far fa-comments"></i> <span>0</span> Comments </a></div>
                             </div>
                         </div>
                     </div>
@@ -383,17 +383,17 @@ $this->params['header_dark'] = true;
                         </a>
                         <a href="#" class="social-buttons__button social-button social-button--snapchat" aria-label="SnapChat">
 <span class="social-button__inner">
- <i class="fa fa-snapchat-ghost"></i>
+ <i class="fab fa-snapchat-ghost"></i>
 </span>
                         </a>
                         <a href="#" class="social-buttons__button social-button social-button--github" aria-label="GitHub">
 <span class="social-button__inner">
- <i class="fa fa-github"></i>
+ <i class="fab fa-github"></i>
 </span>
                         </a>
                         <a href="#" class="social-buttons__button social-button social-button--codepen" aria-label="CodePen">
 <span class="social-button__inner">
- <i class="fa fa-codepen"></i>
+ <i class="fab fa-codepen"></i>
 </span>
                         </a>
                     </div>

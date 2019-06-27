@@ -1,11 +1,11 @@
 <h3>Interview Details</h3>
 <ul style="border:0px;">
     <?php if (!empty($interview_start) && $interview_end) { ?>
-        <li><i class="fa fa-calendar-check-o"></i>
+        <li><i class="far fa-calendar-check"></i>
             <h3>Interview Dates</h3>
             <span><?= date('d-M-y', strtotime($interview_start)); ?> To <?= date('d-M-y', strtotime($interview_end)); ?></span>
         </li>
-        <li><i class="fa fa-clock-o"></i>
+        <li><i class="far fa-clock"></i>
             <h3>Interview Time</h3>
             <span><?= date('H:i A', strtotime($interview_start)); ?> To <?= date('H:i A', strtotime($interview_end)); ?></span>
         </li>

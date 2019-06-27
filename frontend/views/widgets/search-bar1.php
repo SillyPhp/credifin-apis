@@ -30,7 +30,7 @@ use yii\helpers\Url;
                                 <?php }else{ ?>
                                     <input type="text" name="location" id="cities" placeholder="Location" class="form-control">
                                 <?php }?>
-                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                             </div>
                         </div>
                         <div class="col-md-2 col-xs-12 col-sm-6 text-center">

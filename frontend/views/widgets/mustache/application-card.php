@@ -30,7 +30,7 @@
                 <div class="application-card-description">
                     <a href="{{link}}" title="{{title}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
-                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
                     <h5>Negotiable</h5>
@@ -39,7 +39,7 @@
                     <h5>{{type}}</h5>
                     {{/type}}
                     {{#experience}}
-                    <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
                 </div>
             </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="application-card-wrapper">
                 <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>

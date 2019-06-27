@@ -51,7 +51,7 @@ $this->params['seo_tags'] = [
                             <span class="input-group-addon"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
-                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
                         <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
@@ -111,7 +111,7 @@ $this->params['seo_tags'] = [
                     <div>
                         <a href="<?= Url::to('/internships/list'); ?>" class="btn btn-3">
                             <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </div>
                 </div>

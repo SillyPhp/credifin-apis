@@ -784,7 +784,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <div class="application-card-description">
                     <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
-                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
                     <h5>Negotiable</h5>
@@ -793,7 +793,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     <h5>{{type}}</h5>
                     {{/type}}
                     {{#experience}}
-                    <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
                 </div>
             </div>
@@ -814,7 +814,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             {{/last_date}}
             <div class="application-card-wrapper">
                 <a href="{{link}}" class="application-card-open">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>

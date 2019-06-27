@@ -39,7 +39,7 @@ $industries = Json::encode($industries);
             ])
             ?>
             <div class="cover-edit">
-                <a class="fa fa-pencil dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
+                <a class="fas fa-pencil-alt dropdown-toggle edits" data-toggle="dropdown"> Edit</a>
                 <ul class="dropdown-menu">
                     <li>
                         <a href="#">
@@ -87,7 +87,7 @@ $industries = Json::encode($industries);
                                         ])
                                         ?>
                                         <div id="open-pop" class="avatar-edit">
-                                            <i class="fa fa-camera dropdown-toggle full_width"
+                                            <i class="fas fa-camera dropdown-toggle full_width"
                                                data-toggle="dropdown"></i>
                                             <ul class="dropdown-menu">
                                                 <li>
@@ -127,11 +127,11 @@ $industries = Json::encode($industries);
                                                 class="model" id="tag_line" data-type="text" data-pk="tag_line"
                                                 data-name="tag_line"
                                                 data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
-                                        <span data-for="tag_line" class="edit-box"><i class="fa fa-pencil"></i></span>
+                                        <span data-for="tag_line" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
                                     </div>
                                     <div class="com-establish"><span class="detail-title">Industry:</span> <span
                                                 class="model" data-type="select" id="industry_enc_id"></span> <span
-                                                data-for="industry_enc_id" class="edit-box"><i class="fa fa-pencil"></i></span>
+                                                data-for="industry_enc_id" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@ $industries = Json::encode($industries);
                                     class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
                            data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
-                                    class="fa fa-link"></i> </a>
+                                    class="fas fa-link"></i> </a>
                     </div>
                 </div>
             </div>
@@ -182,7 +182,7 @@ $industries = Json::encode($industries);
                         <div class="heading-style">
                             About <?= Html::encode($organization['name']) ?>
                             <span data-for="description" class="edit-box"><i
-                                        class="fa fa-pencil"></i></span>
+                                        class="fas fa-pencil-alt"></i></span>
                         </div>
                         <div class="divider"></div>
 
@@ -197,7 +197,7 @@ $industries = Json::encode($industries);
                             <div class="a-boxs">
                                 <div class="row margin-0">
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
-                                        <span data-for="employees" class="edit-box"><i class="fa fa-pencil"></i></span>
+                                        <span data-for="employees" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
@@ -219,7 +219,7 @@ $industries = Json::encode($industries);
                                     </div>
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <span data-for="establishment_year" class="edit-box"><i
-                                                    class="fa fa-pencil"></i></span>
+                                                    class="fas fa-pencil-alt"></i></span>
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
@@ -245,7 +245,7 @@ $industries = Json::encode($industries);
                                 <div class="mv-heading">
                                     Mission <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
                                         <span data-for="mission" class="edit-box"><i
-                                                    class="fa fa-pencil"></i></span><?php } ?></div>
+                                                    class="fas fa-pencil-alt"></i></span><?php } ?></div>
                                 <div class="mv-text">
                                     <span href="#" class="model" id="mission" data-pk="mission" data-name="mission"
                                           data-type="textarea"
@@ -255,7 +255,7 @@ $industries = Json::encode($industries);
                                     <div class="mv-heading">
                                         Vision <?php if (Yii::$app->user->identity->organization->slug === $organization['slug']) { ?>
                                             <span data-for="vision" class="edit-box"><i
-                                                        class="fa fa-pencil"></i></span><?php } ?></div>
+                                                        class="fas fa-pencil-alt"></i></span><?php } ?></div>
                                     <div class="mv-text">
                                         <span href="#" class="model" id="vision" data-pk="vision" data-name="vision"
                                               data-type="textarea"
@@ -275,7 +275,7 @@ $industries = Json::encode($industries);
                                     <button type="submit" class="i-review-nx modal-load-class"
                                             value="/account/employee-benefits/create-benefit">
                                             <span class="i-review-button-tx">
-                                                Add New <span class="fa fa-long-arrow-right"></span>
+                                                Add New <span class="fas fa-long-arrow-alt-right"></span>
                                             </span>
                                     </button>
                                 </div>
@@ -324,7 +324,7 @@ $industries = Json::encode($industries);
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/organizations/add-gallery-images">
                                             <span class="i-review-button-tx">
-                                                Add New Images <span class="fa fa-long-arrow-right"></span>
+                                                Add New Images <span class="fas fa-long-arrow-alt-right"></span>
                                             </span>
                                     </button>
                                 </div>
@@ -378,7 +378,7 @@ $industries = Json::encode($industries);
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/organizations/add-products">
                                             <span class="i-review-button-tx">
-                                                Add New Product <span class="fa fa-long-arrow-right"></span>
+                                                Add New Product <span class="fas fa-long-arrow-alt-right"></span>
                                             </span>
                                     </button>
                                 </div>
@@ -431,7 +431,7 @@ $industries = Json::encode($industries);
                             Pjax::end()
                             ?>
                             <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fa fa-pencil"></i></span></h4>
+                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fas fa-pencil-alt"></i></span></h4>
                                 <p>
                                     <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
                                 </p>
@@ -446,7 +446,7 @@ $industries = Json::encode($industries);
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/organizations/add-employee">
                                         <span class="i-review-button-tx">
-                                            Add New Employee <span class="fa fa-long-arrow-right"></span>
+                                            Add New Employee <span class="fas fa-long-arrow-alt-right"></span>
                                         </span>
                                     </button>
                                 </div>
@@ -558,7 +558,7 @@ $industries = Json::encode($industries);
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/account/locations/create">
                                             <span class="i-review-button-tx">
-                                                Add New <span class="fa fa-long-arrow-right"></span>
+                                                Add New <span class="fas fa-long-arrow-alt-right"></span>
                                             </span>
                                     </button>
                                 </div>

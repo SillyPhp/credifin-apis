@@ -36,11 +36,6 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <!--                    <div class="re-bttn">-->
-                        <!--                        <button type="button" data-toggle="modal" data-target="#report">-->
-                        <!--                            <i class="fa fa-flag"></i> Report-->
-                        <!--                        </button>-->
-                        <!--                    </div>-->
                         <div class="publish-date">{{created_on}}</div>
                         {{#reviewer_type}}
                         <div class="emp-duration">Current Employee</div>
@@ -143,15 +138,15 @@ $(document).on('click','.follow',function(e){
         data: {org_id:org_id},                         
         method: 'post',
         beforeSend:function(){
-         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.follow').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(data){  
             if(data.message == 'Following'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Following');
+                $('.follow').html('<i class="far fa-heart hvr-icon"></i> Following');
                 $('.follow').addClass('followed');
             }
             else if(data.message == 'Unfollow'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Follow');
+                $('.follow').html('<i class="far fa-heart hvr-icon"></i> Follow');
                 $('.follow').removeClass('followed');
             }
         }
@@ -166,7 +161,7 @@ function getReviews(limit=null,offset=null) {
         url : '/organizations/get-unclaimed-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
         beforeSend:function()
         {
-            $('#load_more_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('#load_more_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if(response.status === 200) {

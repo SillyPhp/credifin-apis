@@ -81,7 +81,7 @@ $this->params['seo_tags'] = [
                                     <div class="share-list">
                                         <div class="share">
                                             <button type="button" class="sbtn" onclick="showShare()"><i
-                                                        class="fa fa-share-alt"></i> Share
+                                                        class="fas fa-share-alt"></i> Share
                                             </button>
                                         </div>
                                         <?php
@@ -127,14 +127,14 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <div class="views"><i class="fa fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
-                                <div class="likes"><i class="fa fa-thumbs-up"></i>
+                                <div class="views"><i class="far fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
+                                <div class="likes"><i class="fas fa-thumbs-up"></i>
                                     <span><?= $like_count ? $like_count : 'No' ?></span> Likes
                                 </div>
-                                <div class="likes"><i class="fa fa-thumbs-down"></i>
+                                <div class="likes"><i class="fas fa-thumbs-down"></i>
                                     <span><?= $dislike_count ? $dislike_count : 'No' ?></span> Dislikes
                                 </div>
-                                <div class="comms"><a href="#comments"> <i class="fa fa-comments-o"></i>
+                                <div class="comms"><a href="#comments"> <i class="far fa-comments"></i>
                                         <span><?= $comment_count ? $comment_count : 'No' ?></span>
                                         Comments </a></div>
                             </div>

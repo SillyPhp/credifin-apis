@@ -60,7 +60,7 @@ use yii\widgets\Pjax;
                     </li>
                     <li class="inner-child">
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
-                                    class="fa fa-paper-plane-o"></i>Applied Job</a>
+                                    class="far fa-paper-plane"></i>Applied Job</a>
                     </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
@@ -72,7 +72,7 @@ use yii\widgets\Pjax;
                         <a href="/account/jobs" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Active Jobs</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/internships" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Active
+                        <a href="/account/internships" title="" class="tree-toggler"><i class="far fa-paper-plane"></i>Active
                             Internships</a>
                     </li>
                     <li class="inner-child">
@@ -81,12 +81,12 @@ use yii\widgets\Pjax;
                     </li>
                     <li class="inner-child">
                         <a href="/account/internships/create" title="" class="tree-toggler"><i
-                                    class="fa fa-paper-plane-o"></i>Create Internships</a>
+                                    class="far fa-paper-plane"></i>Create Internships</a>
                     </li>
                 <?php endif; ?>
                 <li>
                     <a href="#" url="/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
-                       data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
+                       data-backdrop="static" data-keyboard="false"><i class="fas fa-key"></i> Change Password</a>
                     <div class="modal fade" id="myModal2" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -99,7 +99,7 @@ use yii\widgets\Pjax;
                     </div>
                 </li>
                 <li class="inner-child">
-                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
+                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fas fa-sign-out-alt"></i>Logout</a>
                 </li>
             </ul>
         </div>

@@ -28,12 +28,12 @@ if (!empty($placement_locations)) {
     }
     ?>
     <ul>
-        <li><i class="fa fa-puzzle-piece"></i>
+        <li><i class="fas fa-puzzle-piece"></i>
             <h3>Profile</h3><span><?= $profile_name; ?></span></li>
-        <li><i class="fa fa-puzzle-piece"></i>
+        <li><i class="fas fa-puzzle-piece"></i>
             <h3>Stipend Type <?= '(' . $wage_duration . ')'; ?></h3>
             <span><?= $wage_type; ?></span></li>
-        <li><i class="fa fa-gift"></i>
+        <li><i class="fas fa-gift"></i>
             <h3>Preplacement Offer</h3><span><?= $offer; ?></span></li>
         <?php setlocale(LC_MONETARY, 'en_IN'); ?>
         <li><i class="far fa-money-bill-alt"></i>
@@ -44,7 +44,7 @@ if (!empty($placement_locations)) {
             <h3>Maximum Stipend</h3>
             <span><?= (($max_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $max_wage)) . ' p.m.' : 'N/A'); ?></span>
         </li>
-        <li><i class="fa fa-mars-double"></i>
+        <li><i class="fas fa-mars-double"></i>
             <h3>Gender</h3><span><?php
                 switch ($gender) {
                     case 0:
@@ -67,7 +67,7 @@ if (!empty($placement_locations)) {
             <h3>Fixed Stipend</h3>
             <span><?= (($fixed_wage) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $fixed_wage)) . 'p.m.' : 'N/A') ?></span>
         </li>
-        <li><i class="fa fa-line-chart "></i>
+        <li><i class="fas fa-chart-line"></i>
             <h3>Total Vacancies</h3>
             <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span></li>
         <li><i class="fas fa-map-marker-alt"></i>

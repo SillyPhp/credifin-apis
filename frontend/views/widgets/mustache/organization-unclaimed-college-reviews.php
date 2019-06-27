@@ -36,11 +36,6 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <!--                    <div class="re-bttn">-->
-                        <!--                        <button type="button" data-toggle="modal" data-target="#report">-->
-                        <!--                            <i class="fa fa-flag"></i> Report-->
-                        <!--                        </button>-->
-                        <!--                    </div>-->
                         <div class="publish-date">{{created_on}}</div>
                         <div class="emp-duration">{{reviewer_type}} Student</div>
                     </div>
@@ -170,7 +165,7 @@ function getStudentReviews(limit=null,offset=null) {
         url : '/organizations/get-unclaimed-student-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
         beforeSend:function()
         {
-            $('#load_more_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('#load_more_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if(response.status === 200) {

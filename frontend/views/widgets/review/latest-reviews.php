@@ -17,7 +17,7 @@ use yii\helpers\Url;
                         <div class="qrb-details">
                             <div class="qr-name"><a href=""> Guru Nanak Institute of Management and Technology </a></div>
                             <div class="qr-stars">
-                                <i class="fa fa-calendar"></i> June 04, 2019
+                                <i class="fas fa-calendar-alt"></i> June 04, 2019
                             </div>
                         </div>
                     </div>

@@ -74,8 +74,8 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="MS-controls">
-                    <button class="MS-left"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
-                    <button class="MS-right"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>
+                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>
                 </div>
             </div>
         </div>

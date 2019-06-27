@@ -121,7 +121,7 @@ if ($type == 'Internships') {
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-google">
-                                        <i class="fa fa-envelope"></i>
+                                        <i class="fas fa-envelope"></i>
                                     </a>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@ if ($type == 'Internships') {
                         <div class="j-details col-md-4">
                             <ul class="job-overviews">
                                 <li>
-                                    <i class="fa fa-clock-o"></i>
+                                    <i class="far fa-clock"></i>
                                     <h3>Experience</h3>
                                     <span><?= $data['experience'] ?></span>
                                 </li>
@@ -170,7 +170,7 @@ if ($type == 'Internships') {
                                 if (!empty($data['industry'])) {
                                     ?>
                                     <li>
-                                        <i class="fa fa-puzzle-piece"></i>
+                                        <i class="fas fa-puzzle-piece"></i>
                                         <h3>Preferred Industry</h3>
                                         <span><?= $data['industry'] ?></span>
                                     </li>
@@ -179,7 +179,7 @@ if ($type == 'Internships') {
                                 if (!empty($data['designation'])) {
                                     ?>
                                     <li>
-                                        <i class="fa fa-thumb-tack"></i>
+                                        <i class="fas fa-thumbtack"></i>
                                         <h3>Designation</h3>
                                         <span><?= $data['designation'] ?></span>
                                     </li>
@@ -213,12 +213,12 @@ if ($type == 'Internships') {
                                 }
                                 ?>
                                 <li>
-                                    <i class="fa fa-suitcase"></i>
+                                    <i class="fas fa-suitcase"></i>
                                     <h3>Type</h3>
                                     <span><?= $application_details['type'] ?></span>
                                 </li>
                                 <li>
-                                    <i class="fa fa-line-chart "></i>
+                                    <i class="fas fa-chart-line"></i>
                                     <h3>Total Vacancies</h3>
                                     <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
                                 </li>
@@ -263,7 +263,7 @@ if ($type == 'Internships') {
                                 </p>
                             </div>
                             <div class="b-apply foo">
-                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>View
+                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i class="fas fa-paper-plane"></i>View
                                     Detail</a>
                             </div>
                         </div>

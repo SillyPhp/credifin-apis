@@ -72,7 +72,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                     'id' => 'category_drp',
                                     'class' => 'chosen'])->label(false); ?>
                                 <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['title'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
+                                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['title'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
                             </div>
                             <div class="row">
                                 <?= $form->field($basicDetails, 'exp_year', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Year', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[0] : '')])->label(false) ?>
@@ -136,7 +136,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                             } ?>
                                             <li class="tagAdd taglist">
                                                 <div class="language_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                                                     <input type="text" id="search-language"
                                                            class="skill-input lang-input">
                                                 </div>
@@ -162,7 +162,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                             } ?>
                                             <li class="tagAdd taglist">
                                                 <div class="skill_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                                                     <input type="text" id="search-skill" class="skill-input">
                                                 </div>
                                             </li>
@@ -213,7 +213,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <div class="row">
                         <?= $form->field($socialDetails, 'facebook', ['template' => '<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fab fa-facebook-f"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Facebook Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'twitter', ['template' => '<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fab fa-twitter"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Twitter Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'skype', ['template' => '<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Skype Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'skype', ['template' => '<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fab fa-skype"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Skype Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
                         <?= $form->field($socialDetails, 'linkedin', ['template' => '<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fab fa-linkedin-in"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Linkedin Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update', ['class' => 'btn_pink btn_submit_contact', 'id' => 'contact_submit']); ?>
@@ -725,7 +725,7 @@ function runAjax(thisObj,data,btn) {
      cache:false,
      processData: false,
      beforeSend:function() {
-       btn.append('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+       btn.append('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
        btn.attr("disabled","true");
      },
      success:function(response) {
