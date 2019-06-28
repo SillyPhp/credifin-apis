@@ -28,7 +28,7 @@ use yii\helpers\Url;
                                 <div class="qrb-details">
                                     <div class="qr-name"><a href="/{{profile_link}}"> {{name}} </a></div>
                                     <div class="qr-stars">
-                                        <i class="fa fa-calendar"></i> {{created_on}}
+                                        <i class="fas fa-calendar-alt"></i> {{created_on}}
                                     </div>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@ function fetch_cards_new_latest(params,template,is_clear=false)
         beforeSend: function(){
           $('#loading_img').addClass('show');
           $('.fader').css('display','block');
-           $('#load_review_card_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+           $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if (response.status==200){
@@ -90,7 +90,7 @@ function fetch_cards_new_latest_comp(params,template,is_clear=false)
         beforeSend: function(){
           $('#loading_img').addClass('show');
           $('.fader').css('display','block');
-           $('#load_review_card_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+           $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if (response.status==200){

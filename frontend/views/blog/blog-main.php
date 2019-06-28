@@ -47,9 +47,9 @@ $this->params['seo_tags'] = [
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
                         <div class="controls pull-right">
-                            <a class="left fa fa-chevron-left bttn-left" href="#carousel-example"
+                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
-                            <a class="right fa fa-chevron-right bttn-right" href="#carousel-example"
+                            <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
                                data-slide="next"></a>
                         </div>
                     </div>
@@ -213,7 +213,7 @@ $this->params['seo_tags'] = [
                         <div>
                             <a href="<?= Url::to('/site/all-quiz'); ?>" class="btn btn-3">
                                 <span class="txt"><?= Yii::t('frontend', 'View all Quizzes'); ?></span>
-                                <span class="round"><i class="fa fa-chevron-right"></i></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
                             </a>
                         </div>
                     </div>
@@ -332,12 +332,12 @@ if (!empty($quotes)) {
     <div class="imgmain-div"><img class="imgmain"/></div>
     <ul class="styled-icon icon-bordered icon-md mb-5 lightbox-ul">
         <li><a link='https://www.facebook.com/sharer/sharer.php?u=' target="_blank" class="overfb"><i
-                        class="fa fa-facebook"></i></a></li>
-        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fa fa-twitter"></i></a>
+                        class="fab fa-facebook-f"></i></a></li>
+        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fab fa-twitter"></i></a>
         </li>
         <li><a href link="https://www.pinterest.com/pin/create/button/?url={link}&media={image}&description={title}"
-               target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
-        <li><a target="_blank" class="overdw" download><i class="fa fa-download"></i></a></li>
+               target="_blank" class="overpt"><i class="fab fa-pinterest"></i></a></li>
+        <li><a target="_blank" class="overdw" download><i class="fas fa-download"></i></a></li>
     </ul>
     <section class="blog-mirror">
         <div class="my-container">
@@ -1198,8 +1198,8 @@ $('.owl-carousel-4col').owlCarousel({
     autoplayHoverPause: true,
     responsiveClass: true,
     navText: [
-        '<i class="fa fa-chevron-left"></i>',
-        '<i class="fa fa-chevron-right"></i>'
+        '<i class="fas fa-chevron-left"></i>',
+        '<i class="fas fa-chevron-right"></i>'
     ],
     responsive: {
         0: {

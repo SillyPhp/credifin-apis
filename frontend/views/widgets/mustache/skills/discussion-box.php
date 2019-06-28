@@ -337,7 +337,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     </div>
 
                     <div class="reply">
-                        <button class="replyButton" onclick="addReply(this)"><i class="fa fa-reply"></i> Reply</button>
+                        <button class="replyButton" onclick="addReply(this)"><i class="fas fa-reply"></i> Reply</button>
                     </div>
                 </div>
             </div>

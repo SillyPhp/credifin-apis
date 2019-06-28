@@ -5,7 +5,7 @@ use yii\bootstrap\ActiveForm;
 ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title"><i class="fa fa-key" aria-hidden="true"></i> <?= Yii::t('frontend', 'Change Password'); ?></h4>
+    <h4 class="modal-title"><i class="fas fa-key" aria-hidden="true"></i> <?= Yii::t('frontend', 'Change Password'); ?></h4>
 </div>
 <?php
 $form = ActiveForm::begin([

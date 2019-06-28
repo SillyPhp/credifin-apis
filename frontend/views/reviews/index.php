@@ -62,7 +62,7 @@ $this->params['seo_tags'] = [
                                         </div>
                                         <input type="text" id="search_comp" class="form-control" placeholder="Search Companies, Colleges, Schools, Educational Institutes" name="keywords">
                                         <div class="input-group-btn">
-                                            <button class="loader_btn_search"><i class="fa fa-search"></i></button>
+                                            <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                                         </div>
                                     </div>
                                 </form>

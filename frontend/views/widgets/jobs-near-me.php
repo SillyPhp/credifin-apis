@@ -109,13 +109,13 @@ if($type == 'jobs'){
             {{#city_name}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;{{city_name}}
+                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city_name}}
                 </span>
             {{/city_name}}
             {{^city_name}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;All India
+                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
                 </span>
             {{/city_name}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
@@ -135,7 +135,7 @@ if($type == 'jobs'){
                             {{job_title}}</h4>
                     </a>
                     {{#salary}}
-                    <h5 id="salary"><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    <h5 id="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
                     <h5 id="salary">Negotiable</h5>
@@ -144,7 +144,7 @@ if($type == 'jobs'){
                     <h5 class="type">{{type}}</h5>
                     {{/type}}
                     {{#experience}}
-                    <h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
                 </div>
             </div>
@@ -155,7 +155,7 @@ if($type == 'jobs'){
 
             <div class="application-card-wrapper">
                 <a href="/<?= $job_type?>/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>
@@ -612,7 +612,7 @@ $(document).on("click","#card-hover",function() {
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fa fa-map-marker"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fa fa-inr"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });

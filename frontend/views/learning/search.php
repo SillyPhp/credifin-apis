@@ -11,7 +11,7 @@ use yii\helpers\Html;
                 <div class="search-container">
                     <form action="<?= Url::to('/learning/search-video');?>">
                         <input type="text" placeholder="Search topics" name="keyword" id="s-input" />
-                        <button type="submit" id="s-btn"><i class="fa fa-search"></i></button>
+                        <button type="submit" id="s-btn"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
             </div>

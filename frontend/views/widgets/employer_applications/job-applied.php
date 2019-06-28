@@ -289,7 +289,7 @@ $script = <<< JS
                     type: 'post',
                  beforeSend:function()
                  {
-                 $('.sav_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                 $('.sav_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
                  },     
                  success:function(data)
                  {
@@ -331,8 +331,8 @@ $script = <<< JS
     function applied()
         {
              $('#modal').modal('toggle');
-                     $('.'+btn_class+'').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                     $('.'+btn_class+'').html('<i class = "fa fa-check"></i>Applied');
+                     $('.'+btn_class+'').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                     $('.'+btn_class+'').html('<i class = "fas fa-check"></i>Applied');
                      $('.'+btn_class+'').attr("disabled","true");
             }
 
