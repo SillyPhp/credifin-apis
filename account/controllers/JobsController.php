@@ -845,12 +845,15 @@ class JobsController extends Controller
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
+                $b->onCondition(['b.is_deleted' => 0]);
                 $b->joinWith(['applicationTypeEnc c']);
                 $b->joinWith(['title d' => function ($c) {
                     $c->joinWith(['categoryEnc e']);
                     $c->joinWith(['parentEnc f']);
                 }]);
-                $b->joinWith(['organizationEnc g']);
+                $b->joinWith(['organizationEnc g' => function ($d) {
+                    $d->onCondition(['g.is_deleted' => 0]);
+                }]);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
             }], false)
