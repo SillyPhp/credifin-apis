@@ -52,29 +52,25 @@ class Reviews extends Model
     public $coverage_of_subject_matter;
     public $educational_stream;
 
-//    public function rules()
-//    {
-//
-//        return [
-//            [['org_enc_id','user_detail', 'current_employee', 'job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'location', 'department', 'designation', 'like', 'dislike', 'from'], 'required'],
-//            [['to'],'safe'],
-////            [['org_enc_id','academics'],'required','on'=>'college']
-//        ];
-//
-//    }
 
     public function rules()
     {
 
         return [
             [['org_enc_id', 'user_detail', 'current_employee', 'job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'location', 'department', 'designation', 'like', 'dislike', 'from'], 'required', 'on' => 'employee-review'],
+            [['org_enc_id', 'user_detail', 'job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'like', 'dislike'], 'required', 'on' => 'edit-employee-review'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'location', 'department', 'designation', 'like', 'dislike', 'from'], 'required', 'on' => 'unclaimed_employee_review'],
+            [['org_enc_id', 'user_detail', 'reviewer_type', 'job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'like', 'dislike'], 'required', 'on' => 'edit_unclaimed_employee_review'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'college'],
+            [['org_enc_id', 'user_detail', 'reviewer_type', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'like', 'dislike'], 'required', 'on' => 'edit_college'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'school'],
+            [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'like', 'dislike'], 'required', 'on' => 'edit_school'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'edu_institute'],
-            [['job_security'], 'integer', 'min' => 1, 'max' => 5],
+            [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'like', 'dislike'], 'required', 'on' => 'edit_edu_institute'],
+            [['job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'integer', 'min' => 1, 'max' => 5],
             [['reviewer_type'], 'integer', 'min' => 0, 'max' => 7],
             [['user_detail'], 'integer', 'min' => 0, 'max' => 1],
+            [['current_employee'], 'integer', 'min' => 0, 'max' => 1],
             [['to'], 'safe']
         ];
     }
@@ -103,8 +99,8 @@ class Reviews extends Model
         if ($this->reviewer_type == 0 || $this->reviewer_type == 1) {
             $rating = [$this->skill_development, $this->work_life_balance, $this->salary_benefits, $this->company_culture, $this->job_security, $this->career_growth, $this->work_satisfaction];
             $data->average_rating = $this->findAvg($rating);
-            $data->category_enc_id = $this->__addCategory($this->department,$options['user_enc_id']);
-            $data->designation_enc_id = $this->__addDesignation($this->designation,$options['user_enc_id']);
+            $data->category_enc_id = $this->__addCategory($this->department, $options['user_enc_id']);
+            $data->designation_enc_id = $this->__addDesignation($this->designation, $options['user_enc_id']);
             $data->job_security = $this->job_security;
             $data->growth = $this->career_growth;
             $data->organization_culture = $this->company_culture;
@@ -112,7 +108,7 @@ class Reviews extends Model
             $data->work = $this->work_satisfaction;
             $data->work_life = $this->work_life_balance;
             $data->skill_development = $this->skill_development;
-        }elseif($this->reviewer_type == 2 || $this->reviewer_type == 3){
+        } elseif ($this->reviewer_type == 2 || $this->reviewer_type == 3) {
             $rating = [$this->academics, $this->faculty_teaching_quality, $this->infrastructure, $this->accomodation_food, $this->placements_internships, $this->social_life_extracurriculars, $this->culture_diversity];
             $data->average_rating = $this->findAvg($rating);
             $data->educational_stream_enc_id = $this->__eduStream($this->educational_stream);
@@ -123,7 +119,7 @@ class Reviews extends Model
             $data->placements_internships = $this->placements_internships;
             $data->social_life_extracurriculars = $this->social_life_extracurriculars;
             $data->culture_diversity = $this->culture_diversity;
-        }elseif($this->reviewer_type == 4 || $this->reviewer_type == 5){
+        } elseif ($this->reviewer_type == 4 || $this->reviewer_type == 5) {
             $rating = [$this->student_engagement, $this->school_infrastructure, $this->faculty, $this->accessibility_of_faculty, $this->co_curricular_activities, $this->leadership_development, $this->sports];
             $data->average_rating = $this->findAvg($rating);
             $data->educational_stream_enc_id = $this->__eduStream($this->educational_stream);
@@ -134,7 +130,7 @@ class Reviews extends Model
             $data->co_curricular_activities = $this->co_curricular_activities;
             $data->leadership_development = $this->leadership_development;
             $data->sports = $this->sports;
-        }elseif ($this->reviewer_type == 6 || $this->reviewer_type == 7){
+        } elseif ($this->reviewer_type == 6 || $this->reviewer_type == 7) {
             $rating = [$this->student_engagement, $this->school_infrastructure, $this->faculty, $this->value_for_money, $this->teaching_style, $this->coverage_of_subject_matter, $this->accessibility_of_faculty];
             $data->average_rating = $this->findAvg($rating);
             $data->educational_stream_enc_id = $this->__eduStream($this->educational_stream);
@@ -148,10 +144,65 @@ class Reviews extends Model
         }
         if ($data->save()) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
+    }
+
+    public function __updateData($options)
+    {
+
+        $data = NewOrganizationReviews::find()
+            ->select(['*'])
+            ->where(['created_by' => $options['user_enc_id'], 'organization_enc_id' => $options['org_enc_id']])
+            ->one();
+
+
+        $data->likes = $this->like;
+        $data->dislikes = $this->dislike;
+
+        $data->show_user_details = $this->user_detail;
+        $data->last_updated_by = $options['user_enc_id'];
+        $data->last_updated_on = date('Y-m-d H:i:s');
+        if ($this->reviewer_type == 0 || $this->reviewer_type == 1) {
+            $data->job_security = $this->job_security;
+            $data->growth = $this->career_growth;
+            $data->organization_culture = $this->company_culture;
+            $data->compensation = $this->salary_benefits;
+            $data->work = $this->work_satisfaction;
+            $data->work_life = $this->work_life_balance;
+            $data->skill_development = $this->skill_development;
+        } elseif ($this->reviewer_type == 2 || $this->reviewer_type == 3) {
+            $data->academics = $this->academics;
+            $data->faculty_teaching_quality = $this->faculty_teaching_quality;
+            $data->infrastructure = $this->infrastructure;
+            $data->accomodation_food = $this->accomodation_food;
+            $data->placements_internships = $this->placements_internships;
+            $data->social_life_extracurriculars = $this->social_life_extracurriculars;
+            $data->culture_diversity = $this->culture_diversity;
+        } elseif ($this->reviewer_type == 4 || $this->reviewer_type == 5) {
+            $data->student_engagement = $this->student_engagement;
+            $data->school_infrastructure = $this->school_infrastructure;
+            $data->faculty = $this->faculty;
+            $data->accessibility_of_faculty = $this->accessibility_of_faculty;
+            $data->co_curricular_activities = $this->co_curricular_activities;
+            $data->leadership_development = $this->leadership_development;
+            $data->sports = $this->sports;
+        } elseif ($this->reviewer_type == 6 || $this->reviewer_type == 7) {
+            $data->student_engagement = $this->student_engagement;
+            $data->school_infrastructure = $this->school_infrastructure;
+            $data->faculty = $this->faculty;
+            $data->value_for_money = $this->value_for_money;
+            $data->teaching_style = $this->teaching_style;
+            $data->coverage_of_subject_matter = $this->coverage_of_subject_matter;
+            $data->accessibility_of_faculty = $this->accessibility_of_faculty;
+        }
+        if ($data->update()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function findAvg($data)
@@ -161,7 +212,7 @@ class Reviews extends Model
         return $avg_rating;
     }
 
-    private function __addCategory($name,$id)
+    private function __addCategory($name, $id)
     {
 
         $cat = Categories::find()
@@ -193,7 +244,7 @@ class Reviews extends Model
         }
     }
 
-    private function __addDesignation($designation,$id)
+    private function __addDesignation($designation, $id)
     {
 
         $des = Designations::find()
