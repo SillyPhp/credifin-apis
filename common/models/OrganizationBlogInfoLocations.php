@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%organization_blog_info_locations}}".
  *
@@ -43,10 +41,6 @@ class OrganizationBlogInfoLocations extends \yii\db\ActiveRecord
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
 
     /**
      * @return \yii\db\ActiveQuery
