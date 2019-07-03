@@ -169,7 +169,7 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 echo $this->render('/widgets/blogs/whats-new',[
-    'size' => 'col-md-3',
+    'size' => 'col-md-3 col-sm-6',
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/category-card');
@@ -739,11 +739,16 @@ $this->registerCss('
     float:left;
 }
 .wn-box-icon{
-    max-width: 270px !important;
+    max-width: 100% !important;
 }
 .wn-box-icon img{
     height: 200px !important;
     object-fit: fill;
+}
+@media only screen and (max-width: 767px) and (min-width: 375px) {
+    .form-inline .input-group{
+        width:98%;
+    }
 }
 ');
 $script = <<<JS
