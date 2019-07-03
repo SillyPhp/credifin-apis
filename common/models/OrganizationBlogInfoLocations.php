@@ -2,28 +2,35 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
- * This is the model class for table "{{%organization_blog_info_locations}}".
+ * This is the model class for table "{{%organization_blog_information}}".
  *
  * @property int $id
- * @property string $blog_information_location_enc_id
  * @property string $blog_information_enc_id
- * @property string $city_enc_id
+ * @property string $title
+ * @property string $description
+ * @property string $industry
+ * @property string $organization_enc_id
  * @property string $created_on
  * @property string $created_by
+ * @property int $is_deleted
  *
- * @property OrganizationBlogInformation $blogInformationEnc
+ * @property OrganizationBlogInfoLocations[] $organizationBlogInfoLocations
+ * @property Organizations $organizationEnc
  * @property Users $createdBy
- * @property Cities $cityEnc
+ * @property OrganizationBlogInformationImages[] $organizationBlogInformationImages
+ * @property TopOrganizationsBlogsList[] $topOrganizationsBlogsLists
  */
-class OrganizationBlogInfoLocations extends \yii\db\ActiveRecord
+class OrganizationBlogInformation extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%organization_blog_info_locations}}';
+        return '{{%organization_blog_information}}';
     }
 
     /**
@@ -32,22 +39,35 @@ class OrganizationBlogInfoLocations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['blog_information_location_enc_id', 'blog_information_enc_id', 'city_enc_id'], 'required'],
+            [['blog_information_enc_id', 'title', 'description'], 'required'],
+            [['title', 'description', 'industry'], 'string'],
             [['created_on'], 'safe'],
-            [['blog_information_location_enc_id', 'blog_information_enc_id', 'city_enc_id', 'created_by'], 'string', 'max' => 100],
-            [['blog_information_location_enc_id'], 'unique'],
-            [['blog_information_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationBlogInformation::className(), 'targetAttribute' => ['blog_information_enc_id' => 'blog_information_enc_id']],
+            [['is_deleted'], 'integer'],
+            [['blog_information_enc_id', 'organization_enc_id', 'created_by'], 'string', 'max' => 100],
+            [['blog_information_enc_id'], 'unique'],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationBlogInfoLocations()
+    {
+        return $this->hasMany(OrganizationBlogInfoLocations::className(), ['blog_information_enc_id' => 'blog_information_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBlogInformationEnc()
+    public function getOrganizationEnc()
     {
-        return $this->hasOne(OrganizationBlogInformation::className(), ['blog_information_enc_id' => 'blog_information_enc_id']);
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -61,8 +81,16 @@ class OrganizationBlogInfoLocations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCityEnc()
+    public function getOrganizationBlogInformationImages()
     {
-        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(OrganizationBlogInformationImages::className(), ['blog_information_enc_id' => 'blog_information_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTopOrganizationsBlogsLists()
+    {
+        return $this->hasMany(TopOrganizationsBlogsList::className(), ['blog_information_enc_id' => 'blog_information_enc_id']);
     }
 }
