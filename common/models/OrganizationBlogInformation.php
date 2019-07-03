@@ -11,6 +11,7 @@ use Yii;
  * @property string $blog_information_enc_id
  * @property string $title
  * @property string $description
+ * @property string $industry
  * @property string $organization_enc_id
  * @property string $created_on
  * @property string $created_by
@@ -20,6 +21,7 @@ use Yii;
  * @property Organizations $organizationEnc
  * @property Users $createdBy
  * @property OrganizationBlogInformationImages[] $organizationBlogInformationImages
+ * @property TopOrganizationsBlogsList[] $topOrganizationsBlogsLists
  */
 class OrganizationBlogInformation extends \yii\db\ActiveRecord
 {
@@ -38,7 +40,7 @@ class OrganizationBlogInformation extends \yii\db\ActiveRecord
     {
         return [
             [['blog_information_enc_id', 'title', 'description'], 'required'],
-            [['title', 'description'], 'string'],
+            [['title', 'description', 'industry'], 'string'],
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['blog_information_enc_id', 'organization_enc_id', 'created_by'], 'string', 'max' => 100],
@@ -82,5 +84,13 @@ class OrganizationBlogInformation extends \yii\db\ActiveRecord
     public function getOrganizationBlogInformationImages()
     {
         return $this->hasMany(OrganizationBlogInformationImages::className(), ['blog_information_enc_id' => 'blog_information_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTopOrganizationsBlogsLists()
+    {
+        return $this->hasMany(TopOrganizationsBlogsList::className(), ['blog_information_enc_id' => 'blog_information_enc_id']);
     }
 }
