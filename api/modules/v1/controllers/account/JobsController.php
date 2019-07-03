@@ -7,6 +7,7 @@ use api\modules\v1\controllers\ApiBaseController;
 use api\modules\v1\models\Applied;
 use api\modules\v1\models\Candidates;
 use common\models\AnsweredQuestionnaire;
+use common\models\AnsweredQuestionnaireFields;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplicationProcess;
@@ -23,6 +24,7 @@ use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\UserPreferences;
+use common\models\Utilities;
 use common\models\Users;
 use MongoDB\Driver\Query;
 use yii\helpers\Url;
@@ -692,7 +694,7 @@ class JobsController extends ApiBaseController
             ->one();
 
         if ($chk) {
-            return $this->response(409);
+            return $this->response(409,'already filled');
         }
 
         $questions = OrganizationQuestionnaire::find()
@@ -709,6 +711,7 @@ class JobsController extends ApiBaseController
             }], true)
             ->where(['a.questionnaire_enc_id' => $questions[0]['questionnaire_enc_id']])
             ->groupBy(['a.field_enc_id'])
+            ->orderBy('a.sequence')
             ->asArray()
             ->all();
 
@@ -717,6 +720,98 @@ class JobsController extends ApiBaseController
         } else {
             return $this->response(404);
         }
+    }
+
+    public function actionFillQuestionnaire(){
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if(isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])){
+            $questionnaire_id = $parameters['questionnaire_enc_id'];
+        }else{
+            return $this->response(422);
+        }
+
+        if(isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])){
+            $applied_application_id = $parameters['applied_application_enc_id'];
+        }else{
+            return $this->response(422);
+        }
+
+        $data = json_decode($parameters['data'],true);
+        $data = $data['response'];
+
+        $answered_model = new AnsweredQuestionnaire();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $answered_model->answered_questionnaire_enc_id = $utilitiesModel->encrypt();
+        $answered_model->applied_application_enc_id = $applied_application_id;
+        $answered_model->questionnaire_enc_id = $questionnaire_id;
+        $answered_model->created_by = $candidate->user_enc_id;
+        $answered_model->created_on = date('Y-m-d H:i:s');
+        if($answered_model->save()){
+            foreach ($data as $d){
+
+                if($d['field_type'] == 'text' || $d['field_type'] == 'textarea' || $d['field_type'] == 'number' || $d['field_type'] == 'date' || $d['field_type'] == 'time'){
+                    $field_model = new AnsweredQuestionnaireFields();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                    $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                    $field_model->field_enc_id = $d['field_enc_id'];
+                    $field_model->answer = $d['answer'];
+                    $field_model->created_on = date('Y-m-d H:i:s');
+                    $field_model->created_by = $candidate->user_enc_id;
+                    if(!$field_model->save()){
+                        return $this->response(500);
+                    }
+                }
+
+                if($d['field_type'] == 'select' || $d['field_type'] == 'radio'){
+                    $field_model = new AnsweredQuestionnaireFields();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                    $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                    $field_model->field_enc_id = $d['field_enc_id'];
+                    $field_model->field_option_enc_id = $d['option_enc_id'];
+                    $field_model->created_on = date('Y-m-d H:i:s');
+                    $field_model->created_by = $candidate->user_enc_id;
+                    if(!$field_model->save()){
+                        return $this->response(500);
+                    }
+                }
+
+                if($d['field_type'] == 'checkbox'){
+                    foreach ($d['options'] as $option){
+                        $utilitiesModel = new Utilities();
+                        $fieldsModel = new AnsweredQuestionnaireFields;
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $field_model->field_enc_id = $d['field_enc_id'];
+                        $field_model->field_option_enc_id = $option['option_enc_id'];
+                        $field_model->created_on = date('Y-m-d H:i:s');
+                        $field_model->created_by = $candidate->user_enc_id;
+                        if(!$field_model->save()){
+                            return $this->response(500);
+                        }
+                    }
+                }
+            }
+        }else{
+            return $this->response(500,'problem in saving questionnaire');
+        }
+
+        $update = Yii::$app->db->createCommand()
+            ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $candidate->user_enc_id], ['applied_application_enc_id' => $applied_application_id])
+            ->execute();
+        if ($update) {
+            return $this->response(201);
+        } else {
+            return $this->response(500,'error occured while updating applied applications');
+        }
+
     }
 
     public function actionProcessApplication()
