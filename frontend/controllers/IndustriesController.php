@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\AssignedCategories;
+use common\models\Categories;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -44,6 +46,16 @@ class IndustriesController extends Controller
 
             return $response;
         }
+    }
+
+    public function actionProfiles()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $primaryfields = Industries::find()
+            ->select(['industry value'])
+            ->asArray()
+            ->all();
+        return $primaryfields;
     }
 
 }
