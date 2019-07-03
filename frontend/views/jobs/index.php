@@ -36,8 +36,8 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center text-white">
-                <h2 class="text-white"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
-                <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
+                <h2 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
+                <h4 class="text-white2"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
                 <div class="search-by-type">
                     <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
                         <div class="input-group mb-10 mr-10 col-md-5">
@@ -179,6 +179,19 @@ echo $this->render('/widgets/mustache/application-card');
 //    'posts' => $posts,
 //]);
 $this->registerCss('
+.text-white1{
+    color:white;
+    font-family:Roboto;
+    }
+.text-white2{
+    color:white;
+    font-family:Roboto;
+    font-weight:300;
+    }
+.form-control{
+    font-family:Roboto;
+    font-weight:300;
+    }
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -190,11 +203,14 @@ $this->registerCss('
 }
 .list-heading{
     font-size:16px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:Roboto;
 }
 .quick-links li a{
     line-height:23px;
     font-size:13px;
+    font-family:Roboto;
+    font-weight:300;
 }
 .quick-links li a:hover{
     color:#00a0e3;
@@ -358,6 +374,8 @@ $this->registerCss('
     background-color: #f07d1b;
     color: #FFF;
     border-color: transparent;
+    font-family:Roboto;
+    font-weight:400 !important;
 }
 .twitter-typeahead{
     width:100%;

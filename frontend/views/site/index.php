@@ -693,15 +693,16 @@ $this->registerCss('
 .mob-heading{
     font-size:33px;
     color:#000;
-    font-family:lora;
-        font-weight:bold;
+    font-family:Roboto;
+        font-weight:500;
     text-transform:capitalize;
     width:100%;
 }
 .mob-sub-heading{
     font-size:18px;
     color:#000;
-    font-family:lora;
+    font-family:Roboto;
+    font-weight:300;
     text-transform:capitalize;
     width:100%;
 }
@@ -817,7 +818,8 @@ $this->registerCss('
    text-align:center;
    margin:0 auto;
    max-width:300px;
-   font-weight:600;
+   font-weight:400;
+   font-family:Roboto;
 }
 .post-job-bttn a:hover{
    box-shadow:none;
@@ -1045,7 +1047,8 @@ $this->registerCss('
 }
 .how-heading{
     font-size: 15px;
-    font-family:lora;
+    font-weight:300;
+    font-family:Roboto;
 }
 .steps-row{
     padding: 30px 0;
@@ -1227,8 +1230,9 @@ how-icon{
 }
 .nav.nav-tabs > li a {
     float: left;
-    font-size: 18px;
-    font-weight: bold;
+    font-size:18px;
+    font-weight:400;
+    font-family:Roboto;
     letter-spacing: 0px;
     padding: 15px 30px;
     
@@ -1243,6 +1247,8 @@ how-icon{
 .nav.nav-tabs > li a.current {
     color: #ffffff;
     background-color: #00a0e3;
+    font-family:Roboto;
+    font-weight:400;
 }
 .job-listing.wtabs {
     border: 1px solid #ebefef;
@@ -1534,11 +1540,14 @@ how-icon{
 }
 .list-heading{
     font-size:16px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:Roboto;
 }
 .quick-links li a{
     line-height:23px;
     font-size:13px;
+    font-weight:300;
+    font-family:Roboto;
 }
 .quick-links li a:hover{
     color:#00a0e3;
@@ -1646,6 +1655,7 @@ function scrollFunction() {
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
