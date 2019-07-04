@@ -22,7 +22,7 @@ use yii\helpers\Url;
             <div class="row">
                 <?php foreach ($profiles as $p) { ?>
                     <div class="col-md-3">
-                        <a href="<?= $p['slug']?>">
+                        <a href="list?keyword=<?= $p['name']?>">
                             <div class="box">
                                 <div class="icon"><img
                                             src="<?= $p['icon']?>">
