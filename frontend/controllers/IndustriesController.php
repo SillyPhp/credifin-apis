@@ -51,11 +51,15 @@ class IndustriesController extends Controller
     public function actionProfiles()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $primaryfields = Industries::find()
+        $param1 = (new \yii\db\Query())
             ->select(['industry value'])
-            ->asArray()
-            ->all();
-        return $primaryfields;
+            ->from(Industries::tableName().'as a');
+
+        $param2 = (new \yii\db\Query())
+            ->select(['business_activity value'])
+            ->from(BusinessActivities::tableName().'as a');
+
+        return $param1->union($param2)->all();
     }
 
 }
