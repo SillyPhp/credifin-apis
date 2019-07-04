@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\AssignedCategories;
+use frontend\models\workingProfiles\WorkingProfile;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -806,6 +807,59 @@ class JobsController extends Controller
                 'cards' => $related_app_data
             ];
         }
+    }
+
+    public function actionWorkingProfiles(){
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+                $activeProfiles = AssignedCategories::find()
+                    ->select(['b.name', 'b.slug','CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+                    ->alias('a')
+                    ->distinct()
+                    ->innerJoinWith(['parentEnc b' => function ($b) {
+                        $b->onCondition([
+                            'or',
+                            ['!=', 'b.icon', NULL],
+                            ['!=', 'b.icon', ''],
+                        ])
+                            ->groupBy(['b.category_enc_id']);
+                    }], false)
+                    ->joinWith(['employerApplications d' => function ($d) {
+                        $d->andOnCondition([
+                            'd.status' => 'Active',
+                            'd.is_deleted' => 0,
+                        ])
+                            ->joinWith(['applicationTypeEnc e' => function ($e) {
+                                $e->andOnCondition(['e.name' => ucfirst('Jobs')]);
+                            }], false);
+                    }], false)
+                    ->where(['a.assigned_to' => ucfirst('Jobs')])
+                    ->orderBy([
+                        'total' => SORT_DESC,
+                        'b.name' => SORT_ASC,
+                    ])
+                    ->asArray()
+                    ->all();
+
+                if($activeProfiles){
+                    $response = [
+                        'status' => 200,
+                        'message' => 'Success',
+                        'categories' => [
+                            'jobs' => $activeProfiles,
+                        ],
+                    ];
+                }else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+
+                return $response;
+        }
+        return $this->render('working-profile');
     }
 
 }

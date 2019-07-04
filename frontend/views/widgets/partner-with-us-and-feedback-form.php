@@ -105,6 +105,7 @@ $this->registerCss('
     -o-transition:.6s all;
     -moz-transition:.6s all;
     -ms-transition:.6s all;
+    font-family:Roboto;
 }
 .partner-btn button:hover{
     border:2px solid #00a0e3;

@@ -417,7 +417,6 @@ class InternshipsController extends Controller
         return $this->render('compare-internships');
     }
 
-
     public function actionFindApplication(){
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -679,6 +678,38 @@ class InternshipsController extends Controller
             ->one();
 
         return $application;
+    }
+
+    public function actionWorkingProfiles(){
+        $activeProfiles = AssignedCategories::find()
+            ->select(['b.name', 'b.slug','CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->alias('a')
+            ->distinct()
+            ->innerJoinWith(['parentEnc b' => function ($b) {
+                $b->onCondition([
+                    'or',
+                    ['!=', 'b.icon', NULL],
+                    ['!=', 'b.icon', ''],
+                ])
+                    ->groupBy(['b.category_enc_id']);
+            }], false)
+            ->joinWith(['employerApplications d' => function ($d) {
+                $d->andOnCondition([
+                    'd.status' => 'Active',
+                    'd.is_deleted' => 0,
+                ])
+                    ->joinWith(['applicationTypeEnc e' => function ($e) {
+                        $e->andOnCondition(['e.name' => ucfirst('Internships')]);
+                    }], false);
+            }], false)
+            ->where(['a.assigned_to' => ucfirst('Internships')])
+            ->orderBy([
+                'total' => SORT_DESC,
+                'b.name' => SORT_ASC,
+            ])
+            ->asArray()
+            ->all();
+        return $this->render('internship-profiles',['profiles'=>$activeProfiles]);
     }
 
 }
