@@ -56,7 +56,8 @@ class OrganizationSignUpForm extends Model
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-            [['username', 'email', 'organization_email'], 'string', 'max' => 50],
+            [['username'], 'string', 'length' => [3, 20]],
+            [['email', 'organization_email'], 'string', 'max' => 50],
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
@@ -136,7 +137,7 @@ class OrganizationSignUpForm extends Model
 
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $this->_flag = false;
-//                $transaction->rollback();
+                $transaction->rollback();
             }
 
             if($this->_flag) {
@@ -145,7 +146,7 @@ class OrganizationSignUpForm extends Model
 
                 if (!$referralModel->create()) {
                     $this->_flag = false;
-//                    $transaction->rollback();
+                    $transaction->rollback();
                 } else {
                     $this->_flag = true;
                 }
@@ -170,13 +171,15 @@ class OrganizationSignUpForm extends Model
                 $organizationsModel->status = 'Active';
                 if (!$organizationsModel->validate() || !$organizationsModel->save()) {
                     $this->_flag = false;
-//                    $transaction->rollback();
+                    $transaction->rollback();
+                    return false;
                 }
 
                 $usersModel->organization_enc_id = $organizationsModel->organization_enc_id;
                 if (!$usersModel->validate() || !$usersModel->update()) {
                     $this->_flag = false;
-//                    $transaction->rollback();
+                    $transaction->rollback();
+                    return false;
                 }
             }
 
@@ -188,7 +191,8 @@ class OrganizationSignUpForm extends Model
 
                 if (!$referralModel->create()) {
                     $this->_flag = false;
-//                    $transaction->rollback();
+                    $transaction->rollback();
+                    return false;
                 } else {
                     $this->_flag = true;
                 }

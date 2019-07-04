@@ -99,6 +99,8 @@ class IndividualSignUpForm extends Model
             $usernamesModel->assigned_to = 1;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
                 $this->_flag = false;
+                $transaction->rollBack();
+                return false;
             } else {
                 $this->_flag = true;
             }
@@ -121,15 +123,19 @@ class IndividualSignUpForm extends Model
                 $usersModel->status = 'Active';
                 if (!$usersModel->validate() || !$usersModel->save()) {
                     $this->_flag = false;
+                    $transaction->rollBack();
+                    return false;
                 }
             }
 
-            if($this->_flag) {
+            if ($this->_flag) {
                 $referralModel = new \common\models\crud\Referral();
                 $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
 
                 if (!$referralModel->create()) {
                     $this->_flag = false;
+                    $transaction->rollBack();
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
