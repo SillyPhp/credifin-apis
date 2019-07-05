@@ -203,6 +203,10 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function actionCalendar(){
+        return $this->render('test');
+    }
+
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[

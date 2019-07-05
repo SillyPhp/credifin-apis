@@ -22,12 +22,12 @@ endif;
     <div class="row">
         <div class="col-md-3">
             <?= $this->render('/widgets/tasks/taskbar-card',['viewed'=>$viewed]); ?>
-            <?=
-            $this->render('/widgets/services-selection/edit-services', [
-                'model' => $model,
-                'services' => $services,
-            ]);
-            ?>
+<!--            --><?//=
+//            $this->render('/widgets/services-selection/edit-services', [
+//                'model' => $model,
+//                'services' => $services,
+//            ]);
+//            ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>

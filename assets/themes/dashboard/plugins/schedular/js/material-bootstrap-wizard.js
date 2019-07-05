@@ -55,6 +55,58 @@ $(document).ready(function(){
         'previousSelector': '.btn-previous',
 
         onNext: function(tab, navigation, index) {
+            if(index == 2){
+                if (!$('#selected_application_id').val()) {
+                    if($('#select-application-sch').find('.error-msg').length == 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#select-application-sch').append(output);
+                    }
+                    return false;
+                }
+                if($('#select-app-round').find('label').length > 0) {
+                    if (!$('#selected_round_id').val()) {
+                        if ($('#select-app-round').find('.error-msg').length == 0) {
+                            var html = $('#error-msg').html();
+                            var data = {
+                                msg: "This field can't be empty"
+                            };
+                            var output = Mustache.render(html, data);
+                            $('#select-app-round').append(output);
+                        }
+                        return false;
+                    }
+                }
+                if($('#specialities-subdata').find('#interview_locations').length > 0) {
+                    if (!$('select#interview-location').children("option:selected").val()) {
+                        if ($('#interview_locations').find('.error-msg').length == 0) {
+                            var html = $('#error-msg').html();
+                            var data = {
+                                msg: "This field can't be empty"
+                            };
+                            var output = Mustache.render(html, data);
+                            $('#interview_locations').append(output);
+                        }
+                        return false;
+                    }
+                }
+                if($('#specialities-data').find('#number_candidate_cont').length > 0) {
+                    if (!$('#candidates').val()) {
+                        if ($('#no_cand_cont').find('.error-msg').length == 0) {
+                            var html = $('#error-msg').html();
+                            var data = {
+                                msg: "This field can't be empty"
+                            };
+                            var output = Mustache.render(html, data);
+                            $('#no_cand_cont').append(output);
+                        }
+                        return false;
+                    }
+                }
+            }
         	var $valid = $('.wizard-card form').valid();
         	if(!$valid) {
         		$validator.focusInvalid();

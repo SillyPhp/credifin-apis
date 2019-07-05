@@ -1,3 +1,11 @@
+<?php
+
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
+//use yii\widgets\Pjax;
+?>
+
 <div class="image-container set-full-height" style="">
     <!--   Big container   -->
     <div class="container">
@@ -20,76 +28,28 @@
                         </div>
                         <div class="tab-content">
                             <div class="tab-pane" id="captain">
-                                <h4 class="info-text">Select Interview Type </h4>
-                                <div class="row">
-                                    <form>
-                                        <div class="col-sm-10 col-sm-offset-1">
-                                            <div class="col-sm-4 col-sm-offset-2">
-                                                <div class="choice" title="This is good if you travel alone.">
-                                                    <input type="radio" id="interview_type_fixed" name="interview_type" value="fixed">
-                                                    <label for="interview_type_fixed" class="icon">
-                                                        <i class="fa fa-link"></i>
-                                                    </label>
-                                                    <h6>Fixed</h6>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <div class="choice" title="Select this room if you're traveling with your family.">
-                                                    <input type="radio" id="interview_type_flexible" name="interview_type" value="flexible">
-                                                    <label for="interview_type_flexible" class="icon">
-                                                        <i class="fa fa-link"></i>
-                                                    </label>
-                                                    <h6>Flexible</h6>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
+                                <?php
+                                echo $this->render('/widgets/scheduler/interview_type')
+                                ?>
                             </div>
+
                             <div class="tab-pane" id="description">
-                                <!-- <div id="fixed_tab" class="row"> -->
-                                <!-- <div class="select-options">
-                                  <input id="toggle1" type="checkbox">
-                                  <label for="toggle1">Toggle me!</label>
-                                </div> -->
-
-                                <!-- </div> -->
-                                <!-- <div id="flexible_tab" class="row"> -->
-
-                                <!-- </div> -->
+                                <?php
+                                echo $this->render('/widgets/scheduler/interview_details')
+                                ?>
                             </div>
+
                             <div class="tab-pane" id="details">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <h4 class="info-text"> Add Interviewer details.</h4>
-                                        <div class="row">
-                                            <div class="col-md-12 col-sm-12">
-                                                <div class="col-md-4 col-sm-4">
-                                                    <label for="int_name" class="form-label">Name of Interviewer</label>
-                                                    <input type="text" name="int_name" id="int_name">
-                                                </div>
-                                                <div class="col-md-4 col-sm-4">
-                                                    <label for="int_email" class="form-label">Email of Interviewer</label>
-                                                    <input type="text" name="int_email" id="int_email">
-                                                </div>
-                                                <div class="col-md-4 col-sm-4">
-                                                    <label for="int_phone" class="form-label">Phone Number of Interviewer</label>
-                                                    <input type="number" name="int_phone" id="int_phone">
-                                                </div>
-                                            </div>
-                                            <div id="more-interviewers"></div>
-                                        </div>
-                                        <div class="col-md-12 col-sm-12">
-                                            <a href="#" id="add-more-interviewers"><i class="fa fa-plus-circle"></i> Add More</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php
+                                echo  $this->render('/widgets/scheduler/interviewer_details')
+                                ?>
                             </div>
+
                         </div>
                         <div class="wizard-footer">
                             <div class="pull-right">
                                 <input type='button' class='btn btn-next btn-fill btn-danger btn-wd' name='next' value='Next' />
-                                <input type='button' class='btn btn-finish btn-fill btn-danger btn-wd' name='finish' value='Finish' />
+                                <input type='button' class='btn btn-finish btn-fill btn-danger btn-wd' name='finish' id="finish" value='Finish' />
                             </div>
                             <div class="pull-left">
                                 <input type='button' class='btn btn-previous btn-fill btn-default btn-wd' name='previous' value='Previous' />
@@ -107,14 +67,14 @@
     {{#.}}
     <div class="col-sm-6">
         <label class="headings">Select Interview Timing for {{date}}</label>
-        <div class="col-sm-6">
+        <div class="col-sm-6 secondary-time-from">
             <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-6 secondary-time-to">
             <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
         </div>
 
-        <div id="times-container"></div>
+        <div id="times-container" class="times-cont"></div>
         <div class="col-md-12">
             <a href="#" id="add-more"><i class="fa fa-plus-circle"></i> Add more</a>
         </div>
@@ -124,10 +84,10 @@
 <script id="add-more-d" type="text/template">
     <div id="added-date" class='col-sm-12'>
         <div class="row" style="margin-top: 10px;">
-            <div class="col-sm-6">
+            <div class="col-sm-6 added-time-from">
                 <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6 added-time-to">
                 <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
             </div>
         </div>
@@ -137,231 +97,107 @@
     </div>
 </script>
 <script id="add-more-interviewers-detail" type="text/template">
-    <div class="col-md-12 col-sm-12 added-interviewers">
+    <div class="col-md-12 col-sm-12 added-interviewers interviewers">
         <div class="col-md-4 col-sm-4">
             <label for="int_name" class="form-label">Name of Interviewer</label>
-            <input type="text" name="int_name" id="int_name">
+            <input type="text" name="int_name" class="int_name">
         </div>
         <div class="col-md-4 col-sm-4">
             <label for="int_email" class="form-label">Email of Interviewer</label>
-            <input type="text" name="int_email" id="int_email">
+            <input type="text" name="int_email" class="int_email">
         </div>
         <div class="col-md-4 col-sm-4">
             <label for="int_phone" class="form-label">Phone Number of Interviewer</label>
-            <input type="number" name="int_phone" id="int_phone">
+            <input type="number" name="int_phone" class="int_phone">
         </div>
         <a class='remove-added-interviewers'>
             <i class='fa fa-times'></i>
         </a>
     </div>
 </script>
-<script id="fixed_tab" type="text/template">
-    <div class="acc-wizard">
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-                <div class="panel-heading" id="headingOne">
-                    <h3>
-                        <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" aria-expanded="true">Basic infomation</a>
-                    </h3>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
-                    <div class="panel-body">
-                        <form method="POST">
-                            <fieldset>
-                                <div class="form-row">
-                                    <div class="form-select">
-                                        <label for="rounds" class="form-label">Select Round</label>
-                                        <div class="select-group">
-
-                                            <select name="rounds" id="rounds">
-                                                <option value="" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select</option>
-                                                <option value="Viet Nam" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Round 1</option>
-                                                <option value="USA" data-url='images/icon-usa.png'><img src="images/icon-usa.png" alt="">Round 2</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-select">
-                                        <label for="location" class="form-label">Select Placement Location</label>
-                                        <div class="select-group">
-
-                                            <select name="location" id="location">
-                                                <option value="" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select Location</option>
-                                                <option value="Viet Nam" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Vietnam</option>
-                                                <option value="USA" data-url='images/icon-usa.png'><img src="images/icon-usa.png" alt="">USA</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </fieldset>
-                        </form>
+<script id="select-application" type="text/template">
+    <select name="rounds" id="rounds">
+        <option value="select" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select</option>
+        {{#applications}}
+        <option value="{{application_enc_id}}" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> {{application_name}}</option>
+        {{/applications}}
+    </select>
+</script>
+<script id="select-candidate" type="text/template">
+    <label class="form-label">Select Candidates</label>
+    <div class="select-group">
+        <div class="ui fluid multiple search selection dropdown test-multi">
+            <input type="hidden" name="country">
+            <i class="dropdown icon"></i>
+            <div class="default text">Select Candidate</div>
+            <div class="menu">
+                {{#appliedcandidates}}
+                    <div class="item" data-value="{{user_enc_id}}"><img
+                                src="{{image}}"
+                                class="af flag">{{full_name}}
                     </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" id="headingTwo">
-                    <h3>
-                        <a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion">Additional infomation</a>
-                    </h3>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <form method="post">
-                            <fieldset>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="datepicker" class="form-label">Select Interview Dates</label>
-                                        <input class="date-picker" placeholder="Select Dates" size="16" type="text" id="datepicker" value=""/>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-6">
-                                            <label for="time_from" class="form-label">Select Interview Timing</label>
-                                            <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label for="time_to" class="form-label">Select Interview Timing</label>
-                                            <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
-                                        </div>
-                                        <div class="col-md-12">
-                                            <input type="checkbox" id="all-dates" class="float_to_left" name="" checked>
-                                            <label for="all-dates" class="float_to_left">For all Interview Dates</label>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="form-row">
-                                    <div id="selected-dates"></div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" id="headingThree">
-                    <h3>
-                        <a href="#collapseThree" data-toggle="collapse" data-parent="#accordion">Specialities</a>
-                    </h3>
-                </div>
-                <div id="collapseThree" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <form method="post">
-                            <fieldset>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Select Mode</label>
-                                        <div class="col-sm-6">
-                                            <input type="radio" id="inplace" class="float_to_left" value="1" name="mode" checked="checked"/>
-                                            <label for="inplace" class="float_to_left">Inplace</label>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <input type="radio" id="online" class="float_to_left" value="2" name="mode">
-                                            <label for="online" class="float_to_left">Online</label>
-                                        </div>
-                                    </div>
-                                    <div id="interview_locations" class="form-group">
-                                        <label for="location" class="form-label">Select Interview Location</label>
-                                        <div class="select-group">
-                                            <select name="interview-location" id="interview-location">
-                                                <option value="">Select Location</option>
-                                                <option value="jk">Vietnam</option>
-                                                <option value="xzfgd">USA</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="candidates" class="form-label">Enter Number of Candidates</label>
-                                        <input type="number" name="candidates" id="candidates">
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <!--  <div class="form-submit">
-                                 <input type="submit" value="Submit" class="au-btn">
-                             </div> -->
-                        </form>
-                    </div>
-                </div>
+                {{/appliedcandidates}}
             </div>
         </div>
     </div>
 </script>
-<script id="flexible_tab" type="text/template">
-    <div class="acc-wizard">
-        <div class="panel-group" id="accordion_1">
-            <div class="panel panel-default">
-                <div class="panel-heading" id="headingOne">
-                    <h3>
-                        <a href="#collapseOne_1" data-toggle="collapse" data-parent="#accordion_1">Basic infomation</a>
-                    </h3>
-                </div>
+<script id="select-round" type="text/template">
+    <label for="location" class="form-label">Select Interview Round</label>
+    <div class="select-group">
 
-                <div id="collapseOne_1" class="panel-collapse collapse in" aria-expanded="true">
-                    <div class="panel-body">
-                        <form method="POST">
-                            <fieldset>
-                                <div class="form-row">
-                                    <div class="form-select">
-                                        <label class="form-label">Select Candidates</label>
-                                        <div class="select-group">
-                                            <div class="ui fluid multiple search selection dropdown test-multi">
-                                                <input type="hidden" name="country">
-                                                <i class="dropdown icon"></i>
-                                                <div class="default text">Select Country</div>
-                                                <div class="menu">
-                                                    <div class="item" data-value="af"><img src="https://design.printexpress.co.uk/wp-content/uploads/2016/02/01-avatars.jpg" class="af flag"></i>aaaa</div>
-                                                    <div class="item" data-value="ax"><img src="https://design.printexpress.co.uk/wp-content/uploads/2016/02/01-avatars.jpg" class="ax flag"></i>bbb Islands</div>
-                                                    <div class="item" data-value="al"><img src="https://design.printexpress.co.uk/wp-content/uploads/2016/02/01-avatars.jpg" class="al flag"></i>ccc</div>
-                                                    <div class="item" data-value="dz"><img src="https://design.printexpress.co.uk/wp-content/uploads/2016/02/01-avatars.jpg" class="dz flag"></i>ddd</div>
-                                                    <div class="item" data-value="as"><img src="https://design.printexpress.co.uk/wp-content/uploads/2016/02/01-avatars.jpg" class="as flag"></i>aa Samoa</div>
-                                                    <div class="item" data-value="ad"><img src="https://design.printexpress.co.uk/wp-content/uploads/2016/02/01-avatars.jpg" class="ad flag"></i>ab</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+        <select name="location" id="location">
+            <option value="select" data-url='images/icon-vietnam.png'><img
+                        src="images/icon-vietnam.png" alt=""> Select Round
+            </option>
+            {{#interviewrounds}}
+            <option value="{{field_enc_id}}" data-url='images/icon-vietnam.png'><img
+                        src="images/icon-vietnam.png" alt=""> {{field_label}}
+            </option>
+            {{/interviewrounds}}
+        </select>
 
-                                    <div class="form-select">
-                                        <label for="location" class="form-label">Select Placement Location</label>
-                                        <div class="select-group">
-
-                                            <select name="location" id="location">
-                                                <option value="" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select Location</option>
-                                                <option value="Viet Nam" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Vietnam</option>
-                                                <option value="USA" data-url='images/icon-usa.png'><img src="images/icon-usa.png" alt="">USA</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" id="headingTwo">
-                    <h3>
-                        <a href="#collapseTwo_2" data-toggle="collapse" data-parent="#accordion_1">Additional infomation</a>
-                    </h3>
-                </div>
-                <div id="collapseTwo_2" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <form method="post">
-                            <fieldset>
-
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    </div>
+</script>
+<script id="number-of-candidates" type="text/templates">
+    <div class="form-row" id="number_candidate_cont">
+        <div class="form-group" id="no_cand_cont">
+            <label for="candidates" class="form-label">Enter Number of Candidates</label>
+            <input type="number" name="candidates" id="candidates">
         </div>
     </div>
+</script>
+<script id="main-timings" type="text/template">
+    <div class="col-sm-6" id="main_time_from">
+        <label for="time_from" class="form-label">Select Interview Timing</label>
+        <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
+    </div>
+    <div class="col-sm-6" id="main_time_to">
+        <label for="time_to" class="form-label">Select Interview Timing</label>
+        <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
+    </div>
+</script>
+<script id="interview-locations-temp" type="text/template">
+    <div id="interview_locations" class="form-group">
+        <label for="location" class="form-label">Select Interview Location</label>
+        <div class="select-group">
+            <select name="interview-location" id="interview-location">
+                <option value="">Select Location</option>
+                {{#interviewlocation}}
+                <option value="{{interview_location_enc_id}}">{{name}}</option>
+                {{/interviewlocation}}
+            </select>
+        </div>
+    </div>/
+</script>
+<script id="error-msg" type="text/template">
+    <div class="error-msg">{{msg}}</div>
 </script>
 <?php
 $this->registerCss('
+.error-msg{
+    padding-left:5px;
+    color:#bb2124;
+}
 .nav-pills>li+li{
     margin-left:0px;
 }
@@ -437,8 +273,17 @@ input.float_to_left{margin-top: 8.7px !important;}
 .panel-group .panel+.panel {
     margin-top: 18px;
 }
+.nav-pills>li>a{pointer-events:none;}
+#rounds{
+    max-height: 235px;
+    overflow-y: scroll;
+}
 ');
 $script = <<< JS
+
+$('.btn-next.btn-fill.btn-danger.btn-wd').css('display','none');
+$('#same-timings-cont').append(Mustache.render($('#main-timings').html()));
+
 $(document).on('change', '#interview_type_fixed', function(){
     if($(this).is(':checked')){
         $('#collapseOne').addClass('in');
@@ -449,6 +294,7 @@ $(document).on('change', '#interview_type_flexible', function(){
         $('#collapseOne_1').addClass('in');
     }
 });
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/plugins/schedular/css/semantic.min.css');
@@ -457,6 +303,8 @@ $this->registerCssFile('@backendAssets/global/plugins/bootstrap-timepicker/css/b
 $this->registerCssFile('@backendAssets/plugins/schedular/css/material-bootstrap-wizard.css');
 $this->registerCssFile('@backendAssets/plugins/schedular/css/acc-wizard.min.css');
 $this->registerCssFile('@backendAssets/plugins/schedular/css/style.css');
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/jquery.bootstrap.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/material-bootstrap-wizard.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -468,4 +316,3 @@ $this->registerJsFile('@backendAssets/plugins/schedular/js/additional-methods.mi
 $this->registerJsFile('@backendAssets/plugins/schedular/js/jquery.steps.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
