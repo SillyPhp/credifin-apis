@@ -137,7 +137,7 @@ class IndividualSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id);
+//                Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id);
                 Referral::widget(['user_id' => $usersModel->user_enc_id]);
                 $transaction->commit();
             }
