@@ -809,7 +809,7 @@ class JobsController extends Controller
         }
     }
 
-    public function actionWorkingProfiles(){
+    public function actionProfiles(){
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 

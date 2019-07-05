@@ -680,7 +680,7 @@ class InternshipsController extends Controller
         return $application;
     }
 
-    public function actionWorkingProfiles(){
+    public function actionProfiles(){
         $activeProfiles = AssignedCategories::find()
             ->select(['b.name', 'b.slug','CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
             ->alias('a')
