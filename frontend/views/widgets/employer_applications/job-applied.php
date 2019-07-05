@@ -38,7 +38,7 @@ Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\Vie
                 <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
 
                 <div id="new_resume">
-                    <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
+                    <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
                 </div>
                 <?php if ($resumes) { ?>
                     <div id="use_existing">
@@ -239,7 +239,7 @@ $script = <<< JS
                  $.each($('#resume_file').prop("files"), function(k,v){
                  var filename = v['name'];    
                  var ext = filename.split('.').pop().toLowerCase();
-                if($.inArray(ext, ['pdf','doc','docx']) == -1) {
+                if($.inArray(ext, ['pdf','doc','docx','png','jpg','jpeg']) == -1||v['size']>2097152) {
                 return false;
               }
           else
@@ -280,7 +280,7 @@ $script = <<< JS
         function ajax_call(formData)
         {
             $.ajax({
-                    url:'/account/jobs/jobs-apply',
+                    url:'/jobs/jobs-apply',
                     dataType: 'text',  
                     cache: false,
                     contentType: false,
@@ -289,7 +289,7 @@ $script = <<< JS
                     type: 'post',
                  beforeSend:function()
                  {
-                 $('.sav_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                 $('.sav_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
                  },     
                  success:function(data)
                  {
@@ -331,8 +331,8 @@ $script = <<< JS
     function applied()
         {
              $('#modal').modal('toggle');
-                     $('.'+btn_class+'').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                     $('.'+btn_class+'').html('<i class = "fa fa-check"></i>Applied');
+                     $('.'+btn_class+'').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                     $('.'+btn_class+'').html('<i class = "fas fa-check"></i>Applied');
                      $('.'+btn_class+'').attr("disabled","true");
             }
 

@@ -4,7 +4,7 @@
 <script id="company-card" type="text/template">
     <div class="row">
         {{#.}}
-        <div class="col-md-2">
+        <div class="col-md-2 col-sm-3 col-xs-6">
             <a class="company-inner" href="{{link}}">
                 <div class="company-info">
                 {{#logo}}

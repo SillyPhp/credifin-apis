@@ -56,7 +56,8 @@ class OrganizationSignUpForm extends Model
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-            [['username', 'email', 'organization_email'], 'string', 'max' => 50],
+            [['username'], 'string', 'length' => [3, 20]],
+            [['email', 'organization_email'], 'string', 'max' => 50],
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
@@ -137,6 +138,15 @@ class OrganizationSignUpForm extends Model
 
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $transaction->rollBack();
+                $this->_flag = false;
+            }
+
+            $referralModel = new \common\models\crud\Referral();
+            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+
+            if (!$referralModel->create()) {
+                $transaction->rollBack();
+                $this->_flag = false;
             } else {
                 $this->_flag = true;
             }
@@ -168,13 +178,24 @@ class OrganizationSignUpForm extends Model
                     $transaction->rollBack();
                     $this->_flag = false;
                 }
+
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->created_by = $usersModel->user_enc_id;
+                $referralModel->is_organization = true;
+                $referralModel->organization_enc_id = $organizationsModel->organization_enc_id;
+
+                if (!$referralModel->create()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if ($this->_flag) {
-                if(Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id)){
-                    Referral::widget(['user_org_id' =>$organizationsModel->organization_enc_id]);
-                    $transaction->commit();
-                }
+                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
+                $transaction->commit();
             }
         } catch (Exception $e) {
             $transaction->rollBack();

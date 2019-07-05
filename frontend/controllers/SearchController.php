@@ -16,11 +16,12 @@ use yii\helpers\Url;
 
 class SearchController extends Controller
 {
-    private function findUnclaimed($s){
+    private function findUnclaimed($s)
+    {
         return UnclaimedOrganizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
-            ->joinWith(['organizationTypeEnc b' => function($y){
+            ->joinWith(['organizationTypeEnc b' => function ($y) {
                 $y->select(['b.business_activity_enc_id', 'b.business_activity']);
             }])
             ->joinWith(['newOrganizationReviews c' => function ($x) {
@@ -96,10 +97,10 @@ class SearchController extends Controller
             $result['Scholarship Fund'] = [];
             $result['Banking & Finance Company'] = [];
             $result['Others'] = [];
-            foreach($unclaimed as $uc){
+            foreach ($unclaimed as $uc) {
                 $ba = $uc['organizationTypeEnc']['business_activity'];
-                if($ba) {
-                    if(count($result[$ba]) < 8) {
+                if ($ba) {
+                    if (count($result[$ba]) < 8) {
                         array_push($result[$ba], $uc);
                     }
                 }
@@ -324,7 +325,7 @@ class SearchController extends Controller
                         }
                     } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $final_internships[$i]['salary'] = (string)$val['min_salary']  . ' p.m.';
+                            $final_internships[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
                         } elseif ($val['salary_duration'] == "Hourly") {
                             $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
                         } elseif ($val['salary_duration'] == "Weekly") {

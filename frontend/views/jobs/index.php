@@ -36,25 +36,21 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center text-white">
-                <h2 class="text-white"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
-                <h4 class="text-white"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
+                <h2 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
+                <h4 class="text-white2"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
                 <div class="search-by-type">
                     <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
                         <div class="input-group mb-10 mr-10 col-md-5">
-                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <span class="input-group-addon"><i class="fas fa-user"></i></span>
                             <input type="text" name="keyword" class="form-control"
                                    placeholder="Job Title or Keywords or Company"/>
                         </div>
-                        <!--                            <div class="input-group mb-10 mr-10">-->
-                        <!--                                <span class="input-group-addon"><i class="fa fa-building"></i></span>-->
-                        <!--                                <input type="text" name="company" class="form-control" placeholder="Company"/>-->
-                        <!--                            </div>-->
                         <div class="input-group mb-10 mr-10 col-md-3">
                                 <span class="input-group-addon set-heights"><i
-                                            class="fa fa-map-marker"></i></span>
+                                            class="fas fa-map-marker-alt"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
-                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
                         <div class="form-group mb-10 mr-10">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
@@ -89,7 +85,7 @@ $this->params['seo_tags'] = [
                     <div>
                         <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
                             <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </div>
                 </div>
@@ -173,7 +169,7 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 echo $this->render('/widgets/blogs/whats-new',[
-    'size' => 'col-md-3',
+    'size' => 'col-md-3 col-sm-6',
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/category-card');
@@ -183,6 +179,19 @@ echo $this->render('/widgets/mustache/application-card');
 //    'posts' => $posts,
 //]);
 $this->registerCss('
+.text-white1{
+    color:white;
+    font-family:Roboto;
+    }
+.text-white2{
+    color:white;
+    font-family:Roboto;
+    font-weight:300;
+    }
+.form-control{
+    font-family:Roboto;
+    font-weight:300;
+    }
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -194,11 +203,14 @@ $this->registerCss('
 }
 .list-heading{
     font-size:16px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:Roboto;
 }
 .quick-links li a{
     line-height:23px;
     font-size:13px;
+    font-family:Roboto;
+    font-weight:300;
 }
 .quick-links li a:hover{
     color:#00a0e3;
@@ -362,6 +374,8 @@ $this->registerCss('
     background-color: #f07d1b;
     color: #FFF;
     border-color: transparent;
+    font-family:Roboto;
+    font-weight:400 !important;
 }
 .twitter-typeahead{
     width:100%;
@@ -743,11 +757,16 @@ $this->registerCss('
     float:left;
 }
 .wn-box-icon{
-    max-width: 270px !important;
+    max-width: 100% !important;
 }
 .wn-box-icon img{
     height: 200px !important;
     object-fit: fill;
+}
+@media only screen and (max-width: 767px) and (min-width: 375px) {
+    .form-inline .input-group{
+        width:98%;
+    }
 }
 ');
 $script = <<<JS

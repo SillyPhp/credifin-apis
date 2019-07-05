@@ -98,7 +98,7 @@ echo $this->render('/widgets/breadcrumbs', [
                     <?php if (Yii::$app->session->hasFlash('success')): ?>
                         <div class="alert alert-success alert-dismissable">
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                            <h4><i class="fa fa-check-circle-o"></i> Thank you :)</h4>
+                            <h4><i class="far fa-check-circle"></i> Thank you :)</h4>
                             <?= Yii::$app->session->getFlash('success'); ?>
                         </div>
                     <?php endif; ?>

@@ -43,8 +43,7 @@ $this->registerCss("
 }
          ");
 $script = <<<JS
-$(document).ready(function () {
-    console.log("js is woking");    
+$(document).ready(function () { 
     $(".row.title").hide();
     $(".row.description").hide();
     $('#url').blur(geturl);
@@ -83,7 +82,6 @@ $(document).on('submit', '#video-form', function (event) {
               $('.cancel').prop('disabled','true');
         },
         success: function (response) {
-        console.log("this is response", response);
             if (response == 1) {
                 toastr.success("Video Uploaded");
                 $("#video-form")[0].reset();

@@ -23,6 +23,7 @@ class OrgAutoGenrateBlog extends Model
     public $images;
     public $applications;
     public $description;
+    public $industry;
     public $cities;
 
     public function formName()
@@ -36,13 +37,17 @@ class OrgAutoGenrateBlog extends Model
             [['title','description'],'required'],
             [['cities'],'required','when'=>function($model,$attribute)
             {
-                return Yii::$app->user->isGuest;
+                return ((Yii::$app->user->isGuest)? true : false);
+            }],
+            [['industry'],'required','when'=>function($model,$attribute)
+            {
+                return ((Yii::$app->user->isGuest)? true : false);
             }],
             [['applications'],'required','when'=>function($model,$attribute)
             {
-                return Yii::$app->user->identity->organization;
+                return ((Yii::$app->user->identity->organization)? true : false);
             }],
-            [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4],
+            [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 4,'maxSize'=>1024*1024*2],
         ];
     }
 
@@ -70,6 +75,7 @@ class OrgAutoGenrateBlog extends Model
         $orgBlogInfo->blog_information_enc_id = $utilitiesModel->encrypt();
         $orgBlogInfo->title = $this->title;
         $orgBlogInfo->description = $this->description;
+        $orgBlogInfo->industry = $this->industry;
         $orgBlogInfo->organization_enc_id = ((Yii::$app->user->identity->organization->organization_enc_id) ? Yii::$app->user->identity->organization->organization_enc_id : null);
         $orgBlogInfo->created_by = Yii::$app->user->identity->user_enc_id;
         if ($orgBlogInfo->save())

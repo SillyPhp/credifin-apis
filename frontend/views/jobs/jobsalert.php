@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title"><i class="fa fa-bell-o fa-lg"></i> <?= Yii::t('frontend', 'Jobs alert'); ?></h4>
+    <h4 class="modal-title"><i class="far fa-bell fa-lg"></i> <?= Yii::t('frontend', 'Jobs alert'); ?></h4>
 </div>
 <?php
 $form = ActiveForm::begin([

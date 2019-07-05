@@ -6,6 +6,8 @@ namespace api\modules\v1\controllers\account;
 use api\modules\v1\controllers\ApiBaseController;
 use api\modules\v1\models\Applied;
 use api\modules\v1\models\Candidates;
+use common\models\AnsweredQuestionnaire;
+use common\models\AnsweredQuestionnaireFields;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\AppliedApplicationProcess;
@@ -15,11 +17,14 @@ use common\models\Categories;
 use common\models\DropResumeApplications;
 use common\models\EmployerApplications;
 use common\models\FollowedOrganizations;
+use common\models\OrganizationQuestionnaire;
 use common\models\Organizations;
+use common\models\QuestionnaireFields;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\UserPreferences;
+use common\models\Utilities;
 use common\models\Users;
 use MongoDB\Driver\Query;
 use yii\helpers\Url;
@@ -167,9 +172,35 @@ class JobsController extends ApiBaseController
         if (!empty($parameters['type']) && isset($parameters['type'])) {
             $review_list = ReviewedApplications::find()
                 ->alias('a')
-                ->select(['a.review_enc_id', 'a.review', 'c.name type', 'b.application_enc_id', 'g.name as org_name', 'SUM(h.positions) as positions', 'e.name title', 'f.name parent_category',
+                ->select([
+                    'a.review_enc_id',
+                    'a.review',
+                    'c.name type',
+                    'b.application_enc_id',
+                    'g.name as org_name',
+                    'SUM(h.positions) as positions',
+                    'e.name title',
+                    'f.name parent_category',
                     'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
-                    'f.icon_png'])
+                    'f.icon_png',
+                    'CASE WHEN g.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", g.logo_location, "/", g.logo) ELSE NULL END logo',
+                    'g.initials_color',
+                    '(CASE
+                    WHEN b.experience = "0" THEN "No Experience"
+                    WHEN b.experience = "1" THEN "Less Than 1 Year"
+                    WHEN b.experience = "2" THEN "1 Year"
+                    WHEN b.experience = "3" THEN "2 - 3 Years"
+                    WHEN b.experience = "3 - 5" THEN "3 - 5 Years"
+                    WHEN b.experience = "5 - 10" THEN "5 - 10 Years"
+                    WHEN b.experience = "10 - 20" THEN "10 - 20 Years"
+                    WHEN b.experience = "20 + " THEN "More Than 20 Years"
+                    ELSE "No Experience"
+                    END) as experience',
+                    'b.type job_type',
+                    'b.last_date',
+                    'j.city_enc_id',
+                    'j.name city_name'
+            ])
                 ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->distinct();
@@ -182,7 +213,11 @@ class JobsController extends ApiBaseController
                     $b->joinWith(['organizationEnc g' => function ($d) {
                         $d->where(['g.is_deleted' => 0]);
                     }]);
-                    $b->joinWith(['applicationPlacementLocations h']);
+                    $b->joinWith(['applicationPlacementLocations h' => function ($x) {
+                        $x->joinWith(['locationEnc i' => function ($x) {
+                            $x->joinWith(['cityEnc j'], false);
+                        }], false);
+                    }], false);
                     $b->groupBy(['h.application_enc_id']);
                 }], false)
                 ->having(['type' => $parameters['type']])
@@ -465,9 +500,13 @@ class JobsController extends ApiBaseController
 
         $followedCompanies = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'b.name', 'b.initials_color',
+            ->select(['a.organization_enc_id',
+                'b.name',
+                'b.initials_color',
+                'c.industry',
                 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
             ->joinWith(['organizationEnc b' => function ($a) {
+                $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);
             }], false)
             ->where(['a.followed' => 1, 'a.created_by' => $candidate->user_enc_id])
@@ -570,28 +609,28 @@ class JobsController extends ApiBaseController
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        $applied_applications = AppliedApplications::find()
+        $applied_app = EmployerApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'a.application_enc_id', 'a.status', 'd.name as title', 'e.name as org_name',
-                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", f.icon) icon',
-                'SUM(g.positions) as positions'])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->andwhere(['a.created_by' => $candidate->user_enc_id, 'a.is_deleted' => 0, 'e.is_deleted' => 0, 'k.is_deleted' => 0])
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->orderBy(['j.name' => SORT_DESC])
+            ->select(['a.application_enc_id', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id', 'f.status', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", d.icon) icon', 'g.name as org_name',
+//                'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active',
+//                'COUNT(h.is_completed) as total',
+                'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+            ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = b.parent_enc_id')
+            ->innerJoin(Organizations::tablename() . 'as g', 'g.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as f', 'f.application_enc_id = a.application_enc_id')
+            ->where(['f.created_by' => $candidate->user_enc_id])
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as h', 'h.applied_application_enc_id = f.applied_application_enc_id')
+            ->groupBy(['h.applied_application_enc_id'])
+            ->orderBy(['f.id' => SORT_DESC])
             ->asArray()
             ->all();
 
-        if (!empty($applied_applications)) {
-            return $this->response(200, $applied_applications);
-        }else{
+        if (!empty($applied_app)) {
+            return $this->response(200, $applied_app);
+        } else {
             return $this->response(404);
         }
 
@@ -609,10 +648,10 @@ class JobsController extends ApiBaseController
         }
 
         $cancel_application = AppliedApplications::find()
-            ->where(['created_by'=>$candidate->user_enc_id,'application_enc_id'=>$application_enc_id,'is_deleted'=>0])
+            ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $application_enc_id, 'is_deleted' => 0])
             ->one();
 
-        if($cancel_application['status'] == 'Pending' || $cancel_application['status'] == 'Incomplete'){
+        if ($cancel_application['status'] == 'Pending' || $cancel_application['status'] == 'Incomplete') {
             $cancel_application->status = 'Cancelled';
             $cancel_application->last_updated_by = $candidate->user_enc_id;
             $cancel_application->last_updated_on = date('Y-m-d H:i:s');
@@ -621,8 +660,216 @@ class JobsController extends ApiBaseController
             } else {
                 return $this->response(500);
             }
-        }else{
+        } else {
             return $this->response(500);
+        }
+
+    }
+
+    public function actionQuestionnaireFields()
+    {
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
+            $q_enc_id = $parameters['questionnaire_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
+            $applied_application_enc_id = $parameters['applied_application_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        $chk = AnsweredQuestionnaire::find()
+            ->where([
+                'applied_application_enc_id' => $applied_application_enc_id,
+                'questionnaire_enc_id' => $q_enc_id,
+                'created_by' => $candidate->user_enc_id,
+            ])
+            ->asArray()
+            ->one();
+
+        if ($chk) {
+            return $this->response(409,'already filled');
+        }
+
+        $questions = OrganizationQuestionnaire::find()
+            ->select(['questionnaire_enc_id', 'questionnaire_name'])
+            ->where(['questionnaire_enc_id' => $q_enc_id])
+            ->asArray()
+            ->all();
+
+        $fields = QuestionnaireFields::find()
+            ->alias('a')
+            ->select(['a.field_enc_id', 'a.field_name', 'a.field_label', 'a.sequence', 'a.field_type', 'a.placeholder', 'a.is_required'])
+            ->joinWith(['questionnaireFieldOptions b' => function ($a) {
+                $a->select(['b.field_option_enc_id', 'b.field_enc_id', 'b.field_option']);
+            }], true)
+            ->where(['a.questionnaire_enc_id' => $questions[0]['questionnaire_enc_id']])
+            ->groupBy(['a.field_enc_id'])
+            ->orderBy('a.sequence')
+            ->asArray()
+            ->all();
+
+        if (!empty($fields)) {
+            return $this->response(200, $fields);
+        } else {
+            return $this->response(404);
+        }
+    }
+
+    public function actionFillQuestionnaire(){
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if(isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])){
+            $questionnaire_id = $parameters['questionnaire_enc_id'];
+        }else{
+            return $this->response(422);
+        }
+
+        if(isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])){
+            $applied_application_id = $parameters['applied_application_enc_id'];
+        }else{
+            return $this->response(422);
+        }
+
+        $data = json_decode($parameters['data'],true);
+        $data = $data['response'];
+
+        $answered_model = new AnsweredQuestionnaire();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $answered_model->answered_questionnaire_enc_id = $utilitiesModel->encrypt();
+        $answered_model->applied_application_enc_id = $applied_application_id;
+        $answered_model->questionnaire_enc_id = $questionnaire_id;
+        $answered_model->created_by = $candidate->user_enc_id;
+        $answered_model->created_on = date('Y-m-d H:i:s');
+        if($answered_model->save()){
+            foreach ($data as $d){
+
+                if($d['field_type'] == 'text' || $d['field_type'] == 'textarea' || $d['field_type'] == 'number' || $d['field_type'] == 'date' || $d['field_type'] == 'time'){
+                    $field_model = new AnsweredQuestionnaireFields();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                    $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                    $field_model->field_enc_id = $d['field_enc_id'];
+                    $field_model->answer = $d['answer'];
+                    $field_model->created_on = date('Y-m-d H:i:s');
+                    $field_model->created_by = $candidate->user_enc_id;
+                    if(!$field_model->save()){
+                        return $this->response(500);
+                    }
+                }
+
+                if($d['field_type'] == 'select' || $d['field_type'] == 'radio'){
+                    $field_model = new AnsweredQuestionnaireFields();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $field_model->answer_enc_id = $utilitiesModel->encrypt();
+                    $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                    $field_model->field_enc_id = $d['field_enc_id'];
+                    $field_model->field_option_enc_id = $d['option_enc_id'];
+                    $field_model->created_on = date('Y-m-d H:i:s');
+                    $field_model->created_by = $candidate->user_enc_id;
+                    if(!$field_model->save()){
+                        return $this->response(500);
+                    }
+                }
+
+                if($d['field_type'] == 'checkbox'){
+                    foreach ($d['options'] as $option){
+                        $utilitiesModel = new Utilities();
+                        $fieldsModel = new AnsweredQuestionnaireFields;
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $field_model->field_enc_id = $d['field_enc_id'];
+                        $field_model->field_option_enc_id = $option['option_enc_id'];
+                        $field_model->created_on = date('Y-m-d H:i:s');
+                        $field_model->created_by = $candidate->user_enc_id;
+                        if(!$field_model->save()){
+                            return $this->response(500);
+                        }
+                    }
+                }
+            }
+        }else{
+            return $this->response(500,'problem in saving questionnaire');
+        }
+
+        $update = Yii::$app->db->createCommand()
+            ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $candidate->user_enc_id], ['applied_application_enc_id' => $applied_application_id])
+            ->execute();
+        if ($update) {
+            return $this->response(201);
+        } else {
+            return $this->response(500,'error occured while updating applied applications');
+        }
+
+    }
+
+    public function actionProcessApplication()
+    {
+
+        $parameters = \Yii::$app->request->post();
+        $candidate = $this->userId();
+
+        if (isset($parameters['application_enc_id']) && !empty($parameters['application_enc_id'])) {
+            $app_id = $parameters['application_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        $applied_user = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->where(['a.application_enc_id' => $app_id, 'a.created_by' => $candidate->user_enc_id])
+            ->select(['a.applied_application_enc_id', 'a.status',
+                'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", i.icon) icon',
+                'h.name org_name', 'g.name title', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->joinWith(['organizationEnc h'], false);
+                $b->joinWith(['title f' => function ($b) {
+                    $b->joinWith(['parentEnc i'], false);
+                    $b->joinWith(['categoryEnc g'], false);
+                }], false);
+
+            }], false)
+            ->joinWith(['appliedApplicationProcesses c' => function ($b) {
+                $b->joinWith(['fieldEnc d'], false);
+                $b->select(['c.applied_application_enc_id',
+                    'TRIM(REPLACE(d.field_name, "\n", " ")) as field_name',
+                    '(CASE
+                        WHEN d.icon = "fa fa-sitemap" THEN "f0e8"
+                        WHEN d.icon = "fa fa-phone" THEN "f095"
+                        WHEN d.icon = "fa fa-user" THEN "f007"
+                        WHEN d.icon = "fa fa-cogs" THEN "f085"
+                        WHEN d.icon = "fa fa-user-circle" THEN "f2bd"
+                        WHEN d.icon = "fa fa-users" THEN "f0c0"
+                        WHEN d.icon = "fa fa-video-camera" THEN "f03d"
+                        WHEN d.icon = "fa fa-check" THEN "f00c"
+                        WHEN d.icon = "fa fa-pencil-square-o" THEN "f044"
+                        WHEN d.icon = "fa fa-envelope" THEN "f0e0"
+                        WHEN d.icon = "fa fa-question" THEN "f128"
+                        WHEN d.icon = "fa fa-paper-plane" THEN "f1d8"
+                        ELSE "f067"
+                        END) as icon',
+                ]);
+            }])
+            ->groupBy(['a.applied_application_enc_id'])
+            ->asArray()
+            ->one();
+
+        if (!empty($applied_user)) {
+            return $this->response(200, $applied_user);
+        }else{
+            return $this->response(404);
         }
 
     }

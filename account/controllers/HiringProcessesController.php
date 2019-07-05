@@ -33,6 +33,9 @@ class HiringProcessesController extends Controller
     {
         $model = new InterviewProcess();
         $type = 'create';
+        if (empty(Yii::$app->user->identity->organization)):
+            return 'Access Denied !!!';
+        endif;
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
                 return true;
@@ -77,6 +80,9 @@ class HiringProcessesController extends Controller
             ->joinWith(['interviewProcessFields b'], true)
             ->asArray()
             ->one();
+        if (empty(Yii::$app->user->identity->organization)):
+            return 'Access Denied !!!';
+        endif;
         if (empty($process))
         {
             return 'not found';
