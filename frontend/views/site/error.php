@@ -24,7 +24,6 @@ $this->params['header_dark'] = true;
             <div class="col-md-6 col-sm-6 error-description">
                 <h2>Oops,</h2>
                 <h2>nothing here..</h2>
-                <h5><?= Html::encode($this->title); ?></h5>
                 <h5><?= nl2br(Html::encode($message)); ?></h5>
                 <a href="/" class="cta">
                     <span>Back to Home</span>
