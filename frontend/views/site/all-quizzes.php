@@ -47,7 +47,7 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <?php foreach ($data as $d) { ?>
                     <div class="col-md-3 col-sm-6">
-                        <div class="quiz-box">
+                        <a href="<?= $d['slug']; ?>" class="quiz-box">
                             <div class="quiz-icon">
                                 <img src="<?= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $d['sharing_image_location'] . "/" . $d['sharing_image'] ?>">
                             </div>
@@ -58,9 +58,9 @@ $this->params['seo_tags'] = [
                                 Total Questions : <?= $d['cnt']; ?>
                             </div>
                             <div class="take-quiz">
-                                <a href="<?= $d['slug']; ?>">Take Quiz</a>
+                                <span>Take Quiz</span>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php } ?>
             </div>
@@ -76,13 +76,20 @@ $this->registerCss('
      background-position:bottom;
 }
 .quiz-box{
-    border:1px solid #eee;  
+    border:1px solid #eee;
     text-align: center;
     border-radius: 10px;
     margin-bottom: 20px;
+    display:block;
 }
 .quiz-box:hover{
     box-shadow:0 0 8px rgba(0,0,0,.3);
+}
+.quiz-box:hover .take-quiz span{
+    color:#fff;
+    background:#00a0e3;
+    border-color:#00a0e3;
+    transition:.3s ease;
 }
 .quiz-box:hover .quiz-icon img{
      -webkit-transform: scale(1.1);
@@ -130,13 +137,13 @@ $this->registerCss('
     overflow: hidden;
     padding: 20px 0 6px 0;
 }
-.take-quiz a{
+.take-quiz span{
     border:1px solid #eee;
     padding: 8px 13px;
     border-radius:5px 5px 0 0;
     font-size:13px;    
 }
-.take-quiz a:hover{
+.take-quiz span:hover{
     color:#fff;
     background:#00a0e3;
     border-color:#00a0e3;
