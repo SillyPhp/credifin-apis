@@ -14,8 +14,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <?php
             } else {
                 ?>
-                <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
-                        color="<?= $initial_color; ?>" font="55px"></canvas>
+                <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
+                        color="<?= $initial_color; ?>" font="48px"></canvas>
                 <?php
             }
             ?>
@@ -148,6 +148,15 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     </div>
 <?php
 $this->registerCss('
+.job-thumb a{
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    display: block;
+    margin: auto;
+    border-radius: 50%;
+}
+.job-thumb a img{margin:5px;}
 .overlay-top{
     width: 70%;
     margin: auto;
