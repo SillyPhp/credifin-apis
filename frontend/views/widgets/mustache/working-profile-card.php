@@ -52,7 +52,7 @@ $this->registerCss('
 ');
 $script = <<<JS
 function getProfiles() {
-    var card = '{{#.}}<div class="col-md-3"><a href="{{slug}}"><div class="profile-box"><div class="icon"><img src="{{icon}}"></div><div class="profile"><div class="pn">{{name}}</div></div></div></a></div>{{/.}}';
+    var card = '{{#.}}<div class="col-md-3"><a href="list?keyword={{name}}"><div class="profile-box"><div class="icon"><img src="{{icon}}"></div><div class="profile"><div class="pn">{{name}}</div></div></div></a></div>{{/.}}';
     $.ajax({
         method: "POST",
         url : window.location.href,
