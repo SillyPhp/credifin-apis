@@ -29,7 +29,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="rating">
                     <div class="stars">{{rating}}</div>
-                    <div class="reviews-rate"> of {{#newOrganizationReviews}}{{total_reviews}}{{/newOrganizationReviews}} reviews</div>
+                    <div class="reviews-rate"> of {{total_reviews}} reviews</div>
                 </div>
                 {{/rating}}
                 {{^rating}}
@@ -107,6 +107,13 @@ function fetch_cards_top(params,template,is_clear=false)
                   }
                 });
             }
+            else
+                {
+              $('#loading_img').removeClass('show');
+            $('#load_review_card_btn').hide();
+            $('.fader').css('display','none');
+            empty_div();
+                }
         }
     });
 }

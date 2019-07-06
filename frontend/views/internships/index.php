@@ -38,8 +38,8 @@ $this->params['seo_tags'] = [
 
             </div>
             <div class="col-md-9 col-sm-12 text-center">
-                <h2 class="intern-banner-heading mt-0">
-                    <?= Yii::t('frontend', 'Intern with the best'); ?></h2>
+                <h2 class="intern-banner-heading mt-0 heading-text">
+                    <?= Yii::t('frontend', 'Intern With The Best'); ?></h2>
                 <div class="search-by-type row">
                     <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
@@ -48,10 +48,10 @@ $this->params['seo_tags'] = [
                                    placeholder="Job Title or Skill or Company"/>
                         </div>
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
-                            <span class="input-group-addon"><i class="fa fa-map-marker fa-lg"></i></span>
+                            <span class="input-group-addon"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
-                            <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
                         <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
@@ -66,8 +66,8 @@ $this->params['seo_tags'] = [
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12 text-center">
-                <h2>
+            <div class="col-md-12 text-center ">
+                <h2 class="center-text">
                     <b>
                         <?= Yii::t('frontend', 'Ever wondered why are internships so important?'); ?>
                     </b>
@@ -111,7 +111,7 @@ $this->params['seo_tags'] = [
                     <div>
                         <a href="<?= Url::to('/internships/list'); ?>" class="btn btn-3">
                             <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fa fa-chevron-right"></i></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </div>
                 </div>
@@ -205,6 +205,17 @@ echo $this->render('/widgets/mustache/application-card');
 //    'posts' => $posts,
 //]);
 $this->registerCss('
+.center-text{
+    font-family:lora;
+    }
+.heading-text{
+    font-family:lora;
+    }
+
+.form-control{
+    font-family:Roboto;
+    font-weight:300;
+    }
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -216,11 +227,14 @@ $this->registerCss('
 }
 .list-heading{
     font-size:16px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:Roboto;
 }
 .quick-links li a{
     line-height:23px;
     font-size:13px;
+    font-family:Roboto;
+    font-weight:300;
 }
 .quick-links li a:hover{
     color:#00a0e3;
@@ -537,6 +551,8 @@ $this->registerCss('
     background-color: #f07d1b;
     color: #FFF;
     border-color: transparent;
+    font-family:Roboto;
+    font-weight:400 !important;
 }
 .select2-selection{
     height:45px !important;

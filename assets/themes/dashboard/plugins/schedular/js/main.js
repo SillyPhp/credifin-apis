@@ -60,13 +60,14 @@
         if(this.childNodes[1].getAttribute('id') == "headingThree") {
             var result = {};
             if ($('#main_time_from').find('input').val() && $('#main_time_to').find('input').val()) {
-                for(var pp = 0; pp < dates.length; pp++){
-                    result[dates[pp]['date']] = [];
-                    var r = {
-                        'from' : $('#main_time_from').find('input').val(),
-                        'to' : $('#main_time_to').find('input').val(),
-                    };
-                    result[dates[pp]['date']].push(r);
+                var the_date = $('.date-picker').datepicker('getDates');
+                for (var j = 0; j < the_date.length; j++) {
+                    var r = {};
+                    var s_date = convert(the_date[j].toString());
+                    result[s_date] = [];
+                    r['from'] = $('#main_time_from').find('input').val();
+                    r['to'] = $('#main_time_to').find('input').val();
+                    result[s_date].push(r);
                 }
                 // result['all'] = {};
                 // result['all']['from'] = $('#main_time_from').find('input').val();

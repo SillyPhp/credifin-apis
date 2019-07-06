@@ -25,16 +25,16 @@ use yii\bootstrap\ActiveForm;
                             <span></span>
                         </div>
                         <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input" placeholder="Search Company">
-                        <button type="submit" class="s-btn"><i class="fa fa-search"></i> </button>
+                        <button type="submit" class="s-btn"><i class="fas fa-search"></i> </button>
                     </div>
                 </form>
             </div>
             <div class="col-md-12">
                 <div class="btn_add_new_org pull-right">
                     <?php if (Yii::$app->user->isGuest): ?>
-                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Company</a>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Review</a>
                     <?php else : ?>
-                        <a href="#" class="add_new_org1 add_new_org">Add New Organizaton</a>
+                        <a href="#" class="add_new_org1 add_new_org">Add New Review</a>
                     <?php  endif; ?>
                 </div>
             </div>
@@ -44,7 +44,11 @@ use yii\bootstrap\ActiveForm;
 <div>
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
+            <div class="pos-relative-mobile">
+            <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
+                <div class="filter-btns" id="hide-filter">
+                    <button class="hide-btn"><i class="fas fa-times"></i> Close</button>
+                </div>
                 <div class="filter-heading">
                     Search companies by
                 </div>
@@ -53,7 +57,7 @@ use yii\bootstrap\ActiveForm;
                         <div class="filter-search">
                             <div class="f-search-loc">
                                 <input type="text" id="city_search" placeholder="Location" />
-                                <i class="fa fa-search"></i>
+                                <i class="fas fa-search"></i>
                             </div>
                         </div>
                         <div class="row">
@@ -62,7 +66,7 @@ use yii\bootstrap\ActiveForm;
                                     Filter companies by
                                 </div>
                                 <div class="show-search">
-                                    <button type="button" onclick="showSearch()"><i class="fa fa-search"></i></button>
+                                    <button type="button" onclick="showSearch()"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -78,11 +82,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="fivestars rating-stars">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -93,11 +97,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="fourstars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -108,11 +112,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="threestars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -123,11 +127,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="twostars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -138,11 +142,11 @@ use yii\bootstrap\ActiveForm;
                                             <span class="check"></span>
                                             <span class="box"></span>
                                             <div class="onestars rating-stars">
-                                                <i class="fa fa-star active"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fas fa-star active"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -175,15 +179,15 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </form>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9 col-sm-8 col-xs-12 ">
+                <div class="filter-btns">
+                    <button type="button" id="show-filter"><i class="fas fa-bars"></i> Show Filters </button>
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-8 col-xs-12">
                 <div class="companies-reviews">
                     <div class="row">
-                        <div id="review_container">
-
-                        </div>
-                        <div id="review_container_unclaimed">
-
-                        </div>
+                        <div id="review_container"></div>
                         <div class="col-md-12">
                             <div class="load-more-bttn">
                                 <button type="button" id="load_review_card_btn">Load More</button>
@@ -200,12 +204,12 @@ use yii\bootstrap\ActiveForm;
                     </div>
                     <div class="es-text2">
                         Be the first one to wirte a review.
-<!--                        Write a review for this organization, and our team will add this organization to Empower Youth.-->
                     </div>
                     <div class="es-btn">
-                        <button>Write a Review</button>
+                        <button class="add_new_org">Write a Review</button>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
@@ -220,11 +224,17 @@ echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 </div>
 <?php
 $this->registerCss('
+.filter-btns{
+    display:none;
+}
 .empty{
     text-align:center;
+    display:none;
 }
 .es-btn{
     padding-top: 20px;
+    padding-bottom: 20px;
+    
 }
 .es-btn button{
     background:#00a0e3;
@@ -915,7 +925,55 @@ min-height:304px;
 .com-loc, .com-dep{
     min-height:24px;
 }
+ .mobile-hidden{
+    display:block
+ }
 /*new modal css ends*/
+
+@media only screen and (max-width: 768px){
+    .pos-relative-mobile{
+        position:relative;
+        overflow:scroll;
+    }
+
+    .mobile-hidden{
+        display:none;
+        position:absolute;
+        background:#fff;
+        top:0px;
+        right:0px;
+        z-index:9999;
+        border:1px solid #eee;
+        border-top:none;
+        border-bottom:none;
+        border-right:none;
+    }
+    .filter-btns{
+        display:block;
+        text-align:right;
+    }
+    #show-filter{
+        background:none;
+        border:none;
+        margin:10px 0;
+        text-align:right; 
+        color:#00a0e3;
+    }
+    .hide-btn{
+        background:none;
+        border:none;
+        margin:10px 0;
+        text-align:left; 
+        color:#00a0e3;
+    }
+    .footer{
+        margin-top:0px !important;
+    }
+    .rh-header{
+        margin-bottom:0px;
+    }
+}
+
 ');
 $script = <<< JS
 var template;
@@ -933,7 +991,6 @@ $(document).on('click','input[name="activities[]"]',function()
             $.each($("input[name='activities[]']:checked"), function(){            
                 activities.push($(this).val());
             });
-     fetch_cards_top(params={'rating':[1,2,3,4,5],business_activity:activities,'offset':0},template=$('#review_container_unclaimed'),is_clear=true);       
      fetch_cards(params={'business_activity':activities,'limit':null},template=$('#review_container'),is_clear=true);       
 });
 var ps = new PerfectScrollbar('#industry-scroll');
@@ -941,7 +998,6 @@ var params = {};
 $(document).on('submit','#search-form-submit',function(e)
 {
     e.preventDefault();
-    fetch_cards_top(params={'keywords':$('input[name="keywords"]').val()},template=$('#review_container_unclaimed'),is_clear=true);
     fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':6},template=$('#review_container'),is_clear=true);
  });   
 var companies = new Bloodhound({
@@ -1007,7 +1063,6 @@ $('#city_search').typeahead(null, {
   {
      fetch_cards(params={'city':datum.text,'limit':9},template=$('#review_container'),is_clear=true);   
   });
-fetch_cards_top(params={'rating':[1,2,3,4,5],'keywords':$('input[name="keywords"]').val(),'offset':0},template=$('#review_container_unclaimed'),is_clear=true);
 fetch_cards(params={'keywords':$('input[name="keywords"]').val(),'limit':9,'offset':page_name},template=$('#review_container'),is_clear=true);
 JS;
 $this->registerJs($script);
@@ -1020,3 +1075,14 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+
+<script>
+    document.getElementById('show-filter').addEventListener("click", function () {
+        var s = document.getElementsByClassName('mobile-hidden');
+        s[0].style.display = 'block';
+    });
+    document.getElementById('hide-filter').addEventListener("click", function () {
+        var s = document.getElementsByClassName('mobile-hidden');
+        s[0].style.display = 'none';
+    });
+</script>

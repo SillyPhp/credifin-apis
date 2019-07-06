@@ -1,20 +1,21 @@
 ; (function ($) {
+    var quiz_name = document.getElementById('quest-name').getAttribute('value');
     var quest_path = document.getElementById('quest-path').getAttribute('value');
     var quiz_count = 0;
     $.fn.quiz = function (url) {
         $.ajax({
             url: url,
             method: 'POST',
-            // data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
+            data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
             dataType: 'JSON',
             success: function (response) {
 
+                var result = response['results'];
+
                 var data = {};
-                data['title'] = 'Cricket World Cup 2019 Vol 3';
+                data['title'] = quiz_name;
                 data['url'] = 'https://www.empoweryouth.com';
                 data['questions'] = [];
-
-                var result = response['results'];
 
                 var k = 0;
 

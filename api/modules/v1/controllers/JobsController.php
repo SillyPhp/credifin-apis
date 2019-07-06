@@ -8,6 +8,7 @@ use api\modules\v1\models\JobApply;
 use api\modules\v1\models\JobDetail;
 use common\models\Organizations;
 use common\models\Posts;
+use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
 use common\models\UnclaimedOrganizations;
@@ -840,7 +841,13 @@ class JobsController extends ApiBaseController
                         ->select('shortlisted')
                         ->where(['shortlisted' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
                         ->exists();
-                    $result["hasShortlisted"] = $shortlist;
+                    $data["hasShortlisted"] = $shortlist;
+
+                    $reviewlist = ReviewedApplications::find()
+                        ->select(['review'])
+                        ->where(['review' =>1,'application_enc_id'=>$req['id'], 'created_by'=>$user->user_enc_id])
+                        ->exists();
+                    $data["hasReviewed"] = $reviewlist;
                 } else {
                     return $this->response(401);
                 }
@@ -942,7 +949,7 @@ class JobsController extends ApiBaseController
                     WHEN a.preferred_gender = "2" THEN "Female"
                     WHEN a.preferred_gender = "3" THEN "Transgender"
                     END) as preferred_gender',
-                'a.description',
+                'TRIM(REPLACE(a.description, "\n", " ")) as description',
                 'a.designation_enc_id',
                 'n.designation',
                 'l.category_enc_id',

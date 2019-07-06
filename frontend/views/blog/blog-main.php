@@ -47,9 +47,9 @@ $this->params['seo_tags'] = [
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
                         <div class="controls pull-right">
-                            <a class="left fa fa-chevron-left bttn-left" href="#carousel-example"
+                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
                                data-slide="prev"></a>
-                            <a class="right fa fa-chevron-right bttn-right" href="#carousel-example"
+                            <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
                                data-slide="next"></a>
                         </div>
                     </div>
@@ -204,14 +204,27 @@ $this->params['seo_tags'] = [
     <section class="bg-black">
         <div class="container">
             <div class="row">
-                <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
+                <div class="col-md-6 col-sm-6">
+                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
+                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/site/all-quiz'); ?>" class="btn btn-3">
+                                <span class="txt"><?= Yii::t('frontend', 'View all Quizzes'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="q-box">
                         <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz" class="q-box-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz"
+                                 class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
                             </div>
@@ -221,7 +234,8 @@ $this->params['seo_tags'] = [
                 <div class="col-md-4">
                     <div class="q-box">
                         <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>" alt="World Cup 2019 Quiz vol-2" class="q-box-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>"
+                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
                             </div>
@@ -231,7 +245,8 @@ $this->params['seo_tags'] = [
                 <div class="col-md-4">
                     <div class="q-box">
                         <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>" alt="Yuvraj Singh Quiz" class="q-box-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>"
+                                 alt="Yuvraj Singh Quiz" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
                             </div>
@@ -317,12 +332,12 @@ if (!empty($quotes)) {
     <div class="imgmain-div"><img class="imgmain"/></div>
     <ul class="styled-icon icon-bordered icon-md mb-5 lightbox-ul">
         <li><a link='https://www.facebook.com/sharer/sharer.php?u=' target="_blank" class="overfb"><i
-                        class="fa fa-facebook"></i></a></li>
-        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fa fa-twitter"></i></a>
+                        class="fab fa-facebook-f"></i></a></li>
+        <li><a link='https://twitter.com/home?status=' target="_blank" class="overtw"><i class="fab fa-twitter"></i></a>
         </li>
         <li><a href link="https://www.pinterest.com/pin/create/button/?url={link}&media={image}&description={title}"
-               target="_blank" class="overpt"><i class="fa fa-pinterest"></i></a></li>
-        <li><a target="_blank" class="overdw" download><i class="fa fa-download"></i></a></li>
+               target="_blank" class="overpt"><i class="fab fa-pinterest"></i></a></li>
+        <li><a target="_blank" class="overdw" download><i class="fas fa-download"></i></a></li>
     </ul>
     <section class="blog-mirror">
         <div class="my-container">
@@ -844,6 +859,87 @@ hr {
 .lightbox-ul-show{
     display:block;
 }
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+}
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.txt {
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+
+/*<!---- view-all button css ends --->*/
 @media screen and (max-width: 768px){
     .controls {
         margin-top: 35px;
@@ -1102,8 +1198,8 @@ $('.owl-carousel-4col').owlCarousel({
     autoplayHoverPause: true,
     responsiveClass: true,
     navText: [
-        '<i class="fa fa-chevron-left"></i>',
-        '<i class="fa fa-chevron-right"></i>'
+        '<i class="fas fa-chevron-left"></i>',
+        '<i class="fas fa-chevron-right"></i>'
     ],
     responsive: {
         0: {

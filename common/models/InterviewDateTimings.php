@@ -10,7 +10,8 @@ use Yii;
  * @property int $id
  * @property string $interview_date_timing_enc_id
  * @property string $interview_dates_enc_id
- * @property string $scheduled_time
+ * @property string $from
+ * @property string $to
  * @property int $is_deleted 0 as Deleted, 1 as Active
  */
 class InterviewDateTimings extends \yii\db\ActiveRecord
@@ -29,10 +30,11 @@ class InterviewDateTimings extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['interview_date_timing_enc_id', 'interview_dates_enc_id', 'scheduled_time'], 'required'],
-            [['scheduled_time'], 'safe'],
+            [['interview_date_timing_enc_id', 'interview_dates_enc_id', 'from', 'to'], 'required'],
+            [['from', 'to'], 'safe'],
             [['is_deleted'], 'integer'],
             [['interview_date_timing_enc_id', 'interview_dates_enc_id'], 'string', 'max' => 100],
         ];
     }
+
 }

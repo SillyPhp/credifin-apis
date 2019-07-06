@@ -7,17 +7,19 @@ use Yii;
 /**
  * This is the model class for table "{{%referral}}".
  *
- * @property int $id
- * @property string $referral_enc_id referral code enc id
- * @property string $code referral code
- * @property string $referral_link referral_link
- * @property string $user_enc_id user for which the reward should count
- * @property string $created_on created on
- * @property string $created_by user who genrated the code
- * @property int $is_deleted weather deleted or not
+ * @property int $id Primary Key
+ * @property string $referral_enc_id Referral Code Encrypted ID
+ * @property string $code Referral Code
+ * @property string $referral_link Referral Link
+ * @property string $user_enc_id Foreign Key to Users Table
+ * @property string $organization_enc_id Foreign Key to Organizations Table
+ * @property string $created_on On which date Referral Information was added to Datatabase
+ * @property string $created_by By which User Referral Information was added to Database
+ * @property int $is_deleted Is Referral Code Deleted (0 as False, 1 as True)
  *
  * @property Users $createdBy
  * @property Users $userEnc
+ * @property Organizations $organizationEnc
  * @property ReferralSignUpTracking[] $referralSignUpTrackings
  */
 class Referral extends \yii\db\ActiveRecord
@@ -36,19 +38,18 @@ class Referral extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['referral_enc_id', 'code', 'referral_link', 'user_enc_id', 'created_by'], 'required'],
+            [['referral_enc_id', 'code', 'referral_link', 'created_by'], 'required'],
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['referral_enc_id', 'code', 'referral_link', 'user_enc_id', 'created_by'], 'string', 'max' => 100],
+            [['referral_enc_id', 'code', 'referral_link', 'user_enc_id', 'organization_enc_id', 'created_by'], 'string', 'max' => 100],
             [['referral_enc_id'], 'unique'],
+            [['code'], 'unique'],
+            [['referral_link'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -64,6 +65,14 @@ class Referral extends \yii\db\ActiveRecord
     public function getUserEnc()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEnc()
+    {
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**

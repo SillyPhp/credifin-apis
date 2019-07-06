@@ -9,6 +9,8 @@ use common\models\AppliedApplications;
 use common\models\EmployerApplications;
 use common\models\extended\OrganizationInterviewProcess;
 use common\models\InterviewCandidates;
+use common\models\InterviewDates;
+use common\models\InterviewDateTimings;
 use common\models\InterviewerDetail;
 use common\models\Interviewers;
 use common\models\InterviewOptions;
@@ -269,6 +271,29 @@ class SchedularController extends Controller
 
                 }
             }
+
+            foreach ($data['timings'] as $date => $time) {
+
+                $interview_dates = new InterviewDates();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $interview_dates->interview_dates_enc_id = $utilitiesModel->encrypt();
+                $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                $interview_dates->interview_date = $date;
+                if ($interview_dates->save()) {
+
+                    $interview_date_timing = new InterviewDateTimings();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
+                    $interview_date_timing->interview_dates_enc_id = $interview_dates['interview_dates_enc_id'];
+                    $interview_date_timing->from = $time[0]['from'];
+                    $interview_date_timing->to = $time[0]['to'];
+                    if($interview_date_timing->save()){
+
+                    }
+
+                }
+            }
+
 
         }
 

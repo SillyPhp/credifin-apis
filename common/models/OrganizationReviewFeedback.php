@@ -10,7 +10,7 @@ use Yii;
  * @property int $id Primary Key
  * @property string $feedback_enc_id Feedback Encrypted ID
  * @property string $review_enc_id Foreign Key to Organization Reviews Table
- * @property int $feedback_type Feedback Type (1 as Useful, 2 as Not Useful, 3 as Spam)
+ * @property int $feedback_type Feedback Type (1 as Report)
  * @property string $feedback Review Feedback
  * @property string $user_enc_id Foreign Key to Users Table
  * @property string $created_on On which date Organization Review Feedback information was added to database
@@ -45,7 +45,6 @@ class OrganizationReviewFeedback extends \yii\db\ActiveRecord
             [['created_on', 'last_updated_on'], 'safe'],
             [['feedback_enc_id', 'review_enc_id', 'feedback', 'user_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['feedback_enc_id'], 'unique'],
-            [['review_enc_id', 'user_enc_id'], 'unique', 'targetAttribute' => ['review_enc_id', 'user_enc_id']],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
@@ -56,7 +55,6 @@ class OrganizationReviewFeedback extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-
     /**
      * @return \yii\db\ActiveQuery
      */

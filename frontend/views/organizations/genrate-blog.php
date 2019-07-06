@@ -63,8 +63,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                     <?= $form->field($model,'images[]')->fileInput(['multiple' => true, 'accept' => 'image/*'])->label('Select Multiple Company Images,logo') ?>
                     <?= $form->field($model,'description')->textArea(['rows'=>6,'placeholder'=>'Enter Some Description About The Company...'])->label(false); ?>
                    <?php if (!Yii::$app->user->identity->organization || Yii::$app->user->isGuest): ?>
-
-                    <div id="box_int">
+                       <div id="box_int">
                         <label>Please <a href="#loginModal" data-toggle="modal" class="orange">SignIn</a> To Select Jobs,Internships You Created..</label>
                     </div>
                     <?php else: ?>
@@ -77,7 +76,15 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                       ])->label(false); ?>
                     <?php endif; ?>
                     <?php if (!Yii::$app->user->identity->organization || Yii::$app->user->isGuest):  ?>
-                      <?= $form->field($model, 'cities')->widget(Select2::classname(), [
+                    <div class="sub_cat_wrapper">
+                        <div class="load-suggestions Typeahead-spinner">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                      <?= $form->field($model,'industry')->textInput(['id'=>'industry','placeholder'=>'Industry'])->label(false); ?>
+                    </div>
+                        <?= $form->field($model, 'cities')->widget(Select2::classname(), [
                         'options' => ['placeholder' => 'Select City...','multiple'=>true],
                         'pluginOptions' => [
                         'allowClear' => true,
@@ -214,5 +221,144 @@ label{
 .md-checkbox label>.box{
     border: 2px solid #c2cad8;
 }
+ .typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 98%;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.edu_wrapper
+{
+margin-bottom:10px;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.twitter-typeahead {
+    
+    width: 100% !important;
+}  
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 
 ');
+$script = <<< JS
+var category = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch: 
+  {
+      url:'/industries/profiles',
+      cache:false,
+      filter:function(res) {
+        return res;
+      }
+      }
+});    
+            
+$('#industry').typeahead(null, {
+  name: 'category',
+  display: 'value',
+  source: category,
+   limit: 6,
+   hint:true,
+});
+JS;
+$this->registerJs($script);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

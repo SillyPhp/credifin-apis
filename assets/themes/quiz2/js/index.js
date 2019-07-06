@@ -653,6 +653,7 @@
    ***************************************************/
   
   function getData() {
+    var quiz_name = document.getElementById('quest-name').getAttribute('value');
     if (!config.question.retake) {
       $.ajax({
         url: config.api.uri,
@@ -663,14 +664,15 @@
 
           var a = [];
 
-          a.push({
-            "title" : "Cricket World Cup 2019 Vol 2",
-            "footer": "Empower Youth"
-          });
-
           var quesans = [];
 
           var datares = data['results'];
+
+          a.push({
+            "title" : quiz_name,
+            "footer": "Empower Youth"
+          });
+
           for(var i = 0; i < datares.length; i++){
 
             var ind = {};

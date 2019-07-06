@@ -52,7 +52,7 @@ $this->params['seo_tags'] = [
                                 <form id="form-search" action="<?=Url::to(['search']) ?>">
                                 <input class='form-control' name="keywords" id="search_company" name="search_company" placeholder='Search Companies' type='text'>
                                 <button class='btn btn-link search-btn'>
-                                    <i class='fa fa-search'></i>
+                                    <i class='fas fa-search'></i>
                                 </button>
                                 </form>
                             </div>
@@ -153,8 +153,31 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rated Companies</div>
+                    <div class="heading-style">Top Rated Organizations</div>
                     <div id="review_container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
 
                     </div>
                 </div>
@@ -229,7 +252,8 @@ $this->registerCss('
     right: 25px;
     font-size:15px;
     bottom: 10px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:roboto;
 }
 .btn_add_org:hover{
     color:#00A0E3;
@@ -333,6 +357,7 @@ review-benifit{
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    font-family:roboto;
 }
 .com-logo{
     width:100px;
@@ -390,6 +415,8 @@ review-benifit{
 }
 .with-us-block{
     text-align:center;
+    font-family:roboto;
+    font-weight:300;
 }
 .cri-bg{
     background:url(' . Url::to('@eyAssets/images/pages/review/company-bg.png') . ');
@@ -447,6 +474,8 @@ review-benifit{
     padding-top:20px;
     padding-bottom:8px;
     font-size:16px;
+    font-family:roboto;
+    font-weight:400;
 }
 .hbb-text{
     padding-top:10px;
@@ -652,7 +681,10 @@ float:right;
 }
 /*Load Suggestions loader css ends */
 ');
-echo $this->render('/widgets/mustache/review-cards', [
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/mustache/top-user-reviews');
+echo $this->render('/widgets/mustache/review-cards-company', [
 ]);
 $script = <<<JS
 $(document).on('click','.add_new_org',function(e) {
@@ -660,8 +692,11 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
 var template;
-fetch_cards(params={'rating':[4,5],'limit':3},template=$('#review_container'));
-fetch_cards(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
+fetch_cards_new_latest_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':4},template=$('#latest_reviews_card_new'));
+fetch_cards_new_top_user(params={'rating':[5,4],'limit':4},template=$('#top_user_reviews_card_new'));
+fetch_cards_new_most_comp(params={'rating':[5,4],'limit':4,'most_reviewed':1},template=$('#most_reviews_card_new'));
+fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container'));
+fetch_cards_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
 var companies = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
   queryTokenizer: Bloodhound.tokenizers.whitespace,
