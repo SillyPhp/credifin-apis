@@ -67,7 +67,7 @@ $(document).ready(function(){
                     }
                     return false;
                 }
-                if($('#select-app-round').find('label').length > 0) {
+                if($('#select-app-round').find('#location').length > 0) {
                     if (!$('#selected_round_id').val()) {
                         if ($('#select-app-round').find('.error-msg').length == 0) {
                             var html = $('#error-msg').html();

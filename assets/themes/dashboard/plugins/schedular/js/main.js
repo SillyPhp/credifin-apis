@@ -1,7 +1,7 @@
 (function($) {
 
     var results = {};
-
+    
     $(document).ready(function(){
         $.ajax({
             url : "/account/schedular/find-applications",
