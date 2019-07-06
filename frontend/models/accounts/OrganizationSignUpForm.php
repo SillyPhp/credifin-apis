@@ -114,7 +114,6 @@ class OrganizationSignUpForm extends Model
             $usernamesModel->username = $this->username;
             $usernamesModel->assigned_to = 2;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
-                $transaction->rollBack();
                 $this->_flag = false;
             } else {
                 $this->_flag = true;
@@ -137,18 +136,20 @@ class OrganizationSignUpForm extends Model
             $usersModel->status = 'Active';
 
             if (!$usersModel->validate() || !$usersModel->save()) {
-                $transaction->rollBack();
                 $this->_flag = false;
+                $transaction->rollback();
             }
 
-            $referralModel = new \common\models\crud\Referral();
-            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+            if($this->_flag) {
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
 
-            if (!$referralModel->create()) {
-                $transaction->rollBack();
-                $this->_flag = false;
-            } else {
-                $this->_flag = true;
+                if (!$referralModel->create()) {
+                    $this->_flag = false;
+                    $transaction->rollback();
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if ($this->_flag) {
@@ -169,43 +170,45 @@ class OrganizationSignUpForm extends Model
                 $organizationsModel->slug = $utilitiesModel->create_slug();
                 $organizationsModel->status = 'Active';
                 if (!$organizationsModel->validate() || !$organizationsModel->save()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 }
 
                 $usersModel->organization_enc_id = $organizationsModel->organization_enc_id;
                 if (!$usersModel->validate() || !$usersModel->update()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 }
+            }
 
+            if($this->_flag) {
                 $referralModel = new \common\models\crud\Referral();
                 $referralModel->created_by = $usersModel->user_enc_id;
                 $referralModel->is_organization = true;
                 $referralModel->organization_enc_id = $organizationsModel->organization_enc_id;
 
                 if (!$referralModel->create()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
             }
 
             if ($this->_flag) {
-//                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
-                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
+                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+//                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+                return false;
             }
         } catch (Exception $e) {
             $transaction->rollBack();
-            return false;
-        }
-
-        if ($this->_flag) {
-            Yii::$app->sitemap->generate();
-            return true;
-        } else {
             return false;
         }
     }
