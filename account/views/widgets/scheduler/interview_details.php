@@ -91,9 +91,6 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <!--  <div class="form-submit">
-                             <input type="submit" value="Submit" class="au-btn">
-                         </div> -->
                     </form>
                 </div>
             </div>

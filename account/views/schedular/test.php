@@ -132,7 +132,7 @@ use yii\helpers\Url;
             <div class="default text">Select Candidate</div>
             <div class="menu">
                 {{#appliedcandidates}}
-                    <div class="item" data-value="{{user_enc_id}}"><img
+                    <div class="item" data-value="{{applied_application_enc_id}}"><img
                                 src="{{image}}"
                                 class="af flag">{{full_name}}
                     </div>
@@ -187,7 +187,7 @@ use yii\helpers\Url;
                 {{/interviewlocation}}
             </select>
         </div>
-    </div>/
+    </div>
 </script>
 <script id="error-msg" type="text/template">
     <div class="error-msg">{{msg}}</div>
