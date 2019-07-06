@@ -46,9 +46,6 @@ class DashboardController extends Controller
 
     public function actionIndex()
     {
-        print_r(Yii::$app->user->identity->referral->code);
-        exit;
-
         $model = new \account\models\services\ServiceSelectionForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
@@ -201,7 +198,6 @@ class DashboardController extends Controller
             'model' => $model,
             'services' => $services,
             'business_activities' => $business_activities,
-
         ]);
     }
 

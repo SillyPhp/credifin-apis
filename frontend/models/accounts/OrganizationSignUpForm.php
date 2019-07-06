@@ -115,6 +115,8 @@ class OrganizationSignUpForm extends Model
             $usernamesModel->assigned_to = 2;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
                 $this->_flag = false;
+                $transaction->rollback();
+                return false;
             } else {
                 $this->_flag = true;
             }
@@ -138,6 +140,7 @@ class OrganizationSignUpForm extends Model
             if (!$usersModel->validate() || !$usersModel->save()) {
                 $this->_flag = false;
                 $transaction->rollback();
+                return false;
             }
 
             if($this->_flag) {
@@ -147,6 +150,7 @@ class OrganizationSignUpForm extends Model
                 if (!$referralModel->create()) {
                     $this->_flag = false;
                     $transaction->rollback();
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
@@ -199,8 +203,8 @@ class OrganizationSignUpForm extends Model
             }
 
             if ($this->_flag) {
-                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
-//                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
+//                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
                 return true;
             } else {
