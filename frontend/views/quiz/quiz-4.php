@@ -24,12 +24,6 @@
 </svg>
 <div class='overlay'></div>
 <div class='options'>
-<!--    <div class='options_sf'>-->
-<!--        <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/sfIcon2.png'>-->
-<!--    </div>-->
-<!--    <div class='options_bg'>-->
-<!--        <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/bgIcon2.png'>-->
-<!--    </div>-->
 </div>
 <div class='main'>
     <div class='main_inner'>
@@ -40,41 +34,39 @@
             <div class='loader'>
                 <div class='text'>
                     <span>Quiz</span>
-                    <!-- <div class='s'> -->
-                    <!-- <span>game quiz</span> -->
-                    <!-- </div> -->
                 </div>
                 <p>
                     <button>Click anywhere to play</button>
                 </p>
             </div>
         </div>
+
         <div class='main_inner__modalOverlay'></div>
         <div class='main_inner__modal'></div>
+
         <div class='main_inner__modalContent'>
             <h1>Quiz complete!</h1>
             <p class='score'>You got 7 out of 8 correct!</p>
-            <p>Don't forget to follow the talented bunch that contributed to this pen. They are:</p>
-            <a href='https://www.codepen.io/jotavejv' target='_blank'>João Santos</a>
-            <a href='https://www.codepen.io/kathykato' target='_blank'>Katherine Kato</a>
-            <a href='https://www.codepen.io/KristopherVanSant' target='_blank'>Kristopher Van Sant</a>
-            <a href='https://www.codepen.io/jnwright' target='_blank'>Jasmine Wright</a>
-            <a href='https://www.codepen.io/miffili' target='_blank'>Klara Miffili</a>
+
             <button class='share'>Tweet your score</button>
         </div>
+
         <div class='main_inner__logo'>
             <a href=''>
-                <img src='https://www.empoweryouth.com/assets/common/logos/empower_youth_plus_white.svg'>
+                <img src='/assets/common/logos/eylogo.png'>
             </a>
         </div>
+
         <div class='main_inner__title'>
-            <h1>In what popular video game would you find this?</h1>
-            <p>Click on an answer or use the number keys</p>
-            <a>Need a hint?</a>
-            <div class='hint'></div>
+<!--            <h1>In what popular video game would you find this?</h1>-->
+<!--            <p>Click on an answer or use the number keys</p>-->
+<!--            <a>Need a hint?</a>-->
+            <h1 class='hint'></h1>
         </div>
+
         <div class='main_inner__circle'></div>
         <div class='main_inner__feedback'></div>
+
         <div class='main_inner__scenes'>
             <div class='scene akuaku'>
                 <div class='container'>
@@ -194,23 +186,64 @@
                     </div>
                 </div>
             </div>
+<!--            <div class='scene buster'>-->
+<!--                <div class='container'>-->
+<!--                    <div class='hat'>-->
+<!--                        <div class='main'></div>-->
+<!--                        <div class='label'>-->
+<!--                            <p>M</p>-->
+<!--                        </div>-->
+<!--                        <div class='screen'></div>-->
+<!--                    </div>-->
+<!--                    <div class='ears'>-->
+<!--                        <div class='ear left'></div>-->
+<!--                        <div class='ear right'></div>-->
+<!--                    </div>-->
+<!--                    <div class='head'>-->
+<!--                        <div class='hair'>-->
+<!--                            <div class='hair-back left'></div>-->
+<!--                            <div class='hair-back right'></div>-->
+<!--                        </div>-->
+<!--                        <div class='face'></div>-->
+<!--                        <div class='mustache'>-->
+<!--                            <div class='detail farleft'></div>-->
+<!--                            <div class='detail left'></div>-->
+<!--                            <div class='detail right'></div>-->
+<!--                            <div class='detail farright'></div>-->
+<!--                            <div class='main'></div>-->
+<!--                        </div>-->
+<!--                        <div class='eyes'>-->
+<!--                            <div class='eye left'></div>-->
+<!--                            <div class='eye right'></div>-->
+<!--                        </div>-->
+<!--                        <div class='nose'></div>-->
+<!--                    </div>-->
+<!--                    <div class='brows'>-->
+<!--                        <div class='brow left'></div>-->
+<!--                        <div class='brow right'></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
-        <div class='main_inner__info'>
-            <p>CSS illustration by</p>
-            <span></span>
-            <a class='codepen' href='#' target='_blank'>
-                <i class='fa fa-codepen'></i>
-            </a>
-            <a class='twitter' href='#' target='_blank'>
-                <i class='fa fa-twitter'></i>
-            </a>
-        </div>
+
+<!--        <div class='main_inner__info'>-->
+<!--            <p>CSS illustration by</p>-->
+<!--            <span></span>-->
+<!--            <a class='codepen' href='#' target='_blank'>-->
+<!--                <i class='fa fa-codepen'></i>-->
+<!--            </a>-->
+<!--            <a class='twitter' href='#' target='_blank'>-->
+<!--                <i class='fa fa-twitter'></i>-->
+<!--            </a>-->
+<!--        </div>-->
+
         <div class='main_inner__answers'>
             <div class='answer'></div>
             <div class='answer'></div>
             <div class='answer'></div>
             <div class='answer'></div>
         </div>
+
         <div class='main_inner__breadcrumbs'></div>
     </div>
 </div>

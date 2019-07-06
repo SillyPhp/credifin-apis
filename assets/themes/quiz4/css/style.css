@@ -456,7 +456,7 @@ body .main_inner__logo {
 }
 
 body .main_inner__logo img {
-    width: 150px;
+    width: 190px;
 }
 
 body .main_inner__title {
@@ -538,11 +538,11 @@ body .main_inner__title a {
 body .main_inner__title .hint {
     color: white;
     width: 240px;
-    display: none;
+    display: block !Important;
     float: right;
     clear: both;
     margin-top: 14px;
-    font-size: 14px;
+    /*font-size: 14px;*/
 }
 
 @media only screen and (max-width: 1000px) {

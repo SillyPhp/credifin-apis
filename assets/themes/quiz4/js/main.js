@@ -1,75 +1,18 @@
 
 const globals = {
     audio: true
-}
-
-// Audio
-// buttonClick = new Audio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/Buttonclick.mp3');
-// featured = new Audio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/featured.mp3');
-// slideSlow = new Audio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/slideSlow.mp3');
-// wrong = new Audio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/Wrong.mp3');
-// bg = new Audio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/retrogameloop.mp3');
-// buttonClick = new Audio('./Buttonclick.mp3');
-// featured = new Audio('./featured.mp3');
-// slideSlow = new Audio('./slideSlow.mp3');
-// wrong = new Audio('./Wrong.mp3');
-// bg = new Audio('./retrogameloop.mp3');
-
-// wrong.volume = 0.2;
-// ## Create a function to play our sounds
-// function playSound(sound) {
-//     if (globals.audio) {
-//
-//         sound.play(); // Play sound
-//     }
-// }
-
-// function playAudio(sound) {
-//
-//     sound.loop = true;
-//     sound.volume = 0.7;
-//     sound.play(); // Play sound
-//
-// }
+};
 
 $(document).ready(function() {
     setTimeout(function(){
         $('button').animate({'opacity': 1});
     }, 2000)
 
-})
+});
 
 $('.loader').click(function() {
     $('.main_inner__loading').addClass('loaded');
-    // playAudio(bg);
-})
-
-audioSwitch = 0;
-sfxSwitch = 0;
-
-$('.options_sf').click(function(){
-    if(sfxSwitch == 0) {
-        globals.audio = false
-        sfxSwitch = 1;
-        $(this).css('opacity','0.4')
-    } else {
-        globals.audio = true
-        sfxSwitch = 0;
-        $(this).css('opacity','1')
-    }
 });
-$('.options_bg').click(function(){
-    console.log('test')
-    if(audioSwitch == 0) {
-        $(bg).animate({volume: 0}, 600);
-        audioSwitch = 1;
-        $(this).css('opacity','0.4')
-    } else {
-        $(bg).animate({volume: 0.7}, 600);
-        audioSwitch = 0;
-        $(this).css('opacity','1')
-    }
-})
 
 // Quiz options
 const sceneDelay = 870; // Scene delay in ms
@@ -112,7 +55,7 @@ const scenes = [
         codepenprofile: 'KristopherVanSant', // Your Codepen profile link
         twitterprofile: 'KristopherVanSant', // Your Codepen profile link
         answer: 'Broken Age', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: '#ea894f', // Page background color for your scene
+        backgroundColor: 'rgb(67, 34, 56)', // Page background color for your scene
         hint: 'An animated puzzle adventure'
     }, {
         name: 'moogle', // Must mirror class name
@@ -120,7 +63,7 @@ const scenes = [
         codepenprofile: 'jnwright', // Your Codepen profile link
         twitterprofile: 'salsaverde', // Your Codepen profile link
         answer: 'Final Fantasy', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: '#3fde9d', // Page background color for your scene
+        backgroundColor: 'rgb(218, 68, 103)', // Page background color for your scene
         hint: 'Kupo!'
     }, {
         name: 'mario', // Must mirror class name
@@ -128,7 +71,7 @@ const scenes = [
         codepenprofile: 'miffili', // Your Codepen profile link
         twitterprofile: 'KlaraMiffili', // Your Codepen profile link
         answer: 'Mario Brothers', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: '#fb741e', // Page background color for your scene
+        backgroundColor: 'rgb(67, 34, 56)', // Page background color for your scene
         hint: 'Letsa gooooooo!'
     }, {
         name: 'buster', // Must mirror class name
@@ -270,10 +213,6 @@ function checkAnswer(el) {
         return 'correct';
 }
 
-// $(answer).mouseenter(function() {
-//     playSound(buttonClick);
-// });
-
 // Bind answers to check, this should really be passed to another function but meh...
 $(answer).click(function() {
 
@@ -388,10 +327,10 @@ $(answer).click(function() {
 });
 
 // Show hint
-$('.main_inner__title a').click(function() {
-    $(this).next().slideToggle();
-    return false;
-});
+// $('.main_inner__title a').click(function() {
+//     $(this).next().slideToggle();
+//     return false;
+// });
 
 // Handle key presses
 $(document).keypress(function(event) {
@@ -532,7 +471,7 @@ function twShare(url, title, winWidth, winHeight) {
 pen_id = $('._pen_id').text();
 
 $('body').on('click', '.share', () => {
-    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @jamiecoulter89 and others.`, 520, 350);
+    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouth__ and others.`, 520, 350);
     return false;
 });
 
