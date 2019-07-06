@@ -22,11 +22,11 @@ if (!empty(Yii::$app->user->identity->organization)) {
 }
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
-    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username),
+    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username) . $referral,
     'template' => '<a href="{url}" target="_blank">{label}</a>',
 ];
 array_push($result, $profile);
-if(Yii::$app->user->identity->type->user_type == 'Individual') {
+if (Yii::$app->user->identity->type->user_type == 'Individual') {
     $preferences = [
         'label' => '<i class=""></i>' . Yii::t('account', 'My Preferences'),
         'url' => Url::to('/account/preferences'),
@@ -35,7 +35,7 @@ if(Yii::$app->user->identity->type->user_type == 'Individual') {
     array_push($result, $preferences);
 }
 
-if(Yii::$app->user->identity->type->user_type == 'Individual') {
+if (Yii::$app->user->identity->type->user_type == 'Individual') {
     $resume = [
         'label' => '<i class=""></i>' . Yii::t('account', 'Build Resume'),
         'url' => Url::to('/account/resume-builder'),
