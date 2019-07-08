@@ -1,5 +1,7 @@
 <?php
 
+/* @var $referral string */
+
 use yii\helpers\Url;
 ?>
     <ul class="menuzord-menu">

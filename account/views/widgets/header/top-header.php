@@ -1,5 +1,7 @@
 <?php
 
+/* @var $referral string */
+
 use yii\widgets\Menu;
 use yii\helpers\Url;
 
