@@ -603,7 +603,7 @@ $this->params['seo_tags'] = [
 <section class="search-lists">
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
@@ -616,7 +616,7 @@ $this->params['seo_tags'] = [
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Jobs</div>
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
@@ -630,7 +630,7 @@ $this->params['seo_tags'] = [
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Browse by City</div>
                 <ul class="quick-links" id="cities">
                     <?php foreach ($cities as $c) { ?>
@@ -643,7 +643,7 @@ $this->params['seo_tags'] = [
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Internships</div>
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>

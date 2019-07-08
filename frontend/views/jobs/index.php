@@ -125,7 +125,7 @@ $this->params['seo_tags'] = [
 <section class="search-lists">
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
                     <?php foreach($search_words as $sw){ ?>
@@ -138,7 +138,7 @@ $this->params['seo_tags'] = [
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="list-heading">Jobs</div>
                 <ul class="quick-links" id="jobs">
                     <?php foreach($job_profiles as $jp){ ?>
@@ -151,7 +151,7 @@ $this->params['seo_tags'] = [
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="list-heading">Browse by City</div>
                 <ul class="quick-links" id="b-cities">
                     <?php foreach($cities as $c){ ?>
