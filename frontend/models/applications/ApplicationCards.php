@@ -25,6 +25,7 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $cards = EmployerApplications::find()
             ->alias('a')
             ->select([
@@ -34,9 +35,9 @@ class ApplicationCards
                 'a.type',
                 'i.name category',
                 'l.designation',
-                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/job/", a.slug, "' . $referral . '") link',
                 'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
+                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
                 "g.name as city",
                 'c.name as title',
                 'i.icon',
@@ -63,14 +64,13 @@ class ApplicationCards
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
             }], false)
-            ->joinWith(['organizationEnc d'=>function($a){
-                $a->where(['d.is_deleted'=>0]);
+            ->joinWith(['organizationEnc d' => function ($a) {
+                $a->where(['d.is_deleted' => 0]);
             }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g'=>function($x)
-                    {
-                        $x->joinWith(['stateEnc s'],false);
+                    $x->joinWith(['cityEnc g' => function ($x) {
+                        $x->joinWith(['stateEnc s'], false);
                     }], false);
                 }], false);
             }], false)
@@ -137,11 +137,11 @@ class ApplicationCards
         }
 
         $result = null;
-        if(isset($options['similar_jobs'])){
+        if (isset($options['similar_jobs'])) {
             $cards->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $result = $cards->orderBy(new \yii\db\Expression('rand()'))->asArray()->all();
-        }else {
+        } else {
             $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
         }
 
@@ -203,6 +203,7 @@ class ApplicationCards
 
     private static function _getCardsFromInternships($options)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $cards = EmployerApplications::find()
             ->alias('a')
             ->select([
@@ -210,9 +211,9 @@ class ApplicationCards
                 'f.location_enc_id location_id',
                 'a.last_date',
                 'i.name category',
-                'CONCAT("/internship/", a.slug) link',
+                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
                 'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
+                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
                 "g.name as city",
                 'a.type',
                 'm.fixed_wage as fixed_salary',
@@ -228,8 +229,8 @@ class ApplicationCards
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
             }], false)
-            ->joinWith(['organizationEnc d'=>function($a){
-                $a->where(['d.is_deleted'=>0]);
+            ->joinWith(['organizationEnc d' => function ($a) {
+                $a->where(['d.is_deleted' => 0]);
             }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->joinWith(['locationEnc f' => function ($x) {
@@ -291,11 +292,11 @@ class ApplicationCards
         }
 
         $result = null;
-        if(isset($options['similar_jobs'])){
+        if (isset($options['similar_jobs'])) {
             $cards->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $result = $cards->orderBy(new \yii\db\Expression('rand()'))->asArray()->all();
-        }else {
+        } else {
             $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
         }
         $i = 0;
@@ -324,7 +325,7 @@ class ApplicationCards
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary']  . ' p.m.';
+                        $result[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
                         $result[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {

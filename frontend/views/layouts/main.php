@@ -12,7 +12,7 @@ use frontend\assets\AppAssets;
 use frontend\widgets\login;
 
 AppAssets::register($this);
-$referral = ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii::$app->user->identity->referral->code : '');
+$referral = Yii::$app->referral->getReferralCode();
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -109,7 +109,6 @@ $referral = ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii
                             <?php
                         }
                         ?>
-
                     </a>
                     <?php
                     if (!Yii::$app->user->isGuest) {
@@ -159,6 +158,7 @@ $referral = ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii
         if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
             echo $this->render('/widgets/sub-header', [
                 'data' => $this->params['sub_header'],
+                'referral' => $referral,
             ]);
         }
         ?>
@@ -238,7 +238,9 @@ $referral = ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii
     </footer>
     <?php
     if (!Yii::$app->user->isGuest) {
-        echo $this->render('/widgets/user-profile-sidebar-right');
+        echo $this->render('/widgets/user-profile-sidebar-right', [
+            'referral' => $referral,
+        ]);
     } elseif (Yii::$app->user->isGuest) {
         echo login::widget();
     }
@@ -267,14 +269,12 @@ $this->registerCss('
     max-width:250px;
 }
 .ql{
-//    text-align:center;
     padding-top:20px;
     padding-bottom:10px;
     padding-inline-start: 00px;
 }
 .ql li{
     display:inline;
-//    padding:10px 10px;
     color:#fff !important;
 }
 .ql li a:hover{
@@ -486,7 +486,6 @@ $this->registerCss('
     color:#fff !important;
 } 
 .footer-widget{
-//    color:#00a0e3;
     margin: 0 auto;
 }
 .icons-ss{

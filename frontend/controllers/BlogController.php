@@ -20,9 +20,10 @@ class BlogController extends Controller
 
     public function actionIndex()
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $postsModel = new Posts();
         $posts = $postsModel->find()
-            ->select(['featured_image_location', 'featured_image', 'featured_image_alt', 'featured_image_title', 'title', '(CASE WHEN is_crawled = "0" THEN CONCAT("c/",slug) ELSE slug END) as slug'])
+            ->select(['featured_image_location', 'featured_image', 'featured_image_alt', 'featured_image_title', 'title', '(CASE WHEN is_crawled = "0" THEN CONCAT("c/",slug, "' . $referral . '") ELSE CONCAT(slug, "' . $referral . '") END) as slug'])
             ->where(['status' => 'Active', 'is_deleted' => 0])
             ->orderby(['created_on' => SORT_ASC])
             ->limit(8)
@@ -30,7 +31,7 @@ class BlogController extends Controller
             ->all();
         $quotes = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -45,7 +46,7 @@ class BlogController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $popular_posts = Posts::find()
                 ->alias('a')
-                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
                 ->joinWith(['postCategories b' => function ($b) {
                     $b->joinWith(['categoryEnc c'], false);
                 }], false)
@@ -68,11 +69,12 @@ class BlogController extends Controller
 
     public function actionTrendingPosts()
     {
+        $referral = Yii::$app->referral->getReferralCode();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $popular_posts = Posts::find()
                 ->alias('a')
-                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
                 ->innerJoinWith(['postCategories b' => function ($b) {
                     $b->innerJoinWith(['categoryEnc c'], false);
                 }], false)
@@ -93,7 +95,7 @@ class BlogController extends Controller
 
             $whats_new_posts = Posts::find()
                 ->alias('a')
-                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
                 ->innerJoinWith(['postCategories b' => function ($b) {
                     $b->innerJoinWith(['categoryEnc c'], false);
                 }], false)
@@ -113,7 +115,7 @@ class BlogController extends Controller
 
             $trending_posts = Posts::find()
                 ->alias('a')
-                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
                 ->innerJoinWith(['postCategories b' => function ($b) {
                     $b->innerJoinWith(['categoryEnc c'], false);
                 }], false)
@@ -144,9 +146,10 @@ class BlogController extends Controller
 
     public function actionGetPostsByCategory($slug)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $postsModel = new Posts();
         $posts = $postsModel->find()->alias('a')
-            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'd.first_name', 'd.last_name'])
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
@@ -166,9 +169,10 @@ class BlogController extends Controller
 
     public function actionGetPostsByTag($slug)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $postsModel = new Posts();
         $posts = $postsModel->find()->alias('a')
-            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as slug', 'd.first_name', 'd.last_name'])
             ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
@@ -191,10 +195,11 @@ class BlogController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $postsModel = new Posts();
         if (!empty($slug)) {
+            $referral = Yii::$app->referral->getReferralCode();
             $posts = $postsModel->find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("' . Url::to('/blog/c/') . '",a.slug) ELSE a.slug END) as url',
+                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("' . Url::to('/blog/c/') . '",a.slug, "' . $referral . '") ELSE CONCAT(a.slug, "' . $referral . '") END) as url',
                     'a.excerpt', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location,"/",a.featured_image) AS image',
                     'a.featured_image_title AS image_title',
                     'a.featured_image_alt AS image_alt',

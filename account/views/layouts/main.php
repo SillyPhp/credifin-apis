@@ -10,7 +10,7 @@ use yii\helpers\Url;
 
 AppAssets::register($this);
 $this->beginPage();
-$referral = ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii::$app->user->identity->referral->code : '');
+$referral = Yii::$app->referral->getReferralCode();
 ?>
     <!DOCTYPE html>
     <!--[if IE 8]>
@@ -109,7 +109,9 @@ $referral = ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii
             </p>
         </div>
         <?php
-        echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
+        echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right', [
+            'referral' => $referral,
+        ]);
         ?>
     </div>
     <?php

@@ -1,5 +1,7 @@
 <?php
 
+/* @var $referral string */
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -44,7 +46,8 @@ use yii\widgets\Pjax;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username; ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                           class="tree-toggler"><i
                                     class="far fa-file-alt"></i>My Profile</a>
 
                     </li>
@@ -54,7 +57,8 @@ use yii\widgets\Pjax;
 
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Shorlisted
+                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i
+                                    class="far fa-money-bill-alt"></i>Shorlisted
                             Job</a>
 
                     </li>
@@ -65,18 +69,21 @@ use yii\widgets\Pjax;
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                           class="tree-toggler"><i
                                     class="far fa-file-alt"></i>My Profile</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Active Jobs</a>
+                        <a href="/account/jobs" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Active
+                            Jobs</a>
                     </li>
                     <li class="inner-child">
                         <a href="/account/internships" title="" class="tree-toggler"><i class="far fa-paper-plane"></i>Active
                             Internships</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/create" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Create
+                        <a href="/account/jobs/create" title="" class="tree-toggler"><i
+                                    class="far fa-money-bill-alt"></i>Create
                             Jobs</a>
                     </li>
                     <li class="inner-child">
@@ -99,7 +106,8 @@ use yii\widgets\Pjax;
                     </div>
                 </li>
                 <li class="inner-child">
-                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fas fa-sign-out-alt"></i>Logout</a>
+                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i
+                                class="fas fa-sign-out-alt"></i>Logout</a>
                 </li>
             </ul>
         </div>

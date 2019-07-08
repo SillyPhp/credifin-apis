@@ -1,7 +1,8 @@
 <?php
 
-use yii\helpers\Url;
+/* @var $referral string */
 
+use yii\helpers\Url;
 ?>
     <ul class="menuzord-menu">
         <li><a href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>

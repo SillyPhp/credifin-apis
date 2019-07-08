@@ -16,8 +16,9 @@ class ProfileCards
 
     private static function _getActiveProfiles($options)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         return AssignedCategories::find()
-            ->select(['b.name', 'CONCAT("' . Url::to('/' . strtolower($options['type']) . '/list?keyword=') . '", b.name) link', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->select(['b.name', 'CONCAT("' . Url::to('/' . strtolower($options['type']) . '/list?keyword=') . '", b.name, "' . $referral . '") link', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon', 'COUNT(d.id) as total'])
             ->alias('a')
             ->distinct()
             ->joinWith(['parentEnc b'], false)

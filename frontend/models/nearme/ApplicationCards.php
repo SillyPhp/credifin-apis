@@ -18,16 +18,17 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($lat, $long, $radius, $num, $keyword, $type, $walkin)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $date = Date('Y-m-d H:i:s');
         $data = EmployerApplications::find()
             ->alias('a')
             ->select([
                 'a.application_enc_id',
                 'a.type',
-                'i.slug as organization_slug',
+                'CONCAT(i.slug, "' . $referral . '") as organization_slug',
                 'a.experience',
                 'h.name as job_title',
-                'a.slug',
+                'CONCAT(a.slug, "' . $referral . '") as slug',
                 'a.last_date',
                 'e.name as city_name',
                 'c.location_name',
@@ -86,7 +87,7 @@ class ApplicationCards
             ->joinWith(['designationEnc l'], false)
             ->joinWith(['preferredIndustry o'], false)
             ->having(['<', 'distance', $radius])
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.for_careers' => 0 ,'a.is_deleted' => 0]);
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0]);
 
         if (!empty($keyword)) {
             $data->andWhere([
