@@ -1,7 +1,9 @@
 (function($) {
 
     var results = {};
-    
+
+    results.mode = "online";
+
     $(document).ready(function(){
         $.ajax({
             url : "/account/schedular/find-applications",
@@ -88,10 +90,13 @@
                         }
                         if (sibling.classList.contains('times-cont')) {
                             var at = sibling.getElementsByClassName('col-sm-6 added-time-from');
-                            if (at) {
+                            var ata = sibling.getElementsByClassName('col-sm-6 added-time-to');
+                            if (at && ata) {
                                 for (var ch = 0; ch < at.length; ch++) {
-                                    r['from'] = at[ch].children[0].value;
-                                    r['to'] = at[ch].children[0].value;
+                                    var a = {};
+                                    a['from'] = at[ch].children[0].value;
+                                    a['to'] = ata[ch].children[0].value;
+                                    result[title].push(a);
                                 }
                             }
                         }
@@ -316,7 +321,11 @@
     //add more interviewers
     $(document).on('click', '#add-more-interviewers', function(e){
         e.preventDefault();
-       $('#more-interviewers').append(Mustache.render($('#add-more-interviewers-detail').html()));
+        if(document.querySelectorAll('.interviewers')[0].querySelector('.int_name').value) {
+            $('#more-interviewers').append(Mustache.render($('#add-more-interviewers-detail').html()));
+        }else{
+            alert('Please fill the values');
+        }
     });
 
     //remove added interviewers
@@ -394,9 +403,9 @@
         var elems = document.querySelectorAll('.interviewers');
         for(var i=0; i < elems.length; i++){
             var r = {};
-            var name = elems[0].querySelector('.int_name').value;
-            var email = elems[0].querySelector('.int_email').value;
-            var phone = elems[0].querySelector('.int_phone').value;
+            var name = elems[i].querySelector('.int_name').value;
+            var email = elems[i].querySelector('.int_email').value;
+            var phone = elems[i].querySelector('.int_phone').value;
             r['name'] = name;
             r['email'] = email;
             r['phone'] = phone;

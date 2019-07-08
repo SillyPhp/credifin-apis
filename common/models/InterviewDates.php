@@ -29,9 +29,9 @@ class InterviewDates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'interview_dates_enc_id', 'scheduled_interview_enc_id', 'interview_date'], 'required'],
-            [['id', 'is_deleted'], 'integer'],
+            [['interview_dates_enc_id', 'scheduled_interview_enc_id', 'interview_date'], 'required'],
             [['interview_date'], 'safe'],
+            [['is_deleted'], 'integer'],
             [['interview_dates_enc_id', 'scheduled_interview_enc_id'], 'string', 'max' => 100],
         ];
     }

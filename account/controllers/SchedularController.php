@@ -185,6 +185,7 @@ class SchedularController extends Controller
                     $res['selected_location'] = $req['selected_location'];
                 }
                 $res['type'] = $req['type'];
+                $res['mode'] = $req['mode'];
                 $res['selected_candidate'] = $req['selected_candidate'];
                 $res['interviewers'] = [];
                 $res['timings'] = [];
@@ -201,23 +202,29 @@ class SchedularController extends Controller
             }
 
             $save = $this->saveData($res);
+            if($save){
+                return [
+                    'status' => 200,
+                    'response' => $res
+                ];
+            }else{
+                print_r('There is an error');
+            }
 //            $res = $this->findOrganizationInterviewLocations($req['application_id']);
-            return [
-                'status' => 200,
-                'response' => $res
-            ];
+
         }
     }
 
     private function saveData($data)
     {
-        print_r($data);
-        die();
+
         if ($data['mode'] == 'online') {
             $mode = 1;
         } elseif ($data['mode'] == 'at_location') {
             $mode = 2;
         }
+
+        $candidate_applications = explode(',', $data['selected_candidate']);
 
         $interview = new ScheduledInterview();
         $utilitiesModel = new \common\models\Utilities();
@@ -226,13 +233,15 @@ class SchedularController extends Controller
         $interview->scheduled_interview_type_enc_id = $this->interviewType($data['type']);
         $interview->application_enc_id = $data['application'];
         $interview->interview_mode = $mode;
-        $interview->interview_location_enc_id = $data['selected_location'];
-        $interview->created_by = Yii::$app->user->identity->organization->organization_enc_id;
+        if ($mode == 2) {
+            $interview->interview_location_enc_id = $data['selected_location'];
+        }
+        $interview->created_by = Yii::$app->user->identity->user_enc_id;
         $interview->created_on = date('Y-m-d H:i:s');
 
         if ($interview->save()) {
 
-            if($data['type'] == 'fixed') {
+            if ($data['type'] == 'fixed') {
 
                 $interview_options = new InterviewOptions();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -241,38 +250,54 @@ class SchedularController extends Controller
                 $interview_options->process_field_enc_id = $data['selected_round'];
                 $interview_options->number_of_candidates = $data['number_of_candidates'];
                 if (!$interview_options->save()) {
-
+                    return false;
                 }
 
-            }elseif ($data['type'] == 'flexible'){
+            } elseif ($data['type'] == 'flexible') {
 
-                $interview_candidate = new InterviewCandidates();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
-                $interview_candidate->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
-                $interview_candidate->applied_application_enc_id = '';
+                foreach ($candidate_applications as $application_enc_id) {
+                    $interview_candidate = new InterviewCandidates();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
+                    $interview_candidate->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    $interview_candidate->applied_application_enc_id = $application_enc_id;
+                    if(!$interview_candidate->save()){
+                        return false;
+                    }
+                }
             }
 
-            $interviewer = new Interviewers();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $interviewer->interviewers_enc_id = $utilitiesModel->encrypt();
-            $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+            foreach ($data['interviewers'] as $i) {
 
-            if($interviewer->save()){
+                if(!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
 
-                $interviewer_detail = new InterviewerDetail();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
-                $interviewer_detail->interviewer_enc_id = $interviewer['interviewers_enc_id'];
-                $interviewer_detail->name = $data['name'];
-                $interviewer_detail->email = $data['email'];
-                $interviewer_detail->phone = $data['phone'];
-                if (!$interviewer_detail->save()){
+                    $interviewer = new Interviewers();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interviewer->interviewers_enc_id = $utilitiesModel->encrypt();
+                    $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
 
+                    if ($interviewer->save()) {
+
+                        $interviewer_detail = new InterviewerDetail();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
+                        $interviewer_detail->interviewer_enc_id = $interviewer['interviewers_enc_id'];
+                        $interviewer_detail->name = $i['name'];
+                        $interviewer_detail->email = $i['email'];
+                        $interviewer_detail->phone = $i['phone'];
+                        if (!$interviewer_detail->save()) {
+                            return false;
+                        }
+                    }else{
+                        return false;
+                    }
                 }
+
             }
 
             foreach ($data['timings'] as $date => $time) {
+
+               $date = date('Y-m-d', strtotime($date));
 
                 $interview_dates = new InterviewDates();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -281,24 +306,30 @@ class SchedularController extends Controller
                 $interview_dates->interview_date = $date;
                 if ($interview_dates->save()) {
 
-                    $interview_date_timing = new InterviewDateTimings();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
-                    $interview_date_timing->interview_dates_enc_id = $interview_dates['interview_dates_enc_id'];
-                    $interview_date_timing->from = $time[0]['from'];
-                    $interview_date_timing->to = $time[0]['to'];
-                    if($interview_date_timing->save()){
+                    foreach ($time as $t) {
 
+                        $interview_date_timing = new InterviewDateTimings();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
+                        $interview_date_timing->interview_dates_enc_id = $interview_dates['interview_dates_enc_id'];
+                        $interview_date_timing->from = $t['from'];
+                        $interview_date_timing->to = $t['to'];
+                        if (!$interview_date_timing->save()) {
+                            return false;
+                        }
                     }
 
+                }else{
+                    return false;
                 }
             }
 
+            return true;
 
+        }else{
+            return false;
         }
 
-        print_r($interview_options);
-        die();
     }
 
     private function interviewType($type)
