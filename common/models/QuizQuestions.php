@@ -14,8 +14,8 @@ use Yii;
  * @property string $type Quiz Type
  * @property string $difficulty Quiz Difficulty
  * @property string $question Quiz Question
- * @property string $question_image
- * @property string $question_image_location
+ * @property string $image Image
+ * @property string $image_location Image Location
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -48,7 +48,7 @@ class QuizQuestions extends \yii\db\ActiveRecord
             [['type', 'difficulty', 'question'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['status', 'is_deleted'], 'integer'],
-            [['quiz_question_enc_id', 'quiz_enc_id', 'question_image', 'question_image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['quiz_question_enc_id', 'quiz_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['category'], 'string', 'max' => 50],
             [['quiz_question_enc_id'], 'unique'],
             [['quiz_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Quiz::className(), 'targetAttribute' => ['quiz_enc_id' => 'quiz_enc_id']],

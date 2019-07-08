@@ -1,4 +1,3 @@
-
 const globals = {
     audio: true
 };
@@ -7,7 +6,6 @@ $(document).ready(function() {
     setTimeout(function(){
         $('button').animate({'opacity': 1});
     }, 2000)
-
 });
 
 $('.loader').click(function() {
@@ -23,7 +21,7 @@ const answer = answers.find('.answer');
 const circle = $('.main_inner__circle');
 
 // Quiz progress
-var progress = 1; // Change this to your scene number
+var progress = 0; // Change this to your scene number
 
 // Transition check
 var transitioning = false;
@@ -31,106 +29,50 @@ var transitioning = false;
 // End circle scale
 const circleScale = 10;
 
-// Our main array. You must add your details to this.
-const scenes = [
-    {
-        name: 'akuaku', // Must mirror class name
-        author: 'João Santos', // Your name
-        codepenprofile: 'jotavejv', // Your Codepen profile link
-        twitterprofile: '_jotavejv', // Your Codepen profile link
-        answer: 'Crash Bandicoot', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: 'rgb(67, 34, 56)', // Page background color for your scene
-        hint: 'UKA UKA is FREEEEE!'
-    },{
-        name: 'kirby', // Must mirror class name
-        author: 'Katherine Kato', // Your name
-        codepenprofile: 'kathykato', // Your Codepen profile link
-        twitterprofile: 'kato_katherine', // Your Codepen profile link
-        answer: 'Kirby', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: 'rgb(218, 68, 103)', // Page background color for your scene
-        hint: 'A Nintendo classic'
-    }, {
-        name: 'hexipal', // Must mirror class name
-        author: 'Kristopher Van Sant', // Your name
-        codepenprofile: 'KristopherVanSant', // Your Codepen profile link
-        twitterprofile: 'KristopherVanSant', // Your Codepen profile link
-        answer: 'Broken Age', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: 'rgb(67, 34, 56)', // Page background color for your scene
-        hint: 'An animated puzzle adventure'
-    }, {
-        name: 'moogle', // Must mirror class name
-        author: 'Jasmine Wright', // Your name
-        codepenprofile: 'jnwright', // Your Codepen profile link
-        twitterprofile: 'salsaverde', // Your Codepen profile link
-        answer: 'Final Fantasy', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: 'rgb(218, 68, 103)', // Page background color for your scene
-        hint: 'Kupo!'
-    }, {
-        name: 'mario', // Must mirror class name
-        author: 'Klara Miffili', // Your name
-        codepenprofile: 'miffili', // Your Codepen profile link
-        twitterprofile: 'KlaraMiffili', // Your Codepen profile link
-        answer: 'Mario Brothers', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: 'rgb(67, 34, 56)', // Page background color for your scene
-        hint: 'Letsa gooooooo!'
-    }, {
-        name: 'buster', // Must mirror class name
-        author: 'Jamie Coulter', // Your name
-        codepenprofile: 'jcoulterdesign', // Your Codepen profile link
-        twitterprofile: 'jamiecoulter89', // Your Codepen profile link
-        answer: 'Final Fantsy 7', // The correct game, we can obfuscate this later if we want to hide answers
-        backgroundColor: '#4d352f', // Page background color for your scene
-        hint: '1997 JRPG for PS1!'
+var scenes = [];
+var videoGames = null;
+$.ajax({
+    type: 'POST',
+    url: window.location.href,
+    async: false,
+    data: {'_csrf-common':$('meta[name="csrf-token"]').attr('content')},
+    dataType: 'JSON',
+    success: function(data){
+        var main_data = data.results;
+        var w = [];
+        for(var i = 0; i < main_data.length; i++){
+            var r = {};
+            r['hint'] = main_data[i]['question'];
+            r['image'] = main_data[i]['image'];
+            r['image_location'] = main_data[i]['image_location'];
+            r['name'] = main_data[i]['quiz_question_enc_id'];
+            r['backgroundColor'] = 'rgb(67, 34, 56)';
+            r['img'] = $('#i_path').val() + r['image_location'] + "/" + r['image'];
+            for(var j= 0; j < main_data[i]['quizAnswers'].length; j++){
+                if(main_data[i]['quizAnswers'][j]['is_answer'] == "1"){
+                    r['answer'] = main_data[i]['quizAnswers'][j]['answer'];
+                }else{
+                    w.push(main_data[i]['quizAnswers'][j]['answer'])
+                }
+            }
+            var p = {
+                id: main_data[i]['quiz_question_enc_id'],
+                img : r['img']
+            };
+            var html = $('#options-temp').html();
+            var output = Mustache.render(html, p);
+            $('#options_cont').append(output);
+            scenes.push(r);
+        }
+        videoGames = w;
     }
-]
-
-// List of random video games that our JS can pull from, feel free to add your own
-const videoGames = [
-    'Pong',
-    'Zork',
-    'Space Invaders',
-    'Asteroids',
-    'Pac-Man',
-    'Defender',
-    'Donkey Kong',
-    'Frogger',
-    'Galaga',
-    'Joust',
-    'Ms. Pac-Man',
-    'Pitfall!',
-    'Tetris',
-    'Gauntlet',
-    'Super Mario Bros.',
-    'The Legend of Zelda',
-    'Contra',
-    'Double Dragon',
-    'Grand Theft Auto',
-    'Half-Life 2',
-    'Katamari Damacy',
-    'Metal Gear Solid 3',
-    'World of Warcraft',
-    'Civilization IV',
-    'Devil May Cry 3',
-    'God of War',
-    'Guitar Hero',
-    'Resident Evil 4',
-    'Shadow of the Colossus',
-    'Tom Clancys Splinter Cell',
-    'The Elder Scrolls IV',
-    'Gears of War',
-    'Ōkami',
-    'Spiderman',
-    'Tomb Raider',
-    'Wii Sports',
-    'BioShock',
-    'Call of Duty 4: Modern Warfare'
-]
+});
 
 // Start by assigning colors and other props to the scene
 function setUp() {
 
     // Lets start by setting the correct colors for our scene
-    $('body').css('background', scenes[progress - 1].backgroundColor);
+    $('body').css('background', scenes[progress].backgroundColor);
     circle.css('background', scenes[progress].backgroundColor);
     circle.find('.circles').css('background', scenes[progress].backgroundColor);
 
@@ -157,22 +99,17 @@ setUp();
 function initScene(scene) {
 
     // Get the next scene from our array
-    let nextScene = $('.scene.' + scenes[progress - 1].name);
-
+    let nextScene = $('.scene.' + scenes[progress].name);
+    
     // Bring the next scene in
     setTimeout(function(){
         nextScene.fadeIn();
         nextScene.css('bottom', '-400px');
     }, 500);
 
-    // Change info
-    $('.main_inner__info span').text(scenes[progress - 1].author);
-    $('.main_inner__info .codepen').attr('href' , `https://www.codepen.io/${scenes[progress - 1].codepenprofile}`);
-    $('.main_inner__info .twitter').attr('href' , `https://www.twitter.com/${scenes[progress - 1].twitterprofile}`);
-
     // Change the hint
     $('.main_inner__title .hint').slideUp(function() {
-        $('.main_inner__title .hint').text(scenes[progress - 1].hint);
+        $('.main_inner__title .hint').text(scenes[progress].hint);
     });
 
     // Bring the info in
@@ -191,7 +128,7 @@ function initScene(scene) {
     let correctAnswerEl = $(answer[correctAnswer]);
 
     // Set the text of the answer element
-    correctAnswerEl.text(scenes[scene - 1].answer);
+    correctAnswerEl.text(scenes[progress].answer);
     correctAnswerEl.data('correct', true);
 
     // Select the other answers and if no data set against it, pick a random game
@@ -223,14 +160,8 @@ $(answer).click(function() {
     if(!transitioning) {
         transitioning = true; // Check if not mid transition
         if(checkAnswer($(this))) {
-
-            // Play sound
-            // playSound(featured);
-
-            // Add breadcrumb class
             $('.breadcrumb.active').addClass('correct');
 
-            // Add class to button
             $(this).addClass('correct');
 
             // Set up feedback message
@@ -240,8 +171,6 @@ $(answer).click(function() {
         } else {
             // Add breadcrumb class
             $('.breadcrumb.active').addClass('wrong');
-
-            // playSound(wrong);
 
             // Add class to button
             $(this).addClass('wrong');
@@ -255,11 +184,9 @@ $(answer).click(function() {
         // Move breadcrumb
         $('.breadcrumb.active').removeClass('active').next().addClass('active');
 
-        let currentScene = $('.scene.' + scenes[progress - 1].name);
-        console.log(progress)
-
+        let currentScene = $('.scene.' + scenes[progress].name);
+        
         currentScene.css('opacity', '0');
-        console.log(currentScene)
 
         $('.main_inner__info').css('bottom' , '-50px');
         $('.main_inner__info').css('opacity' , '0');
@@ -268,9 +195,31 @@ $(answer).click(function() {
         progress++;
 
         // End screen
-        if(progress == $('.scene').length + 1) {
+        if(progress == $('.scene').length) {
             $('.main_inner__modalOverlay, .main_inner__modal, .main_inner__modalContent').show();
-            $('p.score').html('You got ' + $('.breadcrumb.correct').length + ' out of 5 correct!')
+            $('.main_inner__feedback').fadeOut(1500);
+            $('#elem-button-share-quiz').on('click', function() {
+                var path = window.location.pathname.split('/');
+                var u = window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
+                var t = document.title;
+                window.open('http://www.facebook.com/sharer.php?u=' + u);
+                return false;
+            });
+            $('#elem-button-share-quiz-twitter').on('click', function() {
+                var path = window.location.pathname.split('/');
+                var u = window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
+                var t = document.title;
+                window.open("https://twitter.com/intent/tweet?text=" + u);
+                return false;
+            });
+            $('#elem-button-share-quiz-wa').on('click', function() {
+                var path = window.location.pathname.split('/');
+                var u = window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
+                var t = document.title;
+                window.open("https://wa.me/?text=" + u);
+                return false;
+            });
+            $('p.score').html('You got ' + $('.breadcrumb.correct').length + ' out of ' + $('.scene').length + ' correct!');
         }
 
         // Some crazy animations. I've gone a bit nuts on using set timeouts, should really be using delays in CSS
@@ -284,20 +233,18 @@ $(answer).click(function() {
         // Then after the transition is complete we set the background to the next color in our array
         // Then set the scale of the circle back to 0 (removing any transitions)
         setTimeout(function() {
-            $('body').css('background', scenes[progress - 1].backgroundColor);
+            $('body').css('background', scenes[progress].backgroundColor);
             circle.css({'transform' : `translateY(-50%) scale(0)`});
             circle.css({'transition-duration' : '0ms'})
 
             // Get some colors based on new bg
-            let newHue = LightenDarkenColor(scenes[progress - 1].backgroundColor, 30);
-            let newHueInfo = LightenDarkenColor(scenes[progress - 1].backgroundColor, -20);
+            let newHue = LightenDarkenColor(scenes[progress].backgroundColor, 30);
+            let newHueInfo = LightenDarkenColor(scenes[progress].backgroundColor, -20);
 
             // Alter the hue of certain texts to match new bg color
             $('.main_inner__title a').css('color', newHue);
             $('.main_inner__info p').css('color', newHueInfo);
             $('.main_inner__info span').css('color', newHueInfo);
-
-
 
             $('.main_inner__feedback').css('transform', 'translateY(-50%) scale(0) rotate(20deg)');
         }, sceneDelay);
@@ -325,12 +272,6 @@ $(answer).click(function() {
         }, sceneDelay + 100);
     }
 });
-
-// Show hint
-// $('.main_inner__title a').click(function() {
-//     $(this).next().slideToggle();
-//     return false;
-// });
 
 // Handle key presses
 $(document).keypress(function(event) {

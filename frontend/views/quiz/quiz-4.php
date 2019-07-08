@@ -1,3 +1,44 @@
+<?php
+use yii\helpers\Url;
+$this->title = $quiz['title'];
+
+$keywords = $quiz['keywords'];
+
+$description = $quiz['description'];
+
+if (!empty($score) && !empty($total)) {
+    if (($score >= 0 && $score <= 10) && ($total >= 0 && $total <= 10)) {
+        $description = 'I scored ' . $score . ' out of ' . $total . '. Try Yours!!!. ' . $description;
+    }
+}
+
+$image = Url::to(Yii::$app->params->upload_directories->quiz->sharing->image . $quiz['sharing_image_location'] . DIRECTORY_SEPARATOR . $quiz['sharing_image'], 'https');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+?>
 <svg version='1.1' xmlns='http://www.w3.org/2000/svg'>
     <defs>
         <filter id='squiggly-0'>
@@ -33,7 +74,7 @@
             </div>
             <div class='loader'>
                 <div class='text'>
-                    <span>Quiz</span>
+                    <span><?= $quiz['name'] ?></span>
                 </div>
                 <p>
                     <button>Click anywhere to play</button>
@@ -48,7 +89,14 @@
             <h1>Quiz complete!</h1>
             <p class='score'>You got 7 out of 8 correct!</p>
 
-            <button class='share'>Tweet your score</button>
+            <div class="effect jaques">
+                <div class="buttons">
+                    <a href="#" id="elem-button-share-quiz" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                    <a href="#" id="elem-button-share-quiz-twitter" class="tw" target="_blank" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                    <a href="#" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <a href="/login" id="" class="login-s" title="Login or Signup to Empoweryouth">Login or Signup</a>
         </div>
 
         <div class='main_inner__logo'>
@@ -58,184 +106,14 @@
         </div>
 
         <div class='main_inner__title'>
-<!--            <h1>In what popular video game would you find this?</h1>-->
-<!--            <p>Click on an answer or use the number keys</p>-->
-<!--            <a>Need a hint?</a>-->
             <h1 class='hint'></h1>
         </div>
 
         <div class='main_inner__circle'></div>
         <div class='main_inner__feedback'></div>
 
-        <div class='main_inner__scenes'>
-            <div class='scene akuaku'>
-                <div class='container'>
-                    <div class='feather'></div>
-                    <div class='feather'></div>
-                    <div class='feather'></div>
-                    <div class='feather'></div>
-                    <div class='body'></div>
-                    <div class='eyebrows'></div>
-                    <div class='eyebrows'></div>
-                    <div class='eye'></div>
-                    <div class='eye'></div>
-                    <div class='nose'></div>
-                    <div class='lip'></div>
-                    <div class='lip'></div>
-                    <div class='beard'></div>
-                    <div class='beard'></div>
-                </div>
-            </div>
-            <div class='scene kirby'>
-                <div id='container'>
-                    <div class='kirby'>
-                        <div class='body'>
-                            <div class='face'>
-                                <div class='eyes'>
-                                    <div class='eye'></div>
-                                    <div class='eye'></div>
-                                </div>
-                                <div class='mouth'></div>
-                                <div class='cheeks'>
-                                    <div class='cheek'></div>
-                                    <div class='cheek'></div>
-                                </div>
-                            </div>
-                            <div class='arms'>
-                                <div class='arm'></div>
-                                <div class='arm'></div>
-                            </div>
-                            <div class='feet'>
-                                <div class='foot'></div>
-                                <div class='foot'></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class='scene hexipal'>
-                <div id='hexipal'>
-                    <div class='hexagon1'></div>
-                    <div class='hexagon2'></div>
-                    <div class='hexagon3'></div>
-                    <div class='hexagon4'></div>
-                    <div class='eyes'>
-                        <div class='eye'></div>
-                        <div class='eye'></div>
-                    </div>
-                    <div class='smile'>U</div>
-                    <div class='left-arm'></div>
-                    <div class='left-hands'>E</div>
-                    <div class='right-arm'></div>
-                    <div class='right-hands'>E</div>
-                    <div class='left-leg'></div>
-                    <div class='right-leg'></div>
-                </div>
-            </div>
-            <div class='scene moogle'>
-                <div class='container'>
-                    <div class='ball'></div>
-                    <div class='head'>
-                        <div class='nose'></div>
-                        <div class='cheeks'></div>
-                        <div class='eyes'></div>
-                    </div>
-                    <div class='body'></div>
-                    <div class='feet'></div>
-                    <div class='ears'></div>
-                    <div class='inside'></div>
-                    <div class='wings'></div>
-                    <div class='wings2'></div>
-                </div>
-            </div>
-            <div class='scene mario'>
-                <div class='container'>
-                    <div class='hat'>
-                        <div class='main'></div>
-                        <div class='label'>
-                            <p>M</p>
-                        </div>
-                        <div class='screen'></div>
-                    </div>
-                    <div class='ears'>
-                        <div class='ear left'></div>
-                        <div class='ear right'></div>
-                    </div>
-                    <div class='head'>
-                        <div class='hair'>
-                            <div class='hair-back left'></div>
-                            <div class='hair-back right'></div>
-                        </div>
-                        <div class='face'></div>
-                        <div class='mustache'>
-                            <div class='detail farleft'></div>
-                            <div class='detail left'></div>
-                            <div class='detail right'></div>
-                            <div class='detail farright'></div>
-                            <div class='main'></div>
-                        </div>
-                        <div class='eyes'>
-                            <div class='eye left'></div>
-                            <div class='eye right'></div>
-                        </div>
-                        <div class='nose'></div>
-                    </div>
-                    <div class='brows'>
-                        <div class='brow left'></div>
-                        <div class='brow right'></div>
-                    </div>
-                </div>
-            </div>
-<!--            <div class='scene buster'>-->
-<!--                <div class='container'>-->
-<!--                    <div class='hat'>-->
-<!--                        <div class='main'></div>-->
-<!--                        <div class='label'>-->
-<!--                            <p>M</p>-->
-<!--                        </div>-->
-<!--                        <div class='screen'></div>-->
-<!--                    </div>-->
-<!--                    <div class='ears'>-->
-<!--                        <div class='ear left'></div>-->
-<!--                        <div class='ear right'></div>-->
-<!--                    </div>-->
-<!--                    <div class='head'>-->
-<!--                        <div class='hair'>-->
-<!--                            <div class='hair-back left'></div>-->
-<!--                            <div class='hair-back right'></div>-->
-<!--                        </div>-->
-<!--                        <div class='face'></div>-->
-<!--                        <div class='mustache'>-->
-<!--                            <div class='detail farleft'></div>-->
-<!--                            <div class='detail left'></div>-->
-<!--                            <div class='detail right'></div>-->
-<!--                            <div class='detail farright'></div>-->
-<!--                            <div class='main'></div>-->
-<!--                        </div>-->
-<!--                        <div class='eyes'>-->
-<!--                            <div class='eye left'></div>-->
-<!--                            <div class='eye right'></div>-->
-<!--                        </div>-->
-<!--                        <div class='nose'></div>-->
-<!--                    </div>-->
-<!--                    <div class='brows'>-->
-<!--                        <div class='brow left'></div>-->
-<!--                        <div class='brow right'></div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+        <div class='main_inner__scenes' id="options_cont">
         </div>
-
-<!--        <div class='main_inner__info'>-->
-<!--            <p>CSS illustration by</p>-->
-<!--            <span></span>-->
-<!--            <a class='codepen' href='#' target='_blank'>-->
-<!--                <i class='fa fa-codepen'></i>-->
-<!--            </a>-->
-<!--            <a class='twitter' href='#' target='_blank'>-->
-<!--                <i class='fa fa-twitter'></i>-->
-<!--            </a>-->
-<!--        </div>-->
 
         <div class='main_inner__answers'>
             <div class='answer'></div>
@@ -248,10 +126,20 @@
     </div>
 </div>
 <canvas class='grain'></canvas>
+<input type="hidden" id="i_path" value="<?= Yii::$app->params->upload_directories->quiz->question->image;?>">
 <?php
 //$this->registerCssFile('/assets/themes/quiz4/css/style.css');
-//$this->registerJsFile('/assets/themes/quiz4/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-//$script = <<<JS
-//
-//JS;
-//$this->registerJs($script);
+$script = <<<JS
+
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+
+<script id="options-temp" type="text/template">
+    <div class='scene {{id}}'>
+        <div class='container'>
+            <img src="{{img}}"/>
+        </div>
+    </div>
+</script>
