@@ -171,8 +171,8 @@ function GenerateCalendar(events){
 
 JS;
 $this->registerJs($script);
-$this->registerCssFile('https://fullcalendar.io/releases/fullcalendar/3.10.0/fullcalendar.min.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css');
-$this->registerJsFile('https://fullcalendar.io/releases/fullcalendar/3.10.0/lib/moment.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('https://fullcalendar.io/releases/fullcalendar/3.10.0/fullcalendar.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/fullcalendar/fullcalendar.min.css');
+$this->registerJsFile('@eyAssets/fullcalendar/moment.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/fullcalendar/fullcalendar.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
