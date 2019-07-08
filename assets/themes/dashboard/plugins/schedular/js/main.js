@@ -398,39 +398,61 @@
         load_script();
     });
 
+    $(document).on('blur','.interviewer_details', function(){
+        validateDetails();
+    });
+
+    var validate_detail = false;
+    function validateDetails(){
+        $('.interviewer_details').each(function(){
+            if($(this).val() === "" || $(this).val() == null){
+                console.log('error');
+                $(this).next('.i-error').text('This field is required.');
+                validate_detail = false;
+            } else{
+                $(this).next('.i-error').text('');
+                console.log('completed');
+                validate_detail = true;
+            }
+        });
+    }
     $(document).on('click', '#finish', function(){
-        var result = [];
-        var elems = document.querySelectorAll('.interviewers');
-        for(var i=0; i < elems.length; i++){
-            var r = {};
-            var name = elems[i].querySelector('.int_name').value;
-            var email = elems[i].querySelector('.int_email').value;
-            var phone = elems[i].querySelector('.int_phone').value;
-            r['name'] = name;
-            r['email'] = email;
-            r['phone'] = phone;
-            result.push(r);
-        }
-        results.interviewers = result;
-        delete results['applications'];
-        delete results['appliedcandidates'];
-        delete results['interviewlocation'];
-        delete results['interviewrounds'];
-        // console.log(results);
-        $.ajax({
-            url: '/account/schedular/fix-interview',
-            type: 'POST',
-            data: results,
-            success: function(data){
+        validateDetails();
+        if(validate_detail) {
+            $(this).prop('disabled',true);
+            var result = [];
+            var elems = document.querySelectorAll('.interviewers');
+            for (var i = 0; i < elems.length; i++) {
+                var r = {};
+                var name = elems[i].querySelector('.int_name').value;
+                var email = elems[i].querySelector('.int_email').value;
+                var phone = elems[i].querySelector('.int_phone').value;
+                r['name'] = name;
+                r['email'] = email;
+                r['phone'] = phone;
+                result.push(r);
+            }
+            results.interviewers = result;
+            delete results['applications'];
+            delete results['appliedcandidates'];
+            delete results['interviewlocation'];
+            delete results['interviewrounds'];
+            // console.log(results);
+            $.ajax({
+                url: '/account/schedular/fix-interview',
+                type: 'POST',
+                data: results,
+                success: function (data) {
                     if (data.status == 200) {
                         console.log(data);
-                        toastr.success('Interview schedule has been fixed. Check Dashboard for Updates','Interview Scheduled Successfully');
-                            window.location.href = "/account/dashboard";
+                        toastr.success('Interview schedule has been fixed. Check Dashboard for Updates', 'Interview Scheduled Successfully');
+                        window.location.href = "/account/dashboard";
                     } else {
-                        toastr.error('Some error occured. Please try again after sometime','Error');
+                        toastr.error('Some error occured. Please try again after sometime', 'Error');
                     }
-            }
-        })
+                }
+            })
+        }
     })
 
 })(jQuery);

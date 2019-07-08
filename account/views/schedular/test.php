@@ -100,15 +100,18 @@ use yii\helpers\Url;
     <div class="col-md-12 col-sm-12 added-interviewers interviewers">
         <div class="col-md-4 col-sm-4">
             <label for="int_name" class="form-label">Name of Interviewer</label>
-            <input type="text" name="int_name" class="int_name">
+            <input type="text" name="int_name" class="int_name interviewer_details">
+            <p class="i-error"></p>
         </div>
         <div class="col-md-4 col-sm-4">
             <label for="int_email" class="form-label">Email of Interviewer</label>
-            <input type="text" name="int_email" class="int_email">
+            <input type="email" name="int_email" class="int_email interviewer_details">
+            <p class="i-error"></p>
         </div>
         <div class="col-md-4 col-sm-4">
             <label for="int_phone" class="form-label">Phone Number of Interviewer</label>
-            <input type="number" name="int_phone" class="int_phone">
+            <input type="number" name="int_phone" class="int_phone interviewer_details">
+            <p class="i-error"></p>
         </div>
         <a class='remove-added-interviewers'>
             <i class='fa fa-times'></i>
@@ -241,8 +244,8 @@ input.float_to_left{margin-top: 8.7px !important;}
 #add-more, #add-more-interviewers{
     color:#555;
     margin-top: 5px;
-    display: block;
-    text-align: right;
+    display: inline-block;
+    float: right;
 }
 #interview-location{
     width: 100%;
@@ -277,6 +280,11 @@ input.float_to_left{margin-top: 8.7px !important;}
 #rounds{
     max-height: 235px;
     overflow-y: scroll;
+}
+.i-error{
+    color: red;
+    margin: 0;
+    height: 20px;
 }
 ');
 $script = <<< JS
