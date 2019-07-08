@@ -207,8 +207,6 @@ class SchedularController extends Controller
                     'status' => 200,
                     'response' => $res
                 ];
-            }else{
-                print_r('There is an error');
             }
 //            $res = $this->findOrganizationInterviewLocations($req['application_id']);
 
@@ -288,8 +286,6 @@ class SchedularController extends Controller
                         if (!$interviewer_detail->save()) {
                             return false;
                         }
-                    }else{
-                        return false;
                     }
                 }
 
