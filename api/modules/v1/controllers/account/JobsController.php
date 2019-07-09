@@ -788,12 +788,12 @@ class JobsController extends ApiBaseController
                         $fieldsModel = new AnsweredQuestionnaireFields;
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
-                        $field_model->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
-                        $field_model->field_enc_id = $d['field_enc_id'];
-                        $field_model->field_option_enc_id = $option['option_enc_id'];
-                        $field_model->created_on = date('Y-m-d H:i:s');
-                        $field_model->created_by = $candidate->user_enc_id;
-                        if(!$field_model->save()){
+                        $fieldsModel->answered_questionnaire_enc_id = $answered_model->answered_questionnaire_enc_id;
+                        $fieldsModel->field_enc_id = $d['field_enc_id'];
+                        $fieldsModel->field_option_enc_id = $option['option_enc_id'];
+                        $fieldsModel->created_on = date('Y-m-d H:i:s');
+                        $fieldsModel->created_by = $candidate->user_enc_id;
+                        if(!$fieldsModel->save()){
                             return $this->response(500);
                         }
                     }

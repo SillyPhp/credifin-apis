@@ -188,7 +188,6 @@ class ReviewsController extends ApiBaseController
                 $follow = FollowedOrganizations::find()
                     ->select('followed')
                     ->where(['created_by' => $candidate->user_enc_id, 'organization_enc_id' => $org['organization_enc_id']])
-                    ->asArray()
                     ->one();
 
                 $hasReviewed = OrganizationReviews::find()
@@ -212,11 +211,9 @@ class ReviewsController extends ApiBaseController
 
             $data['org_detail'] = $org;
             $data['reviews'] = $reviews;
-            $data['follow'] = $follow;
+            $data['follow'] = $follow->followed;
             $data['hasReviewed'] = $hasReviewed;
-            if ($data['follow'] == null) {
-                $data['follow'] = $follow = [];
-            }
+
             $data['overall_rating'] = $stats;
 
             if (!empty($data)) {
@@ -501,7 +498,6 @@ class ReviewsController extends ApiBaseController
                 $follow = UnclaimedFollowedOrganizations::find()
                     ->select('followed')
                     ->where(['created_by' => $candidate->user_enc_id, 'organization_enc_id' => $unclaimed_org['organization_enc_id']])
-                    ->asArray()
                     ->one();
 
                 $hasReviewed = NewOrganizationReviews::find()
@@ -534,12 +530,10 @@ class ReviewsController extends ApiBaseController
 
             $data['org_detail'] = $org;
             $data['reviews'] = $emp_reviews;
-            $data['follow'] = $follow;
+            $data['follow'] = $follow->followed;
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
-            if ($data['follow'] == null) {
-                $data['follow'] = $follow = [];
-            }
+
             $data['overall_rating'] = $emp_stats;
             $data['student_overall_rating'] = $stats_students;
             $data['student_reviews'] = $reviews_students;

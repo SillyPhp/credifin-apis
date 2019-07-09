@@ -44,26 +44,81 @@ class QuizController extends Controller
             ])
             ->asArray()
             ->one();
-        if($temp['template'] == 1) {
+        if ($temp['template'] == 1) {
             $this->layout = 'quiz-main';
             return $this->render('cricket-quiz', [
                 'score' => $s,
                 'total' => $t,
                 'quiz' => $temp
             ]);
-        }elseif ($temp['template'] == 2){
+        } elseif ($temp['template'] == 2) {
             $this->layout = 'quiz2-main';
             return $this->render('cricket-quiz-2', [
                 'score' => $s,
                 'total' => $t,
                 'quiz' => $temp
             ]);
-        }elseif($temp['template'] == 3){
+        } elseif ($temp['template'] == 3) {
             $this->layout = 'quiz3-main';
             return $this->render('quiz-3', [
                 'score' => $s,
                 'total' => $t,
                 'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 4) {
+            $this->layout = 'quiz4-main';
+            return $this->render('quiz-4', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        }
+    }
+
+    public function actionAllQuiz($type = null)
+    {
+        if ($type == null) {
+            $quizes = Quiz::find()
+                ->alias('a')
+                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
+                ->joinWith(['quizQuestions b' => function ($x) {
+                    $x->onCondition([
+                        'b.is_deleted' => 0
+                    ]);
+                    $x->groupBy(['b.quiz_enc_id']);
+                }], false)
+                ->joinWith(['assignedCategoryEnc c' => function ($x) {
+                    $x->joinWith(['parentEnc d']);
+                }], false)
+                ->where([
+                    'a.is_deleted' => 0
+                ])
+                ->asArray()
+                ->all();
+            return $this->render('quiz-landing-page', [
+                'data' => $quizes
+            ]);
+        } else {
+            $quizes = Quiz::find()
+                ->alias('a')
+                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
+                ->joinWith(['quizQuestions b' => function ($x) {
+                    $x->onCondition([
+                        'b.is_deleted' => 0
+                    ]);
+                    $x->groupBy(['b.quiz_enc_id']);
+                }], false)
+                ->joinWith(['assignedCategoryEnc c' => function ($x) {
+                    $x->joinWith(['parentEnc d']);
+                }], false)
+                ->where([
+                    'a.is_deleted' => 0,
+                    'd.slug' => $type
+                ])
+                ->asArray()
+                ->all();
+            return $this->render('all-quiz', [
+                'data' => $quizes
             ]);
         }
     }
