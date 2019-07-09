@@ -7,10 +7,10 @@ use yii\base\Component;
 
 class ReferralComponent extends Component
 {
-    public function getReferralCode()
+    public function getReferralCode($queryConcatenator = "?")
     {
         if (!Yii::$app->user->isGuest) {
-            return ((!empty(Yii::$app->user->identity->referral->code)) ? '?ref=' . Yii::$app->user->identity->referral->code : false);
+            return ((!empty(Yii::$app->user->identity->referral->code)) ? $queryConcatenator . "ref=" . Yii::$app->user->identity->referral->code : false);
         }
         return false;
     }
