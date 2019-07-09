@@ -91,9 +91,14 @@ if ($quiz['background_image']) {
 $this->registerCss('
 body{
     background: url(' . $background_image . ');
-    background-size: 100% 100%;
+    background-size: cover;
     background-attachment: fixed;
     background-repeat: no-repeat;
+}
+@media screen and (max-width: 991px) {
+    body{
+        background-size:100% 100%;
+    }
 }
 ');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
