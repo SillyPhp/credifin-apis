@@ -77,6 +77,7 @@ use Yii;
  * @property Industries $industryEnc
  * @property OrganizationTypes $organizationTypeEnc
  * @property Referral[] $referrals
+ * @property Users[] $userEncs0
  * @property ReferralSignUpTracking[] $referralSignUpTrackings
  * @property Reviews[] $reviews
  * @property Roles[] $roles
@@ -361,6 +362,14 @@ class Organizations extends \yii\db\ActiveRecord
     public function getReferrals()
     {
         return $this->hasMany(Referral::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEncs0()
+    {
+        return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%referral}}', ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**

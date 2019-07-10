@@ -244,6 +244,7 @@ use Yii;
  * @property QuizQuestions[] $quizQuestions0
  * @property Referral[] $referrals
  * @property Referral[] $referrals0
+ * @property Organizations[] $organizationEncs0
  * @property ReferralSignUpTracking[] $referralSignUpTrackings
  * @property ReviewedApplications[] $reviewedApplications
  * @property ReviewedApplications[] $reviewedApplications0
@@ -296,7 +297,7 @@ use Yii;
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations0
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations1
- * @property UnclaimedOrganizations[] $organizationEncs0
+ * @property UnclaimedOrganizations[] $organizationEncs1
  * @property UnclaimedOrganizations[] $unclaimedOrganizations
  * @property UserAccessTokens[] $userAccessTokens
  * @property UserAchievements[] $userAchievements
@@ -1970,6 +1971,14 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationEncs0()
+    {
+        return $this->hasMany(Organizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%referral}}', ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getReferralSignUpTrackings()
     {
         return $this->hasMany(ReferralSignUpTracking::className(), ['sign_up_user_enc_id' => 'user_enc_id']);
@@ -2386,7 +2395,7 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationEncs0()
+    public function getOrganizationEncs1()
     {
         return $this->hasMany(UnclaimedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%unclaimed_followed_organizations}}', ['user_enc_id' => 'user_enc_id']);
     }
