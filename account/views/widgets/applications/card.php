@@ -78,7 +78,7 @@ if (!empty($total_applications)) {
                                 Applications
                             </div>
                             <div class="col-md-6 minus-15-pad j-grid"><a
-                                        href="<?= Url::to($applications[$next]["link"], $referral); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
+                                        href="<?= Url::to($applications[$next]["link"] . $referral); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
                             </div>
                         </div>
                     </div>
