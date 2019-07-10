@@ -4,6 +4,11 @@ namespace account\controllers;
 
 use account\models\applications\Applied;
 use common\models\ApplicationTypes;
+use common\models\InterviewCandidates;
+use common\models\InterviewDates;
+use common\models\InterviewOptions;
+use common\models\InterviewProcessFields;
+use common\models\ScheduledInterview;
 use common\models\UserCoachingTutorials;
 use common\models\WidgetTutorials;
 use Yii;
@@ -205,6 +210,56 @@ class DashboardController extends Controller
 
     public function actionCalendar(){
         return $this->render('test');
+    }
+
+    public function actionFixedInterview(){
+
+        $candidate = AppliedApplicationProcess::find()
+            ->alias('a')
+            ->select([])
+            ->innerJoinWith(['appliedApplicationEnc b'=>function($b){
+                $b->andWhere(['b.created_by'=>Yii::$app->user->identity->user_enc_id]);
+            }])
+            ->innerJoinWith(['fieldEnc c'=>function($c){
+                $c->innerJoinWith(['interviewOptions d']);
+            }])
+            ->where(['is_completed'=>1])
+            ->asArray()
+            ->all();
+
+        print_r($candidate);
+        die();
+
+    }
+
+    public function actionFlexibleInterview(){
+
+        $flexible_interview = InterviewCandidates::find()
+            ->alias('a')
+            ->select(['e.name job_title',
+                'f.name company_name',
+                '(CASE
+                    WHEN g.interview_mode = 1 THEN "online"
+                    WHEN g.interview_mode = 2 THEN "Inplace"
+                    END) as interview_type'
+                ])
+            ->joinWith(['appliedApplicationEnc b'=>function($b){
+                $b->andWhere(['b.created_by'=>Yii::$app->user->identity->user_enc_id]);
+                $b->joinWith(['applicationEnc c'=>function($c){
+                    $c->joinWith(['organizationEnc f']);
+                    $c->joinWith(['title d'=>function($d){
+                        $d->joinWith(['categoryEnc e']);
+                    }]);
+                }]);
+            }])
+            ->joinWith(['scheduledInterviewEnc g'],false)
+//            ->innerJoin(InterviewDates::tableName().'as g','g.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
+            ->where([])
+            ->asArray()
+            ->all();
+
+        print_r($flexible_interview);
+        die();
     }
 
 //    public function actionError(){

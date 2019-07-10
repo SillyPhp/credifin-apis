@@ -13,6 +13,8 @@ use Yii;
  * @property string $name
  * @property string $email
  * @property string $phone
+ *
+ * @property Interviewers $interviewerEnc
  */
 class InterviewerDetail extends \yii\db\ActiveRecord
 {
@@ -34,7 +36,17 @@ class InterviewerDetail extends \yii\db\ActiveRecord
             [['interviewer_detail_enc_id', 'interviewer_enc_id', 'name'], 'string', 'max' => 100],
             [['email'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
+            [['interviewer_detail_enc_id'], 'unique'],
+            [['interviewer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Interviewers::className(), 'targetAttribute' => ['interviewer_enc_id' => 'interviewer_enc_id']],
         ];
     }
 
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewerEnc()
+    {
+        return $this->hasOne(Interviewers::className(), ['interviewer_enc_id' => 'interviewer_enc_id']);
+    }
 }

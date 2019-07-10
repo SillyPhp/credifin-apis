@@ -18,6 +18,14 @@ use Yii;
  * @property string $last_updated_on
  * @property string $last_updated_by
  * @property int $status 0 as Inactive, 1 as Active
+ *
+ * @property InterviewCandidates[] $interviewCandidates
+ * @property InterviewOptions[] $interviewOptions
+ * @property Interviewers[] $interviewers
+ * @property EmployerApplications $applicationEnc
+ * @property InterviewTypes $scheduledInterviewTypeEnc
+ * @property Users $createdBy
+ * @property Users $lastUpdatedBy
  */
 class ScheduledInterview extends \yii\db\ActiveRecord
 {
@@ -39,7 +47,67 @@ class ScheduledInterview extends \yii\db\ActiveRecord
             [['interview_mode', 'status'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['scheduled_interview_enc_id', 'scheduled_interview_type_enc_id', 'application_enc_id', 'interview_location_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['scheduled_interview_enc_id'], 'unique'],
+            [['application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EmployerApplications::className(), 'targetAttribute' => ['application_enc_id' => 'application_enc_id']],
+            [['scheduled_interview_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => InterviewTypes::className(), 'targetAttribute' => ['scheduled_interview_type_enc_id' => 'interview_type_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewCandidates()
+    {
+        return $this->hasMany(InterviewCandidates::className(), ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewOptions()
+    {
+        return $this->hasMany(InterviewOptions::className(), ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewers()
+    {
+        return $this->hasMany(Interviewers::className(), ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationEnc()
+    {
+        return $this->hasOne(EmployerApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScheduledInterviewTypeEnc()
+    {
+        return $this->hasOne(InterviewTypes::className(), ['interview_type_enc_id' => 'scheduled_interview_type_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
 }

@@ -47,7 +47,7 @@ class SchedularController extends Controller
         return EmployerApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id', 'a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'CONCAT(c.name, " - ", d.name) application_name'])
-            ->innerJoinWith(['applicationInterviewQuestionnaires z'])
+//            ->innerJoinWith(['applicationInterviewQuestionnaires z'])
             ->innerJoinWith(['appliedApplications t'])
             ->joinWith(['title b' => function ($x) {
                 $x->joinWith(['categoryEnc c']);
@@ -271,7 +271,7 @@ class SchedularController extends Controller
 
                     $interviewer = new Interviewers();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $interviewer->interviewers_enc_id = $utilitiesModel->encrypt();
+                    $interviewer->interviewer_enc_id = $utilitiesModel->encrypt();
                     $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
 
                     if ($interviewer->save()) {
@@ -279,7 +279,7 @@ class SchedularController extends Controller
                         $interviewer_detail = new InterviewerDetail();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
-                        $interviewer_detail->interviewer_enc_id = $interviewer['interviewers_enc_id'];
+                        $interviewer_detail->interviewer_enc_id = $interviewer['interviewer_enc_id'];
                         $interviewer_detail->name = $i['name'];
                         $interviewer_detail->email = $i['email'];
                         $interviewer_detail->phone = $i['phone'];
@@ -297,7 +297,7 @@ class SchedularController extends Controller
 
                 $interview_dates = new InterviewDates();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $interview_dates->interview_dates_enc_id = $utilitiesModel->encrypt();
+                $interview_dates->interview_date_enc_id = $utilitiesModel->encrypt();
                 $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
                 $interview_dates->interview_date = $date;
                 if ($interview_dates->save()) {
@@ -307,7 +307,7 @@ class SchedularController extends Controller
                         $interview_date_timing = new InterviewDateTimings();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
-                        $interview_date_timing->interview_dates_enc_id = $interview_dates['interview_dates_enc_id'];
+                        $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
                         $interview_date_timing->from = $t['from'];
                         $interview_date_timing->to = $t['to'];
                         if (!$interview_date_timing->save()) {

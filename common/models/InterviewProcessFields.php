@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%interview_process_fields}}".
  *
@@ -28,25 +30,28 @@ namespace common\models;
  *
  * @property ApplicationInterviewQuestionnaire[] $applicationInterviewQuestionnaires
  * @property AppliedApplicationProcess[] $appliedApplicationProcesses
+ * @property InterviewOptions[] $interviewOptions
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class InterviewProcessFields extends \yii\db\ActiveRecord {
-
+class InterviewProcessFields extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%interview_process_fields}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['field_enc_id', 'field_name', 'field_label', 'interview_process_enc_id', 'created_on', 'created_by'], 'required'],
+            [['field_enc_id', 'field_name', 'field_label', 'interview_process_enc_id', 'created_by'], 'required'],
             [['field_type'], 'string'],
             [['sequence', 'is_required', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
@@ -59,40 +64,52 @@ class InterviewProcessFields extends \yii\db\ActiveRecord {
         ];
     }
 
+
     /**
-     *
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationInterviewQuestionnaires() {
+    public function getApplicationInterviewQuestionnaires()
+    {
         return $this->hasMany(ApplicationInterviewQuestionnaire::className(), ['field_enc_id' => 'field_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAppliedApplicationProcesses() {
+    public function getAppliedApplicationProcesses()
+    {
         return $this->hasMany(AppliedApplicationProcess::className(), ['field_enc_id' => 'field_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getInterviewProcessEnc() {
+    public function getInterviewOptions()
+    {
+        return $this->hasMany(InterviewOptions::className(), ['process_field_enc_id' => 'field_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewProcessEnc()
+    {
         return $this->hasOne(OrganizationInterviewProcess::className(), ['interview_process_enc_id' => 'interview_process_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
-
 }

@@ -33,7 +33,7 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
-                    <input type="hidden" id="hdEventID" value="0" />
+                    <input type="hidden" id="hdEventID" value="0"/>
                     <div class="form-group">
                         <label>Subject</label>
                         <input type="text" id="txtSubject" class="form-control"/>
@@ -41,21 +41,16 @@
                     <div class="form-group">
                         <label>Start</label>
                         <div class="input-group date" id="dtp1">
-                            <input type="text" id="txtStart" class="form-control" />
+                            <input type="text" id="txtStart" class="form-control"/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day event</label>
-                        </div>
-                    </div>
                     <div class="form-group" id="divEndDate" style="display:none">
                         <label>End</label>
                         <div class="input-group date" id="dtp2">
-                            <input type="text" id="txtEnd" class="form-control" />
+                            <input type="text" id="txtEnd" class="form-control"/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -94,7 +89,7 @@ $this->registerCss('
   }
 ');
 $script = <<< JS
-
+var events= null;
 var events = [
     {
         title: "Title 1",
@@ -112,6 +107,31 @@ var events = [
     }
 ];
 var selectedEvent = null;
+// FetchEventAndRenderCalendar();
+function FetchEventAndRenderCalendar(){
+    events = [];
+    $.ajax({
+        type: 'GET',
+        url: 'account/dashboard/get-events',
+        async: false,
+        success: function(data) {
+            $.each(data, function(i,v) {
+                events.push({
+                    eventID: v.EventID,
+                    title: v.Subject,
+                    description: v.Description,
+                    start: moment(v.Start),
+                    end: moment(v.End),
+                    color: v.ThemeColor
+                })
+            });
+            GenerateCalendar(events);
+        },
+        error: function() {
+            alert('failed');
+        }
+    })
+}
 
 GenerateCalendar(events);
 
@@ -167,8 +187,100 @@ function GenerateCalendar(events){
     })
 }
 
+$('#btnEdit').click(function() {
+    openAddEditForm();
+});
 
+$('#btnDelete').click(function() {
+  if(selectedEvent != null && confirm('Are you sure?')){
+      console.log('Delete Clicked');
+      $('#myModal').modal('hide');
+      // $.ajax({
+      //   type: 'POST',
+      //   url: '/account/dashboard/delete-event',
+      //   data: {
+      //       'eventID' : selectedEvent.eventID
+      //   },
+      //   success: function(data) {
+      //       if(data.status){
+      //          FetchEventAndRenderCalendar(); 
+      //          $('#myModal').modal('hide');
+      //       }
+      //   },
+      //   error: function() {
+      //       alert('failed');
+      //   }
+      // })
+  }
+})
 
+$('#dtp1, #dtp2').datetimepicker({
+    format: 'DD/MM/YYYY HH:mm A'
+});
+
+function openAddEditForm(){
+    if(selectedEvent != null){
+        $('#hdEventID').val(selectedEvent.eventID);
+        $('#txtSubject').val(selectedEvent.title);
+        $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+        $('#txtEnd').val(selectedEvent.end.format('DD/MM/YYYY HH:mm A'));
+        $('#txtDescription').val(selectedEvent.description);
+        $('#ddThemeColor').val(selectedEvent.color);
+    }
+    $('#myModal').modal('hide');
+    $('#myModalSave').modal();
+}
+
+$('#btnSave').click(function() {
+    if ($('#txtSubject').val().trim() == "") {
+        alert('Subject required');
+        return;
+    }
+    if($('#txtStart').val().trim() == "") {
+        alert('Start date required');
+        return;
+    }
+    if ($('#txtEnd').val().trim() == "") {
+        alert('End date required');
+        return;
+    }
+    else {
+        var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
+        var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+        if (startDate > endDate) {
+            alert('Invalid end date');
+            return;
+        }
+    }
+    var data = {
+        EventID: $('#hdEventID').val(),
+        Subject: $('#txtSubject').val().trim(),
+        Start: $('#txtStart').val().trim(),
+        End: $('#txtEnd').val().trim(),
+        Description: $('#txtDescription').val(),
+        ThemeColor: $('#ddThemeColor').val(),
+    };
+    SaveEvent(data);
+})
+
+function SaveEvent(data){
+    console.log(data);
+    $('#myModalSave').modal('hide');
+    // $.ajax({
+    //     type: 'POST',
+    //     url: '/account/home/save-event',
+    //     data: data,
+    //     success: function(data) {
+    //         if(data.status){
+    //             FetchEventAndRenderCalendar();
+    //             $('#myModalSave').modal('hide');
+    //         }
+    //     },
+    //     error: function() {
+    //         alert('failed');
+    //     }
+    // })
+}
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css');

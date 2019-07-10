@@ -9,10 +9,12 @@ use Yii;
  *
  * @property int $id
  * @property string $interview_date_timing_enc_id
- * @property string $interview_dates_enc_id
+ * @property string $interview_date_enc_id
  * @property string $from
  * @property string $to
  * @property int $is_deleted 0 as Deleted, 1 as Active
+ *
+ * @property InterviewDates $interviewDateEnc
  */
 class InterviewDateTimings extends \yii\db\ActiveRecord
 {
@@ -30,11 +32,20 @@ class InterviewDateTimings extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['interview_date_timing_enc_id', 'interview_dates_enc_id', 'from', 'to'], 'required'],
+            [['interview_date_timing_enc_id', 'interview_date_enc_id', 'from', 'to'], 'required'],
             [['from', 'to'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['interview_date_timing_enc_id', 'interview_dates_enc_id'], 'string', 'max' => 100],
+            [['interview_date_timing_enc_id', 'interview_date_enc_id'], 'string', 'max' => 100],
+            [['interview_date_timing_enc_id'], 'unique'],
+            [['interview_date_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => InterviewDates::className(), 'targetAttribute' => ['interview_date_enc_id' => 'interview_date_enc_id']],
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewDateEnc()
+    {
+        return $this->hasOne(InterviewDates::className(), ['interview_date_enc_id' => 'interview_date_enc_id']);
+    }
 }
