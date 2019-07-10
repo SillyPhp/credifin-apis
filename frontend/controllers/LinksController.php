@@ -46,7 +46,9 @@ ORDER BY
             foreach ($users as $user) {
                 $referralModel = new \common\models\crud\Referral();
                 $referralModel->user_enc_id = $referralModel->created_by = $user["user_enc_id"];
-                $referralModel->create();
+                if(!$referralModel->create()) {
+                    print_r($referralModel->getErrors());
+                }
             }
         }
 
