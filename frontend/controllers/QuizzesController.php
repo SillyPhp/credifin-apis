@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\AssignedCategories;
 use common\models\Quiz;
 use Yii;
 use yii\web\Controller;
@@ -11,6 +12,15 @@ class QuizzesController extends Controller
 {
     public function actionIndex($type = null){
         if ($type == null) {
+            $categories = AssignedCategories::find()
+                ->alias('a')
+                ->select(['a.category_enc_id','b.name','b.slug'])
+                ->joinWith(['categoryEnc b'],false)
+                ->where(['a.assigned_to'=> 'Quiz','a.status' =>'Approved', 'a.parent_enc_id'=> NULL, 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+            print_r($categories);
+            exit();
             $quizes = Quiz::find()
                 ->alias('a')
                 ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
