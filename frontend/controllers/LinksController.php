@@ -35,8 +35,8 @@ class LinksController extends Controller
     {
         $connection = Yii::$app->getDb();
         $command1 = $connection->createCommand("
-            SELECT DISTINCT `id`, `user_enc_id` FROM `lJCWPnNNVy3d95ppLp7M_users` WHERE `user_enc_id` NOT IN
-(SELECT DISTINCT `a`.`user_enc_id` FROM `lJCWPnNNVy3d95ppLp7M_referral` `a` INNER JOIN `lJCWPnNNVy3d95ppLp7M_users` `b` ON `b`.`user_enc_id` = `a`.`user_enc_id`)
+            SELECT DISTINCT `id`, `user_enc_id` FROM " . \common\models\Users::tableName() . " WHERE `user_enc_id` NOT IN
+(SELECT DISTINCT `a`.`user_enc_id` FROM " . \common\models\Referral::tableName() . " `a` INNER JOIN " . \common\models\Users::tableName() . " `b` ON `b`.`user_enc_id` = `a`.`user_enc_id`)
 ORDER BY
 `id`
         ");
@@ -46,15 +46,15 @@ ORDER BY
             foreach ($users as $user) {
                 $referralModel = new \common\models\crud\Referral();
                 $referralModel->user_enc_id = $referralModel->created_by = $user["user_enc_id"];
-                if(!$referralModel->create()) {
+                if (!$referralModel->create()) {
                     print_r($referralModel->getErrors());
                 }
             }
         }
 
         $command2 = $connection->createCommand("
-            SELECT DISTINCT `id`, `organization_enc_id`, `created_by` FROM `lJCWPnNNVy3d95ppLp7M_organizations` WHERE `organization_enc_id` NOT IN
-(SELECT DISTINCT `a`.`organization_enc_id` FROM `lJCWPnNNVy3d95ppLp7M_referral` `a` INNER JOIN `lJCWPnNNVy3d95ppLp7M_users` `b` ON `b`.`organization_enc_id` = `a`.`organization_enc_id`)
+            SELECT DISTINCT `id`, `organization_enc_id`, `created_by` FROM " . \common\models\Organizations::tableName() . " WHERE `organization_enc_id` NOT IN
+(SELECT DISTINCT `a`.`organization_enc_id` FROM " . \common\models\Referral::tableName() . " `a` INNER JOIN " . \common\models\Organizations::tableName() . " `b` ON `b`.`organization_enc_id` = `a`.`organization_enc_id`)
 ORDER BY
 `id`
         ");
@@ -66,7 +66,7 @@ ORDER BY
                 $referralModel->created_by = $organization["created_by"];
                 $referralModel->is_organization = true;
                 $referralModel->organization_enc_id = $organization["organization_enc_id"];
-                if(!$referralModel->create()) {
+                if (!$referralModel->create()) {
                     print_r($referralModel->getErrors());
                 }
             }
