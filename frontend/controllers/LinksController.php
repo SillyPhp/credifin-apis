@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\Referral;
 use Yii;
 use yii\web\Controller;
 use common\models\SharingLinks;
