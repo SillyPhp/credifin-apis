@@ -2,15 +2,19 @@
 
 namespace api\modules\v1\controllers;
 
+
 use Yii;
 use api\modules\v1\models\IndividualSignup;
 use api\modules\v1\models\LoginForm;
 use api\modules\v1\models\Clients;
 use common\models\RandomColors;
+use common\models\UserTypes;
 
-class OauthController extends ApiBaseController{
+class OauthController extends ApiBaseController
+{
 
-    public function behaviors(){
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
@@ -25,7 +29,7 @@ class OauthController extends ApiBaseController{
 
     /**
      * This is the signup endpoint
-     * @var http://www.aditya.eygb.me/api/v1/oauth/signup
+     * @var https://www.empoweryouth.com/api/v1/oauth/signup
      * @param first_name
      * @param last_name
      * @param email
@@ -35,11 +39,18 @@ class OauthController extends ApiBaseController{
      * @param username
      * @return Returns access token and auth key
      */
-    public function actionSignup(){
+    public function actionSignup()
+    {
         $model = new IndividualSignup();
-        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
-            if($model->validate()) {
+        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
+            if ($model->validate()) {
+                $user_type = UserTypes::findOne([
+                    'user_type' => $this->user_type,
+                ]);
 
+                if (!$user_type) {
+                    return $this->response(204);
+                }
                 $user = new Clients();
                 $user->username = $model->username;
                 $user->first_name = $model->first_name;
@@ -47,7 +58,7 @@ class OauthController extends ApiBaseController{
                 $user->phone = $model->phone;
                 $user->email = $model->email;
                 $user->user_enc_id = time() . mt_rand(10, 99);
-                $user->user_type_enc_id = 'VkRqU1NjSGZNOWQzZnV2NDB0ckY5Zz09';
+                $user->user_type_enc_id = $user_type->user_type_enc_id;
                 $user->initials_color = RandomColors::one();
                 $user->access_token = \Yii::$app->security->generateRandomString(32);
                 $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
@@ -56,6 +67,9 @@ class OauthController extends ApiBaseController{
                 $user->setPassword($model->password);
                 $user->generateAuthKey();
                 if ($user->save()) {
+                    $referralModel = new \common\models\crud\Referral();
+                    $referralModel->user_enc_id = $referralModel->created_by = $user->user_enc_id;
+                    $referralModel->create();
                     $data = [
                         'user_id' => $user->user_enc_id,
                         'username' => $user->username,
@@ -69,7 +83,6 @@ class OauthController extends ApiBaseController{
                     ];
                     return $this->response(200, $data);
                 } else {
-//                    return $user->getErrors();
                     return $this->response(204);
                 }
             }
@@ -80,39 +93,39 @@ class OauthController extends ApiBaseController{
 
     /**
      * This is the login endpoint
-     * @var http://www.aditya.eygb.me/api/v1/oauth/login
+     * @var https://www.empoweryouth.com/api/v1/oauth/login
      * @param username It can be email too
      * @param password
      * @return Returns access token only
      */
-    public function actionLogin(){
+    public function actionLogin()
+    {
         $model = new LoginForm();
 
         $username = \Yii::$app->request->post('username');
         $password = \Yii::$app->request->post('password');
-        if(!isset($password) && isset($username)){
+        if (!isset($password) && isset($username)) {
             $user = Clients::findOne([
                 'username' => $username,
             ]);
-            if(!$user){
+            if (!$user) {
                 $user = Clients::findOne([
                     'email' => $username,
                 ]);
             }
-            if($user > 0) {
+            if ($user > 0) {
                 return $this->response(103);
-            }else{
+            } else {
                 return $this->response(201);
             }
         }
 
-        if($model->load(\Yii::$app->getRequest()->getBodyParams(), '')){
-//            return $model->login();
-            if($model->login()) {
+        if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
+            if ($model->login()) {
                 $user = Clients::findOne([
                     'username' => $model->username,
                 ]);
-                if(!$user){
+                if (!$user) {
                     $user = Clients::findOne([
                         'email' => $model->username,
                     ]);
@@ -143,16 +156,17 @@ class OauthController extends ApiBaseController{
 
     /**
      * This is the refresh token endpoint
-     * @var http://www.aditya.eygb.me/api/v1/oauth/refresh-token
+     * @var https://www.empoweryouth.com/api/v1/oauth/refresh-token
      * @param auth_key
      * @return Returns access token
      */
-    public function actionRefreshToken(){
-        if(\Yii::$app->request->post('auth_key')){
+    public function actionRefreshToken()
+    {
+        if (\Yii::$app->request->post('auth_key')) {
             $user = Clients::findOne([
                 'auth_key' => \Yii::$app->request->post('auth_key')
             ]);
-            if($user) {
+            if ($user) {
                 $user->access_token = \Yii::$app->security->generateRandomString();
                 $user->token_expiration_time = date('Y-m-d H:i:s', time());
                 if ($user->save()) {
@@ -164,7 +178,7 @@ class OauthController extends ApiBaseController{
                 } else {
                     return $this->response(102);
                 }
-            }else{
+            } else {
                 return $this->response(201);
             }
         }
