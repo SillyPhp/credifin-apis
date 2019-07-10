@@ -18,48 +18,65 @@ $this->params['header_dark'] = false;
                     <div class="box1">
                         <div class="heading-text-1">You're Welcome To Challenge Yourself</div>
                         <div class="inner-text">Take a quiz from different categories to test your knowledge</div>
-                        <div class="btnn"><A href="#">View All</A></div>
+<!--                        <div class="btnn"><A href="#">View All</A></div>-->
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="row mar-top">
-                        <div class="col-md-6 col-sm-6 col-xs-6 sett pl-1">
-                            <div class="edu mb-15 pull-right">
-                                <a href="#">
-                                    <div class="imag">
-                                        <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png');?>">
-                                    </div>
-                                    <div class="txt">education</div>
-                                </a>
+                        <?php
+                        $next = 0;
+                        for ($i=0; $i<2; $i++) {
+                            ?>
+                            <div class="col-md-6 col-sm-6 col-xs-6 top-categories pr-0">
+                                <?php
+                                $d=0;
+                                for ($j = 0; $j < 2; $j++) {
+                                ?>
+                                <div class="edu mb-15 top-categories-list">
+                                    <a href="<?= Url::to('/quizzes?type=' . $data[$next]['category_name']); ?>">
+                                        <div class="imag">
+                                            <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png'); ?>">
+                                        </div>
+                                        <div class="txt"><?= $data[$next]['category_name'];?></div>
+                                    </a>
+                                </div>
+<!--                                <div class="edu mb-15 pull-right">-->
+<!--                                    <a href="#">-->
+<!--                                        <div class="imag">-->
+<!--                                            <img src="--><?//= Url::to('/assets/themes/ey/images/quiz/NGO.png'); ?><!--">-->
+<!--                                        </div>-->
+<!--                                        <div class="txt">ngo</div>-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <?php
+                            $next++;
+//                            if ($d == 4) break;
+                            }
+                            ?>
                             </div>
-                            <div class="edu mb-15 pull-right">
-                                <a href="#">
-                                    <div class="imag">
-                                        <img src="<?= Url::to('/assets/themes/ey/images/quiz/NGO.png');?>">
-                                    </div>
-                                    <div class="txt">ngo</div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6 mt-5 pr-1">
-                            <div class="edu mt-15">
-                                <a href="#">
-                                    <div class="imag">
-                                        <img src="<?= Url::to('/assets/themes/ey/images/quiz/film.png');?>">
-                                    </div>
-                                    <div class="txt">movie</div>
-                                </a>
-                            </div>
-                            <div class="edu mt-15">
-                                <a href="#">
-                                    <div class="imag">
-                                        <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png');?>">
-                                    </div>
-                                    <div class="txt">education</div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                            <?php
+                        }
+                            ?>
+<!--                        <div class="col-md-6 col-sm-6 col-xs-6 top-categories">-->
+<!--                            <div class="edu mt-15">-->
+<!--                                <a href="#">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="--><?//= Url::to('/assets/themes/ey/images/quiz/film.png');?><!--">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">movie</div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="edu mt-15">-->
+<!--                                <a href="#">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="--><?//= Url::to('/assets/themes/ey/images/quiz/education.png');?><!--">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">education</div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
                 </div>
             </div>
         </div>
@@ -177,6 +194,12 @@ $this->params['header_dark'] = false;
 
 <?php
 $this->registerCss('
+.top-categories:nth-child(2){
+    margin-top:5px;
+}
+.top-categories:nth-child(1) .top-categories-list{
+    float:right;
+}
 .quiz-header{
      background:url(' . Url::to('@eyAssets/images/pages/quiz/quiz-header1.png') . ');
      min-height:450px;
