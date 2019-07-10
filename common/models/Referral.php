@@ -45,6 +45,7 @@ class Referral extends \yii\db\ActiveRecord
             [['referral_enc_id'], 'unique'],
             [['code'], 'unique'],
             [['referral_link'], 'unique'],
+            [['user_enc_id', 'organization_enc_id'], 'unique', 'targetAttribute' => ['user_enc_id', 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],

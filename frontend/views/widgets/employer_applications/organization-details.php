@@ -24,7 +24,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     <div class="job-head-info">
         <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
         <div class="organization-details">
-<!--            <h4>Company Detail</h4>-->
             <?php if ($website): ?>
                 <p><i class="fas fa-unlink"></i><?= $website; ?></p>
             <?php endif; ?>
@@ -36,15 +35,16 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
                         class="fas fa-paper-plane"></i>Login to apply</a>
             <div class="sub-actions">
-                 <?php
-        if ($type == 'Internship'): ?>
-                <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
-                    Compare Internship</a>
-        <?php elseif ($type == 'Job'): ?>
-            <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-               class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
-                Compare Job</a>
-        <?php endif; ?>
+                <?php
+                if ($type == 'Internship'): ?>
+                    <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                       class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                        Compare Internship</a>
+                <?php elseif ($type == 'Job'): ?>
+                    <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                       class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                        Compare Job</a>
+                <?php endif; ?>
             </div>
         <?php else: ?>
             <?php if ($applied): ?>
@@ -52,7 +52,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
-                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Internship</a>
 
                     <?php elseif ($type == 'Job'): ?>
@@ -70,12 +71,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                         if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                             ?>
-                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                            <a href="#"
+                               class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
                                         class="far fa-heart hvr-icon"></i>Shortlisted</a>
                             <?php
                         } else {
                             ?>
-                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                            <a href="#"
+                               class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
                                         class="far fa-heart hvr-icon"></i>Shortlist</a>
                             <?php
                         }
@@ -83,7 +86,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     ?>
                     <?php
                     if ($type == 'Internship'): ?>
-                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Internship</a>
 
                     <?php elseif ($type == 'Job'): ?>
@@ -94,7 +98,6 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 </div>
             <?php endif; ?>
         <?php endif; ?>
-
         <?php
         if ($type == 'Internship'): ?>
             <a href="<?= Url::to('/internships/list?company=' . $org_name); ?>" title="" class="view-all-a">View all
@@ -108,10 +111,11 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <h3 class="text-white">Share</h3>
         <div class="buttons">
             <?php
+            $referral = Yii::$app->referral->getReferralCode();
             if ($type == 'Internship') {
-                $link = Url::to('internship/' . $application_slug, true);
+                $link = Url::to('internship/' . $application_slug . $referral, 'https');
             } else if ($type == 'Job') {
-                $link = Url::to('job/' . $application_slug, true);
+                $link = Url::to('job/' . $application_slug . $referral, 'https');
             }
             ?>
             <a href="#"
