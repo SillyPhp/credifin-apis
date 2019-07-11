@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 $this->params['header_dark'] = false;
-//print_r($data);
+//print_r($quiz);
 //exit();
 ?>
     <section class="bg-imgg">
@@ -32,11 +32,11 @@ $this->params['header_dark'] = false;
                                 for ($j = 0; $j < 2; $j++) {
                                     ?>
                                     <div class="edu mb-15 top-categories-list">
-                                        <a href="<?= Url::to('/quizzes?type=' . $data[$next]['category_name']); ?>">
+                                        <a href="<?= Url::to('/quizzes?type=' . $data[$next]['name']); ?>">
                                             <div class="imag">
                                                 <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png'); ?>">
                                             </div>
-                                            <div class="txt"><?= $data[$next]['category_name']; ?></div>
+                                            <div class="txt"><?= $data[$next]['name']; ?></div>
                                         </a>
                                     </div>
                                     <?php
@@ -72,12 +72,12 @@ $this->params['header_dark'] = false;
                         foreach ($data as $d) {
                             ?>
                             <div class="col-md-2 col-sm-4 col-xs-6 pr-0">
-                                <a href="<?= Url::to('/quizzes?type=' . $d['category_name']); ?>">
+                                <a href="<?= Url::to('/quizzes?type=' . $d['name']); ?>">
                                     <div class="newset">
                                         <div class="imag">
                                             <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png'); ?>">
                                         </div>
-                                        <div class="txt"><?= $d['category_name']; ?></div>
+                                        <div class="txt"><?= $d['name']; ?></div>
                                     </div>
                                 </a>
                             </div>
@@ -144,21 +144,28 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3">
-                    <div class="quiz-box">
-                        <div class="quiz-icon">
-                            <img src="<?= Url::to('/assets/themes/ey/images/quiz/yuvi-quiz.png') ?>">
-                        </div>
-                        <div class="quiz-title">Yuvraj singh
-                        </div>
-                        <div class="quiz-ques">
-                            Total Questions :12
-                        </div>
-                        <div class="take-quiz">
-                            <a href="">Take Quiz</a>
-                        </div>
+                <?php
+                foreach ($quiz as $q) {
+                    ?>
+                    <div class="col-md-3">
+                        <a href="<?= Url::to($q['slug']); ?>" class="quiz-box">
+                            <div class="quiz-icon">
+                                <img src="<?= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $q['sharing_image_location'] . "/" . $q['sharing_image'] ?>">
+                            </div>
+                            <div class="quiz-title">
+                                <?= $q['name']; ?>
+                            </div>
+                            <div class="quiz-ques">
+                                Total Questions : <?= $q['cnt']; ?>
+                            </div>
+                            <div class="take-quiz">
+                                <span>Take Quiz</span>
+                            </div>
+                        </a>
                     </div>
-                </div>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </section>
@@ -181,7 +188,9 @@ $this->registerCss('
 .quiz-box{
     border:1px solid #eee;  
     text-align: center;
-    border-radius: 10px; 
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: block;
 }
 .quiz-box:hover{
     box-shadow:0 0 8px rgba(0,0,0,.3);
@@ -193,7 +202,7 @@ $this->registerCss('
 }
 .quiz-icon{
     width:100%;
-    heigth:100%;
+    height:150px;
     overflow:hidden;
      border-radius:5px 5px 0 0; 
     position:relative;  
@@ -207,15 +216,21 @@ $this->registerCss('
     opacity: 1;
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     transition: .5s ease;
     backface-visibility: hidden;
 }
 .quiz-title{
-    font-size:15px;
-    font-weight:bold;
+    font-size: 15px;
+    font-weight: bold;
     padding-top: 10px;
-    font-family:lora;
+    font-family: lora;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 60px;
 }
 .quiz-ques{
     line-height: 13px;
@@ -226,13 +241,13 @@ $this->registerCss('
     overflow: hidden;
     padding: 20px 0 6px 0;
 }
-.take-quiz a{
+.take-quiz span{
     border:1px solid #eee;
     padding: 8px 13px;
     border-radius:5px 5px 0 0;
     font-size:13px;    
 }
-.take-quiz a:hover{
+.take-quiz span:hover, .quiz-box:hover .take-quiz span{
     color:#fff;
     background:#00a0e3;
     border-color:#00a0e3;
