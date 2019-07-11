@@ -237,11 +237,13 @@ class DashboardController extends Controller
         $flexible_interview = InterviewCandidates::find()
             ->alias('a')
             ->select(['e.name job_title',
+                'a.scheduled_interview_enc_id',
                 'f.name company_name',
                 '(CASE
                     WHEN g.interview_mode = 1 THEN "online"
-                    WHEN g.interview_mode = 2 THEN "Inplace"
-                    END) as interview_type'
+                    WHEN g.interview_mode = 2 THEN j.name
+                    END) as interview_at',
+
                 ])
             ->joinWith(['appliedApplicationEnc b'=>function($b){
                 $b->andWhere(['b.created_by'=>Yii::$app->user->identity->user_enc_id]);
@@ -251,12 +253,25 @@ class DashboardController extends Controller
                         $d->joinWith(['categoryEnc e']);
                     }]);
                 }]);
-            }])
-            ->joinWith(['scheduledInterviewEnc g'],false)
-//            ->innerJoin(InterviewDates::tableName().'as g','g.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
+            }],false)
+            ->joinWith(['scheduledInterviewEnc g'=>function($g){
+                $g->joinWith(['interviewLocationEnc h'=>function($h){
+                    $h->joinWith(['locationEnc i'=>function($i){
+                        $i->joinWith(['cityEnc j']);
+                    }]);
+                }]);
+            }],false)
             ->where([])
             ->asArray()
             ->all();
+
+        $interview_dates = InterviewDates::find()
+            ->alias('a')
+            ->select(['a.interview_date'])
+            ->where(['a.scheduled_interview_enc_id'=>$flexible_interview[0]['scheduled_interview_enc_id']])
+            ->asArray()
+            ->all();
+        print_r($interview_dates);
 
         print_r($flexible_interview);
         die();

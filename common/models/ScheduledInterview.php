@@ -26,6 +26,7 @@ use Yii;
  * @property InterviewTypes $scheduledInterviewTypeEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property ApplicationInterviewLocations $interviewLocationEnc
  */
 class ScheduledInterview extends \yii\db\ActiveRecord
 {
@@ -52,8 +53,10 @@ class ScheduledInterview extends \yii\db\ActiveRecord
             [['scheduled_interview_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => InterviewTypes::className(), 'targetAttribute' => ['scheduled_interview_type_enc_id' => 'interview_type_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['interview_location_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ApplicationInterviewLocations::className(), 'targetAttribute' => ['interview_location_enc_id' => 'interview_location_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -109,5 +112,13 @@ class ScheduledInterview extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewLocationEnc()
+    {
+        return $this->hasOne(ApplicationInterviewLocations::className(), ['interview_location_enc_id' => 'interview_location_enc_id']);
     }
 }
