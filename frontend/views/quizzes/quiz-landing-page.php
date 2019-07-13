@@ -4,8 +4,6 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 $this->params['header_dark'] = false;
-//print_r($quiz);
-//exit();
 ?>
     <section class="bg-imgg">
 
@@ -18,7 +16,6 @@ $this->params['header_dark'] = false;
                     <div class="box1">
                         <div class="heading-text-1">You're Welcome To Challenge Yourself</div>
                         <div class="inner-text">Take a quiz from different categories to test your knowledge</div>
-                        <!--                        <div class="btnn"><A href="#">View All</A></div>-->
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
@@ -32,9 +29,9 @@ $this->params['header_dark'] = false;
                                 for ($j = 0; $j < 2; $j++) {
                                     ?>
                                     <div class="edu mb-15 top-categories-list">
-                                        <a href="<?= Url::to('/quizzes?type=' . $data[$next]['name']); ?>">
+                                        <a href="<?= Url::to('/quizzes?type=' . $data[$next]['slug']); ?>">
                                             <div class="imag">
-                                                <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png'); ?>">
+                                                <img src="<?= $data[$next]['icon']; ?>">
                                             </div>
                                             <div class="txt"><?= $data[$next]['name']; ?></div>
                                         </a>
@@ -72,10 +69,10 @@ $this->params['header_dark'] = false;
                         foreach ($data as $d) {
                             ?>
                             <div class="col-md-2 col-sm-4 col-xs-6 pr-0">
-                                <a href="<?= Url::to('/quizzes?type=' . $d['name']); ?>">
+                                <a href="<?= Url::to('/quizzes?type=' . $d['slug']); ?>">
                                     <div class="newset">
                                         <div class="imag">
-                                            <img src="<?= Url::to('/assets/themes/ey/images/quiz/education.png'); ?>">
+                                            <img src="<?= $d['icon']; ?>">
                                         </div>
                                         <div class="txt"><?= $d['name']; ?></div>
                                     </div>
@@ -94,52 +91,6 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Popular Quiz</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 pb-15">
-                    <div class="q-box">
-                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('/assets/themes/ey/images/quiz/vol_1.png') ?>"
-                                 alt="World Cup 2019 Quiz"
-                                 class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 pb-15">
-                    <div class="q-box">
-                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('/assets/themes/ey/images/quiz/quiz-vol2.jpg') ?>"
-                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
-                            <img src="<?= Url::to('/assets/themes/ey/images/quiz/yuvi-quiz.png') ?>"
-                                 alt="Yuvraj Singh Quiz" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
                     <div class="heading-style">All quiz</div>
                 </div>
             </div>
@@ -148,7 +99,7 @@ $this->params['header_dark'] = false;
                 foreach ($quiz as $q) {
                     ?>
                     <div class="col-md-3">
-                        <a href="<?= Url::to($q['slug']); ?>" class="quiz-box">
+                        <a href="<?= Url::to($q['slug']); ?>" title="<?= $q['name']; ?>" class="quiz-box">
                             <div class="quiz-icon">
                                 <img src="<?= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $q['sharing_image_location'] . "/" . $q['sharing_image'] ?>">
                             </div>
@@ -252,50 +203,6 @@ $this->registerCss('
     background:#00a0e3;
     border-color:#00a0e3;
     transition:.3s ease;
-}
-.q-box{
-    text-align:center;
-    position:relative;   
-    border-radius:10px;
-    padding-bottom:35px;
-    overflow:hidden;
-}
-.bg-black{
-    background:#2b2d32;
-    padding-bottom:40px;
-}
-.q-box-img{
-    opacity: 1;
-    display: block;
-    width: 100%;
-    height: 200px;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transition: .3s ease-in-out;
-    transition: .3s ease-in-out;
-    backface-visibility: hidden;
-    border-radius:10px;
-}
-.q-box:hover a .q-box-img{
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-}
-.q-box-hover{
-   transition: .5s ease;
-   opacity: 0;
-   position: absolute;
-   bottom: 0px;
-   left: 50%;
-   transform: translateX(-50%);
-   -ms-transform: translateX(-50%);
-   text-align: center;
-}
-.q-box a .q-box-img.coming-soon {
-  opacity: 0.3;
-}
-.q-box a .q-box-hover {
-  opacity: 1;
-  width:100%
 }
 .text2{
   background-color: #00a0e3;
