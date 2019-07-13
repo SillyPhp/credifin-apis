@@ -3,6 +3,8 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+$referral = Yii::$app->referral->getReferralCode();
+
 $total_applications = count($applications);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_jobs']);
@@ -32,7 +34,7 @@ if (!empty($total_applications)) {
                             </button>
                         </div>
                         <div class="lf-bttn">
-                            <?php $link = Url::to($applications[$next]["link"], true); ?>
+                            <?php $link = Url::to($applications[$next]["link"] . $referral, "https"); ?>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-fb share_btn" type="button">
@@ -76,7 +78,7 @@ if (!empty($total_applications)) {
                                 Applications
                             </div>
                             <div class="col-md-6 minus-15-pad j-grid"><a
-                                        href="<?= Url::to($applications[$next]["link"]); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
+                                        href="<?= Url::to($applications[$next]["link"] . $referral); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
                             </div>
                         </div>
                     </div>

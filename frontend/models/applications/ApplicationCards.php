@@ -4,17 +4,8 @@ namespace frontend\models\applications;
 
 use Yii;
 use yii\helpers\Url;
-use common\models\Organizations;
-use common\models\OrganizationLocations;
-use common\models\Cities;
 use common\models\EmployerApplications;
-use common\models\ApplicationPlacementLocations;
-use common\models\AssignedCategories;
-use common\models\Categories;
 use common\models\ApplicationTypes;
-use common\models\Industries;
-use common\models\Designations;
-use common\models\ApplicationOptions;
 
 class ApplicationCards
 {

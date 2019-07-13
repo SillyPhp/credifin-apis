@@ -4,6 +4,8 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
+$referral = Yii::$app->referral->getReferralCode("&");
+
 $keywords = 'Govt jobs,Jobs,Empower youth,Jobs near me,Jobs in Bangalore, IT Jobs,Job Vacancies,Fresher Jobs,Web Development Jobs,Jobs in Delhi,Bank Jobs';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
@@ -116,7 +118,6 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
                 <div id="whats-new" class="row">
-
                 </div>
             </div>
         </div>
@@ -128,9 +129,10 @@ $this->params['seo_tags'] = [
             <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
-                    <?php foreach($search_words as $sw){ ?>
+                    <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>" title="<?= $sw['name'] ?>">
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                               title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
                         </li>
@@ -141,9 +143,10 @@ $this->params['seo_tags'] = [
             <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="list-heading">Jobs</div>
                 <ul class="quick-links" id="jobs">
-                    <?php foreach($job_profiles as $jp){ ?>
+                    <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>" title="<?= $jp['name']; ?> Jobs">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                               title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
                         </li>
@@ -154,9 +157,10 @@ $this->params['seo_tags'] = [
             <div class="col-md-4 col-sm-4 col-xs-6">
                 <div class="list-heading">Browse by City</div>
                 <ul class="quick-links" id="b-cities">
-                    <?php foreach($cities as $c){ ?>
+                    <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                               title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
                         </li>
@@ -168,16 +172,12 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 <?php
-echo $this->render('/widgets/blogs/whats-new',[
+echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-//echo $this->render('/widgets/employers-landing-page-floating-widget');
-//echo $this->render('/widgets/blog-slider', [
-//    'posts' => $posts,
-//]);
 $this->registerCss('
 .text-white1{
     color:white;
@@ -816,16 +816,16 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     expandFirst('jobs');
 
 
-    function expandFirst(elem){
+    function expandFirst(elem) {
         var i = 0;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k =0;
-        while(k < listElementsLength){
-            if(k < i + 4){
-                if(document.getElementById(elem)) {
+        var k = 0;
+        while (k < listElementsLength) {
+            if (k < i + 4) {
+                if (document.getElementById(elem)) {
                     document.getElementById(elem).children[k].classList.remove('hide');
                 }
-            }else{
+            } else {
                 break;
             }
             k += 1;
@@ -836,19 +836,19 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         showMoreEvent();
     });
 
-    function showMoreEvent(){
+    function showMoreEvent() {
         hideMore('searches');
         hideMore('b-cities');
         hideMore('jobs');
     }
 
-    function hideMore(elem){
+    function hideMore(elem) {
         var i = 0;
         i += 5;
         var k = 4;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while(k < listElementsLength){
-            if(document.getElementById(elem)) {
+        while (k < listElementsLength) {
+            if (document.getElementById(elem)) {
                 document.getElementById(elem).children[k].classList.remove('hide');
             }
             k += 1;
@@ -861,24 +861,24 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         showLessEvent();
     });
 
-    function showLessEvent(){
+    function showLessEvent() {
         hideLess('searches');
         hideLess('b-cities');
         hideLess('jobs');
     }
 
-    function hideLess(elem){
+    function hideLess(elem) {
         shrinkFirst(elem);
         document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
         document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
         expandFirst(elem);
     }
 
-    function shrinkFirst(elem){
+    function shrinkFirst(elem) {
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         var k = 5;
-        while(k < listElementsLength){
-            if(document.getElementById(elem)) {
+        while (k < listElementsLength) {
+            if (document.getElementById(elem)) {
                 document.getElementById(elem).children[k].classList.add('hide');
             }
             k += 1;

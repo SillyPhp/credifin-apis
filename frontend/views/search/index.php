@@ -577,8 +577,10 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
-$('.s-input').val(decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20')));
+var url_params = (new URL(document.location)).searchParams;
+var search_keyword = url_params.get("keyword");
 
+$('.s-input').val(search_keyword);
 $(document).on('click', '.s-btn', function(e){
     e.preventDefault();
     var query_string = window.location.search;
@@ -597,7 +599,7 @@ function fillData(){
         async: false,
         url: window.location.pathname,
         data: {
-            'keyword' : decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20'))
+            'keyword' : search_keyword
         },
         success: function(result){
             result = JSON.parse(result);
@@ -708,7 +710,6 @@ function fillData(){
     })
 }
 fillData();
-
 $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
 $('.starr').raty({
   readOnly: true,

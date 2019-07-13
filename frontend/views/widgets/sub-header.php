@@ -1,9 +1,9 @@
 <div class="secondary-headers on-top">
     <div class="secondary-headers-right">
         <?php
-        foreach ($data as $d){
+        foreach ($data as $d) {
             ?>
-        <a href="/<?= $d['route']; ?>"><?= $d['name']; ?></a>
+            <a href="/<?= $d['route'] . $referral; ?>"><?= $d['name']; ?></a>
             <?php
         }
         ?>
