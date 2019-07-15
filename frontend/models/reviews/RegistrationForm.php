@@ -11,6 +11,7 @@ use common\models\UnclaimedOrganizations;
 use common\models\Usernames;
 use common\models\Utilities;
 use common\models\RandomColors;
+use frontend\models\referral\ReferralReviewsTracking;
 use Yii;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
@@ -202,6 +203,7 @@ class RegistrationForm extends Model {
         if (!$companyReview->save()) {
             return false;
         } else {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
             return true;
         }
     }
@@ -272,6 +274,7 @@ class RegistrationForm extends Model {
         $companyReview->status = 1;
         $companyReview->created_on = date('Y-m-d H:i:s');
         if ($companyReview->save()) {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
             return true;
         } else {
             return false;
@@ -344,6 +347,7 @@ class RegistrationForm extends Model {
         $companyReview->status = 1;
         $companyReview->created_on = date('Y-m-d H:i:s');
         if ($companyReview->save()) {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
             return true;
         } else {
             return false;
@@ -415,6 +419,7 @@ class RegistrationForm extends Model {
         $companyReview->status = 1;
         $companyReview->created_on = date('Y-m-d H:i:s');
         if ($companyReview->save()) {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
             return true;
         } else {
             return false;
