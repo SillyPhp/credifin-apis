@@ -263,8 +263,14 @@ class InternshipsController extends Controller
             return 'Application Not found';
         }
         $object = new \account\models\applications\ApplicationForm();
-        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'email', 'initials_color color', 'slug', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-
+        if (!empty($application_details->unclaimed_organization_enc_id)){
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id,$application_type = 'Internships');
+        }
+        else {
+            $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Internships');
+        }
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
@@ -296,7 +302,8 @@ class InternshipsController extends Controller
             $model = new \frontend\models\applications\JobApplied();
             return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
-                'data' => $object->getCloneData($application_details->application_enc_id,$application_type='Internships'),
+                'data1' => $data1,
+                'data2' => $data2,
                 'org' => $org_details,
                 'type' => $type,
                 'applied' => $applied_jobs,
