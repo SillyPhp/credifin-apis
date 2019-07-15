@@ -89,51 +89,34 @@ $this->registerCss('
   }
 ');
 $script = <<< JS
+
 var events= null;
-var events = [
-    {
-        title: "Title 1",
-        description: "Description 1",
-        start: moment('2019-07-07T12:30:00'),
-        end: moment('2019-07-08T12:30:00'),
-        color: 'Red',
-    },
-    {
-        title: "Title 2",
-        description: "Description 2",
-        start: moment('2019-07-15T12:30:00'),
-        end: moment('2019-07-17T12:30:00'),
-        color: 'Green',
-    }
-];
 var selectedEvent = null;
-// FetchEventAndRenderCalendar();
+
+FetchEventAndRenderCalendar();
+
 function FetchEventAndRenderCalendar(){
     events = [];
     $.ajax({
         type: 'GET',
-        url: 'account/dashboard/get-events',
+        url: 'flexible-interview',
         async: false,
         success: function(data) {
+            data = JSON.parse(data);
             $.each(data, function(i,v) {
                 events.push({
                     eventID: v.EventID,
                     title: v.Subject,
-                    description: v.Description,
+                    profile: v.Profile,
                     start: moment(v.Start),
                     end: moment(v.End),
                     color: v.ThemeColor
                 })
             });
             GenerateCalendar(events);
-        },
-        error: function() {
-            alert('failed');
         }
     })
 }
-
-GenerateCalendar(events);
 
 function GenerateCalendar(events){
     $('#calendar').fullCalendar('destroy');
@@ -155,7 +138,7 @@ function GenerateCalendar(events){
             var d = $('<div/>');
             d.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
             d.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
-            d.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+            d.append($('<p/>').html('<b>Profile:</b>' + calEvent.profile));
             $('#myModal #pDetails').empty().html(d);
             $('#myModal').modal();
         },

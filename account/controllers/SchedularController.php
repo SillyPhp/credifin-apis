@@ -224,6 +224,7 @@ class SchedularController extends Controller
 
         $candidate_applications = explode(',', $data['selected_candidate']);
 
+
         $interview = new ScheduledInterview();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -308,8 +309,8 @@ class SchedularController extends Controller
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
                         $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
-                        $interview_date_timing->from = $t['from'];
-                        $interview_date_timing->to = $t['to'];
+                        $interview_date_timing->from = date("H:i", strtotime($t['from']));
+                        $interview_date_timing->to = date("H:i", strtotime($t['to']));
                         if (!$interview_date_timing->save()) {
                             return false;
                         }

@@ -6,6 +6,7 @@ use account\models\applications\Applied;
 use common\models\ApplicationTypes;
 use common\models\InterviewCandidates;
 use common\models\InterviewDates;
+use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
@@ -150,8 +151,8 @@ class DashboardController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
-            'having'=>[
-                '>','a.last_date',date('Y-m-d')
+            'having' => [
+                '>', 'a.last_date', date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -208,22 +209,24 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function actionCalendar(){
+    public function actionCalendar()
+    {
         return $this->render('test');
     }
 
-    public function actionFixedInterview(){
+    public function actionFixedInterview()
+    {
 
         $candidate = AppliedApplicationProcess::find()
             ->alias('a')
             ->select([])
-            ->innerJoinWith(['appliedApplicationEnc b'=>function($b){
-                $b->andWhere(['b.created_by'=>Yii::$app->user->identity->user_enc_id]);
+            ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
+                $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
             }])
-            ->innerJoinWith(['fieldEnc c'=>function($c){
+            ->innerJoinWith(['fieldEnc c' => function ($c) {
                 $c->innerJoinWith(['interviewOptions d']);
             }])
-            ->where(['is_completed'=>1])
+            ->where(['is_completed' => 1])
             ->asArray()
             ->all();
 
@@ -232,49 +235,81 @@ class DashboardController extends Controller
 
     }
 
-    public function actionFlexibleInterview(){
+    public function actionFlexibleInterview()
+    {
 
-        $flexible_interview = InterviewCandidates::find()
-            ->alias('a')
-            ->select(['e.name job_title',
-                'a.scheduled_interview_enc_id',
-                'f.name company_name',
-                '(CASE
+        if (Yii::$app->request->isAjax) {
+
+            $flexible_interview = InterviewCandidates::find()
+                ->alias('a')
+                ->select([
+                    'e.name job_title',
+                    'm.name profile',
+                    'a.scheduled_interview_enc_id',
+                    'f.name company_name',
+                    '(CASE
                     WHEN g.interview_mode = 1 THEN "online"
                     WHEN g.interview_mode = 2 THEN j.name
                     END) as interview_at',
+                    'o.interview_date',
+                    'p.from',
+                    'p.to'
 
                 ])
-            ->joinWith(['appliedApplicationEnc b'=>function($b){
-                $b->andWhere(['b.created_by'=>Yii::$app->user->identity->user_enc_id]);
-                $b->joinWith(['applicationEnc c'=>function($c){
-                    $c->joinWith(['organizationEnc f']);
-                    $c->joinWith(['title d'=>function($d){
-                        $d->joinWith(['categoryEnc e']);
+                ->joinWith(['appliedApplicationEnc b' => function ($b) {
+                    $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
+                    $b->joinWith(['applicationEnc c' => function ($c) {
+                        $c->joinWith(['organizationEnc f']);
+                        $c->joinWith(['title d' => function ($d) {
+                            $d->joinWith(['categoryEnc e']);
+                            $d->joinWith(['parentEnc m'], false);
+                        }]);
                     }]);
-                }]);
-            }],false)
-            ->joinWith(['scheduledInterviewEnc g'=>function($g){
-                $g->joinWith(['interviewLocationEnc h'=>function($h){
-                    $h->joinWith(['locationEnc i'=>function($i){
-                        $i->joinWith(['cityEnc j']);
+                }], false)
+                ->joinWith(['scheduledInterviewEnc g' => function ($g) {
+                    $g->joinWith(['interviewLocationEnc h' => function ($h) {
+                        $h->joinWith(['locationEnc i' => function ($i) {
+                            $i->joinWith(['cityEnc j']);
+                        }]);
                     }]);
-                }]);
-            }],false)
-            ->where([])
-            ->asArray()
-            ->all();
+                }], false)
+                ->innerJoin(InterviewDates::tableName().'as o','o.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
+                ->innerJoin(InterviewDateTimings::tableName().'as p','p.interview_date_enc_id = o.interview_date_enc_id')
+                ->where([])
+                ->asArray()
+                ->all();
 
-        $interview_dates = InterviewDates::find()
-            ->alias('a')
-            ->select(['a.interview_date'])
-            ->where(['a.scheduled_interview_enc_id'=>$flexible_interview[0]['scheduled_interview_enc_id']])
-            ->asArray()
-            ->all();
-        print_r($interview_dates);
 
-        print_r($flexible_interview);
-        die();
+//            $interview_dates_timing = [];
+//            foreach ($flexible_interview as $a) {
+//                $interview_dates = InterviewDates::find()
+//                    ->alias('a')
+//                    ->select(['a.interview_date', 'b.from', 'b.to'])
+//                    ->where(['a.scheduled_interview_enc_id' => $a['scheduled_interview_enc_id']])
+//                    ->joinWith(['interviewDateTimings b'], false)
+//                    ->asArray()
+//                    ->all();
+//                array_push($interview_dates_timing, $interview_dates);
+//            }
+
+
+
+            $result = [];
+            $data = [];
+            foreach ($flexible_interview as $f) {
+                $data['EventId'] = $f['scheduled_interview_enc_id'];
+                $data['Subject'] = $f['job_title'];
+                $data['Profile'] = $f['profile'];
+                $data['ThemeColor'] = 'blue';
+                $interview_date = $f['interview_date'];
+                $from = $f['from'];
+                $to = $f['to'];
+                $data['Start'] = $interview_date.'T'.$from;
+                $data['End'] = $interview_date.'T'.$to;
+                array_push($result, $data);
+            }
+            return json_encode($result);
+        }
     }
 
 //    public function actionError(){

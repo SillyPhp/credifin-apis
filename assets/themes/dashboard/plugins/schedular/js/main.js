@@ -406,12 +406,12 @@
     function validateDetails(){
         $('.interviewer_details').each(function(){
             if($(this).val() === "" || $(this).val() == null){
-                console.log('error');
+                // console.log('error');
                 $(this).next('.i-error').text('This field is required.');
                 validate_detail = false;
             } else{
                 $(this).next('.i-error').text('');
-                console.log('completed');
+                // console.log('completed');
                 validate_detail = true;
             }
         });
