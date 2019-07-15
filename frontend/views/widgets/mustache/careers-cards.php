@@ -20,7 +20,7 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <div class="job-exp">{{experience}}</div>
-                    <div class="job-lctn"><i class="fa fa-map-marker"></i>
+                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>
                         {{#city}}
                             {{city}}
                         {{/city}}

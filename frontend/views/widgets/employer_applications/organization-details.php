@@ -14,8 +14,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <?php
             } else {
                 ?>
-                <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
-                        color="<?= $initial_color; ?>" font="55px"></canvas>
+                <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
+                        color="<?= $initial_color; ?>" font="48px"></canvas>
                 <?php
             }
             ?>
@@ -24,45 +24,46 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     <div class="job-head-info">
         <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
         <div class="organization-details">
-<!--            <h4>Company Detail</h4>-->
             <?php if ($website): ?>
-                <p><i class="fa fa-unlink"></i><?= $website; ?></p>
+                <p><i class="fas fa-unlink"></i><?= $website; ?></p>
             <?php endif; ?>
-            <p><i class="fa fa-envelope"></i><?= $email; ?></p>
+            <p><i class="fas fa-envelope"></i><?= $email; ?></p>
         </div>
     </div>
     <div class="actions-main">
         <?php if (Yii::$app->user->isGuest): ?>
             <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                        class="fa fa-paper-plane"></i>Login to apply</a>
+                        class="fas fa-paper-plane"></i>Login to apply</a>
             <div class="sub-actions">
-                 <?php
-        if ($type == 'Internship'): ?>
-                <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
-                    Compare Internship</a>
-        <?php elseif ($type == 'Job'): ?>
-            <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-               class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
-                Compare Job</a>
-        <?php endif; ?>
+                <?php
+                if ($type == 'Internship'): ?>
+                    <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                       class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                        Compare Internship</a>
+                <?php elseif ($type == 'Job'): ?>
+                    <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                       class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                        Compare Job</a>
+                <?php endif; ?>
             </div>
         <?php else: ?>
             <?php if ($applied): ?>
-                <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i class="fa fa-check"></i>Applied</a>
+                <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i class="fas fa-check"></i>Applied</a>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
-                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Internship</a>
 
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
                 </div>
             <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fa fa-paper-plane hvr-icon"></i>Apply
+                <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
                 <div class="sub-actions">
@@ -70,31 +71,33 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                         if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                             ?>
-                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                        class="fa fa-heart-o hvr-icon"></i>Shortlisted</a>
+                            <a href="#"
+                               class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                                        class="far fa-heart hvr-icon"></i>Shortlisted</a>
                             <?php
                         } else {
                             ?>
-                            <a href="#" class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                        class="fa fa-heart-o hvr-icon"></i>Shortlist</a>
+                            <a href="#"
+                               class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                                        class="far fa-heart hvr-icon"></i>Shortlist</a>
                             <?php
                         }
                     }
                     ?>
                     <?php
                     if ($type == 'Internship'): ?>
-                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug)?>" class="add-or-compare hvr-icon-pulse full-width"><i class="fa fa-files-o hvr-icon"></i>
+                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Internship</a>
 
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse"><i class="fa fa-files-o hvr-icon"></i>
+                           class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
         <?php endif; ?>
-
         <?php
         if ($type == 'Internship'): ?>
             <a href="<?= Url::to('/internships/list?company=' . $org_name); ?>" title="" class="view-all-a">View all
@@ -108,31 +111,32 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <h3 class="text-white">Share</h3>
         <div class="buttons">
             <?php
+            $referral = Yii::$app->referral->getReferralCode();
             if ($type == 'Internship') {
-                $link = Url::to('internship/' . $application_slug, true);
+                $link = Url::to('internship/' . $application_slug . $referral, 'https');
             } else if ($type == 'Job') {
-                $link = Url::to('job/' . $application_slug, true);
+                $link = Url::to('job/' . $application_slug . $referral, 'https');
             }
             ?>
             <a href="#"
                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-facebook"></i>
+                <i class="fab fa-facebook-f"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-twitter"></i>
+                <i class="fab fa-twitter"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-linkedin"></i>
+                <i class="fab fa-linkedin-in"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-whatsapp"></i>
+                <i class="fab fa-whatsapp"></i>
             </a>
             <a href="#"
                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
-                <i class="fa fa-envelope"></i>
+                <i class="fas fa-envelope"></i>
             </a>
         </div>
         <div class="row m-0">
@@ -141,13 +145,22 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <div class="pf-field">
                     <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
                            class="form-control" value="<?= $link ?>" readonly>
-                    <i class="fa fa-clipboard"></i>
+                    <i class="far fa-copy"></i>
                 </div>
             </div>
         </div>
     </div>
 <?php
 $this->registerCss('
+.job-thumb a{
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    display: block;
+    margin: auto;
+    border-radius: 50%;
+}
+.job-thumb a img{margin:5px;}
 .overlay-top{
     width: 70%;
     margin: auto;

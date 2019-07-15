@@ -48,7 +48,6 @@ class DashboardController extends Controller
     {
         $model = new \account\models\services\ServiceSelectionForm();
 
-
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
             return $this->redirect('/account/dashboard');
         }
@@ -145,8 +144,8 @@ class DashboardController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
-            'having'=>[
-                '>','a.last_date',date('Y-m-d')
+            'having' => [
+                '>', 'a.last_date', date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -199,15 +198,7 @@ class DashboardController extends Controller
             'model' => $model,
             'services' => $services,
             'business_activities' => $business_activities,
-
         ]);
     }
-
-//    public function actionError(){
-//        $error = Yii::$app->errorHandler->exception;
-//        return $this->render('error',[
-//            'error' => $error
-//        ]);
-//    }
 
 }

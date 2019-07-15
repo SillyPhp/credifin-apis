@@ -118,6 +118,8 @@ use yii\helpers\Url;
 $this->registerCss('
 .ac-subheading{
     margin-top:-15px;
+    font-family:Roboto;
+    font-weight:300;
 }
 .all-coms a{
     color:#00a0e3;

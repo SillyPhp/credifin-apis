@@ -577,8 +577,10 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
-$('.s-input').val(decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20')));
+var url_params = (new URL(document.location)).searchParams;
+var search_keyword = url_params.get("keyword");
 
+$('.s-input').val(search_keyword);
 $(document).on('click', '.s-btn', function(e){
     e.preventDefault();
     var query_string = window.location.search;
@@ -597,7 +599,7 @@ function fillData(){
         async: false,
         url: window.location.pathname,
         data: {
-            'keyword' : decodeURIComponent((window.location.search.split('=')[1] + '').replace(/\+/g, '%20'))
+            'keyword' : search_keyword
         },
         success: function(result){
             result = JSON.parse(result);
@@ -708,7 +710,6 @@ function fillData(){
     })
 }
 fillData();
-
 $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
 $('.starr').raty({
   readOnly: true,
@@ -760,13 +761,13 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             {{#city}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;{{city}}
+                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
                 </span>
             {{/city}}
             {{^city}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;All India
+                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
                 </span>
             {{/city}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
@@ -784,7 +785,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <div class="application-card-description">
                     <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
                     {{#salary}}
-                    <h5><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
                     <h5>Negotiable</h5>
@@ -793,7 +794,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     <h5>{{type}}</h5>
                     {{/type}}
                     {{#experience}}
-                    <h5><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
                 </div>
             </div>
@@ -814,7 +815,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             {{/last_date}}
             <div class="application-card-wrapper">
                 <a href="{{link}}" class="application-card-open">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>

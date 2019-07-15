@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use yii\helpers\Html;
@@ -11,6 +12,7 @@ use frontend\assets\AppAssets;
 use frontend\widgets\login;
 
 AppAssets::register($this);
+$referral = Yii::$app->referral->getReferralCode();
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -61,7 +63,7 @@ AppAssets::register($this);
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
-                        <a href="/employers"><i class="fa fa-user-circle"></i> Employer Zone</a>
+                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
                     </div>
                     <div class="secondary-top-header-right">
                         <a href="/signup/organization">Signup as Company</a>
@@ -74,7 +76,8 @@ AppAssets::register($this);
             <div class="container-fluid">
                 <nav id="menuzord-right"
                      class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
-                    <a class="menuzord-brand pull-left flip mt-15" href="<?= Url::to('/'); ?>">
+                    <a class="menuzord-brand pull-left flip mt-15"
+                       href="<?= "/" . $referral; ?>">
                         <?php
                         if (!Yii::$app->user->isGuest) {
                             ?>
@@ -106,7 +109,6 @@ AppAssets::register($this);
                             <?php
                         }
                         ?>
-
                     </a>
                     <?php
                     if (!Yii::$app->user->isGuest) {
@@ -140,6 +142,7 @@ AppAssets::register($this);
 
                     echo $this->render('/widgets/top-header', [
                         'menu_class' => 'menuzord-menu' . (!$this->params['header_dark']) ? ' dark' : '',
+                        'referral' => $referral,
                     ]);
                     ?>
                 </nav>
@@ -152,11 +155,12 @@ AppAssets::register($this);
             <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
         </div>
         <?php
-            if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-                echo $this->render('/widgets/sub-header',[
-                        'data' => $this->params['sub_header'],
-                ]);
-            }
+        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+            echo $this->render('/widgets/sub-header', [
+                'data' => $this->params['sub_header'],
+                'referral' => $referral,
+            ]);
+        }
         ?>
         <?= $content; ?>
     </div>
@@ -169,33 +173,35 @@ AppAssets::register($this);
                     <div class="footer-widget ">
                         <div class="widget-title1 mb-10"><?= Yii::t('frontend', 'Connect With Us'); ?></div>
                         <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <div class="si-icons">
-                            <ul class="styled-icons icon-bordered icon-sm mb-5">
-                                <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
-                                                class="fa fa-facebook"></i></a></li>
-                                <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
-                                                class="fa fa-twitter"></i></a></li>
-                                <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i
-                                                class="fa fa-instagram"></i></a></li>
-                                <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
-                                                class="fa fa-pinterest"></i></a></li>
-                                <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
-                                       class="overlink"><i class="fa fa-linkedin"></i></a></li>
-                            </ul>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="si-icons">
+                                    <ul class="styled-icons icon-bordered icon-sm mb-5">
+                                        <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
+                                                        class="fab fa-facebook-f"></i></a></li>
+                                        <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
+                                                        class="fab fa-twitter"></i></a></li>
+                                        <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank"
+                                               class="overig"><i
+                                                        class="fab fa-instagram"></i></a></li>
+                                        <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
+                                                        class="fab fa-pinterest"></i></a></li>
+                                        <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
+                                               class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
                             <div class="col-md-12 col-sm-12">
                                 <div class="quick-btns">
                                     <ul class="qb">
-                                        <li><a href="/careers" class="career-btn">Careers</a></li>
+                                        <li><a href="<?= "/careers" . $referral; ?>" class="career-btn">Careers</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
-                                                class="fa fa-envelope-o mt-5 mr-5"></i> <span>info@empoweryouth.com</span></a>
+                                                class="far fa-envelope mt-5 mr-5"></i>
+                                        <span>info@empoweryouth.com</span></a>
                                 </div>
                             </div>
                         </div>
@@ -203,16 +209,20 @@ AppAssets::register($this);
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="f-logo">
-                        <a href="/" title='Empower Youth'>
-                            <img src="<?= Url::to('/assets/common/logos/fg2.png')?>" title='Empower Youth'  alt="Empower Youth"/>
+                        <a href="<?= "/" . $referral; ?>" title='Empower Youth'>
+                            <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth'
+                                 alt="Empower Youth"/>
                         </a>
                     </div>
                     <div class="ftxt">Empowering youth and going beyond</div>
                 </div>
                 <div class="col-md-3 col-sm-12">
                     <div class="app-btn">
-                        <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1' title='Download Empower Youth App on Google Play'>
-                            <img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png' title='Download Empower Youth App on Google Play'/>
+                        <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'
+                           title='Download Empower Youth App on Google Play'>
+                            <img alt='Get it on Google Play'
+                                 src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
+                                 title='Download Empower Youth App on Google Play'/>
                         </a>
                     </div>
                 </div>
@@ -228,7 +238,9 @@ AppAssets::register($this);
     </footer>
     <?php
     if (!Yii::$app->user->isGuest) {
-        echo $this->render('/widgets/user-profile-sidebar-right');
+        echo $this->render('/widgets/user-profile-sidebar-right', [
+            'referral' => $referral,
+        ]);
     } elseif (Yii::$app->user->isGuest) {
         echo login::widget();
     }
@@ -257,14 +269,12 @@ $this->registerCss('
     max-width:250px;
 }
 .ql{
-//    text-align:center;
     padding-top:20px;
     padding-bottom:10px;
     padding-inline-start: 00px;
 }
 .ql li{
     display:inline;
-//    padding:10px 10px;
     color:#fff !important;
 }
 .ql li a:hover{
@@ -476,7 +486,6 @@ $this->registerCss('
     color:#fff !important;
 } 
 .footer-widget{
-//    color:#00a0e3;
     margin: 0 auto;
 }
 .icons-ss{
@@ -659,7 +668,7 @@ $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webf
 $this->registerJs('
             WebFont.load({
                     google: {
-                            "families": ["Lobster", "Open+Sans"]
+                            "families": ["Lobster", "Open+Sans", "Roboto"]
                     },
                     active: function() {
                             sessionStorage.fonts = true;

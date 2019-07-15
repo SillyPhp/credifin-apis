@@ -625,13 +625,13 @@ a:hover {
                                                         </strong>
                                                     </h4>
                                                     <h5> 
-                                                        <i class="fa fa-location-arrow"></i> 
+                                                        <i class="fas fa-location-arrow"></i>
                                                         <strong><?php echo $cards[$next]['city']; ?>
                                                         </strong>
 
                                                     </h5>
                                                     <h5>
-                                                        <i class="fa fa-map-pin"> 
+                                                        <i class="fas fa-map-pin">
                                                             Min <?php echo $cards[$next]['experience']; ?> yr exp
                                                         </i>
                                                     </h5>
@@ -640,7 +640,7 @@ a:hover {
                                                     <a class="btn btn-theme-colored btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color" href="/job/<?php echo $cards[$next]['slug']; ?>">VIEW DETAILS
                                                     </a>
                                                     <a style="background-color:#FF4500" class="btn btn-sm btn-flat pl-20 pr-20 btn-add-to-cart text-uppercase font-weight-700 custom_color2" href="#">
-                                                        <i class="fa fa-plus">
+                                                        <i class="fas fa-plus">
                                                         </i>
                                                     </a>
                                                 </div>
@@ -669,7 +669,7 @@ a:hover {
                     <div class="btn-div" align="center">
                         <a href="#" id="loadMore" class="btn btn-primary" align="center"style="color:white">
                             <h4>Load More 
-                                <i class="fa fa-angle-down">
+                                <i class="fas fa-angle-down">
                                 </i>
                             </h4>
                         </a>
@@ -734,8 +734,8 @@ $('.owl-carousel-5col').owlCarousel({
     margin: 20,
     responsiveClass: true,
     navText: [
-        '<i class="fa fa-angle-left set_icon"></i>',
-        '<i class="fa fa-angle-right set_icon"></i>'
+        '<i class="fas fa-angle-left set_icon"></i>',
+        '<i class="fas fa-angle-right set_icon"></i>'
     ],
     responsive: {
         0: {
@@ -763,8 +763,8 @@ $('.owl-carousel-4col').owlCarousel({
     margin: 20,
     responsiveClass: true,
     navText: [
-        '<i class="fa fa-angle-left set_icon"></i>',
-        '<i class="fa fa-angle-right set_icon"></i>'
+        '<i class="fas fa-angle-left set_icon"></i>',
+        '<i class="fas fa-angle-right set_icon"></i>'
     ],
     responsive: {
         0: {

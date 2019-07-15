@@ -52,7 +52,7 @@ $this->params['seo_tags'] = [
                                 <form id="form-search" action="<?=Url::to(['search']) ?>">
                                 <input class='form-control' name="keywords" id="search_school" placeholder='Search School' type='text'>
                                 <button class='btn btn-link search-btn'>
-                                    <i class='fa fa-search'></i>
+                                    <i class='fas fa-search'></i>
                                 </button>
                                 </form>
                             </div>
@@ -137,6 +137,29 @@ $this->params['seo_tags'] = [
                 <div class="col-md-12">
                     <div class="heading-style">Top Rated Schools</div>
                     <div id="uncliamed_top">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
 
                     </div>
                 </div>
@@ -244,8 +267,9 @@ $this->registerCss('
     position:absolute;
     right: 25px;
     bottom: 10px;
-    font-weight:bold;
+    font-weight:500;
     font-size:15px;
+    font-family:roboto;
 }
 .btn_add_org:hover{
     color:#0CAA41;
@@ -353,6 +377,7 @@ review-benifit{
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    font-family:roboto;
 }
 .com-logo{
     width:100px;
@@ -445,6 +470,8 @@ review-benifit{
     padding-top:20px;
     padding-bottom:8px;
     font-size:16px;
+    font-family:roboto;
+    font-weight:400;
 }
 .hbb-text{
     padding-top:10px;
@@ -648,12 +675,18 @@ float:right;
 ');
 echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 ]);
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/mustache/top-user-reviews');
 $script = <<< JS
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_school').val());
 })
 var template;
+fetch_cards_unclaim_latest(params={'rating':[1,2,3,4,5],'sort':1,business_activity:'School','limit':4},template=$('#latest_reviews_card_new'));
+fetch_cards_top_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'School'},template=$('#top_user_reviews_card_new'));
+fetch_cards_most_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'School','most_reviewed':1},template=$('#most_reviews_card_new'));
 fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_top'));
 var companies = new Bloodhound({

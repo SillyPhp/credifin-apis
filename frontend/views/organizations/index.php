@@ -11,7 +11,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="main-heading">
                     <div class="pos-center">
-                        <div class="main-text">Explore Companies</div>
+                        <div class="main-text">Explore All Companies</div>
                         <div class="search-container">
                             <form action="">
                                 <div class="load-suggestions Typeahead-spinner city-spin"
@@ -21,7 +21,7 @@ use yii\helpers\Url;
                                     <span></span>
                                 </div>
                                 <input id="company_search" type="text" placeholder="Search Companies" name="search">
-                                <button id="search"><i class="fa fa-search"></i></button>
+                                <button id="search"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
                     </div>
