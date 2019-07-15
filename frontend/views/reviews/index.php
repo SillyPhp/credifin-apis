@@ -1261,7 +1261,7 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+var result =  '<div class="suggestion_wrap"><a href="/'+data.review_link+'">'
  +'<div class="logo_wrap">'
  +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
@@ -1277,7 +1277,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
+    window.location.replace('/'+datum.review_link+'');
   });
 JS;
 $this->registerJs($script);
