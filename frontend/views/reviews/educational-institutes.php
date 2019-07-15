@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Educational Institute Reviews | Reviews');
@@ -48,19 +49,22 @@ $this->params['seo_tags'] = [
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                <input class='form-control' name="keywords" placeholder='Search educational institute' id="search_institute" name="search_institute" type='text'>
-                                <button class='btn btn-link search-btn'>
-                                    <i class='fas fa-search'></i>
-                                </button>
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords"
+                                           placeholder='Search educational institute' id="search_institute"
+                                           name="search_institute" type='text'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fas fa-search'></i>
+                                    </button>
                                 </form>
                             </div>
                             <div class="btn_add_new_org">
                                 <?php if (Yii::$app->user->isGuest): ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New Institute</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                       class="btn_add_org">Add New Institute</a>
                                 <?php else : ?>
                                     <a href="#" class="add_new_org btn_add_org">Add New Institute</a>
-                                <?php  endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -77,28 +81,31 @@ $this->params['seo_tags'] = [
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
                         </div>
                         <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Faculity</span>, <span>Teaching Style</span>, <span>Accessibilit Of Faculty</span></div>
+                        <div class="rb-text">Reviews on the basis of <span>Faculity</span>, <span>Teaching Style</span>,
+                            <span>Accessibilit Of Faculty</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
                         </div>
-                        <div class="rb-heading">Infrastructure and Environment </div>
-                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Value For Money</span></div>
+                        <div class="rb-heading">Infrastructure and Environment</div>
+                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>,
+                            <span>Value For Money</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
                         </div>
-                        <div class="rb-heading">Growth and Development </div>
-                        <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Coverage Of Subject Matter</span></div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Coverage Of Subject Matter</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -659,7 +666,7 @@ $('#search_institute').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'">'
  +'<div class="logo_wrap">'
  +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
@@ -675,7 +682,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
+    window.location.replace('/'+datum.slug+'');
   });
 JS;
 $this->registerJs($script);

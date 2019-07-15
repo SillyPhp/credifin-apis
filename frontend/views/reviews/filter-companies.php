@@ -1,7 +1,9 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
 ?>
 <div id="loading_img">
     <img src="https://thumbs.gfycat.com/HollowNaughtyAfricanhornbill-small.gif">
@@ -11,7 +13,7 @@ use yii\bootstrap\ActiveForm;
         <div class="row">
             <div class="col-md-12">
                 <div class="header">
-<!--                    <div class="main-headings">Know In-depth information about the companies you want to work for.</div>-->
+                    <!--                    <div class="main-headings">Know In-depth information about the companies you want to work for.</div>-->
                 </div>
             </div>
         </div>
@@ -24,18 +26,20 @@ use yii\bootstrap\ActiveForm;
                             <span></span>
                             <span></span>
                         </div>
-                        <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input" placeholder="Search Company">
-                        <button type="submit" class="s-btn"><i class="fas fa-search"></i> </button>
+                        <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input"
+                               placeholder="Search Company">
+                        <button type="submit" class="s-btn"><i class="fas fa-search"></i></button>
                     </div>
                 </form>
             </div>
             <div class="col-md-12">
                 <div class="btn_add_new_org pull-right">
                     <?php if (Yii::$app->user->isGuest): ?>
-                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org add_new_org1">Add New Review</a>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                           class="btn_add_org add_new_org1">Add New Review</a>
                     <?php else : ?>
                         <a href="#" class="add_new_org1 add_new_org">Add New Review</a>
-                    <?php  endif; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -45,171 +49,180 @@ use yii\bootstrap\ActiveForm;
     <div class="container">
         <div class="row">
             <div class="pos-relative-mobile">
-            <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
-                <div class="filter-btns" id="hide-filter">
-                    <button class="hide-btn"><i class="fas fa-times"></i> Close</button>
-                </div>
-                <div class="filter-heading">
-                    Search companies by
-                </div>
-                <form>
-                    <div class="filters">
-                        <div class="filter-search">
-                            <div class="f-search-loc">
-                                <input type="text" id="city_search" placeholder="Location" />
-                                <i class="fas fa-search"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 f-main-heading">
-                                <div class="filter-heading">
-                                    Filter companies by
-                                </div>
-                                <div class="show-search">
-                                    <button type="button" onclick="showSearch()"><i class="fas fa-search"></i></button>
+                <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
+                    <div class="filter-btns" id="hide-filter">
+                        <button class="hide-btn"><i class="fas fa-times"></i> Close</button>
+                    </div>
+                    <div class="filter-heading">
+                        Search companies by
+                    </div>
+                    <form>
+                        <div class="filters">
+                            <div class="filter-search">
+                                <div class="f-search-loc">
+                                    <input type="text" id="city_search" placeholder="Location"/>
+                                    <i class="fas fa-search"></i>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-md-12 f-main-heading">
+                                    <div class="filter-heading">
+                                        Filter companies by
+                                    </div>
+                                    <div class="show-search">
+                                        <button type="button" onclick="showSearch()"><i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="f-ratings">
-                            <div class="overall-box-heading">Avg. Company Ratings </div>
-                            <div class="form-group form-md-checkboxes">
-                                <div class="md-checkbox-list">
-                                    <div class="md-checkbox">
-                                        <input type="checkbox" name="avg_rating[]" value="5" id="checkbox1" class="md-check">
-                                        <label for="checkbox1">
-                                            <span></span>
-                                            <span class="check"></span>
-                                            <span class="box"></span>
-                                            <div class="fivestars rating-stars">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div class="md-checkbox">
-                                        <input type="checkbox" name="avg_rating[]" value="4" id="checkbox2" class="md-check">
-                                        <label for="checkbox2">
-                                            <span></span>
-                                            <span class="check"></span>
-                                            <span class="box"></span>
-                                            <div class="fourstars rating-stars">
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div class="md-checkbox">
-                                        <input type="checkbox" name="avg_rating[]" value="3" id="checkbox3" class="md-check">
-                                        <label for="checkbox3">
-                                            <span></span>
-                                            <span class="check"></span>
-                                            <span class="box"></span>
-                                            <div class="threestars rating-stars">
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div class="md-checkbox">
-                                        <input type="checkbox" name="avg_rating[]" value="2" id="checkbox4" class="md-check">
-                                        <label for="checkbox4">
-                                            <span></span>
-                                            <span class="check"></span>
-                                            <span class="box"></span>
-                                            <div class="twostars rating-stars">
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div class="md-checkbox">
-                                        <input type="checkbox" name="avg_rating[]" value="1" id="checkbox5" class="md-check">
-                                        <label for="checkbox5">
-                                            <span></span>
-                                            <span class="check"></span>
-                                            <span class="box"></span>
-                                            <div class="onestars rating-stars">
-                                                <i class="fas fa-star active"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </label>
-                                    </div>
+                            <div class="f-ratings">
+                                <div class="overall-box-heading">Avg. Company Ratings</div>
+                                <div class="form-group form-md-checkboxes">
+                                    <div class="md-checkbox-list">
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" name="avg_rating[]" value="5" id="checkbox1"
+                                                   class="md-check">
+                                            <label for="checkbox1">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                <div class="fivestars rating-stars">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" name="avg_rating[]" value="4" id="checkbox2"
+                                                   class="md-check">
+                                            <label for="checkbox2">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                <div class="fourstars rating-stars">
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" name="avg_rating[]" value="3" id="checkbox3"
+                                                   class="md-check">
+                                            <label for="checkbox3">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                <div class="threestars rating-stars">
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" name="avg_rating[]" value="2" id="checkbox4"
+                                                   class="md-check">
+                                            <label for="checkbox4">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                <div class="twostars rating-stars">
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" name="avg_rating[]" value="1" id="checkbox5"
+                                                   class="md-check">
+                                            <label for="checkbox5">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                <div class="onestars rating-stars">
+                                                    <i class="fas fa-star active"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                            </label>
+                                        </div>
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="f-ratings f-rating-box-2" id="industry-scroll" >
-                                    <div class="overall-box-heading">Business Activities</div>
-                                    <div class="form-group form-md-checkboxes">
-                                        <div class="md-checkbox-list">
-                                            <?php foreach($business_activity as $activities) { ?>
-                                            <div class="md-checkbox">
-                                                <input type="checkbox" name="activities[]" value="<?=$activities['business_activity'] ?>" id="checkbox-<?= $activities['business_activity_enc_id']; ?>" class="md-check" name="business[]">
-                                                <label for="checkbox-<?= $activities['business_activity_enc_id']; ?>">
-                                                    <span></span>
-                                                    <span class="check"></span>
-                                                    <span class="box"></span>
-                                                    <div class="all-label-2"><?= $activities['business_activity'] ?></div>
-                                                </label>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="f-ratings f-rating-box-2" id="industry-scroll">
+                                        <div class="overall-box-heading">Business Activities</div>
+                                        <div class="form-group form-md-checkboxes">
+                                            <div class="md-checkbox-list">
+                                                <?php foreach ($business_activity as $activities) { ?>
+                                                    <div class="md-checkbox">
+                                                        <input type="checkbox" name="activities[]"
+                                                               value="<?= $activities['business_activity'] ?>"
+                                                               id="checkbox-<?= $activities['business_activity_enc_id']; ?>"
+                                                               class="md-check" name="business[]">
+                                                        <label for="checkbox-<?= $activities['business_activity_enc_id']; ?>">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                            <div class="all-label-2"><?= $activities['business_activity'] ?></div>
+                                                        </label>
+                                                    </div>
+                                                <?php } ?>
                                             </div>
-                                          <?php } ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-9 col-sm-8 col-xs-12 ">
-                <div class="filter-btns">
-                    <button type="button" id="show-filter"><i class="fas fa-bars"></i> Show Filters </button>
+                    </form>
                 </div>
-            </div>
-            <div class="col-md-9 col-sm-8 col-xs-12">
-                <div class="companies-reviews">
-                    <div class="row">
-                        <div id="review_container"></div>
-                        <div class="col-md-12">
-                            <div class="load-more-bttn">
-                                <button type="button" id="load_review_card_btn">Load More</button>
+                <div class="col-md-9 col-sm-8 col-xs-12 ">
+                    <div class="filter-btns">
+                        <button type="button" id="show-filter"><i class="fas fa-bars"></i> Show Filters</button>
+                    </div>
+                </div>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <div class="companies-reviews">
+                        <div class="row">
+                            <div id="review_container"></div>
+                            <div class="col-md-12">
+                                <div class="load-more-bttn">
+                                    <button type="button" id="load_review_card_btn">Load More</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="empty">
+                        <div class="es-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/nofound.png') ?>">
+                        </div>
+                        <div class="es-text">
+                            There are no reviews for this organization yet.
+                        </div>
+                        <div class="es-text2">
+                            Be the first one to wirte a review.
+                        </div>
+                        <div class="es-btn">
+                            <button class="add_new_org">Write a Review</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="empty">
-                    <div class="es-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/review/nofound.png')?>">
-                    </div>
-                    <div class="es-text">
-                        There are no reviews for this organization yet.
-                    </div>
-                    <div class="es-text2">
-                        Be the first one to wirte a review.
-                    </div>
-                    <div class="es-btn">
-                        <button class="add_new_org">Write a Review</button>
-                    </div>
-                </div>
-            </div>
             </div>
         </div>
     </div>
@@ -1020,7 +1033,7 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-return '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+return '<div class="suggestion_wrap"><a href="/'+data.slug+'">'
  +'<div class="logo_wrap">'
  +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
@@ -1035,7 +1048,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
+    window.location.replace('/'+datum.slug+'');
   });
 
 var locations = new Bloodhound({
