@@ -386,6 +386,7 @@ $this->registerCss('
     position:relative;   
     border-radius:10px;
     padding-bottom:35px;
+    margin-bottom: 20px;
     overflow:hidden;
 }
 .bg-black{

@@ -195,10 +195,6 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 <?php
-echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-3',
-    'is_ajax' => true
-]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
@@ -715,6 +711,10 @@ $this->registerCss('
     }
 }
 ');
+echo $this->render('/widgets/blogs/whats-new', [
+    'size' => 'col-md-3',
+    'is_ajax' => true
+]);
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
