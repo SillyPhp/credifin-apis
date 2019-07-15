@@ -886,4 +886,31 @@ class ApplicationForm extends Model
 
         return $application;
     }
+
+    public function getCloneUnclaimed($aidk,$application_type)
+    {
+        $application = EmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->where(['a.application_enc_id' => $aidk])
+            ->select(['a.application_enc_id','a.preferred_gender','a.description',
+                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug','o.*'])
+            ->joinwith(['title k' => function ($b) {
+                $b->joinWith(['parentEnc l'], false);
+                $b->joinWith(['categoryEnc m'], false);
+            }], false)
+            ->joinWith(['applicationUnclaimOptions o'],false)
+            ->joinWith(['applicationPlacementCities p'=>function($b)
+            {
+                $b->select(['p.application_enc_id','q.city_enc_id','name']);
+                $b->joinWith(['cityEnc q'],false);
+            }])
+            ->joinWith(['applicationTypeEnc y' => function ($b) use ($application_type) {
+                $b->andWhere(['y.name' => $application_type]);
+            }], false, 'INNER JOIN')
+            ->asArray()
+            ->one();
+        return $application;
+
+    }
 }

@@ -200,7 +200,7 @@ class JobsController extends ApiBaseController
                     'b.last_date',
                     'j.city_enc_id',
                     'j.name city_name'
-            ])
+                ])
                 ->where(['a.created_by' => $candidate->user_enc_id, 'a.review' => 1])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->distinct();
@@ -611,7 +611,9 @@ class JobsController extends ApiBaseController
 
         $applied_app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id', 'f.status', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", d.icon) icon', 'g.name as org_name',
+            ->select(['a.application_enc_id',
+                'SUBSTRING(i.name,1,CHAR_LENGTH(i.name) - 1) AS type',
+                'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id', 'f.status', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", d.icon) icon', 'g.name as org_name',
 //                'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active',
 //                'COUNT(h.is_completed) as total',
                 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
@@ -694,7 +696,7 @@ class JobsController extends ApiBaseController
             ->one();
 
         if ($chk) {
-            return $this->response(409,'already filled');
+            return $this->response(409, 'already filled');
         }
 
         $questions = OrganizationQuestionnaire::find()
@@ -722,23 +724,24 @@ class JobsController extends ApiBaseController
         }
     }
 
-    public function actionFillQuestionnaire(){
+    public function actionFillQuestionnaire()
+    {
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
-        if(isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])){
+        if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
             $questionnaire_id = $parameters['questionnaire_enc_id'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
-        if(isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])){
+        if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
             $applied_application_id = $parameters['applied_application_enc_id'];
-        }else{
+        } else {
             return $this->response(422);
         }
 
-        $data = json_decode($parameters['data'],true);
+        $data = json_decode($parameters['data'], true);
         $data = $data['response'];
 
         $answered_model = new AnsweredQuestionnaire();
@@ -749,10 +752,10 @@ class JobsController extends ApiBaseController
         $answered_model->questionnaire_enc_id = $questionnaire_id;
         $answered_model->created_by = $candidate->user_enc_id;
         $answered_model->created_on = date('Y-m-d H:i:s');
-        if($answered_model->save()){
-            foreach ($data as $d){
+        if ($answered_model->save()) {
+            foreach ($data as $d) {
 
-                if($d['field_type'] == 'text' || $d['field_type'] == 'textarea' || $d['field_type'] == 'number' || $d['field_type'] == 'date' || $d['field_type'] == 'time'){
+                if ($d['field_type'] == 'text' || $d['field_type'] == 'textarea' || $d['field_type'] == 'number' || $d['field_type'] == 'date' || $d['field_type'] == 'time') {
                     $field_model = new AnsweredQuestionnaireFields();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -762,12 +765,12 @@ class JobsController extends ApiBaseController
                     $field_model->answer = $d['answer'];
                     $field_model->created_on = date('Y-m-d H:i:s');
                     $field_model->created_by = $candidate->user_enc_id;
-                    if(!$field_model->save()){
+                    if (!$field_model->save()) {
                         return $this->response(500);
                     }
                 }
 
-                if($d['field_type'] == 'select' || $d['field_type'] == 'radio'){
+                if ($d['field_type'] == 'select' || $d['field_type'] == 'radio') {
                     $field_model = new AnsweredQuestionnaireFields();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -777,13 +780,13 @@ class JobsController extends ApiBaseController
                     $field_model->field_option_enc_id = $d['option_enc_id'];
                     $field_model->created_on = date('Y-m-d H:i:s');
                     $field_model->created_by = $candidate->user_enc_id;
-                    if(!$field_model->save()){
+                    if (!$field_model->save()) {
                         return $this->response(500);
                     }
                 }
 
-                if($d['field_type'] == 'checkbox'){
-                    foreach ($d['options'] as $option){
+                if ($d['field_type'] == 'checkbox') {
+                    foreach ($d['options'] as $option) {
                         $utilitiesModel = new Utilities();
                         $fieldsModel = new AnsweredQuestionnaireFields;
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -793,14 +796,14 @@ class JobsController extends ApiBaseController
                         $fieldsModel->field_option_enc_id = $option['option_enc_id'];
                         $fieldsModel->created_on = date('Y-m-d H:i:s');
                         $fieldsModel->created_by = $candidate->user_enc_id;
-                        if(!$fieldsModel->save()){
+                        if (!$fieldsModel->save()) {
                             return $this->response(500);
                         }
                     }
                 }
             }
-        }else{
-            return $this->response(500,'problem in saving questionnaire');
+        } else {
+            return $this->response(500, 'problem in saving questionnaire');
         }
 
         $update = Yii::$app->db->createCommand()
@@ -809,7 +812,7 @@ class JobsController extends ApiBaseController
         if ($update) {
             return $this->response(201);
         } else {
-            return $this->response(500,'error occured while updating applied applications');
+            return $this->response(500, 'error occured while updating applied applications');
         }
 
     }
@@ -868,7 +871,7 @@ class JobsController extends ApiBaseController
 
         if (!empty($applied_user)) {
             return $this->response(200, $applied_user);
-        }else{
+        } else {
             return $this->response(404);
         }
 

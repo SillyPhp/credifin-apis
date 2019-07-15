@@ -2,7 +2,9 @@
 
 use yii\helpers\Url;
 
-$link = Url::to($org_slug . '/reviews', true);
+$referral = Yii::$app->referral->getReferralCode();
+
+$link = Url::to($org_slug . '/reviews' . $referral, true);
 ?>
     <script id="organization-reviews" type="text/template">
         {{#.}}
@@ -36,11 +38,11 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                                            <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
-                                                <button type="button"  data-toggle="modal" data-target="#report">
-                                                    <i class="fas fa-flag"></i> Report
-                                                </button>
-                                            </div>
+                        <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
+                            <button type="button" data-toggle="modal" data-target="#report">
+                                <i class="fas fa-flag"></i> Report
+                            </button>
+                        </div>
                         <div class="publish-date">{{created_on}}</div>
                         {{#is_current_employee}}
                         <div class="emp-duration">Current Employee</div>
@@ -110,23 +112,25 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                                  <div class="usefull-bttn pull-right">
-                                  <div class="use-bttn">
-                                  <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i class="fas fa-thumbs-up"></i> Usefull
-                                 </button>
-                                 </div>
-                                 <div class="notuse-bttn">
-                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i class="fas fa-thumbs-down"></i> Not Usefull
+                        <div class="usefull-bttn pull-right">
+                            <div class="use-bttn">
+                                <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i
+                                            class="fas fa-thumbs-up"></i> Usefull
                                 </button>
-                               </div>
-                       </div>
+                            </div>
+                            <div class="notuse-bttn">
+                                <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
+                                            class="fas fa-thumbs-down"></i> Not Usefull
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         {{/.}}
     </script>
-  <input type="hidden" name="review_enc_id" id="review_enc_id">
+    <input type="hidden" name="review_enc_id" id="review_enc_id">
     <div id="report" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
@@ -139,39 +143,43 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="form-group form-md-radios">
                         <label></label>
                         <form id="report_form">
-                        <div class="md-radio-list">
-                            <div class="md-radio">
-                                <input type="radio" id="radio1" name="reporting_radio" value="1" class="md-radiobtn">
-                                <label for="radio1">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    This post contains hateful, violent, or inappropriate content </label>
+                            <div class="md-radio-list">
+                                <div class="md-radio">
+                                    <input type="radio" id="radio1" name="reporting_radio" value="1"
+                                           class="md-radiobtn">
+                                    <label for="radio1">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains hateful, violent, or inappropriate content </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio2" name="reporting_radio" value="2"
+                                           class="md-radiobtn">
+                                    <label for="radio2">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains advertising or spam</label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio3" name="reporting_radio" value="3"
+                                           class="md-radiobtn">
+                                    <label for="radio3">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span> Off-topic </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio4" name="reporting_radio" value="4"
+                                           class="md-radiobtn">
+                                    <label for="radio4">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains conflicts of interest </label>
+                                </div>
                             </div>
-                            <div class="md-radio">
-                                <input type="radio" id="radio2" name="reporting_radio" value="2" class="md-radiobtn">
-                                <label for="radio2">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    This post contains advertising or spam</label>
-                            </div>
-                            <div class="md-radio">
-                                <input type="radio" id="radio3" name="reporting_radio" value="3" class="md-radiobtn">
-                                <label for="radio3">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span> Off-topic </label>
-                            </div>
-                            <div class="md-radio">
-                                <input type="radio" id="radio4" name="reporting_radio" value="4" class="md-radiobtn">
-                                <label for="radio4">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    This post contains conflicts of interest </label>
-                            </div>
-                        </div>
                         </form>
                     </div>
                 </div>
