@@ -45,7 +45,7 @@ use yii\helpers\Url;
 
                 </div>
                 <div class="rating">
-                    <div class="reviews-rate"> Currenlty No Review</div>
+                    <div class="reviews-rate"> Currently No Review</div>
                 </div>
                 {{/rating}}
                 <div class="row">

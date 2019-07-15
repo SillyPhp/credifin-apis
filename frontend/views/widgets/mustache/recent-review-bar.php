@@ -9,12 +9,11 @@ use yii\bootstrap\ActiveForm;
         <div class="min-review-box">
             <div class="r-logo">
                 {{#logo}}
-                <a href="/{{slug}}/reviews">
+                <a href="/{{reviews_slug}}">
                     <img src="{{logo}}">
                 </a>
                 {{/logo}}
                 {{^logo}}
-                <a href="/{{slug}}/reviews">
                     <canvas class="user-icon" name="{{name}}" width="100" height="100"
                             color="{{color}}" font="35px"></canvas>
                 </a>
@@ -41,7 +40,7 @@ use yii\bootstrap\ActiveForm;
 
                     </div>
                     <div class="rating">
-                        <div class="reviews-rate"> Currenlty No Review</div>
+                        <div class="reviews-rate"> Currently No Review</div>
                     </div>
                     {{/rating}}
                 </div>
