@@ -49,7 +49,11 @@ class DashboardController extends Controller
         $model = new \account\models\services\ServiceSelectionForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            return $this->redirect('/account/dashboard');
+            if (Yii::$app->user->identity->organization) {
+                return $this->redirect('/' . Yii::$app->user->identity->organization->slug);
+            } else{
+                return $this->redirect('/' . Yii::$app->user->identity->username . '/edit');
+            }
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {

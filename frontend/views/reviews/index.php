@@ -1224,6 +1224,9 @@ body.modal-open{
         transform: translateY(-0%);
         margin:auto;
     }
+    .head-text {
+        margin-top: 80px;
+    }
 }
 ');
 echo $this->render('/widgets/mustache/review-cards-company');

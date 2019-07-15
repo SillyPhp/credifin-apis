@@ -48,6 +48,14 @@ $this->registerCss('
 .secondary-headers.on-top a{
     color:#fff;
 }
+@media only screen and (max-width: 900px) {
+    .secondary-headers{
+        top: 56px;
+    }
+    .menuzord-responsive .menuzord-brand {
+        margin: 8px 30px 7px 20px;
+    }
+}
 @media screen and (max-width: 571px) and (min-width: 0px) {
     .secondary-headers-right{padding-right:15px;}
     .secondary-headers-right a{padding:0px 5px;}
