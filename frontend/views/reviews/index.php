@@ -41,9 +41,6 @@ $this->params['seo_tags'] = [
 
     <section class="head-bg">
         <div class="overlay-bg"></div>
-<!--        <div class="bg-img">-->
-<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">
-<!--        </div>-->
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -1236,6 +1233,9 @@ body.modal-open{
         position:relative;
         transform: translateY(-0%);
         margin:auto;
+    }
+    .head-text {
+        margin-top: 80px;
     }
 }
 ');

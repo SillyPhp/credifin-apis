@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%assigned_categories}}".
  *
@@ -12,8 +10,8 @@ use Yii;
  * @property string $category_enc_id Foreign Key to Categories Table
  * @property string $parent_enc_id Foreign Key to Categories Table
  * @property string $assigned_to Assigned To
- * @property string $icon
- * @property string $icon_png
+ * @property string $icon SVG Icon
+ * @property string $icon_png PNG Icon
  * @property string $organization_enc_id Foreign Key to Organizations Table
  * @property string $created_on On which date Category information was added to database
  * @property string $created_by By which User Category information was added
@@ -52,8 +50,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
             [['assigned_to', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['assigned_category_enc_id', 'category_enc_id', 'parent_enc_id', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['icon', 'icon_png'], 'string', 'max' => 50],
+            [['assigned_category_enc_id', 'category_enc_id', 'parent_enc_id', 'icon', 'icon_png', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['assigned_category_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],

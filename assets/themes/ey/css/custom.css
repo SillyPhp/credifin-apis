@@ -132,7 +132,7 @@ ul.list {
 }
 @media (max-width: 500px) {
     .menuzord-responsive .menuzord-brand {
-        margin: 8px 0 10px 0 !important;
+        margin: 8px 0 6px 0 !important;
     }
 }
 .btn{

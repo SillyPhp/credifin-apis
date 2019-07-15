@@ -97,7 +97,7 @@ a.wn-overlay-text {
 }
 @media screen and (max-width: 768px){
     .wn-box-icon{
-        max-width: 100%;
+        max-width: 100% !important;
     }
 }
 ');
