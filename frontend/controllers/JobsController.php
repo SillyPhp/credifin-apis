@@ -241,8 +241,6 @@ class JobsController extends Controller
         }
         $options = [];
         $cards = ApplicationCards::jobs($options);
-        print_r($cards);
-        exit();
         return $this->render('list');
     }
 
