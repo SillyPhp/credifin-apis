@@ -12,8 +12,8 @@
                 <button id="btnDelete" class="btn btn-default btn-sm pull-right">
                     <span class="glyphicon glyphicon-remove"></span> Remove
                 </button>
-                <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
-                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                <button id="btnAccept" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                    <span class="glyphicon glyphicon-pencil"></span> Accept
                 </button>
                 <p id="pDetails"></p>
             </div>
@@ -99,18 +99,22 @@ function FetchEventAndRenderCalendar(){
     events = [];
     $.ajax({
         type: 'GET',
-        url: 'flexible-interview',
+        url: 'get-events',
         async: false,
         success: function(data) {
             data = JSON.parse(data);
             $.each(data, function(i,v) {
                 events.push({
-                    eventID: v.EventID,
+                    eventID: v.EventId,
                     title: v.Subject,
                     profile: v.Profile,
                     start: moment(v.Start),
                     end: moment(v.End),
-                    color: v.ThemeColor
+                    color: v.ThemeColor,
+                    type:v.type,
+                    date_time_enc_id:v.date_time,
+                    applied_application_enc_id:v.applied_application_enc_id,
+                    interview_candidate_enc_id:v.interview_c_enc_id
                 })
             });
             GenerateCalendar(events);
@@ -170,9 +174,25 @@ function GenerateCalendar(events){
     })
 }
 
-$('#btnEdit').click(function() {
-    openAddEditForm();
+$('#btnAccept').click(function() {
+    acceptInterview();
 });
+
+function acceptInterview(){
+    if(selectedEvent != null){
+        console.log(selectedEvent);
+        $.ajax({
+        type: 'POST',
+        url: 'candidate-accepted',
+        data:{date_enc_id:selectedEvent.date_time_enc_id, interview_candidate_enc_id: selectedEvent.interview_candidate_enc_id, scheduled_interview_enc_id:selectedEvent.eventID, applied_app_id:selectedEvent.applied_application_enc_id},
+        async: false,
+        success: function(data) {
+           $('#myModal').modal('hide');
+        }
+    });
+        
+    }
+}
 
 $('#btnDelete').click(function() {
   if(selectedEvent != null && confirm('Are you sure?')){
