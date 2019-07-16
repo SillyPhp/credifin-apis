@@ -223,6 +223,7 @@ class SiteController extends Controller
                 $x->groupBy(['b.quiz_enc_id']);
             }], false)
             ->where([
+                'a.display' => 1,
                 'a.is_deleted' => 0
             ])
             ->asArray()
