@@ -2,6 +2,7 @@
 
 namespace frontend\models\applications;
 
+use frontend\models\referral\RefferalJobAppliedTracking;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -83,6 +84,7 @@ class JobApplied extends Model
                                 'aid' => $appliedModel->applied_application_enc_id,
                             ];
                             $this->save_process($id, $app_id);
+                            RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
                             return $status;
 
                         } else {
@@ -136,6 +138,7 @@ class JobApplied extends Model
                 'aid' => $appliedModel->applied_application_enc_id,
             ];
             $this->save_process($id, $app_id);
+            RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
             return $status;
         } else {
             return false;

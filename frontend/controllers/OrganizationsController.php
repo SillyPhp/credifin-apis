@@ -1,7 +1,7 @@
 <?php
 
 namespace frontend\controllers;
-
+use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Designations;
@@ -1049,6 +1049,13 @@ class OrganizationsController extends Controller
             if (!$companyReview->save()) {
                 return true;
             } else {
+                if ($request_type == 1) {
+                    ReferralReviewsTracking::widget(['claim_review_id' => $companyReview->review_enc_id]);
+                }
+                else
+                {
+                    ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
+                }
                 return true;
             }
         }
