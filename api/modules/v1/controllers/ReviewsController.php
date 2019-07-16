@@ -1179,23 +1179,44 @@ class ReviewsController extends ApiBaseController
 
         if ($org) {
             $claimed_org_review = OrganizationReviews::find()
-                ->select(['review_enc_id',
-                    'organization_enc_id',
-                    'show_user_details',
-                    'skill_development Skill_Development',
-                    'work_life Work_Life_Balance',
-                    'compensation Salary_And_Benefits',
-                    'organization_culture Company_Culture',
-                    'job_security Job_Security',
-                    'growth Career_Growth',
-                    'work Work_Satisfaction',
-                    'likes',
-                    'dislikes'])
-                ->where(['organization_enc_id' => $org_enc_id, 'created_by' => $candidate->user_enc_id])
+                ->alias('a')
+                ->select([
+                    'a.review_enc_id',
+                    'a.organization_enc_id',
+                    'a.show_user_details',
+                    'a.skill_development Skill_Development',
+                    'a.work_life Work_Life_Balance',
+                    'a.compensation Salary_And_Benefits',
+                    'a.organization_culture Company_Culture',
+                    'a.job_security Job_Security',
+                    'a.growth Career_Growth',
+                    'a.work Work_Satisfaction',
+                    'a.likes',
+                    'a.dislikes',
+                    'b.first_name',
+                    'b.last_name'
+                ])
+                ->where(['a.organization_enc_id' => $org_enc_id, 'a.created_by' => $candidate->user_enc_id])
+                ->joinWith(['createdBy b'],false)
                 ->asArray()
                 ->one();
-            if (!empty($claimed_org_review)) {
-                return $this->response(200, $claimed_org_review);
+
+            $sub_array = [];
+            $data = [];
+            if(!empty($claimed_org_review)) {
+                foreach ($claimed_org_review as $key => $value) {
+                    if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'first_name' || $key == 'last_name') {
+                        $sub_array[$key] = $value;
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }
+
+            $sub_array['data'][] = $data;
+
+            if (!empty($sub_array)) {
+                return $this->response(200, $sub_array);
             }
 
         } elseif ($unclaimed_org) {
@@ -1215,10 +1236,16 @@ class ReviewsController extends ApiBaseController
                     'a.likes',
                     'a.dislikes',
                     'a.show_user_details',
+                    'b.first_name',
+                    'b.last_name'
                 ]
             ];
 
-            $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+            $options['joins']['created_by'] = [
+                'alias' => 'b'
+            ];
+
+            $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
             $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
 
             $options['quant'] = 'one';
@@ -1244,11 +1271,16 @@ class ReviewsController extends ApiBaseController
                         'a.dislikes',
                         'a.show_user_details',
                         'a.reviewer_type',
+                        'b.first_name',
+                        'b.last_name'
                     ]
                 ];
 
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [2, 3]];
                 $options['quant'] = 'one';
 
@@ -1274,10 +1306,16 @@ class ReviewsController extends ApiBaseController
                         'a.dislikes',
                         'a.show_user_details',
                         'a.reviewer_type',
+                        'b.first_name',
+                        'b.last_name'
                     ]
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [4, 5]];
                 $options['quant'] = 'one';
 
@@ -1303,10 +1341,16 @@ class ReviewsController extends ApiBaseController
                         'a.dislikes',
                         'a.show_user_details',
                         'a.reviewer_type',
+                        'b.first_name',
+                        'b.last_name'
                     ]
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [6, 7]];
                 $options['quant'] = 'one';
 
@@ -1314,8 +1358,24 @@ class ReviewsController extends ApiBaseController
 
             }
 
-            if (!empty($reviews)) {
-                return $this->response(200, $reviews);
+            $sub_array = [];
+            $data = [];
+            if(!empty($reviews)) {
+                foreach ($reviews as $key => $value) {
+                    if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'reviewer_type' || $key == 'first_name' || $key == 'last_name') {
+                        $sub_array[$key] = $value;
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }else{
+                return $this->response(404);
+            }
+
+            $sub_array['data'][] = $data;
+
+            if (!empty($sub_array)) {
+                return $this->response(200, $sub_array);
             } else {
                 return $this->response(404);
             }
