@@ -946,6 +946,7 @@ class ReviewsController extends ApiBaseController
 
                 //check if review already exists else save new record
                 if (!empty($chk)) {
+                    $chk->average_rating = $avg_rating;
                     $chk->skill_development = $model->skill_development;
                     $chk->work_life = $model->work_life_balance;
                     $chk->compensation = $model->salary_benefits;
