@@ -67,10 +67,10 @@ class Reviews extends Model
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'like', 'dislike'], 'required', 'on' => 'edit_school'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'edu_institute'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'like', 'dislike'], 'required', 'on' => 'edit_edu_institute'],
-            [['job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'integer', 'min' => 1, 'max' => 5],
-            [['reviewer_type'], 'integer', 'min' => 0, 'max' => 7],
-            [['user_detail'], 'integer', 'min' => 0, 'max' => 1],
-            [['current_employee'], 'integer', 'min' => 0, 'max' => 1],
+            [['job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'string', 'min' => 1, 'max' => 5],
+            [['reviewer_type'], 'string', 'min' => 0, 'max' => 7],
+            [['user_detail'], 'string', 'min' => 0, 'max' => 1],
+            [['current_employee'], 'string', 'min' => 0, 'max' => 1],
             [['to'], 'safe']
         ];
     }
