@@ -9,9 +9,9 @@
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
             <div class="modal-body">
-                <button id="btnDelete" class="btn btn-default btn-sm pull-right">
-                    <span class="glyphicon glyphicon-remove"></span> Remove
-                </button>
+<!--                <button id="btnDelete" class="btn btn-default btn-sm pull-right">-->
+<!--                    <span class="glyphicon glyphicon-remove"></span> Remove-->
+<!--                </button>-->
                 <button id="btnAccept" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
                     <span class="glyphicon glyphicon-pencil"></span> Accept
                 </button>
@@ -188,6 +188,11 @@ function acceptInterview(){
         async: false,
         success: function(data) {
            $('#myModal').modal('hide');
+           if(data.status == 200){
+               toastr.success(data.message,'success');
+           }else{
+               toastr.error(data.message,'error');
+           }
         }
     });
         
