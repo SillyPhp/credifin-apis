@@ -16,7 +16,6 @@
         data: {'_csrf-common':$('meta[name="csrf-token"]').attr('content')},
         dataType: 'JSON',
         success: function(data){
-            console.log(data);
             for (let i = 0; i < data.results.length; i++) {
                 quiz.push({
                     details: data.results[i].category,
@@ -25,7 +24,6 @@
                     correct: createCorrectAnswersArray(data.results[i]['quizAnswers'])
                 });
             }
-            console.log(quiz);
         }
     });
 
@@ -636,6 +634,5 @@ $(document).on("click", ".sc-ifAKCX", function(){
     if(btns === 5){
         $(".sc-bZQynM .sc-gzVnrw:first-child").remove();
     }
-console.log(11, btns);
 });
 ');
