@@ -1016,6 +1016,12 @@ a.login-s:hover {
 .effect.jaques a:hover {
     border-radius: 50%;
 }
+@media screen and (max-width: 991px) {
+    #elem-button-share-quiz-wa{display:none !important;}
+}
+@media screen and (min-width: 991px) {
+    #elem-button-share-quiz-wa-mob{display:none !important;}
+}
 /* sharing icon css ends*/
 
 @-webkit-keyframes circle {
