@@ -56,6 +56,12 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
+@media screen and (max-width: 991px) {
+    #elem-button-share-quiz-wa{display:none !important;}
+}
+@media screen and (min-width: 991px) {
+    #elem-button-share-quiz-wa-mob{display:none !important;}
+}
 ');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $script = <<<JS

@@ -71,6 +71,8 @@ $this->params['seo_tags'] = [
                                         class="fa fa-linkedin" aria-hidden="true"></i></a>
                             <a href="#" id="wa-share" class="whats" target="_blank" title="Share on Whatsapp"><i
                                         class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                            <a href="#" id="wa-share-mob" class="whats" target="_blank" title="Share on Whatsapp"><i
+                                        class="fa fa-whatsapp" aria-hidden="true"></i></a>
                         </div>
                     </div>
                     <?php
@@ -184,6 +186,12 @@ $this->registerCss('
     .logo-bottom a img{
         width:30vw !Important;
     }
+}
+@media screen and (max-width: 991px) {
+    #wa-share{display:none !important;}
+}
+@media screen and (min-width: 991px) {
+    #wa-share-mob{display:none !important;}
 }
 ');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
