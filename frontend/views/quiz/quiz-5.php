@@ -1,3 +1,6 @@
+<a href="/" class="logo">
+    <img src="/assets/common/logos/logo.svg"/>
+</a>
 <div id="root"></div>
 <script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-de7e2ef6bfefd24b79a3f68b414b87b8db5b08439cac3f1012092b2290c719cd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.8.6/umd/react.production.min.js"></script>
@@ -5,166 +8,68 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/styled-components/4.2.0/styled-components.min.js"></script>
 <script id="rendered-js">
     // array of objects describing the quiz
-    const quiz = [
-        {
-            question: 'Which driver did Michael Schumacher hit on the way to the grid for the 2005 Chinese Grand Prix?',
-            answers: [
-                {
-                    answer: 'Ralf Schumacher',
-                    percentage: 19
-                },
-
-                {
-                    answer: 'Nicolas Kiesa',
-                    percentage: 11
-                },
-
-                {
-                    answer: 'Christijan Albers',
-                    percentage: 52
-                },
-
-                {
-                    answer: 'Narain Karthikeyan',
-                    percentage: 18
-                }],
-
-
-            correct: 2,
-            details: 'Schumacher and Minardi driver Christijan Albers clashed as they worked their way around to the grid. Schumacher later span out of the race under the Safety Car too, to cap off a less-than-great weekend for the German.'
-        },
-
-        {
-            question: 'Red Bull Racing took their first ever win at the 2009 Chinese Grand Prix, with a one-two for Sebastian Vettel and Mark Webber. But who was third?',
-            answers: [
-                {
-                    answer: 'Robert Kubica',
-                    percentage: 13
-                },
-
-                {
-                    answer: 'Jenson Button',
-                    percentage: 55
-                },
-
-                {
-                    answer: 'Fernando Alonso',
-                    percentage: 17
-                },
-
-                {
-                    answer: 'Lewis Hamilton',
-                    percentage: 15
-                }],
-
-
-            correct: 1,
-            details: 'Jenson Button completed the podium for Brawn.'
-        },
-
-        {
-            question: 'Michael Schumacher secured his 91st and final victory at the 2006 Chinese Grand Prix. But where did he secure his final pole position?',
-            answers: [
-                {
-                    answer: '2005 Japanese Grand Prix',
-                    percentage: 16
-                },
-
-                {
-                    answer: '2006 French Grand Prix',
-                    percentage: 26
-                },
-
-                {
-                    answer: '2006 Chinese Grand Prix',
-                    percentage: 19
-                },
-
-                {
-                    answer: '2006 Italian Grand Prix',
-                    percentage: 39
-                }],
-
-
-            correct: 1,
-            details: 'Schumacher’s 68th and final pole position came at the French Grand Prix at Magny-Cours in 2006.'
-        },
-
-        {
-            question: 'Daniil Kvyat earned his ‘Torpedo’ nickname at the 2016 Chinese Grand Prix. But who coined the moniker?   ',
-            answers: [
-                {
-                    answer: 'Mark Webber',
-                    percentage: 10
-                },
-
-                {
-                    answer: 'Daniel Ricciardo',
-                    percentage: 11
-                },
-
-                {
-                    answer: 'Sebastian Vettel',
-                    percentage: 75
-                },
-
-                {
-                    answer: 'Lewis Hamilton',
-                    percentage: 4
-                }],
-
-
-            correct: 2,
-            details: 'It was Sebastian Vettel, who\'d been left displeased with Kvyat’s aggressive pass in Turn 1.'
-        },
-
-        {
-            question: 'Jenson Button endured an embarrassing moment at the 2011 Chinese Grand Prix. What did he do?',
-            answers: [
-                {
-                    answer: 'Got beached in the gravel at the pit entry',
-                    percentage: 6
-                },
-
-                {
-                    answer: 'Spun under the Safety Car, brought out after he’d clashed with his team mate and left debris on the track',
-                    percentage: 25
-                },
-
-                {
-                    answer: 'Parked in the wrong place after winning, forcing him to run down the pit lane',
-                    percentage: 21
-                },
-
-                {
-                    answer: 'Drove into the Red Bull pit box',
-                    percentage: 48
-                }],
-
-
-            correct: 3,
-            details: 'In a moment that left him a tad red-faced, Button pulled into Red Bull’s pit box, before being frantically waved on by the team’s mechanics so that they could service Sebastian Vettel.'
+    const quiz = [];
+    $.ajax({
+        type: 'POST',
+        url: window.location.href,
+        async: false,
+        data: {'_csrf-common':$('meta[name="csrf-token"]').attr('content')},
+        dataType: 'JSON',
+        success: function(data){
+            console.log(data);
+            for (let i = 0; i < data.results.length; i++) {
+                quiz.push({
+                    details: data.results[i].category,
+                    question: data.results[i].question,
+                    answers: createAnswersArray(data.results[i]['quizAnswers']),
+                    correct: createCorrectAnswersArray(data.results[i]['quizAnswers'])
+                });
+            }
+            console.log(quiz);
         }
-        ];
-    // $.ajax({
-    //     type: 'POST',
-    //     url: 'https://ajay.eygb.me/quiz/quiz-title-1',
-    //     async: false,
-    //     data: {'_csrf-common':$('meta[name="csrf-token"]').attr('content')},
-    //     dataType: 'JSON',
-    //     success: function(data){
-    //         console.log(data);
-    //         for (let i = 0; i < data.results.length; i++) {
-    //             quiz.push({
-    //                 details: data.results[i].category,
-    //                 // difficulty: data.results[i].difficulty,
-    //                 // type: data.results[i].type,
-    //                 question: data.results[i].question,
-    //                 answers: createAnswersArray(data.results[i]['quizAnswers'])
-    //             });
-    //         }
-    //     }
-    // });
+    });
+
+    function createAnswersArray(answers) {
+
+        const answersLength = answers.length;
+        let answersArray = [];
+        for (let i = 0; i < answers.length; i++) {
+            if (answers[i].is_answer == 1) {
+                answersArray.push({
+                    answer: answers[i].answer,
+                    percentage: 88
+                })
+            } else {
+                answersArray.push({
+                    answer: answers[i].answer,
+                    percentage: 22
+                })
+            }
+        }
+        // if(answersLength === 2){
+        //     answersArray.sort((a, b) => a.answer < b.answer);
+        // }
+        return answersArray;
+    }
+
+    function createCorrectAnswersArray(answers) {
+
+        const answersLength = answers.length;
+        // let answersArray = [];
+        for (let i = 0; i < answers.length; i++) {
+            if (answers[i].is_answer == 1) {
+                // answersArray.push({
+                //     answer: answers[i].answer,
+                //     percentage: 88
+                // })
+                return i;
+            }
+        }
+        // if(answersLength === 2){
+        //     answersArray.sort((a, b) => a.answer < b.answer);
+        // }
+        // return answersArray;
+    }
 
 
     /* Main
@@ -244,6 +149,7 @@
     const Question = styled.p`
   line-height: 1.5;
   font-weight: 600;
+  font-size: 25px;
 `;
 
 
@@ -265,7 +171,7 @@
   text-align: left;
   color: inherit;
   background: ${props => props.isCorrect ? '#5BC20F' : 'rgba(255, 255, 255, 0.2)'};
-  padding: 0.75rem 2.5rem 0.75rem 0.9rem;
+  padding: 1.5rem 2.5rem 1.5rem 0.9rem;
   margin: 0.2rem 0;
   border: none;
   border-left: ${props => props.choice ? '4px solid #D31411' : 'none'};
@@ -273,7 +179,7 @@
   font-family: inherit;
   font-weight: ${props => props.isCorrect ? '700' : '500'};
   text-transform: capitalize;
-  font-size: 1rem;
+  font-size: 1.7rem;
   letter-spacing: 0.07rem;
   transition: all 0.1s ease-out;
   position: relative;
@@ -610,7 +516,6 @@
                     round: this.state.round + 1,
                     showResult: false
                 });
-
             } else {
                 this.goToScore();
             }
@@ -710,4 +615,27 @@ body {
   place-items: center;
   font-family: "Open Sans", sans-serif;
 }
+.logo{
+    text-align: center;
+    position: absolute;
+    padding: 20px 0px;
+}
+.logo img{
+    width: 60%;
+    max-width: 300px;
+}
+@media only screen and (max-width: 768px){
+    .logo{
+        position: relative;
+    }
+}
+');
+$this->registerJs('
+$(document).on("click", ".sc-ifAKCX", function(){
+    var btns = $(".sc-bZQynM .sc-gzVnrw").length;
+    if(btns === 5){
+        $(".sc-bZQynM .sc-gzVnrw:first-child").remove();
+    }
+console.log(11, btns);
+});
 ');

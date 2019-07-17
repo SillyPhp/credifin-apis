@@ -72,12 +72,14 @@ class QuizController extends Controller
                 'total' => $t,
                 'quiz' => $temp
             ]);
+        } elseif ($temp['template'] == 5) {
+            $this->layout = 'quiz5-main';
+            return $this->render('quiz-5', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
         }
-    }
-
-    public function actionTest(){
-        $this->layout = 'quiz5-main';
-        return $this->render('quiz-5');
     }
 
 }
