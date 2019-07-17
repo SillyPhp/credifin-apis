@@ -94,6 +94,7 @@ $this->params['seo_tags'] = [
                     <a href="#" id="elem-button-share-quiz" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
                     <a href="#" id="elem-button-share-quiz-twitter" class="tw" target="_blank" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                     <a href="#" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                    <a href="#" id="elem-button-share-quiz-wa-mob" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
                 </div>
             </div>
             <a href="/login" id="" class="login-s" title="Login or Signup to Empoweryouth">Login or Signup</a>

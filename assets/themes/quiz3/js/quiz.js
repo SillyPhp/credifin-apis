@@ -217,7 +217,8 @@
                         var path = window.location.pathname.split('/');
                         $('#elem-button-share-quiz').attr('href', 'http://www.facebook.com/sharer.php?u=' + window.location.hostname + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
                         $('#elem-button-share-quiz-twitter').attr('href', 'https://twitter.com/intent/tweet?text=' + window.location.hostname + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
-                        $('#elem-button-share-quiz-wa').attr('href', 'https://wa.me/?text=' + window.location.hostname + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
+                        $('#elem-button-share-quiz-wa').attr('href', 'https://wa.me/?text=' + window.location.href + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
+                        $('#elem-button-share-quiz-wa-mob').attr('href', 'whatsapp://send?text=' + window.location.href + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
                         $indicators.removeClass('show');
                         $indicators.find('li')
                             .removeClass('dark')
@@ -255,7 +256,7 @@
 
         var $social = $("<div>")
             .attr('class', 'results-social')
-            .html('<h3>Did you like the quiz? Share your results with your friends, so they can give it a shot!</h3><div class="effect jaques"><div class="buttons"><a href="" id="elem-button-share-quiz" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a><a href="" id="elem-button-share-quiz-twitter" class="tw" target="_blank" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a><a href="" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></div></div><a href="/login" id="" class="login-s" title="Login or Signup to Empoweryouth">Login or Signup</a>')
+            .html('<h3>Did you like the quiz? Share your results with your friends, so they can give it a shot!</h3><div class="effect jaques"><div class="buttons"><a href="" id="elem-button-share-quiz" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a><a href="" id="elem-button-share-quiz-twitter" class="tw" target="_blank" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a><a href="" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a><a href="" id="elem-button-share-quiz-wa-mob" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></div></div><a href="/login" id="" class="login-s" title="Login or Signup to Empoweryouth">Login or Signup</a>')
             .appendTo($results_slide);
 
         $("<button>")

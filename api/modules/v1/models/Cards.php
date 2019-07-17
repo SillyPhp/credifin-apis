@@ -47,11 +47,13 @@ class Cards
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration'
             ])
-            ->joinWith(['title b' => function ($x) {
+            ->innerJoinWith(['title b' => function ($x) {
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
             }], false)
-            ->joinWith(['organizationEnc d'], false)
+            ->innerJoinWith(['organizationEnc d'=>function($d){
+                $d->onCondition(['d.is_deleted'=>0]);
+            }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->joinWith(['locationEnc f' => function ($x) {
                     $x->joinWith(['cityEnc g'], false);
@@ -60,7 +62,7 @@ class Cards
             ->joinWith(['preferredIndustry h'], false)
             ->joinWith(['designationEnc l'], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->joinWith(['applicationOptions m'], false)
+            ->innerJoinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
 
         if (isset($options['company'])) {
@@ -69,11 +71,11 @@ class Cards
                 ['like', 'd.name', $options['company']]
             ]);
         }
-        
+
         if (isset($options['organization_id'])) {
             $cards->andWhere(['d.organization_enc_id' => $options['organization_id']]);
         }
-        
+
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',
@@ -152,7 +154,7 @@ class Cards
                     } else {
                         $result[$i]['salary'] = "₹" . (string)($val['max_salary']) . ' p.a.';
                     }
-                } else{
+                } else {
                     $result[$i]['salary'] = "Negotiable";
                 }
             }
@@ -188,18 +190,20 @@ class Cards
                 'c.name as title',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE NULL END logo'])
-            ->joinWith(['title b' => function ($x) {
+            ->innerJoinWith(['title b' => function ($x) {
                 $x->joinWith(['categoryEnc c'], false);
                 $x->joinWith(['parentEnc i'], false);
             }], false)
-            ->joinWith(['organizationEnc d'], false)
+            ->innerJoinWith(['organizationEnc d'=>function($d){
+                $d->onCondition(['d.is_deleted'=>0]);
+            }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->joinWith(['locationEnc f' => function ($x) {
                     $x->joinWith(['cityEnc g'], false);
                 }], false);
             }], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->joinWith(['applicationOptions m'], false)
+            ->innerJoinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0]);
 
         if (isset($options['company'])) {
@@ -217,11 +221,11 @@ class Cards
             'or',
             ['a.for_careers' => $options['for_careers']]
         ]);
-        
+
         if (isset($options['organization_id'])) {
             $cards->andWhere(['d.organization_enc_id' => $options['organization_id']]);
         }
-        
+
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',
@@ -291,7 +295,7 @@ class Cards
                     }
                 }
             }
-            if(empty($result[$i]['salary'])){
+            if (empty($result[$i]['salary'])) {
                 $result[$i]['salary'] = "Unpaid";
             }
             unset($result[$i]['max_salary']);
@@ -307,7 +311,8 @@ class Cards
         return self::_getCardsFromJobsNearMe($options);
     }
 
-    private static function _getCardsFromJobsNearMe($options){
+    private static function _getCardsFromJobsNearMe($options)
+    {
 
         $lat = $options['latitude'];
         $long = $options['longitude'];
@@ -381,7 +386,7 @@ class Cards
             ->joinWith(['designationEnc l'], false)
             ->joinWith(['preferredIndustry o'], false)
             ->having(['<', 'distance', $radius])
-            ->where(['j.name' => $options['type'], 'a.status' => 'Active', 'a.for_careers' => 0 ,'a.is_deleted' => 0]);
+            ->where(['j.name' => $options['type'], 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0]);
 
         if (!empty($options['keyword'])) {
             $data->andWhere([
