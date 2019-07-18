@@ -86,7 +86,7 @@ $this->params['seo_tags'] = [
                             <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
                         </div>
                         <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Academics</span>, <span>Faculity & Teaching Quality</span>
+                        <div class="rb-text">Reviews on the basis of <span>Academics</span>, <span>Faculty & Teaching Quality</span>
                         </div>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ $this->params['seo_tags'] = [
                             <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
                         </div>
                         <div class="rb-heading">Infrastructure and Environment</div>
-                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Accomodation & Food</span>
+                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Accommodation & Food</span>
                         </div>
                     </div>
                 </div>
@@ -683,7 +683,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.review_link+'');
+    window.location.replace('/'+datum.review_link);
   });
 JS;
 $this->registerJs($script);

@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <script id="review-card_main" type="text/template">
         {{#.}}
@@ -7,19 +9,19 @@ use yii\helpers\Url;
             <div class="com-review-box uncliamed_height fivestar-box">
                 <div class="com-logo">
                     {{#logo}}
-                    <a href="/{{slug}}/reviews">
+                    <a href="/{{profile_link}}">
                         <img src="{{logo}}">
                     </a>
                     {{/logo}}
                     {{^logo}}
-                    <a href="/{{slug}}/reviews">
+                    <a href="/{{review_link}}">
                         <canvas class="user-icon" name="{{name}}" width="100" height="100"
                                 color="{{color}}" font="35px"></canvas>
                     </a>
                     {{/logo}}
                 </div>
                 <div class="pos-rel">
-                <div class="com-name"><a href="/{{slug}}/reviews">{{name}}</a></div>
+                    <div class="com-name"><a href="/{{review_link}}">{{name}}</a></div>
                 </div>
                 <div class="com-loc"></div>
                 <div class="com-dep"></div>

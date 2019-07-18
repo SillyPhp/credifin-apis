@@ -35,7 +35,7 @@ $('#search_company').typeahead(null, {
     utilities.initials();
     $('.load-suggestions').hide();
 }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.review_link+'');
+    window.location.replace('/'+datum.review_link);
 });
 JS;
 $this->registerJs($script);
