@@ -1,11 +1,11 @@
 <?php
 
 namespace frontend\controllers;
+
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Designations;
-use common\models\EmployerApplications;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
 use common\models\OrganizationReviewLikeDislike;
@@ -41,7 +41,6 @@ use common\models\States;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
-use common\models\BusinessActivities;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
 
@@ -859,7 +858,7 @@ class OrganizationsController extends Controller
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
@@ -1051,9 +1050,7 @@ class OrganizationsController extends Controller
             } else {
                 if ($request_type == 1) {
                     ReferralReviewsTracking::widget(['claim_review_id' => $companyReview->review_enc_id]);
-                }
-                else
-                {
+                } else {
                     ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
                 }
                 return true;
