@@ -17,7 +17,7 @@ $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl() . $referral,
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
     ],
     'name' => [
         'keywords' => $keywords,
