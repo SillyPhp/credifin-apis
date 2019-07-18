@@ -46,7 +46,7 @@ use yii\helpers\Url;
                     <div class="cm-btns padd-0">
                         <div class="col-md-6 col-sm-6 col-xs-6">
                             <div class="color-blue">
-                                <a href="/{{review_link}}">View Profile</a>
+                                <a href="/{{profile_link}}">View Profile</a>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-6">
