@@ -21,6 +21,12 @@ if (!empty(Yii::$app->user->identity->organization)) {
         'url' => Url::toRoute('/templates'),
     ];
     array_push($result, $template);
+
+    $institute = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Manage Candidates'),
+        'url' => Url::toRoute('/institutes/manage-candidates'),
+    ];
+    array_push($result, $institute);
 }
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
