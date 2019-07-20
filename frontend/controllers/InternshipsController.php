@@ -243,7 +243,6 @@ class InternshipsController extends Controller
             }
             return $response;
         }
-
         return $this->render('list');
     }
 
