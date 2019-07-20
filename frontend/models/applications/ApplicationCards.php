@@ -30,10 +30,13 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/job/", a.slug, "' . $referral . '") link',
+                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
+                'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
                 'i.icon','(CASE
@@ -53,8 +56,6 @@ class ApplicationCards
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
                 'd.name as organization_name',
-                'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name as city'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
@@ -74,7 +75,9 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/job/", a.slug, "' . $referral . '") link',
+                'CONCAT("/job/", a.slug, "' . $referral . '") organization_link',
+                'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
                 'i.icon','(CASE
@@ -94,8 +97,6 @@ class ApplicationCards
                 'v.min_wage as min_salary',
                 new Expression('NULL as salary_duration'),
                 'd.name as organization_name',
-                'd.initials_color color',
-                'CONCAT("/job/", a.slug)  organization_link',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name as city'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
@@ -280,6 +281,7 @@ class ApplicationCards
 
     private static function _getCardsFromInternships($options)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $cards = EmployerApplications::find()
             ->alias('a')
             ->select([
@@ -287,9 +289,9 @@ class ApplicationCards
                 'f.location_enc_id location_id',
                 'a.last_date',
                 'i.name category',
-                'CONCAT("/internship/", a.slug) link',
+                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
                 'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
+                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
                 "g.name as city",
                 'a.type',
                 'm.fixed_wage as fixed_salary',
