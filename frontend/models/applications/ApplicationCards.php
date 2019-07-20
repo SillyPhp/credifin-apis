@@ -31,17 +31,6 @@ class ApplicationCards
     private static function _getCardsFromJobs($options)
     {
         $referral = Yii::$app->referral->getReferralCode();
-        $cards = EmployerApplications::find()
-            ->alias('a')
-            ->select([
-                'a.application_enc_id application_id',
-                'e.location_enc_id location_id',
-                'a.last_date',
-                'a.type',
-                'i.name category',
-                'l.designation',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
-        $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
@@ -61,7 +50,7 @@ class ApplicationCards
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
                END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
-                            'm.fixed_wage as fixed_salary',
+                'm.fixed_wage as fixed_salary',
                 'm.wage_type salary_type',
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
