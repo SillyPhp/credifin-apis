@@ -217,7 +217,6 @@ class DashboardController extends Controller
 
     private function FixedInterview()
     {
-
         $fixed_interview = AppliedApplicationProcess::find()
             ->alias('a')
             ->select([
@@ -234,7 +233,10 @@ class DashboardController extends Controller
                 'p.to',
                 'p.interview_date_timing_enc_id',
                 'q.name interview_type',
-                'b.applied_application_enc_id'
+                'b.applied_application_enc_id',
+                'c.sequence',
+                'b.current_round',
+                'd.process_field_enc_id'
             ])
             ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
                 $b->joinWith(['applicationEnc e' => function ($e) {
@@ -260,7 +262,7 @@ class DashboardController extends Controller
             }], false)
             ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = j.scheduled_interview_enc_id')
             ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
-            ->where(['is_completed' => 1])
+            ->where(new \yii\db\Expression('`b`.`current_round` = `c`.`sequence`'))
             ->asArray()
             ->all();
 
@@ -343,6 +345,7 @@ class DashboardController extends Controller
                 $data['date_time'] = $f['interview_date_timing_enc_id'];
                 $data['applied_application_enc_id'] = $f['applied_application_enc_id'];
                 $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
+                $data['process_field_enc_id'] = $f['process_field_enc_id'];
                 array_push($result, $data);
             }
 
@@ -358,72 +361,101 @@ class DashboardController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             $date_enc_id = Yii::$app->request->post('date_enc_id');
-            $interview_candidate_enc_id = Yii::$app->request->post('interview_candidate_enc_id');
+            $process_id = Yii::$app->request->post('process_id');
+            $interview_candidate_id = Yii::$app->request->post('candidate_interview_id');
             $scheduled_interview_enc_id = Yii::$app->request->post('scheduled_interview_enc_id');
             $applied_app_enc_id = Yii::$app->request->post('applied_app_id');
+            $type = Yii::$app->request->post('type');
 
-            $interview_candidates = InterviewCandidates::find()
-                ->select(['status'])
-                ->where(['scheduled_interview_enc_id' => $scheduled_interview_enc_id, 'applied_application_enc_id' => $applied_app_enc_id])
-                ->asArray()
-                ->one();
+            $resonse = [
+                'status' => 200,
+                'message' => 'already exists'
+            ];
 
-            $number_of_candidates = $this->checkNumbers($scheduled_interview_enc_id);
-            $count = $this->countApplications($scheduled_interview_enc_id);
+            if ($type == 'flexible') {
 
-            if ($count < $number_of_candidates) {
+                $interview_candidates = InterviewCandidates::find()
+                    ->select('status')
+                    ->where(['interview_candidate_enc_id' => $interview_candidate_id])
+                    ->asArray()
+                    ->one();
 
-                if (empty($interview_candidates)) {
-                    $save_fixed_user_acceptance = new InterviewCandidates();
+                if ($interview_candidates['status'] == 2) {
+                    return $resonse;
+                } else {
 
-                    $utilitiesModel = new \common\models\Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $save_fixed_user_acceptance->interview_candidate_enc_id = $utilitiesModel->encrypt();
-                    $save_fixed_user_acceptance->scheduled_interview_enc_id = $scheduled_interview_enc_id;
-                    $save_fixed_user_acceptance->interview_date_timing_enc_id = $date_enc_id;
-                    $save_fixed_user_acceptance->applied_application_enc_id = $applied_app_enc_id;
-                    $save_fixed_user_acceptance->status = 2;
-                    if ($save_fixed_user_acceptance->save()) {
+                    $interview_candidates = InterviewCandidates::find()
+                        ->where(['applied_application_enc_id' => $applied_app_enc_id])
+                        ->one();
+
+                    $interview_candidates->status = 2;
+                    $interview_candidates->interview_date_timing_enc_id = $date_enc_id;
+
+                    if ($interview_candidates->update()) {
                         return [
                             'status' => 200,
                             'message' => 'accepted'
                         ];
+                    } else {
+                        return [
+                            'status' => 201,
+                            'message' => 'There is an error'
+                        ];
                     }
                 }
-
-            } else {
-                return [
-                    'status' => 201,
-                    'message' => 'this slot is full.try next time'
-                ];
-            }
-
-            if ($interview_candidates['status'] == 2) {
-                return [
-                    'status' => 200,
-                    'message' => 'already exists'
-                ];
-            } else {
+            } elseif ($type == 'fixed') {
 
                 $interview_candidates = InterviewCandidates::find()
-                    ->where(['applied_application_enc_id' => $applied_app_enc_id])
+                    ->select(['status'])
+                    ->where([
+                        'scheduled_interview_enc_id' => $scheduled_interview_enc_id,
+                        'applied_application_enc_id' => $applied_app_enc_id,
+                        'process_field_enc_id' => $process_id,
+                    ])
+                    ->asArray()
                     ->one();
 
-                $interview_candidates->status = 2;
-                $interview_candidates->interview_date_timing_enc_id = $date_enc_id;
+                if ($interview_candidates['status'] == 2) {
+                    return $resonse;
+                }
 
-                if ($interview_candidates->update()) {
-                    return [
-                        'status' => 200,
-                        'message' => 'accepted'
-                    ];
+                $number_of_candidates = $this->checkNumbers($scheduled_interview_enc_id);
+                $count = $this->countApplications($scheduled_interview_enc_id);
+
+                if ($count < $number_of_candidates) {
+
+                    if (empty($interview_candidates)) {
+                        $save_fixed_user_acceptance = new InterviewCandidates();
+
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $save_fixed_user_acceptance->interview_candidate_enc_id = $utilitiesModel->encrypt();
+                        $save_fixed_user_acceptance->scheduled_interview_enc_id = $scheduled_interview_enc_id;
+                        $save_fixed_user_acceptance->interview_date_timing_enc_id = $date_enc_id;
+                        $save_fixed_user_acceptance->process_field_enc_id = $process_id;
+                        $save_fixed_user_acceptance->applied_application_enc_id = $applied_app_enc_id;
+                        $save_fixed_user_acceptance->status = 2;
+                        if ($save_fixed_user_acceptance->save()) {
+                            return [
+                                'status' => 200,
+                                'message' => 'accepted'
+                            ];
+                        }
+                    }
+
                 } else {
                     return [
                         'status' => 201,
-                        'message' => 'There is an error'
+                        'message' => 'this slot is full.try next time'
                     ];
                 }
+            } else {
+                return [
+                    'status' => 201,
+                    'message' => 'an error occured'
+                ];
             }
+
         }
 
     }
@@ -451,9 +483,6 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-    private function checkProcessField(){
-
-    }
 
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;

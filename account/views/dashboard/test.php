@@ -9,9 +9,9 @@
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
             <div class="modal-body">
-<!--                <button id="btnDelete" class="btn btn-default btn-sm pull-right">-->
-<!--                    <span class="glyphicon glyphicon-remove"></span> Remove-->
-<!--                </button>-->
+                <!--                <button id="btnDelete" class="btn btn-default btn-sm pull-right">-->
+                <!--                    <span class="glyphicon glyphicon-remove"></span> Remove-->
+                <!--                </button>-->
                 <button id="btnAccept" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
                     <span class="glyphicon glyphicon-pencil"></span> Accept
                 </button>
@@ -114,7 +114,8 @@ function FetchEventAndRenderCalendar(){
                     type:v.type,
                     date_time_enc_id:v.date_time,
                     applied_application_enc_id:v.applied_application_enc_id,
-                    interview_candidate_enc_id:v.interview_c_enc_id
+                    interview_candidate_enc_id:v.interview_c_enc_id,
+                    process_field_id:v.process_field_enc_id,
                 })
             });
             GenerateCalendar(events);
@@ -184,7 +185,14 @@ function acceptInterview(){
         $.ajax({
         type: 'POST',
         url: 'candidate-accepted',
-        data:{date_enc_id:selectedEvent.date_time_enc_id, interview_candidate_enc_id: selectedEvent.interview_candidate_enc_id, scheduled_interview_enc_id:selectedEvent.eventID, applied_app_id:selectedEvent.applied_application_enc_id},
+        data:{
+            date_enc_id:selectedEvent.date_time_enc_id, 
+            scheduled_interview_enc_id:selectedEvent.eventID, 
+            candidate_interview_id: selectedEvent.interview_c_enc_id,
+            applied_app_id:selectedEvent.applied_application_enc_id,
+            process_id:selectedEvent.process_field_id,
+            type:selectedEvent.type,
+            },
         async: false,
         success: function(data) {
            $('#myModal').modal('hide');
