@@ -77,10 +77,10 @@ class ExploreController extends ApiBaseController
                     'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'c.initials_color color'
                 ])
-                ->joinWith(['applicationTypeEnc b'=>function($b) use($req){
+                ->innerJoinWith(['applicationTypeEnc b'=>function($b) use($req){
                     $b->where(['b.name'=>$req['type']]);
                 }],false)
-                ->joinWith(['organizationEnc c'=>function($c){
+                ->innerJoinWith(['organizationEnc c'=>function($c){
                     $c->where([
                         'a.status' => 'Active',
                         'a.is_deleted' => 0,
