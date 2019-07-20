@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "{{%referral_review_tracking}}".
  *
  * @property int $id
- * @property string $tracking_job_enc_id tracking code enc id
+ * @property string $tracking_review_enc_id tracking code enc id
  * @property string $referral_enc_id referral code enc id
  * @property string $unclaimed_review_enc_id unclaimed review through referral  id
  * @property string $claimed_review_enc_id claimed review through referral  id
@@ -35,11 +35,11 @@ class ReferralReviewTracking extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tracking_job_enc_id', 'referral_enc_id'], 'required'],
+            [['tracking_review_enc_id', 'referral_enc_id'], 'required'],
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['tracking_job_enc_id', 'referral_enc_id', 'unclaimed_review_enc_id', 'claimed_review_enc_id'], 'string', 'max' => 100],
-            [['tracking_job_enc_id'], 'unique'],
+            [['tracking_review_enc_id', 'referral_enc_id', 'unclaimed_review_enc_id', 'claimed_review_enc_id'], 'string', 'max' => 100],
+            [['tracking_review_enc_id'], 'unique'],
             [['referral_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Referral::className(), 'targetAttribute' => ['referral_enc_id' => 'referral_enc_id']],
             [['unclaimed_review_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => NewOrganizationReviews::className(), 'targetAttribute' => ['unclaimed_review_enc_id' => 'review_enc_id']],
             [['claimed_review_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationReviews::className(), 'targetAttribute' => ['claimed_review_enc_id' => 'review_enc_id']],
@@ -49,7 +49,6 @@ class ReferralReviewTracking extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-
     /**
      * @return \yii\db\ActiveQuery
      */

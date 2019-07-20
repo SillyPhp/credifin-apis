@@ -23,7 +23,7 @@ class RefferalJobAppliedTracking extends Widget
             $model = new ReferralJobAppliedTracking();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->tracking_signup_enc_id = $utilitiesModel->encrypt();
+            $model->tracking_job_enc_id = $utilitiesModel->encrypt();
             $model->referral_enc_id = $ref->referral_enc_id;
             if (!empty($this->job_applied_id)) {
                 $model->applied_enc_id = $this->job_applied_id;
