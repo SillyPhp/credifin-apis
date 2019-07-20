@@ -32,6 +32,7 @@ class ApplicationCards
     {
         $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
+            ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug, "' . $referral . '") link',
@@ -65,7 +66,7 @@ class ApplicationCards
             ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
             ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = e.application_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id')
             ->innerJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
             ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
             ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
@@ -74,6 +75,7 @@ class ApplicationCards
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
+            ->distinct()
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug, "' . $referral . '") link',
                 'CONCAT("/job/", a.slug, "' . $referral . '") organization_link',
@@ -105,7 +107,7 @@ class ApplicationCards
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(UnclaimedOrganizations::tableName() . 'as d', 'd.organization_enc_id = a.unclaimed_organization_enc_id')
-            ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id')
+            ->innerJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id')
             ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
