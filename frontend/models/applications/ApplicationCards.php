@@ -2,8 +2,13 @@
 
 namespace frontend\models\applications;
 
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationUnclaimOptions;
+use common\models\States;
+use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\helpers\Url;
+use yii\db\Expression;
 use common\models\Organizations;
 use common\models\OrganizationLocations;
 use common\models\Cities;
@@ -25,24 +30,13 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
-        $cards = EmployerApplications::find()
-            ->alias('a')
-            ->select([
-                'a.application_enc_id application_id',
-                'e.location_enc_id location_id',
-                'a.last_date',
-                'a.type',
-                'i.name category',
-                'l.designation',
+        $cards1 = (new \yii\db\Query())
+            ->from(EmployerApplications::tableName() . 'as a')
+            ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug) link',
-                'd.initials_color color',
-                'CONCAT("/", d.slug) organization_link',
-                "g.name as city",
                 'c.name as title',
-                'i.icon',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE
+                'a.last_date',
+                'i.icon','(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
                 WHEN a.experience = "2" THEN "1 Year Experience"
@@ -52,48 +46,98 @@ class ApplicationCards
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
-                END) as experience',
-                'm.fixed_wage as fixed_salary',
+               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
+                            'm.fixed_wage as fixed_salary',
                 'm.wage_type salary_type',
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
-                'm.wage_duration as salary_duration'
-            ])
-            ->joinWith(['title b' => function ($x) {
-                $x->joinWith(['categoryEnc c'], false);
-                $x->joinWith(['parentEnc i'], false);
-            }], false)
-            ->joinWith(['organizationEnc d'=>function($a){
-                $a->where(['d.is_deleted'=>0]);
-            }], false)
-            ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g'=>function($x)
-                    {
-                        $x->joinWith(['stateEnc s'],false);
-                    }], false);
-                }], false);
-            }], false)
-            ->joinWith(['preferredIndustry h'], false)
-            ->joinWith(['designationEnc l'], false)
+                'm.wage_duration as salary_duration',
+                'd.name as organization_name',
+                'd.initials_color color',
+                'CONCAT("/", d.slug) organization_link',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'g.name as city'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
+            ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
+            ->innerJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
+            ->innerJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
+            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = e.application_enc_id')
+            ->innerJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
+            ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
+            ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->joinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
 
+        $cards2 = (new \yii\db\Query())
+            ->from(EmployerApplications::tableName() . 'as a')
+            ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
+                'CONCAT("/job/", a.slug) link',
+                'c.name as title',
+                'a.last_date',
+                'i.icon','(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
+                WHEN a.experience = "2" THEN "1 Year Experience"
+                WHEN a.experience = "3" THEN "2-3 Years Experience"
+                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
+                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
+                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
+                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                ELSE "No Experience"
+               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
+                'v.fixed_wage as fixed_salary',
+                'v.wage_type salary_type',
+                'v.max_wage as max_salary',
+                'v.min_wage as min_salary',
+                new Expression('NULL as salary_duration'),
+                'd.name as organization_name',
+                'd.initials_color color',
+                'CONCAT("/job/", a.slug)  organization_link',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'g.name as city'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
+            ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->innerJoin(UnclaimedOrganizations::tableName() . 'as d', 'd.organization_enc_id = a.unclaimed_organization_enc_id')
+            ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id')
+            ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
+            ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
+
+
         if (isset($options['company'])) {
-            $cards->andWhere([
+            $cards1->andWhere([
+                'or',
+                ['like', 'd.name', $options['company']]
+            ]);
+            $cards2->andWhere([
                 'or',
                 ['like', 'd.name', $options['company']]
             ]);
         }
+
         if (isset($options['slug'])) {
-            $cards->andWhere([
+            $cards1->andWhere([
+                'or',
+                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+            ]);
+            $cards2->andWhere([
                 'or',
                 ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
             ]);
         }
         if (isset($options['location'])) {
-            $cards->andWhere([
+            $cards1->andWhere([
+                'or',
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']]
+            ]);
+            $cards2->andWhere([
                 'or',
                 ['g.name' => $options['location']],
                 ['s.name' => $options['location']]
@@ -104,13 +148,17 @@ class ApplicationCards
             $options['for_careers'] = 0;
         }
 
-        $cards->andWhere([
+        $cards1->andWhere([
+            'or',
+            ['a.for_careers' => $options['for_careers']]
+        ]);
+        $cards2->andWhere([
             'or',
             ['a.for_careers' => $options['for_careers']]
         ]);
 
         if (isset($options['category'])) {
-            $cards->andWhere([
+            $cards1->andWhere([
                 'or',
                 ['like', 'd.name', $options['category']],
                 ['like', 'l.designation', $options['category']],
@@ -119,9 +167,16 @@ class ApplicationCards
                 ['like', 'h.industry', $options['category']],
                 ['like', 'i.name', $options['category']],
             ]);
+            $cards2->andWhere([
+                'or',
+                ['like', 'd.name', $options['category']],
+                ['like', 'a.type', $options['category']],
+                ['like', 'c.name', $options['category']],
+                ['like', 'i.name', $options['category']],
+            ]);
         }
         if (isset($options['keyword'])) {
-            $cards->andWhere([
+            $cards1->andWhere([
                 'or',
                 ['like', 'l.designation', $options['keyword']],
                 ['like', 'a.type', $options['keyword']],
@@ -130,19 +185,41 @@ class ApplicationCards
                 ['like', 'i.name', $options['keyword']],
                 ['like', 'd.name', $options['keyword']]
             ]);
+            $cards2->andWhere([
+                'or',
+                ['like', 'a.type', $options['keyword']],
+                ['like', 'c.name', $options['keyword']],
+                ['like', 'i.name', $options['keyword']],
+                ['like', 'd.name', $options['keyword']]
+            ]);
         }
         if (isset($options['limit'])) {
-            $cards->limit = $options['limit'];
-            $cards->offset = ($options['page'] - 1) * $options['limit'];
+            $limit = $options['limit'];
+            $offset = ($options['page'] - 1) * $options['limit'];
         }
-
         $result = null;
         if(isset($options['similar_jobs'])){
-            $cards->andWhere(['in', 'c.name', $options['similar_jobs']]);
-            $cards->andWhere(['in', 'i.name', $options['similar_jobs']]);
-            $result = $cards->orderBy(new \yii\db\Expression('rand()'))->asArray()->all();
+            $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
+            $cards2->andWhere(['in', 'c.name', $options['similar_jobs']]);
+            $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
+            $cards2->andWhere(['in', 'i.name', $options['similar_jobs']]);
+            $result  = (new \yii\db\Query())
+                ->from([
+                    $cards1->union($cards2),
+                ])
+                ->limit($limit)
+                ->offset($offset)
+                ->orderBy(new \yii\db\Expression('rand()'))
+                ->all();
         }else {
-            $result = $cards->orderBy(['a.id' => SORT_DESC])->asArray()->all();
+            $result =  (new \yii\db\Query())
+                ->from([
+                    $cards1->union($cards2),
+                ])
+                ->limit($limit)
+                ->offset($offset)
+                ->orderBy(['id' => SORT_DESC])
+                ->all();
         }
 
         $i = 0;
