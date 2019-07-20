@@ -80,7 +80,7 @@ class ApplicationCards
         if (isset($options['slug'])) {
             $cards->andWhere([
                 'or',
-                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+                ($options['slug']) ? ['d.slug' => $options['slug']] : ''
             ]);
         }
         if (isset($options['location'])) {
