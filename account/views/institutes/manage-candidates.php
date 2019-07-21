@@ -75,20 +75,22 @@ use yii\widgets\Pjax;
                                                                 <div class="steps-form-2">
                                                                     <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">
                                                                         <?php
+                                                                        $j = 1;
                                                                           foreach ($u['appliedEnc']['appliedApplicationProcesses'] as $d) {
                                                                         ?>
-                                                                        <div class="steps-step-2 ">
-                                                                            <a type="button"
-                                                                               class="circle-group btn btn-circle-2 waves-effect btn-blue-grey current"
-                                                                               data-toggle="tooltip"
-                                                                               data-placement="top" title=""
-                                                                               data-id="jL9zWvg3wlJxz9GN0PM5ypoqEG6OB1"
-                                                                               data-original-title="<?= $d['field_name']; ?>">
-                                                                                <i class="<? $d['icon']; ?>"
-                                                                                   aria-hidden="true"></i>
+                                                                        <div class="steps-step-2 <?= ($j < $u['appliedEnc']['current_round']) ? 'active' : ''?>">
+                                                                            <a class="circle-group btn btn-circle-2 waves-effect btn-blue-grey <?php
+                                                                            if ($j < $u['appliedEnc']['current_round']) {
+                                                                                echo 'active';
+                                                                            } elseif ($j == $u['appliedEnc']['current_round']) {
+                                                                                echo 'current';
+                                                                            }
+                                                                            ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?= $d['field_name']; ?>">
+                                                                                <i class="<?= $d['icon']; ?>" aria-hidden="true"></i>
                                                                             </a>
                                                                         </div>
                                                                         <?php
+                                                                          $j++;
                                                                           }
                                                                         ?>
                                                                     </div>

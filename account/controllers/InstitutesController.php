@@ -38,6 +38,9 @@ class InstitutesController extends Controller
             ->limit(20)
             ->all();
 
+//        print_r($data);
+//        exit();
+
         return $this->render('manage-candidates',[
             'users' => $data,
         ]);
