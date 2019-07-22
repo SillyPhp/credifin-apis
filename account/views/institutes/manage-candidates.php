@@ -4,29 +4,14 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-//echo $this->render('/widgets/header/secondary-header', [
-//    'for' => 'Questionnaire',
-//]);
 ?>
-
-    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-lg-12 col-xs-12 col-sm-12">
             <div class="portlet light ">
                 <div class="portlet-title tabbable-line">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h3>Process Applications of candidates</h3>
+                            <h3>Application Processes of candidates</h3>
                         </div>
                     </div>
                 </div>
@@ -34,37 +19,68 @@ use yii\widgets\Pjax;
                     <div class="row">
                         <div class="col-md-12">
                             <?php
-                            foreach ($users as $u) {
-                                ?>
-                                <div class="row cd-box">
-                                    <div class="cd-can-box">
-                                        <div class="cd-box-border" id="cd-box-border">
-                                            <div class="row">
-                                                <div class=" cd-user-icon col-md-6">
-                                                    <a href="#"
-                                                       target="_blank">
-                                                        <canvas class="user-icon" name="test" width="80" height="80" font="35px"></canvas>
-                                                    </a>
-                                                    <div class="cand-name">
-                                                        <a href="#" target="_blank">
-                                                            <?= $u['appliedEnc']['name'] ?>
+                            if (!empty($users)) {
+                                foreach ($users as $u) {
+                                    ?>
+                                    <div class="row cd-box">
+                                        <div class="cd-can-box">
+                                            <div class="cd-box-border" id="cd-box-border">
+                                                <div class="row">
+                                                    <div class=" cd-user-icon col-md-6">
+                                                        <a href="/<?= $u['appliedEnc']['username'] ?>" target="_blank">
+                                                            <?php
+                                                            $name = $image = NULL;
+                                                            if (!empty($u['appliedEnc']['image'])) {
+                                                                $image = Yii::$app->params->upload_directories->users->image . $u['appliedEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['image'];
+                                                            }
+                                                            $name = $u['appliedEnc']['name'];
+                                                            if ($image):
+                                                                ?>
+                                                                <img src="<?= $image; ?>" alt="<?= $name; ?>"
+                                                                     class="img-circle"/>
+                                                            <?php else: ?>
+                                                                <img src="https://ui-avatars.com/api/?name=<?= $name . '&size=200&rounded=false&background=' . str_replace("#", "", $u['appliedEnc']['initials_color']) . '&color=ffffff' ?>"
+                                                                     alt="<?= $name; ?>" class="img-circle"/>
+                                                            <?php endif; ?>
                                                         </a>
+                                                        <div class="cand-name capitalize">
+                                                            <a href="/<?= $u['appliedEnc']['username'] ?>"
+                                                               target="_blank">
+                                                                <?= $u['appliedEnc']['name'] ?>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vj-btn col-md-6">
+                                                        <a href="<?= Url::to('/' . $u['username']); ?>">View Profile</a>
                                                     </div>
                                                 </div>
-                                                <div class="vj-btn col-md-6">
-                                                    <a href="<?= Url::to('/' . $u['username']);?>">View Profile</a>
-                                                </div>
-                                            </div>
                                                 <div class="row margn">
                                                     <div class="col-md-5 col-sm-12 col-xs-12">
                                                         <div class="cmp-profile">
                                                             <div class="cmp-logo">
-                                                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png"
-                                                                     class="user-icon" style="width: 100%;">
+                                                                <?php
+                                                                $org_name = $org_logo = NULL;
+                                                                if (!empty($u['appliedEnc']['applicationEnc']['organizationEnc']['logo'])) {
+                                                                    $org_logo = Yii::$app->params->upload_directories->organizations->logo . $u['appliedEnc']['applicationEnc']['organizationEnc']['logo_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['applicationEnc']['organizationEnc']['logo'];
+                                                                }
+                                                                $org_name = $u['appliedEnc']['applicationEnc']['organizationEnc']['name'];
+                                                                if ($org_logo):
+                                                                    ?>
+                                                                    <img src="<?= $org_logo; ?>" alt="<?= $org_name; ?>"
+                                                                         class="user-icon" style="width: 100%;"/>
+                                                                <?php else: ?>
+                                                                    <img src="https://ui-avatars.com/api/?name=<?= $org_name . '&size=200&rounded=false&background=' . str_replace("#", "", $u['appliedEnc']['applicationEnc']['organizationEnc']['org_initials']) . '&color=ffffff' ?>"
+                                                                         alt="<?= $org_name; ?>" class="user-icon"
+                                                                         style="width: 100%;"/>
+                                                                <?php endif; ?>
                                                             </div>
                                                             <div class="inline">
-                                                                <h3 class="cmp-name"><?= $u['appliedEnc']['applicationEnc']['organizationEnc']['name'] ?></h3>
-                                                                <h5 class="cmp-desg"><?= $u['appliedEnc']['applicationEnc']['organizationEnc']['slug'] ?></h5>
+                                                                <h3 class="cmp-name"><a
+                                                                            href="/<?= ($u['appliedEnc']['applicationEnc']['assigned_to'] == 'Jobs') ? 'job' : 'internship' ?>/<?= $u['appliedEnc']['applicationEnc']['application_slug'] ?>"><?= $u['appliedEnc']['applicationEnc']['application_title'] ?></a>
+                                                                </h3>
+                                                                <h5 class="cmp-desg"><a
+                                                                            href="/<?= $u['appliedEnc']['applicationEnc']['organizationEnc']['slug'] ?>"><?= $u['appliedEnc']['applicationEnc']['organizationEnc']['name'] ?></a>
+                                                                </h5>
 
                                                             </div>
                                                         </div>
@@ -76,22 +92,25 @@ use yii\widgets\Pjax;
                                                                     <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">
                                                                         <?php
                                                                         $j = 1;
-                                                                          foreach ($u['appliedEnc']['appliedApplicationProcesses'] as $d) {
-                                                                        ?>
-                                                                        <div class="steps-step-2 <?= ($j < $u['appliedEnc']['current_round']) ? 'active' : ''?>">
-                                                                            <a class="circle-group btn btn-circle-2 waves-effect btn-blue-grey <?php
-                                                                            if ($j < $u['appliedEnc']['current_round']) {
-                                                                                echo 'active';
-                                                                            } elseif ($j == $u['appliedEnc']['current_round']) {
-                                                                                echo 'current';
-                                                                            }
-                                                                            ?>" data-toggle="tooltip" data-placement="top" data-original-title="<?= $d['field_name']; ?>">
-                                                                                <i class="<?= $d['icon']; ?>" aria-hidden="true"></i>
-                                                                            </a>
-                                                                        </div>
-                                                                        <?php
-                                                                          $j++;
-                                                                          }
+                                                                        foreach ($u['appliedEnc']['appliedApplicationProcesses'] as $d) {
+                                                                            ?>
+                                                                            <div class="steps-step-2 <?= ($j < $u['appliedEnc']['current_round']) ? 'active' : '' ?>">
+                                                                                <a class="circle-group btn btn-circle-2 waves-effect btn-blue-grey <?php
+                                                                                if ($j < $u['appliedEnc']['current_round']) {
+                                                                                    echo 'active';
+                                                                                } elseif ($j == $u['appliedEnc']['current_round']) {
+                                                                                    echo 'current';
+                                                                                }
+                                                                                ?>" data-toggle="tooltip"
+                                                                                   data-placement="top"
+                                                                                   data-original-title="<?= $d['field_name']; ?>">
+                                                                                    <i class="<?= $d['icon']; ?>"
+                                                                                       aria-hidden="true"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                            <?php
+                                                                            $j++;
+                                                                        }
                                                                         ?>
                                                                     </div>
                                                                 </div>
@@ -99,114 +118,119 @@ use yii\widgets\Pjax;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            <!--                                            <div class="row">-->
-                                            <!--                                                <div class="col-md-4 col-sm-12 col-xs-12">-->
-                                            <!--                                                    <div class="cmp-profile">-->
-                                            <!--                                                        <div class="cmp-logo">-->
-                                            <!--                                                            <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png"-->
-                                            <!--                                                                 class="user-icon" style="width: 100%;">-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                        <div class="inline">-->
-                                            <!--                                                            <h3 class="cmp-name">empower youth</h3>-->
-                                            <!--                                                            <h5 class="cmp-desg">web designer</h5>-->
-                                            <!---->
-                                            <!--                                                        </div>-->
-                                            <!--                                                    </div>-->
-                                            <!--                                                </div>-->
-                                            <!--                                                <div class="col-md-8 floating col-sm-12 col-xs-12">-->
-                                            <!--                                                    <div class="row">-->
-                                            <!--                                                        <div class="col-md-12 padd">-->
-                                            <!--                                                            <div class="steps-form-2">-->
-                                            <!--                                                                <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey current"-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="jL9zWvg3wlJxz9GN0PM5ypoqEG6OB1"-->
-                                            <!--                                                                           data-original-title="Get Applications">-->
-                                            <!--                                                                            <i class="fa fa-sitemap"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="EV8KoxNaQZzMAegqqQPqyp539GLgXD"-->
-                                            <!--                                                                           data-original-title="Technical Inteview">-->
-                                            <!--                                                                            <i class="fa fa-cogs"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="LREdPVpMwyooRen33AP6y3kGB1Ye4r"-->
-                                            <!--                                                                           data-original-title="HR Interview">-->
-                                            <!--                                                                            <i class="fa fa-user-circle"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="EV8KoxNaQZzMAegqWVxnyp539GLgXD"-->
-                                            <!--                                                                           data-original-title="Video Call">-->
-                                            <!--                                                                            <i class="fa fa-video-camera"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="rND6P3qwg7D0z3qOYRg674ajv0oeAQ"-->
-                                            <!--                                                                           data-original-title="Written Examination">-->
-                                            <!--                                                                            <i class="fa fa-pencil-square-o"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="rND6P3qwg7D0z3qOYWqP74ajv0oeAQ"-->
-                                            <!--                                                                           data-original-title="Employee Verification">-->
-                                            <!--                                                                            <i class="fa fa-check"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                    <div class="steps-step-2 ">-->
-                                            <!--                                                                        <a type="button"-->
-                                            <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
-                                            <!--                                                                           data-toggle="tooltip"-->
-                                            <!--                                                                           data-placement="top" title=""-->
-                                            <!--                                                                           data-id="d8WwBN62KlBn2eGN6zj2ljpEJLD9mv"-->
-                                            <!--                                                                           data-original-title="Hire Applicants">-->
-                                            <!--                                                                            <i class="fa fa-paper-plane"-->
-                                            <!--                                                                               aria-hidden="true"></i>-->
-                                            <!--                                                                        </a>-->
-                                            <!--                                                                    </div>-->
-                                            <!--                                                                </div>-->
-                                            <!--                                                            </div>-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                    </div>-->
-                                            <!--                                                </div>-->
-                                            <!--                                            </div>-->
+                                                <!--                                            <div class="row">-->
+                                                <!--                                                <div class="col-md-4 col-sm-12 col-xs-12">-->
+                                                <!--                                                    <div class="cmp-profile">-->
+                                                <!--                                                        <div class="cmp-logo">-->
+                                                <!--                                                            <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png"-->
+                                                <!--                                                                 class="user-icon" style="width: 100%;">-->
+                                                <!--                                                        </div>-->
+                                                <!--                                                        <div class="inline">-->
+                                                <!--                                                            <h3 class="cmp-name">empower youth</h3>-->
+                                                <!--                                                            <h5 class="cmp-desg">web designer</h5>-->
+                                                <!---->
+                                                <!--                                                        </div>-->
+                                                <!--                                                    </div>-->
+                                                <!--                                                </div>-->
+                                                <!--                                                <div class="col-md-8 floating col-sm-12 col-xs-12">-->
+                                                <!--                                                    <div class="row">-->
+                                                <!--                                                        <div class="col-md-12 padd">-->
+                                                <!--                                                            <div class="steps-form-2">-->
+                                                <!--                                                                <div class="steps-row-2 setup-panel-2 d-flex justify-content-between">-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey current"-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="jL9zWvg3wlJxz9GN0PM5ypoqEG6OB1"-->
+                                                <!--                                                                           data-original-title="Get Applications">-->
+                                                <!--                                                                            <i class="fa fa-sitemap"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="EV8KoxNaQZzMAegqqQPqyp539GLgXD"-->
+                                                <!--                                                                           data-original-title="Technical Inteview">-->
+                                                <!--                                                                            <i class="fa fa-cogs"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="LREdPVpMwyooRen33AP6y3kGB1Ye4r"-->
+                                                <!--                                                                           data-original-title="HR Interview">-->
+                                                <!--                                                                            <i class="fa fa-user-circle"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="EV8KoxNaQZzMAegqWVxnyp539GLgXD"-->
+                                                <!--                                                                           data-original-title="Video Call">-->
+                                                <!--                                                                            <i class="fa fa-video-camera"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="rND6P3qwg7D0z3qOYRg674ajv0oeAQ"-->
+                                                <!--                                                                           data-original-title="Written Examination">-->
+                                                <!--                                                                            <i class="fa fa-pencil-square-o"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="rND6P3qwg7D0z3qOYWqP74ajv0oeAQ"-->
+                                                <!--                                                                           data-original-title="Employee Verification">-->
+                                                <!--                                                                            <i class="fa fa-check"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                    <div class="steps-step-2 ">-->
+                                                <!--                                                                        <a type="button"-->
+                                                <!--                                                                           class="circle-group btn btn-circle-2 waves-effect btn-blue-grey "-->
+                                                <!--                                                                           data-toggle="tooltip"-->
+                                                <!--                                                                           data-placement="top" title=""-->
+                                                <!--                                                                           data-id="d8WwBN62KlBn2eGN6zj2ljpEJLD9mv"-->
+                                                <!--                                                                           data-original-title="Hire Applicants">-->
+                                                <!--                                                                            <i class="fa fa-paper-plane"-->
+                                                <!--                                                                               aria-hidden="true"></i>-->
+                                                <!--                                                                        </a>-->
+                                                <!--                                                                    </div>-->
+                                                <!--                                                                </div>-->
+                                                <!--                                                            </div>-->
+                                                <!--                                                        </div>-->
+                                                <!--                                                    </div>-->
+                                                <!--                                                </div>-->
+                                                <!--                                            </div>-->
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                <h2>The candidate hasn't applied for any application yet.</h2>
                                 <?php
                             }
-                            ?>
+                                ?>
                         </div>
                     </div>
                 </div>
@@ -239,6 +263,9 @@ $this->registerCss('
     color: #555;
     text-transform:capitalize;
     }
+.cmp-name a{
+    color: #555;
+}
 .cmp-desg{
     float: left;
     clear: both;
@@ -246,6 +273,9 @@ $this->registerCss('
     color: #777;
     margin:0px;
     }
+.cmp-desg a{
+    color: #777;
+}
 .inline{
     display: inline-block;
     }
@@ -519,102 +549,6 @@ a:hover{
 $script = <<<JS
 $('[data-toggle="tooltip"]').tooltip();
 
-$(document).on('click','.slide-bttn',function()
-    {   
-     $(this).closest('.cd-can-box').find('.cd-box-border-hide').slideToggle('slow');
-   })  
-
-$(document).on('click', '.modal-load-class', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('href'));   
-});
-$(document).on('click', '.approve', function() {
-    var field_id = $(this).parent().prev('div').find('.current').attr('data-id');  
-    var app_id = $(this).val();
-    var btn = $(this);
-    var btn2 = btn.next();
-    var btn3 = btn.prev();
-        var total = $(this).attr('data-total');
-   $.ajax({
-       url:'/account/jobs/approve-candidate',
-       data:{field_id:field_id,app_id:app_id},
-       method:'post',
-       beforeSend:function()  {
-                    btn.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                    btn.attr("disabled","true");
-                    },    
-       success:function(data)
-           {
-            res = JSON.parse(data);
-            if(res.status==true)
-                {
-                  disable(btn);
-                  run(btn);
-                  hide_btn(res,total,btn,btn2,btn3); 
-                }
-            else
-            {
-               disable(btn);
-               alert('something went wrong..');
-            }
-          }
-       }) 
-});
-   
-        function hide_btn(res,total,thisObj,thisObj1,thisObj2)
-        {  
-       if(res.active==total)
-        {
-          thisObj.hide();
-          thisObj1.hide();
-          thisObj2.show();
-        }
-        }
-        
-   $(document).on('click','.reject',function()
-            {
-             var btn = $(this);
-             var btn2 = $(this).prev();
-             var btn3 = $(this).next();
-             var app_id = $(this).val();
-              $.ajax({
-                 url:'/account/jobs/reject-candidate',
-                 data:{app_id:app_id},
-                 method:'post',
-                 beforeSend:function()  {
-                    btn.html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                    btn.attr("disabled","true");
-                    },    
-            success:function(data)
-           {
-               if(data==true)
-                    {
-                      btn.hide();
-                      btn2.hide();
-                      btn3.show();
-                    }
-              else
-            {
-               alert('something went wrong..');
-            }
-            } 
-            }) });   
-  function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}          
-            
-   function run(thisObj)
-       {
-    var current_div = $(thisObj).parent().prev('div').find('.steps-step-2:first');
-    if(current_div.hasClass('active')) {
-        current_div = $(thisObj).parent().prev('div').find('.steps-step-2.active:last').next('.steps-step-2');
-    }
-    if(!(current_div.is(':last-child'))) {
-        current_div.addClass('active');
-        setTimeout(function() {
-            current_div.next('div').find('a').addClass('current');
-        }, 1000);
-        
-    }
-    current_div.find('a').removeClass('current').addClass('active');
-       }
    
 JS;
 $this->registerJs($script);
