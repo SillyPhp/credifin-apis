@@ -51,7 +51,8 @@ use yii\widgets\Pjax;
                                                         </div>
                                                     </div>
                                                     <div class="vj-btn col-md-6">
-                                                        <a href="<?= Url::to('/' . $u['username']); ?>">View Profile</a>
+                                                        <a href="<?= Url::to('/' . $u['appliedEnc']['username']); ?>">View
+                                                            Profile</a>
                                                     </div>
                                                 </div>
                                                 <div class="row margn">
@@ -230,7 +231,7 @@ use yii\widgets\Pjax;
                                 <h2>The candidate hasn't applied for any application yet.</h2>
                                 <?php
                             }
-                                ?>
+                            ?>
                         </div>
                     </div>
                 </div>
