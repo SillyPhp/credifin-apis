@@ -908,6 +908,11 @@ class ApplicationForm extends Model
             ->joinWith(['applicationTypeEnc y' => function ($b) use ($application_type) {
                 $b->andWhere(['y.name' => $application_type]);
             }], false, 'INNER JOIN')
+            ->joinWith(['applicationSkills z'=>function($b)
+            {
+                $b->select(['z.application_enc_id','n.skill_enc_id','skill']);
+                $b->joinWith(['skillEnc n'],false);
+            }])
             ->asArray()
             ->one();
         return $application;

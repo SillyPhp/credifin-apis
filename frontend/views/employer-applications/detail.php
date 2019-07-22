@@ -204,6 +204,13 @@ $this->render('/widgets/employer_applications/top-banner', [
                             ]);
                         }
                             ?>
+                        <?php
+                        if (!empty($data1['applicationSkills'])):
+                         echo $this->render('/widgets/employer_applications/skills', [
+                             'skills' => $data1['applicationSkills']
+                         ]);
+                        endif;
+                        ?>
                             <?=
                             $this->render('/widgets/employer_applications/other-details', [
                                 'other_details' => (($data2['description']) ? $data2['description'] : $data1['description']) ,
