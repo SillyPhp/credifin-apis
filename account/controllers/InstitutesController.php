@@ -35,7 +35,6 @@ class InstitutesController extends Controller
             ->distinct()
             ->where(['b.code' => Yii::$app->user->identity->referral->code, 'a.is_deleted' => 0])
             ->asArray()
-            ->limit(20)
             ->all();
 
         return $this->render('manage-candidates',[
