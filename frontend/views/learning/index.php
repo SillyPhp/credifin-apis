@@ -34,31 +34,33 @@ use yii\helpers\Url;
         <div class="cat-padding">
             <div class="row col-md-12">
                 <div class="heading-style col-md-6 col-sm-6">All Category</div>
-<!--                <div class="search-box">-->
-<!--                    <form action="">-->
-<!--                        <input type="text" placeholder="Search Category" name="search">-->
-<!--                        <button type="submit"><i class="fa fa-search"></i></button>-->
-<!--                    </form>-->
-<!--                </div>-->
+                <!--                <div class="search-box">-->
+                <!--                    <form action="">-->
+                <!--                        <input type="text" placeholder="Search Category" name="search">-->
+                <!--                        <button type="submit"><i class="fa fa-search"></i></button>-->
+                <!--                    </form>-->
+                <!--                </div>-->
             </div>
             <div class="categories">
                 <div class="row category b-padding">
 
-                    <?php foreach($categories as $c) { ?>
+                    <?php foreach ($categories as $c) { ?>
                         <div class="f-box col-md-3 col-sm-6">
                             <div class="flipbox ">
                                 <a href="/learning/videos/category/<?= $c['slug'] ?>" class="lc-link">
                                     <div class="back">
                                         <div class="b-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"  alt=""/>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"
+                                                 alt=""/>
                                         </div>
                                     </div>
                                     <div class="front">
                                         <div class="b-icon">
-                                            <?php if($c['child_icon']){ ?>
+                                            <?php if ($c['child_icon']) { ?>
                                                 <img src="" alt=""/>
-                                            <?php } else{ ?>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories.png'); ?>" alt=""/>
+                                            <?php } else { ?>
+                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories.png'); ?>"
+                                                     alt=""/>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -120,10 +122,10 @@ use yii\helpers\Url;
                 <div class="container">
                     <div class="heading-style">Most Popular Topics</div>
                     <div class="mt-actions " style="">
-                        <?php foreach($topics as $t) { ?>
+                        <?php foreach ($topics as $t) { ?>
                             <div class="col-md-3 col-sm-4">
                                 <div class="topic-con">
-                                    <a href="/learning/videos/topic/<?= $t['slug']?>">
+                                    <a href="/learning/videos/topic/<?= $t['slug'] ?>">
                                         <div class="hr-company-box">
                                             <div class="hr-company-box-center">
                                                 <div class="hr-com-icon">
@@ -175,7 +177,7 @@ use yii\helpers\Url;
                                 </a>
                             </div>
                         </div>
-                        <?php } ?>
+                    <?php } ?>
                 </div>
                 <div class="MS-controls">
                     <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>
@@ -184,6 +186,178 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Our Collaborators</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Makayla Linger</h4>
+                            <span class="post">operator</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Emily Graves</h4>
+                            <span class="post">officer</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook-f"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/04-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Madel Kavel</h4>
+                            <span class="post">Actor</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/03-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Lucy Adey</h4>
+                            <span class="post">Captive agent</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/02-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Lily Buggy</h4>
+                            <span class="post">Caster</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/05-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Paige Luxton</h4>
+                            <span class="post">Demographic</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/06-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 <?php
 $this->registerCss('
@@ -661,6 +835,125 @@ text-align: left;
     padding-left:0px !important; 
     padding-right:0px !important;
 }
+/*collaborators css starts*/
+.collaborators-main {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    overflow: hidden;
+}
+.collaborators-main .c-detail {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 220px;
+}
+.collaborators-main .c-detail .title {
+    font-size: 20px;
+    line-height: 30px;
+    color: #07c3ff;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.collaborators-main .c-detail .title {
+    font-size: 18px;
+    color: #2a384c;
+}
+.collaborators-main .c-detail .post {
+    font-size: 16px;
+    line-height: 26px;
+    color: #616161;
+}
+.collaborators-main .c-detail .post {
+    font-size: 14px;
+    color: #197BEB;
+}
+.collaborators-main .c-detail .social-icon {
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    position: relative;
+    padding-top: 20px;
+}
+.collaborators-main .c-detail .social-icon li {
+    list-style: none;
+    display: inline-block;
+    margin: 0px;
+    text-align: center;
+}
+.collaborators-main .c-detail .social-icon li a {
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: #dfdfdf;
+    -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.53);
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.53);
+    color: #4f78ee;
+    font-size: 14px;
+    -webkit-transition: .3s ease-in;
+    -o-transition: .3s ease-in;
+    transition: .3s ease-in;
+}
+.collaborators-main .c-detail .social-icon li a {
+    background-color: #f2f2f2;
+    color: #515151;
+    font-size: 16px;
+}
+.collaborators-main .thumb {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.collaborators-main .thumb img {
+    -webkit-transition: 1s ease-in-out;
+    -o-transition: 1s ease-in-out;
+    transition: 1s ease-in-out;
+  width:100%;
+}
+.collaborators-main .c-detail .social-icon:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120%;
+    background-color: #07c3ff;
+    content: "";
+    height: 1px;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    -webkit-transition: 1s ease-in;
+    -o-transition: 1s ease-in;
+    transition: 1s ease-in;
+    z-index: 1;
+}
+.collaborators-main .c-detail .social-icon:after {
+    background-color: #197BEB;
+}
+.collaborators-main:hover .thumb img {
+    -webkit-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    transform: scale(1.3);
+}
+.collaborators-main:hover .c-detail .social-icon:after {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+}
+/*collaborators css ends*/
 @media only screen and (max-width: 992px){
     .b-padding{
         padding-top: 0px;
